@@ -1,5 +1,5 @@
 <template>
-  <Authorization msg="Registration_page"/>
+  <Authorization msg="Registration_page" @remove="test" />
 </template>
 
 <script>
@@ -9,6 +9,11 @@ export default {
   name: 'App',
   components: {
     Authorization
+  },
+  methods: {
+    test(e) {
+      console.log(e)
+    }
   }
 }
 </script>
@@ -18,8 +23,11 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+  background: #2f2e33;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
 }
 </style>
