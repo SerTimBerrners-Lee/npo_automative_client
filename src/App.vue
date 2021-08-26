@@ -1,14 +1,22 @@
 <template>
-  <Authorization msg="Registration_page" @remove="test" />
+  <div id="nav">
+    <!-- логика заключается в том что если человек не авторизован 
+    кидаем его на страницу акторизации а так всегда открывается главная
+    начальная страница -->
+    <router-view />
+  </div>
 </template>
 
 <script>
-import Authorization from './components/Authorization.vue'
+// import Authorization from './components/Authorization.vue'
+// <Authorization msg="Registration_page" @remove="test" />
+// import MenuIcon from 'vue-material-design-icons/Menu.vue';
 
 export default {
   name: 'App',
   components: {
-    Authorization
+    // Authorization
+    // "menu-icon": MenuIcon
   },
   methods: {
     test(e) {
@@ -23,11 +31,10 @@ export default {
   font-family: Avenir, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: #2f2e33;
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
   left: 0;
+  top: 0;
+}
+body {
+  margin: 0px;
 }
 </style>

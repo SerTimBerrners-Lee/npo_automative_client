@@ -1,5 +1,5 @@
 <template>
-    <div class="container"> 
+    <div class="conten main-block"> 
         <div class="items_1">
             <img src="@/assets/logo.png" alt="logo" class="logo">
             <div>
@@ -30,7 +30,7 @@
                     <label for="password">Пароль</label>
                     <input type="password" name="password" id="password" ref="input_password">
 
-                    <button type="submit" class="btn blues">Войти</button>
+                    <button type="submit" class="btn blues" @click="checkedUser">Войти</button>
 
                     <p class="tabel-placholder"> {{ strTabels.length ? strTabels : "Начните вводить табель"}} </p>
                 </div>
@@ -112,6 +112,9 @@ export default {
                 this.strTabels = "";
                 this.flagsBlocingInput = false
             }, 1500)
+        },
+        checkedUser() {
+            this.$router.push('/')
         }
     }
 }
@@ -120,9 +123,23 @@ export default {
 <style>
 h2 {
     color: #ffffff;
-    margin: 2px;
+    margin: 2px; 
     font-size: 36px;
 }
+
+.conten {
+    display: flex;
+    background: #2f2e33;
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    top: 0;
+    left: 0;
+    margin-left: 0px;
+    padding-top: 20px;
+    padding-left: 10px;
+}
+
 
 .items_1 {
     display: flex;
