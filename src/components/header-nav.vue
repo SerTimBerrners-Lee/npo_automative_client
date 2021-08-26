@@ -18,11 +18,15 @@
                 <span class="initial">Наливайченко Н.И.</span>
                 <span class="role">инженер</span>
             </p>
-            <unicon name="power" fill="white" />
+            <router-link to="/Authorization">
+                <unicon name="power" fill="white" />
+            </router-link>
         </div>
-        <span class="setting-po">
-            <unicon name="setting" fill="white" />
-        </span>
+        <router-link to="/settings">
+            <span class="setting-po">
+                    <unicon name="setting" fill="white" />
+            </span>
+        </router-link>
     </div>
 </template>
 <script>
@@ -75,6 +79,8 @@ export default {
     padding: 5px;
     align-items: 10px;
     user-select: none;
+    position: fixed;
+    top: 0px;
 }
 .logo-block {
     display: flex;
@@ -94,6 +100,9 @@ export default {
     display: flex;
     align-items: center;
     margin-left: 500px;
+}
+.clock>.data {
+    text-align: center;
 }
 .setting-po {
     margin-right: 50px;

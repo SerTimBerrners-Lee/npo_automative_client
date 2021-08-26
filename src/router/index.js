@@ -1,19 +1,30 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import Main from '@/views/Main'
+import WorkTable from '@/views/WorkTable.vue';
+import Authorization from '@/views/Authorization.vue';
+import settings from '@/views/Settings.vue';
+import UsersPage from '@/views/UsersPage.vue';
+
 
 const routes = [
   {
     path: '/',
-    name: 'Main',
-    component: Main
+    name: 'WorkTable',
+    component: WorkTable
   },
   {
     path: '/Authorization',
     name: 'Authorization',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/Authorization.vue')
+    component: Authorization
+  },
+  {
+    path: '/settings',
+    name: 'settings',
+    component: settings
+  },
+  {
+    path: '/employee',
+    name: 'UsersPage',
+    component: UsersPage
   }
 ]
 

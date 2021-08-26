@@ -28,7 +28,7 @@
                     </select> 
 
                     <label for="password">Пароль</label>
-                    <input type="password" name="password" id="password" ref="input_password">
+                    <input class="input-auth" type="password" name="password" id="password" ref="input_password">
 
                     <button type="submit" class="btn blues" @click="checkedUser">Войти</button>
 
@@ -151,13 +151,6 @@ h2 {
     flex-direction: column;
 }
 
-.container {
-    margin-top: 15px;
-    margin-left: 10px;
-    display: flex;
-
-}
-
 .form-auth div:first-child {
     border: 1px solid aliceblue;
     border-radius: 4px;
@@ -179,7 +172,7 @@ h2 {
     padding-left: 8px;
 }
 
-input {
+.input-auth {
     height: 40px;
     width: 290px;
     border-radius: 5px; 
@@ -260,10 +253,6 @@ label {
 
 .blues:hover {
     background-color: #35aeff;
-}
-
-.container {
-    user-select: none;
 }
 
 .tabel-placholder {

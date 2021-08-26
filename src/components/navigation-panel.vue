@@ -1,7 +1,9 @@
 <template>
     <div class="rout-nav">
         <span class="home-link">
+            <router-link to="/">
                 <unicon name="house-user" fill="black" icon-style="monochrome"/>
+            </router-link>
         </span>
     </div>
 </template>
@@ -19,7 +21,7 @@ export default {
     display: flex;
     align-items: center;
     float: left;
-    background-color: rgb(235, 235, 235);
+    margin-top: 10px;
 }
 .rout-nav>span:hover {
     cursor: pointer;
