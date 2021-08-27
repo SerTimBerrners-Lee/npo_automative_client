@@ -149,7 +149,7 @@
                 <input type="text" class="input-periud">
             </div>
             <div class="scroll-table">
-                <table>
+                <table class="wort-page-table">
                     <tr>
                         <th colspan="11" scope="colgroup"></th>
                         <th colspan="3" scope="colgroup">За 1 шт.</th>
@@ -215,6 +215,9 @@ export default {
         margin-top: 10px;
         font-size: 16px;
     }
+    .wort-page-table {
+        font-size: 16px;
+    }
     th {
         border: 1px solid #d3d3d3;
         padding: 10px;
@@ -230,11 +233,13 @@ export default {
         height: 250px;
         overflow: auto;
         direction: ltr;
+        width: inherit;
     }
     .print_btn {
         float: right;
         padding-left: 10px;
         padding-right: 10px;
+        margin-top: 20px;
     }
 
 </style>

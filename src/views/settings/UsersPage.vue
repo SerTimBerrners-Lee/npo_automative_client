@@ -23,8 +23,10 @@
             </div>
             <div class="btn-control">
                 <button>В архив</button>
-                <button>Редактировать</button>
-                <button>Добавить</button>
+                <button @click="$router.push({path: `/employee/edit/Редактировать сотрудника`})">Редактировать</button>
+                <button @click="$router.push({path: `/employee/edit/Добавить сотрудника`})">
+                    Добавить
+                </button>
             </div>
         </div>
         <div class="inform-content">
@@ -139,12 +141,6 @@
 </template>
 
 <style scoped>
-.btn-control> button {
-    margin: 5px;
-    padding-left: 5px;
-    padding-right: 5px;
-    float:right;
-}
 .table-content {
     width: max-content;
 }
@@ -231,5 +227,8 @@ textarea {
 }
 .working-block {
     width: max-content;
+}
+table {
+    margin-top: 0px;
 }
 </style>
