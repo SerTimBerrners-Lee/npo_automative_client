@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Должности сотрудников</h3>
         <div class="cont">
             <table>

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="main-dive">
         <h3>База непроизводственной техники и инвентаря (типы и подтипы)</h3>
         <div class="cont">
             <div class="cont scroll-table scrolls-type-490">
@@ -13,9 +13,9 @@
                 </table>
             </div>
             <div class="btn-control">
-                    <button class="btn-small">Удалить</button>
-                    <button class="btn-small">Редактировать</button>
-                    <button class="btn-add btn-small">Создать</button>
+                <button class="btn-add btn-small">Создать</button>
+                <button class="btn-small">Редактировать</button>
+                <button class="btn-small">Удалить</button>
             </div>
         </div>
         <div class="cont">
@@ -30,9 +30,9 @@
                 </table>
             </div>
             <div class="btn-control">
-                    <button class="btn-small">Удалить</button>
-                    <button class="btn-small">Редактировать</button>
-                    <button class="btn-add btn-small">Создать</button>
+                <button class="btn-add btn-small">Создать</button>
+                <button class="btn-small">Редактировать</button>
+                <button class="btn-small">Удалить</button>
             </div>
         </div>
     </div>

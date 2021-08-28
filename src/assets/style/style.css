@@ -1,5 +1,40 @@
 
 
+.edit-save-block {
+    border-bottom: 2px solid black;
+    display: flex;
+    justify-content: end;
+    position: fixed;
+    bottom: 10px;
+    width: 1200px;
+    background-color: #fdfdfd;
+}
+.edit-save-block * {
+    margin: 8px;
+}
+.type-issue {
+    margin-top: 20px;
+    margin-bottom: 5px;
+}
+
+.main-dive>div {
+    display: flex;
+    flex-direction: column;
+}
+
+.type-issue span{
+    margin: 10px;
+    text-decoration: line;
+    text-decoration: underline;
+    cursor: pointer;
+}
+.scroll-table { 
+    height: 250px;
+    overflow: auto;
+    direction: ltr;
+    width: max-content;
+}
+
 .button-cover
 {
     height: 100px;
@@ -101,12 +136,13 @@
     background-color: #46c7ff;
 }
 
-.select-small {
+.select-small { 
     width: max-content;
     height: 26px;
     padding: 0px;
     font-size: 13px;
-    margin-top: 5px;
+    margin-top: 6px;
+    border: 1px solid #d3d3d3;
 }
 .btn-status {
     background: #fff;

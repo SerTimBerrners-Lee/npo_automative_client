@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3> {{ title }} </h3>
 
         <div class="block">
@@ -60,11 +60,11 @@
                         </tr>
                     </table>
                     <div class="btn-control">
-                        <button class="btn-small">Удалить</button>
-                        <button class="btn-small">Редактировать</button>
                         <button class="btn-small btn-add ">
                             Добавить
                         </button>
+                        <button class="btn-small">Редактировать</button>
+                        <button class="btn-small">Удалить</button>
                     </div>
                 </div>
                 <div class="addedit-docks">
@@ -73,17 +73,17 @@
                         <tr>
                             <th class="width-350">Файл</th>
                         </tr>
-                        <tr>
+                        <tr class="td-row">
                             <td>Скан паспорта.jpg</td>
                         </tr>
-                        <tr>
+                        <tr class="td-row">
                             <td>Снилс.png</td>
                         </tr>
                     </table>
                     <div class="btn-control">
                         <button class="btn-small">Открыть</button>
-                        <button class="btn-small">Удалить</button>
                         <button class="btn-small">Добавить из базы</button>
+                        <button class="btn-small">Удалить</button>
                     </div>
                 </div>
             </div>
@@ -143,10 +143,6 @@ textarea {
     font-size: 13px;
     margin-top: 5px;
 }
-.btn-control {
-    display: flex;
-    justify-content: end;
-}
 .block>p {
     margin-left: 10px;
 }
@@ -173,18 +169,5 @@ textarea {
     height: 250px;
     margin-top: 40px;
     margin-left: 40px;
-}
-
-.edit-save-block {
-    border-bottom: 2px solid black;
-    display: flex;
-    justify-content: end;
-    position: fixed;
-    bottom: 10px;
-    width: 1200px;
-    background-color: #fdfdfd;
-}
-.edit-save-block * {
-    margin: 8px;
 }
 </style>

@@ -8,6 +8,7 @@
                 <h2>Производства</h2>
             </div>
         </div>
+        {{ allPosts }}
         <div class="items_2">
             <div class="form-auth">
                 <div class="item-form">
@@ -54,10 +55,18 @@
 
 
 <script>
+
+import { mapGetters, mapActions }from 'vuex'
 export default {
     name: 'Authorization',
     props: {
         msg: String
+    },
+    computed: mapGetters(['allPosts']),
+    async mounted() {
+        //this.$store.dispatch('fetchPosts')
+        this.fetchPosts(3)
+        console.log(this.allPosts)
     },
     data() {
         return {
@@ -76,10 +85,9 @@ export default {
         this.text = "created"
     },
     methods: {
-        testM() {
-            this.$emit('remove', "hi")
-        },
-        changeSelectUser(value, isTabel) {
+        // оператор спрет
+        ...mapActions(['fetchPosts']),
+        angeSelectUser(value, isTabel) {
             isTabel ?
                 this.selectInitial = value :
                     this.selectTabel = value
@@ -114,7 +122,7 @@ export default {
             }, 1500)
         },
         checkedUser() {
-            this.$router.push('/')
+            this.$emit('checked', true)
         }
     }
 }

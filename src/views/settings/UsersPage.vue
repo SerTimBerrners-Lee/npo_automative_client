@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <div class="table-content">
         <h3>Сотрудники</h3>
             <div class="scroll-table" style="height: 690px;">
@@ -85,10 +85,10 @@
                             <tr>
                                 <th>Файл</th>
                             </tr>
-                            <tr>
+                            <tr class="td-row">
                                 <td>Скан паспорта.jpg</td>
                             </tr>
-                            <tr>
+                            <tr class="td-row">
                                 <td>Снилс.png</td>
                             </tr>
                         </table>
@@ -119,7 +119,7 @@
                             <th>Кол-во, ч.</th>
                             <th>Итого, ч.</th>
                         </tr>
-                        <tr v-for="iten in 6" :key="iten">
+                        <tr v-for="iten in 6" :key="iten" class="td-row">
                             <td>13.05.2021</td>
                             <td>18-225</td>
                             <td>Выпрессовщик сайдендблоков ВСГ25</td>
@@ -144,11 +144,11 @@
 .table-content {
     width: max-content;
 }
-.container {
+.container>div {
     display: flex;
     flex-direction: row;
 }
-.container>div:last-child {
+.container>div>div:last-child {
     margin-left: 20px;
     display: flex;
     flex-direction: column;

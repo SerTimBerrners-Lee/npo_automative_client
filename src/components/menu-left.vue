@@ -21,19 +21,19 @@
                 <img src="@/assets/img/img5.png" alt="" class="icon-li">
                 <span class="text-item">База сборочных едениц</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/basedetals')">
                 <img src="@/assets/img/img6.png" alt="" class="icon-li">
                 <span class="text-item">База деталей</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/basematerial')">
                 <img src="@/assets/img/img7.png" alt="" class="icon-li">
                 <span class="text-item">База материалов</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/basetools')">
                 <img src="@/assets/img/img8.png" alt="" class="icon-li">
                 <span class="text-item">База инструмента и оснастки</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/baseequipment')">
                 <img src="@/assets/img/img9.png" alt="" class="icon-li">
                 <span class="text-item">База оборудования</span>
             </li>
@@ -41,15 +41,15 @@
                 <img src="@/assets/img/img10.png" alt="" class="icon-li">
                 <span class="text-item">База техники и инвентаря</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/baseprovider')">
                 <img src="@/assets/img/img11.png" alt="" class="icon-li">
                 <span class="text-item">База поставщиков</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/basebuyer')">
                 <img src="@/assets/img/999.png" alt="" class="icon-li">
                 <span class="text-item">База покупателей</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/filebase')">
                 <img src="@/assets/img/img12.png" alt="" class="icon-li">
                 <span class="text-item">База файлов</span>
             </li>
@@ -112,6 +112,7 @@
          font-weight: bold;
          user-select: none;
          float: left;
+         position: fixed;
     }
     ul {
         margin-left: 0px;

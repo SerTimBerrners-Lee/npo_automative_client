@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import WorkTable from '@/views/WorkTable.vue';
-import Authorization from '@/views/Authorization.vue';
 import settings from '@/views/Settings.vue';
 import UsersPage from '@/views/settings/UsersPage.vue';
 import EdizmPage from '@/views/settings/EdizmPage.vue';
@@ -19,8 +18,14 @@ import LibbaryPage from '@/views/settings/LibbaryPage.vue';
 import PriceHorsPage from '@/views/settings/PriceHorsPage.vue';
 import SaveBaseData from '@/views/settings/SaveBaseData.vue';
 import AddEdit from '@/views/settings/AddEdit.vue';
-
-
+import FileBase from '@/views/FileBase.vue';
+import BaseMaterial from '@/views/BaseMaterial.vue';
+import BaseBuyer from '@/views/BaseBuyer.vue';
+import BaseProvider from '@/views/BaseProvider.vue';
+import BaseTools from '@/views/BaseTools.vue';
+import BaseEquipment from '@/views/BaseEquipment.vue';
+import BaseDetals from '@/views/BaseDetals.vue';
+ 
 const routes = [
   {
     path: '/',
@@ -28,9 +33,39 @@ const routes = [
     component: WorkTable
   },
   {
-    path: '/Authorization',
-    name: 'Authorization',
-    component: Authorization
+    path: '/basedetals',
+    name: 'BaseDetals',
+    component: BaseDetals
+  },
+  {
+    path: '/baseequipment',
+    name: 'BaseEquipment',
+    component: BaseEquipment
+  },
+  {
+    path: '/basetools',
+    name: 'BaseTools',
+    component: BaseTools
+  },
+  {
+    path: '/baseprovider',
+    name: 'BaseProvider',
+    component: BaseProvider
+  },
+  {
+    path: '/basebuyer',
+    name: 'BaseBuyer',
+    component: BaseBuyer
+  },
+  {
+    path: '/basematerial',
+    name: 'BaseMaterial',
+    component: BaseMaterial
+  },
+  {
+    path: '/filebase',
+    name: 'FileBase',
+    component: FileBase
   },
   {
     path: '/settings',

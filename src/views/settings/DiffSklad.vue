@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Настройки для отображения</h3>
         <div class="block">
             <div>

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <div class="block-one">
             <h3>Задачи для меня</h3>
             <div class="type-issue">
@@ -148,7 +148,7 @@
                 <span>Кол-во рабочих дней в периоде: </span>
                 <input type="text" class="input-periud">
             </div>
-            <div class="scroll-table">
+            <div class="scroll-table" style="width: inherit;">
                 <table class="wort-page-table">
                     <tr>
                         <th colspan="11" scope="colgroup"></th>
@@ -203,12 +203,6 @@ export default {
         margin-left: 210px;
         padding-top: 40px;
     }
-    .block-one span{
-        margin: 10px;
-        text-decoration: line;
-        text-decoration: underline;
-        cursor: pointer;
-    }
     table {
         border: 1px solid #d3d3d3;
         border-collapse: collapse;
@@ -229,10 +223,7 @@ export default {
     .block-one {
         width: max-content;
     }
-    .scroll-table{
-        height: 250px;
-        overflow: auto;
-        direction: ltr;
+    .block-one>.scroll-table{
         width: inherit;
     }
     .print_btn {

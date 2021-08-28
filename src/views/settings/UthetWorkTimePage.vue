@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Учет рабочего времени</h3>
 
        <div class="cont">

@@ -1,9 +1,16 @@
 <template>
-  <div id="nav">
-      <HeadersNav />
-      <MenuItem />
-      <NavigationPanel />
-    <router-view />
+  <div>
+    <div id="nav" v-if="avtorization">
+        <HeadersNav />
+        <MenuItem />
+        <NavigationPanel />
+      <div class="container">
+        <router-view />
+      </div>
+    </div>
+    <div v-if="!avtorization" >
+      <Authorization @checked="checked" />
+    </div>
   </div>
 </template>
 
@@ -12,6 +19,7 @@
 import MenuItem from '@/components/menu-left';
 import HeadersNav from '@/components/header-nav';
 import NavigationPanel from '@/components/navigation-panel';
+import Authorization from '@/views/Authorization.vue';
 import '@/assets/style/style.css'
 
 export default {
@@ -19,12 +27,19 @@ export default {
   components: {
     MenuItem,
     HeadersNav,
-    NavigationPanel
+    NavigationPanel,
+    Authorization
+  },
+  data() {
+    return {
+      avtorization: false
+    }
   },
   methods: {
-    test(e) {
-      console.log(e)
-    }
+    checked(avtorization) {
+      this.avtorization = avtorization
+    },
+
   }
 }
 </script>
@@ -74,12 +89,6 @@ export default {
       display: flex;
       flex-wrap: wrap;
   }
-  .scroll-table{
-      height: 250px;
-      overflow: auto;
-      direction: ltr;
-      width: max-content;
-  }
   table {
       border: 1px solid #d3d3d3;
       border-collapse: collapse;
@@ -128,11 +137,14 @@ export default {
       text-decoration: none;
       color: #000 !important;
     }
-    .btn-control> button {
+    .btn-control> * {
       margin: 5px;
       padding-left: 5px;
       padding-right: 5px;
-      float:right;
+    }
+    .btn-control {
+      display: flex;
+      justify-content: flex-end;
     }
     .btn-add {
       background:#00fb91;

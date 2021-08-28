@@ -1,5 +1,5 @@
 <template>
-        <div class="container">
+        <div class="main-dive">
         <h3>Операции технологического процесса</h3>
         <div class="cont">
             <div class="cont scroll-table scrolls-type-490">

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Настройки</h3>
         <div class="operation-block">
             <router-link to="/employee">

@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Единицы измерения</h3>
         <div class="cont">
             <table class="edizm-table">
@@ -59,9 +59,9 @@
             </table>
 
             <div class="btn-control">
-                <button class="btn-small">Удалить</button>
-                <button class="btn-small">Редактировать</button>
                 <button class="btn-add btn-small">Создать</button>
+                <button class="btn-small">Редактировать</button>
+                <button class="btn-small">Удалить</button>
             </div>
         </div>
     </div>

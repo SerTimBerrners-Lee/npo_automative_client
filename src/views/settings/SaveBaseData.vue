@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Сохранение баз данных, настроек, истории действий</h3>
         <div class="block">
             <span class="span_db">Делать резервную копию базы данных каждые: </span>

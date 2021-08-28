@@ -81,6 +81,7 @@ export default {
     user-select: none;
     position: fixed;
     top: 0px;
+    z-index: 3;
 }
 .logo-block {
     display: flex;

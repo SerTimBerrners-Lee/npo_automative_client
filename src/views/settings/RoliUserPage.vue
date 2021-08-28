@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Роли пользователей</h3>
         <p>
             <span class="span-role">Роль: </span>

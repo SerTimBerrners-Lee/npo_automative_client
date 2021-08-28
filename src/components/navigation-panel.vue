@@ -22,6 +22,8 @@ export default {
     align-items: center;
     float: left;
     margin-top: 10px;
+    margin-left: 200px;
+    position: fixed;
 }
 .rout-nav>span:hover {
     cursor: pointer;

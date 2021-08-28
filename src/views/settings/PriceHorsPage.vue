@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div>
         <h3>Стоимость норма-часа</h3>
         <div class="cont">
             <table>
