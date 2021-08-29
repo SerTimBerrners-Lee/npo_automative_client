@@ -142,6 +142,12 @@ const routes = [
     path: '/dolznuser',
     name: 'DolznUser',
     component: DolznUser
+    // не подходит страница перезагружается
+    // children: [{
+    //   path: ':id',
+    //   name: 'addedizm',
+    //   component: AddEdizm
+    // }]
   },
   {
     path: '/libbarysetting',

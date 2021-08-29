@@ -8,7 +8,6 @@
                 <h2>Производства</h2>
             </div>
         </div>
-        {{ allPosts }}
         <div class="items_2">
             <div class="form-auth">
                 <div class="item-form">
@@ -65,8 +64,7 @@ export default {
     computed: mapGetters(['allPosts']),
     async mounted() {
         //this.$store.dispatch('fetchPosts')
-        this.fetchPosts(3)
-        console.log(this.allPosts)
+        //this.fetchPosts(3)
     },
     data() {
         return {

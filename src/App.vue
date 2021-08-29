@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      avtorization: false
+      avtorization: true
     }
   },
   methods: {
@@ -102,10 +102,6 @@ export default {
   td {
       border: 1px solid #d3d3d3;
       padding: 5px !important;
-  }
-  .td-row:hover {
-    background: #b6b6b6;
-    cursor: pointer;
   }
   .result-work {
         margin: 10px;
