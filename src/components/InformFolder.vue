@@ -3,7 +3,7 @@
         <div>
             <span class="message-block-title">{{ title }}</span>
             <div @click="destrouCommponent = false">
-                 <unicon name="times" fill="black" width="25px" />
+                <unicon name="times" fill="black" width="25px" />
             </div>
         </div>
         <span>{{ message }}</span>
@@ -24,6 +24,8 @@ export default {
         setTimeout(() => this.destrouCommponent = false, 7000)
     },
     mounted() {
+        this.destrouCommponent = true
+        console.log(1)
         this.$props.type == 'w' ?
             this.typeMessage = 'warning-message' :
             this.$props.type == 'e' ?
@@ -37,7 +39,7 @@ export default {
 
 <style scoped>
 .message-folder-block {
-    position: absolute;
+    position: fixed;
     z-index: 1111111;
     border-radius: 6px 6px 0px 0px;
     padding-left: 10px;

@@ -7,14 +7,14 @@
                 <tr>
                     <th>Табельный номер</th>
                     <th>Должность</th>
-                    <th>Инициалы</th>
+                    <th style="width: 300px;">Инициалы</th>
                 </tr>
-                <tr class="td-row" v-for="iten in 6" :key="iten">
-                    <td class="tabel-td">00{{ iten }}</td>
-                    <td>Слесарь</td>
-                    <td>Петров Виталий Валентинович</td>
+                <tr class="td-row" v-for="user in getUsers" :key="user" @click="userShow(user)">
+                    <td class="tabel-td">{{ user.tabel }}</td>
+                    <td>{{ user.initial }}</td>
+                    <td> {{ user.initial }}</td>
                 </tr>
-                <tr class="td-row" v-for="iten in 40" :key="iten">
+                <tr class="td-row" v-for="iten in 70" :key="iten">
                     <td></td>
                     <td></td>
                     <td></td>
@@ -30,56 +30,56 @@
             </div>
         </div>
         <div class="inform-content">
-            <h3 class="initial-user">Петров Виталий Валентинович</h3>
+            <h3 class="initial-user">{{ initial }}</h3>
             <div class="inform-block">
                 <div class="contact-inform">
                     <div class="data-user-form">
                         <div class="prim">
                             <p class="p-1">
                             <span>Должность: </span>
-                            <input type="text" value="Слесарь">
+                            <input type="text" :value='roles'>
                             <span>Табельный номер: </span>
-                            <input type="text" value="008">
+                            <input type="text" :value='tabel'>
                             </p>
                             <p class="p-2">
                                 <span>Дата приема на работу: </span>
-                                <input type="text" value="01.09.19">
+                                <input type="text" :value='dateWork'>
                             </p>
                             <p class="p-3">
                                 <span>Логин: </span>
-                                <input type="text" value="Петров В.В.">
+                                <input type="text" :value='login'>
                                 <span>День рождения: </span>
-                                <input type="text" value="08.09.1993">
+                                <input type="text" :value='birthday'>
                             </p>
                             <h3>Контактные данные</h3>
                             <p class="p-4">
                                 <span>Моб. телефон: </span>
-                                <input type="text" value="8-920-444-87-90">
+                                <input type="text" :value='phone'>
                             </p>
                             <p class="p-5">
                                 <span>Постоянный адрес проживания: </span>
-                                <input type="text" value="г. Псков., Инженерная ул., д. 2">
+                                <input type="text" :value='adress'>
                             </p>
                             <p class="p-6">
                                 <span>Адрес по прописке: </span>
-                                <input type="text" value="г. Псков., Инженерная ул., д. 2 ">
+                                <input type="text" :value='adressProps'>
                             </p>
                         </div>
                         <h3>Примечание</h3>
-                        <textarea name="description" icols="30" rows="10">
+                        <textarea name="description" icols="30" rows="10" :text='primetch'>
                             
                         </textarea>
                     </div>
                 </div>
                 <div class="har-inform">
                     <div class="ava-block">
-                        <img src="@/assets/img/photo_ava_example.jpg" alt="аватарка"/>
+                        <img :src='image' alt="аватарка"/>
                             <h3>Роль пользователя</h3>
                             <h3>Оборот ТМЦ</h3>
                     </div>
                     <div class="ava-right-block">
                         <h3>Характеристика</h3>
-                        <textarea class="textarea-har" cols="30" rows="10"></textarea>
+                        <textarea class="textarea-har" cols="30" rows="10" :text='haracteristic'></textarea>
                         <h3>Документы</h3>
                         <table>
                             <tr>
@@ -140,6 +140,59 @@
     </div>
 </template>
 
+<script>
+import {  mapActions, mapGetters } from 'vuex'
+import { isEmpty } from 'lodash';
+
+export default {
+    data() {
+        return {
+            initial: '',
+            tabel: '',
+            adress: '',
+            adressProps: '',
+            dateUnWork: '',
+            dateWork: '',
+            email: '',
+            haracteristic: '',
+            image: '',
+            login: '',
+            password: '',
+            phone: '',
+            primetch: '',
+            birthday: '',
+            roles: ''
+        }
+    }, 
+    computed: mapGetters(['getUsers']),
+    methods: {
+        ...mapActions(['getAllUsers']),
+        userShow(user) {
+            this.roles = !isEmpty(user.roles[0]) ? user.roles[0].description : '' 
+            this.initial = user.initial
+            this.tabel = user.tabel
+            this.adress = user.adress
+            this.adressProps = user.adressProps
+            this.dateUnWork = user.dateUnWork
+            this.dateWork = user.dateWork
+            this.email = user.email
+            this.haracteristic = user.haracteristic
+            this.image = `http://localhost:5000/${user.image}`
+            this.login = user.login
+            this.password = user.password
+            this.phone = user.phone
+            this.primetch = user.primetch
+            this.birthday = user.birthday
+        }
+    },
+    async mounted() {
+        this.getAllUsers().then(() => {
+            this.userShow(this.getUsers[0])
+        })
+    }
+}
+</script>
+
 <style scoped>
 .table-content {
     width: max-content;
@@ -166,13 +219,17 @@
     width: 85px;
 }
 .p-4 input{
-    width: 100px;
+    width: 140px;
 }
 .p-5 input{
-    width: 160px;
+    width: 140px;
+}
+.p-5, .p-6, .p-4 {
+    display: flex;
+    justify-content: space-between;
 }
 .p-6 input{
-    width: 160px;
+    width: 140px;
 }
 input {
     margin-left: 4px;
@@ -195,6 +252,9 @@ textarea {
     border-radius: 4px;
     padding: 8px;
 }
+.prim>p {
+    font-size: 14px;
+}
 .tabel-td {
     width: 60px;
 }
@@ -207,9 +267,11 @@ textarea {
     width: 300px;
     height: 80px;
 }
+.ava-block {
+    width: 260px;
+}
 .ava-block>img {
-    height: 200px;
-    width: 160px;
+    max-width: 260px;
 }
 .har-inform>div {
     margin-left: 10px;
