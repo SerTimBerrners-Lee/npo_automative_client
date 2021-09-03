@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3> {{ title }} </h3>
+        <h3> {{ title == edit ? 'Редактировать' : 'Добавить' }} сотрудника</h3>
 
         <div class="block">
             <p>
@@ -77,20 +77,17 @@
                         <tr>
                             <th class="width-350" style="width: 520px;">Файл</th>
                         </tr>
-                        <tr class="td-row">
-                            <td>Скан паспорта.jpg</td>
-                        </tr>
-                        <tr class="td-row">
-                            <td>Снилс.png</td>
+                        <tr class="td-row" v-for="doc in docFiles" :key="doc" @click="getDoc(doc.name)">
+                            <td> {{ doc.name }}</td>
                         </tr>
                     </table>
                     <div class="pointer-files-to-add">
                         <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                        <input id="docsFileSelected" type="file" style="display:none;">
+                        <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
                     </div>
                     <div class="btn-control">
-                        <button class="btn-small">Открыть</button>
-                        <button class="btn-small">Удалить</button>
+                        <!-- <button class="btn-small">Открыть</button> -->
+                        <button class="btn-small" @click='delitFilesDoc'>Удалить</button>
                         <button class="btn-small">Добавить из базы</button>
                     </div>
                 </div>
@@ -116,7 +113,7 @@
         </div>
 
         <div class="edit-save-block block">
-            <button class="btn-status">В архив</button>
+            <button class="btn-status" v-if="title == edit">В архив</button>
             <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
             <button class="btn-status btn-black" @click="saveData">Сохранить</button>
         </div>
@@ -134,6 +131,8 @@ import photoPreloadUrl from '@/js/photo_preload.js'
 export default ({ 
     data() {
         return {
+            docFiles: [],
+            selectFiles: Object,
             editTableKontact: false,
             showInformPanel: false,
             titleMessage: '',
@@ -170,11 +169,17 @@ export default ({
     components: {
         InformFolder
     },
-    mounted() {this.fetchRoles()},
+    mounted() {
+        this.fetchRoles()
+    },
     methods: {
         ...mapActions(['saveUser', 'fetchRoles']),
 
         saveData() {
+            if(this.object.tabel.length > 4)
+                return showMessage('', 'Тебель не может быть больше 4-х символов', 'e', this)
+            if(!Number(this.object.tabel))
+                return showMessage('', 'Тебель должен быть числом', 'e', this)
             this.saveContact()
             const formData = new FormData()
             for (let dat in this.object) {
@@ -182,11 +187,20 @@ export default ({
             }
             formData.append('image', this.fileFolder)
 
+            if(this.docFiles.length > 0) {
+                for(let file of this.docFiles) {
+                    formData.append('document', file)
+                }
+            }
+
             this.saveUser(formData).then(m => {
                 if(m.type == 'error')
                     return showMessage('Ошибка', m.message, 'e', this)
-                if(m.type == 'success')
-                    return showMessage('Успешно', 'Пользователь успешно создан', 's', this)
+                if(m.type == 'success') {
+                    showMessage('Успешно', 'Пользователь успешно создан', 's', this)
+                    setTimeout(() => this.$router.push('/employee'), 1000)
+                }
+
             });
 
         },
@@ -207,6 +221,19 @@ export default ({
                 this.$refs.phone.textContent = this.object.phone
                 this.$refs.email.textContent = this.object.email
             }
+        },
+        getDoc(doc) {
+            this.selectFiles = doc
+        },
+        delitFilesDoc(){
+            if(this.selectFiles) {
+                this.docFiles = this.docFiles.filter(f => f.name !== this.selectFiles)
+            }
+        },
+        addDock(val) {
+            val.target.files.forEach(f => {
+                this.docFiles.push(f)
+            })
         }
     }
 })
@@ -285,6 +312,15 @@ textarea {
     content: attr(href)
 }
 .pointer-files-to-add {
+    height: 100px;
+    display: flex;
+}
+.btn-control {
+    height: 70px;
+}
+.addedit-docks {
+    display: flex;
+    flex-direction: column;
 
 }
 </style>

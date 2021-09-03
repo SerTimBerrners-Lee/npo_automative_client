@@ -1,7 +1,10 @@
 <template>
     <div>
         <div class="table-content">
-        <h3>Сотрудники</h3>
+        <h3 class="h3-title">Сотрудники</h3>
+        <div class="type-issue">
+            <span @click="knowGet = !knowGet" v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
+        </div>
             <div class="scroll-table" style="height: 690px;">
             <table>
                 <tr>
@@ -9,9 +12,9 @@
                     <th>Должность</th>
                     <th style="width: 300px;">Инициалы</th>
                 </tr>
-                <tr class="td-row" v-for="user in getUsers" :key="user" @click="userShow(user)">
+                <tr class="td-row" v-for="user in knowGet ? getUsers : getUserBan" :key="user" @click="userShow(user)">
                     <td class="tabel-td">{{ user.tabel }}</td>
-                    <td>{{ user.initial }}</td>
+                    <td>{{ roles }}</td>
                     <td> {{ user.initial }}</td>
                 </tr>
                 <tr class="td-row" v-for="iten in 70" :key="iten">
@@ -22,9 +25,9 @@
             </table>
             </div>
             <div class="btn-control">
-                <button>В архив</button>
-                <button @click="$router.push({path: `/employee/edit/Редактировать сотрудника`})">Редактировать</button>
-                <button @click="$router.push({path: `/employee/edit/Добавить сотрудника`})">
+                <button @click="userBan"> {{ knowGet ? 'В архив' : 'В Активные' }}</button>
+                <button @click="$router.push({path: `/employee/edit/edit`})">Редактировать</button>
+                <button @click="$router.push({path: `/employee/edit/add`})">
                     Добавить
                 </button>
             </div>
@@ -55,7 +58,7 @@
                             <p class="p-4">
                                 <span>Моб. телефон: </span>
                                 <input type="text" :value='phone'>
-                            </p>
+                            </p> 
                             <p class="p-5">
                                 <span>Постоянный адрес проживания: </span>
                                 <input type="text" :value='adress'>
@@ -85,11 +88,8 @@
                             <tr>
                                 <th>Файл</th>
                             </tr>
-                            <tr class="td-row">
-                                <td>Скан паспорта.jpg</td>
-                            </tr>
-                            <tr class="td-row">
-                                <td>Снилс.png</td>
+                            <tr class="td-row" v-for="document in documents" :key="document">
+                                <td @click="openNewWindow(document.path)"> {{ document.name }}</td>
                             </tr>
                         </table>
                         <button>Скачать</button>
@@ -137,16 +137,25 @@
                 </div>
             </div>
         </div>
+        <InformFolder v-if='showInformPanel' :title='titleMessage' :message='message' :type='type'  :key='keyInformTip' />
     </div>
 </template>
 
 <script>
 import {  mapActions, mapGetters } from 'vuex'
 import { isEmpty } from 'lodash';
+import showMessage from '@/js/inform_folder.js';
+import InformFolder from '@/components/InformFolder.vue'
 
 export default {
     data() {
         return {
+            knowGet: true,
+            titleMessage: '',
+            message: '',
+            type: '',
+            showInformPanel: false,
+            keyInformTip: '',
             initial: '',
             tabel: '',
             adress: '',
@@ -161,37 +170,58 @@ export default {
             phone: '',
             primetch: '',
             birthday: '',
-            roles: ''
+            roles: '',
+            id: ''
         }
     }, 
-    computed: mapGetters(['getUsers']),
+    computed: mapGetters(['getUsers', 'getUserBan']),
+    components: {
+        InformFolder
+    },
     methods: {
-        ...mapActions(['getAllUsers']),
+        ...mapActions(['getAllUsers', 'banUserById']),
         userShow(user) {
-            this.roles = !isEmpty(user.roles[0]) ? user.roles[0].description : '' 
-            this.initial = user.initial
-            this.tabel = user.tabel
-            this.adress = user.adress
-            this.adressProps = user.adressProps
-            this.dateUnWork = user.dateUnWork
-            this.dateWork = user.dateWork
-            this.email = user.email
-            this.haracteristic = user.haracteristic
-            this.image = `http://localhost:5000/${user.image}`
-            this.login = user.login
-            this.password = user.password
-            this.phone = user.phone
-            this.primetch = user.primetch
-            this.birthday = user.birthday
+            if(user) {
+                this.roles = !isEmpty(user.roles[0]) ? user.roles[0].description : '' 
+                this.initial = user.initial
+                this.tabel = user.tabel
+                this.adress = user.adress
+                this.adressProps = user.adressProps
+                this.dateUnWork = user.dateUnWork
+                this.dateWork = user.dateWork
+                this.email = user.email
+                this.haracteristic = user.haracteristic
+                this.image = `http://localhost:5000/${user.image}`
+                this.login = user.login
+                this.password = user.password
+                this.phone = user.phone
+                this.primetch = user.primetch
+                this.birthday = user.birthday
+                this.id = user.id
+                this.documents = user.documents
+            }
+        },
+        userBan() {
+            if(!this.id)
+                return showMessage('Ошибка', 'Пользователь не выбран', 'w', this)
+                
+            this.banUserById(this.id).then(mes => {
+                showMessage('', mes.message, mes.type, this)
+                if(mes.type == 's') 
+                    this.getAllUsers()
+            })
+        },
+        openNewWindow(url) {
+            window.open(`http://localhost:5000/${url}`, '_blank')
         }
     },
     async mounted() {
         this.getAllUsers().then(() => {
             this.userShow(this.getUsers[0])
-        })
+        });
     }
 }
-</script>
+</script> 
 
 <style scoped>
 .table-content {
@@ -292,5 +322,16 @@ textarea {
 }
 table {
     margin-top: 0px;
+}
+.type-issue>span {
+    font-size: 15px;
+}
+.type-issue {
+    display: flex;
+    justify-content: end;
+}
+.h3-title {
+    float: left;
+    user-select: none;
 }
 </style>

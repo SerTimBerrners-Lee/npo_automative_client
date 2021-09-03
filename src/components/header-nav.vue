@@ -13,11 +13,13 @@
             <span class="time"></span>
         </div>
         <div class="profile">
-            <unicon name="user" fill="white" />
-            <p>
-                <span class="initial">Наливайченко Н.И.</span>
-                <span class="role">инженер</span>
-            </p>
+            <div @click="$router.push('/')">
+                <unicon name="user" fill="white" />
+                <p>
+                    <span class="initial">Наливайченко Н.И.</span>
+                    <span class="role">инженер</span>
+                </p>
+            </div>
             <router-link to="/Authorization">
                 <unicon name="power" fill="white" />
             </router-link>
@@ -116,7 +118,7 @@ export default {
 .role {
     font-size: 12px;
 }
-.profile>p {
+.profile p {
     display: flex;
     flex-direction: column;
     margin: 0px;
@@ -128,5 +130,17 @@ export default {
     display: flex;
     margin-left: 500px;
     cursor: pointer;
+}
+.profile>div {
+    display: flex;
+
+}
+.profile>div:hover {
+    background: #4d4d4d;
+}
+.profile a:hover {
+    background: #4d4d4d;
+    padding-left: 3px;
+    padding-right:3px;
 }
 </style>

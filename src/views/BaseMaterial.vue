@@ -105,14 +105,17 @@
         max-height: 250px;
         height: auto;
     }
-    .table-fbp table {
+    /* .table-fbp table {
         width: 100%
-    }
+    } */
     .nav-base-file-page {
         display: flex;
     }
     .right-div-bfp {
         width: 414px;
         margin-left: 10px;
+    }
+    th {
+        width: 350px;
     }
 </style>

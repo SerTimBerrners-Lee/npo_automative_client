@@ -6,11 +6,14 @@ export default {
     },
     getters: { 
         getUsers(state) {
-            return state.users
+            return state.users.filter(user => !user.banned)
+        },
+        getUserBan(state) {
+            return state.users.filter(user => user.banned)
         }
     },
     actions: {
-        async saveUser(ctx, data) {
+        async saveUser(ctx, data) { 
             const res = await fetch('http://localhost:5000/api/users', {
                 method: "post",
                 body: data
@@ -31,11 +34,29 @@ export default {
             const result = await res.json()
 
             ctx.commit('updateUsers', result)
+        },
+        async banUserById(crx, id) {
+            const res = await fetch('http://localhost:5000/api/users/ban', {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    userId: id,
+                    banReason: '...'
+                })
+            })
+
+            if(res.ok) {
+                return { type: 's', message: 'Пользователь успешно изменен'}
+            }
+            return { type: 'e', message: 'Произошла ошика при изменении пользователя'}
         }
     },
     mutations: {
         updateUsers(state, users) { 
-            state.users = users.filter((el) => !el.banned)
+            state.users = users
         }
     }
 }
