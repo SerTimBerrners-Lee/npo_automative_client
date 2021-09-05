@@ -106,7 +106,7 @@
             </tr>
         </table>
         <div class="btn-control out-btn-control">
-            <button class="btn-status btn-black" @click='addEditEdizm'>Сохранить</button>
+            <button class="btn-status btn-black" @click='addEditMaterial'>Сохранить</button>
             <button class="btn-status" @click='destroyModalF'>Отменить</button>
         </div>
       </div>
@@ -114,7 +114,7 @@
         <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
         <p class="p-types">
             <span>Тип: &nbsp;</span>
-            <span> {{ parametrs.material.name }}</span>
+            <span> {{ parametrs.type == 'create' ? parametrs.material.name : parametrs.parentMat.name }}</span>
         </p>
         <div class="block">
             <p> 
@@ -145,7 +145,7 @@
         </table>
         <div class="btn-control out-btn-control" v-if='parametrs.mat != "PODTYPE"'>
             <button class="btn-status btn-black" v-if="parametrs.type == 'create'" @click='addEditMaterial'>Сохранить</button>
-            <button class="btn-status btn-black" v-if="parametrs.type == 'edit'" @click='addEditMaterial'>Обновить </button>
+            <button class="btn-status btn-black" v-if="parametrs.type == 'edit'" @click='addEditMaterial'>Обновить</button>
             <button class="btn-status" @click='destroyModalF'>Отменить</button>
         </div>
         <div class="btn-control out-btn-control" v-if='parametrs.mat == "PODTYPE"'>
@@ -201,39 +201,74 @@ export default {
       this.hiddens = 'opacity: 1;'
       if(this.parametrs.type != 'create') {
           this.titleapp = 'Редактирование'
-          let el = this.parametrs.element
-          this.obj.inputs = el.name
-          console.log(this.parametrs)
           if(this.parametrs.mat == "TYPE") {
-            if(el.length) {
+            let el = this.parametrs.element
+            this.obj.inputs = el.name
+            if(el.length && typeof el.length[0] == 'string') {
               this.obj.length_selecter = JSON.parse(el.length[0]).edizmId.id 
               this.obj.length_input = JSON.parse(el.length[0]).znach 
+            } else if(el.length && typeof el.length[0] == 'object') {
+              this.obj.length_selecter = el.length[0].edizmId.id 
+              this.obj.length_input = el.length[0].znach 
             }
-            if(el.width) {
+            if(el.width && typeof el.width[0] == 'string') {
               this.obj.width_selecter = JSON.parse(el.width[0]).edizmId.id 
               this.obj.width_input = JSON.parse(el.width[0]).znach 
+            } else if(el.width && typeof el.width[0] == 'object') {
+              this.obj.width_selecter = el.width[0].edizmId.id 
+              this.obj.width_input = el.width[0].znach 
             }
-            if(el.height) {
+            if(el.height && typeof el.height[0] == 'string') {
               this.obj.height_selecter = JSON.parse(el.height[0]).edizmId.id 
               this.obj.height_input = JSON.parse(el.height[0]).znach 
+            } else if(el.height && typeof el.height[0] == 'object') {
+              this.obj.height_selecter = el.height[0].edizmId.id 
+              this.obj.height_input = el.height[0].znach 
             }
-            if(el.wallThickness) {
+            if(el.wallThickness && typeof el.wallThickness[0] == 'string') {
               this.obj.wallThickness_selecter = JSON.parse(el.wallThickness[0]).edizmId.id 
               this.obj.wallThickness_input = JSON.parse(el.wallThickness[0]).znach 
+            } else if(el.wallThickness && typeof el.wallThickness[0] == 'object') {
+              this.obj.wallThickness_selecter = el.wallThickness[0].edizmId.id 
+              this.obj.wallThickness_input = el.wallThickness[0].znach 
             }
-            if(el.outsideDiametr) {
+            if(el.outsideDiametr && typeof el.outsideDiametr[0] == 'string') {
               this.obj.outsideDiametr_selecter = JSON.parse(el.outsideDiametr[0]).edizmId.id 
               this.obj.outsideDiametr_input = JSON.parse(el.outsideDiametr[0]).znach 
+            } else if(el.outsideDiametr && typeof el.outsideDiametr[0] == 'object') {
+              this.obj.outsideDiametr_selecter = el.outsideDiametr[0].edizmId.id 
+              this.obj.outsideDiametr_input = el.outsideDiametr[0].znach 
             }
-            if(el.thickness) {
+            if(el.thickness && typeof el.thickness[0] == 'string') {
               this.obj.thickness_selecter = JSON.parse(el.thickness[0]).edizmId.id 
               this.obj.thickness_input = JSON.parse(el.thickness[0]).znach 
+            } else if(el.thickness && typeof el.thickness[0] == 'object') {
+              this.obj.thickness_selecter = el.thickness[0].edizmId.id 
+              this.obj.thickness_input = el.thickness[0].znach 
             }
-            if(el.areaCrossSectional) {
+            if(el.areaCrossSectional && typeof el.areaCrossSectional[0] == 'string') {
               this.obj.areaCrossSectional_selecter = JSON.parse(el.areaCrossSectional[0]).edizmId.id 
               this.obj.areaCrossSectional_input = JSON.parse(el.areaCrossSectional[0]).znach 
+            } else if(el.areaCrossSectional && typeof el.areaCrossSectional[0] == 'object') {
+              this.obj.areaCrossSectional_selecter = el.areaCrossSectional[0].edizmId.id 
+              this.obj.areaCrossSectional_input = el.areaCrossSectional[0].znach 
             }
             
+          }
+
+          if(this.parametrs.mat == "PODTYPE") {
+            this.obj_podType.inputs = this.parametrs.material.name
+            if(this.parametrs.material.density) {
+              // Делаем проверку когда мы добавляем новый под тип он сохраняется как обьект 
+              // Когда он приходит с сервера он приходит в json и его нужно распарсить в объект
+              if(typeof this.parametrs.material.density[0] == 'string') {
+                this.obj_podType.density_input = JSON.parse(this.parametrs.material.density).znach
+                this.obj_podType.density_select = JSON.parse(this.parametrs.material.density).edizmId.id
+              } else {
+                this.obj_podType.density_input = this.parametrs.material.density[0].znach
+                this.obj_podType.density_select = this.parametrs.material.density[0].edizmId.id
+              }
+            }
           }
       } 
   },
@@ -241,7 +276,7 @@ export default {
       destroyModalF() {
           this.destroyModalLeft = 'left-block-modal-hidden'
           this.destroyModalRight = 'content-modal-right-menu-hidden'
-          this.hiddens = 'opacity: 0;'
+          this.hiddens = 'display: none;'
           this.$emit('unmount', 0) 
       },
       addEditPodMaterial() {
@@ -250,15 +285,31 @@ export default {
             this.$emit('unmount', {
               type: 'createPodMaterial',
               data: {
-                density: {
-                  edzimId: this.obj_podType.density_select,
+                density: this.obj_podType.density_select != 'Выберите тип ЕИ' ? {
+                  edizmId: this.obj_podType.density_select,
                   znach: this.obj_podType.density_input
-                },
-                parentId: this.parametrs.material.id
+                } : {},
+                parentId: this.parametrs.material.id,
+                name: this.obj_podType.inputs
               }
             })
           }
 
+          if(this.parametrs.type == 'edit') {
+            this.$emit('unmount', {
+              type: 'editPodMaterial',
+              data: {
+                density: this.obj_podType.density_select != 'Выберите тип ЕИ' ? {
+                  edizmId: this.obj_podType.density_select,
+                  znach: this.obj_podType.density_input
+                } : {},
+                parentId: this.parametrs.parentMat.id,
+                name: this.obj_podType.inputs,
+                id: this.parametrs.material.id
+              }
+            })
+          }
+        this.destroyModalF()
       },
       addEditMaterial() {
           if(this.obj.inputs.length > 2) {

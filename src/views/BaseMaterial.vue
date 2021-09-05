@@ -9,34 +9,25 @@
                     <span>Покупные детали</span>
                     <span>Расходные материалы</span>
                 </div>
-
-                <div class="scroll-table" style="height: 540px;">
-                    <table>
-                        <tr >
-                            <th>Тип (профиля заготовки)</th>
-                            <th>Подтип (Материал заготовки)</th>
-                            <th>Наименование (Марка / типоразмер)</th>
-                        </tr>
-                        <tr v-for="h in 15" :key="h" class="td-row">
-                            <td>Металлопрокат</td>
-                            <td width="400px">Сталь 40Х</td>
-                            <td>Круг Сталь 40xD 10мм </td>
-                        </tr>
-                    </table>
+                <div class="cont">
+                   <div>
+                        <TableMaterial :alltypeM='alltypeM' :title='"Тип (Тип профиля заготовки)"' :type='"type"' @clickMat='clickMat' />
+                        <TableMaterial :alltypeM='allPodTypeM' :title='"Подтип (Материал заготовки)"' :type='"podM"' @clickMat='clickMat' />
+                        <TableMaterial :alltypeM='getOnePodMaterial' :title='"Наименование (Марка / типоразмер)"' :type='"podPM"' @clickMat='clickMat' />
+                   </div>
+                    <div class="btn-control" style="margin-top: 10px;">
+                        <button class="btn-small btn-add" @click="$router.push({path: '/material/add/create'}) ">Создать</button>
+                        <button class="btn-small btn-add" >Создать копированием</button>
+                        <button class="btn-small" @click="editMaterial">Редактировать</button>
+                    </div>  
+                    <div class="btn-control">
+                    <button class="btn-small" @click='banPPM'>В архив</button>
                 </div>
-
-                <div class="btn-control">
-                    <button class="btn-small btn-add">Создать</button>
-                    <button class="btn-small btn-add">Создать копированием</button>
-                    <button class="btn-small">Редактировать</button>
-                </div>
-                <div class="btn-control">
-                    <button class="btn-small">В архив</button>
                 </div>
             </div>
             <div class="right-div-bfp">
                 <h3>Принадлежность</h3>
-                <div class="block">
+                <div class="block" style='width: 400px;'>
                     <h3>Изделие</h3>
                     <div class="scroll-table table-fbp">
                         <table>
@@ -45,12 +36,12 @@
                             <th>Наименование</th>
                         </tr>
                         <tr class="td-row">
-                            <td>ВШ70-250</td>
-                            <td>Выприсовщик скворней</td>
+                            <td>...</td>
+                            <td>...</td>
                         </tr>
                         <tr class="td-row">
-                            <td>ВШ7250</td>
-                            <td>Выприсовщик сайлендблоков</td>
+                            <td>...</td>
+                            <td>...</td>
                         </tr>
                     </table>
                     </div>
@@ -62,8 +53,8 @@
                             <th>Наименование</th>
                         </tr>
                         <tr v-for="u in 50" :key="u" class="td-row">
-                            <td>25567 + {{ u * 34}}</td>
-                            <td>Цилиндр</td>
+                            <td>...</td>
+                            <td>...</td>
                         </tr>
                     </table>
                     </div>
@@ -74,17 +65,9 @@
                             <th>Артикул </th>
                             <th>Наименование</th>
                         </tr>
-                        <tr class="td-row">
-                            <td>34534550</td>
-                            <td>Шток</td>
-                        </tr>
-                        <tr class="td-row">
-                            <td>435345350</td>
-                            <td>Корпус</td>
-                        </tr>
-                        <tr class="td-row">
-                            <td>56465</td>
-                            <td>Крышка</td>
+                        <tr class="td-row" v-for='i in 3' :key='i'>
+                            <td>...</td>
+                            <td>...</td>
                         </tr>
                     </table>
                     </div>
@@ -99,15 +82,57 @@
     </div>
 </template> 
 
+<script>
+
+import TableMaterial from '@/components/mathzag/table-material.vue'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+export default {
+    data() {
+        return {
+            material: null,
+            podMaterial: null,
+            podPodMaterial: null
+        }
+    },
+    components:{TableMaterial},
+    computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
+    methods: {
+        ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM']),
+        ...mapMutations(['filterMatByPodType', 'addOnePPTyep']),
+        clickMat(mat, type) {
+            if(type == 'type') {
+                this.material = mat
+                this.filterMatByPodType(this.material.id)
+            }
+            if(type == 'podM') this.getOnePodType(mat.id)
+            if(type == 'podPM') this.podPodMaterial = mat
+        },
+        editMaterial() {
+            if(!this.podPodMaterial) return 0
+            this.addOnePPTyep(this.podPodMaterial)
+            this.$router.push({path: '/material/add/edit'}) 
+        },
+        banPPM() {
+            if(!this.podPodMaterial) return 0
+            this.bannedPPM(this.podPodMaterial.id)
+        }
+    },
+    async mounted() {
+        this.getAllTypeMaterial()
+    }
+}
+</script>
+
 <style scoped>
     .table-fbp {
         width:100%;
         max-height: 250px;
         height: auto;
     }
-    /* .table-fbp table {
-        width: 100%
-    } */
+    .cont {
+        display: flex;
+        flex-direction: column;
+    }
     .nav-base-file-page {
         display: flex;
     }

@@ -25,12 +25,19 @@ import BaseProvider from '@/views/BaseProvider.vue';
 import BaseTools from '@/views/BaseTools.vue';
 import BaseEquipment from '@/views/BaseEquipment.vue';
 import BaseDetals from '@/views/BaseDetals.vue';
+import AddMaterialBase from '@/components/base-material-add.vue'
  
 const routes = [
   {
     path: '/',
     name: 'WorkTable',
     component: WorkTable
+  },
+  {
+    path: '/material/add/:type',
+    name: 'AddMaterialBase',
+    component: AddMaterialBase,
+    props: true
   },
   {
     path: '/basedetals',

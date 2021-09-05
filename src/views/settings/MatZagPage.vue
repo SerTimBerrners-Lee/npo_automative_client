@@ -2,19 +2,7 @@
     <div class="main-dive">
         <h3>Материалы (типы и подтипы)</h3>
         <div class="cont">
-            <div class="cont scroll-table scrolls-type-490">
-                <table class="type-table">
-                    <tr>
-                        <th class="width-350">Тип (Тип профиля заготовки)</th>
-                    </tr>
-                    <tr class="td-row" v-for='mat in alltypeM' :key='mat' @click='clickMat(mat)'>
-                        <td>{{ mat.name }}</td>
-                    </tr>
-                    <tr class="td-row" v-for="i in 20" :key="i">
-                        <td>...</td>
-                    </tr>
-                </table>
-            </div>
+            <TableMaterial :title='"Тип (Тип профиля заготовки)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
             <div class="btn-control">
                 <button class="btn-add btn-small" @click='createEditMat("TYPE")'>Создать</button>
                 <button class="btn-small"  @click='createEditMat("TYPE", "edit")'>Редактировать</button>
@@ -22,20 +10,11 @@
             </div>
         </div>
         <div class="cont">
-            <div class="cont scroll-table scrolls-type-490">
-                <table class="type-table">
-                    <tr>
-                        <th class="width-350">Подтип (Материал заготовки)</th>
-                    </tr>
-                    <tr class="td-row" v-for="i in 20" :key="i">
-                        <td>...</td>
-                    </tr>
-                </table>
-            </div>
+            <TableMaterial :title='"Подтип (Материал заготовки)"' :alltypeM="allPodTypeM" :type="'podT'" @clickMat="clickMat"/>
             <div class="btn-control">
                 <button class="btn-add btn-small" @click='createEditMat("PODTYPE")'>Создать</button>
-                <button class="btn-small">Редактировать</button>
-                <button class="btn-small">Удалить</button>
+                <button class="btn-small" @click="createEditMat('PODTYPE', 'edit')">Редактировать</button>
+                <button class="btn-small" @click="removePodType">Удалить</button>
             </div>
         </div>
         <addEditMat
@@ -49,7 +28,8 @@
 <script>
 import addEditMat from '@/components/mathzag/addeditmat.vue'
 import { random } from 'lodash'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import TableMaterial from '@/components/mathzag/table-material.vue'
 
 export default {
     data() {
@@ -59,13 +39,23 @@ export default {
             keyModals: random(20, 2132356723547632),
             parametrs: {},
             itemsSelect: null,
-            material: null
+            material: null,
+            podType: null
         }
     },
-    computed: mapGetters(['allEdizm', 'alltypeM']),
-    components: {addEditMat},
+    computed: mapGetters(['allEdizm', 'alltypeM', 'allPodTypeM']),
+    components: {addEditMat, TableMaterial},
     methods: {
-        ...mapActions(['getAllEdizm', 'createTypeM', 'getAllTypeMaterial', 'updateTypeM', 'removeMaterial']),
+        ...mapActions(['getAllEdizm', 
+            'createTypeM', 
+            'getAllTypeMaterial', 
+            'updateTypeM', 
+            'removeMaterial', 
+            'createPodType', 
+            'deletePodType',
+            'updatePodMaterial'
+        ]),
+        ...mapMutations(['filterMatByPodType']),
         unmount(res) {
             if(!res)
                 return 0;
@@ -76,7 +66,10 @@ export default {
                 this.updateTypeM(res.data)
             }
             if(res.type == 'createPodMaterial') {
-                console.log(res.data)
+                this.createPodType(res.data)
+            }
+            if(res.type == 'editPodMaterial') {
+                this.updatePodMaterial(res.data)
             }
         },
         createEditMat(typeMat, type = 'create') {
@@ -107,11 +100,32 @@ export default {
                     edizm: this.allEdizm
                 }
             }
+
+            if(typeMat == 'PODTYPE' && type == 'edit') {
+                if(!this.material) return 0;
+                this.parametrs = {
+                    type, 
+                    material: this.podType,
+                    parentMat: this.material,
+                    mat: typeMat,
+                    edizm: this.allEdizm 
+                }
+            }
             this.keyModals = random(20, 2132356723547632)
             this.showIs = true
         },
-        clickMat(mat) {
-            this.material = mat
+        clickMat(mat, type) {
+            if(type == 'type') {
+                this.material = mat
+                this.filterMatByPodType(mat.id)
+            }
+            if(type == 'podT') {
+                this.podType = mat
+            }
+        },
+        removePodType() {
+            if(!this.podType) return null
+            this.deletePodType({podType: this.podType.id, materialId: this.material.id})
         },
         removeItem(type = 'TYPE') {
             if(!this.material) return 0;

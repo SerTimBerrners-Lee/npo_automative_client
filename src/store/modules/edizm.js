@@ -66,9 +66,7 @@ export default {
                     short_name: ez.short_name
                 })
             });
-            console.log(res)
             const result = await res.json()
-            console.log(result)
             ctx.commit('updateEdizmOne', result)
         }
     },

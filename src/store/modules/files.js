@@ -23,11 +23,12 @@ export default {
         },
 
         async pushDocuments(ctx, data) {
-            const res = fetch('http://localhost:5000/api/documents/add', {
+            const res = await fetch('http://localhost:5000/api/documents/add', {
                 method: 'post',
                 body: data
             })
-            console.log(res)
+            const result = await res.json()
+            console.log(result)
         },
 
         async bannedFiles(ctx, docs) {
