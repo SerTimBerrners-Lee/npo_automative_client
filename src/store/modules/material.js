@@ -142,6 +142,14 @@ export default {
                 ctx.commit('bannedPPM', id)
             }
         },
+        async fetchGetOnePPM(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}/api/settings/material/podpodtype/get/${id}`)
+            if(res.ok) {
+                const result = await res.json()
+                ctx.commit('addOnePPTyep', result)
+                return result
+            }
+        }
     },
     mutations: {
         addTypeMaterial(state, material) {

@@ -213,6 +213,7 @@ export default {
   },
   methods: {
     file_unmount(e) { 
+      if(!e) return 0
       this.formData = e.formData
     },
     addDock(val) {
@@ -227,11 +228,13 @@ export default {
          if(this.obj.name == '' || !this.podMaterial) return 0
       }
       let dat = this.obj
+      
       if(!this.formData) 
         this.formData = new FormData()
         
-      this.formData.append('id', JSON.stringify({id}))
-      let podTypeId = this.$route.params.type == 'edit' ? this.getOnePPT.NodePodPodMaterial.podMatId : this.podMaterial.MatPodMat.id 
+      this.formData.append('id', Number(id))
+      
+      let podTypeId = this.$route.params.type == 'edit' ? this.getOnePPT.materials[0].id : this.podMaterial.MatPodMat.id 
       this.formData.append('podTypeId', podTypeId)
       this.formData.append('name', dat.name)
       let length = dat.length_select != 'Выберите тип ЕИ' &&
@@ -287,16 +290,17 @@ export default {
         edizmId: dat.metrMass_select,
         znach: dat.metrMass_input
       }) : JSON.stringify({})
-      this.formData.append('metrMass', metrMass)
+      this.formData.append('metrMass', metrMass) 
       this.formData.append('description', dat.description)
       this.createNewPodPodMaterial(this.formData)
-      //this.$router.push('/basematerial')
+      this.$router.push('/basematerial')
     },
     ...mapActions(['getAllTypeMaterial', 
       'getOnePodType', 
       'getAllEdizm', 
       'podMaterial',
-      'createNewPodPodMaterial'
+      'createNewPodPodMaterial',
+      'fetchGetOnePPM'
       ]),
     ...mapMutations(['filterMatByPodType']),
     clickMat(mat, type) {

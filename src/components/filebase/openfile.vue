@@ -16,6 +16,10 @@
                                     <img class="imgShow-modal" v-if='docType.type == "img"' :src='urlImg' alt="">
                                 </div>
                             </div>
+                            <div class="slider" v-if='isArrayFile'>
+                                <span> {{ file_increment }} / {{ file.length }}</span>
+                                <span class="btn-small btn-add abnf" @click="nextFile">Следующий</span>
+                            </div>
                             <table>
                                 <tr>
                                     <th>Файл</th>
@@ -58,6 +62,7 @@
 
 import { photoPreloadUrl } from '@/js/';
 import { mapActions } from 'vuex'
+import { isArray } from 'lodash'
 export default {
     props: ['parametrs'],
     data() {
@@ -70,7 +75,10 @@ export default {
             imgShow: false,
             showDocType: false,
             docType: {},
-            arrItemsFile: []
+            arrItemsFile: [],
+            isArrayFile: false,
+            file: null,
+            file_increment: 0
         }
     },
     async mounted() {
@@ -83,13 +91,15 @@ export default {
             this.titleapp = 'Редактирование'
             this.inputs = this.parametrs.description
             this.inputs_short = this.parametrs.value
-        }
+        } 
 
         let file = this.$props.parametrs
-        photoPreloadUrl(file, (res) => {
-            this.docType = {...res}
-        }, true)
-        this.urlImg = `http://localhost:5000/${this.$props.parametrs.path}`
+        this.file = this.$props.parametrs
+        if(isArray(this.$props.parametrs)) {
+            file = file[0]
+            this.isArrayFile = true
+        }
+        this.showDocs(file)
         
     },
     methods: {
@@ -100,26 +110,22 @@ export default {
             this.hiddens = 'display: none;'
             this.$emit('unmount', null)
         },
+        nextFile(){
+            if(this.file_increment == this.file.length) {
+                this.file_increment = 0
+            } else {
+                this.file_increment++
+            } 
+            this.showDocs(this.file[this.file_increment])
+        },
+        showDocs(file) {
+            if(!file) return 0
+            photoPreloadUrl(file, (res) => {
+                this.docType = {...res}
+            }, true)
+            this.urlImg = `http://localhost:5000/${file.path}`
+        },
         addFiles() {
-            const formData = new FormData()
-            const dataArr = []
-            for(let doc of this.arrItemsFile) {
-                formData.append('document', doc)
-                dataArr.push({
-                    type: doc.TypeDocument,
-                    version: doc.VersionDocument,
-                    description: doc.DescriptionDocument,
-                    name: doc.NameDocument,
-                    nameInstans: ''
-                })
-            }
-            formData.append('docs', JSON.stringify(dataArr))
-            this.pushDocuments(formData).then(() => {
-                this.$emit('unmount', {
-                    type: 'w',
-                    message: 'Файлы переданы на сервер для обработки'
-                })
-            })
             this.destroyModalF()
         },
         fileRead(val, folder, index) {
@@ -133,6 +139,18 @@ export default {
 </script>
 
 <style scoped>
+    .abnf{
+        padding: 10px;
+        cursor: pointer;
+    }
+    .slider {
+        margin: 5px;
+        display: flex;
+        justify-content: space-between;
+        align-content: center;
+        padding: 10px;
+        user-select: none;
+    }
     .left-block {
         width: 40%;
     }

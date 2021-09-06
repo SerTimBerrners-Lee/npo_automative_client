@@ -51,7 +51,7 @@ export default {
         destroyModalF() {
             this.destroyModalLeft = 'left-block-modal-hidden'
             this.destroyModalRight = 'content-modal-right-menu-hidden'
-            this.hiddens = 'opacity: 0;'
+            this.hiddens = 'display: none;'
             this.$emit('unmount', 0)
         },
         addEditEdizm() {

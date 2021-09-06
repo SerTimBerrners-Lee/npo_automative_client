@@ -78,6 +78,12 @@
                     </button>
                 </div>
             </div>
+            <OpensFile 
+                :parametrs='itemFiles' 
+                v-if="itemFiles != null" 
+                @unmount='openFile'
+                :key='keyWhenModalGenerateFileOpen'
+            />
         </div>
     </div>
 </template> 
@@ -85,19 +91,24 @@
 <script>
 
 import TableMaterial from '@/components/mathzag/table-material.vue'
+import OpensFile from '@/components/filebase/openfile.vue'
+import random from 'lodash'
+
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
     data() {
         return {
             material: null,
             podMaterial: null,
-            podPodMaterial: null
+            podPodMaterial: null,
+            itemFiles: null, //  Показываем Файл в окне 
+            keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
         }
     },
-    components:{TableMaterial},
+    components:{TableMaterial, OpensFile},
     computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
     methods: {
-        ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM']),
+        ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM']),
         ...mapMutations(['filterMatByPodType', 'addOnePPTyep']),
         clickMat(mat, type) {
             if(type == 'type') {
@@ -105,7 +116,16 @@ export default {
                 this.filterMatByPodType(this.material.id)
             }
             if(type == 'podM') this.getOnePodType(mat.id)
-            if(type == 'podPM') this.podPodMaterial = mat
+            if(type == 'podPM') {
+                this.podPodMaterial = mat
+                this.fetchGetOnePPM(mat.id).then((material) => {
+                    this.podPodMaterial = material
+                    if(this.podPodMaterial.documents && this.podPodMaterial.documents.length > 0) { 
+                        this.itemFiles = this.podPodMaterial.documents
+                        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+                    }
+                })
+            }
         },
         editMaterial() {
             if(!this.podPodMaterial) return 0
@@ -115,6 +135,9 @@ export default {
         banPPM() {
             if(!this.podPodMaterial) return 0
             this.bannedPPM(this.podPodMaterial.id)
+        },
+        openFile(res) {
+            console.log(res)
         }
     },
     async mounted() {
