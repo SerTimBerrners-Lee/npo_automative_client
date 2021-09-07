@@ -191,7 +191,7 @@ export default {
                 this.dateWork = user.dateWork
                 this.email = user.email
                 this.haracteristic = user.haracteristic
-                this.image = `http://10.14.109.5:5000/${user.image}`
+                this.image = `http://89.23.4.133:5000/${user.image}`
                 this.login = user.login
                 this.password = user.password
                 this.phone = user.phone
@@ -212,7 +212,7 @@ export default {
             })
         },
         openNewWindow(url) {
-            window.open(`http://10.14.109.5:5000/${url}`, '_blank')
+            window.open(`http://89.23.4.133:5000/${url}`, '_blank')
         }
     },
     async mounted() {
