@@ -9,10 +9,10 @@ export default {
     },
     getters: {
         alltypeM(state) {
-            return state.typeM.reverse()
+            return state.typeM
         },
         allPodTypeM(state) {
-            return state.podTypeM.reverse()
+            return state.podTypeM
         },
         getOnePodMaterial(state) {
             return state.podMaterial
