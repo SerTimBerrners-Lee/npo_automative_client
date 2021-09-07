@@ -15,8 +15,8 @@ export default {
     },
     actions: { 
         async getAllEdizm(ctx) {
-            let eType =  await fetch(`${PATH_TO_SERVER}/api/settings/typeedizm`)
-            let edizm = await fetch(`${PATH_TO_SERVER}/api/settings/edizm`)
+            let eType =  await fetch(`${PATH_TO_SERVER}api/settings/typeedizm`)
+            let edizm = await fetch(`${PATH_TO_SERVER}api/settings/edizm`)
             eType = await eType.json()
             edizm = await edizm.json()
 
@@ -25,7 +25,7 @@ export default {
         },
 
         async createEdizm(ctx, edizm) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/edizm`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/edizm`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -43,7 +43,7 @@ export default {
         },
 
         async removeEdizm(ctx, id) {
-            const res =  await fetch(`${PATH_TO_SERVER}/api/settings/edizm/${id}`, {
+            const res =  await fetch(`${PATH_TO_SERVER}api/settings/edizm/${id}`, {
                 method: 'delete'
             })
             const result = await res.json()
@@ -53,7 +53,7 @@ export default {
         },
         async updateEdizm(ctx, ez) {
 
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/edizm/update`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/edizm/update`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',

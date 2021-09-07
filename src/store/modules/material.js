@@ -23,13 +23,13 @@ export default {
     },
     actions: { 
         async getAllTypeMaterial(ctx) {
-            const res =  await fetch(`${PATH_TO_SERVER}/api/settings/material`)
+            const res =  await fetch(`${PATH_TO_SERVER}api/settings/material`)
             const result = await res.json()
 
             ctx.commit("getTypeMaterial", result)
         },
         async createTypeM(ctx, material) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/material`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -44,7 +44,7 @@ export default {
             ctx.commit('addTypeMaterial', result)
         },
         async createPodType(ctx, pod_type) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/material/podtype`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podtype`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -63,14 +63,14 @@ export default {
             }
         },
         async removeMaterial(ctx, id) {
-            const res =  await fetch(`${PATH_TO_SERVER}/api/settings/material/${id}`, {
+            const res =  await fetch(`${PATH_TO_SERVER}api/settings/material/${id}`, {
                 method: 'delete'
             })
             if(res.ok)
                 ctx.dispatch('getAllTypeMaterial')
         },
         async updateTypeM(ctx, material) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/material/update`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/update`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -85,7 +85,7 @@ export default {
             ctx.commit('updateMaterial', result)
         },
         async updatePodMaterial(ctx, podM) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/material/podtype/update`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podtype/update`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -102,7 +102,7 @@ export default {
             ctx.commit('updatePodMaterial', {result, matId: podM.parentId} )
         },
         async deletePodType(ctx, data) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/material/podtype/${data.podType}`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podtype/${data.podType}`, {
                 method: 'delete'
             })
 
@@ -111,14 +111,14 @@ export default {
                 ctx.commit('updateForTwoArr', data)
         },
         async getOnePodType(ctx, id) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/materials/typematerial/${id}`)
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/typematerial/${id}`)
             const result = await res.json()
             
             ctx.commit('addOnePodType', result)
             return result
         },
         async createNewPodPodMaterial(ctx, data) {
-            const res = fetch(`${PATH_TO_SERVER}/api/settings/material/podpodtype/`, {
+            const res = fetch(`${PATH_TO_SERVER}api/settings/material/podpodtype/`, {
                 method: 'post',
                 body: data
             })
@@ -128,21 +128,21 @@ export default {
             }
         },
         async removePPM(ctx, id) {
-            const res =  await fetch(`${PATH_TO_SERVER}/api/settings/material/podpodtype/${id}`, {
+            const res =  await fetch(`${PATH_TO_SERVER}api/settings/material/podpodtype/${id}`, {
                 method: 'delete'
             })
             if(res.ok)
                 ctx.dispatch('getAllTypeMaterial')
         },
         async bannedPPM(ctx, id) {
-            const res =  await fetch(`${PATH_TO_SERVER}/api/settings/material/podpodtype/${id}`)
+            const res =  await fetch(`${PATH_TO_SERVER}api/settings/material/podpodtype/${id}`)
             if(res.ok) {
                 ctx.dispatch('getAllTypeMaterial')
                 ctx.commit('bannedPPM', id)
             }
         },
         async fetchGetOnePPM(ctx, id) {
-            const res = await fetch(`${PATH_TO_SERVER}/api/settings/material/podpodtype/get/${id}`)
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podpodtype/get/${id}`)
             if(res.ok) {
                 const result = await res.json()
                 ctx.commit('addOnePPTyep', result)
