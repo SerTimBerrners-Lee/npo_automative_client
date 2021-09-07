@@ -123,7 +123,7 @@ export default {
             photoPreloadUrl(file, (res) => {
                 this.docType = {...res}
             }, true)
-            this.urlImg = `http://localhost:5000/${file.path}`
+            this.urlImg = `http://10.14.109.5:5000/${file.path}`
         },
         addFiles() {
             this.destroyModalF()

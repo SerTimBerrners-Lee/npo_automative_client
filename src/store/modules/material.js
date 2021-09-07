@@ -1,5 +1,5 @@
 
-let PATH_TO_SERVER = "http://localhost:5000"
+const PATH_TO_SERVER = "http://10.14.109.5:5000/"
 
 export default {
     state: {

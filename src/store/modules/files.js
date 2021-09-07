@@ -1,3 +1,6 @@
+
+const PATH_TO_SERVER = "http://10.14.109.5:5000/"
+
 export default {
     state: {
         files: [],
@@ -14,7 +17,7 @@ export default {
     },
     actions: { 
         async fetchFiles(ctx) {
-            const res = await fetch('http://localhost:5000/api/documents')
+            const res = await fetch(`${PATH_TO_SERVER}api/documents`)
 
             const result = await res.json()
             ctx.commit('updateFiles', result);
@@ -23,7 +26,7 @@ export default {
         },
 
         async pushDocuments(ctx, data) {
-            const res = await fetch('http://localhost:5000/api/documents/add', {
+            const res = await fetch(`${PATH_TO_SERVER}api/documents/add`, {
                 method: 'post',
                 body: data
             })
@@ -32,7 +35,7 @@ export default {
         },
 
         async bannedFiles(ctx, docs) {
-            const res = await fetch('http://localhost:5000/api/documents/' + docs.id)
+            const res = await fetch(`${PATH_TO_SERVER}api/documents/` + docs.id)
             const result = await res.json()
             if(res.ok) {
                 let awar = await ctx.commit('banFiles', result)
@@ -42,7 +45,7 @@ export default {
         },
 
         async checkedType(ctx, {id, type}) {
-            const res = await fetch('http://localhost:5000/api/documents/editype', {
+            const res = await fetch(`${PATH_TO_SERVER}api/documents/editype`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',

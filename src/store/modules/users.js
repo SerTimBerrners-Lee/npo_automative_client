@@ -1,4 +1,5 @@
 
+const PATH_TO_SERVER = "http://10.14.109.5:5000/"
 
 export default {
     state: {
@@ -14,7 +15,7 @@ export default {
     },
     actions: {
         async saveUser(ctx, data) { 
-            const res = await fetch('http://localhost:5000/api/users', {
+            const res = await fetch(`${PATH_TO_SERVER}api/users`, {
                 method: "post",
                 body: data
             })
@@ -30,13 +31,13 @@ export default {
             
         },
         async getAllUsers(ctx) {
-            const res = await fetch('http://localhost:5000/api/users')
+            const res = await fetch(`${PATH_TO_SERVER}api/users`)
             const result = await res.json()
 
             ctx.commit('updateUsers', result)
         },
         async banUserById(crx, id) {
-            const res = await fetch('http://localhost:5000/api/users/ban', {
+            const res = await fetch(`${PATH_TO_SERVER}api/users/ban`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',

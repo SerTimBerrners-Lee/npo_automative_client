@@ -1,3 +1,6 @@
+
+const PATH_TO_SERVER = "http://10.14.109.5:5000/"
+
 export default {
     state: {
         roles: []
@@ -9,12 +12,12 @@ export default {
     },
     actions: {
         async fetchRoles(ctx) {
-            const res = await fetch('http://localhost:5000/api/roles/')
+            const res = await fetch(`${PATH_TO_SERVER}api/roles/`)
             const result = await res.json()
             ctx.commit('updateRoles', result);
         },
         async removeRole(ctx, id) {
-            const res = await fetch('http://localhost:5000/api/roles/' + id, {
+            const res = await fetch(`${PATH_TO_SERVER}api/roles/` + id, {
                 method: 'delete',
             }) 
             if(res.status == 200) {
@@ -24,7 +27,7 @@ export default {
             } 
         },
         async createRole(ctx, param) {
-            const res = await fetch('http://localhost:5000/api/roles/', {
+            const res = await fetch(`${PATH_TO_SERVER}api/roles/`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
@@ -43,7 +46,7 @@ export default {
         },
         async editRoleById(ctx, param) {
             console.log(param)
-            const res = await fetch('http://localhost:5000/api/roles/update', {
+            const res = await fetch(`${PATH_TO_SERVER}api/roles/update`, {
                 method: 'post',
                 headers: {
                     'Accept': 'application/json',
