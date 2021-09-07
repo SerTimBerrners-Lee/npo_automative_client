@@ -1,4 +1,4 @@
-const PATH_TO_SERVER = "http://89.23.4.133:5000/"
+const PATH_TO_SERVER = "http://10.14.109.5:5000/"
 
 export default {
     state: {
