@@ -25,9 +25,15 @@ import BaseProvider from '@/views/BaseProvider.vue';
 import BaseTools from '@/views/BaseTools.vue';
 import BaseEquipment from '@/views/BaseEquipment.vue';
 import BaseDetals from '@/views/BaseDetals.vue';
-import AddMaterialBase from '@/components/base-material-add.vue'
+import AddMaterialBase from '@/components/base-material-add.vue';
+import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
  
 const routes = [
+  {
+    path: '/baseprovider/addedit',
+    name: 'AddEditBaseProvider',
+    component: AddEditBaseProvider
+  },
   {
     path: '/',
     name: 'WorkTable',

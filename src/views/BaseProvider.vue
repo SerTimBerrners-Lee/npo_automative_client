@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div> 
         <div class="flex-box-main">
             <div class="left-block-bprovider">
                  <h3>База поставщиков</h3>
@@ -16,7 +16,7 @@
                     </table>
                 </div>
                 <div class="btn-control">
-                    <button class="btn-small btn-add">Создать</button>
+                    <button class="btn-small btn-add" @click="$router.push('/baseprovider/addedit')">Создать</button>
                     <button class="btn-small">Редактировать</button>
                     <button class="btn-small">В архив</button>
                 </div>
@@ -163,6 +163,7 @@
                 </div>
             </div>
         </div>
+        <router-view></router-view>
     </div>
 </template>
 
