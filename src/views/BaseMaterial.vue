@@ -101,20 +101,19 @@ export default {
             material: null,
             podMaterial: null,
             podPodMaterial: null,
-            itemFiles: null, //  Показываем Файл в окне 
+            itemFiles: null,
             keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
         }
     },
     components:{TableMaterial, OpensFile},
     computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
     methods: {
-        ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM']),
+        ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
         ...mapMutations(['filterMatByPodType', 'addOnePPTyep']),
         clickMat(mat, type) {
-            if(type == 'type') {
+            if(type == 'type') 
                 this.material = mat
-                this.filterMatByPodType(this.material.id)
-            }
+
             if(type == 'podM') this.getOnePodType(mat.id)
             if(type == 'podPM') {
                 this.podPodMaterial = mat
@@ -142,6 +141,7 @@ export default {
     },
     async mounted() {
         this.getAllTypeMaterial()
+        this.getAllPodTypeMaterial()
     }
 }
 </script>

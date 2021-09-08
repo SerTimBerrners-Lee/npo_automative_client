@@ -63,6 +63,8 @@
 import { photoPreloadUrl } from '@/js/';
 import { mapActions } from 'vuex'
 import { isArray } from 'lodash'
+import PATH_TO_SERVER from '@/js/path.js'
+
 export default {
     props: ['parametrs'],
     data() {
@@ -123,7 +125,7 @@ export default {
             photoPreloadUrl(file, (res) => {
                 this.docType = {...res}
             }, true)
-            this.urlImg = `http://89.23.4.133:5000/${file.path}`
+            this.urlImg = PATH_TO_SERVER + file.path
         },
         addFiles() {
             this.destroyModalF()

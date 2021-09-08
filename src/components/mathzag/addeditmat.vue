@@ -21,87 +21,115 @@
                 <th>Значение</th>
             </tr>
             <tr>
-                <td>Длина (Д)</td>
+                <td  @click='obj.length_permanent = ""'>Длина (L)</td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "TYPE"' v-model="obj.length_selecter">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                    м, мм
                 </td>
                 <td class="input_znach">
-                  <input type="text" v-model="obj.length_input">
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio" value="permanent" v-model="obj.length_permanent">
+                  </p>
+                 <p>
+                    <span> Переменное </span>
+                    <input type="radio"  value="variable" v-model="obj.length_permanent">
+                 </p>
                 </td>
             </tr>
             <tr>
-                <td>Ширина (Ш)</td>
+                <td  @click='obj.width_permanent = ""'>Ширина (A)</td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "TYPE"' v-model="obj.width_selecter">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                    м, мм
                 </td>
-                <td class="input_znach">
-                  <input type="text" v-model="obj.width_input" >
+                <td class="input_znach" >
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio" value="permanent" v-model="obj.width_permanent">
+                  </p>
+                 <p>
+                    <span> Переменное </span>
+                    <input type="radio" value="variable" v-model="obj.width_permanent">
+                 </p>
                 </td>
             </tr>
             <tr>
-                <td>Высота (В)</td>
+                <td @click='obj.height_permanent = ""'>Высота (B)</td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "TYPE"' v-model="obj.height_selecter">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                   м, мм
                 </td>
                 <td class="input_znach">
-                  <input type="text" v-model="obj.height_input">
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio"  value="permanent" v-model="obj.height_permanent">
+                  </p>
+                 <p>
+                    <span>  Переменное </span>
+                    <input type="radio" value="variable" v-model="obj.height_permanent">
+                 </p>
                 </td>
             </tr>
             <tr>
-                <td>Толщина стенки (S)</td>
+                <td @click='obj.wallThickness_permanent = ""'>Толщина стенки (С)</td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "TYPE"' v-model="obj.wallThickness_selecter">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                   мм
                 </td>
                 <td class="input_znach">
-                  <input type="text" v-model="obj.wallThickness_input">
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio" value="permanent" v-model="obj.wallThickness_permanent">
+                  </p>
+                 <p>
+                    <span> Переменное </span>
+                    <input type="radio" value="variable" v-model="obj.wallThickness_permanent">
+                 </p>
                 </td>
             </tr>
             <tr>
-                <td>Наружный Диаметр (D)</td>
+                <td @click='obj.outsideDiametr_permanent = ""'>Наружный Диаметр (D)</td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "TYPE"' v-model="obj.outsideDiametr_selecter">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                    мм
                 </td>
                 <td class="input_znach">
-                  <input type="text" v-model="obj.outsideDiametr_input">
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio" value="permanent" v-model="obj.outsideDiametr_permanent">
+                  </p>
+                 <p>
+                    <span> Переменное </span>
+                    <input type="radio" value="variable" v-model="obj.outsideDiametr_permanent">
+                 </p>
                 </td>
             </tr>
               <tr>
-                <td>Толщина </td>
+                <td @click='obj.thickness_permanent = ""'>Толщина </td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "TYPE"' v-model="obj.thickness_selecter">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                    мм
                 </td>
                 <td class="input_znach">
-                  <input type="text" v-model="obj.thickness_input">
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio" value="permanent" v-model="obj.thickness_permanent">
+                  </p>
+                 <p>
+                    <span> Переменное </span>
+                    <input type="radio" value="variable" v-model="obj.thickness_permanent">
+                 </p>
                 </td>
             </tr>
             <tr>
-                <td>Площадь сечения (A)</td>
+                <td @click='obj.areaCrossSectional_permanent = ""'>Площадь сечения (S)</td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "TYPE"' v-model="obj.areaCrossSectional_selecter">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                   м2
                 </td>
                 <td class="input_znach">
-                  <input type="text" v-model="obj.areaCrossSectional_input">
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio" value="permanent" v-model="obj.areaCrossSectional_permanent">
+                  </p>
+                 <p>
+                    <span> Переменное </span>
+                    <input type="radio" value="variable" v-model="obj.areaCrossSectional_permanent">
+                 </p>
                 </td>
             </tr>
         </table>
@@ -112,12 +140,8 @@
       </div>
         <div v-if="parametrs.mat == 'PODTYPE'">
         <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
-        <p class="p-types">
-            <span>Тип: &nbsp;</span>
-            <span> {{ parametrs.type == 'create' ? parametrs.material.name : parametrs.parentMat.name }}</span>
-        </p>
         <div class="block">
-            <p> 
+            <p style="align-items: center;"> 
                 <span>Наименование: </span>
                 <input type="text" v-model.trim='obj_podType.inputs'>
             </p>
@@ -134,12 +158,18 @@
             <tr>
                 <td>Плотность</td>
                 <td>
-                    <select class="select-small" v-if='parametrs.mat == "PODTYPE"' v-model="obj_podType.density_select">
-                        <option>Выберите тип ЕИ</option>
-                        <option v-for='edizm of parametrs.edizm' :key='edizm' :value='edizm.id'>{{ edizm.short_name }}</option>
-                    </select>
+                    м2
                 </td>
-                <td><input type="text" v-model="obj_podType.density_input"></td>
+                <td class="input_znach">
+                 <p>
+                    <span> Постоянное </span>
+                    <input type="radio" value="permanent" v-model="obj_podType.density_permanent">
+                  </p>
+                 <p>
+                    <span> Переменное </span>
+                    <input type="radio" value="variable" v-model="obj_podType.density_permanent">
+                 </p>
+                </td>
             </tr>
             
         </table>
@@ -155,6 +185,24 @@
         </div>
       </div>
     </div>
+    <!-- <table >
+      <tr>
+        <th>Профиль</th>
+        <th>Формула расчета объёма</th>
+        <th>Формула площади S с постоянными величинами</th>
+        <th>Примечание</th>
+        <th>Постоянные значения (указываем конкретные значения при создании материала)</th>
+        <th>Переменные значения (указываем в детали - характеристика заготовки</th>
+      </tr>
+      <tr>
+        <th>Круг</th>
+        <td rowspan="5" space='row' >V = S*L</td>
+        <td>3.14*D кв./4</td>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    </table> -->
   </div>
 </div>
 </template>
@@ -171,31 +219,24 @@ export default {
           inputs_short: '',
           titleapp: 'Добавление',
           obj: {
-            length_selecter: 'Выберите тип ЕИ',
-            width_selecter: 'Выберите тип ЕИ',
-            height_selecter: 'Выберите тип ЕИ',
-            wallThickness_selecter: 'Выберите тип ЕИ',
-            outsideDiametr_selecter: 'Выберите тип ЕИ',
-            thickness_selecter: 'Выберите тип ЕИ',
-            areaCrossSectional_selecter: 'Выберите тип ЕИ',
-            length_input: '',
-            width_input: '',
-            height_input: '',
-            wallThickness_input: '',
-            outsideDiametr_input: '',
-            thickness_input: '',
-            areaCrossSectional_input: '',
+            length_permanent: '',
+            width_permanent: '',
+            height_permanent: '',
+            wallThickness_permanent: '',
+            outsideDiametr_permanent: '',
+            thickness_permanent: '',
+            areaCrossSectional_permanent: 'permanent',
             inputs: '',
           },
           obj_podType : {
             inputs: '',
-            density_input: '',
-            density_select: 'Выберите тип ЕИ'
+            density_permanent: '',
           }
 
       }
   },
   mounted() {
+      console.log(this.parametrs)
       this.destroyModalLeft = 'left-block-modal'
       this.destroyModalRight = 'content-modal-right-menu'
       this.hiddens = 'opacity: 1;'
@@ -204,70 +245,50 @@ export default {
           if(this.parametrs.mat == "TYPE") {
             let el = this.parametrs.element
             this.obj.inputs = el.name
-            if(el.length && typeof el.length[0] == 'string') {
-              this.obj.length_selecter = JSON.parse(el.length[0]).edizmId.id 
-              this.obj.length_input = JSON.parse(el.length[0]).znach 
-            } else if(el.length && typeof el.length[0] == 'object') {
-              this.obj.length_selecter = el.length[0].edizmId.id 
-              this.obj.length_input = el.length[0].znach 
-            }
-            if(el.width && typeof el.width[0] == 'string') {
-              this.obj.width_selecter = JSON.parse(el.width[0]).edizmId.id 
-              this.obj.width_input = JSON.parse(el.width[0]).znach 
-            } else if(el.width && typeof el.width[0] == 'object') {
-              this.obj.width_selecter = el.width[0].edizmId.id 
-              this.obj.width_input = el.width[0].znach 
-            }
-            if(el.height && typeof el.height[0] == 'string') {
-              this.obj.height_selecter = JSON.parse(el.height[0]).edizmId.id 
-              this.obj.height_input = JSON.parse(el.height[0]).znach 
-            } else if(el.height && typeof el.height[0] == 'object') {
-              this.obj.height_selecter = el.height[0].edizmId.id 
-              this.obj.height_input = el.height[0].znach 
-            }
-            if(el.wallThickness && typeof el.wallThickness[0] == 'string') {
-              this.obj.wallThickness_selecter = JSON.parse(el.wallThickness[0]).edizmId.id 
-              this.obj.wallThickness_input = JSON.parse(el.wallThickness[0]).znach 
-            } else if(el.wallThickness && typeof el.wallThickness[0] == 'object') {
-              this.obj.wallThickness_selecter = el.wallThickness[0].edizmId.id 
-              this.obj.wallThickness_input = el.wallThickness[0].znach 
-            }
-            if(el.outsideDiametr && typeof el.outsideDiametr[0] == 'string') {
-              this.obj.outsideDiametr_selecter = JSON.parse(el.outsideDiametr[0]).edizmId.id 
-              this.obj.outsideDiametr_input = JSON.parse(el.outsideDiametr[0]).znach 
-            } else if(el.outsideDiametr && typeof el.outsideDiametr[0] == 'object') {
-              this.obj.outsideDiametr_selecter = el.outsideDiametr[0].edizmId.id 
-              this.obj.outsideDiametr_input = el.outsideDiametr[0].znach 
-            }
-            if(el.thickness && typeof el.thickness[0] == 'string') {
-              this.obj.thickness_selecter = JSON.parse(el.thickness[0]).edizmId.id 
-              this.obj.thickness_input = JSON.parse(el.thickness[0]).znach 
-            } else if(el.thickness && typeof el.thickness[0] == 'object') {
-              this.obj.thickness_selecter = el.thickness[0].edizmId.id 
-              this.obj.thickness_input = el.thickness[0].znach 
-            }
-            if(el.areaCrossSectional && typeof el.areaCrossSectional[0] == 'string') {
-              this.obj.areaCrossSectional_selecter = JSON.parse(el.areaCrossSectional[0]).edizmId.id 
-              this.obj.areaCrossSectional_input = JSON.parse(el.areaCrossSectional[0]).znach 
-            } else if(el.areaCrossSectional && typeof el.areaCrossSectional[0] == 'object') {
-              this.obj.areaCrossSectional_selecter = el.areaCrossSectional[0].edizmId.id 
-              this.obj.areaCrossSectional_input = el.areaCrossSectional[0].znach 
-            }
+            if(el.length && typeof el.length == 'string') 
+              this.obj.length_permanent = JSON.parse(el.length).znach 
+            if(el.length && typeof el.length == 'object') 
+              this.obj.length_permanent = el.length.znach 
             
+            if(el.width && typeof el.width == 'string') 
+              this.obj.width_permanent = JSON.parse(el.width).znach 
+            if(el.width && typeof el.width == 'object') 
+              this.obj.width_permanent = el.width.znach 
+            
+            if(el.height && typeof el.height == 'string')
+              this.obj.height_permanent = JSON.parse(el.height).znach 
+            if(el.height && typeof el.height == 'object')
+              this.obj.height_permanent = el.height.znach 
+      
+            if(el.wallThickness && typeof el.wallThickness == 'string')
+              this.obj.wallThickness_permanent = JSON.parse(el.wallThickness).znach 
+            if(el.wallThickness && typeof el.wallThickness == 'object')
+              this.obj.wallThickness_permanent = el.wallThickness[0].znach 
+            
+            if(el.outsideDiametr && typeof el.outsideDiametr == 'string')
+              this.obj.outsideDiametr_permanent = JSON.parse(el.outsideDiametr).znach 
+            if(el.outsideDiametr && typeof el.outsideDiametr == 'object')
+              this.obj.outsideDiametr_permanent = el.outsideDiametr.znach 
+
+            if(el.thickness && typeof el.thickness == 'string')
+              this.obj.thickness_permanent = JSON.parse(el.thickness).znach 
+            if(el.thickness && typeof el.thickness == 'object')
+              this.obj.thickness_permanent = el.thickness.znach 
+            
+            if(el.areaCrossSectional && typeof el.areaCrossSectional == 'string')
+              this.obj.areaCrossSectional_permanent = JSON.parse(el.areaCrossSectional).znach 
+            if(el.areaCrossSectional && typeof el.areaCrossSectional == 'object')
+              this.obj.areaCrossSectional_permanent = el.areaCrossSectional.znach 
           }
 
           if(this.parametrs.mat == "PODTYPE") {
-            this.obj_podType.inputs = this.parametrs.material.name
-            if(this.parametrs.material.density) {
-              // Делаем проверку когда мы добавляем новый под тип он сохраняется как обьект 
-              // Когда он приходит с сервера он приходит в json и его нужно распарсить в объект
-              if(typeof this.parametrs.material.density[0] == 'string') {
-                this.obj_podType.density_input = JSON.parse(this.parametrs.material.density).znach
-                this.obj_podType.density_select = JSON.parse(this.parametrs.material.density).edizmId.id
-              } else {
-                this.obj_podType.density_input = this.parametrs.material.density[0].znach
-                this.obj_podType.density_select = this.parametrs.material.density[0].edizmId.id
-              }
+            let mat = this.parametrs.material
+            this.obj_podType.inputs = mat.name
+            if(mat.density) {
+              if(typeof mat.density == 'string') 
+                this.obj_podType.density_permanent = JSON.parse(mat.density).znach
+              if(typeof mat.density == 'object')
+                this.obj_podType.density_permanent = mat.density[0].znach
             }
           }
       } 
@@ -285,11 +306,10 @@ export default {
             this.$emit('unmount', {
               type: 'createPodMaterial',
               data: {
-                density: this.obj_podType.density_select != 'Выберите тип ЕИ' ? {
-                  edizmId: this.obj_podType.density_select,
-                  znach: this.obj_podType.density_input
+                density: this.obj_podType.density_permanent != '' ? {
+                  edizm: "м2",
+                  znach: this.obj_podType.density_permanent
                 } : {},
-                parentId: this.parametrs.material.id,
                 name: this.obj_podType.inputs
               }
             })
@@ -299,11 +319,10 @@ export default {
             this.$emit('unmount', {
               type: 'editPodMaterial',
               data: {
-                density: this.obj_podType.density_select != 'Выберите тип ЕИ' ? {
-                  edizmId: this.obj_podType.density_select,
-                  znach: this.obj_podType.density_input
+                density: this.obj_podType.density_select != '' ? {
+                  edizm: "м2",
+                  znach: this.obj_podType.density_permanent
                 } : {},
-                parentId: this.parametrs.parentMat.id,
                 name: this.obj_podType.inputs,
                 id: this.parametrs.material.id
               }
@@ -316,33 +335,33 @@ export default {
             let dat = this.obj
             let data = {
                     name: dat.inputs,
-                    length: dat.length_selecter != 'Выберите тип ЕИ' ? {
-                      edizmId: dat.length_selecter,
-                      znach: dat.length_input
+                    length: dat.length_permanent != '' ? {
+                      edizm: 'м,мм',
+                      znach: dat.length_permanent
                     } : {} ,
-                    width: dat.width_selecter != 'Выберите тип ЕИ' ? {
-                      edizmId: dat.width_selecter,
-                      znach: dat.width_input
+                    width: dat.width_permanent != '' ? {
+                      edizm: 'м,мм',
+                      znach: dat.width_permanent
                     } : {} ,
-                    height: dat.height_selecter != 'Выберите тип ЕИ' ? {
-                      edizmId: dat.height_selecter,
-                      znach: dat.height_input
+                    height: dat.height_permanent != '' ? {
+                      edizm: 'м,мм',
+                      znach: dat.height_permanent
                     } : {},
-                    wallThickness: dat.wallThickness_selecter != 'Выберите тип ЕИ' ? {
-                      edizmId: dat.wallThickness_selecter,
-                      znach: dat.wallThickness_input
+                    wallThickness: dat.wallThickness_permanent != '' ? {
+                      edizm: 'мм',
+                      znach: dat.wallThickness_permanent
                     } : {},
-                    outsideDiametr: dat.outsideDiametr_selecter != 'Выберите тип ЕИ' ? {
-                      edizmId: dat.outsideDiametr_selecter,
-                      znach: dat.outsideDiametr_input
+                    outsideDiametr: dat.outsideDiametr_permanent != '' ? {
+                      edizm: 'мм',
+                      znach: dat.outsideDiametr_permanent
                     } : {},
-                    thickness: dat.thickness_selecter != 'Выберите тип ЕИ' ? {
-                      edizmId: dat.thickness_selecter,
-                      znach: dat.thickness_input
+                    thickness: dat.thickness_permanent != '' ? {
+                      edizm: 'мм',
+                      znach: dat.thickness_permanent
                     } : {},
-                    areaCrossSectional: dat.areaCrossSectional_selecter != 'Выберите тип ЕИ' ? {
-                      edizmId: dat.areaCrossSectional_selecter,
-                      znach: dat.areaCrossSectional_input
+                    areaCrossSectional: dat.areaCrossSectional_permanent != '' ? {
+                      edizm: 'm2',
+                      znach: dat.areaCrossSectional_permanent
                     } : {}
                   }
               if(this.parametrs.type == 'create') {
@@ -379,7 +398,16 @@ export default {
   .input_znach {
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
+    flex-direction: column;
+  }
+  .input_znach p {
+    display: flex;
+    justify-content: space-between;
+    margin-right: 5px;
+    margin-left: 5px;
+    margin: 0;
+    width: 100%;
   }
   .select-small{
       font-size: 14px;
@@ -412,5 +440,8 @@ export default {
   }
   .p-types span:first-child {
       font-weight: bold;
+  }
+  table {
+    user-select: none;
   }
 </style>

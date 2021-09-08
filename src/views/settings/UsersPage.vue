@@ -146,6 +146,7 @@ import {  mapActions, mapGetters } from 'vuex'
 import { isEmpty } from 'lodash';
 import showMessage from '@/js/inform_folder.js';
 import InformFolder from '@/components/InformFolder.vue'
+import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
     data() {
@@ -191,7 +192,7 @@ export default {
                 this.dateWork = user.dateWork
                 this.email = user.email
                 this.haracteristic = user.haracteristic
-                this.image = `http://89.23.4.133:5000/${user.image}`
+                this.image = PATH_TO_SERVER + user.image
                 this.login = user.login
                 this.password = user.password
                 this.phone = user.phone
@@ -212,7 +213,7 @@ export default {
             })
         },
         openNewWindow(url) {
-            window.open(`http://89.23.4.133:5000/${url}`, '_blank')
+            window.open(PATH_TO_SERVER + url, '_blank')
         }
     },
     async mounted() {

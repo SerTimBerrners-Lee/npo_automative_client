@@ -1,4 +1,4 @@
-const PATH_TO_SERVER = "http://89.23.4.133:5000/"
+import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
     state: {

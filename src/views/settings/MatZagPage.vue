@@ -28,7 +28,7 @@
 <script>
 import addEditMat from '@/components/mathzag/addeditmat.vue'
 import { random } from 'lodash'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions } from 'vuex'
 import TableMaterial from '@/components/mathzag/table-material.vue'
 
 export default {
@@ -43,7 +43,7 @@ export default {
             podType: null
         }
     },
-    computed: mapGetters(['allEdizm', 'alltypeM', 'allPodTypeM']),
+    computed: mapGetters(['allEdizm', 'alltypeM', 'allPodTypeM']), 
     components: {addEditMat, TableMaterial},
     methods: {
         ...mapActions(['getAllEdizm', 
@@ -53,9 +53,9 @@ export default {
             'removeMaterial', 
             'createPodType', 
             'deletePodType',
-            'updatePodMaterial'
+            'updatePodMaterial',
+            'getAllPodTypeMaterial'
         ]),
-        ...mapMutations(['filterMatByPodType']),
         unmount(res) {
             if(!res)
                 return 0;
@@ -73,13 +73,13 @@ export default {
             }
         },
         createEditMat(typeMat, type = 'create') {
-            if(type == 'create') {
+            if(typeMat == 'TYPE' && type == 'create') {
                 this.parametrs = {
                     type,
                     mat: typeMat,
                     edizm: this.allEdizm
                 }
-            } else if(type == 'edit') {
+            } else if(typeMat == 'TYPE' && type == 'edit') {
                 if(!this.material)
                     return 0;
 
@@ -92,21 +92,18 @@ export default {
             }
 
             if(typeMat == 'PODTYPE' && type == 'create') {
-                if(!this.material) return 0;
                 this.parametrs = {
-                    type, 
-                    material: this.material,
+                    type,
                     mat: typeMat,
                     edizm: this.allEdizm
                 }
             }
 
             if(typeMat == 'PODTYPE' && type == 'edit') {
-                if(!this.material) return 0;
+                if(!this.podType) return 0;
                 this.parametrs = {
-                    type, 
+                    type,
                     material: this.podType,
-                    parentMat: this.material,
                     mat: typeMat,
                     edizm: this.allEdizm 
                 }
@@ -117,7 +114,6 @@ export default {
         clickMat(mat, type) {
             if(type == 'type') {
                 this.material = mat
-                this.filterMatByPodType(mat.id)
             }
             if(type == 'podT') {
                 this.podType = mat
@@ -125,7 +121,7 @@ export default {
         },
         removePodType() {
             if(!this.podType) return null
-            this.deletePodType({podType: this.podType.id, materialId: this.material.id})
+            this.deletePodType(this.podType.id)
         },
         removeItem(type = 'TYPE') {
             if(!this.material) return 0;
@@ -138,6 +134,7 @@ export default {
     async mounted() {
         this.getAllEdizm()
         this.getAllTypeMaterial()
+        this.getAllPodTypeMaterial()
     }
 }
 </script>

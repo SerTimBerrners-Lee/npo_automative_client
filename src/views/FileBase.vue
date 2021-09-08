@@ -100,6 +100,7 @@
         <AddFile :parametrs='docFiles' 
                 v-if="isChangeFolderFile" 
                 @unmount='unmount'
+                :return_files="push"
                 :key='keyWhenModalGenerate' />
         <OpensFile 
                 :parametrs='itemFiles' 

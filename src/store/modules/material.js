@@ -1,4 +1,4 @@
-const PATH_TO_SERVER = "http://89.23.4.133:5000/"
+import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
     state: {
@@ -27,6 +27,12 @@ export default {
             const result = await res.json()
 
             ctx.commit("getTypeMaterial", result)
+        },
+        async getAllPodTypeMaterial(ctx) {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/typematerial`)
+            const result = await res.json()
+
+            ctx.commit('filterMatByPodType', result)
         },
         async createTypeM(ctx, material) {
             const res = await fetch(`${PATH_TO_SERVER}api/settings/material`, {
@@ -59,7 +65,7 @@ export default {
             
             if(res.ok) {
                 //const result = await res.json()
-                ctx.dispatch('getAllTypeMaterial')
+                ctx.dispatch('getAllPodTypeMaterial')
             }
         },
         async removeMaterial(ctx, id) {
@@ -101,14 +107,13 @@ export default {
             const result = await res.json()
             ctx.commit('updatePodMaterial', {result, matId: podM.parentId} )
         },
-        async deletePodType(ctx, data) {
-            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podtype/${data.podType}`, {
+        async deletePodType(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podtype/${id}`, {
                 method: 'delete'
             })
 
-            console.log(res)
             if(res.ok)
-                ctx.commit('updateForTwoArr', data)
+                ctx.commit('deletePodMaterial', id)
         },
         async getOnePodType(ctx, id) {
             const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/typematerial/${id}`)
@@ -161,22 +166,11 @@ export default {
             state.typeM = state.typeM.filter(mat => mat.id != material.id)
             state.typeM.push(material)
         },
-        filterMatByPodType(state, matId) {
-            state.typeM.map(mat => {
-                if(mat.id == matId) {
-                    mat.podMaterials ? 
-                        state.podTypeM = mat.podMaterials : state.podTypeM = []
-                }
-            })
+        filterMatByPodType(state, podMaterials) {
+            state.podTypeM = podMaterials
         },
-        updateForTwoArr(state, data) {
-            state.podTypeM = state.podTypeM.filter(typ => typ.id != data.podType)
-            state.typeM = state.typeM.map(mat => {
-                if(mat.id == data.materialId) {
-                    mat.podMaterials = mat.podMaterials.filter(pod => pod.id != data.podType)
-                }
-                return mat
-            })
+        deletePodMaterial(state, id) {
+            state.podTypeM = state.podTypeM.filter(typ => typ.id != id)
         },
         updatePodMaterial(state, data) {
             state.podTypeM = state.podTypeM.filter(typ => typ.id != data.result.id)
@@ -188,7 +182,7 @@ export default {
                 }
             })
         },
-        createPodType(state, data) {
+        createPodType(state, data) { 
             state.typeM = state.typeM.map(mat => {
                 if(mat.id == data.parentId) {
                     mat.podMaterials.push(data.result)
@@ -197,6 +191,7 @@ export default {
             })
         },
         addOnePodType(state, typMaterial) {
+            console.log(typMaterial)
             state.podMaterial = typMaterial.podPodMaterials.filter(material => !material.ban)
         },
         addOnePPTyep(state, PPT) {

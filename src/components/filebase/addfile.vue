@@ -40,7 +40,7 @@
                 <div class="btn-control out-btn-control">
                     <button class="btn-status" @click='destroyModalF'>Отменить</button>
                     <button class="btn-status btn-black" @click='addFiles("getfile")' v-if='return_files="getfile"'>Загрузить все файлы</button>
-                    <button class="btn-status btn-black" @click='addFiles' v-else>Загрузить все файлы</button>
+                    <button class="btn-status btn-black" @click='addFiles' v-if='return_files="push"'>Загрузить все файлы</button>
                 </div>
            </div>
         </div>
@@ -108,7 +108,7 @@ export default {
             this.hiddens = 'display: none;'
             this.$emit('unmount', null)
         },
-        addFiles(getFormData = 'getfile') {
+        addFiles(getFormData = 'pushfile') {
             const formData = new FormData()
             const dataArr = []
             for(let doc of this.arrItemsFile) {
