@@ -158,17 +158,10 @@
             <tr>
                 <td>Плотность</td>
                 <td>
-                    м2
+                    кг/м.куб
                 </td>
                 <td class="input_znach">
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio" value="permanent" v-model="obj_podType.density_permanent">
-                  </p>
-                 <p>
-                    <span> Переменное </span>
-                    <input type="radio" value="variable" v-model="obj_podType.density_permanent">
-                 </p>
+                  <input style='border: none; width: 97%; height: 100%' type="text" v-model="obj_podType.density_permanent">
                 </td>
             </tr>
             
@@ -232,7 +225,6 @@ export default {
             inputs: '',
             density_permanent: '',
           }
-
       }
   },
   mounted() {
@@ -303,13 +295,14 @@ export default {
       addEditPodMaterial() {
           if(this.obj_podType.inputs.length < 2) return 0;
           if(this.parametrs.type == 'create') {
+            console.log(this.obj_podType.density_permanent)
             this.$emit('unmount', {
               type: 'createPodMaterial',
               data: {
-                density: this.obj_podType.density_permanent != '' ? {
-                  edizm: "м2",
+                density: {
+                  edizm: 11,
                   znach: this.obj_podType.density_permanent
-                } : {},
+                },
                 name: this.obj_podType.inputs
               }
             })
@@ -319,10 +312,10 @@ export default {
             this.$emit('unmount', {
               type: 'editPodMaterial',
               data: {
-                density: this.obj_podType.density_select != '' ? {
-                  edizm: "м2",
+                density:  {
+                  edizm: 11,
                   znach: this.obj_podType.density_permanent
-                } : {},
+                },
                 name: this.obj_podType.inputs,
                 id: this.parametrs.material.id
               }

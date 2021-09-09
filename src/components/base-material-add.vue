@@ -40,18 +40,12 @@
             </tr>
             <tr>
               <td>Количество</td>
-              <td>
-                <select class="select-small" v-model="obj.kolvo_select">
-                  <option>Выберите тип ЕИ</option>
-                  <option value='1'>шт (штука)</option>
-                  <option value='2'>л (литр)</option>
-                  <option value='3'>кг (килограмм)</option>
-                  <option value='4'>м (метр)</option>
-                  <option value='5'>м.куб (кубический метр)</option>
-                </select>
-              </td>
-              <td>
-                <input type="text" class="select-small" v-model.trim='obj.kolvo_input'>
+              <td colspan="2"> 
+                  <input value='1' type="checkbox" v-model="obj.kolvo_select.c1"> шт 
+                  <input value='2' type="checkbox" v-model="obj.kolvo_select.c2"> л 
+                  <input value='3' type="checkbox" v-model="obj.kolvo_select.c3"> кг 
+                  <input value='4' type="checkbox" v-model="obj.kolvo_select.c4"> м 
+                  <input value='5' type="checkbox" v-model="obj.kolvo_select.c5"> м.куб 
               </td>
             </tr>
           </table>
@@ -127,10 +121,10 @@
               <td><input type="text" class="select-small" v-model.trim='obj.areaCrossSectional_input'></td>
             </tr>
 
-            <tr v-if='podMaterial && podMaterial.density && JSON.parse(podMaterial.density).znach == "permanent" || this.obj.density_input'>
+            <tr v-if='podMaterial && podMaterial.density && JSON.parse(podMaterial.density).znach || this.obj.density_input'>
               <td>Плотность </td>
               <td>
-                метр. кв.
+                кг/м.куб.
               </td>
               <td><input type="text" class="select-small" v-model.trim='obj.density_input'></td>
             </tr>
@@ -195,8 +189,6 @@ export default {
         name: '',
         deliveryTime_select: 'Выберите тип ЕИ',
         deliveryTime_input: '',
-        kolvo_select: 'Выберите тип ЕИ', // число
-        kolvo_input: '',
         description: '',
         length_select: 'Выберите тип ЕИ',
         length_input: '',
@@ -213,7 +205,14 @@ export default {
         areaCrossSectional_select: 'Выберите тип ЕИ',
         areaCrossSectional_input: '',
         density_select: 10,
-        density_input: ''
+        density_input: '',
+        kolvo_select: {
+          c1: false,
+          c2: false,
+          c3: false,
+          c4: false,
+          c5: false
+        }
       }
     }
   },
@@ -309,10 +308,8 @@ export default {
         znach: dat.deliveryTime_input
       })
       this.formData.append('deliveryTime', deliveryTime)
-      let kolvo = dat.kolvo_select != 'Выберите тип ЕИ' ? JSON.stringify({
-        edizm: dat.kolvo_select,
-        znach: dat.kolvo_input
-      }) : JSON.stringify({})
+
+      let kolvo = JSON.stringify({ kolvo: dat.kolvo_select})
       this.formData.append('kolvo', kolvo)
 
       this.formData.append('description', dat.description)
@@ -337,6 +334,14 @@ export default {
           this.getOnePodType(mat.id).then((mat) => {
             if(!mat) return 0
             this.podMaterial = mat
+            if(!this.$route.params.type == 'edit')
+              this.obj.density_input = JSON.parse(this.podMaterial.density).znach
+            if(this.material) {
+              this.obj.name = this.material.name + ' ' + this.podMaterial.name
+            } else {
+              this.obj.name = ''
+              this.obj.name = this.obj.name + ' ' + mat.name 
+            }
           })
       }
     },
@@ -379,9 +384,20 @@ export default {
         this.obj.deliveryTime_select = 9
         this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach
       }
-      if(this.getOnePPT.kolvo) {
-        this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo).edizm.id
-        this.obj.kolvo_input = JSON.parse(this.getOnePPT.kolvo).znach
+      if(this.getOnePPT.kolvo && this.getOnePPT.kolvo.length > 0) {
+        let kolvo = this.getOnePPT.kolvo
+        for(let k of kolvo) {
+          if(JSON.parse(k).id == 1)
+            this.obj.kolvo_select.c1 = true
+          if(JSON.parse(k).id == 2)
+            this.obj.kolvo_select.c2 = true
+          if(JSON.parse(k).id == 3)
+            this.obj.kolvo_select.c3 = true
+          if(JSON.parse(k).id == 4)
+            this.obj.kolvo_select.c4 = true
+          if(JSON.parse(k).id == 5)
+            this.obj.kolvo_select.c5 = true
+        }
       }
       if(this.getOnePPT.density) {
         this.obj.density_select = 10
