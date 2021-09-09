@@ -6,6 +6,7 @@ import files from './modules/files'
 import edizm from './modules/edizm'
 import material from './modules/material'
 import providers from './modules/providers'
+import instruments from './modules/instruments'
 
 export default createStore({
   modules: {
@@ -15,7 +16,8 @@ export default createStore({
     files,
     edizm,
     material,
-    providers
+    providers,
+    instruments
   }
 })
   
