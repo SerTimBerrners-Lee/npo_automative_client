@@ -126,6 +126,14 @@
               </td>
               <td><input type="text" class="select-small" v-model.trim='obj.areaCrossSectional_input'></td>
             </tr>
+
+            <tr v-if='podMaterial && podMaterial.density && JSON.parse(podMaterial.density).znach == "permanent" || this.obj.density_input'>
+              <td>Плотность </td>
+              <td>
+                метр. кв.
+              </td>
+              <td><input type="text" class="select-small" v-model.trim='obj.density_input'></td>
+            </tr>
           </table>
           <h3>Поставщики</h3>
           <table>
@@ -204,6 +212,8 @@ export default {
         thickness_input: '',
         areaCrossSectional_select: 'Выберите тип ЕИ',
         areaCrossSectional_input: '',
+        density_select: 10,
+        density_input: ''
       }
     }
   },
@@ -287,12 +297,18 @@ export default {
       })
       this.formData.append('areaCrossSectional', areaCrossSectional)
 
+      let density =  JSON.stringify({
+        edizm: 10,
+        znach: dat.density_input
+      })
+      
+      this.formData.append('density', density)
+
       let deliveryTime = JSON.stringify({
         edizm: 9,
         znach: dat.deliveryTime_input
       })
       this.formData.append('deliveryTime', deliveryTime)
-      console.log(dat.kolvo_select)
       let kolvo = dat.kolvo_select != 'Выберите тип ЕИ' ? JSON.stringify({
         edizm: dat.kolvo_select,
         znach: dat.kolvo_input
@@ -366,6 +382,10 @@ export default {
       if(this.getOnePPT.kolvo) {
         this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo).edizm.id
         this.obj.kolvo_input = JSON.parse(this.getOnePPT.kolvo).znach
+      }
+      if(this.getOnePPT.density) {
+        this.obj.density_select = 10
+        this.obj.density_input = JSON.parse(this.getOnePPT.density).znach
       }
     }
   },
