@@ -5,7 +5,7 @@ import users from './modules/users'
 import files from './modules/files'
 import edizm from './modules/edizm'
 import material from './modules/material'
-import provuders from './modules/provuders'
+import providers from './modules/providers'
 
 export default createStore({
   modules: {
@@ -15,7 +15,7 @@ export default createStore({
     files,
     edizm,
     material,
-    provuders
+    providers
   }
 })
   

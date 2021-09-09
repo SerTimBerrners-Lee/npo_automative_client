@@ -32,7 +32,7 @@
             <tr>
               <td>Срок поставки</td>
               <td>
-               дн
+               дн (дни)
               </td>
               <td>
                 <input type="text" class="select-small" v-model.trim='obj.deliveryTime_input'>
@@ -41,11 +41,14 @@
             <tr>
               <td>Количество</td>
               <td>
-                <select class="select-small" v-model="obj.kolvo_select" v-if='!obj.kolvo_input'>
+                <select class="select-small" v-model="obj.kolvo_select">
                   <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in "шт (штука), л (литр), кг, м (метр), м2".split(",")' :key="edizm" :value='edizm'>{{ edizm }}</option>
+                  <option value='1'>шт (штука)</option>
+                  <option value='2'>л (литр)</option>
+                  <option value='3'>кг (килограмм)</option>
+                  <option value='4'>м (метр)</option>
+                  <option value='5'>м.куб (кубический метр)</option>
                 </select>
-                <span v-if='obj.kolvo_input'>{{ obj.kolvo_select }}</span>  
               </td>
               <td>
                 <input type="text" class="select-small" v-model.trim='obj.kolvo_input'>
@@ -59,116 +62,67 @@
               <th>ЕИ</th>
               <th>Значение</th>
             </tr>
-            <tr>
-              <td>Масса погонного метра </td>
-              <td><select class="select-small" v-model="obj.metrMass_select">
-                  <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in allEdizm' :key="edizm"  :value='edizm.id'>{{ edizm.short_name }}</option>
-                </select></td>
-              <td> <input type="text" class="select-small" v-model.trim='obj.metrMass_input'></td>
-            </tr>
-            <tr v-if='material && material.length && JSON.parse(material.length).znach == "permanent"'>
+
+            <tr v-if='material && material.length && JSON.parse(material.length).znach == "permanent" || this.obj.length_input'>
               <td>Длина (Д)</td>
-              <td><select class="select-small" v-model="obj.length_select">
+              <td>
+                <select class="select-small" v-model="obj.length_select">
                   <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in JSON.parse(material.length).edizm.split(",")' :key="edizm" :value='edizm'>{{ edizm }}</option>
+                  <option value='6'>м (метр)</option>
+                  <option value='7'>мм (миллиметр)</option>
                 </select></td>
               <td><input type="text" class="select-small" v-model.trim='obj.length_input'></td>
             </tr>
-             <tr v-if='obj.length_input'>
-              <td>Длина (Д)</td>
-              <td> 
-                  {{ obj.length_select }}
-              </td>
-              <td><input type="text" class="select-small" v-model.trim='obj.length_input'></td>
-            </tr>
-            <tr v-if='material && material.width && JSON.parse(material.width).znach == "permanent"'>
+
+            <tr v-if='material && material.width && JSON.parse(material.width).znach == "permanent" || this.obj.width_input'>
               <td>Ширина (Ш)</td>
               <td><select class="select-small" v-model="obj.width_select">
                   <option >Выберите тип ЕИ</option>
-                  <option v-for='edizm in JSON.parse(material.width).edizm.split(",")' :key="edizm"  :value='edizm'>{{ edizm }}</option>
+                  <option value='6'>м (метр)</option>
+                  <option value='7'>мм (миллиметр)</option>
                 </select></td>
               <td><input type="text" class="select-small" v-model.trim='obj.width_input'></td>
             </tr>
-            <tr v-if='obj.width_input'>
-              <td>Ширина (Ш)</td>
-              <td> 
-                  {{ obj.width_select }}
-              </td>
-              <td><input type="text" class="select-small" v-model.trim='obj.width_input'></td>
-            </tr>
-            <tr v-if='material && material.height && JSON.parse(material.height).znach == "permanent"'>
+            
+            <tr v-if='material && material.height && JSON.parse(material.height).znach == "permanent" || this.obj.height_input'>
               <td>Высота (В)</td>
               <td><select class="select-small" v-model="obj.height_select">
                   <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in JSON.parse(material.height).edizm.split(",")' :key="edizm"  :value='edizm'>{{ edizm }}</option>
+                  <option value='6'>м (метр)</option>
+                  <option value='7'>мм (миллиметр)</option>
                 </select></td>
               <td><input type="text" class="select-small" v-model.trim='obj.height_input'></td>
             </tr>
-            <tr v-if='obj.height_input'>
-              <td>Высота (В)</td>
-              <td> 
-                  {{ obj.height_select }}
-              </td>
-              <td><input type="text" class="select-small" v-model.trim='obj.height_input'></td>
-            </tr>
-            <tr v-if='material && material.wallThickness &&  JSON.parse(material.wallThickness).znach == "permanent"'>
+          
+            <tr v-if='material && material.wallThickness &&  JSON.parse(material.wallThickness).znach == "permanent" || this.obj.wallThickness_input'>
               <td>Толщина стенки (S)</td>
-              <td><select class="select-small" v-model="obj.wallThickness_select">
-                  <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in JSON.parse(material.wallThickness).edizm.split(",")' :key="edizm" :value='edizm'>{{ edizm }}</option>
-                </select></td>
+              <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.wallThickness_input'></td>
             </tr>
-            <tr v-if='obj.wallThickness_input '>
-              <td>Толщина стенки (S)</td>
-              <td> 
-                  {{ obj.wallThickness_select }}
-              </td>
-              <td><input type="text" class="select-small" v-model.trim='obj.wallThickness_input'></td>
-            </tr>
-            <tr v-if='material && material.outsideDiametr && JSON.parse(material.outsideDiametr).znach == "permanent"'>
+
+            <tr v-if='material && material.outsideDiametr && JSON.parse(material.outsideDiametr).znach == "permanent" || this.obj.outsideDiametr_input'>
               <td>Наружный Диаметр (D)</td>
               <td><select class="select-small" v-model="obj.outsideDiametr_select">
                   <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in JSON.parse(material.outsideDiametr).edizm.split(",")' :key="edizm" :value='edizm'>{{ edizm }}</option>
+                 <td>мм (миллиметр)</td>
                 </select></td>
               <td><input type="text" class="select-small" v-model.trim='obj.outsideDiametr_input'></td>
             </tr>
-            <tr v-if='obj.outsideDiametr_input'>
-              <td>Наружный Диаметр (D)</td>
-              <td> 
-                  {{ obj.outsideDiametr_select }}
-              </td>
-              <td><input type="text" class="select-small" v-model.trim='obj.outsideDiametr_input'></td>
-            </tr>
-            <tr v-if='material && material.thickness && JSON.parse(material.thickness).znach == "permanent"'>
+           
+            <tr v-if='material && material.thickness && JSON.parse(material.thickness).znach == "permanent" || this.obj.thickness_input'>
               <td>Толщина </td>
               <td><select class="select-small" v-model="obj.thickness_select">
                   <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in JSON.parse(material.thickness).edizm.split(",") ' :key="edizm" :value='edizm'>{{ edizm }}</option>
+                  <option value='6'>м (метр)</option>
+                  <option value='7'>мм (миллиметр)</option>
                 </select></td>
               <td><input type="text" class="select-small" v-model.trim='obj.thickness_input'></td>
             </tr>
-            <tr v-if='obj.thickness_input '>
-              <td>Толщина</td>
-              <td> 
-                  {{ obj.thickness_select }}
-              </td>
-              <td><input type="text" class="select-small" v-model.trim='obj.thickness_input'></td>
-            </tr>
-            <tr v-if='material && material.areaCrossSectional && JSON.parse(material.areaCrossSectional).znach == "permanent"'>
+
+            <tr v-if='material && material.areaCrossSectional && JSON.parse(material.areaCrossSectional).znach == "permanent" || this.obj.areaCrossSectional_input'>
               <td>Площадь сечения (A) </td>
-              <td><select class="select-small" v-model="obj.areaCrossSectional_select">
-                  <option>Выберите тип ЕИ</option>
-                  <option v-for='edizm in JSON.parse(material.areaCrossSectional).edizm.split(",")' :key="edizm" :value='edizm'>{{ edizm }}</option>
-                </select></td>
-              <td><input type="text" class="select-small" v-model.trim='obj.areaCrossSectional_input'></td>
-            </tr>
-             <tr v-if='obj.areaCrossSectional_input  '>
-              <td>Площадь сечения (A)</td>
-              <td> 
-                  {{ obj.areaCrossSectional_select }}
+              <td>
+                метр. кв.
               </td>
               <td><input type="text" class="select-small" v-model.trim='obj.areaCrossSectional_input'></td>
             </tr>
@@ -193,10 +147,11 @@
         <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
       </div>
       <AddFile :parametrs='docFiles' 
+                :typeGetFile='"getfile"'
                 v-if="isChangeFolderFile" 
                 @unmount='file_unmount'
                 :key='keyWhenModalGenerate'
-                :return_files='getfile' />
+                 />
         </div>
       </div>
     </div>
@@ -234,8 +189,6 @@ export default {
         deliveryTime_input: '',
         kolvo_select: 'Выберите тип ЕИ', // число
         kolvo_input: '',
-        metrMass_select: 'Выберите тип ЕИ',
-        metrMass_input: '',
         description: '',
         length_select: 'Выберите тип ЕИ',
         length_input: '',
@@ -278,6 +231,7 @@ export default {
       if(this.$route.params.type != 'edit')  {
         if(this.obj.name == '' || !this.podMaterial) return 0
       }
+       if(!this.obj.areaCrossSectional_input) return 0
       let dat = this.obj
       
       if(!this.formData) 
@@ -310,15 +264,13 @@ export default {
         znach: dat.height_input
       }) : JSON.stringify({})
       this.formData.append('height', height)
-      let wallThickness = dat.wallThickness_select != 'Выберите тип ЕИ' &&
-      dat.wallThickness_select ? JSON.stringify({
-        edizm: dat.wallThickness_select,
+      let wallThickness = dat.wallThickness_input ? JSON.stringify({
+        edizm: 7,
         znach: dat.wallThickness_input
       }) : JSON.stringify({})
       this.formData.append('wallThickness', wallThickness)
-      let outsideDiametr = dat.outsideDiametr_select != 'Выберите тип ЕИ'  &&
-      dat.outsideDiametr_select  ? JSON.stringify({
-        edizm: dat.outsideDiametr_select,
+      let outsideDiametr = dat.outsideDiametr_input ? JSON.stringify({
+        edizm: 7,
         znach: dat.outsideDiametr_input
       }) : JSON.stringify({})
       this.formData.append('outsideDiametr', outsideDiametr)
@@ -328,29 +280,25 @@ export default {
         znach: dat.thickness_input
       }) : JSON.stringify({})
       this.formData.append('thickness', thickness)
-      let areaCrossSectional = dat.areaCrossSectional_select != 'Выберите тип ЕИ'  &&
-      dat.areaCrossSectional_select ? JSON.stringify({
-        edizm: dat.areaCrossSectional_select,
-        znach: dat.areaCrossSectional_input
-      }) : JSON.stringify({})
-      this.formData.append('areaCrossSectional', areaCrossSectional)
-      let deliveryTime = dat.deliveryTime_select != 'Выберите тип ЕИ' ? JSON.stringify({
-        edizm: dat.deliveryTime_select,
-        znach: dat.deliveryTime_input
-      }) : JSON.stringify({})
-      this.formData.append('deliveryTime', deliveryTime)
 
+      let areaCrossSectional =  JSON.stringify({
+        edizm: 10,
+        znach: dat.areaCrossSectional_input
+      })
+      this.formData.append('areaCrossSectional', areaCrossSectional)
+
+      let deliveryTime = JSON.stringify({
+        edizm: 9,
+        znach: dat.deliveryTime_input
+      })
+      this.formData.append('deliveryTime', deliveryTime)
+      console.log(dat.kolvo_select)
       let kolvo = dat.kolvo_select != 'Выберите тип ЕИ' ? JSON.stringify({
         edizm: dat.kolvo_select,
         znach: dat.kolvo_input
       }) : JSON.stringify({})
       this.formData.append('kolvo', kolvo)
 
-      let metrMass = dat.metrMass_select != 'Выберите тип ЕИ' ? JSON.stringify({
-        edizm: dat.metrMass_select,
-        znach: dat.metrMass_input
-      }) : JSON.stringify({})
-      this.formData.append('metrMass', metrMass) 
       this.formData.append('description', dat.description)
       this.createNewPodPodMaterial(this.formData)
       this.$router.push('/basematerial')
@@ -378,31 +326,31 @@ export default {
     },
     updateInputSelect(mat) {
       if(mat.length) {
-        this.obj.length_select = JSON.parse(mat.length).edizm
+        this.obj.length_select = JSON.parse(mat.length).edizm.id
         this.obj.length_input = JSON.parse(mat.length).znach
       }
       if(mat.width) {
-        this.obj.width_select = JSON.parse(mat.width).edizm
+        this.obj.width_select = JSON.parse(mat.width).edizm.id
         this.obj.width_input = JSON.parse(mat.width).znach
       }
       if(mat.height) {
-        this.obj.height_select = JSON.parse(mat.height).edizm
+        this.obj.height_select = JSON.parse(mat.height).edizm.id
         this.obj.height_input = JSON.parse(mat.height).znach
       }
       if(mat.wallThickness) {
-        this.obj.wallThickness_select = JSON.parse(mat.wallThickness).edizm
+        this.obj.wallThickness_select = JSON.parse(mat.wallThickness).edizm.id
         this.obj.wallThickness_input = JSON.parse(mat.wallThickness).znach
       }
       if(mat.outsideDiametr) {
-        this.obj.outsideDiametr_select = JSON.parse(mat.outsideDiametr).edizm
+        this.obj.outsideDiametr_select = JSON.parse(mat.outsideDiametr).edizm.id
         this.obj.outsideDiametr_input = JSON.parse(mat.outsideDiametr).znach
       }
       if(mat.thickness) {
-        this.obj.thickness_select = JSON.parse(mat.thickness).edizm
+        this.obj.thickness_select = JSON.parse(mat.thickness).edizm.id
         this.obj.thickness_input = JSON.parse(mat.thickness).znach
       }
       if(mat.areaCrossSectional) {
-        this.obj.areaCrossSectional_select = JSON.parse(mat.areaCrossSectional).edizm
+        this.obj.areaCrossSectional_select = JSON.parse(mat.areaCrossSectional).edizm.id
         this.obj.areaCrossSectional_input = JSON.parse(mat.areaCrossSectional).znach
       }
     },
@@ -412,15 +360,11 @@ export default {
       this.obj.description = this.getOnePPT.description
       this.obj.name = this.getOnePPT.name
       if(this.getOnePPT.deliveryTime) {
-        this.obj.deliveryTime_select = JSON.parse(this.getOnePPT.deliveryTime).edizm
+        this.obj.deliveryTime_select = 9
         this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach
       }
-      if(this.getOnePPT.metrMass) {
-        this.obj.metrMass_select = JSON.parse(this.getOnePPT.metrMass).edizm
-        this.obj.metrMass_input = JSON.parse(this.getOnePPT.metrMass).znach
-      }
       if(this.getOnePPT.kolvo) {
-        this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo).edizm
+        this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo).edizm.id
         this.obj.kolvo_input = JSON.parse(this.getOnePPT.kolvo).znach
       }
     }

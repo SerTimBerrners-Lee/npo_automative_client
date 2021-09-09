@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Создать поставщика</h3>
+        <h3> {{ this.$route.params.type == 'edit' ? 'Редактировать' : 'Создать' }} поставщика</h3>
         <div class="block">
             <span>Наименование:</span>
             <input class="input_name" type="text" v-model="obj.name">
@@ -14,22 +14,13 @@
                 <div>
                     <h3>Реквизиты</h3>
                     <table class="recvizits"> 
-                        <tr>
-                            <th>Юр. адрес</th>
-                            <td class='td-row' ref='adress' contenteditable></td>
+                        <tr v-for="(rek, index) in obj.rekvisit" :key="rek">
+                            <th>{{ rek.name }}</th>
+                            <td class='td-row'>
+                                <input type="text" class="rek" :value="rek.description" @change='e => changeRek(e.target.value, index)'>
+                            </td>
                         </tr>
-                        <tr>
-                            <th>Телефон</th>
-                            <td class='td-row' ref='phone' contenteditable></td>
-                        </tr>
-                        <tr>
-                            <th>Сайт</th>
-                            <td class='td-row' ref='site' contenteditable></td>
-                        </tr>
-                        <tr>
-                            <th>Эл.почта</th>
-                            <td class='td-row' ref='email' contenteditable></td>
-                        </tr>
+                       
                     </table>
                 </div>
                 <div>
@@ -54,6 +45,10 @@
             <div class="right_content">
                 <div>
                     <h3>Документы</h3>
+                    <div class="pointer-files-to-add">
+                        <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
+                        <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+                    </div>
                 </div>
                 <h3>Поставляемый материал</h3>
                 <div class="scroll-table">
@@ -81,30 +76,49 @@
                 @unmount='unmount'
                 v-if="isShow"
             />
+            <AddFile :parametrs='docFiles' 
+                :typeGetFile='"getfile"'
+                v-if="isChangeFolderFile" 
+                @unmount='file_unmount'
+                :key='keyWhenModalGenerate'
+            />
     </div>
 </template>
 <script>
 
 import AddContact from './add-contact.vue';
 import { random } from 'lodash';
-import { mapActions } from 'vuex'
+import { mapActions, mapGetters } from 'vuex'
+import AddFile from '@/components/filebase/addfile.vue'
 
 export default {
     data() {
         return {
             obj: {
+                id: null,
                 name: '',
                 inn: '',
                 cpp: '',
                 description: '',
                 contact: [],
+                rekvisit: [
+                    { name: 'Юр. адрес', description: ''},
+                    { name: 'Телефон', description: ''},
+                    { name: 'Сайт', description: ''},
+                    { name: 'Эл.почта', description: ''}
+                ]
             },
             keyModal: random(1, 2313123123213),
             isShow: false,
-            contact: null
+            contact: null,
+            formData: null,
+            keyWhenModalGenerate: random(10, 384522333213313324),
+            isChangeFolderFile: false,
+            docFiles: [],
         }
     },
-    components: {AddContact},
+    computed: mapGetters(['getSetProvider']),
+    components: {AddContact, AddFile},
     methods: {
         ...mapActions(['addOneProvider']),
         unmount(data) {
@@ -112,7 +126,7 @@ export default {
                 return 0;
             this.obj.contact.push({...data})
         },
-        addContact() {
+        addContact() { 
             this.keyModal = random(1, 2312312312312)
             this.isShow = true
         },
@@ -123,24 +137,81 @@ export default {
             if(!this.contact) return 0;
             this.obj.contact = this.obj.contact.filter((a, index) => index != this.contact.index)
         },
-        addProvider() {
-            let adress = this.$refs.adress.textContent
-            let phone = this.$refs.phone.textContent
-            let site = this.$refs.site.textContent
-            let email = this.$refs.email.textContent
-            this.addOneProvider({
-                adress,
-                phone,
-                site,
-                email,
-                ...this.obj
+        changeRek(e, inx) {
+            this.obj.rekvisit.forEach((rek, index) => {
+                if(index == inx) {
+                    this.obj.rekvisit[index].description = e.trim()
+                }
             })
+        },
+        addProvider() {
+            if(this.obj.name.length < 5)
+                return 0
+            
+            if(!this.formData)
+                this.formData = new FormData()
+
+            this.formData.append('name', this.obj.name)
+            let rekvisit = JSON.stringify(this.obj.rekvisit)
+            this.formData.append('rekvisit', rekvisit)
+            let contact = JSON.stringify(this.obj.contact)
+            this.formData.append('contacts', contact)
+            this.formData.append('inn', this.obj.inn)
+            this.formData.append('cpp', this.obj.cpp)
+            this.formData.append('description', this.obj.description)
+            this.formData.append('id', this.obj.id)
+
+            this.addOneProvider(this.formData)
+            this.$router.push('/baseprovider')
+        },
+        file_unmount(e) { 
+            if(!e) return 0
+            this.formData = e.formData
+        },
+        addDock(val) {
+            val.target.files.forEach(f => {
+                this.docFiles.push(f)
+            })
+            this.keyWhenModalGenerate = random(10, 384522333213313324)
+            this.isChangeFolderFile = true
+        },
+    },
+    async mounted() {
+        if(this.$route.params.type) {
+            if(!this.getSetProvider)
+                this.$router.push('/baseprovider')
+
+            let provider = this.getSetProvider
+            this.obj.id = provider.id
+            this.obj.name = provider.name
+            this.obj.inn = provider.inn
+            this.obj.cpp = provider.cpp
+            this.obj.description = provider.description
+            if(provider.contacts) 
+                this.obj.contact = JSON.parse(provider.contacts)
+            
+            if(provider.rekvisit) 
+                this.obj.rekvisit = JSON.parse(provider.rekvisit)
+            
         }
     }
 }
 </script>
 
 <style scoped>
+    .pointer-files-to-add {
+        margin: 10px;
+        height: 120px;
+        display:flex;
+    }
+    .pointer-files-to-add label {
+        display: flex;
+        align-items: center;
+    }
+    .rek {
+        border: none;
+        width: 95%;   
+    }
     .block{
         width: 1050px;
     }

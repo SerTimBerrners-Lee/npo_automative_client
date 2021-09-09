@@ -4,21 +4,27 @@
             <div class="left-block-bprovider">
                  <h3>База поставщиков</h3>
                 <div class="scroll-table">
-                    <table>
+                    <table class="provider_table"> 
                         <tr>
                             <th>ИНН</th>
                             <th style="width: 440px;">Наименование поставщика</th>
                         </tr>
-                        <tr v-for="hh in 45" :key="hh" class="td-row">
-                            <td>{{ 342364 * hh }}</td>
-                            <td>ООО "Лента"</td>
+                        <tr v-for="provider in allProvider" 
+                        :key="provider" 
+                        class="td-row"
+                        @click="setProvider(provider)">
+                            <td>{{ provider.inn }}</td>
+                            <td>{{ provider.name }}</td>
+                        </tr>
+                        <tr v-for="i in 10" :key="i">
+                            <td>...</td><td>...</td>
                         </tr>
                     </table>
                 </div>
                 <div class="btn-control">
-                    <button class="btn-small btn-add" @click="$router.push('/baseprovider/addedit')">Создать</button>
-                    <button class="btn-small">Редактировать</button>
-                    <button class="btn-small">В архив</button>
+                    <button class="btn-small btn-add" @click="$router.push({path: '/baseprovider/addedit/add'})">Создать</button>
+                    <button class="btn-small" @click="editProvider">Редактировать</button>
+                    <button class="btn-small" @click="banProvider">В архив</button>
                 </div>
                 <h3>Фильтр по материалу</h3>
                 <div class="scroll-table table-filter-bproveder">
@@ -29,9 +35,9 @@
                             <th> Наименование</th>
                         </tr>
                         <tr v-for="g in 25" :key="g" class="td-row" >
-                            <td>Метизы</td>
-                            <td>Гайки</td>
-                            <td>М12</td>
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
                         </tr>
                     </table>
                 </div>
@@ -41,13 +47,13 @@
                 <div class="block">
                     <div class="first-block-description">
                         <p>
-                            <span>Наименование: </span><input type="text" value="ООО Лента">
+                            <span>Наименование: </span><input type="text" :value="obj.name">
                         </p>
                         <p>
-                            <span>ИНН: </span><input type="text" value="345345345345">
+                            <span>ИНН: </span><input type="text" :value="obj.inn">
                         </p>
                         <p>
-                            <span>КПП: </span><input type="text" value="345345435345">
+                            <span>КПП: </span><input type="text" :value="obj.cpp">
                         </p>
                     </div>
                     <div>
@@ -55,37 +61,25 @@
                             <div>
                                 <div>
                                     <h3>Реквизиты</h3>
-                                    <table>
-                                        <tr class="td-row">
-                                            <th>Юр.адрес</th>
-                                            <td>192658 Москва, Юрия гагарина 125, оф. 87</td>
-                                        </tr>
-                                         <tr class="td-row">
-                                            <th>Сайт</th>
-                                            <td>www.lenta.ru</td>
-                                        </tr>
-                                         <tr class="td-row">
-                                            <th>Эл. почта</th>
-                                            <td>lenta@mail.ru</td>
+                                    <table class="table_rek">
+                                        <tr class="td-row" v-for="rek in obj.rekvisit" :key='rek'>
+                                            <th>{{ rek.name }}</th>
+                                            <td>{{ rek.description }}</td>
                                         </tr>
                                     </table>
                                 </div>
                                 <div>
                                     <h3>Контакты</h3>
-                                    <table>
-                                        <tr class="td-row">
-                                            <th>Юрий петрович белинский</th>
-                                            <td>+79008895674, yra@lenta.ru, заместитель начальника склада</td>
-                                        </tr>
-                                        <tr class="td-row">
-                                            <th>Василий Николай Горохов</th>
-                                            <td>+79008895674, yra@lenta.ru, заместитель начальника склада</td>
+                                    <table class="table_rek">
+                                        <tr class="td-row" v-for="cont in obj.contact" :key='cont'>
+                                            <th> {{ cont.initial }}</th>
+                                             <th> {{ cont.description }}</th>
                                         </tr>
                                     </table>
                                 </div>
                                 <div>
                                     <h3>Описание / примечание</h3>
-                                    <textarea ></textarea>
+                                    <textarea :value="obj.description" class="table_rek"></textarea>
                                     <h3>История изменений</h3>
                                 </div>
                             </div>
@@ -97,17 +91,13 @@
                                         <tr>
                                             <th>Файл</th>
                                         </tr>
-                                        <tr class="td-row">
-                                            <td>Сопутствующая документация (Тип СД)          </td>
-                                        </tr>
-                                        <tr class="td-row">
-                                            <td>Документация.pdf</td>
+                                        <tr class="td-row" 
+                                        v-for="doc in obj.documents" 
+                                        :key="doc"
+                                        @click="clickDoc(doc)">
+                                            <td> {{ doc.name }} </td>
                                         </tr>
                                     </table>
-                                    <div class="btn-control">
-                                        <button class="btn-small">Открыть</button>
-                                        <button class="btn-small">Скачать</button>
-                                    </div>
                                 </div>
                                 </div>
                                 <div>
@@ -164,11 +154,86 @@
             </div>
         </div>
         <router-view></router-view>
+        <OpensFile 
+            :parametrs='itemFiles' 
+            v-if="itemFiles != null" 
+            @unmount='openFile'
+            :key='keyWhenModalGenerateFileOpen'
+        />
     </div>
 </template>
 
-<style scoped>
+<script>
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import OpensFile from '@/components/filebase/openfile.vue'
+import random from 'lodash'
 
+export default {
+    data() {
+        return {
+            obj: {
+                name: '',
+                inn: '',
+                cpp: '',
+                description: '',
+                contact: [],
+                rekvisit: [],
+                documents: []
+            },
+            provider: null,
+            itemFiles: null,
+            keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
+        }
+    },
+    computed: mapGetters(['allProvider']),
+    components: {OpensFile},
+    methods: {
+        ...mapActions(['fetchGetProviders', 'fetchProviderBan']),
+        ...mapMutations(['setProviderState']),
+        setProvider(provider) {
+            this.provider = provider
+            this.setProviderState(provider)
+            this.obj.name = provider.name
+            this.obj.inn = provider.inn
+            this.obj.cpp = provider.cpp
+            this.obj.description = provider.description
+            if(provider.contacts) 
+                this.obj.contact = JSON.parse(provider.contacts)
+            
+            if(provider.rekvisit) 
+                this.obj.rekvisit = JSON.parse(provider.rekvisit)
+            
+            if(provider.documents) 
+                this.obj.documents = provider.documents
+            
+        },
+        clickDoc(files) {
+            if(files) { 
+                this.itemFiles = files
+                this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+            }
+        },
+        banProvider() {
+            if(!this.provider.id)
+                return 0;
+            this.fetchProviderBan(this.provider.id)
+        },
+        editProvider() {
+            if(!this.provider)
+                return 0;
+            this.$router.push({path: '/baseprovider/addedit/edit'})
+        }
+    },
+    async mounted() {
+        this.fetchGetProviders()
+    }
+}
+</script>
+
+<style scoped>
+    .table_rek{
+        width: 420px;
+    }
     .table-filter-bproveder th {
         width: 158px;
     }
@@ -231,5 +296,8 @@
         justify-content: end;
         margin-top: 20px;
         align-items: end;
+    }
+    .provider_table {
+        width: 520px;
     }
 </style>

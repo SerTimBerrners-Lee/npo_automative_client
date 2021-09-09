@@ -30,9 +30,10 @@ import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
  
 const routes = [
   {
-    path: '/baseprovider/addedit',
+    path: '/baseprovider/addedit/:type',
     name: 'AddEditBaseProvider',
-    component: AddEditBaseProvider
+    component: AddEditBaseProvider,
+    props: true
   },
   {
     path: '/',

@@ -39,8 +39,8 @@
                 </div>
                 <div class="btn-control out-btn-control">
                     <button class="btn-status" @click='destroyModalF'>Отменить</button>
-                    <button class="btn-status btn-black" @click='addFiles("getfile")' v-if='return_files="getfile"'>Загрузить все файлы</button>
-                    <button class="btn-status btn-black" @click='addFiles' v-if='return_files="push"'>Загрузить все файлы</button>
+                    <button class="btn-status btn-black" @click='addFiles("getfile")' v-if='typeGetFile == "getfile"'>Загрузить файлы</button>
+                    <button class="btn-status btn-black" @click='addFiles' v-if='typeGetFile !== "getfile"'>Загрузить все файлы</button>
                 </div>
            </div>
         </div>
@@ -52,7 +52,7 @@
 import { photoPreloadUrl } from '@/js/';
 import { mapActions } from 'vuex'
 export default {
-    props: ['parametrs'],
+    props: ['parametrs', 'typeGetFile'],
     data() {
         return {
             destroyModalLeft: 'left-block-modal',
@@ -67,6 +67,7 @@ export default {
         }
     },
     async mounted() {
+        console.log(this.return_files)
         this.destroyModalLeft = 'left-block-modal'
         this.destroyModalRight = 'content-modal-right-menu'
         this.hiddens = 'opacity: 1;'
