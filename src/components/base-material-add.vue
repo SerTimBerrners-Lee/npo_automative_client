@@ -130,19 +130,18 @@
             </tr>
           </table>
           <h3>Поставщики</h3>
-          <table>
-              <tr>
-                <th>ИНН</th>
-                <th>Наименование</th>
-              </tr>
-              <tr>
-                <th>...</th>
-                <th>...</th>
-              </tr>
+          <table class="table_provider">
+            <tr>
+              <th>ИНН</th>
+              <th>Наименование</th>
+            </tr>
+            <tr v-for='prov in providers' :key='prov'>
+              <td>{{ prov.inn }}</td>
+              <td>{{ prov.name }}</td>
+            </tr>
           </table>
-          <div class="btn-block">
-            <button class="btn-small btn-add">Добавить из базы</button>
-            <button class="btn-small btn-add">Создать нового</button>
+          <div class="btn-control" style="width: 84%;">
+            <button class="btn-small btn-add" @click="addProvider">Добавить из базы</button>
           </div>
       <div class="pointer-files-to-add">
         <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
@@ -165,6 +164,11 @@
             <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type == 'create'">Сохранить</button>
             <button class="btn-status btn-black" @click="addItem(this.getOnePPT.id)" v-if="$route.params.type == 'edit'">Обновить</button>
         </div>
+        <ListProvider  
+          @unmount='pushProvider' 
+          :key='keyWhenModalListProvider'
+          v-if='showProvider'
+          />
   </div>
 </template>
 
@@ -172,6 +176,7 @@
 import TableMaterial from '@/components/mathzag/table-material.vue'
 import { mapActions, mapGetters, mapMutations } from 'vuex'
 import AddFile from '@/components/filebase/addfile.vue'
+import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { random }  from 'lodash'
 
 export default {
@@ -184,7 +189,11 @@ export default {
       docFiles: [],
       formData: null,
       isChangeFolderFile: false,
+      showProvider: false,
+      providers: [],
+      providersId: [],
       keyWhenModalGenerate: random(10, 384522333213313324),
+      keyWhenModalListProvider: random(10, 384522333213313324),
       obj: {
         name: '',
         deliveryTime_select: 'Выберите тип ЕИ',
@@ -216,7 +225,7 @@ export default {
       }
     }
   },
-  components: {TableMaterial, AddFile},
+  components: {TableMaterial, AddFile, ListProvider},
   computed: {
     ...mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial', 'allEdizm', 'getOnePPT']),
   },  
@@ -225,6 +234,16 @@ export default {
       this.$router.push({path: '/basematerial'}) 
   },
   methods: {
+    pushProvider(provider) { 
+      if(!provider)
+        return 0
+      this.providers.push(provider)
+      this.providersId.push({id: provider.id})
+    },
+    addProvider() {
+        this.showProvider = true
+        this.keyWhenModalListProvider = random(10, 384522333213313324)
+      },
     file_unmount(e) { 
       if(!e) return 0
       this.formData = e.formData
@@ -247,6 +266,9 @@ export default {
         this.formData = new FormData()
         
       this.formData.append('id', Number(id))
+
+      if(this.providersId)
+        this.providersId = JSON.stringify(this.providersId)
       
       let podTypeId
       
@@ -311,6 +333,8 @@ export default {
 
       let kolvo = JSON.stringify({ kolvo: dat.kolvo_select})
       this.formData.append('kolvo', kolvo)
+
+      this.formData.append('providers', this.providersId)
 
       this.formData.append('description', dat.description)
       this.createNewPodPodMaterial(this.formData)
@@ -384,6 +408,11 @@ export default {
         this.obj.deliveryTime_select = 9
         this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach
       }
+      this.providers = this.getOnePPT.providers
+      this.providers.forEach(provider => {
+        this.providersId.push({id: provider.id})
+      })
+      console.log(this.providers)
       if(this.getOnePPT.kolvo && this.getOnePPT.kolvo.length > 0) {
         let kolvo = this.getOnePPT.kolvo
         for(let k of kolvo) {

@@ -17,7 +17,6 @@ export default {
         async fetchGetProviders(ctx) {
             const res =  await fetch(`${PATH_TO_SERVER}api/provider`)
             const result = await res.json()
-            console.log(result)
             ctx.commit("setAllProvider", result)
         },
         async addOneProvider(ctx, provider) {

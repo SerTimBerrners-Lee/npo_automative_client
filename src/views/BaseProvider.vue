@@ -109,6 +109,11 @@
                                                 <th>Подтип</th>
                                                 <th>Наименование</th>
                                             </tr>
+                                            <tr v-for='mat in materials' :key='mat'>
+                                                <td>...</td>
+                                                <td>...</td>
+                                                <td>{{ mat.name }}</td>
+                                            </tr>
                                             <tr v-for="ff in 25" :key="ff" class="td-row">
                                                 <td>...</td>
                                                 <td>...</td>
@@ -133,13 +138,13 @@
                                         <th>Подробнее</th>
                                     </tr>
                                     <tr v-for="uu in 40" :key="uu" class="td-row">
-                                        <td>32432</td>
-                                        <td>11.19.2020</td>
-                                        <td>№23432 11.19.2020</td>
-                                        <td>11 900</td>
-                                        <td>15.19.2020</td>
-                                        <td>Выполняется</td>
-                                        <td>Раскрыть</td>
+                                        <td>...</td>
+                                        <td>...</td>
+                                        <td>...</td>
+                                        <td>...</td>
+                                        <td>...</td>
+                                        <td>...</td>
+                                        <td>...</td>
                                     </tr>
                                 </table>
                             </div>
@@ -180,6 +185,7 @@ export default {
                 rekvisit: [],
                 documents: []
             },
+            materials: [],
             provider: null,
             itemFiles: null,
             keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
@@ -191,6 +197,8 @@ export default {
         ...mapActions(['fetchGetProviders', 'fetchProviderBan']),
         ...mapMutations(['setProviderState']),
         setProvider(provider) {
+            this.materials = provider.materials;
+            console.log(this.materials )
             this.provider = provider
             this.setProviderState(provider)
             this.obj.name = provider.name

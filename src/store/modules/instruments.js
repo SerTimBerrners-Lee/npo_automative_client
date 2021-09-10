@@ -3,7 +3,9 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
     state: {
         TInstrument: [],
-        PTInstrument: []
+        PTInstrument: [],
+        PPTInstrument: [],
+        nameInstrument: {}
     },
     getters: {
         allTInstrument(state) {
@@ -11,6 +13,12 @@ export default {
         },
         allPTInstrument(state) {
             return state.PTInstrument
+        },
+        allPPTInstrument(state) {
+            return state.PPTInstrument
+        },
+        getOneNameInstrument(state) {
+            return state.nameInstrument
         }
     },
     actions: { 
@@ -98,9 +106,63 @@ export default {
                 ctx.commit('updatePTInstrument', result)
                 ctx.dispatch('fetchAllInstruments')
             }
-        }
+        },
+        async getAllPTInstances(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`)
+            const result = await res.json()
+            ctx.commit('getAllName', result)
+        },
+
+        async addNameInstrument(ctx, data) {
+            const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`, {
+                method: 'post',
+                body: data
+            })
+
+            if(res.ok) {
+                const result = await res.json()
+                console.log(result)
+            }
+        },
+        async fetchOneNameInstrument(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/instrument/name/${id}`)
+            const result = await res.json()
+            ctx.commit('addOneNameInstrument', result)
+        },
+        async removeFileInstrument(ctx, id) {
+            await fetch(`${PATH_TO_SERVER}api/instrument/file/${id}`, {
+                method: 'delete'
+            })
+        },
+        async updateNameInstrument(ctx, data) {
+            const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/update`, {
+                method: 'post',
+                body: data
+            })
+
+            if(res.ok) {
+                const result = await res.json()
+                console.log(result)
+            }
+        },
+        async banNameInstrument(ctx, id) {
+            await fetch(`${PATH_TO_SERVER}api/instrument/ban/${id}`, {
+                method: 'delete'
+            })
+            ctx.commit('hideNameInstrument', id)
+            ctx.dispatch('fetchAllInstruments')
+        },
     },
     mutations: {
+        hideNameInstrument(state, id) {
+            state.PPTInstrument = state.PPTInstrument.filter(inst => inst.id != id)
+        },
+        addOneNameInstrument(state, nameInstrument) {
+            state.nameInstrument = nameInstrument
+        },
+        getAllName(state, data) {
+            state.PPTInstrument = data.nameInstrument.filter(nameInstrument => !nameInstrument.ban)
+        },
         addAllTInstrument(state, instruments) {
             state.TInstrument = instruments
         },
@@ -111,10 +173,12 @@ export default {
             state.TInstrument = state.TInstrument.filter(instr => instr.id != id)
         },
         addOnePTInstrument(state, PTInstrument) {
+            if(!state.PTInstrument)
+                state.PTInstrument = []
             state.PTInstrument.push(PTInstrument)
         },
         filterAllpInstrument(state, pInstruments) {
-            if(!pInstruments)
+            if(!pInstruments)   
                 state.PTInstrument = []
             state.PTInstrument = pInstruments
         },

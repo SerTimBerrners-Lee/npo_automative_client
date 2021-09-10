@@ -58,6 +58,11 @@
                             <th>Подтип</th>
                             <th>Материал</th>
                         </tr>
+                        <tr v-for="mat in materials" :key="mat">
+                            <td>...</td>
+                            <td>...</td>
+                            <td>{{ mat.name }}</td>
+                        </tr>
                         <tr v-for="i in 40" :key="i">
                             <td>...</td>
                             <td>...</td>
@@ -115,6 +120,7 @@ export default {
             keyWhenModalGenerate: random(10, 384522333213313324),
             isChangeFolderFile: false,
             docFiles: [],
+            materials: []
         }
     },
     computed: mapGetters(['getSetProvider']),
@@ -181,7 +187,8 @@ export default {
             if(!this.getSetProvider)
                 this.$router.push('/baseprovider')
 
-            let provider = this.getSetProvider
+            let provider = this.getSetProvider  
+            this.materials = provider.materials
             this.obj.id = provider.id
             this.obj.name = provider.name
             this.obj.inn = provider.inn
