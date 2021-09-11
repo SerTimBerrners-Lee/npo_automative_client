@@ -3,7 +3,10 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
     state: {
         typeM: [],
+        instansTypeM: [],
         podTypeM: [],
+        instansPodTypeM: [],
+        
         podMaterial: [],
         onePPT: {}
     },
@@ -26,13 +29,15 @@ export default {
             const res =  await fetch(`${PATH_TO_SERVER}api/settings/material`)
             const result = await res.json()
 
-            ctx.commit("getTypeMaterial", result)
+            await ctx.commit("getTypeMaterial", result)
+            return result
         },
         async getAllPodTypeMaterial(ctx) {
             const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/typematerial`)
             const result = await res.json()
 
-            ctx.commit('filterMatByPodType', result)
+            await ctx.commit('filterMatByPodType', result)
+            return result
         },
         async createTypeM(ctx, material) {
             const res = await fetch(`${PATH_TO_SERVER}api/settings/material`, {
@@ -57,15 +62,13 @@ export default {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    density: pod_type.density,
-                    materialId: pod_type.parentId,
-                    name: pod_type.name
+                    ...pod_type
                 })
             })
             
             if(res.ok) {
-                //const result = await res.json()
-                ctx.dispatch('getAllPodTypeMaterial')
+                const result = await res.json()
+                ctx.commit('createPodType', result)
             }
         },
         async removeMaterial(ctx, id) {
@@ -73,7 +76,7 @@ export default {
                 method: 'delete'
             })
             if(res.ok)
-                ctx.dispatch('getAllTypeMaterial')
+                ctx.commit('deleteMaterial', id)
         },
         async updateTypeM(ctx, material) {
             const res = await fetch(`${PATH_TO_SERVER}api/settings/material/update`, {
@@ -98,9 +101,7 @@ export default {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    materialId: podM.id,
-                    density: podM.density,
-                    name: podM.name
+                    ...podM
                 })
             });
 
@@ -156,6 +157,24 @@ export default {
         }
     },
     mutations: {
+        throwInstans(state) {
+            state.instansTypeM = []
+            state.instansPodTypeM = []
+        },
+        getInstansMaterial(state, instans) {
+            if(instans == 0) {
+                state.typeM = state.instansTypeM
+                state.podTypeM = state.instansPodTypeM
+                return 0
+            }
+            if(state.instansTypeM.length == 0) 
+                state.instansTypeM = state.typeM
+            if(state.instansPodTypeM.length == 0)
+                state.instansPodTypeM = state.podTypeM
+
+            state.typeM = state.instansTypeM.filter(mat => mat.instansMaterial == instans)
+            state.podTypeM = state.instansPodTypeM.filter(mat => mat.instansMaterial == instans)
+        },
         addTypeMaterial(state, material) {
             state.typeM.push(material)
         },
@@ -168,6 +187,9 @@ export default {
         },
         filterMatByPodType(state, podMaterials) {
             state.podTypeM = podMaterials
+        },
+        deleteMaterial(state, id) {
+            state.typeM = state.typeM.filter(typ => typ.id != id)
         },
         deletePodMaterial(state, id) {
             state.podTypeM = state.podTypeM.filter(typ => typ.id != id)
@@ -183,12 +205,7 @@ export default {
             })
         },
         createPodType(state, data) { 
-            state.typeM = state.typeM.map(mat => {
-                if(mat.id == data.parentId) {
-                    mat.podMaterials.push(data.result)
-                }
-                return mat
-            })
+            state.podTypeM.push(data)
         },
         addOnePodType(state, typMaterial) {
             console.log(typMaterial)

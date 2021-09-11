@@ -4,10 +4,10 @@
             <div class="left-div-bfp">
                 <h3>База материалов</h3>
                 <div class="type-issue">
-                    <span>Все</span>
-                    <span>Материалы для деталей</span>
-                    <span>Покупные детали</span>
-                    <span>Расходные материалы</span>
+                    <span ref="all" class='active' @click='e => instansMaterial(0, e.target)'>Все</span>
+                    <span @click='e => instansMaterial(1, e.target)'>Материалы для деталей</span>
+                    <span @click='e => instansMaterial(2, e.target)'>Покупные детали</span>
+                    <span @click='e => instansMaterial(3, e.target)'>Расходные материалы</span>
                 </div>
                 <div class="cont">
                    <div>
@@ -102,14 +102,24 @@ export default {
             podMaterial: null,
             podPodMaterial: null,
             itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
+            keyWhenModalGenerateFileOpen: random(10, 384522333213313324),
+            span: null
         }
     },
     components:{TableMaterial, OpensFile},
     computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
     methods: {
         ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
-        ...mapMutations(['filterMatByPodType', 'addOnePPTyep']),
+        ...mapMutations(['filterMatByPodType', 'addOnePPTyep', 'getInstansMaterial', 'throwInstans']),
+        instansMaterial(instans, span) {
+            this.getInstansMaterial(instans)
+
+            if(!this.span)
+                this.span = (this.$refs.all)
+            this.span.classList.remove('active')
+            span.classList.add('active')
+            this.span = span
+        },
         clickMat(mat, type) {
             if(type == 'type') 
                 this.material = mat
@@ -147,6 +157,9 @@ export default {
 </script>
 
 <style scoped>
+    .type-issue {
+     user-select: none;   
+    }
     .table-fbp {
         width:100%;
         max-height: 250px;
@@ -165,5 +178,8 @@ export default {
     }
     th {
         width: 350px;
+    }
+    .active {
+        color: rgb(12, 64, 221);
     }
 </style>

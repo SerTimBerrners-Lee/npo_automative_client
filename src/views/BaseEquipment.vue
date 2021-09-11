@@ -1,5 +1,165 @@
 <template>
-    <div>
-        <h3>База оборудования</h3>
+  <h3>База Оборудования</h3>
+  <div class="main_content">
+    <div class="body_table">
+          <div>
+        <TableMaterial :title='"Тип"' 
+                :alltypeM="allEquipmentType" 
+                :type='"T"' 
+                @clickMat="clickEquipmentType"/>
+        <TableMaterial :title='"Подтип"' 
+                :alltypeM="allEquipmentPType" 
+                :type="'PT'" 
+                @clickMat="clickEquipmentPType"/>
+        <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
+          :alltypeM="allEquipment" 
+          :type="'PPT'" 
+          @clickMat="clickEquipment"/>
     </div>
+    <div class="btn-control" style="margin-top: 10px;">
+        <button class="btn-small btn-add" @click="$router.push({path: '/instrument/add/create'})">Создать</button>
+        <button class="btn-small btn-add" >Создать копированием</button>
+        <button class="btn-small" @click='edit'>Редактировать</button>
+      </div>  
+      <div class="btn-control">
+        <button class="btn-small" @click="banned">В архив</button>
+      </div>
+    </div>
+
+
+    <!-- <div class="right_info_block" v-if='getOneNameInstrument.name'>
+      <div class="block">
+        <h3>Краткая Информация об инструменте или оснастки</h3>
+        <p>
+          <span class="title_span">Наименование: </span><span>{{ getOneNameInstrument.name }}</span>
+        </p>
+        <div>
+          <span>Описание / Примечание</span>
+          <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
+        </div>
+         <div v-if='getOneNameInstrument.documents.length > 0'>
+            <h3>Документы</h3>
+            <table style="width: 100%;">
+                <tr>
+                    <th>Файл</th>
+                </tr>
+                <tr class="td-row" v-for='doc in getOneNameInstrument.documents' :key='doc' @click='setDocs(doc)'>
+                    <td>{{ doc.name }}</td>
+                </tr>
+            </table>
+            <div class="btn-control">
+              <button class="btn-small" @click='openDock'>Открыть</button>
+            </div>
+            <OpensFile 
+                :parametrs='itemFiles' 
+                v-if="showFile" 
+                @unmount='openFile'
+                :key='keyWhenModalGenerateFileOpen'
+            />
+        </div> 
+         <h3 @click="providershow" style='cursor:pointer;'>Поставищики {{ getOneNameInstrument.providers.length }}</h3>
+            <ShowProvider
+              :allProvider='getOneNameInstrument.providers' 
+              :key='keyProvidersModal'
+              v-if='showProviders'
+            /> 
+      </div>
+    </div> -->
+  </div>
+
 </template>
+
+
+<script>
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+// import OpensFile from '@/components/filebase/openfile.vue'
+// import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
+import {isEmpty, random} from 'lodash'
+
+export default {
+  data() {
+    return {
+        equipmentT: null,
+        equipmentPT: null,
+        equipment: null,
+
+        itemFiles: null,
+        showFile: false,
+        showProviders: false,
+        keyProvidersModal: random(1, 34342),
+        keyWhenModalGenerateFileOpen: random(1, 23123)
+    }
+  },
+  computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEquipment']),
+  components: {TableMaterial},
+  methods: {
+    ...mapActions([
+        'fetchAllEquipmentType',
+           ]),
+    ...mapMutations(['filterAllPTEquipment']),
+    clickEquipmentType(equipment) {
+        this.equipment = equipment
+        this.filterAllPTEquipment(this.equipment.equipmentsPT)
+    },
+    clickEquipmentPType(equipmentPT) {
+        this.equipmentPT = equipmentPT
+    },
+    clickEquipment(eq) {
+      this.equipment = eq
+    },
+    edit() {
+      // if(!this.getOneNameInstrument)
+      //   return 0 
+      // this.$router.push('/instrument/edit')
+    },
+    banned() {
+      // if(!this.getOneNameInstrument)
+      //   return 0 
+      // this.banNameInstrument(this.getOneNameInstrument.id)
+    },
+    setDocs(dc) {
+        this.itemFiles = dc
+    },
+    openDock() {
+        if(isEmpty(this.itemFiles))
+            return 0
+        this.showFile = true
+        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+    },
+    openFile(res) {
+      console.log(res)
+    },
+    providershow() {
+      // if(this.getOneNameInstrument.providers.length > 0) {
+      //   this.keyProvidersModal = random(1, 123123123123)
+      //   this.showProviders = true
+      // }
+    }
+  },
+  async mounted() {
+    this.fetchAllEquipmentType()
+  }
+}
+</script>
+
+<style scoped>
+.title_span {
+  font-weight: bold;
+  font-size: 13px;
+  color: #009fff;
+}
+  .main_content {
+    width: 1600px;
+    display: flex;
+    flex-direction: row;
+  }
+  .body_table {
+    width: 1100px;
+    display: flex;
+    flex-direction: column;
+  }
+  .right_info_block {
+    width: 450px;
+  }
+</style>

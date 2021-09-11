@@ -28,7 +28,7 @@
 <script>
 import addEditMat from '@/components/mathzag/addeditmat.vue'
 import { random } from 'lodash'
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 import TableMaterial from '@/components/mathzag/table-material.vue'
 
 export default {
@@ -56,6 +56,7 @@ export default {
             'updatePodMaterial',
             'getAllPodTypeMaterial'
         ]),
+        ...mapMutations(['getInstansMaterial', 'throwInstans']),
         unmount(res) {
             if(!res)
                 return 0;
@@ -66,7 +67,11 @@ export default {
                 this.updateTypeM(res.data)
             }
             if(res.type == 'createPodMaterial') {
-                this.createPodType(res.data)
+                this.createPodType({
+                    density: res.data.density,
+                    materialId: res.data.parentId,
+                    name: res.data.name
+                })
             }
             if(res.type == 'editPodMaterial') {
                 this.updatePodMaterial(res.data)
@@ -133,8 +138,10 @@ export default {
     },
     async mounted() {
         this.getAllEdizm()
-        this.getAllTypeMaterial()
-        this.getAllPodTypeMaterial()
+        this.throwInstans()
+        await this.getAllTypeMaterial()
+        await this.getAllPodTypeMaterial()
+        this.getInstansMaterial(1)
     }
 }
 </script>

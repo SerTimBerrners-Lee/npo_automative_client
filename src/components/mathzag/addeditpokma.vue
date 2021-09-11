@@ -3,41 +3,17 @@
   <div :class='destroyModalLeft' @click="destroyModalF"></div>
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
-      <div v-if="parametrs.instrument == 'TYPE'">
-        <h3>{{ titleapp }} типа инструмента или оснастки</h3>
+      <div>
+        <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
         <div class="block">
-            <p> 
+            <p style='display: flex; align-items: center;'> 
                 <span>Наименование: </span>
-                <input type="text" v-model.trim='inputs'>
+                <input type="text" v-model.trim='nameInputs'>
             </p>
         </div>
         <div class="btn-control out-btn-control">
-            <button class="btn-status btn-black" 
-              v-if="parametrs.type == 'create'" 
-              @click='create'
-              >Сохранить</button>
-            <button class="btn-status btn-black" 
-              v-if="parametrs.type == 'edit'"
-              @click='update'>Сохранить</button>
-            <button class="btn-status" @click='destroyModalF'>Отменить</button>
-        </div>
-      </div>
-      <div v-if="parametrs.instrument == 'PODTYPE'">
-        <h3>{{ titleapp }} подтипа инструмента или оснастки</h3>
-        <div class="block">
-            <p style="align-items: center;"> 
-                <span>Наименование: </span>
-                <input type="text" v-model.trim='inputs'>
-            </p>
-        </div>
-        <div class="btn-control out-btn-control">
-            <button class="btn-status btn-black" 
-              v-if="parametrs.type == 'create'" 
-              @click='create'
-              >Сохранить</button>
-              <button class="btn-status btn-black" 
-              v-if="parametrs.type == 'edit'"
-              @click='update'>Сохранить</button>
+            <button class="btn-status btn-black" @click='addMaterial' v-if='parametrs.type == "create"'>Добавить</button>
+            <button class="btn-status btn-black" @click='updeteMaterial' v-if='parametrs.type == "edit"'>Обновить</button>
             <button class="btn-status" @click='destroyModalF'>Отменить</button>
         </div>
       </div>
@@ -55,16 +31,16 @@ export default {
           destroyModalRight: 'content-modal-right-menu',
           hiddens: 'display: none;',
           titleapp: 'Добавление',
-          inputs: '',
+          nameInputs: ''
       }
   },
   mounted() {
-      console.log(this.parametrs)
       this.destroyModalLeft = 'left-block-modal'
       this.destroyModalRight = 'content-modal-right-menu'
       this.hiddens = 'opacity: 1;'
       if(this.parametrs.type != 'create') {
           this.titleapp = 'Редактирование'
+          this.nameInputs = this.parametrs.data.name
       } 
   },
   methods: {
@@ -72,21 +48,44 @@ export default {
           this.destroyModalLeft = 'left-block-modal-hidden'
           this.destroyModalRight = 'content-modal-right-menu-hidden'
           this.hiddens = 'display: none;'
-          this.$emit('unmount', 0) 
       },
-      create() {
-        if(this.inputs.length < 3)
-          return 0
-        this.$emit('unmount', {
-          type: this.parametrs.type,
-          action: 'create',
-          name: this.inputs
-        })
-        
+      addMaterial() {
+          if(this.nameInputs.length < 2)
+            return 0
+          if(this.parametrs.type == 'create' && this.parametrs.mat == 'TYPE') {
+            this.$emit('unmountAdd', {
+              type: this.parametrs.mat, 
+              name: this.nameInputs
+            })
+          }
+          if(this.parametrs.type == 'create' && this.parametrs.mat == 'PODTYPE') {
+            this.$emit('unmountAdd', {
+              type: this.parametrs.mat,
+              name: this.nameInputs
+            })
+          }
+
+          this.destroyModalF()
       },
-      edit() {
-        if(this.inputs.length < 3)
-          return 0
+      updeteMaterial() {
+        if(this.nameInputs.length < 2)
+            return 0
+
+          if(this.parametrs.type == 'edit' && this.parametrs.mat == 'TYPE') {
+            this.$emit('unmountUpdate', {
+              type: this.parametrs.mat, 
+              name: this.nameInputs,
+              id: this.parametrs.data.id
+            })
+          }
+          if(this.parametrs.type == 'edit' && this.parametrs.mat == 'PODTYPE') {
+            this.$emit('unmountUpdate', {
+              type: this.parametrs.mat,
+              name: this.nameInputs,
+              id: this.parametrs.data.id
+            })
+          }
+        this.destroyModalF()
       }
   }
 }
