@@ -17,7 +17,7 @@
           @clickMat="clickEquipment"/>
     </div>
     <div class="btn-control" style="margin-top: 10px;">
-        <button class="btn-small btn-add" @click="$router.push({path: '/instrument/add/create'})">Создать</button>
+        <button class="btn-small btn-add" @click="$router.push({path: '/equipment/add'})">Создать</button>
         <button class="btn-small btn-add" >Создать копированием</button>
         <button class="btn-small" @click='edit'>Редактировать</button>
       </div>  
@@ -27,23 +27,23 @@
     </div>
 
 
-    <!-- <div class="right_info_block" v-if='getOneNameInstrument.name'>
+    <div class="right_info_block" v-if='equipment.name'>
       <div class="block">
         <h3>Краткая Информация об инструменте или оснастки</h3>
         <p>
-          <span class="title_span">Наименование: </span><span>{{ getOneNameInstrument.name }}</span>
+          <span class="title_span">Наименование: </span><span>{{ equipment.name }}</span>
         </p>
         <div>
           <span>Описание / Примечание</span>
-          <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
+          <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='equipment.description'> </textarea>
         </div>
-         <div v-if='getOneNameInstrument.documents.length > 0'>
+         <div v-if='equipment.documents.length > 0'>
             <h3>Документы</h3>
             <table style="width: 100%;">
                 <tr>
                     <th>Файл</th>
                 </tr>
-                <tr class="td-row" v-for='doc in getOneNameInstrument.documents' :key='doc' @click='setDocs(doc)'>
+                <tr class="td-row" v-for='doc in equipment.documents' :key='doc' @click='setDocs(doc)'>
                     <td>{{ doc.name }}</td>
                 </tr>
             </table>
@@ -57,14 +57,14 @@
                 :key='keyWhenModalGenerateFileOpen'
             />
         </div> 
-         <h3 @click="providershow" style='cursor:pointer;'>Поставищики {{ getOneNameInstrument.providers.length }}</h3>
+         <h3 @click="providershow" style='cursor:pointer;'>Поставищики {{ equipment.providers.length }}</h3>
             <ShowProvider
-              :allProvider='getOneNameInstrument.providers' 
+              :allProvider='equipment.providers' 
               :key='keyProvidersModal'
               v-if='showProviders'
             /> 
       </div>
-    </div> -->
+    </div>
   </div>
 
 </template>
@@ -73,8 +73,8 @@
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-// import OpensFile from '@/components/filebase/openfile.vue'
-// import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
+import OpensFile from '@/components/filebase/openfile.vue'
+import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash'
 
 export default {
@@ -82,8 +82,6 @@ export default {
     return {
         equipmentT: null,
         equipmentPT: null,
-        equipment: null,
-
         itemFiles: null,
         showFile: false,
         showProviders: false,
@@ -91,32 +89,36 @@ export default {
         keyWhenModalGenerateFileOpen: random(1, 23123)
     }
   },
-  computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEquipment']),
-  components: {TableMaterial},
+  computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEquipment', 'equipment']),
+  components: {TableMaterial, OpensFile, ShowProvider},
   methods: {
     ...mapActions([
         'fetchAllEquipmentType',
+        'getOneEquipmentPType',
+        'fetchOneEquipment',
+        'banEquipment'
            ]),
     ...mapMutations(['filterAllPTEquipment']),
     clickEquipmentType(equipment) {
-        this.equipment = equipment
-        this.filterAllPTEquipment(this.equipment.equipmentsPT)
+        this.equipmentT = equipment
+        this.filterAllPTEquipment(this.equipmentT.equipmentsPT)
     },
     clickEquipmentPType(equipmentPT) {
         this.equipmentPT = equipmentPT
+        this.getOneEquipmentPType(equipmentPT.id)
     },
     clickEquipment(eq) {
-      this.equipment = eq
+      this.fetchOneEquipment(eq.id)
     },
     edit() {
-      // if(!this.getOneNameInstrument)
-      //   return 0 
-      // this.$router.push('/instrument/edit')
+      if(!this.equipment)
+        return 0 
+      this.$router.push('/equipment/edit')
     },
     banned() {
-      // if(!this.getOneNameInstrument)
-      //   return 0 
-      // this.banNameInstrument(this.getOneNameInstrument.id)
+      if(!this.equipment)
+        return 0 
+      this.banEquipment(this.equipment.id)
     },
     setDocs(dc) {
         this.itemFiles = dc
@@ -131,10 +133,10 @@ export default {
       console.log(res)
     },
     providershow() {
-      // if(this.getOneNameInstrument.providers.length > 0) {
-      //   this.keyProvidersModal = random(1, 123123123123)
-      //   this.showProviders = true
-      // }
+      if(this.equipment.providers.length > 0) {
+        this.keyProvidersModal = random(1, 123123123123)
+        this.showProviders = true
+      }
     }
   },
   async mounted() {

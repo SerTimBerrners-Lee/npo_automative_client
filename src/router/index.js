@@ -29,8 +29,20 @@ import AddMaterialBase from '@/components/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
 import AddBaseInstrument from '@/components/instrument/base-instrument-add.vue'
 import EditBaseInstrument from '@/components/instrument/base-instrument-edit.vue'
+import AddBaseEquipment from '@/components/equipment/base-equipment-add.vue';
+import EditBaseEquipment from '@/components/equipment/base-equipment-edit.vue';
  
 const routes = [
+  {
+    path: '/equipment/edit',
+    name: 'EditBaseEquipment',
+    component: EditBaseEquipment
+  },
+  {
+    path: '/equipment/add',
+    name: 'AddBaseEquipment',
+    component: AddBaseEquipment
+  },
   {
     path: '/instrument/edit',
     name: 'EditBaseInstrument',

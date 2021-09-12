@@ -4,7 +4,7 @@ export default {
     state: {
         equipmentType: [],
         equipmentPType: [],
-        equipments: [],
+        equipments: [],  
         equipment: {}
     },
     getters: {
@@ -16,12 +16,16 @@ export default {
         },
         allEquipment(state) {
             return state.equipments
+        },
+        equipment(state) {
+            return state.equipment
         }
     },
     actions: { 
         async fetchAllEquipmentType(ctx) {
-            const res = await fetch(`${PATH_TO_SERVER}api/equipment`)
-            const result = await res.json()
+            const res = await fetch(`${PATH_TO_SERVER}api/equipment`) 
+            const result = await res.json() 
+
             ctx.commit('addAllEquipmentType', result)
         },
         async addEquipmentType(ctx, name) {
@@ -105,62 +109,62 @@ export default {
                 ctx.dispatch('fetchAllEquipmentType')
             }
         },
-    //     async getAllPTInstances(ctx, id) {
-    //         const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`)
-    //         const result = await res.json()
-    //         ctx.commit('getAllName', result)
-    //     },
+        async getOneEquipmentPType(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/equipment/pt/${id}`)
+            const result = await res.json()
+            ctx.commit('allEquipments', result)
+        },
 
-    //     async addNameInstrument(ctx, data) {
-    //         const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`, {
-    //             method: 'post',
-    //             body: data
-    //         })
+        async creqteEquipment(ctx, data) {
+            const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq`, {
+                method: 'post',
+                body: data
+            })
 
-    //         if(res.ok) {
-    //             const result = await res.json()
-    //             console.log(result)
-    //         }
-    //     },
-    //     async fetchOneNameInstrument(ctx, id) {
-    //         const res = await fetch(`${PATH_TO_SERVER}api/instrument/name/${id}`)
-    //         const result = await res.json()
-    //         ctx.commit('addOneNameInstrument', result)
-    //     },
-    //     async removeFileInstrument(ctx, id) {
-    //         await fetch(`${PATH_TO_SERVER}api/instrument/file/${id}`, {
-    //             method: 'delete'
-    //         })
-    //     },
-    //     async updateNameInstrument(ctx, data) {
-    //         const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/update`, {
-    //             method: 'post',
-    //             body: data
-    //         })
+            if(res.ok) {
+                const result = await res.json()
+                console.log(result)
+            }
+        },
+        async fetchOneEquipment(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/${id}`)
+            const result = await res.json()
+            ctx.commit('addOneEquipment', result)
+        },
+        async removeFileEquipment(ctx, id) {
+            await fetch(`${PATH_TO_SERVER}api/equipment/file/${id}`, {
+                method: 'delete'
+            })
+        },
+        async updateEquipment(ctx, data) {
+            const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/update`, {
+                method: 'post',
+                body: data
+            })
 
-    //         if(res.ok) {
-    //             const result = await res.json()
-    //             console.log(result)
-    //         }
-    //     },
-    //     async banNameInstrument(ctx, id) {
-    //         await fetch(`${PATH_TO_SERVER}api/instrument/ban/${id}`, {
-    //             method: 'delete'
-    //         })
-    //         ctx.commit('hideNameInstrument', id)
-    //         ctx.dispatch('fetchAllInstruments')
-    //     },
+            if(res.ok) {
+                const result = await res.json()
+                console.log(result)
+            }
+        },
+        async banEquipment(ctx, id) {
+            await fetch(`${PATH_TO_SERVER}api/equipment/ban/${id}`, {
+                method: 'delete'
+            })
+            ctx.commit('hideEquipment', id)
+            ctx.dispatch('fetchAllEquipmentType')
+        },
     },
     mutations: {
-        // hideNameInstrument(state, id) {
-        //     state.PPTInstrument = state.PPTInstrument.filter(inst => inst.id != id)
-        // },
-        // addOneNameInstrument(state, nameInstrument) {
-        //     state.nameInstrument = nameInstrument
-        // },
-        // getAllName(state, data) {
-        //     state.PPTInstrument = data.nameInstrument.filter(nameInstrument => !nameInstrument.ban)
-        // },
+        hideEquipment(state, id) {
+            state.equipments = state.equipments.filter(eq => eq.id != id)
+        },
+        addOneEquipment(state, eq) {
+            state.equipment = eq
+        },
+        allEquipments(state, data) {
+            state.equipments = data.equipments.filter(eq => !eq.ban)
+        },
         addAllEquipmentType(state, equipments) {
             state.equipmentType = equipments
         },
@@ -178,6 +182,7 @@ export default {
         filterAllPTEquipment(state, PTEquipment) {
             if(!PTEquipment)   
                 state.equipmentPType = []
+            console.log(PTEquipment)
             state.equipmentPType = PTEquipment
         },
         removeEquipmentPType(state, id) {
