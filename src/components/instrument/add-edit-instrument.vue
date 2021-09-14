@@ -6,7 +6,7 @@
       <div v-if="parametrs.instrument == 'TYPE'">
         <h3>{{ titleapp }} типа инструмента или оснастки</h3>
         <div class="block">
-            <p> 
+            <p class="p_modal_name"> 
                 <span>Наименование: </span>
                 <input type="text" v-model.trim='inputs'>
             </p>
@@ -28,7 +28,7 @@
       <div v-if="parametrs.instrument == 'PODTYPE'">
         <h3>{{ titleapp }} подтипа инструмента или оснастки</h3>
         <div class="block">
-            <p style="align-items: center;"> 
+            <p class='p_modal_name'> 
                 <span>Наименование: </span>
                 <input type="text" v-model.trim='inputs'>
             </p>
@@ -155,5 +155,9 @@ export default {
   }
   table {
     user-select: none;
+  }
+  .p_modal_name {
+    display: flex;
+    align-items: center;
   }
 </style>

@@ -6,10 +6,10 @@
                 <div class="img_folder" v-if="file">
                         <img v-if='file.type == "img"' 
                             class='img_slider' 
-                            @click='img => sizeImg(img)'
+                            @click='img => sizeImg(img.target)'
                             :src='file.path'>
                         <video v-if='file.type == "movi"'
-                                @click='img => sizeImg(img)'
+                                @click='img => sizeImg(img.target)'
                                 controls="controls"
                                 class='img_slider'>
                             <source :src='file.path' >
@@ -54,8 +54,8 @@ export default {
             } 
         },
         sizeImg(img) {
-           img.path[1].classList.toggle('all_size_block')
-           img.target.classList.toggle('all_size_img')
+           img.parentElement.classList.toggle('all_size_block')
+           img.classList.toggle('all_size_img')
         }
     },
     async mounted() {

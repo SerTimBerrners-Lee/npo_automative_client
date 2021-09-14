@@ -16,12 +16,12 @@
           :type="'PPT'" 
           @clickMat="clickEquipment"/>
     </div>
-    <div class="btn-control" style="margin-top: 10px;">
+    <div class="btn-control btn-control-eq-w" style="margin-top: 10px;">
         <button class="btn-small btn-add" @click="$router.push({path: '/equipment/add'})">Создать</button>
         <button class="btn-small btn-add" >Создать копированием</button>
         <button class="btn-small" @click='edit'>Редактировать</button>
       </div>  
-      <div class="btn-control">
+      <div class="btn-control btn-control-eq-w">
         <button class="btn-small" @click="banned">В архив</button>
       </div>
     </div>
@@ -165,5 +165,8 @@ export default {
   }
   .right_info_block {
     width: 450px;
+  }
+  .btn-control-eq-w {
+    width: 1100px;
   }
 </style>

@@ -6,7 +6,7 @@
       <div v-if="parametrs.mat == 'TYPE'">
         <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
         <div class="block">
-            <p> 
+            <p class='p_modal_name'> 
                 <span>Наименование: </span>
                 <input type="text" v-model.trim='obj.inputs'>
             </p>
@@ -141,7 +141,7 @@
         <div v-if="parametrs.mat == 'PODTYPE'">
         <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
         <div class="block">
-            <p style="align-items: center;"> 
+            <p class='p_modal_name'> 
                 <span>Наименование: </span>
                 <input type="text" v-model.trim='obj_podType.inputs'>
             </p>
@@ -436,5 +436,9 @@ export default {
   }
   table {
     user-select: none;
+  }
+  .p_modal_name {
+    display: flex;
+    align-items: center;  
   }
 </style>

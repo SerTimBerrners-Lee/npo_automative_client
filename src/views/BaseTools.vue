@@ -16,12 +16,12 @@
           :type="'PPT'" 
           @clickMat="clickPPTInstrument"/>
     </div>
-    <div class="btn-control" style="margin-top: 10px;">
+    <div class="btn-control btn-control-tools-w" style="margin-top: 10px;">
         <button class="btn-small btn-add" @click="$router.push({path: '/instrument/add/create'})">Создать</button>
         <button class="btn-small btn-add" >Создать копированием</button>
         <button class="btn-small" @click='edit'>Редактировать</button>
       </div>  
-      <div class="btn-control">
+      <div class="btn-control btn-control-tools-w">
         <button class="btn-small" @click="banned">В архив</button>
       </div>
     </div>
@@ -164,4 +164,7 @@ export default {
   .right_info_block {
     width: 450px;
   }
+  .btn-control-tools-w {
+        width: 1100px;
+    }
 </style>
