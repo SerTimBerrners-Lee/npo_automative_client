@@ -2,7 +2,7 @@
 <div class="right-menu-modal informat">
   <div :class='destroyModalLeft' @click="destroyModalF"></div>
   <div :class='destroyModalRight'>
-    <div :style="hiddens" >
+    <div :style="hiddens" > 
 
         <div class="right_info_block" v-if='getOneNameInstrument.name'>
         <div class="block">
@@ -10,6 +10,7 @@
             <p class='name_parg'>
             <span class="title_span">Наименование: </span><span>{{ getOneNameInstrument.name }}</span>
             </p>
+            <MediaSlider :width='"width: 93%;"' v-if='getOneNameInstrument.documents.length' :data='getOneNameInstrument.documents' :key='getOneNameInstrument.documents' />
             <div>
             <span>Описание / Примечание</span>
             <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
@@ -54,6 +55,7 @@ import OpensFile from '@/components/filebase/openfile.vue'
 import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash'
 import {mapGetters } from 'vuex'
+import MediaSlider from '@/components/filebase/media-slider.vue';
 
 export default {
     
@@ -72,7 +74,7 @@ export default {
       }
   },
     computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
-    components: {OpensFile, ShowProvider},
+    components: {OpensFile, ShowProvider, MediaSlider},
   mounted() {
       this.destroyModalLeft = 'left-block-modal'
       this.destroyModalRight = 'content-modal-right-menu'

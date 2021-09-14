@@ -3,7 +3,7 @@
         <div class="slider_main">
             <div class='img_content' v-if='files.length'>
                 <div class="left_button" @click='swapMedia("l")'>&#8592;</div>
-                <div class="img_folder" v-if="file">
+                <div class="img_folder" :style='width' v-if="file">
                         <img v-if='file.type == "img"' 
                             class='img_slider' 
                             @click='img => sizeImg(img.target)'
@@ -28,7 +28,7 @@ import {photoPreloadUrl} from '@/js/'
 import PATH_TO_SERVER from '@/js/path.js'
 import { isEmpty } from 'lodash'
 export default {
-    props: ['data'],
+    props: ['data', 'width'],
     data() {
         return {
             files: [],
