@@ -12,8 +12,14 @@
                                 <span class="span-type-files" v-if="docType.type == 'doc'" >
                                     .{{ docType.typename }}
                                 </span>
-                                <div class="imgShow-modal-div" >
-                                    <img class="imgShow-modal" v-if='docType.type == "img"' :src='urlImg' alt="">
+                                <div class="imgShow-modal-div" v-if='docType.type == "img"'>
+                                    <img class="imgShow-modal" :src='urlImg' alt="">
+                                </div>
+                                <div class="imgShow-modal-div" v-if='docType.type == "movi"'>
+                                     <video
+                                        controls="controls">
+                                    <source :src='urlImg' >
+                                </video>
                                 </div>
                             </div>
                             <div class="slider" v-if='isArrayFile'>

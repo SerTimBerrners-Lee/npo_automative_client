@@ -174,7 +174,6 @@ export default {
         
         if(this.providersId)
           this.providersId = JSON.stringify(this.providersId)
-        console.log(this.providersId)
 
         this.formData.append('id', this.obj.id)
         this.formData.append('name', this.obj.name)
@@ -212,13 +211,18 @@ export default {
         this.showFile = true
         this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
     },
-    openFile(res) {
+    openFile(res) { 
         console.log(res)
     },
     checkedUpdate() {
         if(isEmpty(this.getOneNameInstrument)) 
             return this.$router.push('/basetools')
                            
+        console.log(this.getOneNameInstrument)
+        this.filterAllInstrumentNyId({
+          type: this.getOneNameInstrument.rootParentId, 
+          pType: this.getOneNameInstrument.parents[0].id
+        })
         this.obj.id = this.getOneNameInstrument.id
         this.obj.name = this.getOneNameInstrument.name
         this.obj.parentId = this.getOneNameInstrument.parents[0].id
@@ -236,7 +240,7 @@ export default {
 
     // ADD FILE and SET INSTRUMENT TO TABLE
     ...mapActions(['fetchAllInstruments', 'getAllEdizm', 'updateNameInstrument', 'removeFileInstrument']),
-    ...mapMutations(['filterAllpInstrument']),
+    ...mapMutations(['filterAllpInstrument', 'filterAllInstrumentNyId']),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
       this.filterAllpInstrument(instrument.pInstruments)
@@ -260,7 +264,6 @@ export default {
     },
   },
   async mounted() {
-    this.fetchAllInstruments()
     this.getAllEdizm()
     this.checkedUpdate()
     // добавлять документы и удалять их по желанию

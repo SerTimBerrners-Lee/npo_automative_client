@@ -1,6 +1,14 @@
 <template>
     <div class="main-dive">
         <h3>База непроизводственной техники и инвентаря (типы и подтипы)</h3>
+        <img style='position: fixed ;
+                z-index: 12;
+                width: 700px;
+                margin: 0 auto;
+                left: 0;
+                right: 0;' 
+                src="@/assets/img/unnamed.jpg" 
+                alt="На реставрации ">
         <div class="cont">
             <div class="cont scroll-table scrolls-type-490">
                 <table class="type-table">

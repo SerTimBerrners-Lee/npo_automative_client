@@ -33,6 +33,7 @@
         <p>
           <span class="title_span">Наименование: </span><span>{{ equipment.name }}</span>
         </p>
+        <MediaSlider v-if='equipment.documents.length' :data='equipment.documents' :key='equipment.documents' />
         <div>
           <span>Описание / Примечание</span>
           <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='equipment.description'> </textarea>
@@ -42,7 +43,7 @@
             <table style="width: 100%;">
                 <tr>
                     <th>Файл</th>
-                </tr>
+                </tr> 
                 <tr class="td-row" v-for='doc in equipment.documents' :key='doc' @click='setDocs(doc)'>
                     <td>{{ doc.name }}</td>
                 </tr>
@@ -75,7 +76,8 @@ import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue'
 import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
-import {isEmpty, random} from 'lodash'
+import {isEmpty, random} from 'lodash';
+import MediaSlider from '@/components/filebase/media-slider.vue';
 
 export default {
   data() {
@@ -90,7 +92,7 @@ export default {
     }
   },
   computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEquipment', 'equipment']),
-  components: {TableMaterial, OpensFile, ShowProvider},
+  components: {TableMaterial, OpensFile, ShowProvider, MediaSlider},
   methods: {
     ...mapActions([
         'fetchAllEquipmentType',
@@ -157,7 +159,7 @@ export default {
     flex-direction: row;
   }
   .body_table {
-    width: 1100px;
+    width: 1150px;
     display: flex;
     flex-direction: column;
   }

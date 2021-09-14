@@ -52,18 +52,18 @@
                 </div>
                 <h3>Поставляемый материал</h3>
                 <div class="scroll-table">
-                    <table class="material_post_table">
+                     <table style="width: 100%"> 
                         <tr>
                             <th>Тип</th>
                             <th>Подтип</th>
-                            <th>Материал</th>
+                            <th>Наименование</th>
                         </tr>
-                        <tr v-for="mat in materials" :key="mat">
-                            <td>...</td>
-                            <td>...</td>
-                            <td>{{ mat.name }}</td>
+                        <tr v-for='mat in getproviderMaterial' :key='mat' class="td-row">
+                            <td>{{ mat.mat[0].name }}</td>
+                            <td>{{ mat.pt[0].name }}</td>
+                            <td>{{ mat.m.name }}</td>
                         </tr>
-                        <tr v-for="i in 40" :key="i">
+                        <tr v-for="ff in 25" :key="ff" class="td-row">
                             <td>...</td>
                             <td>...</td>
                             <td>...</td>
@@ -123,7 +123,7 @@ export default {
             materials: []
         }
     },
-    computed: mapGetters(['getSetProvider']),
+    computed: mapGetters(['getSetProvider', 'getproviderMaterial']),
     components: {AddContact, AddFile},
     methods: {
         ...mapActions(['addOneProvider']),
@@ -183,10 +183,9 @@ export default {
         },
     },
     async mounted() {
-        if(this.$route.params.type) {
+        if(this.$route.params.type == 'edit') {
             if(!this.getSetProvider)
                 this.$router.push('/baseprovider')
-
             let provider = this.getSetProvider  
             this.materials = provider.materials
             this.obj.id = provider.id

@@ -8,7 +8,10 @@ export default {
         instansPodTypeM: [],
         
         podMaterial: [],
-        onePPT: {}
+        onePPT: {},
+        linkId: 0,
+
+        providerMaterial: []
     },
     getters: {
         alltypeM(state) {
@@ -22,6 +25,12 @@ export default {
         },
         getOnePPT(state) {
             return state.onePPT
+        },
+        getLinkId(state) {
+            return state.linkId
+        },
+        getproviderMaterial(state) {
+            return state.providerMaterial
         }
     },
     actions: { 
@@ -130,6 +139,7 @@ export default {
             })
             if(res.ok) {
                 ctx.dispatch('createTypeM')
+                ctx.commit('onePPTClear')
                 return true
             }
         },
@@ -160,17 +170,21 @@ export default {
         throwInstans(state) {
             state.instansTypeM = []
             state.instansPodTypeM = []
+            state.linkId = 0
         },
         getInstansMaterial(state, instans) {
             if(instans == 0) {
                 state.typeM = state.instansTypeM
                 state.podTypeM = state.instansPodTypeM
+                state.linkId = 0
                 return 0
             }
             if(state.instansTypeM.length == 0) 
                 state.instansTypeM = state.typeM
             if(state.instansPodTypeM.length == 0)
                 state.instansPodTypeM = state.podTypeM
+
+            state.linkId = instans
 
             state.typeM = state.instansTypeM.filter(mat => mat.instansMaterial == instans)
             state.podTypeM = state.instansPodTypeM.filter(mat => mat.instansMaterial == instans)
@@ -216,6 +230,30 @@ export default {
         },
         bannedPPM(state, id) {
             state.podMaterial = state.podMaterial.filter(ppm => ppm.id != id)
+        },
+        filterMaterialById(state, id) {
+            state.typeM = state.typeM.filter(m => m.id == id)
+        },
+        filterPodMaterialById(state, id) {
+            state.podTypeM = state.podTypeM.filter(m => m.id == id)
+        },
+        onePPTClear(state) {
+            state.onePPT = {}
+        },
+        filterMaterialByProvider(state, material) {
+            state.providerMaterial = []
+            material.forEach(m => {
+                if(m.ban)
+                    return 0
+
+                let mat = state.typeM.filter(t => t.id == m.materialsId)
+                let pt = state.podTypeM.filter(pt => pt.id == m.ProvidersMaterial.providerId)
+                state.providerMaterial.push({
+                    mat,
+                    pt,
+                    m
+                })
+            })
         }
     }
 }

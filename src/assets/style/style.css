@@ -33,6 +33,13 @@
     width: max-content;
 }
 
+.link_h3 {
+    cursor: pointer;
+}
+.link_h3:hover {
+    color: rgb(119, 119, 119);
+}
+
 .button-cover
 {
     height: 100px;

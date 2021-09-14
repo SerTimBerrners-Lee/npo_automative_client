@@ -33,6 +33,7 @@
         <p>
           <span class="title_span">Наименование: </span><span>{{ getOneNameInstrument.name }}</span>
         </p>
+         <MediaSlider v-if='getOneNameInstrument.documents.length' :data='getOneNameInstrument.documents' :key='getOneNameInstrument.documents' />
         <div>
           <span>Описание / Примечание</span>
           <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
@@ -65,6 +66,7 @@
             />
       </div>
     </div>
+    
   </div>
 
 </template>
@@ -76,6 +78,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue'
 import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash'
+import MediaSlider from '@/components/filebase/media-slider.vue';
 
 export default {
   data() {
@@ -91,7 +94,7 @@ export default {
     }
   },
   computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
-  components: {TableMaterial, OpensFile, ShowProvider},
+  components: {TableMaterial, OpensFile, ShowProvider, MediaSlider},
   methods: {
     ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 'fetchOneNameInstrument', 'banNameInstrument']),
     ...mapMutations(['filterAllpInstrument']),
@@ -154,7 +157,7 @@ export default {
     flex-direction: row;
   }
   .body_table {
-    width: 1100px;
+    width: 1150px;
     display: flex;
     flex-direction: column;
   }

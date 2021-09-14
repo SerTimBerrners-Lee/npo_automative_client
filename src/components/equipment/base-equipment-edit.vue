@@ -95,6 +95,7 @@
               <button class="btn-small" @click='removeFile'>Удалить</button>
             </div>
         </div>
+        <h3 @click="addInstrument" class="link_h3">Привязанный инструмент или оснастка</h3>
       </div>
     </div>
         <div class="edit-save-block block">
@@ -107,6 +108,12 @@
             @unmount='openFile'
             :key='keyWhenModalGenerateFileOpen'
         />
+        <BaseTools 
+            :listInstrument='listInstrument'
+            :key='instrumentKey'
+            v-if='instrumentIsShow'
+            @unmount_instrument='unmount_instrument'
+          />
   </div>
 </template>
 
@@ -119,10 +126,12 @@ import OpensFile from '@/components/filebase/openfile.vue'
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { random }  from 'lodash'
 import { isEmpty }  from 'lodash'
+import BaseTools from '@/components/instrument/modal-base-tool.vue';
 
 export default {
   data() {
     return {
+        listInstrument: null,
         equipmentT: null,
         equipmentPT: null,
         docFiles: [],
@@ -137,6 +146,8 @@ export default {
         keyWhenModalListProvider: random(10, 384522333213313324),
         providers: [],
         providersId: [],
+        instrumentKey: random(10, 384522333213313324),
+        instrumentIsShow: false,
       obj: {
         name: '',
         parentId: null,
@@ -144,7 +155,8 @@ export default {
         invNymber: '',
         description: '',
         responsible: '',
-        id: null
+        id: null,
+        instrumentIdList: []
       }
     }
   },
@@ -153,7 +165,7 @@ export default {
         this.$router.push('/baseequipment')
   },
   computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEdizm', 'equipment']),
-  components: {TableMaterial, AddFile, OpensFile, ListProvider},
+  components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools},
   methods: {
     saveEquipment() {
         if(!this.obj.id || this.obj.name.length < 3)
@@ -172,15 +184,20 @@ export default {
         this.formData.append('invNymber', this.obj.invNymber)
         this.formData.append('description', this.obj.description)
         this.formData.append('providers', this.providersId)
+        this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
         this.updateEquipment(this.formData)
 
     this.$router.push('/baseequipment')
+    },
+    addInstrument() {
+      this.instrumentKey = random(10, 384522333213313324)
+      this.instrumentIsShow = true
     },
     removeFile() {
         if(isEmpty(this.itemFiles))
             return 0
         this.removeFileEquipment(this.itemFiles.id)
-        this.documents = this.documents.filter(dc => dc.id != this.itemFiles.id   )
+        this.documents = this.documents.filter(dc => dc.id != this.itemFiles.id)
     },
     pushProvider(provider) { 
       if(!provider)
@@ -208,6 +225,9 @@ export default {
         if(isEmpty(this.equipment)) 
             return this.$router.push('/baseequipment')
                            
+        if(this.equipment.nameInstrument)
+          this.listInstrument = this.equipment.nameInstrument
+        this.filterAllEquipmentById({ type: this.equipment.rootParentId, pType: this.equipment.parents[0].id})
         this.obj.id = this.equipment.id
         this.obj.name = this.equipment.name
         this.obj.parentId = this.equipment.parents[0].id
@@ -220,13 +240,12 @@ export default {
         this.providers.forEach(provider => {
           this.providersId.push({id: provider.id})
         })
-
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
     ...mapActions(['fetchAllEquipmentType', 'getAllEdizm', 
     'updateEquipment', 'removeFileEquipment']),
-    ...mapMutations(['filterAllPTEquipment']),
+    ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById']),
     clickEquipment(eq) {
       this.equipmentT = eq
       this.filterAllPTEquipment(eq.equipmentT)
@@ -234,7 +253,7 @@ export default {
     clickEquipmentPT(eq) {
       this.equipmentPT = eq
     },
-    addDock(val) {
+    addDock(val) { 
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
@@ -245,9 +264,17 @@ export default {
       if(!e) return 0
       this.formData = e.formData
     },
+    unmount_instrument(instrumentIdList) {
+      this.obj.instrumentIdList = instrumentIdList
+      this.listInstrument = this.listInstrument.map((el) => {
+        for(let i of Object.values(this.obj.instrumentIdList))
+          if(i == el.id)
+            return el
+      })
+      this.listInstrument = this.listInstrument.filter((el) => el)
+    }
   },
   async mounted() {
-    this.fetchAllEquipmentType()
     this.getAllEdizm()
     this.checkedUpdate()
     // добавлять документы и удалять их по желанию

@@ -109,10 +109,10 @@
                                                 <th>Подтип</th>
                                                 <th>Наименование</th>
                                             </tr>
-                                            <tr v-for='mat in materials' :key='mat'>
-                                                <td>...</td>
-                                                <td>...</td>
-                                                <td>{{ mat.name }}</td>
+                                            <tr v-for='mat in getproviderMaterial' :key='mat' class="td-row">
+                                                <td>{{ mat.mat[0].name }}</td>
+                                                <td>{{ mat.pt[0].name }}</td>
+                                                <td>{{ mat.m.name }}</td>
                                             </tr>
                                             <tr v-for="ff in 25" :key="ff" class="td-row">
                                                 <td>...</td>
@@ -191,14 +191,15 @@ export default {
             keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
         }
     },
-    computed: mapGetters(['allProvider']),
+    computed: mapGetters(['allProvider', 'getproviderMaterial']),
     components: {OpensFile},
     methods: {
-        ...mapActions(['fetchGetProviders', 'fetchProviderBan']),
-        ...mapMutations(['setProviderState']),
+        ...mapActions(['fetchGetProviders', 'fetchProviderBan', 'getAllTypeMaterial', 'getAllPodTypeMaterial']),
+        ...mapMutations(['setProviderState', 'filterMaterialByProvider']),
         setProvider(provider) {
             this.materials = provider.materials;
-            console.log(this.materials )
+            if(this.materials) 
+                this.filterMaterialByProvider(this.materials);
             this.provider = provider
             this.setProviderState(provider)
             this.obj.name = provider.name
@@ -234,6 +235,8 @@ export default {
     },
     async mounted() {
         this.fetchGetProviders()
+        this.getAllTypeMaterial()
+        this.getAllPodTypeMaterial()
     }
 }
 </script>

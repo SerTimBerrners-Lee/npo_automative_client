@@ -9,7 +9,7 @@
                         <h4>Файл {{index + 1}}</h4>
                         <div>
                             <div class="fb-img-block">
-                                <span class="span-type-files" v-if='file.typefile == "doc"'>.{{ file.typename }}</span>
+                                <span class="span-type-files" v-if='file.typefile != "img"'>.{{ file.typename }}</span>
                                 <div class="imgShow-modal-div" v-if="file.typefile == 'img'">
                                     <img class="imgShow-modal" :src="file.url" alt="">
                                 </div>
@@ -89,7 +89,7 @@ export default {
                     arr[index].NameDocument = ''
                     arr[index].typefile = res.type
                     this.arrItemsFile.push(...[arr[index]])
-                } else {
+                } else { 
                     arr[index].TypeDocument = ''
                     arr[index].VersionDocument = ''
                     arr[index].DescriptionDocument = ''

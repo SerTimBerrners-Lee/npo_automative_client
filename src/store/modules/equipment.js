@@ -81,6 +81,7 @@ export default {
 
             if(res.ok) {
                 const result = await res.json()
+                ctx.dispatch('fetchAllEquipmentType')
                 ctx.commit('mutationCreateEquipmentPT', result)
             }
         },
@@ -190,6 +191,10 @@ export default {
         },
         updateEquipmentPType(state, result) {
             state.equipmentPType = state.equipmentPType.map(eq => eq.id == result.id ? result : eq)
+        },
+        filterAllEquipmentById(state, id) {
+            state.equipmentType = state.equipmentType.filter(eq => eq.id == id.type)
+            state.equipmentPType = state.equipmentPType.filter(eq => eq.id == id.pType)
         }
     }
 }

@@ -3,6 +3,14 @@
         <h3>Сохранение баз данных, настроек, истории действий</h3>
         <div class="block">
             <span class="span_db">Делать резервную копию базы данных каждые: </span>
+            <img style='position: fixed ;
+                z-index: 12;
+                width: 700px;
+                margin: 0 auto;
+                left: 0;
+                right: 0;' 
+                src="@/assets/img/unnamed.jpg" 
+                alt="На реставрации ">
             <select name="save_time_db" id="db_save">
                 <option>12 ч</option>
                 <option>24 ч</option>

@@ -6,7 +6,10 @@
         <p>
             <span class='span-title'>Наименование: </span><input type="text" v-model.trim='obj.name'>
             <span class='span-title'>Материал: </span>
-            <span>Материалы для деталей</span>
+            <span v-if='getLinkId == 0'>Все типы</span>
+            <span v-if='getLinkId == 1'>Материалы для деталей</span>
+             <span v-if='getLinkId == 2'>Покупные детали </span>
+              <span v-if='getLinkId == 3'>Расходные материалы</span>
         </p>
       </div>
       <h3>Выбор типа и подипа</h3>
@@ -96,10 +99,7 @@
 
             <tr v-if='material && material.outsideDiametr && JSON.parse(material.outsideDiametr).znach == "permanent" || this.obj.outsideDiametr_input'>
               <td>Наружный Диаметр (D)</td>
-              <td><select class="select-small" v-model="obj.outsideDiametr_select">
-                  <option>Выберите тип ЕИ</option>
-                 <td>мм (миллиметр)</td>
-                </select></td>
+                <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.outsideDiametr_input'></td>
             </tr>
            
@@ -143,7 +143,7 @@
           <div class="btn-control" style="width: 84%;">
             <button class="btn-small btn-add" @click="addProvider">Добавить из базы</button>
           </div>
-      <div class="pointer-files-to-add">
+      <div class="pointer-files-to-add edit-save-material-file-folder">
         <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
         <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
       </div>
@@ -160,7 +160,7 @@
     </div>
      <div class="edit-save-block block">
             <button class="btn-status" @click='$router.push("/basematerial")'>Назад</button>
-            <button class="btn-status">Отменить</button>
+            <button class="btn-status" @click='$router.push("/basematerial")'>Отменить</button>
             <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type == 'create'">Сохранить</button>
             <button class="btn-status btn-black" @click="addItem(this.getOnePPT.id)" v-if="$route.params.type == 'edit'">Обновить</button>
         </div>
@@ -215,6 +215,7 @@ export default {
         areaCrossSectional_input: '',
         density_select: 10,
         density_input: '',
+        rootParentId: null,
         kolvo_select: {
           c1: false,
           c2: false,
@@ -227,7 +228,7 @@ export default {
   },
   components: {TableMaterial, AddFile, ListProvider},
   computed: {
-    ...mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial', 'allEdizm', 'getOnePPT']),
+    ...mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial', 'allEdizm', 'getOnePPT', 'getLinkId']),
   },  
   updated() {
     if(this.$route.params.type == 'edit' && !this.getOnePPT.id)
@@ -257,9 +258,11 @@ export default {
     },
     addItem(id = null) {
       if(this.$route.params.type != 'edit')  {
-        if(this.obj.name == '' || !this.podMaterial) return 0
+        if(this.obj.name == '' || !this.podMaterial && !this.material) 
+          return 0
       }
-       if(!this.obj.areaCrossSectional_input) return 0
+      if(!this.obj.areaCrossSectional_input && this.podMaterial.instansMaterial == 1)   
+        return 0
       let dat = this.obj
       
       if(!this.formData) 
@@ -275,6 +278,8 @@ export default {
       this.$route.params.type == 'edit' ? podTypeId = this.getOnePPT.materials[0].id :
       podTypeId = this.podMaterial.id
 
+      if(this.material)
+        this.formData.append('rootParentId', this.material.id)
       this.formData.append('podTypeId', podTypeId)
       this.formData.append('name', dat.name)
       let length = dat.length_select != 'Выберите тип ЕИ' &&
@@ -348,7 +353,9 @@ export default {
       'fetchGetOnePPM',
       'getAllPodTypeMaterial'
       ]),
-    ...mapMutations(['filterMatByPodType']),
+    ...mapMutations(['filterMatByPodType',
+    'filterMaterialById',
+    'filterPodMaterialById']),
     clickMat(mat, type) {
       if(type == 'type') {
           this.material = mat
@@ -401,6 +408,9 @@ export default {
     },
     editGetDataPPT() {
       this.updateInputSelect(this.getOnePPT)
+      this.filterMaterialById(this.getOnePPT.material.id)
+      this.filterPodMaterialById(this.getOnePPT.materials[0].id)
+      // Отфильтровать таблицу так чтобы показывались привязанный материал и привязанный под материал 
       this.podMaterial = this.getOnePPT
       this.obj.description = this.getOnePPT.description
       this.obj.name = this.getOnePPT.name
@@ -409,24 +419,12 @@ export default {
         this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach
       }
       this.providers = this.getOnePPT.providers
-      this.providers.forEach(provider => {
-        this.providersId.push({id: provider.id})
-      })
-      console.log(this.providers)
-      if(this.getOnePPT.kolvo && this.getOnePPT.kolvo.length > 0) {
-        let kolvo = this.getOnePPT.kolvo
-        for(let k of kolvo) {
-          if(JSON.parse(k).id == 1)
-            this.obj.kolvo_select.c1 = true
-          if(JSON.parse(k).id == 2)
-            this.obj.kolvo_select.c2 = true
-          if(JSON.parse(k).id == 3)
-            this.obj.kolvo_select.c3 = true
-          if(JSON.parse(k).id == 4)
-            this.obj.kolvo_select.c4 = true
-          if(JSON.parse(k).id == 5)
-            this.obj.kolvo_select.c5 = true
-        }
+      if(this.providers ) 
+        this.providers.forEach(provider => {
+          this.providersId.push({id: provider.id})
+        })
+      if(this.getOnePPT.kolvo) {
+          this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo)
       }
       if(this.getOnePPT.density) {
         this.obj.density_select = 10
@@ -435,17 +433,15 @@ export default {
     }
   },
   async mounted() {
-    this.getAllTypeMaterial()
     this.getAllEdizm()
-    this.getAllPodTypeMaterial()
     if(this.$route.params.type == 'edit')
       this.editGetDataPPT()
   }
 }
 </script>
 <style scoped>
-.pointer-files-to-add {
-  margin-top: 30px;
+.edit-save-material-file-folder {
+  margin-right: 8 0px;
 }
 .block {
   width: 1100px;

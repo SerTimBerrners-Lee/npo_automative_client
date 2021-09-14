@@ -69,6 +69,7 @@
             <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
         </div>
+        <h3 @click="addInstrument" class="link_h3">Привязанный инструмент или оснастка</h3>
         <AddFile :parametrs='docFiles' 
           :typeGetFile='"getfile"'
           v-if="isChangeFolderFile" 
@@ -86,6 +87,11 @@
           :key='keyWhenModalListProvider'
           v-if='showProvider'
           />
+          <BaseTools 
+            :key='instrumentKey'
+            v-if='instrumentIsShow'
+            @unmount_instrument='unmount_instrument'
+          />
   </div>
 </template>
 
@@ -95,6 +101,7 @@ import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import AddFile from '@/components/filebase/addfile.vue'
 import ListProvider from '@/components/baseprovider/list-provider.vue';
+import BaseTools from '@/components/instrument/modal-base-tool.vue';
 
 import { random }  from 'lodash'
 
@@ -111,18 +118,21 @@ export default {
       keyWhenModalListProvider: random(10, 384522333213313324),
       providers: [],
       providersId: [],
+      instrumentKey: random(10, 384522333213313324),
+      instrumentIsShow: false,
       obj: {
         name: '',
         parentId: null,
         deliveryTime: '',
         invNymber: '',
         description: '',
-        responsible: ''
+        responsible: '',
+        instrumentIdList: []
       }
     }
   },
   computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEdizm']),
-  components: {TableMaterial, AddFile, ListProvider},
+  components: {TableMaterial, AddFile, ListProvider, BaseTools},
   methods: {
     addProvider() {
       this.showProvider = true
@@ -134,9 +144,12 @@ export default {
       this.providers.push(provider)
       this.providersId.push({id: provider.id})
     },
-
+    addInstrument() {
+      this.instrumentKey = random(10, 384522333213313324)
+      this.instrumentIsShow = true
+    },
     addEquipment() {
-      if(!this.equipmentPT || this.obj.name.length < 3)
+      if(!this.equipmentPT && !this.equipmentT && this.obj.name.length < 3)
         return 0
       
       if(!this.formData) 
@@ -153,6 +166,8 @@ export default {
       this.formData.append('parentId', this.obj.parentId)
       this.formData.append('providers', this.providersId)
       this.formData.append('responsible', this.obj.responsible)
+      this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
+      this.formData.append('rootParentId', this.equipmentT.id)
       this.creqteEquipment(this.formData)
 
       this.$router.push('/baseequipment')
@@ -179,6 +194,9 @@ export default {
       if(!e) return 0
       this.formData = e.formData
     },
+    unmount_instrument(instrumentIdList) {
+      this.obj.instrumentIdList = instrumentIdList
+    }
   },
   async mounted() {
     this.fetchAllEquipmentType()

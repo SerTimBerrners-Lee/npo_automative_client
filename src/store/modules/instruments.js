@@ -41,6 +41,7 @@ export default {
 
             if(res.ok) {
                 const result = await res.json()
+                ctx.dispatch('fetchAllInstruments')
                 ctx.commit('addOneTInstrument', result)
             }
         },
@@ -187,6 +188,10 @@ export default {
         },
         updatePTInstrument(state, result) {
             state.PTInstrument = state.PTInstrument.map(pt => pt.id == result.id ? result : pt)
+        },
+        filterAllInstrumentNyId(state, id) {
+            state.TInstrument = state.TInstrument.filter(pI => pI.id == id.type)
+            state.PTInstrument = state.PTInstrument.filter(p => p.id == id.pType)
         }
     }
 }

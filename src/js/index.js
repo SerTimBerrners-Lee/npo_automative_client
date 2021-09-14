@@ -1,5 +1,8 @@
 import { random } from 'lodash';
 
+const imgArr = ['bmp', 'gif', 'jpg', 'png', 'pds', 'tif', 'odg', 'jpeg', 'eps', 'pict', 'pcx', 'ico', 'webp']
+const moviArr = ['mp4']
+
 const getReversDate = DAT =>  {
     if(!DAT)
         return 0
@@ -37,25 +40,30 @@ const showMessage = (title, message, type, ctx) =>  {
     if(!input) 
         return 0;
 
-    const imgArr = ['bmp', 'gif', 'jpg', 'png', 'pds', 'tif', 'odg', 'jpeg', 'eps', 'pict', 'pcx', 'ico', 'webp']
-
     let typeFile = input.name.split('.')[input.name.split('.').length - 1]
     let type;
     for(let imgType of imgArr) {
-        if(typeFile == imgType) {
+        if(typeFile == imgType)
             type = 'img'
-        } 
     }
-    if (type != 'img') {
+    for(let movi of moviArr) {
+        if(movi == typeFile)
+            type = 'movi'
+    }
 
+    if (type != 'img' && type != 'movi') 
         return cb({ type: 'doc', typename: typeFile })
-    } 
+    
     if(type == 'img' && checkTypes)
         return cb({ type: 'img', typename: typeFile })
+    if(type == 'movi' && checkTypes)
+        return cb({type, typename: typeFile})
+    if(type == 'movi')
+        return cb({type, typename: typeFile})
 
     const reader = new FileReader()
     reader.onload = function(e){
-        return cb({ type: 'img', url: e.target.result})
+        return cb({ type, url: e.target.result})
     } 
     reader.readAsDataURL(input)
 } 

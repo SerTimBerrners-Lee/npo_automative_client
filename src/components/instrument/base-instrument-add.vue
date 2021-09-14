@@ -146,7 +146,7 @@ export default {
     },
 
     addInstrument() {
-      if(!this.PTInstrument || this.obj.name.length < 3)
+      if(!this.PTInstrument && !this.TInstrument && this.obj.name.length < 3)
         return 0
       
       if(!this.formData) 
@@ -156,6 +156,7 @@ export default {
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
 
+      this.formData.append('rootParentId', this.TInstrument.id)
       this.formData.append('name', this.obj.name)
       this.formData.append('deliveryTime', this.obj.deliveryTime)
       this.formData.append('mountUsed', this.obj.mountUsed)
