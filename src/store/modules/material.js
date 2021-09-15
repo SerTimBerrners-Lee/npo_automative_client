@@ -222,7 +222,6 @@ export default {
             state.podTypeM.push(data)
         },
         addOnePodType(state, typMaterial) {
-            console.log(typMaterial)
             state.podMaterial = typMaterial.podPodMaterials.filter(material => !material.ban)
         },
         addOnePPTyep(state, PPT) {

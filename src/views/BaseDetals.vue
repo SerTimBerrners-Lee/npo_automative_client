@@ -1,14 +1,6 @@
 <template>
     <div>
         <h3>База деталей</h3>
-            <img style='position: fixed ;
-                z-index: 12;
-                width: 700px;
-                margin: 0 auto;
-                left: 0;
-                right: 0;' 
-                src="@/assets/img/unnamed.jpg" 
-                alt="На реставрации ">
         <div class="scroll-table" >
             <table class="table-base-detal">
                 <tr>
@@ -79,7 +71,7 @@
         </div>
         <div class="btn-control">
                <p>
-                    <button class="btn-small btn-add">Создать</button>
+                    <button class="btn-small btn-add" @click='$router.push("/detal/add")'>Создать</button>
                     <button class="btn-small btn-add">Создать копированием</button>
                     <button class="btn-small">Редактировать</button>
                </p>
