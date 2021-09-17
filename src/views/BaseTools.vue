@@ -1,8 +1,14 @@
 <template>
   <h3>База инструмента и оснастки</h3>
+   <div class="type-issue">
+      <span ref="all" class='active' @click='e => instansTools(0, e.target)'>Все</span>
+      <span @click='e => instansTools(1, e.target)'>Инструмент</span>
+      <span @click='e => instansTools(2, e.target)'>Оснастка</span>
+      <span @click='e => instansTools(3, e.target)'>Мерительный инструмент</span>
+    </div>
   <div class="main_content">
     <div class="body_table">
-          <div>
+      <div>
         <TableMaterial :title='"Тип (инструмента или оснастки)"' 
           :alltypeM="allTInstrument" 
           :type='"T"' 
@@ -25,6 +31,7 @@
         <button class="btn-small" @click="banned">В архив</button>
       </div>
     </div>
+    
 
 
     <div class="right_info_block" v-if='getOneNameInstrument.name'>
@@ -90,14 +97,15 @@ export default {
       showFile: false,
       showProviders: false,
       keyProvidersModal: random(1, 34342),
-      keyWhenModalGenerateFileOpen: random(1, 23123)
+      keyWhenModalGenerateFileOpen: random(1, 23123),
+      span: null
     }
   },
   computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
   components: {TableMaterial, OpensFile, ShowProvider, MediaSlider},
   methods: {
     ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 'fetchOneNameInstrument', 'banNameInstrument']),
-    ...mapMutations(['filterAllpInstrument']),
+    ...mapMutations(['filterAllpInstrument', 'getInstansTools']),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
       this.filterAllpInstrument(instrument.pInstruments)
@@ -127,7 +135,7 @@ export default {
         if(isEmpty(this.itemFiles))
             return 0
         this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+        this.keyWhenModalGenerateFileOpen = random(10, 38e7)
     },
     openFile(res) {
       console.log(res)
@@ -137,7 +145,16 @@ export default {
         this.keyProvidersModal = random(1, 123123123123)
         this.showProviders = true
       }
-    }
+    },
+    instansTools(tools, span) {
+      this.getInstansTools(tools)
+
+      if(!this.span)
+          this.span = (this.$refs.all)
+      this.span.classList.remove('active')
+      span.classList.add('active')
+      this.span = span
+    },
   },
   async mounted() {
     this.fetchAllInstruments()

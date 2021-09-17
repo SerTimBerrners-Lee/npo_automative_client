@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="nav-base-file-page">
+        <div class="nav-base-file-page"> 
             <div class="left-div-bfp">
                 <h3>База материалов</h3>
                 <div class="type-issue">
@@ -178,8 +178,5 @@ export default {
     }
     th {
         width: 350px;
-    }
-    .active {
-        color: rgb(12, 64, 221);
     }
 </style>

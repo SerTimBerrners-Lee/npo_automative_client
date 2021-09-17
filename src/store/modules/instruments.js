@@ -5,7 +5,10 @@ export default {
         TInstrument: [],
         PTInstrument: [],
         PPTInstrument: [],
-        nameInstrument: {}
+        nameInstrument: {},
+
+        instansTInstrument: [],
+        instansPTInstrument: [],
     },
     getters: {
         allTInstrument(state) {
@@ -27,15 +30,15 @@ export default {
             const result = await res.json()
             ctx.commit('addAllTInstrument', result)
         },
-        async addNewTInstrument(ctx, name) {
+        async addNewTInstrument(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/instrument`, {
                 method: 'post',
-                headers: {
+                headers: { 
                     'Accept': 'application/json',
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    ...name
+                    ...data
                 })
             })
 
@@ -192,6 +195,30 @@ export default {
         filterAllInstrumentNyId(state, id) {
             state.TInstrument = state.TInstrument.filter(pI => pI.id == id.type)
             state.PTInstrument = state.PTInstrument.filter(p => p.id == id.pType)
-        }
+        },
+        throwInstansTools(state) {
+            state.instansTInstrument = []
+            state.instansPTInstrument = []
+            state.linkId = 0
+        },
+        getInstansTools(state, instans) {
+            if(instans == 0) {
+                state.TInstrument = state.instansTInstrument
+                state.PTInstrument = state.instansPTInstrument
+                state.linkId = 0
+                return 0
+            }
+            if(state.instansTInstrument.length == 0) 
+                state.instansTInstrument = state.TInstrument
+            if(state.instansPTInstrument.length == 0)
+                state.instansPTInstrument = state.PTInstrument
+
+            state.linkId = instans
+
+            state.TInstrument = state.instansTInstrument
+                .filter(inst => inst.instans == instans)
+            state.PTInstrument = state.instansPTInstrument
+                .filter(inst => inst.instans == instans)
+        },
     }
 }

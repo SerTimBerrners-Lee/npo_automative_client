@@ -1,3 +1,12 @@
+
+.inputs-small {
+    border: none;
+}
+
+.active {
+    color: rgb(12, 64, 221);
+}
+
 .edit-save-block {
     border-bottom: 2px solid black;
     display: flex;

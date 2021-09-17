@@ -6,10 +6,24 @@
       <div v-if="parametrs.instrument == 'TYPE'">
         <h3>{{ titleapp }} типа инструмента или оснастки</h3>
         <div class="block">
-            <p class="p_modal_name"> 
+            <p class="p_modal_name">  
                 <span>Наименование: </span>
                 <input type="text" v-model.trim='inputs'>
             </p>
+            <div class='block_radio'>
+              <p class='p_radio'>
+                <label for="r1"> Инструмент</label>
+                <input id='r1' type="radio" value="1" v-model="instans">
+              </p>
+              <p class='p_radio'>
+                <label for="r2"> Оснастка</label>
+                <input id='r2' type="radio"  value="2" v-model="instans">
+              </p>
+              <p class='p_radio'>
+                <label for="r3"> Мерительный инструмент</label>
+                <input id='r3' type="radio"  value="3" v-model="instans">
+              </p>
+            </div>
         </div>
         <div class="btn-control out-btn-control">
             <button class="btn-status btn-black" 
@@ -59,6 +73,7 @@ export default {
           hiddens: 'display: none;',
           titleapp: 'Добавление',
           inputs: '',
+          instans: 1
       }
   },
   mounted() {
@@ -68,8 +83,11 @@ export default {
       if(this.parametrs.type != 'create') {
           this.titleapp = 'Редактирование'
       } 
-      if(this.parametrs.type == 'edit') 
+      if(this.parametrs.type == 'edit')  {
         this.inputs = this.parametrs.data.name
+        this.instans = this.parametrs.data.instans
+      }
+        
       
   },
   methods: {
@@ -85,7 +103,8 @@ export default {
         this.$emit('unmount', {
           type: this.parametrs.instrument,
           action: 'create',
-          name: this.inputs
+          name: this.inputs,
+          instans: this.instans
         })
         this.destroyModalF()
       },
@@ -95,7 +114,8 @@ export default {
         this.$emit('unmount', {
           type: this.parametrs.instrument,
           action: 'edit',
-          name: this.inputs
+          name: this.inputs,
+          instans: this.instans
         })
         this.destroyModalF()
       }
@@ -104,8 +124,14 @@ export default {
 </script>
 
 <style scoped>
+  .out-btn-control {
+    width: 96%;
+  }
+  .block_radio {
+    height: 50px;
+  }
   .right-menu-p>input {
-      width: 70%;
+      width: 50%;
   }
   .input_znach {
     display: flex;
@@ -126,15 +152,28 @@ export default {
       padding: 5px;
       font-weight: bolder;
   }
+  .p_radio label {
+    color: black;
+    font-size: 15px;
+  }
+  .p_radio {
+    width: fit-content;
+    float: left;
+  }
   .block p * {
       margin-left: 10px;
   }
-  .block p {
+
+  .block .p_modal_name {
       display: flex;
       justify-content: space-between;
   }
-  .block p input {
-      width: 76%;
+  .block p input[type='radio'] {
+      width: fit-content;
+      
+  }
+  .block p input[type='text'] {
+    width: 100%;
   }
   .select-small {
       width : 100%;

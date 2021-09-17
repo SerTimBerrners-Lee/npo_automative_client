@@ -67,24 +67,6 @@
                                                 <h3>История изменений</h3>
                                             </div>
                                         </div>
-                                        <!-- <div>
-                                            <div>
-                                            <div>
-                                                <h3>Документы</h3>
-                                                <table style="width: 100%">
-                                                    <tr>
-                                                        <th>Файл</th>
-                                                    </tr>
-                                                    <tr class="td-row" 
-                                                    v-for="doc in obj.documents" 
-                                                    :key="doc"
-                                                    @click="clickDoc(doc)">
-                                                        <td> {{ doc.name }} </td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            </div>
-                                        </div> -->
                                     </div>
                                     
                                 </div>

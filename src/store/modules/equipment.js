@@ -131,6 +131,7 @@ export default {
             const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/${id}`)
             const result = await res.json()
             ctx.commit('addOneEquipment', result)
+            return result 
         },
         async removeFileEquipment(ctx, id) {
             await fetch(`${PATH_TO_SERVER}api/equipment/file/${id}`, {

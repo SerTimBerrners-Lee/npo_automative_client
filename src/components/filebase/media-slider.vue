@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div :style='width_main'>
         <div class="slider_main">
             <div class='img_content' v-if='files.length'>
                 <div class="left_button" @click='swapMedia("l")'>&#8592;</div>
@@ -28,7 +28,7 @@ import {photoPreloadUrl} from '@/js/'
 import PATH_TO_SERVER from '@/js/path.js'
 import { isEmpty } from 'lodash'
 export default {
-    props: ['data', 'width'],
+    props: ['data', 'width', 'static', 'width_main'],
     data() {
         return {
             files: [],
@@ -66,8 +66,11 @@ export default {
         for(let file of this.$props.data) {
             i++
             photoPreloadUrl(file, (res) => {
-                if(res.type == 'movi' || res.type == 'img')
-                    this.files.push({ path: PATH_TO_SERVER + file.path, type: res.type})
+                if(res.type == 'movi' || res.type == 'img') 
+                    if(this.$props.static)
+                         this.files.push({ path: file.path, type: res.type})
+                    else
+                        this.files.push({ path: PATH_TO_SERVER + file.path, type: res.type})
                 if(i >= this.$props.data.length - 1)
                     this.swapMedia()
             }, true)

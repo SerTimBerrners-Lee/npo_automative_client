@@ -3,55 +3,43 @@
         <div :class='destroyModalLeft' @click="destroyModalF"></div>
         <div :class='destroyModalRight'>
            <div :style="hiddens">
-                <h3>Добавление материала</h3>
+                <h3>Добавление типа инструмента или оснастки</h3>
                 <div class="body_table_instr">
-                        <TableMaterial :alltypeM='alltypeM' :title='"Тип (Тип профиля заготовки)"' :type='"type"' @clickMat='clickMat' />
-                        <TableMaterial :alltypeM='allPodTypeM' :title='"Подтип (Материал заготовки)"' :type='"podM"' @clickMat='clickMat' />
-                        <TableMaterial :alltypeM='getOnePodMaterial' :title='"Наименование (Марка / типоразмер)"' :type='"podPM"' @clickMat='clickMat' />
+                    <TableMaterial :title='"Тип"' 
+                        :alltypeM="allEquipmentType" 
+                        :type='"T"' 
+                        @clickMat="clickEquipmentType"/>
+                    <TableMaterial :title='"Подтип"' 
+                        :alltypeM="allEquipmentPType" 
+                        :type="'PT'" 
+                        @clickMat="clickEquipmentPType"/>
+                    <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
+                        :alltypeM="allEquipment" 
+                        :type="'PPT'" 
+                        @clickMat="clickEquipment"/>
                 </div>
-                 <div class="btn-control body_table_instr" v-if='!getOneMaterial'>
-                    <button class="btn-small btn-add" @click='addMaterialToList'>Выбрать</button>
+                 <div class="btn-control body_table_instr">
+                    <button class="btn-small btn-add" @click='addEuipmentToList'>Выбрать</button>
                 </div>
-                <div v-if='materialList.length > 0 && !getOneMaterial'>
+                <div v-if='equipmentList.length > 0'>
                     <table>
                         <tr>
-                            <th>Артикул</th>
                             <th>Выбранное</th>
-                            <th>ЕИ</th>
-                            <th>Количество</th>
                             <th>Действие</th>
                         </tr>
-                        <tr v-for='mat of materialList' :key='mat.mat'>
-                            <td class='td_kolvo'>
-                                <input class='inputs-small' 
-                                    @change='e => changeArt(e.target, mat)' 
-                                    type='text' 
-                                    :value='mat.art'>
-                            </td>
-                            <td>{{ mat.mat.name }}</td>
-                            <td>{{  }}</td>
-                            <td class='td_kolvo'>
-                                <input class='inputs-small' 
-                                    @change='e => changeKolvo(e.target, mat)' 
-                                    type='text' 
-                                    :value='mat.kol'>
-                            </td>
-                            <td class='delete_span' @click='delMat(mat.mat.id)'>удалить</td>
+                        <tr v-for='eq of equipmentList' :key='eq'>
+                            <td>{{ eq.name }}</td>
+                            <td class='delete_span' @click='delEQ(eq.id)'>удалить</td>
                         </tr>
                     </table>
                 </div>
                 <div class="btn-control out-btn-control">
-                    <button class="btn-status" @click='destroyModalF' v-if='!getOneMaterial'>Отменить</button>
-                    <button class="btn-status btn-black" 
-                            style="height: 0px;" 
-                            @click='addMaterials' v-if='!getOneMaterial'>Добавить выбранное</button>
-                    <button class="btn-status" @click='exit' v-if='getOneMaterial'>Отменить</button>
-                    <button class="btn-status btn-black" 
-                            style="height: 0px;" 
-                            @click='returnOneMaterial' v-if='getOneMaterial'>Добавить выбранное</button>
+                    <button class="btn-status" @click='destroyModalF'>Отменить</button>
+                    <button class="btn-status btn-black" style="height: 0px;" @click='addEquipment'>Добавить выбранное</button>
                 </div>
            </div>
         </div>
+        <ModalInformation v-if='showModalInformationEq' :key='keyModalInformation' />
 
     </div> 
 
@@ -62,115 +50,95 @@
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import {random} from 'lodash'
+import ModalInformation from './modal-information.vue'
 
 export default {
-    props: ['allMaterial', 'instanMaterial', 'getOneMaterial'],
+    props: ['allProvider', 'listInstrument'],
     data() {
         return {
-            material: null,
-            podMaterial: null,
-            podPodMaterial: null,
-            itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 384522333213313324),
+            equipmentT: null,
+            equipmentPT: null,
+
+            showModalInformationEq: false,
+            keyModalInformation: random(1, 34e121),
 
             destroyModalLeft: 'left-block-modal',
             destroyModalRight: 'content-modal-right-menu',
             hiddens: 'opacity: 1;',
 
-            materialList: [],
-            materialListId: []
+            equipmentList: [],
+            equipmentListId: []
         }
     },
-    computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
-    components: {TableMaterial},
+    computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEquipment', 'equipment']),
+    components: {TableMaterial, ModalInformation},
     methods: {
-         ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
-        ...mapMutations(['filterMatByPodType', 'addOnePPTyep', 'getInstansMaterial', 'throwInstans', 'toEmptyPPT']),
+        ...mapActions([
+            'fetchAllEquipmentType',
+            'getOneEquipmentPType',
+            'fetchOneEquipment',
+            'banEquipment'
+            ]),
+        ...mapMutations(['filterAllPTEquipment']),
+        clickEquipmentType(equipment) {
+            this.equipmentT = equipment
+            this.filterAllPTEquipment(this.equipmentT.equipmentsPT)
+        },
+        clickEquipmentPType(equipmentPT) {
+            this.equipmentPT = equipmentPT
+            this.getOneEquipmentPType(equipmentPT.id)
+        },
+        clickEquipment(eq) {
+            this.fetchOneEquipment(eq.id).then(() => {
+                this.showModalInformationEq = true;
+                this.keyModalInformation = random(10, 34e121)
+            })
+            
+        },
         destroyModalF() {
             this.destroyModalLeft = 'left-block-modal-hidden'
             this.destroyModalRight = 'content-modal-right-menu-hidden'
             this.hiddens = 'display: none;'
         },
-       clickMat(mat, type) {
-            if(type == 'type') 
-                this.material = mat
 
-            if(type == 'podM') this.getOnePodType(mat.id)
-            if(type == 'podPM') {
-                this.podPodMaterial = mat
-                this.fetchGetOnePPM(mat.id).then((material) => {
-                    this.podPodMaterial = material
-                })
-            }
-        },
-
-        addMaterialToList() {
-            if(!this.podPodMaterial)
+        // ---------------------------------------
+        addEuipmentToList() {
+            if(!this.equipment)
                 return 0;
             
             let add = true
-            if(this.materialList.length > 0) {
-                for(let mat of this.materialList) {
-                    if(mat.mat.id == this.podPodMaterial.id)
-                        add = false
+            if(this.equipmentList.length > 0) {
+                for(let eq of this.equipmentList) {
+                    if(eq.id == this.equipment.id)
+                        add=false
                 }
             }
             if(add) {
-                this.materialListId.push(this.podPodMaterial.id)
-                this.materialList.push({ 
-                    art: '',
-                    mat: this.podPodMaterial,
-                    kol: 1,
-                });
+                this.equipmentListId.push(this.equipment.id)
+                this.equipmentList.push(this.equipment);
             }
         },
-        delMat(id) {
-            this.materialList = this.materialList.filter(mat => mat.mat.id != id)
-            this.materialListId = this.materialListId.filter(mat => mat != id)
+        delEQ(id) {
+            this.equipmentList = this.equipmentList.filter(eq => eq.id != id)
+            this.equipmentListId = this.equipmentListId.filter(eq => eq != id)
         },
-        addMaterials() {
+        addEquipment() {
             this.destroyModalF()
-            this.$emit('unmount_material', {
-                materialListId: this.materialListId,
-                materialList: this.materialList
+            this.$emit('unmount_eq', {
+                equipmentListId: this.equipmentListId,
+                equipmentList: this.equipmentList,
             })
-        },
-        returnOneMaterial() {
-            if(!this.podPodMaterial)
-                return 0
-            this.$emit('unmount_material', {
-                material: this.podPodMaterial
-            })
-            this.destroyModalF()
-        },
-        exit() {
-            this.$emit('unmount_material', {
-                material:  null
-            })
-            this.destroyModalF()
-        },
-        changeKolvo(val, mat) {
-            mat.kol = val.value
-        },
-        changeArt(val, mat) {
-            mat.art = val.value
-            console.log(mat)
         }
     },
     async mounted() {
         this.destroyModalLeft = 'left-block-modal'
         this.destroyModalRight = 'content-modal-right-menu'
         this.hiddens = 'opacity: 1;'
-        this.toEmptyPPT()
-
-        await this.getAllTypeMaterial()
-        await this.getAllPodTypeMaterial()
-        if(this.$props.instanMaterial) 
-            this.getInstansMaterial(this.$props.instanMaterial)
-        if(this.$props.allMaterial) {
-             this.materialList = this.$props.allMaterial
-             this.materialList.forEach((el) => {
-                 this.materialListId.push(el.mat.id)
+        this.fetchAllEquipmentType()
+        if(this.$props.listEquipment) {
+             this.equipmentList = this.$props.listEquipment
+             this.$props.listEquipment.forEach((el) => {
+                 this.equipmentListId.push(el.id)
              })
         }
     }
@@ -178,11 +146,6 @@ export default {
 </script>
 
 <style scoped>
-    .inputs-small {
-        width: 100px;
-        max-width: 97%;
-        text-align: center;
-    }
     .delete_span {
         font-size: 11px;
         cursor: pointer;

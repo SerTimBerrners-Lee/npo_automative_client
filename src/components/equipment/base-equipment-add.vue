@@ -194,8 +194,8 @@ export default {
       if(!e) return 0
       this.formData = e.formData
     },
-    unmount_instrument(instrumentIdList) {
-      this.obj.instrumentIdList = instrumentIdList
+    unmount_instrument(instrument) {
+      this.obj.instrumentIdList = instrument.instrumentIdList
     }
   },
   async mounted() {

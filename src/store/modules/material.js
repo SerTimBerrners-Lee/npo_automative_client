@@ -253,6 +253,9 @@ export default {
                     m
                 })
             })
+        },
+        toEmptyPPT(state) {
+            state.podMaterial = []
         }
     }
 }

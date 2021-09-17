@@ -79,6 +79,7 @@ export default {
             this.destroyModalLeft = 'left-block-modal-hidden'
             this.destroyModalRight = 'content-modal-right-menu-hidden'
             this.hiddens = 'display: none;'
+            this.showModalInformation = false
         },
         clickTInstrument(instrument) {
             this.TInstrument = instrument
@@ -117,7 +118,8 @@ export default {
         addInstruement() {
             this.destroyModalF()
             this.$emit('unmount_instrument', {
-                instrumentListId: this.instrumentListId
+                instrumentListId: this.instrumentListId,
+                instrumentList: this.instrumentList,
             })
         }
     },
@@ -127,6 +129,7 @@ export default {
         this.hiddens = 'opacity: 1;'
         this.fetchAllInstruments()
         if(this.$props.listInstrument) {
+            console.log(this.$props.listInstrument)
              this.instrumentList = this.$props.listInstrument
              this.$props.listInstrument.forEach((el) => {
                  this.instrumentListId.push(el.id)

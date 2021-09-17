@@ -64,9 +64,14 @@ export default {
                 return 0
             if(res.type == "TYPE") {
                 if(res.action == 'edit')
-                    this.updateTInstrument({id: this.TInstrument.id, name: res.name})
+                    this.updateTInstrument({
+                        id: this.TInstrument.id, 
+                        name: res.name, 
+                        instans: res.instans})
                 if(res.action == 'create')
-                    this.addNewTInstrument({name: res.name})
+                    this.addNewTInstrument({
+                        name: res.name,
+                        instans: res.instans})
             }
             if(res.type == "PODTYPE") {
                 if(!this.TInstrument)
@@ -103,7 +108,7 @@ export default {
                 this.parametrs = {
                     instrument, 
                     type,
-                    data: { name: this.TInstrument.name }
+                    data: { name: this.TInstrument.name, instans: this.TInstrument.instans }
                 }
             }
 

@@ -365,8 +365,11 @@ export default {
           this.getOnePodType(mat.id).then((mat) => {
             if(!mat) return 0
             this.podMaterial = mat
-            if(!this.$route.params.type == 'edit')
-              this.obj.density_input = JSON.parse(this.podMaterial.density).znach
+            if(this.$route.params.type == 'create') 
+              if(JSON.parse(this.podMaterial.density))
+                this.obj.density_input =  JSON.parse(this.podMaterial.density).znach
+            
+              
             if(this.material) {
               this.obj.name = this.material.name + ' ' + this.podMaterial.name
             } else {
