@@ -98,12 +98,14 @@ export default {
         'fetchAllEquipmentType',
         'getOneEquipmentPType',
         'fetchOneEquipment',
-        'banEquipment'
+        'banEquipment',
+        'getAllEquipmentPType',
+        'fetchAllEquipment'
            ]),
     ...mapMutations(['filterAllPTEquipment']),
     clickEquipmentType(equipment) {
         this.equipmentT = equipment
-        this.filterAllPTEquipment(this.equipmentT.equipmentsPT)
+        this.filterAllPTEquipment(this.equipmentT)
     },
     clickEquipmentPType(equipmentPT) {
         this.equipmentPT = equipmentPT
@@ -143,6 +145,8 @@ export default {
   },
   async mounted() {
     this.fetchAllEquipmentType()
+    this.getAllEquipmentPType()
+    this.fetchAllEquipment()
   }
 }
 </script>

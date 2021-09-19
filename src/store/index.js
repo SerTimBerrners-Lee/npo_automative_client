@@ -8,6 +8,7 @@ import material from './modules/material'
 import providers from './modules/providers'
 import instruments from './modules/instruments'
 import equipment from './modules/equipment'
+import detal from './modules/detal'
 
 export default createStore({
   modules: {
@@ -19,7 +20,8 @@ export default createStore({
     material,
     providers,
     instruments,
-    equipment
+    equipment,
+    detal
   }
 })
   

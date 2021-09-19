@@ -164,6 +164,14 @@ export default {
                 ctx.commit('addOnePPTyep', result)
                 return result
             }
+        },
+        async fetchGetAllPPM(ctx) {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podpodtype`)
+            if(res.ok) {
+                const result = await res.json()
+                ctx.commit('pushAllPPT', result)
+                return result
+            }
         }
     },
     mutations: {
@@ -173,9 +181,15 @@ export default {
             state.linkId = 0
         },
         getInstansMaterial(state, instans) {
+            state.podMaterial = []
             if(instans == 0) {
                 state.typeM = state.instansTypeM
                 state.podTypeM = state.instansPodTypeM
+                state.typeM.forEach(el => {
+                    el.podPodMaterials.forEach(e => {
+                        state.podMaterial.push(e)
+                    })
+                })
                 state.linkId = 0
                 return 0
             }
@@ -188,6 +202,11 @@ export default {
 
             state.typeM = state.instansTypeM.filter(mat => mat.instansMaterial == instans)
             state.podTypeM = state.instansPodTypeM.filter(mat => mat.instansMaterial == instans)
+            state.typeM.forEach(el => {
+                el.podPodMaterials.forEach(e => {
+                    state.podMaterial.push(e)
+                })
+            })
         },
         addTypeMaterial(state, material) {
             state.typeM.push(material)
@@ -201,7 +220,7 @@ export default {
         },
         filterMatByPodType(state, podMaterials) {
             state.podTypeM = podMaterials
-        },
+        }, 
         deleteMaterial(state, id) {
             state.typeM = state.typeM.filter(typ => typ.id != id)
         },
@@ -256,6 +275,12 @@ export default {
         },
         toEmptyPPT(state) {
             state.podMaterial = []
+        },
+        filterByNameMaterial(state, mat) {
+            state.podMaterial = mat.podPodMaterials
+        },
+        pushAllPPT(state, data) {
+            state.podMaterial = data
         }
     }
 }

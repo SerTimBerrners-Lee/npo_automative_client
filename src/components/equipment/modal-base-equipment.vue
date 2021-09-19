@@ -3,7 +3,7 @@
         <div :class='destroyModalLeft' @click="destroyModalF"></div>
         <div :class='destroyModalRight'>
            <div :style="hiddens">
-                <h3>Добавление типа инструмента или оснастки</h3>
+                <h3>Добавление Оборудования</h3>
                 <div class="body_table_instr">
                     <TableMaterial :title='"Тип"' 
                         :alltypeM="allEquipmentType" 
@@ -53,7 +53,7 @@ import {random} from 'lodash'
 import ModalInformation from './modal-information.vue'
 
 export default {
-    props: ['allProvider', 'listInstrument'],
+    props: ['allProvider', 'listEquipment'],
     data() {
         return {
             equipmentT: null,
@@ -77,12 +77,14 @@ export default {
             'fetchAllEquipmentType',
             'getOneEquipmentPType',
             'fetchOneEquipment',
-            'banEquipment'
+            'banEquipment',
+            'getAllEquipmentPType',
+            'fetchAllEquipment'
             ]),
         ...mapMutations(['filterAllPTEquipment']),
-        clickEquipmentType(equipment) {
+        clickEquipmentType(equipment) { 
             this.equipmentT = equipment
-            this.filterAllPTEquipment(this.equipmentT.equipmentsPT)
+            this.filterAllPTEquipment(this.equipmentT)
         },
         clickEquipmentPType(equipmentPT) {
             this.equipmentPT = equipmentPT
@@ -135,8 +137,11 @@ export default {
         this.destroyModalRight = 'content-modal-right-menu'
         this.hiddens = 'opacity: 1;'
         this.fetchAllEquipmentType()
+        this.getAllEquipmentPType()
+        this.fetchAllEquipment()
         if(this.$props.listEquipment) {
              this.equipmentList = this.$props.listEquipment
+             console.log(this.equipmentList)
              this.$props.listEquipment.forEach((el) => {
                  this.equipmentListId.push(el.id)
              })

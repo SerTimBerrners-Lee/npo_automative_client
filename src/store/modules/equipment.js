@@ -115,7 +115,11 @@ export default {
             const result = await res.json()
             ctx.commit('allEquipments', result)
         },
-
+        async getAllEquipmentPType(ctx) {
+            const res = await fetch(`${PATH_TO_SERVER}api/equipment/pt/`)
+            const result = await res.json()
+            ctx.commit('pushAllEquipmentsPT', result)
+        },
         async creqteEquipment(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq`, {
                 method: 'post',
@@ -131,6 +135,12 @@ export default {
             const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/${id}`)
             const result = await res.json()
             ctx.commit('addOneEquipment', result)
+            return result 
+        },
+        async fetchAllEquipment(ctx) {
+            const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/`)
+            const result = await res.json()
+            ctx.commit('pushAllEquipment', result)
             return result 
         },
         async removeFileEquipment(ctx, id) {
@@ -181,13 +191,15 @@ export default {
                 state.equipmentPType = []
             state.equipmentPType.push(equipmentsPT)
         },
-        filterAllPTEquipment(state, PTEquipment) {
-            if(!PTEquipment)   
+        filterAllPTEquipment(state, equipmentT) {
+            if(!equipmentT.equipmentsPT)   
                 state.equipmentPType = []
-            console.log(PTEquipment)
-            state.equipmentPType = PTEquipment
+            if(!equipmentT.equipments)
+                state.equipments = []
+            state.equipments = equipmentT.equipments.filter(el => !el.ban)
+            state.equipmentPType = equipmentT.equipmentsPT
         },
-        removeEquipmentPType(state, id) {
+        removeEquipmentPType(state, id) { 
             state.equipmentPType = state.equipmentPType.filter(eq => eq.id != id)
         },
         updateEquipmentPType(state, result) {
@@ -196,6 +208,12 @@ export default {
         filterAllEquipmentById(state, id) {
             state.equipmentType = state.equipmentType.filter(eq => eq.id == id.type)
             state.equipmentPType = state.equipmentPType.filter(eq => eq.id == id.pType)
+        },
+        pushAllEquipmentsPT(state, data) {
+            state.equipmentPType = data
+        },
+        pushAllEquipment(state, data) {
+            state.equipments = data.filter(el => !el.ban)
         }
     }
 }

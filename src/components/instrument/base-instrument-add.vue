@@ -131,12 +131,12 @@ export default {
       }
     }
   },
-  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm']),
+  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getLinkIdInstrument']),
   components: {TableMaterial, AddFile, ListProvider},
   methods: {
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 384522333213313324)
+      this.keyWhenModalListProvider = random(10, 384^5)
     },
     pushProvider(provider) { 
       if(!provider)
@@ -165,16 +165,16 @@ export default {
       this.formData.append('parentId', this.obj.parentId)
       this.formData.append('providers', this.providersId)
       this.addNameInstrument(this.formData)
-
+      
       this.$router.push('/basetools')
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
     ...mapActions(['fetchAllInstruments', 'getAllEdizm', 'addNameInstrument']),
-    ...mapMutations(['filterAllpInstrument']),
+    ...mapMutations(['filterAllpInstrument', 'getInstansTools']),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
-      this.filterAllpInstrument(instrument.pInstruments)
+      this.filterAllpInstrument(instrument)
     },
     clickPTInstrument(PTInstrument) {
       this.PTInstrument = PTInstrument
@@ -186,7 +186,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384522333213313324)
+      this.keyWhenModalGenerate = random(10, 384e3)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -195,8 +195,9 @@ export default {
     },
   },
   async mounted() {
-    this.fetchAllInstruments()
-    this.getAllEdizm()
+    await this.fetchAllInstruments()
+    await this.getAllEdizm()
+    this.getInstansTools(this.getLinkIdInstrument || 0)
   }
 }
 </script>

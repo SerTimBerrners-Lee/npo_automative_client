@@ -29,7 +29,15 @@
                                     :value='mat.art'>
                             </td>
                             <td>{{ mat.mat.name }}</td>
-                            <td>{{  }}</td>
+                            <td>
+                                <select class='select-small' @change='e => selecter(e.target, mat)' v-model='mat.ez'>
+                                    <option value='1' v-if="mat.ez == 1 || JSON.parse(mat.mat.kolvo).c1"> шт</option> 
+                                    <option value='2' v-if="mat.ez == 2 || JSON.parse(mat.mat.kolvo).c2"> л </option>
+                                    <option value='3' v-if="mat.ez == 3 || JSON.parse(mat.mat.kolvo).c3"> кг</option> 
+                                    <option value='4' v-if="mat.ez == 4 || JSON.parse(mat.mat.kolvo).c4"> м </option>
+                                    <option value='5' v-if="mat.ez == 5 || JSON.parse(mat.mat.kolvo).c5"> м.куб</option> 
+                                </select>       
+                            </td>
                             <td class='td_kolvo'>
                                 <input class='inputs-small' 
                                     @change='e => changeKolvo(e.target, mat)' 
@@ -121,6 +129,7 @@ export default {
                     art: '',
                     mat: this.podPodMaterial,
                     kol: 1,
+                    ez: null
                 });
             }
         },
@@ -154,6 +163,10 @@ export default {
         },
         changeArt(val, mat) {
             mat.art = val.value
+           
+        },
+        selecter(val, mat) {
+            mat.ez = val.value
             console.log(mat)
         }
     },

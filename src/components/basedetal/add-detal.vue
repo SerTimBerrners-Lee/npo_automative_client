@@ -27,7 +27,12 @@
                 <tr v-for='material in materialList' :key='material.mat'>
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
-                  <td></td>
+                  <td> <span v-if="material.ez == 1"> шт</span> 
+                        <span v-if="material.ez == 2"> л </span>
+                        <span v-if="material.ez == 3"> кг</span> 
+                        <span v-if="material.ez == 4"> м </span>
+                        <span v-if="material.ez == 5"> м.куб</span>
+                  </td>
                   <td>{{ material.kol }}</td>
                 </tr>
               </table>
@@ -190,7 +195,7 @@
                   @click='$router.push("/basedetals")'
                   >Отменить</button>
           <button class="btn-status btn-black" 
-            style="height: 0px;">Сохранить</button>
+            style="height: 0px;" @click='saveDetal'>Сохранить</button>
           </div>
       </div>
 
@@ -217,6 +222,7 @@ import AddFile from '@/components/filebase/addfile.vue'
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
 import TechProcess from './tech-process-modal.vue'
 import { random, padStart, padEnd } from 'lodash'
+import { mapActions } from 'vuex'
 
 export default {
   data() {
@@ -245,8 +251,8 @@ export default {
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
       instanMaterial: 3,
-      mat_zag: 'Задать', //  материал как заготовка
-      mat_zag_zam: 'Задать', // Материал как заменитель 
+      mat_zag: 'Задать', 
+      mat_zag_zam: 'Задать', 
       getOneMaterial: false,
       materialList: [],
       selectHaracteristic: null,
@@ -257,7 +263,40 @@ export default {
   },
   components: {AddFile, ModalBaseMaterial, TechProcess},
   methods: {
+    ...mapActions(['createNewDetal']),
+    saveDetal() {
+      // Проверяем введенные данные 
+      if(this.obj.name.length < 3) 
+        return 0
 
+      let FD = new FormData()
+      FD.append('name', this.obj.name)
+      FD.append('articl', this.obj.atricl)
+      FD.append('responsible', this.obj.responsible)
+      FD.append('description', this.obj.description)
+      FD.append('parametrs', JSON.stringify(this.obj.parametrs))
+      FD.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      FD.append('DxL', this.obj.DxL)
+      FD.append('massZag', this.obj.massZag)
+      FD.append('trash', this.obj.trash)
+      FD.append('mat_zag', this.mat_zag != 'Задать' ?
+        this.mat_zag.id : null)
+      FD.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
+         this.mat_zag_zam.id : null)
+      for(let mat = 0; mat < this.materialList.length; mat++) {
+        this.materialList[mat].mat = {
+          id: this.materialList[mat].mat.id,
+          name: this.materialList[mat].mat.name,
+          kolvo: this.materialList[mat].mat.kolvo
+        }
+        if(mat == this.materialList.length - 1) {
+          FD.append('materialList', JSON.stringify(this.materialList))
+          this.createNewDetal(FD)
+        }
+      }
+      
+      
+    },
     addDock(val) {
       val.target.files.forEach(f => {
         this.docFiles.push(f)

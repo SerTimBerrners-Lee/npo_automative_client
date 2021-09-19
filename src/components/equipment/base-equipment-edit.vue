@@ -137,16 +137,16 @@ export default {
         docFiles: [],
         formData: null,
         isChangeFolderFile: false,
-        keyWhenModalGenerate: random(10, 384522333213313324),
+        keyWhenModalGenerate: random(10, 323e8),
         itemFiles: null,
         showFile: false,
-        keyWhenModalGenerateFileOpen: random(10, 384522333213313324),
+        keyWhenModalGenerateFileOpen: random(10, 323e8),
         documents: [],
         showProvider: false,
-        keyWhenModalListProvider: random(10, 384522333213313324),
+        keyWhenModalListProvider: random(10, 323e8),
         providers: [],
         providersId: [],
-        instrumentKey: random(10, 384522333213313324),
+        instrumentKey: random(10, 323e8),
         instrumentIsShow: false,
       obj: {
         name: '',
@@ -185,7 +185,7 @@ export default {
         this.formData.append('description', this.obj.description)
         this.formData.append('providers', this.providersId)
         this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
-        this.updateEquipment(this.formData)
+        this.updateEquipment(this.formData) 
 
     this.$router.push('/baseequipment')
     },
@@ -248,7 +248,7 @@ export default {
     ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById']),
     clickEquipment(eq) {
       this.equipmentT = eq
-      this.filterAllPTEquipment(eq.equipmentT)
+      this.filterAllPTEquipment(eq)
     },
     clickEquipmentPT(eq) {
       this.equipmentPT = eq
@@ -257,27 +257,22 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384522333213313324)
+      this.keyWhenModalGenerate = random(10, 34e9)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
       if(!e) return 0
       this.formData = e.formData
     },
-    unmount_instrument(instrumentIdList) {
-      this.obj.instrumentIdList = instrumentIdList
-      this.listInstrument = this.listInstrument.map((el) => {
-        for(let i of Object.values(this.obj.instrumentIdList))
-          if(i == el.id)
-            return el
-      })
-      this.listInstrument = this.listInstrument.filter((el) => el)
+    unmount_instrument(instruement) {
+      this.obj.instrumentIdList = instruement.instrumentListId
+      this.listInstrument = instruement.instrumentList
     }
   },
   async mounted() {
     this.getAllEdizm()
     this.checkedUpdate()
-    // добавлять документы и удалять их по желанию
+
   }
 }
 </script>

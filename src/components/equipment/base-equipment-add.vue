@@ -88,6 +88,7 @@
           v-if='showProvider'
           />
           <BaseTools 
+            :listInstrument='listInstrument'
             :key='instrumentKey'
             v-if='instrumentIsShow'
             @unmount_instrument='unmount_instrument'
@@ -128,7 +129,8 @@ export default {
         description: '',
         responsible: '',
         instrumentIdList: []
-      }
+      },
+      listInstrument: null
     }
   },
   computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEdizm']),
@@ -158,7 +160,6 @@ export default {
 
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
-
       this.formData.append('name', this.obj.name)
       this.formData.append('deliveryTime', this.obj.deliveryTime)
       this.formData.append('invNymber', this.obj.invNymber)
@@ -178,7 +179,7 @@ export default {
     ...mapMutations(['filterAllPTEquipment']),
     clickEquipment(eq) {
       this.equipmentT = eq
-      this.filterAllPTEquipment(eq.equipmentsPT)
+      this.filterAllPTEquipment(eq)
     },
     clickEquipmentPT(eq) {
       this.equipmentPT = eq
@@ -194,8 +195,9 @@ export default {
       if(!e) return 0
       this.formData = e.formData
     },
-    unmount_instrument(instrument) {
-      this.obj.instrumentIdList = instrument.instrumentIdList
+    unmount_instrument(instruement) {
+      this.obj.instrumentIdList = instruement.instrumentListId
+      this.listInstrument = instruement.instrumentList
     }
   },
   async mounted() {

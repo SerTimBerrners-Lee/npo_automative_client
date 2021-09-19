@@ -7,8 +7,9 @@ export default {
         PPTInstrument: [],
         nameInstrument: {},
 
-        instansTInstrument: [],
+        instansTInstrument: [], 
         instansPTInstrument: [],
+        linkId: 0
     },
     getters: {
         allTInstrument(state) {
@@ -22,7 +23,10 @@ export default {
         },
         getOneNameInstrument(state) {
             return state.nameInstrument
-        }
+        },
+        getLinkIdInstrument(state) {
+            return state.linkId
+        },
     },
     actions: { 
         async fetchAllInstruments(ctx) {
@@ -117,6 +121,12 @@ export default {
             ctx.commit('getAllName', result)
         },
 
+        async getPTInstrumentList(ctx) {
+            const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/`)
+            const result = await res.json()
+
+            ctx.commit('pushPTInstrumentList', result)
+        },
         async addNameInstrument(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`, {
                 method: 'post',
@@ -125,7 +135,9 @@ export default {
 
             if(res.ok) {
                 const result = await res.json()
-                console.log(result)
+                ctx.dispatch('fetchAllInstruments')
+                ctx.dispatch('getAllNameInstrument')
+                return result
             }
         },
         async fetchOneNameInstrument(ctx, id) {
@@ -146,20 +158,40 @@ export default {
 
             if(res.ok) {
                 const result = await res.json()
-                console.log(result)
+                return result 
             }
         },
         async banNameInstrument(ctx, id) {
             await fetch(`${PATH_TO_SERVER}api/instrument/ban/${id}`, {
                 method: 'delete'
             })
-            ctx.commit('hideNameInstrument', id)
-            ctx.dispatch('fetchAllInstruments')
+            ctx.commit('hideNameInstrument', id)    
         },
+        async getAllNameInstrument(ctx) {
+            const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`)
+            const result = await res.json()
+            ctx.commit('pushAllNameInstrument', result)
+        }
     },
-    mutations: {
+    mutations: { 
+        pushAllNameInstrument(state, data) {
+            state.PPTInstrument = data.filter(el => !el.ban)
+        },
+        pushPTInstrumentList(state, data) {
+            state.PTInstrument = data
+        },
         hideNameInstrument(state, id) {
             state.PPTInstrument = state.PPTInstrument.filter(inst => inst.id != id)
+            // Найти родителя и удалиться из него
+            state.TInstrument.forEach(el => {
+                el.nameInstruments = el.nameInstruments.filter((e) => e.id != id)
+            })
+            state.instansTInstrument.forEach(el => {
+                el.nameInstruments = el.nameInstruments.filter((e) => e.id != id)
+            })
+            state.PTInstrument.forEach(el => {
+                el.nameInstrument = el.nameInstrument.filter((e) => e.id != id)
+            })
         },
         addOneNameInstrument(state, nameInstrument) {
             state.nameInstrument = nameInstrument
@@ -181,10 +213,14 @@ export default {
                 state.PTInstrument = []
             state.PTInstrument.push(PTInstrument)
         },
-        filterAllpInstrument(state, pInstruments) {
-            if(!pInstruments)   
+        filterAllpInstrument(state, instrument) {
+            if(!instrument.pInstruments)   
                 state.PTInstrument = []
-            state.PTInstrument = pInstruments
+
+            state.PTInstrument = instrument.pInstruments
+            if(!instrument.nameInstruments)
+                state.PPTInstrument = []
+            state.PPTInstrument = instrument.nameInstruments.filter(el => !el.ban)
         },
         removePTInstrument(state, id) {
             state.PTInstrument = state.PTInstrument.filter(pI => pI.id != id)
@@ -196,15 +232,23 @@ export default {
             state.TInstrument = state.TInstrument.filter(pI => pI.id == id.type)
             state.PTInstrument = state.PTInstrument.filter(p => p.id == id.pType)
         },
-        throwInstansTools(state) {
+        throwInstansInstruments(state) {
             state.instansTInstrument = []
             state.instansPTInstrument = []
+            state.PPTInstrument = []
             state.linkId = 0
         },
         getInstansTools(state, instans) {
             if(instans == 0) {
                 state.TInstrument = state.instansTInstrument
                 state.PTInstrument = state.instansPTInstrument
+                state.PPTInstrument = []
+                state.PTInstrument.forEach(el => {
+                    el.nameInstrument.forEach(name => {
+                        if(!name.ban)
+                            state.PPTInstrument.push(name)
+                    })
+                })
                 state.linkId = 0
                 return 0
             }
@@ -218,7 +262,16 @@ export default {
             state.TInstrument = state.instansTInstrument
                 .filter(inst => inst.instans == instans)
             state.PTInstrument = state.instansPTInstrument
-                .filter(inst => inst.instans == instans)
+                .filter(inst => inst.instruments[0].instans == instans)
+
+            state.PPTInstrument = []
+            state.PTInstrument.forEach(el => {
+                el.nameInstrument.forEach(name => {
+                    if(!name.ban)
+                        state.PPTInstrument.push(name)
+                })
+                
+            })
         },
     }
 }

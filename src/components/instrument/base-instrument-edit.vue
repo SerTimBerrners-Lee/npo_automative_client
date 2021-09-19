@@ -200,7 +200,7 @@ export default {
     },
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 384522333213313324)
+      this.keyWhenModalListProvider = random(10, 384^4)
     },
     setDocs(dc) {
         this.itemFiles = dc
@@ -209,7 +209,7 @@ export default {
         if(isEmpty(this.itemFiles))
             return 0
         this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+        this.keyWhenModalGenerateFileOpen = random(10, 384^42)
     },
     openFile(res) { 
         console.log(res)
@@ -243,7 +243,7 @@ export default {
     ...mapMutations(['filterAllpInstrument', 'filterAllInstrumentNyId']),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
-      this.filterAllpInstrument(instrument.pInstruments)
+      this.filterAllpInstrument(instrument)
     },
     clickPTInstrument(PTInstrument) {
       this.PTInstrument = PTInstrument

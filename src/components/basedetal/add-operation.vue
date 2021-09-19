@@ -8,20 +8,21 @@
       <div class="block">
         <div class='title_p'>
           <span>Выберите операцию из списка: </span>
-          <select class='select-small ' name="" id="">
+          <select class='select-small' v-model='name'>
             <option 
               v-for='(operation, inx) in operatioinList' 
               :key='operation'
               :value='inx'>{{ operation }}</option>
           </select>
           <div>Подготовительно время, н.ч.:</div>
-          <input type="text">
+          <input type="text" v-model='preTime'>
           
           <div>Вспомогательное время, н.ч.:</div>
-          <input type="text">
+          <input type="text" v-model='helperTime'>
           <div>Основное время, н.ч.:</div>
-          <input type="text">
+          <input type="text" v-model='mainTime'>
           <div>Общее число время, ч.:</div>
+          <span class='gen_time'>{{Number(preTime)+Number(helperTime)+Number(mainTime)}}</span>
           <div></div>
         </div>
       </div>
@@ -55,14 +56,17 @@
               <tr>
                 <th>Выбранная оснастка</th>
               </tr>
+              <tr v-for='(ins, inx) in instrumentOsnList' :key='ins'>
+                <td>{{inx+1 }}. {{ ins.name }}</td>
+              </tr>
               <tr v-for='r in 8' :key='r'>
                 <td>...</td>
               </tr>
             </table>
              </div>
             <div class="btn-control">
-              <button clas='btn-small'>Сбросить</button>
-              <button class='btn-add btn-small'>Добавить</button>
+              <button clas='btn-small' @click='instrumentOsnList=[]'>Сбросить</button>
+              <button class='btn-add btn-small' @click='addInstrument("osn")'>Добавить</button>
             </div>
           </div>
         </div>
@@ -156,7 +160,8 @@
         </div>
         <div>
           <h3>Примечание</h3>
-          <textarea cols="30" rows="10"></textarea>
+          <textarea cols="30" rows="10" 
+            v-model='description'></textarea>
         </div>
       </div>
 
@@ -164,7 +169,7 @@
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
           <button class="btn-status btn-black" 
-                  style="height: 0px;">Сохранить</button>
+                  style="height: 0px;" @click='saveOperation'>Сохранить</button>
       </div>
     </div>
   </div>
@@ -173,18 +178,27 @@
     v-if='instrumentIsShow'
     @unmount_instrument='unmount_instrument'
     :listInstrument='instrumentList'
+    :typeInstrument='1'
   />
   <BaseTools 
-    :key='instrumentKey'
+    :key='metInstrumentKey'
     v-if='instrumentMerIsShow'
     @unmount_instrument='unmount_instrument_mer'
     :listInstrument='instrumentMerList'
+    :typeInstrument='3'
+  />
+  <BaseTools 
+    :key='osnInstrumentKey'
+    v-if='instrumentOsnIsShow'
+    @unmount_instrument='unmount_instrument_osn'
+    :listInstrument='instrumentOsnList'
+    :typeInstrument='2'
   />
   <BaseEquipment 
     :key='eqKey'
     v-if='eqIsShow'
     @unmount_eq='unmount_eq'
-    :listInstrument='eqList'
+    :listEquipment='eqList'
   />
 
 </div> 
@@ -193,11 +207,12 @@
 
 <script>
 
-import {random} from 'lodash'
+import {random } from 'lodash'
 import AddFile from '@/components/filebase/addfile.vue'
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
+import { mapActions } from 'vuex';
 
 export default {
 
@@ -225,14 +240,26 @@ export default {
           'Покраска',
           'Упаковка',
       ],
-      instrumentKey: random(10, 384e12),
+      instrumentKey: random(10, 34e12),
+      metInstrumentKey: random(10, 23e9),
+      osnInstrumentKey: random(10, 23e9),
       instrumentIsShow: false,
       instrumentMerIsShow: false,
+      instrumentOsnIsShow: false,
       instrumentList: [],
       instrumentMerList: [],
+      instrumentOsnList: [],
       eqIsShow: false,
       eqList: [],
-      eqKey: random(1, 123e23)
+      eqKey: random(1, 13e23),
+
+      preTime: 0,
+      helperTime: 0,
+      mainTime: 0,
+      generalCountTime: 0,
+      
+      name: 0,
+      description: ''
     }
   },
   computed: {},
@@ -242,6 +269,35 @@ export default {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
+    },
+    ...mapActions(['createOperation']),
+    saveOperation() {
+      if(!this.formData)
+        this.formData = new FormData()
+
+      this.formData.append('name', this.name)
+      this.formData.append('preTime', this.preTime)
+      this.formData.append('helperTime', this.helperTime)
+      this.formData.append('mainTime', this.mainTime)
+      this.formData.append('generalCountTime', 
+        Number(this.preTime) + 
+        Number(this.helperTime) +
+        Number(this.mainTime))
+      this.formData.append('description', this.description)
+      this.formData.append('instrumentList',
+        this.instrumentList.length ? 
+          JSON.stringify(this.instrumentList) : null)
+      this.formData.append('instrumentMerList',
+        this.instrumentMerList.length ?
+          JSON.stringify(this.instrumentMerList) : null)
+      this.formData.append('instrumentOsnList',
+        this.instrumentOsnList.length ? 
+          JSON.stringify(this.instrumentOsnList) : null)
+      this.formData.append('eqList',
+        this.eqList.length ? 
+          JSON.stringify(this.eqList) : null)
+      this.createOperation(this.formData)
+
     },
     addDock(val) {
       val.target.files.forEach(f => {
@@ -261,27 +317,49 @@ export default {
         })
     },
     addInstrument(t = 'ins') {
-      if(t == 'mer')
+      if(t == 'mer') {
+        this.metInstrumentKey = random(1, 23123)
         this.instrumentMerIsShow = true
-      if(t == 'ins')
+      }
+        
+      if(t == 'ins') {
+        this.instrumentKey = random(10, 384e12)
         this.instrumentIsShow = true
+      }
 
-      this.instrumentKey = random(10, 384e12)
+      if(t == 'osn') {
+        this.osnInstrumentKey = random(10, 34e12)
+        this.instrumentOsnIsShow = true
+      }
     },
     addEquipment() {
       this.eqIsShow = true
       this.eqKey = random(10, 384e12)
     },
     unmount_instrument(inst) {
-      this.instrumentList = inst.instrumentList
+      this.instrumentList = []
+      inst.instrumentList.forEach(e => this.instrumentList.push( {id: e.id, name: e.name}))
+     
       this.instrumentIsShow = false
     },
     unmount_instrument_mer(inst) {
-      this.instrumentMerList = inst.instrumentList
+      this.instrumentMerList = []
+      inst.instrumentList.forEach(e => this.instrumentMerList.push({id: e.id, name: e.name}))
       this.instrumentMerIsShow = false
     },
+    unmount_instrument_osn(inst) {
+      this.instrumentOsnList = []
+      inst.instrumentList.forEach(e => this.instrumentOsnList.push({id: e.id, name: e.name}))
+      this.instrumentOsnIsShow = false
+    },
     unmount_eq(eq) {
-      this.eqList = eq.equipmentList
+      this.eqList = []
+      eq.equipmentList.forEach(e => this.eqList.push({id: e.id, name: e.name}))
+      this.eqIsShow = false
+      
+    },
+    changeGenTime(e){
+      console.log(e)
     }
   },
   async mounted() {
@@ -293,6 +371,10 @@ export default {
 </script>
 
 <style scoped>
+  .gen_time{
+    font-weight: bold;
+    color: #1e1e1f;
+  }
   .hooter {
     display: flex;
   }

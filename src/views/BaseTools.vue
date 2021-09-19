@@ -104,11 +104,13 @@ export default {
   computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
   components: {TableMaterial, OpensFile, ShowProvider, MediaSlider},
   methods: {
-    ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 'fetchOneNameInstrument', 'banNameInstrument']),
-    ...mapMutations(['filterAllpInstrument', 'getInstansTools']),
+    ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 
+      'fetchOneNameInstrument', 'banNameInstrument',
+      'getPTInstrumentList', 'getAllNameInstrument']),
+    ...mapMutations(['filterAllpInstrument', 'getInstansTools', 'throwInstansInstruments']),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
-      this.filterAllpInstrument(instrument.pInstruments)
+      this.filterAllpInstrument(instrument)
     },
     clickPTInstrument(PTInstrument) {
       this.PTInstrument = PTInstrument
@@ -157,7 +159,10 @@ export default {
     },
   },
   async mounted() {
+    this.throwInstansInstruments()
     this.fetchAllInstruments()
+    this.getPTInstrumentList()
+    this.getAllNameInstrument()
   }
 }
 </script>

@@ -3,7 +3,15 @@
         <div :class='destroyModalLeft' @click="destroyModalF"></div>
         <div :class='destroyModalRight'>
            <div :style="hiddens">
-                <h3>Добавление типа инструмента или оснастки</h3>
+                <h3 v-if='typeInstrument == 3'>Добавление меритального инструмента</h3>
+                <h3 v-else-if='typeInstrument == 2'>Добавление оснастки</h3>
+                <h3 v-else>Добавление инструмента</h3>
+                <div class="type-issue">
+                    <span ref="all" class='active' @click='e => instansTools(0, e.target)'>Все</span>
+                    <span ref="ins" @click='e => instansTools(1, e.target)'>Инструмент</span>
+                    <span ref="osn" @click='e => instansTools(2, e.target)'>Оснастка</span>
+                    <span ref="mer" @click='e => instansTools(3, e.target)'>Мерительный инструмент</span>
+                </div>
                 <div class="body_table_instr">
                         <TableMaterial :title='"Тип (инструмента или оснастки)"' 
                         :alltypeM="allTInstrument" 
@@ -53,7 +61,7 @@ import {random} from 'lodash'
 import ModalInformation from '@/components/instrument/modal-information.vue'
 
 export default {
-    props: ['allProvider', 'listInstrument'],
+    props: ['allProvider', 'listInstrument', 'typeInstrument'],
     data() {
         return {
             TInstrument: null,
@@ -65,6 +73,7 @@ export default {
             destroyModalLeft: 'left-block-modal',
             destroyModalRight: 'content-modal-right-menu',
             hiddens: 'opacity: 1;',
+            span: null,
 
             instrumentList: [],
             instrumentListId: []
@@ -73,8 +82,10 @@ export default {
     computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
     components: {TableMaterial, ModalInformation},
     methods: {
-        ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 'fetchOneNameInstrument', 'banNameInstrument']),
-        ...mapMutations(['filterAllpInstrument']),
+        ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 
+            'fetchOneNameInstrument', 'banNameInstrument', 
+            'getPTInstrumentList', 'getAllNameInstrument']),
+        ...mapMutations(['filterAllpInstrument', 'getInstansTools']),
         destroyModalF() {
             this.destroyModalLeft = 'left-block-modal-hidden'
             this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -83,7 +94,7 @@ export default {
         },
         clickTInstrument(instrument) {
             this.TInstrument = instrument
-            this.filterAllpInstrument(instrument.pInstruments)
+            this.filterAllpInstrument(instrument)
         },
         clickPTInstrument(PTInstrument) {
             this.PTInstrument = PTInstrument
@@ -121,15 +132,35 @@ export default {
                 instrumentListId: this.instrumentListId,
                 instrumentList: this.instrumentList,
             })
-        }
+        },
+        instansTools(tools, span) {
+            this.getInstansTools(tools)
+
+            if(!this.span)
+                this.span = (this.$refs.all)
+            this.span.classList.remove('active')
+            span.classList.add('active')
+            this.span = span
+        },
     },
     async mounted() {
         this.destroyModalLeft = 'left-block-modal'
         this.destroyModalRight = 'content-modal-right-menu'
         this.hiddens = 'opacity: 1;'
-        this.fetchAllInstruments()
+        await this.fetchAllInstruments()
+        await this.getPTInstrumentList()
+        await this.getAllNameInstrument()
+        if(this.$props.typeInstrument) {
+            if(this.$props.typeInstrument == 1)
+                this.instansTools(this.$props.typeInstrument, this.$refs.ins)
+            if(this.$props.typeInstrument == 2)
+                this.instansTools(this.$props.typeInstrument, this.$refs.osn)
+            if(this.$props.typeInstrument == 3)
+                this.instansTools(this.$props.typeInstrument, this.$refs.mer)
+
+            this.getInstansTools(this.$props.typeInstrument)
+        }
         if(this.$props.listInstrument) {
-            console.log(this.$props.listInstrument)
              this.instrumentList = this.$props.listInstrument
              this.$props.listInstrument.forEach((el) => {
                  this.instrumentListId.push(el.id)

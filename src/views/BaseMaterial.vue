@@ -109,8 +109,16 @@ export default {
     components:{TableMaterial, OpensFile},
     computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
     methods: {
-        ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
-        ...mapMutations(['filterMatByPodType', 'addOnePPTyep', 'getInstansMaterial', 'throwInstans']),
+        ...mapActions(['getAllTypeMaterial', 
+            'getOnePodType', 
+            'bannedPPM', 
+            'fetchGetOnePPM', 
+            'getAllPodTypeMaterial',
+            'fetchGetAllPPM']),
+        ...mapMutations(['filterByNameMaterial', 
+            'addOnePPTyep', 
+            'getInstansMaterial', 
+            'throwInstans']),
         instansMaterial(instans, span) {
             this.getInstansMaterial(instans)
 
@@ -121,8 +129,11 @@ export default {
             this.span = span
         },
         clickMat(mat, type) {
-            if(type == 'type') 
+            if(type == 'type') {
                 this.material = mat
+                this.filterByNameMaterial(mat)
+            }
+                
 
             if(type == 'podM') this.getOnePodType(mat.id)
             if(type == 'podPM') {
@@ -152,6 +163,7 @@ export default {
     async mounted() {
         this.getAllTypeMaterial()
         this.getAllPodTypeMaterial()
+        this.fetchGetAllPPM()
     }
 }
 </script>
