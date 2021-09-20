@@ -261,8 +261,11 @@ export default {
 
             state.TInstrument = state.instansTInstrument
                 .filter(inst => inst.instans == instans)
-            state.PTInstrument = state.instansPTInstrument
-                .filter(inst => inst.instruments[0].instans == instans)
+            if(state.instansPTInstrument[0].instruments.length) {
+                state.PTInstrument = state.instansPTInstrument
+                    .filter(inst => inst.instruments[0].instans == instans)
+            }
+            
 
             state.PPTInstrument = []
             state.PTInstrument.forEach(el => {

@@ -140,6 +140,13 @@
                     >
                     <td>{{ doc.name }}</td>
                   </tr>
+                  <tr 
+                    v-for='doc in documentsOperationList' 
+                    :key='doc'
+                    class='td-row'
+                    >
+                    <td>{{ doc.name }}</td>
+                  </tr>
               </table>
               <div class="btn-control" style='width: 100%;'>
                   <button class="btn-small">Открыть</button>
@@ -213,10 +220,11 @@ import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
 import { mapActions } from 'vuex';
+import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
 
-  props: [],
+  props: ['operation'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -252,6 +260,7 @@ export default {
       eqIsShow: false,
       eqList: [],
       eqKey: random(1, 13e23),
+      documentsOperationList: [],
 
       preTime: 0,
       helperTime: 0,
@@ -259,7 +268,9 @@ export default {
       generalCountTime: 0,
       
       name: 0,
-      description: ''
+      description: '',
+      id: null,
+
     }
   },
   computed: {},
@@ -270,7 +281,7 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['createOperation']),
+    ...mapActions(['createOperation', 'updateOperation', 'fetchOneOperationById']),
     saveOperation() {
       if(!this.formData)
         this.formData = new FormData()
@@ -296,7 +307,17 @@ export default {
       this.formData.append('eqList',
         this.eqList.length ? 
           JSON.stringify(this.eqList) : null)
-      this.createOperation(this.formData)
+      if(this.$props.operation && this.id) {
+        this.formData.append('id', this.id)
+        this.updateOperation(this.formData)
+        this.destroyModalF()
+        this.$emit('unmount')
+      } else {
+        this.createOperation(this.formData)
+        this.destroyModalF()
+        this.$emit('unmount')
+      }
+      
 
     },
     addDock(val) {
@@ -313,7 +334,7 @@ export default {
       if(all) 
         all.forEach(f => {
           this.dataMedia.push({name: f.name, path: f.url})
-          this.randomDataMedia = random(10, 38e100)
+          this.randomDataMedia = random(10, 38100)
         })
     },
     addInstrument(t = 'ins') {
@@ -366,6 +387,40 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
+    
+    if(this.$props.operation) {
+      // Если есть операция показываем ее для редактирования ()
+      let op = this.$props.operation
+      this.id = op.id
+      this.name = op.name
+      this.preTime = op.preTime
+      this.helperTime = op.helperTime
+      this.mainTime = op.mainTime
+      this.generalCountTime =
+          (Number(this.preTime) + 
+          Number(this.helperTime) +
+          Number(this.mainTime))
+      this.description = op.description
+
+      if(op.instrumentList)
+          this.instrumentList = JSON.parse(op.instrumentList)
+      if(op.instrumentMerList)
+          this.instrumentMerList = JSON.parse(op.instrumentMerList)
+
+      if(op.instrumentOsnList)
+          this.instrumentOsnList = JSON.parse(op.instrumentOsnList)
+      if(op.eqList)
+          this.eqList = JSON.parse(op.eqList) 
+
+      // получать полностью всю операцию для отрисовки документов  
+      this.fetchOneOperationById(op.id).then(res => {
+        this.documentsOperationList = res.documents
+        this.dataMedia = res.documents.map(d => {d.path = PATH_TO_SERVER+d.path; return d})
+
+        this.randomDataMedia = random(10, 38100)
+      })
+
+    }
   }
 }
 </script>

@@ -184,6 +184,8 @@
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'
+              @unmount='unmount_tech_process'
+              :techProcessID='techProcessID'
             />
             <h3 class="link_h3">Себестоимость</h3>
             <h3 class="link_h3">История изменений</h3>
@@ -192,7 +194,7 @@
         </div>
         <div class="btn-control out-btn-control control-save" >
           <button class="btn-status"
-                  @click='$router.push("/basedetals")'
+                  @click='exit'
                   >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" @click='saveDetal'>Сохранить</button>
@@ -258,7 +260,8 @@ export default {
       selectHaracteristic: null,
       techProcessIsShow: false,
       techProcessKey: random(10, 33e6),
-      inputMassZag: 0
+      inputMassZag: 0,
+      techProcessID: localStorage.getItem('tpID') || null
     }
   },
   components: {AddFile, ModalBaseMaterial, TechProcess},
@@ -269,19 +272,22 @@ export default {
       if(this.obj.name.length < 3) 
         return 0
 
-      let FD = new FormData()
-      FD.append('name', this.obj.name)
-      FD.append('articl', this.obj.atricl)
-      FD.append('responsible', this.obj.responsible)
-      FD.append('description', this.obj.description)
-      FD.append('parametrs', JSON.stringify(this.obj.parametrs))
-      FD.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
-      FD.append('DxL', this.obj.DxL)
-      FD.append('massZag', this.obj.massZag)
-      FD.append('trash', this.obj.trash)
-      FD.append('mat_zag', this.mat_zag != 'Задать' ?
+      if(!this.formData)
+        this.formData = new FormData()
+
+      this.formData.append('techProcessID', this.techProcessID || null)
+      this.formData.append('name', this.obj.name)
+      this.formData.append('articl', this.obj.atricl)
+      this.formData.append('responsible', this.obj.responsible)
+      this.formData.append('description', this.obj.description)
+      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
+      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      this.formData.append('DxL', this.obj.DxL)
+      this.formData.append('massZag', this.obj.massZag)
+      this.formData.append('trash', this.obj.trash)
+      this.formData.append('mat_zag', this.mat_zag != 'Задать' ?
         this.mat_zag.id : null)
-      FD.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
+      this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
          this.mat_zag_zam.id : null)
       for(let mat = 0; mat < this.materialList.length; mat++) {
         this.materialList[mat].mat = {
@@ -290,12 +296,29 @@ export default {
           kolvo: this.materialList[mat].mat.kolvo
         }
         if(mat == this.materialList.length - 1) {
-          FD.append('materialList', JSON.stringify(this.materialList))
-          this.createNewDetal(FD)
+          this.formData.append('materialList', JSON.stringify(this.materialList))
+          this.createNewDetal(this.formData)
         }
       }
+
+      this.$router.push('/basedetals')
       
       
+    },
+
+    unmount_tech_process(tp) {
+      if(tp.id) {
+        this.techProcessID = tp.id
+        localStorage.setItem('tpID', this.techProcessID)
+        if(tp.opers.length) {
+          tp.opers.forEach(op => {
+            console.log(op)
+            this.obj.parametrs.preTime.znach = Number(this.obj.parametrs.preTime.znach) + Number(op.preTime)
+            this.obj.parametrs.helperTime.znach = Number(this.obj.parametrs.helperTime.znach) + Number(op.helperTime)
+            this.obj.parametrs.mainTime.znach = Number(this.obj.parametrs.mainTime.znach) + Number(op.mainTime)
+          })
+        }
+      }
     },
     addDock(val) {
       val.target.files.forEach(f => {
@@ -404,6 +427,10 @@ export default {
           this.inputMassZag = aCS.znach
         }
       }
+    },
+    exit(){
+      this.$router.push("/basedetals")
+      localStorage.removeItem("tpID")
     }
   }
 }

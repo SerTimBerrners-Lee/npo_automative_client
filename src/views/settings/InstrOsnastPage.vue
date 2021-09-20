@@ -84,7 +84,7 @@ export default {
         },
         clickTInstrument(instrument) {
             this.TInstrument = instrument
-            this.filterAllpInstrument(instrument.pInstruments)
+            this.filterAllpInstrument(instrument)
         },
         clickPTInstrument(PTInstrument) {
             this.PTInstrument = PTInstrument

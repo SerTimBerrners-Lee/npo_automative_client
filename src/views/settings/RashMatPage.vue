@@ -118,7 +118,7 @@ export default {
                     data: this.podType
                 }
             } 
-            this.keyModals = random(20, 2132356723547632)
+            this.keyModals = random(20, 213e6)
             this.showIs = true
         },
         clickMat(mat, type) {

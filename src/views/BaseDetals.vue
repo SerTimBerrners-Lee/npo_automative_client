@@ -52,6 +52,16 @@
                         <th>Наименование</th>
                         <th>Кол-во Д на СБ</th>
                     </tr>   
+                    <tr 
+                        v-for='detal in allDetal' 
+                        :key='detal'
+                        class='td-row'
+                        @click='e => setDetals(detal, e.target.parentElement)'
+                        >
+                        <td>{{ detal.atricl }}</td>
+                        <td>{{ detal.name }}</td>
+                        <td>...</td>
+                    </tr>
                     <tr v-for="item in 42" :key="item">
                         <td></td>
                         <td></td>
@@ -72,6 +82,37 @@
         </div>
     </div>
 </template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex'
+export default {
+    data() {
+        return {
+            selectedDetal: null,
+            tr: null
+        }
+    },
+    computed: mapGetters(['allDetal']),
+    methods: {
+        ...mapActions(['getAllDetals']),
+        setDetals(detal, e) {
+            this.selectedDetal = detal
+            console.log(detal)
+             if(this.tr) 
+                this.tr.classList.remove('td-row-all')
+            
+            this.tr = e
+            this.tr.classList.add('td-row-all')
+        }
+
+    },
+
+
+    async mounted() {
+        this.getAllDetals()
+    }
+}
+</script>
 
 <style scoped>
     .table-base-detal {

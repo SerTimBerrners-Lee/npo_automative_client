@@ -16,11 +16,72 @@
                         <th>Оснастка</th>
                         <th>Меритеьный инструмент</th>
                     </tr>
+                    <tr v-for='(operation, inx) in allOperationNewList' 
+                        :key='operation'
+                        class='td-row'
+                        @click="e => selectTr(e.target, operation)"
+                        >
+                        <td>{{ inx + 1 }}</td>
+                        <td>
+                            <select class="select-small operation_select" 
+                                v-model="operation.name"
+                                style='font-weight:bold;'
+                                >
+                                <option v-for='(op, inx) in operatioinList' 
+                                    :key='op' :value='inx'>{{ op }}</option>
+                            </select>
+                        </td>
+                        <td>{{ operation.preTime }}</td>
+                        <td>{{ operation.helperTime }}</td>
+                        <td>{{ operation.mainTime }}</td>
+                        <td>
+                            <select v-if='operation.eqList' 
+                                class="select-small operation_select"
+                                v-model='operation.eqID'
+                                @change='e=> changeOperation(e.target.value, operation, "eq")'
+                            >
+                                <option v-for='eq in JSON.parse(operation.eqList)' 
+                                        :key='eq' :value='eq.id'>{{ eq.name }}</option>
+                            </select>
+                            <span v-else>-</span>
+                        </td>
+                        <td>
+                            <select v-if='operation.instrumentList' 
+                                class="select-small operation_select"
+                                v-model='operation.instrumentID'
+                                @change='e=> changeOperation(e.target.value, operation, "inst")'
+                            >
+                                <option v-for='inst in JSON.parse(operation.instrumentList)' 
+                                    :key='inst' :value='inst.id'>{{ inst.name }}</option>
+                            </select>
+                            <span v-else>-</span>
+                        </td>
+                        <td>
+                             <select v-if='operation.instrumentOsnList' 
+                                    class="select-small operation_select"
+                                    v-model='operation.instrumentOsnID'
+                                    @change='e=> changeOperation(e.target.value, operation, "osn")'
+                                    >
+                                <option v-for='inst in JSON.parse(operation.instrumentOsnList)' :key='inst' :value='inst.id'>{{ inst.name }}</option>
+                            </select>
+                            <span v-else>-</span>
+                        </td>
+                        <td>
+                            <select v-if='operation.instrumentMerList'  
+                                    class="select-small operation_select"
+                                    v-model='operation.instrumentMerID'
+                                    @change='e=> changeOperation(e.target.value, operation, "mer")'
+                                    >
+                                <option v-for='inst in JSON.parse(operation.instrumentMerList)' :key='inst' :value='inst.id'>{{ inst.name }}</option>
+                            </select>
+                            <span v-else>-</span>
+                        </td>
+                    </tr>
                 </table>
                 <div class="btn-control">
                     <button class="btn-small btn-add" @click='addNewOperation'>Добавить операцию</button>
-                    <button class="btn-small">Редактировать</button>
-                    <button class="btn-small">В архив</button>
+                    <button class="btn-small" @click='editOperation'>Редактировать</button>
+                    <button class="btn-small" @click='bannedOperation'>В архив</button>
                 </div>
                 <div class="file_container">
                     <div class="slider">
@@ -42,6 +103,13 @@
                             </tr>
                             <tr 
                               v-for='doc in formData ? formData.getAll("document") : []' 
+                              :key='doc'
+                              class='td-row'
+                              >
+                              <td>{{ doc.name }}</td>
+                            </tr>
+                            <tr 
+                              v-for='doc in  documentsData' 
                               :key='doc'
                               class='td-row'
                               >
@@ -69,7 +137,7 @@
                 <div class="desctiption_container">
                     <div>
                         <h3>Описание / примечание</h3>
-                        <textarea cols="30" rows="10"></textarea>
+                        <textarea cols="30" rows="10" v-model='description'></textarea>
                     </div>
                     <div>
                         <h3>История изменений</h3>
@@ -87,26 +155,32 @@
                     <button class="btn-status" @click='destroyModalF'>Отменить</button>
                     <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
                     <button class="btn-status btn-black" 
-                            style="height: 0px;">Сохранить</button>
+                            style="height: 0px;" @click='saveTechProcess'>Сохранить</button>
                 </div>
            </div>
         </div>
         <AddOperation 
             v-if='operationPanelShow' 
-            :key='operationKey'/>
+            :key='operationKey'
+            @unmount='unmount_operation'
+            :operation='operationSelect'
+            />
     </div> 
 
 </template>
 
 <script>
 
-import {random} from 'lodash'
+import {random, isEmpty} from 'lodash'
 import AddFile from '@/components/filebase/addfile.vue'
 import AddOperation from '@/components/basedetal/add-operation.vue'
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
 
-  props: [],
+  props: ['techProcessID'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -117,20 +191,38 @@ export default {
       isChangeFolderFile: false,
       formData: null,
       dataMedia: [],
-      randomDataMedia: random(10, 24^34),
+      randomDataMedia: random(10, 24^4),
       operationPanelShow: false,
-      operationKey: random(10, 384e10)
+      operationKey: random(10, 384e10),
+      operatioinList: [
+          'Заготовительная',
+          'Токарная',
+          'Слесарная',
+          'Термообработка',
+          'Фрезерная',
+          'Сверлильная',
+          'Сварочная',
+          'Сборка',
+          'Покраска',
+          'Упаковка',
+      ],
+      tr: null,
+      operationSelect: null,
+      description: '',
+      documentsData: []
     }
   },
-  computed: {},
-  components: {AddFile, AddOperation},
+  computed: mapGetters(['allOperationNewList']),
+  components: {AddFile, AddOperation, MediaSlider},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-  addDock(val) {
+    ...mapActions(['updateOperationTech', 'banOperation', 'createTechProcess', 'fetchTechProcess']),
+    ...mapMutations(['allOperationMutations']),
+    addDock(val) {
       val.target.files.forEach(f => {
         this.docFiles.push(f)
       })
@@ -148,19 +240,105 @@ export default {
         })
     },
     addNewOperation() {
+        this.operationSelect = null
         this.operationPanelShow = true
-        this.operationKey = random(10, 384123432423)
+        this.operationKey = random(10, 38e3)
+    },
+    unmount_operation() {
+        console.log(this.allOperationNewList)
+    },
+    selectTr(e, operation) {
+        if(this.tr)
+            this.tr.classList.remove('td-row-all')
+        this.tr = e.parentElement
+        this.tr.classList.add('td-row-all')
+        this.operationSelect = operation
+    },
+    editOperation( ) {
+        if(!this.operationSelect)
+            return 0;
+        this.operationPanelShow = true
+        this.operationKey = random(10, 38e3)
+    },
+    changeOperation(val, operation, type) {
+        let eqID = operation.eqID
+        let instrumentID = operation.instrumentID
+        let instrumentMerID = operation.instrumentMerID
+        let instrumentOsnID = operation.instrumentOsnID
+
+        if(type == 'eq')
+            eqID = val
+        if(type == 'inst')
+            instrumentID = val
+        if(type == 'mer')
+            instrumentMerID = val
+        if(type == 'osn')
+            instrumentOsnID = val
+
+        this.updateOperationTech({
+            eqID, instrumentID,  instrumentMerID, instrumentOsnID, id: operation.id
+        })
+            
+    },
+    bannedOperation() {
+        if(!this.operationSelect)
+            return 0;
+
+        this.banOperation(this.operationSelect.id)
+    },
+    saveTechProcess() {
+        if(!this.formData)
+            this.formData = new FormData();
+        if(isEmpty(this.allOperationNewList))
+            return 0;
+
+        let operationList = [];
+        for(let tp = 0; tp < this.allOperationNewList.length; tp++) {
+            operationList.push({  id: this.allOperationNewList[tp].id })
+        }
+        this.formData.append("operationList", JSON.stringify(operationList));
+        this.formData.append("description", this.description);
+
+        if(this.$props.techProcessID)
+            this.formData.append("id", this.$props.techProcessID);
+
+        this.createTechProcess(this.formData).then((res) => {
+            this.$emit('unmount', { id: res.id, opers: this.allOperationNewList});
+            this.destroyModalF() 
+        })
+        
     }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
+    if(this.$props.techProcessID) {
+        this.fetchTechProcess(this.$props.techProcessID).then((res) => {
+            if(res.operations) 
+                this.allOperationMutations(res.operations)
+            this.description = res.description
+            this.documentsData = res.documents
+
+            this.dataMedia = res.documents.map(d => {d.path = PATH_TO_SERVER+d.path; return d})
+            console.log(this.dataMedia )
+            this.randomDataMedia = random(10, 38100)
+
+        })
+    }
   }
 }
 </script>
 
 <style scoped>
+    .operation_select {
+        background-color: white;
+        width: 100%;
+        height: 90%;
+        margin: 0;
+        padding: 5px;
+
+    }
   .file_container, .desctiption_container{
       display: flex;
       justify-content: space-between;
