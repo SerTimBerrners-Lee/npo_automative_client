@@ -41,7 +41,6 @@ export default {
             if(isEmpty(this.file)) {
                 this.fPoz = 0
                 this.file = this.files[this.fPoz]
-                console.log(this.files)
                 return 0
             }
             if(ate == 'r' && this.fPoz + 1 <= this.files.length -1) {
@@ -55,6 +54,10 @@ export default {
         },
         sizeImg(img) {
            img.parentElement.classList.toggle('all_size_block')
+           if(img.parentElement.classList.contains('all_size_block'))
+                img.parentElement.style = "width: 100%"
+            else
+                img.parentElement.style = this.$props.width
            img.classList.toggle('all_size_img')
         }
     },

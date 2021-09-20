@@ -3,7 +3,9 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
     state: {
         detal: [],
-        operationNewList: JSON.parse(localStorage.getItem('newOperationItem')) || []
+        select_detal: {},
+        operationNewList: localStorage.getItem('newOperationItem') ?
+            JSON.parse(localStorage.getItem('newOperationItem')) : [],
     },
     getters: {
         allDetal(state) {
@@ -11,11 +13,21 @@ export default {
         },
         allOperationNewList(state) {
             return state.operationNewList
+        },
+        getOneSelectDetal(state) {
+            return state.select_detal
         }
     },
     actions: { 
         async createNewDetal(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal`, {
+                method :  'post',
+                body   :  data
+            })
+            console.log(res)
+        },
+        async fetchUpdateDetal(ctx, data) {
+            const res = await fetch(`${PATH_TO_SERVER}api/detal/update`, {
                 method :  'post',
                 body   :  data
             })
@@ -58,7 +70,6 @@ export default {
                     ...data
                 })
             })
-            console.log(data)
             if(res.ok) {
                 const result = await res.json()
                 ctx.commit('updateOperationToList', result)
@@ -88,8 +99,10 @@ export default {
         async fetchTechProcess(ctx, id) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/techprocess/${id}`)
             const result = await res.json()
-            console.log(result)
-            return result 
+            if(res.ok) {
+                return result 
+            }
+            
         },
         async fetchOneOperationById(ctx, id) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/get/${id}`) 
@@ -98,6 +111,9 @@ export default {
         }
     },
     mutations: {
+        addOneSelectDetal(state, detal) {
+            state.select_detal = detal
+        },
         allOperationMutations(state, data) {
             state.operationNewList = data
             localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))

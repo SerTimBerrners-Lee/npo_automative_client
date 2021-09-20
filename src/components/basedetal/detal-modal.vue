@@ -4,24 +4,50 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 
-        <div class="right_info_block" v-if='getOneNameInstrument.name'>
+        <div class="right_info_block" >
+        <h3>Краткая Информация об детали</h3>
         <div class="block">
-            <h3>Краткая Информация об инструменте или оснастки</h3>
             <p class='name_parg'>
-            <span class="title_span">Наименование: </span><span>{{ getOneNameInstrument.name }}</span>
+            <span class="title_span">Наименование: </span><span>{{ getOneSelectDetal.name }}</span>
             </p>
-            <MediaSlider :width='"width: 93%;"' v-if='getOneNameInstrument.documents.length' :data='getOneNameInstrument.documents' :key='getOneNameInstrument.documents' />
+            <p class='name_parg'>
+            <span class="title_span">Артикул: </span><span>{{ getOneSelectDetal.articl }}</span>
+            </p>
+            <MediaSlider :width='"width: 93%;"' v-if='getOneSelectDetal.documents.length' :data='getOneSelectDetal.documents' :key='getOneSelectDetal.documents' />
             <div>
-            <span>Описание / Примечание</span>
-            <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
+                <h3>Характеристики</h3>
+                <p>
+                    <span>Масса(кг):</span>
+                    <span style='font-weight: bold;'>{{ JSON.parse(getOneSelectDetal.haracteriatic)[0].znach }}</span>
+                </p>
+                <p>
+                    <span>Материал:</span>
+                    <span style='font-weight: bold;'>{{ mat_zag ? mat_zag.name : '' }}</span>
+                </p>
+                <p>
+                    <span>Масса заготовки(кг):</span>
+                    <span style='font-weight: bold;'>{{ getOneSelectDetal.massZag }}</span>
+                </p>
+                <p>
+                    <span>Размеры заготовки DxL(мм):</span>
+                    <span style='font-weight: bold;'>{{ getOneSelectDetal.DxL }}</span>
+                </p>
+                <p>
+                    <span>Норма времени изготовления общая(н.ч.):</span>
+                    <span style='font-weight: bold;'>{{ generateTime }}</span>
+                </p>
             </div>
-            <div v-if='getOneNameInstrument.documents.length > 0'>
+            <div    class='scroll-table' 
+                    style='width:100%' 
+                    v-if='getOneSelectDetal.documents.length > 0'>
                 <h3>Документы</h3>
                 <table style="width: 100%;">
                     <tr>
                         <th>Файл</th>
                     </tr>
-                    <tr class="td-row" v-for='doc in getOneNameInstrument.documents' :key='doc' @click='setDocs(doc)'>
+                    <tr class="td-row" 
+                        v-for='doc in getOneSelectDetal.documents' 
+                        :key='doc' @click='setDocs(doc)'>
                         <td>{{ doc.name }}</td>
                     </tr>
                 </table>
@@ -35,27 +61,28 @@
                     :key='keyWhenModalGenerateFileOpen'
                 />
             </div>
-            <h3 @click="providershow" style='cursor:pointer;'>Поставищики {{ getOneNameInstrument.providers.length }}</h3>
-                <ShowProvider
-                :allProvider='getOneNameInstrument.providers' 
-                :key='keyProvidersModal'
-                v-if='showProviders'
-                />
-                <ModalInformation v-if='showModalInformation' :key='keyModalInformation' />
+             <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
         </div>
         </div>
 
     </div>
+    
   </div>
 </div>
+ <TechProcess 
+                v-if='techProcessIsShow'
+                :key='techProcessKey'
+                @unmount='unmount_tech_process'
+                :techProcessID='techProcessID'
+            />
 </template>
 
 <script>
 import OpensFile from '@/components/filebase/openfile.vue'
-import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash'
-import {mapGetters } from 'vuex'
+import {mapGetters, mapMutations } from 'vuex'
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import TechProcess from './tech-process-modal.vue'
 
 export default {
     
@@ -71,21 +98,45 @@ export default {
             showProviders: false,
             keyProvidersModal: random(1, 34342),
             keyWhenModalGenerateFileOpen: random(1, 23123),
+            mat_zag: null,
+            generateTime: null,
+
+            techProcessIsShow: false,
+            techProcessKey: random(10, 33e6),
+            techProcessID: null,
       }
   },
-    computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
-    components: {OpensFile, ShowProvider, MediaSlider},
-  mounted() {
+    computed: mapGetters([
+        'getOneSelectDetal']),
+    components: {OpensFile, MediaSlider, TechProcess},
+  async mounted() {
       this.destroyModalLeft = 'left-block-modal'
       this.destroyModalRight = 'content-modal-right-menu'
       this.hiddens = 'opacity: 1;'
+      if(isEmpty(this.getOneSelectDetal)) {
+          this.destroyModalF()
+          return 0
+      }
+
+      this.getOneSelectDetal.materials.forEach(element => {
+        if(element.id == this.getOneSelectDetal.mat_zag)
+            this.mat_zag = element
+      });
+      let prs = JSON.parse(this.getOneSelectDetal.parametrs)
+      this.generateTime = Number(prs.preTime.znach) + 
+            Number(prs.helperTime.znach) + 
+            Number(prs.mainTime.znach)
+        if(this.getOneSelectDetal.techProcesses.length)
+            this.techProcessID = this.getOneSelectDetal.techProcesses[0].id
 
   },
   methods: {
+      ...mapMutations(['removeOperationStorage']),
       destroyModalF() {
           this.destroyModalLeft = 'left-block-modal-hidden'
           this.destroyModalRight = 'content-modal-right-menu-hidden'
           this.hiddens = 'display: none;'
+          this.removeOperationStorage()
       },
       setDocs(dc) {
             this.itemFiles = dc
@@ -94,17 +145,24 @@ export default {
             if(isEmpty(this.itemFiles))
                 return 0
             this.showFile = true
-            this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+            this.keyWhenModalGenerateFileOpen = random(10, 384e5)
         },
         openFile(res) {
-        console.log(res)
+            console.log(res)
         },
-        providershow() {
-            if(this.getOneNameInstrument.providers.length > 0) {
-                this.keyProvidersModal = random(1, 123123123123)
-                this.showProviders = true
+        unmount_tech_process(tp) {
+            if(tp.id) {
+                if(tp.opers.length) {
+                tp.opers.forEach(op => {
+                     this.generateTime =  Number(op.preTime) + Number(op.helperTime)+ Number(op.mainTime)
+                })
+                }
             }
-        }
+        },
+        showTechProcess() {
+            this.techProcessIsShow = true
+            this.techProcessKey = random(1, 12e8)
+        },
       
   }
 }
@@ -112,7 +170,7 @@ export default {
 
 <style scoped>
     .informat {
-        z-index: 99999999;
+        z-index: 10;
     }
   .right-menu-p>input {
       width: 70%;

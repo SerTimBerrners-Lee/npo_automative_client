@@ -112,12 +112,13 @@
                               v-for='doc in  documentsData' 
                               :key='doc'
                               class='td-row'
+                              @click='setDocs(doc)'
                               >
                               <td>{{ doc.name }}</td>
                             </tr>
                         </table>
                         <div class="btn-control" style='width: 100%;'>
-                            <button class="btn-small">Открыть</button>
+                            <button class="btn-small" @click='openDock'>Открыть</button>
                             <button class="btn-small">Удалить</button>
                             <button class="btn-small">Добавить из базы</button>
                         </div>
@@ -165,6 +166,11 @@
             @unmount='unmount_operation'
             :operation='operationSelect'
             />
+        <OpensFile 
+                :parametrs='itemFiles' 
+                v-if="showFile" 
+                :key='keyWhenModalGenerateFileOpen'
+            />
     </div> 
 
 </template>
@@ -177,6 +183,7 @@ import AddOperation from '@/components/basedetal/add-operation.vue'
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import PATH_TO_SERVER from '@/js/path.js'
+import OpensFile from '@/components/filebase/openfile.vue'
 
 export default {
 
@@ -209,11 +216,15 @@ export default {
       tr: null,
       operationSelect: null,
       description: '',
-      documentsData: []
+      documentsData: [],
+
+      itemFiles: null,
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 323e8),
     }
   },
   computed: mapGetters(['allOperationNewList']),
-  components: {AddFile, AddOperation, MediaSlider},
+  components: {AddFile, AddOperation, MediaSlider, OpensFile},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
@@ -221,7 +232,7 @@ export default {
       this.hiddens = 'display: none;'
     },
     ...mapActions(['updateOperationTech', 'banOperation', 'createTechProcess', 'fetchTechProcess']),
-    ...mapMutations(['allOperationMutations']),
+    ...mapMutations(['allOperationMutations', 'removeOperationStorage']),
     addDock(val) {
       val.target.files.forEach(f => {
         this.docFiles.push(f)
@@ -306,8 +317,16 @@ export default {
             this.$emit('unmount', { id: res.id, opers: this.allOperationNewList});
             this.destroyModalF() 
         })
-        
-    }
+    },
+    setDocs(dc) {
+        this.itemFiles = dc
+    },
+    openDock() {
+        if(isEmpty(this.itemFiles))
+            return 0
+        this.showFile = true
+        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+    },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -315,15 +334,22 @@ export default {
     this.hiddens = 'opacity: 1;'
     if(this.$props.techProcessID) {
         this.fetchTechProcess(this.$props.techProcessID).then((res) => {
+            if(!res)
+                return 0
             if(res.operations) 
                 this.allOperationMutations(res.operations)
             this.description = res.description
+            if(!res.documents)
+                return 0
             this.documentsData = res.documents
 
-            this.dataMedia = res.documents.map(d => {d.path = PATH_TO_SERVER+d.path; return d})
-            console.log(this.dataMedia )
+            res.documents.forEach(d => {
+                this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+            })
             this.randomDataMedia = random(10, 38100)
 
+        }).catch(() => {
+            this.removeOperationStorage()
         })
     }
   }

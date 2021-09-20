@@ -189,7 +189,7 @@ textarea {
 .left-block-modal {
     width: 70vw;
     animation: width-right 1s 1 ease;
-    height: 100vh;
+    height: 10000px;
     background: rgb(106, 106, 106);
     opacity: 0.6;
 }
@@ -206,7 +206,7 @@ textarea {
 }
 .content-modal-right-menu {
     animation: width 1s 1 ease;
-    height: 100vh;
+    height: 10000px;
     width: 30vw;
     background: white;
     padding: 10px;

@@ -58,7 +58,7 @@
                         class='td-row'
                         @click='e => setDetals(detal, e.target.parentElement)'
                         >
-                        <td>{{ detal.atricl }}</td>
+                        <td>{{ detal.articl }}</td>
                         <td>{{ detal.name }}</td>
                         <td>...</td>
                     </tr>
@@ -74,35 +74,55 @@
                <p>
                     <button class="btn-small btn-add" @click='$router.push("/detal/add")'>Создать</button>
                     <button class="btn-small btn-add">Создать копированием</button>
-                    <button class="btn-small">Редактировать</button>
+                    <button class="btn-small" @click='editDetal'>Редактировать</button>
                </p>
                 <p>
                     <button class="btn-small">В архив</button>
                 </p>
         </div>
+        <DetalModal
+            :key='detalModalKey'
+            v-if='detalIsShow'
+        />
     </div>
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
+import DetalModal from '@/components/basedetal/detal-modal.vue';
+import { random } from 'lodash';
+
 export default {
     data() {
         return {
             selectedDetal: null,
-            tr: null
+            tr: null,
+            detalModalKey: random(1, 123e2),
+            detalIsShow: false
         }
     },
     computed: mapGetters(['allDetal']),
+    components: {DetalModal},
     methods: {
         ...mapActions(['getAllDetals']),
+        ...mapMutations(['addOneSelectDetal']),
         setDetals(detal, e) {
             this.selectedDetal = detal
-            console.log(detal)
              if(this.tr) 
                 this.tr.classList.remove('td-row-all')
             
             this.tr = e
             this.tr.classList.add('td-row-all')
+            this.addOneSelectDetal(this.selectedDetal)
+
+            this.detalModalKey = random(1, 34e5)
+            this.detalIsShow = true
+        },
+        editDetal() {
+            if(!this.selectedDetal)
+                return 0
+
+            this.$router.push("/detal/edit")
         }
 
     },

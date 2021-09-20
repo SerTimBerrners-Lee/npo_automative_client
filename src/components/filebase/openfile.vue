@@ -4,7 +4,7 @@
         <div :class='destroyModalRight'>
            <div :style="hiddens">
                 <h3>Карточка файла</h3>
-                <div class="block scroll-table">
+                <div class="block">
                     <div >
                         <h4>Библиотека документов </h4>
                         <div>

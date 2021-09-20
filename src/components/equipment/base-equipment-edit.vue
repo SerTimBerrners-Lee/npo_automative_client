@@ -131,23 +131,23 @@ import BaseTools from '@/components/instrument/modal-base-tool.vue';
 export default {
   data() {
     return {
-        listInstrument: null,
-        equipmentT: null,
-        equipmentPT: null,
-        docFiles: [],
-        formData: null,
-        isChangeFolderFile: false,
-        keyWhenModalGenerate: random(10, 323e8),
-        itemFiles: null,
-        showFile: false,
-        keyWhenModalGenerateFileOpen: random(10, 323e8),
-        documents: [],
-        showProvider: false,
-        keyWhenModalListProvider: random(10, 323e8),
-        providers: [],
-        providersId: [],
-        instrumentKey: random(10, 323e8),
-        instrumentIsShow: false,
+      listInstrument: null,
+      equipmentT: null,
+      equipmentPT: null,
+      docFiles: [],
+      formData: null,
+      isChangeFolderFile: false,
+      keyWhenModalGenerate: random(10, 323e8),
+      itemFiles: null,
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 323e8),
+      documents: [],
+      showProvider: false,
+      keyWhenModalListProvider: random(10, 323e8),
+      providers: [],
+      providersId: [],
+      instrumentKey: random(10, 323e8),
+      instrumentIsShow: false,
       obj: {
         name: '',
         parentId: null,
@@ -190,14 +190,12 @@ export default {
     this.$router.push('/baseequipment')
     },
     addInstrument() {
-      this.instrumentKey = random(10, 384522333213313324)
+      this.instrumentKey = random(10, 38e9)
       this.instrumentIsShow = true
     },
     removeFile() {
         if(isEmpty(this.itemFiles))
             return 0
-        this.removeFileEquipment(this.itemFiles.id)
-        this.documents = this.documents.filter(dc => dc.id != this.itemFiles.id)
     },
     pushProvider(provider) { 
       if(!provider)
@@ -207,7 +205,7 @@ export default {
     },
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 384522333213313324)
+      this.keyWhenModalListProvider = random(10, 38e9)
     },
     setDocs(dc) {
         this.itemFiles = dc
@@ -216,7 +214,7 @@ export default {
         if(isEmpty(this.itemFiles))
             return 0
         this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
     },
     openFile(res) {
         console.log(res)

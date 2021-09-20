@@ -27,11 +27,12 @@
                 <tr v-for='material in materialList' :key='material.mat'>
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="material.ez == 1"> шт</span> 
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -142,15 +143,15 @@
                   <td class='td_center'>мм</td>
                   <td class='td_center'>
                     <input type="text"
-                      @change='e=>editHarZag(e.target.value, "DxL")'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      v-model='obj.DxL'>
-                      <div class='absolute_znach'>
+                        @change='e=>editHarZag(e.target.value, "DxL")'
+                        style="width: 50px; text-align:center;"
+                        class='inputs-small'
+                        v-model='obj.DxL'>
+                    <div class='absolute_znach'>
                         {{ obj.DxL.split('x')
                             .length == 2 ? 
-                          `=${obj.DxL.split('x')[0] * obj.DxL.split('x')[1]}`
-                          : ''
+                        `=${obj.DxL.split('x')[0] * obj.DxL.split('x')[1]}`
+                        : ''
                         }}
                       </div>
                   </td>
@@ -160,10 +161,10 @@
                   <td class='td_center'>кг</td>
                   <td class='td_center'>
                     <input type="text"
-                      @change='e=>editHarZag(e.target.value, "mass")'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      v-model='obj.massZag'>
+                        @change='e=>editHarZag(e.target.value, "mass")'
+                        style="width: 50px; text-align:center;"
+                        class='inputs-small'
+                        v-model='obj.massZag'>
                   </td>
                 </tr>
                 <tr>
@@ -171,10 +172,10 @@
                   <td class='td_center'>кг</td>
                   <td class='td_center'>
                     <input type="text"
-                      @change='e=>editHarZag(e.target.value, "trash")'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      v-model='obj.trash'>
+                        @change='e=>editHarZag(e.target.value, "trash")'
+                        style="width: 50px; text-align:center;"
+                        class='inputs-small'
+                        v-model='obj.trash'>
                   </td>
                 </tr>
               </table>
@@ -182,10 +183,10 @@
 
             <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
             <TechProcess 
-              v-if='techProcessIsShow'
-              :key='techProcessKey'
-              @unmount='unmount_tech_process'
-              :techProcessID='techProcessID'
+                v-if='techProcessIsShow'
+                :key='techProcessKey'
+                @unmount='unmount_tech_process'
+                :techProcessID='techProcessID'
             />
             <h3 class="link_h3">Себестоимость</h3>
             <h3 class="link_h3">История изменений</h3>
@@ -204,6 +205,35 @@
     <div class="right_content">
        <div>
           <h3>Документы</h3>
+          <div class="slider">
+            <h3>Фото и видео</h3>
+            <MediaSlider 
+                v-if='dataMedia' 
+                :static='true' 
+                :data='dataMedia' 
+                :key='randomDataMedia'
+                :width='"width: 30%;"'
+                :width_main='"width: 97%;"'
+                />
+          </div>
+           <table style='width: 100%;'>
+                <tr>
+                    <th >Файл</th>
+                </tr>
+                <tr 
+                    v-for='doc in  documentsData' 
+                    :key='doc'
+                    class='td-row'
+                    @click='setDocs(doc)'
+                    >
+                    <td>{{ doc.name }}</td>
+                </tr>
+            </table>
+            <div class="btn-control" style='width: 100%;'>
+                <button class="btn-small" @click='openDock'>Открыть</button>
+                <button class="btn-small">Удалить</button>
+                <button class="btn-small">Добавить из базы</button>
+            </div>
           <div class="pointer-files-to-add">
             <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
@@ -213,6 +243,11 @@
                 v-if="isChangeFolderFile" 
                 @unmount='file_unmount'
                 :key='keyWhenModalGenerate'
+            />
+            <OpensFile 
+                :parametrs='itemFiles' 
+                v-if="showFile" 
+                :key='keyWhenModalGenerateFileOpen'
             />
         </div>
     </div>
@@ -224,7 +259,11 @@ import AddFile from '@/components/filebase/addfile.vue'
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
 import TechProcess from './tech-process-modal.vue'
 import { random, padStart, padEnd } from 'lodash'
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
+import PATH_TO_SERVER from '@/js/path.js'
+import { isEmpty } from 'lodash'
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import OpensFile from '@/components/filebase/openfile.vue'
 
 export default {
   data() {
@@ -261,15 +300,24 @@ export default {
       techProcessIsShow: false,
       techProcessKey: random(10, 33e6),
       inputMassZag: 0,
-      techProcessID: localStorage.getItem('tpID') || null
+      techProcessID: localStorage.getItem('tpID') || null,
+      id: null,
+      documentsData: [],
+      dataMedia: [],
+      randomDataMedia: random(10, 24^4),
+
+      itemFiles: null,
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 323e8),
+
     }
   },
-  components: {AddFile, ModalBaseMaterial, TechProcess},
+  computed: mapGetters(['getOneSelectDetal']),
+  components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile},
   methods: {
-    ...mapActions(['createNewDetal']),
+    ...mapActions(['createNewDetal', 'fetchUpdateDetal']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
-      // Проверяем введенные данные 
       if(this.obj.name.length < 3) 
         return 0
 
@@ -286,6 +334,7 @@ export default {
       this.formData.append('DxL', this.obj.DxL)
       this.formData.append('massZag', this.obj.massZag)
       this.formData.append('trash', this.obj.trash)
+      this.formData.append('id', this.id)
       this.formData.append('mat_zag', this.mat_zag != 'Задать' ?
         this.mat_zag.id : null)
       this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
@@ -298,7 +347,7 @@ export default {
         }
         if(mat == this.materialList.length - 1) {
           this.formData.append('materialList', JSON.stringify(this.materialList))
-          this.createNewDetal(this.formData)
+          this.fetchUpdateDetal(this.formData)
         }
       }
 
@@ -331,7 +380,6 @@ export default {
       if(!e) 
         return 0
       this.formData = e.formData
-      console.log(e)
     },
     unmount_material(mat) {
       if(this.getOneMaterial) {
@@ -433,12 +481,64 @@ export default {
       this.$router.push("/basedetals")
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
+    },
+    setDocs(dc) {
+        this.itemFiles = dc
+    },
+    openDock() {
+        if(isEmpty(this.itemFiles))
+            return 0
+        this.showFile = true
+        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+    },
+  },
+  async mounted() {
+    if(isEmpty(this.getOneSelectDetal)){
+        this.$router.push('/basedetals')
+        localStorage.removeItem("tpID")
+        this.removeOperationStorage()
+        return 0
     }
+        
+    this.obj.articl = this.getOneSelectDetal.articl
+    this.obj.name = this.getOneSelectDetal.name
+    this.obj.responsible = this.getOneSelectDetal.responsible
+    this.obj.description = this.getOneSelectDetal.description   
+    this.obj.parametrs = JSON.parse(this.getOneSelectDetal.parametrs)
+    this.obj.DxL = this.getOneSelectDetal.DxL
+    this.obj.massZag = this.getOneSelectDetal.massZag
+    this.obj.trash = this.getOneSelectDetal.trash
+    this.obj.haracteriatic = JSON.parse(this.getOneSelectDetal.haracteriatic)
+    if(this.getOneSelectDetal.materials.length) {
+        this.getOneSelectDetal.materials.forEach(e => {
+            if(this.getOneSelectDetal.mat_zag && this.getOneSelectDetal.mat_zag == e.id)
+                this.mat_zag = e
+            if(this.getOneSelectDetal.mat_zag_zam && this.getOneSelectDetal.mat_zag_zam == e.id)
+                this.mat_zag_zam = e
+        })
+    }
+    if(this.getOneSelectDetal.techProcesses.length) {
+        this.techProcessID = this.getOneSelectDetal.techProcesses[0].id
+        localStorage.setItem('tpID', this.techProcessID)
+    }
+    if(this.getOneSelectDetal.materialList.length) {
+        this.materialList = JSON.parse(this.getOneSelectDetal.materialList)
+    }
+    this.id = this.getOneSelectDetal.id
+
+    this.documentsData = this.getOneSelectDetal.documents
+    this.getOneSelectDetal.documents.forEach(d => {
+        this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+    })
+    this.randomDataMedia = random(10, 38100)
   }
 }
 </script>
 
 <style scoped>
+.right_content>div {
+    margin-top: 100px;
+}
 .absolute_znach {
   position: absolute;
   margin-left: 90px;

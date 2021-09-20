@@ -144,12 +144,13 @@
                     v-for='doc in documentsOperationList' 
                     :key='doc'
                     class='td-row'
+                    @click='setDocs(doc)'
                     >
                     <td>{{ doc.name }}</td>
                   </tr>
               </table>
               <div class="btn-control" style='width: 100%;'>
-                  <button class="btn-small">Открыть</button>
+                  <button class="btn-small" @click='openDock'>Открыть</button>
                   <button class="btn-small">Удалить</button>
                   <button class="btn-small">Добавить из базы</button>
               </div>
@@ -207,6 +208,11 @@
     @unmount_eq='unmount_eq'
     :listEquipment='eqList'
   />
+  <OpensFile 
+    :parametrs='itemFiles' 
+    v-if="showFile" 
+    :key='keyWhenModalGenerateFileOpen'
+  />
 
 </div> 
 
@@ -214,13 +220,14 @@
 
 <script>
 
-import {random } from 'lodash'
+import {random, isEmpty } from 'lodash'
 import AddFile from '@/components/filebase/addfile.vue'
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
 import { mapActions } from 'vuex';
 import PATH_TO_SERVER from '@/js/path.js'
+import OpensFile from '@/components/filebase/openfile.vue'
 
 export default {
 
@@ -261,6 +268,9 @@ export default {
       eqList: [],
       eqKey: random(1, 13e23),
       documentsOperationList: [],
+      itemFiles: null,
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 323e8),
 
       preTime: 0,
       helperTime: 0,
@@ -274,7 +284,7 @@ export default {
     }
   },
   computed: {},
-  components: {AddFile, MediaSlider, BaseTools, BaseEquipment},
+  components: {AddFile, MediaSlider, BaseTools, BaseEquipment, OpensFile},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
@@ -381,7 +391,17 @@ export default {
     },
     changeGenTime(e){
       console.log(e)
-    }
+    },
+    setDocs(dc) {
+        this.itemFiles = dc
+    },
+    openDock() {
+        if(isEmpty(this.itemFiles))
+            return 0
+        console.log
+        this.showFile = true
+        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+    },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -415,7 +435,9 @@ export default {
       // получать полностью всю операцию для отрисовки документов  
       this.fetchOneOperationById(op.id).then(res => {
         this.documentsOperationList = res.documents
-        this.dataMedia = res.documents.map(d => {d.path = PATH_TO_SERVER+d.path; return d})
+        res.documents.forEach(d => 
+          this.dataMedia.push({path : PATH_TO_SERVER+d.path, name: d.name})
+        )
 
         this.randomDataMedia = random(10, 38100)
       })

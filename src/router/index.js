@@ -32,9 +32,16 @@ import EditBaseInstrument from '@/components/instrument/base-instrument-edit.vue
 import AddBaseEquipment from '@/components/equipment/base-equipment-add.vue';
 import EditBaseEquipment from '@/components/equipment/base-equipment-edit.vue';
 import AddDetal from '@/components/basedetal/add-detal.vue'; 
+import EditDetal from '@/components/basedetal/edit-detal.vue'; 
+
 
 
 const routes = [
+  {
+    path: '/detal/edit',
+    name: 'EditDetal',
+    component: EditDetal
+  },
   {
     path: '/detal/add',
     name: 'AddDetal',
