@@ -32,7 +32,7 @@ export default {
   },
   data() {
     return {
-      avtorization: true
+      avtorization: false
     }
   },
   methods: {
@@ -46,8 +46,8 @@ export default {
 
 <style>
   #app {
-    font-family: Avenir, Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
+    font-family: CasperRegular;
+   -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     left: 0;
     top: 0;

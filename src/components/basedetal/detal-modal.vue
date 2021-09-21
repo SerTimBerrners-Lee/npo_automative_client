@@ -61,7 +61,7 @@
                     :key='keyWhenModalGenerateFileOpen'
                 />
             </div>
-             <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
+             <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
         </div>
         </div>
 
@@ -70,11 +70,11 @@
   </div>
 </div>
  <TechProcess 
-                v-if='techProcessIsShow'
-                :key='techProcessKey'
-                @unmount='unmount_tech_process'
-                :techProcessID='techProcessID'
-            />
+    v-if='techProcessIsShow'
+    :key='techProcessKey'
+    @unmount='unmount_tech_process'
+    :techProcessID='techProcessID'
+/>
 </template>
 
 <script>
@@ -106,7 +106,7 @@ export default {
             techProcessID: null,
       }
   },
-    computed: mapGetters([
+    computed: mapGetters([ 
         'getOneSelectDetal']),
     components: {OpensFile, MediaSlider, TechProcess},
   async mounted() {

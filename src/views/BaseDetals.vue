@@ -52,6 +52,13 @@
                         <th>Наименование</th>
                         <th>Кол-во Д на СБ</th>
                     </tr>   
+                    <tr>
+                        <td colspan="3">
+                            <Search 
+                                @unmount='keySearch' 
+                            />
+                        </td>
+                    </tr>
                     <tr 
                         v-for='detal in allDetal' 
                         :key='detal'
@@ -77,7 +84,7 @@
                     <button class="btn-small" @click='editDetal'>Редактировать</button>
                </p>
                 <p>
-                    <button class="btn-small">В архив</button>
+                    <button class="btn-small" @click='deleteDetal'>В архив</button>
                 </p>
         </div>
         <DetalModal
@@ -91,6 +98,7 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
+import Search from '@/components/search.vue'
 
 export default {
     data() {
@@ -102,10 +110,10 @@ export default {
         }
     },
     computed: mapGetters(['allDetal']),
-    components: {DetalModal},
+    components: {DetalModal, Search},
     methods: {
-        ...mapActions(['getAllDetals']),
-        ...mapMutations(['addOneSelectDetal']),
+        ...mapActions(['getAllDetals', 'deleteDetelyId']),
+        ...mapMutations(['addOneSelectDetal', 'filterDetalToArticle']),
         setDetals(detal, e) {
             this.selectedDetal = detal
              if(this.tr) 
@@ -123,6 +131,17 @@ export default {
                 return 0
 
             this.$router.push("/detal/edit")
+        },
+        keySearch(v) {
+            setTimeout(() => {
+                this.filterDetalToArticle(v)
+            }, 
+            500)
+        },
+        deleteDetal() {
+            if(!this.selectedDetal)
+                return 0
+            this.deleteDetelyId(this.selectedDetal.id)
         }
 
     },
@@ -164,4 +183,5 @@ export default {
     .main_table_control {
         display: flex;
     }
+
 </style>

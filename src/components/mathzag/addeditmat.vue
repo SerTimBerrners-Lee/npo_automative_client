@@ -133,6 +133,7 @@
                 </td>
             </tr>
         </table>
+        <span class='snoska'>* Для сброса выбранного кликните на наименование характеристики</span>
         <div class="btn-control out-btn-control">
             <button class="btn-status btn-black" @click='addEditMaterial'>Сохранить</button>
             <button class="btn-status" @click='destroyModalF'>Отменить</button>
@@ -166,6 +167,7 @@
             </tr>
             
         </table>
+        <span class='snoska'>* Для сброса выбранного кликните на наименование характеристики</span>
         <div class="btn-control out-btn-control" v-if='parametrs.mat != "PODTYPE"'>
             <button class="btn-status btn-black" v-if="parametrs.type == 'create'" @click='addEditMaterial'>Сохранить</button>
             <button class="btn-status btn-black" v-if="parametrs.type == 'edit'" @click='addEditMaterial'>Обновить</button>
@@ -178,24 +180,6 @@
         </div>
       </div>
     </div>
-    <!-- <table >
-      <tr>
-        <th>Профиль</th>
-        <th>Формула расчета объёма</th>
-        <th>Формула площади S с постоянными величинами</th>
-        <th>Примечание</th>
-        <th>Постоянные значения (указываем конкретные значения при создании материала)</th>
-        <th>Переменные значения (указываем в детали - характеристика заготовки</th>
-      </tr>
-      <tr>
-        <th>Круг</th>
-        <td rowspan="5" space='row' >V = S*L</td>
-        <td>3.14*D кв./4</td>
-        <td></td>
-        <td></td>
-        <td></td>
-      </tr>
-    </table> -->
   </div>
 </div>
 </template>
@@ -385,6 +369,10 @@ export default {
 </script>
 
 <style scoped>
+  .snoska {
+    margin: 10px;
+    font-size: small;
+  }
   .right-menu-p>input {
       width: 70%;
   }

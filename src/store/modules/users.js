@@ -2,16 +2,21 @@ import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
     state: {
-        users: [1, 2]
+        users: [],
+        user_ban: [],
+        select_user: {}
     },
     getters: { 
         getUsers(state) {
-            return state.users.filter(user => !user.banned)
+            return state.users
         },
         getUserBan(state) {
-            return state.users.filter(user => user.banned)
+            return state.user_ban
+        },
+        getSelectedUser(state) {
+            return state.select_user
         }
-    },
+    }, 
     actions: {
         async saveUser(ctx, data) { 
             const res = await fetch(`${PATH_TO_SERVER}api/users`, {
@@ -20,20 +25,26 @@ export default {
             })
             const result = await res.json()
 
-            if(result.statusCode == 400) {
+            if(result.statusCode == 400) 
                 return { type: 'error', message: result.message}
-            } else if (result.id) {
+            else if (result.id)
                 return { type: 'success', message: 'Пользователь успешно создан'}
-            }
 
             return { type: 'error', message: 'Произошла ошика при добавлении пользователя'}
             
+        },
+        async updateUser(ctx, data) {
+            return await fetch(`${PATH_TO_SERVER}api/users/update`, {
+                method: "post",
+                body: data
+            })
         },
         async getAllUsers(ctx) {
             const res = await fetch(`${PATH_TO_SERVER}api/users`)
             const result = await res.json()
 
             ctx.commit('updateUsers', result)
+            return result
         },
         async banUserById(crx, id) {
             const res = await fetch(`${PATH_TO_SERVER}api/users/ban`, {
@@ -56,7 +67,13 @@ export default {
     },
     mutations: {
         updateUsers(state, users) { 
-            state.users = users
+            state.users = []
+            state.user_ban = []
+            state.users = users.filter(user => !user.banned)
+            state.user_ban = users.filter(user => user.banned)
+        },
+        selectedUser(state, user) {
+            state.select_user = user
         }
     }
 }

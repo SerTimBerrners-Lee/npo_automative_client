@@ -5,7 +5,7 @@
             <div>
                 <h2>Система</h2>
                 <h2>Эффективного</h2>
-                <h2>Производства</h2>
+                <h2>Производства</h2> 
             </div>
         </div>
         <div class="items_2">
@@ -14,16 +14,21 @@
                     <h2>Вход в систему</h2>
 
                     <label for="tabel">Табельный номер</label>
-                    <select name="tabel" id="tabel" v-model="selectTabel">
-                        <option v-for="(obj, index) in userData" :key="index" @click="changeSelectUser(Object.values(obj)[0], true)">
-                            {{  Object.keys(obj)[0] }}
+                    <select name="tabel" id="tabel" 
+                        v-model="selectTabel"
+                        @change="changeTabelUser">
+                        <option v-for="user in getUsers" :key="user" >
+                            {{  user.tabel }}
                         </option>
                     </select> 
                     
                     <label for="initial">Логин</label>
-                    <select name="initial" id="initial" v-model="selectInitial">
-                        <option v-for="(obj, index) in userData" :key="index" @click="changeSelectUser(Object.keys(obj)[0], false)">
-                            {{ Object.values(obj)[0] }}
+                    <select name="initial" id="initial" 
+                        v-model="selectLogin"
+                        @change="changeSelectUser">
+                        <option v-for="user in getUsers" 
+                            :key="user" >
+                            {{ user.login }}
                         </option>
                     </select> 
 
@@ -61,35 +66,32 @@ export default {
     props: {
         msg: String
     },
-    computed: mapGetters(['allPosts']),
-    async mounted() {
-        //this.$store.dispatch('fetchPosts')
-        //this.fetchPosts(3)
-    },
+    computed: mapGetters(['getUsers']),
     data() {
         return {
-            selectTabel: "000",
-            selectInitial: "Васильев А.В.",
-            userData: [
-                {"000" : "Васильев А.В."},
-                {"001" : "Мамалига Ж.А."},
-                {"002" : "Денисов С.С."}
-            ],
+            selectTabel: null,
+            selectLogin: null,
             strTabels: "",
             flagsBlocingInput: false
         }
     },
-    created() {
-        this.text = "created"
-    },
     methods: {
-        // оператор спрет
-        ...mapActions(['fetchPosts']),
-        angeSelectUser(value, isTabel) {
-            isTabel ?
-                this.selectInitial = value :
-                    this.selectTabel = value
+        ...mapActions(['getAllUsers']),
+        changeTabelUser() {
+            this.getUsers.forEach((user) => {   
+                if(user.tabel == this.selectTabel) {
+                    this.selectLogin = user.login
+                }
+            })
         },
+        changeSelectUser() {
+            this.getUsers.forEach((user) => {   
+                if(user.login == this.selectLogin) {
+                    this.selectTabel = user.tabel
+                }
+            })
+        },
+
         tabelStrSplit(num) {
             if (this.flagsBlocingInput)
                 return
@@ -106,12 +108,14 @@ export default {
         tabelSearch() {
             this.$refs.input_password.focus()
 
-            for(let {...dat} of this.userData) {
-                if(Number(Object.keys(dat)[0]) ===   Number(this.strTabels)) {
-                    this.changeSelectUser(Object.values(dat)[0], true) 
-                    this.changeSelectUser(Object.keys(dat)[0], false) 
+            
+            this.getUsers.forEach((user) => {   
+                if(user.tabel == this.strTabels) {
+                    this.selectTabel = user.tabel
+                    this.selectLogin = user.login
                 }
-            }
+            })
+
 
             this.flagsBlocingInput = true
             setTimeout(() => {
@@ -121,6 +125,14 @@ export default {
         },
         checkedUser() {
             this.$emit('checked', true)
+        }
+    },
+    async mounted() {
+        await this.getAllUsers()
+
+        if(this.getUsers.length) {
+            this.selectLogin = this.getUsers[0].login
+            this.selectTabel = this.getUsers[0].tabel
         }
     }
 }

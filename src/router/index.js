@@ -17,7 +17,7 @@ import DolznUser from '@/views/settings/DolznUser.vue';
 import LibbaryPage from '@/views/settings/LibbaryPage.vue';
 import PriceHorsPage from '@/views/settings/PriceHorsPage.vue';
 import SaveBaseData from '@/views/settings/SaveBaseData.vue';
-import AddEdit from '@/views/settings/AddEdit.vue';
+import AddEditUser from '@/views/settings/AddEditUser.vue';
 import FileBase from '@/views/FileBase.vue';
 import BaseMaterial from '@/views/BaseMaterial.vue';
 import BaseBuyer from '@/views/BaseBuyer.vue';
@@ -127,8 +127,8 @@ const routes = [
   },
   { 
     path: '/employee/edit/:title',
-    name: 'AddEdit',
-    component: AddEdit,
+    name: 'AddEditUser',
+    component: AddEditUser,
     props: true
   },
   {

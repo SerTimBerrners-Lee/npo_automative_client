@@ -3,6 +3,7 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
     state: {
         detal: [],
+        filterDetal: [],
         select_detal: {},
         operationNewList: localStorage.getItem('newOperationItem') ?
             JSON.parse(localStorage.getItem('newOperationItem')) : [],
@@ -24,7 +25,18 @@ export default {
                 method :  'post',
                 body   :  data
             })
-            console.log(res)
+            if(res.ok) {
+                const result = await res.json()
+                ctx.commit('addNewDetalToArr', result)
+            }
+        },
+        async deleteDetelyId(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`, {
+                method :  'delete'
+            })
+            if(res.ok) {
+                ctx.commit('deleteDetalById', id)
+            }
         },
         async fetchUpdateDetal(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/update`, {
@@ -111,6 +123,9 @@ export default {
         }
     },
     mutations: {
+        addNewDetalToArr(state, detal) {
+            state.detal.push(detal)
+        },
         addOneSelectDetal(state, detal) {
             state.select_detal = detal
         },
@@ -137,6 +152,24 @@ export default {
         },
         setDetalMutation(state, data) {
             state.detal = data.filter(detal => !detal.ban)
+        },
+        filterDetalToArticle(state, art) {
+            if(!art) 
+                state.detal = state.filterDetal
+            if(state.filterDetal.length == 0)
+                state.filterDetal = state.detal
+            
+            state.detal = state
+            .filterDetal
+            .filter(detal => 
+                String(detal.articl)
+                .slice(0, String(art).length) == String(art) 
+            ) 
+        },
+        deleteDetalById(state, id) {
+            state.detal = state.detal.filter(detal => detal.id != id)
+            if(state.filterDetal.length) 
+                state.filterDetal = state.filterDetal.filter(detal => detal.id)
         }
     }
 }

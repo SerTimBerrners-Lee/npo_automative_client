@@ -261,6 +261,7 @@ export default {
       techProcessIsShow: false,
       techProcessKey: random(10, 33e6),
       inputMassZag: 0,
+      variableDensity: 0,
       techProcessID: localStorage.getItem('tpID') || null
     }
   },
@@ -290,21 +291,26 @@ export default {
         this.mat_zag.id : null)
       this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
          this.mat_zag_zam.id : null)
-      for(let mat = 0; mat < this.materialList.length; mat++) {
-        this.materialList[mat].mat = {
-          id: this.materialList[mat].mat.id,
-          name: this.materialList[mat].mat.name,
-          kolvo: this.materialList[mat].mat.kolvo
+      if(this.materialList.length > 0) {
+        for(let mat = 0; mat < this.materialList.length; mat++) {
+          this.materialList[mat].mat = {
+            id: this.materialList[mat].mat.id,
+            name: this.materialList[mat].mat.name,
+            kolvo: this.materialList[mat].mat.kolvo
+          }
+          if(mat == this.materialList.length - 1) {
+            this.formData.append('materialList', JSON.stringify(this.materialList))
+            this.createNewDetal(this.formData)
+          }
         }
-        if(mat == this.materialList.length - 1) {
-          this.formData.append('materialList', JSON.stringify(this.materialList))
-          this.createNewDetal(this.formData)
-        }
+      } else {
+         this.createNewDetal(this.formData)
       }
-
-      this.$router.push('/basedetals')
+      
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
+      this.$router.push('/basedetals')
+      
     },
 
     unmount_tech_process(tp) {
@@ -393,7 +399,7 @@ export default {
         let dxl = val.split('x')
         if(dxl.length == 2) {
           // обновляем значения в других инпутах 
-          this.obj.massZag = (Number(this.inputMassZag) * Number(dxl[1]))
+          this.obj.massZag = Number(this.variableDensity) * (Number(this.inputMassZag) * (Number(dxl[1])/1000))
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
         }
       }
@@ -403,9 +409,10 @@ export default {
       this.techProcessKey = random(1, 12e8)
     },
     calcParametr(m) {
-      let oD = m.outsideDiametr
-      let leng = m.length
-      let aCS = m.areaCrossSectional
+      let oD = m.outsideDiametr // Наружный диаметр
+      let leng = m.length // Длина
+      let aCS = m.areaCrossSectional //  Площадь сечения
+      let density = m.density
       if(oD) {
         oD = JSON.parse(oD)
         if(m.material.outsideDiametr) 
@@ -416,16 +423,21 @@ export default {
         if(m.material.length) 
             this.obj.DxL = padEnd(this.obj.DxL, this.obj.DxL.length + leng.znach.length, leng.znach)
       }
+      //  Чтобы узнать Массу нужно ПЛОТНОСТЬ * (ПЛОЩАДЬ СЕЧЕНИЯ * ДЛИНУ)
       if(aCS) {
         aCS = JSON.parse(aCS)
+        density = JSON.parse(density)
+        console.log(aCS)
         if(m.material.areaCrossSectional) {
           let dxl = this.obj.DxL.split('x')
           if(dxl.length == 2) 
-            this.obj.massZag = (Number(dxl[1]) * Number(aCS.znach))
+            this.obj.massZag = Number(density.znach) * ((Number(dxl[1])/1000) * Number(aCS.znach))
           else 
             this.obj.massZag = aCS.znach
+
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
           this.inputMassZag = aCS.znach
+          this.variableDensity = Number(density.znach)
         }
       }
     },

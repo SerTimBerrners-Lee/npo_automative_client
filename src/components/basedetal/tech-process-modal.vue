@@ -351,7 +351,7 @@ export default {
         }).catch(() => {
             this.removeOperationStorage()
         })
-    }
+    } 
   }
 }
 </script>

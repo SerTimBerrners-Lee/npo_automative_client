@@ -1,10 +1,10 @@
-<template>
+<template> 
     <div>
-        <h3> {{ title == edit ? 'Редактировать' : 'Добавить' }} сотрудника</h3>
+        <h3> {{ $route.params.title == "edit" ? 'Редактировать' : 'Добавить' }} сотрудника</h3>
 
         <div class="block">
             <p>
-                <span>ФИО: </span>
+                <span>ФИО: </span> 
                 <input type="text" style="width: 200px;" v-model="object.initial">
             </p>
             <p>
@@ -77,7 +77,11 @@
                         <tr>
                             <th class="width-350" style="width: 520px;">Файл</th>
                         </tr>
-                        <tr class="td-row" v-for="doc in docFiles" :key="doc" @click="getDoc(doc.name)">
+                        <tr 
+                            class="td-row" 
+                            v-for="doc in docFiles" 
+                            :key="doc"
+                            @click="setDocs(doc)">
                             <td> {{ doc.name }}</td>
                         </tr>
                     </table>
@@ -108,16 +112,27 @@
                     <label for="fileFolder" class="toltip">Нажмите чтобы загрузить фото</label>
                     <input type="file" @change="e => fileFolderF(e)" id="fileFolder" style="display: none;">
                 </div>
+                 <div v-if="imgShow" class='uploadPhoto'>
+                    <label for="fileFolder2" >Изменить фото</label>
+                    <input type="file" @change="e => fileFolderF(e)" id="fileFolder2" style="display: none;">
+                </div>
             </div>
 
         </div>
 
         <div class="edit-save-block block">
-            <button class="btn-status" v-if="title == edit">В архив</button>
+            <button class="btn-status" 
+                v-if="$route.params.title == 'edit'"
+                @click='bannedUser'>В архив</button>
             <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
             <button class="btn-status btn-black" @click="saveData">Сохранить</button>
         </div>
         <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='showInformPanel' />
+    <OpensFile 
+                :parametrs='itemFiles' 
+                v-if="showFile" 
+                :key='keyWhenModalGenerateFileOpen'
+            />
     </div>
 </template>
 
@@ -127,6 +142,9 @@ import { mapActions, mapGetters } from 'vuex';
 import InformFolder from '@/components/InformFolder.vue';
 import showMessage from '@/js/inform_folder.js'
 import photoPreloadUrl from '@/js/photo_preload.js'
+import {isEmpty, random} from 'lodash'
+import PATH_TO_SERVER from '@/js/path.js'
+import OpensFile from '@/components/filebase/openfile.vue'
 
 export default ({ 
     data() {
@@ -141,7 +159,7 @@ export default ({
             type: '',
             urlImg: '',
             imgShow: false,
-            fileFolder: '',
+            fileFolder: null,
             object: {
                 adress: '',
                 adressProps: '',
@@ -157,27 +175,34 @@ export default ({
                 birthday: '',
                 haracteristic: '',
                 primetch: ''
-            }
+            },
+            id: null,
+
+            itemFiles: null,
+            showFile: false,
+            keyWhenModalGenerateFileOpen: random(10, 323e8),
         }
     },
     computed: {
-        ...mapGetters(['allRoles']),
-        title() {
-            return this.$route.params.title
-        }
+        ...mapGetters(['allRoles', 'getSelectedUser']),
     },
     components: {
-        InformFolder
-    },
-    mounted() {
-        this.fetchRoles()
+        InformFolder,
+        OpensFile
     },
     methods: {
-        ...mapActions(['saveUser', 'fetchRoles']),
+        ...mapActions([
+            'saveUser', 
+            'fetchRoles', 
+            'banUserById',
+            'updateUser'
+        ]),
 
         saveData() {
             if(this.object.tabel.length > 4)
                 return showMessage('', 'Тебель не может быть больше 4-х символов', 'e', this)
+            if(this.object.password.length > 20)
+                return showMessage('', 'Пароль не может быть больше 20-х символов', 'e', this)
             if(!Number(this.object.tabel))
                 return showMessage('', 'Тебель должен быть числом', 'e', this)
             this.saveContact()
@@ -185,12 +210,27 @@ export default ({
             for (let dat in this.object) {
                 formData.append(dat, this.object[dat])
             }
-            formData.append('image', this.fileFolder)
+            if(this.fileFolder)
+                formData.append('image', this.fileFolder)
 
             if(this.docFiles.length > 0) {
                 for(let file of this.docFiles) {
                     formData.append('document', file)
                 }
+            }
+
+            console.log("FILEFOLDER:",  this.fileFolder)
+
+            // А здесь смотрим если редактируем вызываем другую функцию
+            if(this.$route.params.title == 'edit') {
+                formData.append('id', this.id)
+                this.updateUser(formData).then(res => {
+                    setTimeout(() => this.$router.push('/employee'), 4000)
+                    if(res.ok)
+                        return showMessage('', 'Данные переданны для обработки на сервер', 'w', this)
+                    else 
+                        return showMessage('', 'Произошла ошибка на сервере', 'e', this)
+                })
             }
 
             this.saveUser(formData).then(m => {
@@ -222,9 +262,6 @@ export default ({
                 this.$refs.email.textContent = this.object.email
             }
         },
-        getDoc(doc) {
-            this.selectFiles = doc
-        },
         delitFilesDoc(){
             if(this.selectFiles) {
                 this.docFiles = this.docFiles.filter(f => f.name !== this.selectFiles)
@@ -234,12 +271,82 @@ export default ({
             val.target.files.forEach(f => {
                 this.docFiles.push(f)
             })
+        },
+        bannedUser() {
+            if(isEmpty(this.getSelectedUser)) 
+                return 0
+            this.banUserById(this.getSelectedUser.id).then(mes => {
+                showMessage('', mes.message, mes.type, this)
+                setTimeout(() => this.$router.push({path: `/employee`}), 1000)
+            })
+        },
+        setDocs(dc) {
+            this.itemFiles = dc
+            if(isEmpty(this.itemFiles))
+                return 0
+            this.showFile = true
+            this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+        },
+    },
+    async mounted() {
+        this.fetchRoles()
+        if(this.$route.params.title == 'edit') {
+            console.log(this.getSelectedUser.id)
+            if(isEmpty(this.getSelectedUser)) {
+                this.$router.push(`/employee/`)
+                return 0
+            }
+            this.id = this.getSelectedUser.id
+            //Заполняем данные 
+            this.object.adress = this.getSelectedUser.adress
+            this.object.adressProps = this.getSelectedUser.adressProps
+            this.object.phone = this.getSelectedUser.phone
+            this.object.email = this.getSelectedUser.email
+            this.object.initial = this.getSelectedUser.initial
+            this.object.tabel = this.getSelectedUser.tabel
+            this.object.roles = this.getSelectedUser.roles[0].id
+            this.object.dateWork = this.getSelectedUser.dateWork
+            this.object.dateUnWork = this.getSelectedUser.dateUnWork
+            this.object.login = this.getSelectedUser.login
+            this.object.password = this.getSelectedUser.password
+            this.object.birthday = this.getSelectedUser.birthday
+            this.object.haracteristic = this.getSelectedUser.haracteristic
+            this.object.primetch = this.getSelectedUser.primetch
+
+            if(this.getSelectedUser.image) {
+                this.imgShow = true
+                this.urlImg = PATH_TO_SERVER+this.getSelectedUser.image
+            }
+
+            if(this.getSelectedUser.documents.length) {
+                this.docFiles = this.getSelectedUser.documents
+            }
+
         }
-    }
+    },
 })
 </script>
 
 <style scoped>
+.uploadPhoto {
+    background: #2b2b2b;
+    padding: 4px;
+    margin-top: 10px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: bold;
+}
+.uploadPhoto * {
+    cursor: pointer;
+}
+.uploadPhoto:hover {
+    background: #000000;
+}
+.img-ava-block {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+}
 .ava-block>img {
     height: 200px;
     width: 160px;

@@ -339,23 +339,26 @@ export default {
         this.mat_zag.id : null)
       this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
          this.mat_zag_zam.id : null)
-      for(let mat = 0; mat < this.materialList.length; mat++) {
-        this.materialList[mat].mat = {
-          id: this.materialList[mat].mat.id,
-          name: this.materialList[mat].mat.name,
-          kolvo: this.materialList[mat].mat.kolvo
+      if(this.materialList.length > 0) {
+        for(let mat = 0; mat < this.materialList.length; mat++) {
+          this.materialList[mat].mat = {
+            id: this.materialList[mat].mat.id,
+            name: this.materialList[mat].mat.name,
+            kolvo: this.materialList[mat].mat.kolvo
+          }
+          if(mat == this.materialList.length - 1) {
+            this.formData.append('materialList', JSON.stringify(this.materialList))
+            this.fetchUpdateDetal(this.formData)
+          }
         }
-        if(mat == this.materialList.length - 1) {
-          this.formData.append('materialList', JSON.stringify(this.materialList))
-          this.fetchUpdateDetal(this.formData)
-        }
+      } else {
+        this.fetchUpdateDetal(this.formData)
       }
 
       this.$router.push('/basedetals')
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
     },
-
     unmount_tech_process(tp) {
       if(tp.id) {
         this.techProcessID = tp.id
@@ -521,7 +524,7 @@ export default {
         this.techProcessID = this.getOneSelectDetal.techProcesses[0].id
         localStorage.setItem('tpID', this.techProcessID)
     }
-    if(this.getOneSelectDetal.materialList.length) {
+    if(this.getOneSelectDetal.materialList && this.getOneSelectDetal.materialList.length) {
         this.materialList = JSON.parse(this.getOneSelectDetal.materialList)
     }
     this.id = this.getOneSelectDetal.id

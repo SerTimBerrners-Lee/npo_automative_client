@@ -3,7 +3,8 @@
         <div class="table-content">
         <h3 class="h3-title">Сотрудники</h3>
         <div class="type-issue">
-            <span @click="knowGet = !knowGet" v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
+            <span @click="knowGet = !knowGet" 
+                    v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
         </div>
             <div class="scroll-table" style="height: 690px;">
             <table>
@@ -12,22 +13,34 @@
                     <th>Должность</th>
                     <th style="width: 300px;">Инициалы</th>
                 </tr>
-                <tr class="td-row" v-for="user in knowGet ? getUsers : getUserBan" :key="user" @click="userShow(user)">
+                <tr class="td-row" 
+                    v-for="user in knowGet ? getUsers : getUserBan" 
+                    :key="user" @click="e => userShow(user, e.target.parentElement)"
+                    >
                     <td class="tabel-td">{{ user.tabel }}</td>
                     <td>{{ roles }}</td>
                     <td> {{ user.initial }}</td>
                 </tr>
-                <tr class="td-row" v-for="iten in 70" :key="iten">
-                    <td></td>
+                <tr class="td-row"  v-for="iten in 70" :key="iten">
+                    <td style='height: 10px;'></td> 
                     <td></td>
                     <td></td>
                 </tr>
-            </table>
+            </table> 
             </div>
             <div class="btn-control">
-                <button @click="userBan"> {{ knowGet ? 'В архив' : 'В Активные' }}</button>
-                <button @click="$router.push({path: `/employee/edit/edit`})">Редактировать</button>
-                <button @click="$router.push({path: `/employee/edit/add`})">
+                <button 
+                    @click="userBan"
+                    class='btn-small' > 
+                    {{ knowGet ? 'В архив' : 'В Активные' }}
+                </button>
+                <button 
+                    @click="editUser"
+                    class='btn-small'>
+                    Редактировать</button>
+                <button 
+                    @click="$router.push({path: `/employee/edit/add`})"
+                    class='btn-small'>
                     Добавить
                 </button>
             </div>
@@ -69,9 +82,7 @@
                             </p>
                         </div>
                         <h3>Примечание</h3>
-                        <textarea name="description" icols="30" rows="10" :text='primetch'>
-                            
-                        </textarea>
+                        <textarea class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
                     </div>
                 </div>
                 <div class="har-inform">
@@ -81,8 +92,8 @@
                             <h3>Оборот ТМЦ</h3>
                     </div>
                     <div class="ava-right-block">
-                        <h3>Характеристика</h3>
-                        <textarea class="textarea-har" cols="30" rows="10" :text='haracteristic'></textarea>
+                        <h3 style='margin-top: 0px;'>Характеристика</h3>
+                        <textarea class="textarea-har" cols="30" rows="10" v-text='haracteristic'></textarea>
                         <h3>Документы</h3>
                         <table>
                             <tr>
@@ -92,8 +103,8 @@
                                 <td @click="openNewWindow(document.path)"> {{ document.name }}</td>
                             </tr>
                         </table>
-                        <button>Скачать</button>
-                        <button>Открыть</button>
+                        <button class='btn-small'>Скачать</button>
+                        <button class='btn-small'>Открыть</button>
                     </div>
                 </div>
             </div>
@@ -106,7 +117,7 @@
                     <input type="text" class="calendar-input">
                     <span>по: </span>
                     <input type="text" class="calendar-input">
-                    <button>Сбросить фильтр</button>
+                    <button class='btn-small'>Сбросить фильтр</button>
                 </div>
                 <div class="scroll-table" style="height: 190px; margin-left: 10px;">
                     <table >
@@ -142,7 +153,7 @@
 </template>
 
 <script>
-import {  mapActions, mapGetters } from 'vuex'
+import {  mapActions, mapGetters, mapMutations } from 'vuex'
 import { isEmpty } from 'lodash';
 import showMessage from '@/js/inform_folder.js';
 import InformFolder from '@/components/InformFolder.vue'
@@ -172,16 +183,19 @@ export default {
             primetch: '',
             birthday: '',
             roles: '',
-            id: ''
+            id: '',
+
+            span: null
         }
     }, 
-    computed: mapGetters(['getUsers', 'getUserBan']),
+    computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser']),
     components: {
         InformFolder
     },
     methods: {
         ...mapActions(['getAllUsers', 'banUserById']),
-        userShow(user) {
+        ...mapMutations(['selectedUser']),
+        userShow(user, e = null) {
             if(user) {
                 this.roles = !isEmpty(user.roles[0]) ? user.roles[0].description : '' 
                 this.initial = user.initial
@@ -199,8 +213,18 @@ export default {
                 this.primetch = user.primetch
                 this.birthday = user.birthday
                 this.id = user.id
-                this.documents = user.documents
+                this.documents = user.documents 
             }
+
+            this.selectedUser(user)
+            
+            if(!e)
+                return 
+            
+            if(this.span)
+                this.span.classList.remove('td-row-all')
+            this.span = e
+            this.span.classList.add('td-row-all')
         },
         userBan() {
             if(!this.id)
@@ -214,12 +238,18 @@ export default {
         },
         openNewWindow(url) {
             window.open(PATH_TO_SERVER + url, '_blank')
+        },
+        editUser() {
+            if(!this.getSelectedUser) 
+                return 0
+            
+            this.$router.push({path: `/employee/edit/edit`})
         }
     },
     async mounted() {
-        this.getAllUsers().then(() => {
+        await this.getAllUsers();
+        if(this.getUsers.length)
             this.userShow(this.getUsers[0])
-        });
     }
 }
 </script> 
