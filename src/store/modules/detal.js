@@ -50,6 +50,12 @@ export default {
             const result = await res.json()
             ctx.commit('setDetalMutation', result)
         },
+        async getOneDetal(ctx, id)  {
+            const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`)
+            const result = await res.json()
+            ctx.commit('addOneSelectDetal', result)
+            return result
+        },
         async createOperation(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/operation`, {
                 method :  'post',
@@ -70,7 +76,6 @@ export default {
                 ctx.commit('updateOperationToList', result)
             }
         },
-
         async updateOperationTech(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/up/tech`, {
                 headers: {
@@ -87,7 +92,6 @@ export default {
                 ctx.commit('updateOperationToList', result)
             }
         },
-
         async banOperation(ctx, id) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/${id}`, {
                 method  : 'delete'
@@ -96,7 +100,6 @@ export default {
                 ctx.commit('banOperationMuttation', id)
             }
         },
-
         async createTechProcess(ctx, data) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/techprocess`, {
                 method  :   'post',
@@ -107,7 +110,6 @@ export default {
                 return result 
             }
         },
-
         async fetchTechProcess(ctx, id) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal/techprocess/${id}`)
             const result = await res.json()

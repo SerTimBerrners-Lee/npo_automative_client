@@ -40,22 +40,24 @@ input, button
 
 #cover
 {
-    padding: 5px;
+    width: 90%;
+    padding: 2px;
     background-color: #e7e7e7;
     border-radius: 6px;
-    box-shadow: 0 10px 40px #cecece, 0 0 0 20px #ffffffeb;
+    box-shadow: 0 10px 20px #cecece, 0 0 0 10px #ffffffeb;
 }
 input[type="text"]
 {
-    width: 100%;
-    font-size: 20px;
+    width: 90%;
+    font-size: 16px;
     line-height: 1;
 }
 
 input[type="text"]::placeholder
 {
     color: #d4d4d4;
-    font-size: 18px;
+    font-size: 16px;
+    font-weight: bold;
 }
 input[type="text"]:hover::placeholder
 {

@@ -35,7 +35,7 @@
                     <label for="password">Пароль</label>
                     <input class="input-auth" type="password" name="password" id="password" ref="input_password">
 
-                    <button type="submit" class="btn blues" @click="checkedUser">Войти</button>
+                    <button type="submit" class="btn blues" @click="login">Войти</button>
 
                     <p class="tabel-placholder"> {{ strTabels.length ? strTabels : "Начните вводить табель"}} </p>
                 </div>
@@ -54,6 +54,13 @@
                 </div>
             </div>
         </div>
+        <InformFolder 
+            :key="keyInformTip" 
+            :title='titleMessage' 
+            :message='message' 
+            :type='type' 
+            v-if='showInformPanel' 
+        />
     </div>
 </template>
 
@@ -61,22 +68,31 @@
 <script>
 
 import { mapGetters, mapActions }from 'vuex'
+import { showMessage } from '@/js/'
+import InformFolder from '@/components/InformFolder.vue'
 export default {
     name: 'Authorization',
     props: {
         msg: String
     },
+    components: {InformFolder},
     computed: mapGetters(['getUsers']),
     data() {
         return {
             selectTabel: null,
             selectLogin: null,
             strTabels: "",
-            flagsBlocingInput: false
+            flagsBlocingInput: false,
+
+            titleMessage: '',
+            message: '',
+            type: '',
+            showInformPanel: false,
+            keyInformTip: 0,
         }
     },
     methods: {
-        ...mapActions(['getAllUsers']),
+        ...mapActions(['getAllUsers', 'loginAuth']),
         changeTabelUser() {
             this.getUsers.forEach((user) => {   
                 if(user.tabel == this.selectTabel) {
@@ -91,7 +107,6 @@ export default {
                 }
             })
         },
-
         tabelStrSplit(num) {
             if (this.flagsBlocingInput)
                 return
@@ -107,24 +122,34 @@ export default {
         },
         tabelSearch() {
             this.$refs.input_password.focus()
-
-            
             this.getUsers.forEach((user) => {   
                 if(user.tabel == this.strTabels) {
                     this.selectTabel = user.tabel
                     this.selectLogin = user.login
                 }
             })
-
-
             this.flagsBlocingInput = true
             setTimeout(() => {
                 this.strTabels = "";
                 this.flagsBlocingInput = false
             }, 1500)
         },
-        checkedUser() {
-            this.$emit('checked', true)
+        login() {
+            let password = this.$refs.input_password.value
+            if(password < 2) 
+                return 0
+            this.loginAuth({
+                login: this.selectLogin,
+                password
+            }).then(res => {
+                if(res.type == 's')  
+                    setTimeout(() => {
+                        this.$router.push('/')
+                    }, 1000)
+
+                return showMessage('', res.message, res.type, this)
+            })
+            
         }
     },
     async mounted() {

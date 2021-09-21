@@ -30,11 +30,11 @@
             </p>
             <p>
                 <span>Логин: </span>
-                <input type="text" v-model='object.login'>
+                <input type="text" v-model.trim='object.login'>
             </p>
             <p>
                 <span>Пароль: </span>
-                <input type="text" v-model="object.password">
+                <input type="text" v-model.trim="object.password">
             </p>
             <p>
                 <span>День рождения: </span>
@@ -201,8 +201,10 @@ export default ({
         saveData() {
             if(this.object.tabel.length > 4)
                 return showMessage('', 'Тебель не может быть больше 4-х символов', 'e', this)
-            if(this.object.password.length > 20)
-                return showMessage('', 'Пароль не может быть больше 20-х символов', 'e', this)
+            if(this.object.password.length > 20 || this.object.password.length < 5)
+                return showMessage('', 'Пароль не может быть больше 20-х и меньше 5 символов', 'e', this)
+             if(this.object.login.length < 3)
+                return showMessage('', 'Пароль не может быть менее 3-х символов', 'e', this)
             if(!Number(this.object.tabel))
                 return showMessage('', 'Тебель должен быть числом', 'e', this)
             this.saveContact()

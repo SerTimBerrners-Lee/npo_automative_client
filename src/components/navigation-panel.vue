@@ -8,12 +8,6 @@
     </div>
 </template>
 
-<script>
-export default {
-    
-}
-</script>
-
 <style>
 .rout-nav {
     border-bottom: 1px solid #d3d3d3;

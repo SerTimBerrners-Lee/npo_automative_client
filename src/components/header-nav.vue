@@ -12,17 +12,24 @@
             <span class="data">{{ clocks }}</span>
             <span class="time"></span>
         </div>
-        <div class="profile">
+        <div class="profile" >
             <div @click="$router.push('/')">
                 <unicon name="user" fill="white" />
-                <p>
-                    <span class="initial">Наливайченко Н.И.</span>
-                    <span class="role">инженер</span>
+                <p style='padding-right: 15px;padding-left: 10px;'>
+                    <span class="initial">
+                        {{ getAuth ? getAuth.login : '' }}
+                    </span>
+                    <span class="role"> 
+                        {{ 
+                            getAuth && getAuth.roles.length ? 
+                                getAuth.roles[0].description : ''
+                        }}
+                    </span>
                 </p>
             </div>
-            <router-link to="/Authorization">
-                <unicon name="power" fill="white" />
-            </router-link>
+                <a @click='exit'>
+                    <unicon name="power" fill="white" />
+                </a>
         </div>
         <router-link to="/settings">
             <span class="setting-po">
@@ -33,6 +40,8 @@
 </template>
 <script>
 
+import { mapGetters, mapMutations } from 'vuex'
+
 export default {
     data() {
         return {
@@ -40,6 +49,7 @@ export default {
             idInterval: Number
         }
     },
+    computed: mapGetters(['getAuth']),
     created() {
         this.clocks = this.getClock()
         
@@ -51,6 +61,7 @@ export default {
         clearInterval(this.idInterval)
     },
     methods: {
+        ...mapMutations(['unAuth']),
         getClock() {
             let dat =  new Date()
             let Day = String(dat.getUTCDate())
@@ -65,7 +76,14 @@ export default {
         },
         addNull(str) {
             return str.length == 1 ? "0" + str : str
+        },
+        exit() {
+            this.unAuth()
+            this.$emit('exit')
+            this.$router.push('/')
         }
+    },
+    async mounted() {
     }
 }
 </script>
@@ -130,6 +148,7 @@ export default {
     display: flex;
     margin-left: 500px;
     cursor: pointer;
+    margin-right: 50px;
 }
 .profile>div {
     display: flex;

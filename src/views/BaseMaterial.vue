@@ -25,59 +25,10 @@
                 </div>
                 </div>
             </div>
-            <div class="right-div-bfp">
-                <h3>Принадлежность</h3>
-                <div class="block" style='width: 400px;'>
-                    <h3>Изделие</h3>
-                    <div class="scroll-table table-fbp">
-                        <table>
-                        <tr>
-                            <th>Артикул </th>
-                            <th>Наименование</th>
-                        </tr>
-                        <tr class="td-row">
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                        <tr class="td-row">
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </table>
-                    </div>
-                    <h3>Сборочная единица</h3>
-                    <div class="scroll-table table-fbp">
-                        <table>
-                        <tr class="td-row">
-                            <th>Артикул </th>
-                            <th>Наименование</th>
-                        </tr>
-                        <tr v-for="u in 50" :key="u" class="td-row">
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </table>
-                    </div>
-                    <h3>Деталь</h3>
-                    <div class="scroll-table table-fbp">
-                        <table>
-                        <tr class="td-row">
-                            <th>Артикул </th>
-                            <th>Наименование</th>
-                        </tr>
-                        <tr class="td-row" v-for='i in 3' :key='i'>
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </table>
-                    </div>
-                </div>
-                <div class="btn-control">
-                    <button class="btn-small">
-                        Сохранить в виде отчета EXEL
-                    </button>
-                </div>
-            </div>
+            <TableNode  
+                v-if='this.podPodMaterial'
+                :material='podPodMaterial'
+            />
             <OpensFile 
                 :parametrs='itemFiles' 
                 v-if="itemFiles != null" 
@@ -93,6 +44,7 @@
 import TableMaterial from '@/components/mathzag/table-material.vue'
 import OpensFile from '@/components/filebase/openfile.vue'
 import random from 'lodash'
+import TableNode from '@/components/mathzag/table-node.vue'
 
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
@@ -106,7 +58,7 @@ export default {
             span: null
         }
     },
-    components:{TableMaterial, OpensFile},
+    components:{TableMaterial, OpensFile, TableNode},
     computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
     methods: {
         ...mapActions(['getAllTypeMaterial', 
@@ -142,7 +94,7 @@ export default {
                     this.podPodMaterial = material
                     if(this.podPodMaterial.documents && this.podPodMaterial.documents.length > 0) { 
                         this.itemFiles = this.podPodMaterial.documents
-                        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+                        this.keyWhenModalGenerateFileOpen = random(10, 384e4)
                     }
                 })
             }
@@ -172,23 +124,11 @@ export default {
     .type-issue {
      user-select: none;   
     }
-    .table-fbp {
-        width:100%;
-        max-height: 250px;
-        height: auto;
-    }
     .cont {
         display: flex;
         flex-direction: column;
     }
     .nav-base-file-page {
         display: flex;
-    }
-    .right-div-bfp {
-        width: 414px;
-        margin-left: 10px;
-    }
-    th {
-        width: 350px;
     }
 </style>

@@ -1,15 +1,15 @@
 <template>
   <div>
-    <div id="nav" v-if="avtorization">
-        <HeadersNav />
+    <div id="nav" v-if="getAuth">
+        <HeadersNav @exit='exit' />
         <MenuItem />
         <NavigationPanel />
       <div class="container">
         <router-view />
       </div>
     </div>
-    <div v-if="!avtorization" >
-      <Authorization @checked="checked" />
+    <div v-if="!getAuth" >
+      <Authorization  />
     </div>
   </div>
 </template>
@@ -21,6 +21,7 @@ import HeadersNav from '@/components/header-nav';
 import NavigationPanel from '@/components/navigation-panel';
 import Authorization from '@/views/Authorization.vue';
 import '@/assets/style/style.css'
+import { mapGetters } from 'vuex'
 
 export default {
   name: 'App',
@@ -32,14 +33,16 @@ export default {
   },
   data() {
     return {
-      avtorization: false
+      avtorization: this.getAuth
     }
   },
+  computed: mapGetters(['getAuth']),
   methods: {
-    checked(avtorization) {
-      this.avtorization = avtorization
-    },
-
+    exit() {
+      console.log(this.getAuth)
+    }
+  },
+  async mounted() {
   }
 }
 </script>
