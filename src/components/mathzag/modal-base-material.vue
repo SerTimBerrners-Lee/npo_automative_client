@@ -31,21 +31,21 @@
                 <div v-if='materialList.length > 0 && !getOneMaterial'>
                     <table>
                         <tr>
-                            <th>Артикул</th>
+                            <th v-if='!matLightList'>Артикул</th>
                             <th>Выбранное</th>
-                            <th>ЕИ</th>
-                            <th>Количество</th>
+                            <th v-if='!matLightList'>ЕИ</th>
+                            <th v-if='!matLightList'>Количество</th>
                             <th>Действие</th>
                         </tr>
                         <tr v-for='mat of materialList' :key='mat.mat'>
-                            <td class='td_kolvo'>
+                            <td class='td_kolvo' v-if='!matLightList'>
                                 <input class='inputs-small' 
                                     @change='e => changeArt(e.target, mat)' 
                                     type='text' 
                                     :value='mat.art'>
                             </td>
                             <td>{{ mat.mat.name }}</td>
-                            <td>
+                            <td v-if='!matLightList'>
                                 <select class='select-small' @change='e => selecter(e.target, mat)' v-model='mat.ez'>
                                     <option value='1' v-if="mat.ez == 1 || JSON.parse(mat.mat.kolvo).c1"> шт</option> 
                                     <option value='2' v-if="mat.ez == 2 || JSON.parse(mat.mat.kolvo).c2"> л </option>
@@ -54,7 +54,7 @@
                                     <option value='5' v-if="mat.ez == 5 || JSON.parse(mat.mat.kolvo).c5"> м.куб</option> 
                                 </select>       
                             </td>
-                            <td class='td_kolvo'>
+                            <td class='td_kolvo' v-if='!matLightList'>
                                 <input class='inputs-small' 
                                     @change='e => changeKolvo(e.target, mat)' 
                                     type='text' 
@@ -88,14 +88,17 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import {random} from 'lodash'
 
 export default {
-    props: ['allMaterial', 'instanMaterial', 'getOneMaterial'],
+    props: ['allMaterial', 
+            'instanMaterial', 
+            'getOneMaterial',
+            'matLightList'],
     data() {
         return {
             material: null,
             podMaterial: null,
             podPodMaterial: null,
             itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 384522333213313324),
+            keyWhenModalGenerateFileOpen: random(10, 384e4),
 
             destroyModalLeft: 'left-block-modal',
             destroyModalRight: 'content-modal-right-menu',

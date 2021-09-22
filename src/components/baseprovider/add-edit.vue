@@ -8,7 +8,7 @@
             <input type="text" v-model="obj.inn">
             <span>КПП:</span>
             <input type="text" v-model="obj.cpp">
-        </div>
+        </div> 
         <div class="main_content">
             <div class="left_content">
                 <div>
@@ -45,12 +45,23 @@
             <div class="right_content">
                 <div>
                     <h3>Документы</h3>
+                    <table style="width: 100%">
+                        <tr>
+                            <th>Файл</th>
+                        </tr>
+                        <tr class="td-row" 
+                        v-for="doc in obj.documents" 
+                        :key="doc"
+                        @click="clickDoc(doc)">
+                            <td> {{ doc.name }} </td>
+                        </tr>
+                    </table>
                     <div class="pointer-files-to-add">
                         <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
                         <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
                     </div>
                 </div>
-                <h3>Поставляемый материал</h3>
+                <h3 class="link_h3" @click='openMaterial'>Поставляемый материал</h3>
                 <div class="scroll-table">
                      <table style="width: 100%"> 
                         <tr>
@@ -59,11 +70,16 @@
                             <th>Наименование</th>
                         </tr>
                         <tr v-for='mat in getproviderMaterial' :key='mat' class="td-row">
-                            <td>{{ mat.mat[0].name }}</td>
-                            <td>{{ mat.pt[0].name }}</td>
-                            <td>{{ mat.m.name }}</td>
+                            <td>{{ mat.mat ? mat.mat[0].name : '' }}</td>
+                            <td>{{ mat.pt ? mat.pt[0].name : '' }}</td>
+                            <td>{{ mat.m ? mat.m.name : '' }}</td>
                         </tr>
-                        <tr v-for="ff in 25" :key="ff" class="td-row">
+                        <tr v-for='mat in materialList' :key="mat">
+                            <td>{{ mat.mat.material.name }}</td>
+                            <td>{{ mat.mat.materials[0].name }}</td>
+                            <td>{{ mat.mat.name }}</td>
+                        </tr>
+                        <tr v-for="ff in 10" :key="ff" class="td-row">
                             <td>...</td>
                             <td>...</td>
                             <td>...</td>
@@ -87,14 +103,30 @@
                 @unmount='file_unmount'
                 :key='keyWhenModalGenerate'
             />
+            <ModalBaseMaterial 
+                :key='modalMaterialKey'
+                v-if='modalMaterialIsShow'
+                @unmount_material='unmount_material'
+                :instanMaterial='3'
+                :getOneMaterial='false'
+                :matLightList='true'
+                :allMaterial='materialList'
+              />
+            <OpensFile 
+                :parametrs='itemFiles' 
+                v-if="itemFiles"
+                :key='keyWhenModalGenerateFileOpen'
+            />
     </div>
 </template>
-<script>
+<script scoped>
 
 import AddContact from './add-contact.vue';
-import { random } from 'lodash';
+import { random, isEmpty } from 'lodash';
 import { mapActions, mapGetters } from 'vuex'
 import AddFile from '@/components/filebase/addfile.vue'
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
+import OpensFile from '@/components/filebase/openfile.vue'
 
 export default {
     data() {
@@ -111,20 +143,29 @@ export default {
                     { name: 'Телефон', description: ''},
                     { name: 'Сайт', description: ''},
                     { name: 'Эл.почта', description: ''}
-                ]
+                ],
+                materials: [],
+                documents: []
             },
-            keyModal: random(1, 2313123123213),
+            keyModal: random(1, 2213),
             isShow: false,
             contact: null,
             formData: null,
-            keyWhenModalGenerate: random(10, 384522333213313324),
+            keyWhenModalGenerate: random(10, 999),
             isChangeFolderFile: false,
             docFiles: [],
-            materials: []
+            materials: [],
+
+            modalMaterialKey: random(1, 999),
+            modalMaterialIsShow: false,
+            materialList: [],
+
+            itemFiles: null,
+            keyWhenModalGenerateFileOpen: random(10, 1222)
         }
     },
     computed: mapGetters(['getSetProvider', 'getproviderMaterial']),
-    components: {AddContact, AddFile},
+    components: {AddContact, AddFile, ModalBaseMaterial, OpensFile},
     methods: {
         ...mapActions(['addOneProvider']),
         unmount(data) {
@@ -133,7 +174,7 @@ export default {
             this.obj.contact.push({...data})
         },
         addContact() { 
-            this.keyModal = random(1, 2312312312312)
+            this.keyModal = random(1, 22312)
             this.isShow = true
         },
         getContact(cont, index) {
@@ -166,6 +207,8 @@ export default {
             this.formData.append('cpp', this.obj.cpp)
             this.formData.append('description', this.obj.description)
             this.formData.append('id', this.obj.id)
+            this.formData.append('materialList', 
+                JSON.stringify(this.obj.materials))
 
             this.addOneProvider(this.formData)
             this.$router.push('/baseprovider')
@@ -178,13 +221,32 @@ export default {
             val.target.files.forEach(f => {
                 this.docFiles.push(f)
             })
-            this.keyWhenModalGenerate = random(10, 384522333213313324)
+            this.keyWhenModalGenerate = random(10, 3024)
             this.isChangeFolderFile = true
+        },
+        openMaterial() {
+            this.modalMaterialKey = random(10, 2e3)
+            this.modalMaterialIsShow = true
+        },
+        unmount_material(res) {
+            if(res.materialList) {
+                this.obj.materials = []
+                for(let e of res.materialList) {
+                    this.obj.materials.push(e.mat.id)
+                }
+                this.materialList = res.materialList
+            }
+        },
+        clickDoc(files) {
+            if(files) { 
+                this.itemFiles = files
+                this.keyWhenModalGenerateFileOpen = random(10, 1222)
+            }
         },
     },
     async mounted() {
         if(this.$route.params.type == 'edit') {
-            if(!this.getSetProvider)
+            if(isEmpty(this.getSetProvider))
                 this.$router.push('/baseprovider')
             let provider = this.getSetProvider  
             this.materials = provider.materials
@@ -198,7 +260,14 @@ export default {
             
             if(provider.rekvisit) 
                 this.obj.rekvisit = JSON.parse(provider.rekvisit)
+            if(provider.documents) 
+                this.obj.documents = provider.documents
             
+            if(provider.materials) {
+                provider.materials.forEach(e => {
+                    this.obj.materials.push(e.id)
+                })
+            }
         }
     }
 }

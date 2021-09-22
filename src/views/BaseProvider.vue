@@ -5,7 +5,7 @@
                  <h3>База поставщиков</h3>
                 <div class="scroll-table">
                     <table class="provider_table"> 
-                        <tr>
+                        <tr> 
                             <th>ИНН</th>
                             <th style="width: 440px;">Наименование поставщика</th>
                         </tr>
@@ -100,9 +100,9 @@
                                     </table>
                                 </div>
                                 </div>
-                                <div>
+                                <div >
                                     <h3>Поставляемый материал</h3>
-                                    <div class="scroll-table" style="width: 100%">
+                                    <div class="scroll-table" style="width: 100%" >
                                         <table style="width: 100%"> 
                                             <tr>
                                                 <th>Тип</th>
@@ -110,9 +110,9 @@
                                                 <th>Наименование</th>
                                             </tr>
                                             <tr v-for='mat in getproviderMaterial' :key='mat' class="td-row">
-                                                <td>{{ mat.mat[0].name }}</td>
-                                                <td>{{ mat.pt[0].name }}</td>
-                                                <td>{{ mat.m.name }}</td>
+                                                <td>{{ mat.mat ? mat.mat[0].name : '' }}</td>
+                                                <td>{{ mat.pt ? mat.pt[0].name : '' }}</td>
+                                                <td>{{ mat.m ? mat.m.name : '' }}</td>
                                             </tr>
                                             <tr v-for="ff in 25" :key="ff" class="td-row">
                                                 <td>...</td>
@@ -161,8 +161,7 @@
         <router-view></router-view>
         <OpensFile 
             :parametrs='itemFiles' 
-            v-if="itemFiles != null" 
-            @unmount='openFile'
+            v-if="itemFiles"
             :key='keyWhenModalGenerateFileOpen'
         />
     </div>
@@ -187,8 +186,9 @@ export default {
             },
             materials: [],
             provider: null,
+
             itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
+            keyWhenModalGenerateFileOpen: random(10, 1222)
         }
     },
     computed: mapGetters(['allProvider', 'getproviderMaterial']),
@@ -219,7 +219,7 @@ export default {
         clickDoc(files) {
             if(files) { 
                 this.itemFiles = files
-                this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+                this.keyWhenModalGenerateFileOpen = random(10, 1222)
             }
         },
         banProvider() {

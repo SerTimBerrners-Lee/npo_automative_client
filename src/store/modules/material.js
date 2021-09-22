@@ -291,12 +291,6 @@ export default {
             state.podMaterial = data
         },
         searchTypeMutation(state, tm) {
-            // if(state.searchTypeM.length && state.typeM.length 
-            //     && state.typeM[0].instansMaterial != state.searchTypeM[0].instansMaterial
-            //     && state.linkId != 0
-            //     || state.typeM.length > state.searchTypeM.length) {
-            //     state.searchTypeM =  state.typeM
-            // }
             if(!state.searchTypeM.length) 
                 state.searchTypeM =  state.typeM
 
