@@ -94,14 +94,14 @@ export default {
         if(isEmpty(this.itemFiles))
             return 0
         this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+        this.keyWhenModalGenerateFileOpen = random(10, 38e7)
     },
     openFile(res) {
         console.log(res)
     },
     providershow() {
         if(this.getOneNameInstrument.providers.length > 0) {
-            this.keyProvidersModalEq = random(1, 123123123123)
+            this.keyProvidersModalEq = random(1, 38e9)
             this.showProvidersEq = true
         }
     }

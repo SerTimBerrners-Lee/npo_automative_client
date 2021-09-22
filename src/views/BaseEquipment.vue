@@ -29,7 +29,7 @@
 
     <div class="right_info_block" v-if='equipment.name'>
       <div class="block">
-        <h3>Краткая Информация об инструменте или оснастки</h3>
+        <h3>Краткая Информация об оборудовании</h3>
         <p>
           <span class="title_span">Наименование: </span><span>{{ equipment.name }}</span>
         </p>

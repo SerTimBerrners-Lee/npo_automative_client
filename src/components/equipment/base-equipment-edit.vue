@@ -7,7 +7,13 @@
             <span> Наименование: </span><input type="text" v-model.trim="obj.name">
           </p>
           <p class="name_p">
-            <span> Ответственный: </span><input type="text" v-model.trim="obj.responsible">
+            <span> Ответственный: </span>
+            <select class="select-small sle"  
+                    v-model='obj.responsible'>
+              <option v-for='user in getUsers' 
+                      :key='user' 
+                      :value='user.id'>{{ user.login }}</option>
+            </select> 
           </p>
         </div>
     </div>
@@ -164,7 +170,11 @@ export default {
       if(isEmpty(this.equipment))
         this.$router.push('/baseequipment')
   },
-  computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEdizm', 'equipment']),
+  computed: mapGetters(['allEquipmentType', 
+                        'allEquipmentPType', 
+                        'allEdizm', 
+                        'equipment',
+                        'getUsers']),
   components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools},
   methods: {
     saveEquipment() {
@@ -231,18 +241,22 @@ export default {
         this.obj.parentId = this.equipment.parents[0].id
         this.obj.deliveryTime = this.equipment.deliveryTime
         this.obj.invNymber = this.equipment.invNymber
-        this.obj.responsible = this.equipment.responsible
         this.obj.description = this.equipment.description
         this.documents = this.equipment.documents
         this.providers = this.equipment.providers
         this.providers.forEach(provider => {
           this.providersId.push({id: provider.id})
         })
+        
+        if(this.equipment.user) {
+          this.obj.responsible = this.equipment.user.id
+        }
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
     ...mapActions(['fetchAllEquipmentType', 'getAllEdizm', 
-    'updateEquipment', 'removeFileEquipment']),
+    'updateEquipment', 'removeFileEquipment',
+    'getAllUsers']),
     ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById']),
     clickEquipment(eq) {
       this.equipmentT = eq
@@ -270,6 +284,7 @@ export default {
   async mounted() {
     this.getAllEdizm()
     this.checkedUpdate()
+    this.getAllUsers()
 
   }
 }

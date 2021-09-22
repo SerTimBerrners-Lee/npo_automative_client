@@ -6,7 +6,13 @@
         <p>
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
-          <span>Ответственный: </span><input type="text" v-model.trim='obj.responsible'>
+          <span>Ответственный: </span>
+          <select class="select-small sle"  
+                    v-model='obj.responsible'>
+              <option v-for='user in getUsers' 
+                      :key='user' 
+                      :value='user.id'>{{ user.login }}</option>
+            </select> 
         </p>
       </div>
 
@@ -312,10 +318,10 @@ export default {
 
     }
   },
-  computed: mapGetters(['getOneSelectDetal']),
+  computed: mapGetters(['getOneSelectDetal', 'getUsers']),
   components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile},
   methods: {
-    ...mapActions(['createNewDetal', 'fetchUpdateDetal']),
+    ...mapActions(['createNewDetal', 'fetchUpdateDetal', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
       if(this.obj.name.length < 3) 
@@ -502,16 +508,19 @@ export default {
         this.removeOperationStorage()
         return 0
     }
+
+    this.getAllUsers()
         
     this.obj.articl = this.getOneSelectDetal.articl
     this.obj.name = this.getOneSelectDetal.name
-    this.obj.responsible = this.getOneSelectDetal.responsible
     this.obj.description = this.getOneSelectDetal.description   
     this.obj.parametrs = JSON.parse(this.getOneSelectDetal.parametrs)
     this.obj.DxL = this.getOneSelectDetal.DxL
     this.obj.massZag = this.getOneSelectDetal.massZag
     this.obj.trash = this.getOneSelectDetal.trash
     this.obj.haracteriatic = JSON.parse(this.getOneSelectDetal.haracteriatic)
+    this.obj.responsible = this.getOneSelectDetal.user ? 
+      this.getOneSelectDetal.user.id : null
     if(this.getOneSelectDetal.materials.length) {
         this.getOneSelectDetal.materials.forEach(e => {
             if(this.getOneSelectDetal.mat_zag && this.getOneSelectDetal.mat_zag == e.id)
@@ -539,6 +548,9 @@ export default {
 </script>
 
 <style scoped>
+.sle {
+  background-color: white;
+}
 .right_content>div {
     margin-top: 100px;
 }

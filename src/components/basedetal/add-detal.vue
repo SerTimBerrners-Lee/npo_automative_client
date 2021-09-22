@@ -6,7 +6,13 @@
         <p>
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
-          <span>Ответственный: </span><input type="text" v-model.trim='obj.responsible'>
+          <span>Ответственный: </span>
+            <select class="select-small sle"  
+                    v-model='obj.responsible'>
+              <option v-for='user in getUsers' 
+                      :key='user' 
+                      :value='user.id'>{{ user.login }}</option>
+            </select> 
         </p>
       </div>
 
@@ -83,7 +89,7 @@
               <h3>Характеристики детали</h3>
               <table class="tables_bf">
                 <tr>
-                  <th>Наименование</th>
+                  <th>Наименование</th> 
                   <th>ЕИ</th>
                   <th>Значение</th>
                 </tr>
@@ -224,7 +230,7 @@ import AddFile from '@/components/filebase/addfile.vue'
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
 import TechProcess from './tech-process-modal.vue'
 import { random, padStart, padEnd } from 'lodash'
-import { mapActions, mapMutations } from 'vuex'
+import { mapActions, mapMutations, mapGetters } from 'vuex'
 
 export default {
   data() {
@@ -265,9 +271,10 @@ export default {
       techProcessID: localStorage.getItem('tpID') || null
     }
   },
+  computed: mapGetters(['getUsers']),
   components: {AddFile, ModalBaseMaterial, TechProcess},
   methods: {
-    ...mapActions(['createNewDetal']),
+    ...mapActions(['createNewDetal', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
       // Проверяем введенные данные 
@@ -312,7 +319,6 @@ export default {
       this.$router.push('/basedetals')
       
     },
-
     unmount_tech_process(tp) {
       if(tp.id) {
         this.techProcessID = tp.id
@@ -446,11 +452,17 @@ export default {
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
     }
+  },
+  async mounted() {
+    this.getAllUsers()
   }
 }
 </script>
 
 <style scoped>
+.sle {
+  background-color: white;
+}
 .absolute_znach {
   position: absolute;
   margin-left: 90px;

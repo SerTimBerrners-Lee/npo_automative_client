@@ -41,8 +41,8 @@ input, button
 #cover
 {
     width: 90%;
-    padding: 2px;
-    background-color: #e7e7e7;
+    padding-left: 2px;
+    background-color: #f8f8f8;
     border-radius: 6px;
     box-shadow: 0 10px 20px #cecece, 0 0 0 10px #ffffffeb;
 }

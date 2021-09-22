@@ -201,8 +201,8 @@ export default ({
         saveData() {
             if(this.object.tabel.length > 4)
                 return showMessage('', 'Тебель не может быть больше 4-х символов', 'e', this)
-            if(this.object.password.length > 20 || this.object.password.length < 5)
-                return showMessage('', 'Пароль не может быть больше 20-х и меньше 5 символов', 'e', this)
+            if( this.object.password.length < 5)
+                return showMessage('', 'Пароль не может быть меньше 5 символов', 'e', this)
              if(this.object.login.length < 3)
                 return showMessage('', 'Пароль не может быть менее 3-х символов', 'e', this)
             if(!Number(this.object.tabel))
@@ -221,8 +221,6 @@ export default ({
                 }
             }
 
-            console.log("FILEFOLDER:",  this.fileFolder)
-
             // А здесь смотрим если редактируем вызываем другую функцию
             if(this.$route.params.title == 'edit') {
                 formData.append('id', this.id)
@@ -233,6 +231,7 @@ export default ({
                     else 
                         return showMessage('', 'Произошла ошибка на сервере', 'e', this)
                 })
+                return 0;
             }
 
             this.saveUser(formData).then(m => {
@@ -293,7 +292,6 @@ export default ({
     async mounted() {
         this.fetchRoles()
         if(this.$route.params.title == 'edit') {
-            console.log(this.getSelectedUser.id)
             if(isEmpty(this.getSelectedUser)) {
                 this.$router.push(`/employee/`)
                 return 0

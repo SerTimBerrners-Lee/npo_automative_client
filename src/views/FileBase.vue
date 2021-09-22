@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="nav-base-file-page">
+        <div class="nav-base-file-page"> 
             <div class="left-div-bfp">
                 <h3>База файлов</h3>
                 <div class="type-issue">
@@ -41,55 +41,11 @@
                     <button class="btn-small" v-if='nowType != "banned"' @click='changeBanned'>В архив</button>
                 </div>
             </div>
-            <div class="right-div-bfp">
-                <h3>Принадлежность</h3>
-                <div class="block">
-                    <h3>Изделие</h3>
-                    <div class="scroll-table table-fbp">
-                        <table>
-                        <tr>
-                            <th>Артикул </th>
-                            <th>Наименование</th>
-                        </tr>
-                        <tr class="td-row" v-for="r in 2" :key="r">
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </table>
-                    </div>
-                    <h3>Сборочная единица</h3>
-                    <div class="scroll-table table-fbp">
-                        <table>
-                        <tr class="td-row">
-                            <th>Артикул </th>
-                            <th>Наименование</th>
-                        </tr>
-                        <tr v-for="u in 50" :key="u" class="td-row">
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </table>
-                    </div>
-                    <h3>Деталь</h3>
-                    <div class="scroll-table table-fbp">
-                        <table>
-                        <tr class="td-row">
-                            <th>Артикул </th>
-                            <th>Наименование</th>
-                        </tr>
-                        <tr class="td-row" v-for="r in 3" :key="r">
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </table>
-                    </div>
-                </div>
-                <div class="btn-control">
-                    <button class="btn-small">
-                        Сохранить в виде отчета EXEL
-                    </button>
-                </div>
-            </div>
+            <NodeTable 
+                :key='nodeTableKey'
+                v-if='itemFiles'
+                :file='itemFiles'
+            />
         </div>
         <InformFolder  :title='titleMessage'
             :message = 'message'
@@ -120,6 +76,7 @@ import Tables from '@/components/filebase/tables.vue'
 import AddFile from '@/components/filebase/addfile.vue'
 import OpensFile from '@/components/filebase/openfile.vue'
 import { random }  from 'lodash'
+import NodeTable from '@/components/filebase/node-table.vue'
 
 export default {
     data() {
@@ -138,22 +95,30 @@ export default {
             nowFileType: '',
             docFiles: [],
             isChangeFolderFile: false,
-            keyWhenModalGenerate: random(10, 384522333213313324),
-            keyWhenModalGenerateFileOpen: random(10, 384522333213313324)
+            keyWhenModalGenerate: random(10, 38444),
+            keyWhenModalGenerateFileOpen: random(10, 38444),
+
+            nodeTableKey: random(10, 381e4)
         }
     },
     computed: {
         ...mapGetters(['allFiles', 'banFiles']),
     },
-    components: {InformFolder, Tables, AddFile, OpensFile},
+    components: {InformFolder, Tables, AddFile, OpensFile, NodeTable},
     methods: {
-        ...mapActions(['fetchFiles', 'bannedFiles', 'checkedType']),
+        ...mapActions(['fetchFiles', 'bannedFiles', 'checkedType', 'fetchFileById']),
         getDateRevers(date) {
             return getReversDate(date).date
         },
         getFilesToClick(file) {
-            this.itemFiles = file
-            this.keyWhenModalGenerateFileOpen = random(5, 93732542367452)
+            // Сначала получаем весь файл с сервера 
+            this.fetchFileById(file.id).then(res => {
+                this.itemFiles = res
+                this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
+
+                this.nodeTableKey = random(5, 937e2)
+            })
+            
         },
         changeTypeF() {
             if(!this.itemFiles)

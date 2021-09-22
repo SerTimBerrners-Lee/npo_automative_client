@@ -7,12 +7,18 @@
           <span> Наименование: </span><input type="text" v-model.trim="obj.name">
         </p>
          <p class="name_p">
-          <span> Ответственный: </span><input type="text" v-model.trim="obj.responsible">
+          <span> Ответственный: </span>
+          <select class="select-small sle"  
+                    v-model='obj.responsible'>
+              <option v-for='user in getUsers' 
+                      :key='user' 
+                      :value='user.id'>{{ user.login }}</option>
+            </select> 
         </p>
       </div>
     </div>
     <div class="main_contents">
-      <div class="left_content">
+      <div class="left_content"> 
        <div>
          <h3>Выбор типа и подтипа</h3>
           <div>
@@ -115,11 +121,11 @@ export default {
       formData: null,
       isChangeFolderFile: false,
       showProvider: false,
-      keyWhenModalGenerate: random(10, 384522333213313324),
-      keyWhenModalListProvider: random(10, 384522333213313324),
+      keyWhenModalGenerate: random(10, 384e4),
+      keyWhenModalListProvider: random(10, 384e4),
       providers: [],
       providersId: [],
-      instrumentKey: random(10, 384522333213313324),
+      instrumentKey: random(10, 384e4),
       instrumentIsShow: false,
       obj: {
         name: '',
@@ -133,12 +139,15 @@ export default {
       listInstrument: null
     }
   },
-  computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEdizm']),
+  computed: mapGetters(['allEquipmentType', 
+                        'allEquipmentPType', 
+                        'allEdizm', 
+                        'getUsers']),
   components: {TableMaterial, AddFile, ListProvider, BaseTools},
   methods: {
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 384522333213313324)
+      this.keyWhenModalListProvider = random(10, 384e4)
     },
     pushProvider(provider) { 
       if(!provider)
@@ -147,7 +156,7 @@ export default {
       this.providersId.push({id: provider.id})
     },
     addInstrument() {
-      this.instrumentKey = random(10, 384522333213313324)
+      this.instrumentKey = random(10, 384e4)
       this.instrumentIsShow = true
     },
     addEquipment() {
@@ -175,7 +184,10 @@ export default {
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
-    ...mapActions(['fetchAllEquipmentType', 'getAllEdizm', 'creqteEquipment']),
+    ...mapActions(['fetchAllEquipmentType', 
+                    'getAllEdizm', 
+                    'creqteEquipment',
+                    'getAllUsers']),
     ...mapMutations(['filterAllPTEquipment']),
     clickEquipment(eq) {
       this.equipmentT = eq
@@ -203,12 +215,16 @@ export default {
   async mounted() {
     this.fetchAllEquipmentType()
     this.getAllEdizm()
+    this.getAllUsers()
   }
 }
 </script>
 
 
 <style>
+.sle {
+  background-color: white;
+}
   .block_name {
     display: flex;
   }

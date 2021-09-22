@@ -34,13 +34,22 @@ export default {
         },
 
         async bannedFiles(ctx, docs) {
-            const res = await fetch(`${PATH_TO_SERVER}api/documents/` + docs.id)
+            const res = await fetch(`${PATH_TO_SERVER}api/documents/` + docs.id, {
+                method: 'delete',
+            })
             const result = await res.json()
             if(res.ok) {
                 let awar = await ctx.commit('banFiles', result)
                 return { re: awar, type: 's', message: 'Файл успешно изменен'}
             }
             return { type: 'e', message: 'Произошла ошика при изменении'}
+        },
+
+        async fetchFileById(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/documents/${id}`)
+            const result = await res.json()
+            if(res.ok) 
+                return result
         },
 
         async checkedType(ctx, {id, type}) {
