@@ -11,9 +11,24 @@
                 </div>
                 <div class="cont">
                    <div>
-                        <TableMaterial :alltypeM='alltypeM' :title='"Тип (Тип профиля заготовки)"' :type='"type"' @clickMat='clickMat' />
-                        <TableMaterial :alltypeM='allPodTypeM' :title='"Подтип (Материал заготовки)"' :type='"podM"' @clickMat='clickMat' />
-                        <TableMaterial :alltypeM='getOnePodMaterial' :title='"Наименование (Марка / типоразмер)"' :type='"podPM"' @clickMat='clickMat' />
+                        <TableMaterial 
+                            :alltypeM='alltypeM' 
+                            :title='"Тип (Тип профиля заготовки)"' 
+                            :type='"type"' 
+                            @search='searchTypeM'
+                            @clickMat='clickMat' />
+                        <TableMaterial 
+                            :alltypeM='allPodTypeM' 
+                            :title='"Подтип (Материал заготовки)"' 
+                            :type='"podM"' 
+                            @search='searchPT'
+                            @clickMat='clickMat' />
+                        <TableMaterial 
+                            :alltypeM='getOnePodMaterial' 
+                            :title='"Наименование (Марка / типоразмер)"' 
+                            :type='"podPM"' 
+                            @search='searchM' 
+                            @clickMat='clickMat' />
                    </div>
                     <div class="btn-control" style="margin-top: 10px;">
                         <button class="btn-small btn-add" @click="$router.push({path: '/material/add/create'}) ">Создать</button>
@@ -26,7 +41,7 @@
                 </div>
             </div>
             <TableNode  
-                v-if='this.podPodMaterial'
+                v-if='this.podPodMaterial' 
                 :material='podPodMaterial'
             />
             <OpensFile 
@@ -70,7 +85,10 @@ export default {
         ...mapMutations(['filterByNameMaterial', 
             'addOnePPTyep', 
             'getInstansMaterial', 
-            'throwInstans']),
+            'throwInstans',
+            'searchTypeMutation', 
+            'searchPTypeMutation', 
+            'searchMaterialMutation']),
         instansMaterial(instans, span) {
             this.getInstansMaterial(instans)
 
@@ -108,8 +126,17 @@ export default {
             if(!this.podPodMaterial) return 0
             this.bannedPPM(this.podPodMaterial.id)
         },
-        openFile(res) {
+        openFile(res) { 
             console.log(res)
+        },
+        searchTypeM(val) {
+            this.searchTypeMutation(val)
+        },
+        searchPT(val) {
+            this.searchPTypeMutation(val)
+        },
+        searchM(val) {
+            this.searchMaterialMutation(val)
         }
     },
     async mounted() {

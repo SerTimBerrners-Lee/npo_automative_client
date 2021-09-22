@@ -26,11 +26,13 @@
             :alltypeM="allEquipmentType" 
             :type='"T"' 
             :width='"width-260"'
+            @search='serhType'
             @clickMat="clickEquipment"/>
           <TableMaterial :title='"Подтип"' 
             :alltypeM="allEquipmentPType" 
             :width='"width-260"'
             :type="'PT'" 
+            @search='serhPType'
             @clickMat="clickEquipmentPT"/>
         </div>
        </div>
@@ -185,13 +187,17 @@ export default {
 
     // ADD FILE and SET INSTRUMENT TO TABLE
     ...mapActions(['fetchAllEquipmentType', 
+                    'getAllEquipmentPType',
                     'getAllEdizm', 
                     'creqteEquipment',
-                    'getAllUsers']),
-    ...mapMutations(['filterAllPTEquipment']),
+                    'getAllUsers',]),
+    ...mapMutations([ 
+        'filterAllPTEquipment',
+        'searchTypeEq',
+        'searchPTypeEq',]),
     clickEquipment(eq) {
       this.equipmentT = eq
-      this.filterAllPTEquipment(eq)
+      this.filterAllPTEquipment(eq) 
     },
     clickEquipmentPT(eq) {
       this.equipmentPT = eq
@@ -200,7 +206,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384522333213313324)
+      this.keyWhenModalGenerate = random(10, 384e24)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -210,12 +216,19 @@ export default {
     unmount_instrument(instruement) {
       this.obj.instrumentIdList = instruement.instrumentListId
       this.listInstrument = instruement.instrumentList
-    }
+    },
+    serhType(eq) {
+      this.searchTypeEq(eq)
+    },
+    serhPType(eq) {
+      this.searchPTypeEq(eq)
+    },
   },
   async mounted() {
     this.fetchAllEquipmentType()
     this.getAllEdizm()
     this.getAllUsers()
+    this.getAllEquipmentPType()
   }
 }
 </script>

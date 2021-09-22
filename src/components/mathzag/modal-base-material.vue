@@ -5,9 +5,25 @@
            <div :style="hiddens">
                 <h3>Добавление материала</h3>
                 <div class="body_table_instr">
-                        <TableMaterial :alltypeM='alltypeM' :title='"Тип (Тип профиля заготовки)"' :type='"type"' @clickMat='clickMat' />
-                        <TableMaterial :alltypeM='allPodTypeM' :title='"Подтип (Материал заготовки)"' :type='"podM"' @clickMat='clickMat' />
-                        <TableMaterial :alltypeM='getOnePodMaterial' :title='"Наименование (Марка / типоразмер)"' :type='"podPM"' @clickMat='clickMat' />
+                        <TableMaterial 
+                            :alltypeM='alltypeM' 
+                            :title='"Тип (Тип профиля заготовки)"' 
+                            :type='"type"' 
+                            @clickMat='clickMat'
+                            @search='searchTypeM'
+                             />
+                        <TableMaterial 
+                            :alltypeM='allPodTypeM' 
+                            :title='"Подтип (Материал заготовки)"' 
+                            :type='"podM"' 
+                            @search='searchPT'
+                            @clickMat='clickMat' />
+                        <TableMaterial 
+                            :alltypeM='getOnePodMaterial' 
+                            :title='"Наименование (Марка / типоразмер)"' 
+                            :type='"podPM"' 
+                            @search='searchM' 
+                            @clickMat='clickMat' />
                 </div>
                  <div class="btn-control body_table_instr" v-if='!getOneMaterial'>
                     <button class="btn-small btn-add" @click='addMaterialToList'>Выбрать</button>
@@ -93,7 +109,14 @@ export default {
     components: {TableMaterial},
     methods: {
          ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
-        ...mapMutations(['filterMatByPodType', 'addOnePPTyep', 'getInstansMaterial', 'throwInstans', 'toEmptyPPT']),
+        ...mapMutations(['filterMatByPodType', 
+            'addOnePPTyep', 
+            'getInstansMaterial', 
+            'throwInstans', 
+            'toEmptyPPT',
+            'searchTypeMutation', 
+            'searchPTypeMutation', 
+            'searchMaterialMutation']),
         destroyModalF() {
             this.destroyModalLeft = 'left-block-modal-hidden'
             this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -168,6 +191,15 @@ export default {
         selecter(val, mat) {
             mat.ez = val.value
             console.log(mat)
+        },
+        searchTypeM(val) {
+            this.searchTypeMutation(val)
+        },
+        searchPT(val) {
+            this.searchPTypeMutation(val)
+        },
+        searchM(val) {
+            this.searchMaterialMutation(val)
         }
     },
     async mounted() {

@@ -11,7 +11,11 @@ export default {
         onePPT: {},
         linkId: 0,
 
-        providerMaterial: []
+        providerMaterial: [],
+
+        searchTypeM: [],
+        searchPTypeM: [],
+        searchMaterial: []
     },
     getters: {
         alltypeM(state) {
@@ -181,6 +185,10 @@ export default {
             state.linkId = 0
         },
         getInstansMaterial(state, instans) {
+            state.searchMaterial = []
+            state.searchPTypeM = []
+            state.searchTypeM = []
+            
             state.podMaterial = []
             if(instans == 0) {
                 state.typeM = state.instansTypeM
@@ -281,6 +289,44 @@ export default {
         },
         pushAllPPT(state, data) {
             state.podMaterial = data
+        },
+        searchTypeMutation(state, tm) {
+            // if(state.searchTypeM.length && state.typeM.length 
+            //     && state.typeM[0].instansMaterial != state.searchTypeM[0].instansMaterial
+            //     && state.linkId != 0
+            //     || state.typeM.length > state.searchTypeM.length) {
+            //     state.searchTypeM =  state.typeM
+            // }
+            if(!state.searchTypeM.length) 
+                state.searchTypeM =  state.typeM
+
+            state.typeM = state.searchTypeM
+            if(!tm) 
+                return
+
+            state.typeM = state.typeM
+                .filter(t =>  (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase())
+        },
+        searchPTypeMutation(state, tm) {
+            if(!state.searchPTypeM.length) 
+                state.searchPTypeM = state.podTypeM
+            state.podTypeM = state.searchPTypeM
+            if(!tm) 
+                return
+                
+            state.podTypeM = state.podTypeM
+                .filter(t =>  (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase())
+        },
+        searchMaterialMutation(state, tm) {
+            if(!state.searchMaterial.length) 
+                state.searchMaterial = state.podMaterial
+
+            state.podMaterial = state.searchMaterial
+            if(!tm) 
+                return
+                
+            state.podMaterial = state.podMaterial
+                .filter(t =>  (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase())
         }
     }
 }

@@ -17,11 +17,13 @@
             :alltypeM="allTInstrument" 
             :type='"T"' 
             :width='"width-260"'
+            @search='serhType'
             @clickMat="clickTInstrument"/>
           <TableMaterial :title='"Подтип"' 
             :alltypeM="allPTInstrument" 
             :width='"width-260"'
             :type="'PT'" 
+            @search='serhPType'
             @clickMat="clickPTInstrument"/>
         </div>
        </div>
@@ -170,8 +172,14 @@ export default {
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
-    ...mapActions(['fetchAllInstruments', 'getAllEdizm', 'addNameInstrument']),
-    ...mapMutations(['filterAllpInstrument', 'getInstansTools']),
+    ...mapActions(['fetchAllInstruments', 
+      'getAllEdizm', 
+      'addNameInstrument',
+      'getPTInstrumentList']),
+    ...mapMutations(['filterAllpInstrument', 
+      'getInstansTools',
+      'searchTypeInst',
+      'searchPTInst',]),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
       this.filterAllpInstrument(instrument)
@@ -193,11 +201,22 @@ export default {
       if(!e) return 0
       this.formData = e.formData
     },
+    serhType(inst) {
+      this.searchTypeInst(inst)
+    },
+    serhPType(inst) {
+      this.searchPTInst(inst)
+    },
   },
   async mounted() {
     await this.fetchAllInstruments()
     await this.getAllEdizm()
     this.getInstansTools(this.getLinkIdInstrument || 0)
+    if(!this.getLinkIdInstrument) {
+      this.fetchAllInstruments()
+      this.getPTInstrumentList()
+
+    }
   }
 }
 </script>

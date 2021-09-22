@@ -4,8 +4,13 @@ export default {
     state: {
         equipmentType: [],
         equipmentPType: [],
-        equipments: [],  
-        equipment: {}
+        equipments: [],   
+        equipment: {},
+
+
+        searchTypeEq: [],
+        searchPTypeEq: [],
+        searchEq: []
     },
     getters: {
         allEquipmentType(state) {
@@ -214,6 +219,39 @@ export default {
         },
         pushAllEquipment(state, data) {
             state.equipments = data.filter(el => !el.ban)
+        },
+        searchTypeEq(state, eq) {
+            if(!state.searchTypeEq.length) 
+                state.searchTypeEq =  state.equipmentType
+
+            state.equipmentType = state.searchTypeEq
+            if(!eq) 
+                return
+
+            state.equipmentType = state.equipmentType
+                .filter(t =>  (t.name.slice(0, eq.length).toLowerCase()) == eq.toLowerCase())
+        },
+        searchPTypeEq(state, eq) {
+            if(!state.searchPTypeEq.length) 
+                state.searchPTypeEq =  state.equipmentPType
+
+            state.equipmentPType = state.searchPTypeEq
+            if(!eq) 
+                return
+
+            state.equipmentPType = state.equipmentPType
+                .filter(t =>  (t.name.slice(0, eq.length).toLowerCase()) == eq.toLowerCase())
+        },
+        searchEq(state, eq) {
+            if(!state.searchEq.length) 
+                state.searchEq =  state.equipments
+
+            state.equipments = state.searchEq
+            if(!eq) 
+                return
+
+            state.equipments = state.equipments
+                .filter(t =>  (t.name.slice(0, eq.length).toLowerCase()) == eq.toLowerCase())
         }
     }
 }

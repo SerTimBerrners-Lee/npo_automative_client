@@ -16,8 +16,20 @@
       <div class='main-content-block'>
         <div class="left-block">
           <div>
-            <TableMaterial :width='"width-260"' :alltypeM='alltypeM' :title='"Тип (Тип профиля заготовки)"' :type='"type"' @clickMat='clickMat' />
-            <TableMaterial :width='"width-260"' :alltypeM='allPodTypeM' :title='"Подтип (Материал заготовки)"' :type='"podM"' @clickMat='clickMat' />
+            <TableMaterial 
+              :width='"width-260"' 
+              :alltypeM='alltypeM' 
+              :title='"Тип (Тип профиля заготовки)"' 
+              :type='"type"' 
+              @search='searchTypeM'
+              @clickMat='clickMat' />
+            <TableMaterial 
+              :width='"width-260"' 
+              :alltypeM='allPodTypeM' 
+              :title='"Подтип (Материал заготовки)"' 
+              :type='"podM"' 
+              @search='searchPT'
+              @clickMat='clickMat' />
           </div>
           <h3>Описание / Примечание</h3>
           <textarea cols="30" rows="10" v-model='obj.description'></textarea>
@@ -355,7 +367,9 @@ export default {
       ]),
     ...mapMutations(['filterMatByPodType',
     'filterMaterialById',
-    'filterPodMaterialById']),
+    'filterPodMaterialById',
+    'searchTypeMutation', 
+    'searchPTypeMutation',]),
     clickMat(mat, type) {
       if(type == 'type') {
           this.material = mat
@@ -433,7 +447,13 @@ export default {
         this.obj.density_select = 10
         this.obj.density_input = JSON.parse(this.getOnePPT.density).znach
       }
-    }
+    },
+    searchTypeM(val) {
+      this.searchTypeMutation(val)
+    },
+    searchPT(val) {
+      this.searchPTypeMutation(val)
+    },
   },
   async mounted() {
     this.getAllEdizm()

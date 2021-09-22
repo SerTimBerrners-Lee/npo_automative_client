@@ -9,7 +9,11 @@ export default {
 
         instansTInstrument: [], 
         instansPTInstrument: [],
-        linkId: 0
+        linkId: 0,
+
+        searchTypeInst: [],
+        searchPTypeInst: [],
+        searchNameInst: []
     },
     getters: {
         allTInstrument(state) {
@@ -239,6 +243,10 @@ export default {
             state.linkId = 0
         },
         getInstansTools(state, instans) {
+            state.searchTypeInst = []
+            state.searchPTypeInst = []
+            state.searchNameInst = []
+
             if(instans == 0) {
                 state.TInstrument = state.instansTInstrument
                 state.PTInstrument = state.instansPTInstrument
@@ -275,6 +283,41 @@ export default {
                 })
                 
             })
+        },
+        searchTypeInst(state, inst) {
+            if(!state.searchTypeInst.length) 
+            state.searchTypeInst =  state.TInstrument
+
+            state.TInstrument = state.searchTypeInst
+            if(!inst) 
+                return
+
+            state.TInstrument = state.TInstrument
+                .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
+        },
+        searchPTInst(state, inst) {
+            if(!state.searchPTypeInst.length) 
+            state.searchPTypeInst =  state.PTInstrument
+
+            state.PTInstrument = state.searchPTypeInst
+            if(!inst) 
+                return
+
+            state.PTInstrument = state.PTInstrument
+                .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
+
+        },
+        searchNameInst(state, inst) {
+            if(!state.searchNameInst.length) 
+            state.searchNameInst =  state.PPTInstrument
+
+            state.PPTInstrument = state.searchNameInst
+            if(!inst) 
+                return
+
+            state.PPTInstrument = state.PPTInstrument
+                .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
+
         },
     }
 }

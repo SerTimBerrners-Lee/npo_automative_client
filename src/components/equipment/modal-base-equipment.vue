@@ -8,14 +8,17 @@
                     <TableMaterial :title='"Тип"' 
                         :alltypeM="allEquipmentType" 
                         :type='"T"' 
+                        @search='serhType'
                         @clickMat="clickEquipmentType"/>
                     <TableMaterial :title='"Подтип"' 
                         :alltypeM="allEquipmentPType" 
                         :type="'PT'" 
+                        @search='serhPType'
                         @clickMat="clickEquipmentPType"/>
                     <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
                         :alltypeM="allEquipment" 
                         :type="'PPT'" 
+                        @search='serhEq'
                         @clickMat="clickEquipment"/>
                 </div>
                  <div class="btn-control body_table_instr">
@@ -81,7 +84,11 @@ export default {
             'getAllEquipmentPType',
             'fetchAllEquipment'
             ]),
-        ...mapMutations(['filterAllPTEquipment']),
+        ...mapMutations([
+            'filterAllPTEquipment',
+            'searchTypeEq',
+            'searchPTypeEq',
+            'searchEq',]),
         clickEquipmentType(equipment) { 
             this.equipmentT = equipment
             this.filterAllPTEquipment(this.equipmentT)
@@ -130,6 +137,15 @@ export default {
                 equipmentListId: this.equipmentListId,
                 equipmentList: this.equipmentList,
             })
+        },
+        serhType(eq) {
+            this.searchTypeEq(eq)
+        },
+        serhPType(eq) {
+            this.searchPTypeEq(eq)
+        },
+        serhEq(eq) {
+            this.searchEq(eq)
         }
     },
     async mounted() {

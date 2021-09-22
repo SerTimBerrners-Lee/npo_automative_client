@@ -6,14 +6,17 @@
         <TableMaterial :title='"Тип"' 
                 :alltypeM="allEquipmentType" 
                 :type='"T"' 
+                @search='serhType'
                 @clickMat="clickEquipmentType"/>
         <TableMaterial :title='"Подтип"' 
                 :alltypeM="allEquipmentPType" 
                 :type="'PT'" 
+                @search='serhPType'
                 @clickMat="clickEquipmentPType"/>
         <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
           :alltypeM="allEquipment" 
           :type="'PPT'" 
+          @search='serhEq'
           @clickMat="clickEquipment"/>
     </div>
     <div class="btn-control btn-control-eq-w" style="margin-top: 10px;">
@@ -79,7 +82,7 @@ import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 
-export default {
+export default { 
   data() {
     return {
         equipmentT: null,
@@ -102,7 +105,11 @@ export default {
         'getAllEquipmentPType',
         'fetchAllEquipment'
            ]),
-    ...mapMutations(['filterAllPTEquipment']),
+    ...mapMutations([
+        'filterAllPTEquipment',
+        'searchTypeEq',
+        'searchPTypeEq',
+        'searchEq',]),
     clickEquipmentType(equipment) {
         this.equipmentT = equipment
         this.filterAllPTEquipment(this.equipmentT)
@@ -123,7 +130,7 @@ export default {
       if(!this.equipment)
         return 0 
       this.banEquipment(this.equipment.id)
-    },
+    }, 
     setDocs(dc) {
         this.itemFiles = dc
     },
@@ -131,7 +138,7 @@ export default {
         if(isEmpty(this.itemFiles))
             return 0
         this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 384522333213313324)
+        this.keyWhenModalGenerateFileOpen = random(10, 384e4)
     },
     openFile(res) {
       console.log(res)
@@ -141,6 +148,15 @@ export default {
         this.keyProvidersModal = random(1, 123123123123)
         this.showProviders = true
       }
+    },
+    serhType(eq) {
+      this.searchTypeEq(eq)
+    },
+    serhPType(eq) {
+      this.searchPTypeEq(eq)
+    },
+    serhEq(eq) {
+      this.searchEq(eq)
     }
   },
   async mounted() {

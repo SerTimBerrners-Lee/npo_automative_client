@@ -55,6 +55,7 @@
                     <tr>
                         <td colspan="3">
                             <Search 
+                                :placeholder="'Поиск по Артиклу'"
                                 @unmount='keySearch' 
                             />
                         </td>
@@ -93,7 +94,7 @@
         />
     </div>
 </template>
-
+ 
 <script>
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import DetalModal from '@/components/basedetal/detal-modal.vue';
@@ -133,10 +134,7 @@ export default {
             this.$router.push("/detal/edit")
         },
         keySearch(v) {
-            setTimeout(() => {
                 this.filterDetalToArticle(v)
-            }, 
-            500)
         },
         deleteDetal() {
             if(!this.selectedDetal)

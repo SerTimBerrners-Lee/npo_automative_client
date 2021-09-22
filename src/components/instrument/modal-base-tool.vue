@@ -16,14 +16,17 @@
                         <TableMaterial :title='"Тип (инструмента или оснастки)"' 
                         :alltypeM="allTInstrument" 
                         :type='"T"' 
+                        @search='serhType'
                         @clickMat="clickTInstrument"/>
                         <TableMaterial :title='"Подтип"' 
                         :alltypeM="allPTInstrument" 
                         :type="'PT'" 
+                        @search='serhPType'
                         @clickMat="clickPTInstrument"/>
                         <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
                         :alltypeM="allPPTInstrument" 
                         :type="'PPT'" 
+                        @search='serhName'
                         @clickMat="clickPPTInstrument"/>
                 </div>
                  <div class="btn-control body_table_instr">
@@ -85,7 +88,12 @@ export default {
         ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 
             'fetchOneNameInstrument', 'banNameInstrument', 
             'getPTInstrumentList', 'getAllNameInstrument']),
-        ...mapMutations(['filterAllpInstrument', 'getInstansTools']),
+        ...mapMutations([
+            'filterAllpInstrument', 
+            'getInstansTools',
+            'searchTypeInst',
+            'searchPTInst',
+            'searchNameInst']),
         destroyModalF() {
             this.destroyModalLeft = 'left-block-modal-hidden'
             this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -142,6 +150,15 @@ export default {
             span.classList.add('active')
             this.span = span
         },
+        serhType(inst) {
+            this.searchTypeInst(inst)
+        },
+            serhPType(inst) {
+            this.searchPTInst(inst)
+        },
+            serhName(inst) {
+            this.searchNameInst(inst)
+        }
     },
     async mounted() {
         this.destroyModalLeft = 'left-block-modal'
