@@ -11,6 +11,7 @@ import equipment from './modules/equipment'
 import detal from './modules/detal'
 import auth from './modules/auth'
 import navigation from './modules/navigation'
+import operation from './modules/operation'
 
 export default createStore({
   modules: {
@@ -25,7 +26,8 @@ export default createStore({
     equipment,
     detal,
     auth,
-    navigation
+    navigation,
+    operation
   }
 })
   

@@ -17,9 +17,16 @@
                 </div>
 
                 <div class="scroll-table" style="height: 600px;">
-                    <Tables v-if="nowType == 'all'" :documents='allFiles' @pushFile='getFilesToClick' />
-                    <Tables v-if="nowType == 'banned'" :documents='banFiles' @pushFile='getFilesToClick'   />
-                    <Tables v-if="nowType == 'typesFile'" :documents='arrFileGet' @pushFile='getFilesToClick'   />
+                    <Tables v-if="nowType == 'all'" 
+                        :documents='allFiles' 
+                        @pushFile='getFilesToClick' 
+                        @dbPushFile='dbPushFile'/>
+                    <Tables v-if="nowType == 'banned'" :documents='banFiles' 
+                        @pushFile='getFilesToClick'
+                        @dbPushFile='dbPushFile'   />
+                    <Tables v-if="nowType == 'typesFile'" :documents='arrFileGet' 
+                        @pushFile='getFilesToClick'
+                        @dbPushFile='dbPushFile'   />
                 </div>
                 <div class="pointer-files-to-add">
                         <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
@@ -60,7 +67,7 @@
                 :key='keyWhenModalGenerate' />
         <OpensFile 
                 :parametrs='itemFiles' 
-                v-if="itemFiles != null" 
+                v-if="WhenModalGenerateFileOpenShow" 
                 @unmount='unmount'
                 :key='keyWhenModalGenerateFileOpen'
             />
@@ -98,7 +105,8 @@ export default {
             keyWhenModalGenerate: random(10, 38444),
             keyWhenModalGenerateFileOpen: random(10, 38444),
 
-            nodeTableKey: random(10, 381e4)
+            nodeTableKey: random(10, 381e4),
+            WhenModalGenerateFileOpenShow: false
         }
     },
     computed: {
@@ -112,13 +120,25 @@ export default {
         },
         getFilesToClick(file) {
             // Сначала получаем весь файл с сервера 
-            this.fetchFileById(file.id).then(res => {
+            this.fetchFileById(file.id).then((res) => {
                 this.itemFiles = res
-                this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
-
                 this.nodeTableKey = random(5, 937e2)
             })
             
+        },
+        dbPushFile(file) {
+            if(this.itemFiles) {
+                this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
+                this.WhenModalGenerateFileOpenShow = true
+            }
+                
+            else {
+                this.fetchFileById(file.id).then((res) => {
+                this.itemFiles = res
+                this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
+                this.WhenModalGenerateFileOpenShow = true
+            })
+            }
         },
         changeTypeF() {
             if(!this.itemFiles)
@@ -209,7 +229,7 @@ export default {
             val.target.files.forEach(f => {
                 this.docFiles.push(f)
             })
-            this.keyWhenModalGenerate = random(10, 384522333213313324)
+            this.keyWhenModalGenerate = random(10, 1111)
             this.isChangeFolderFile = true
         }
     },

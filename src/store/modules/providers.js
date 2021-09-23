@@ -3,6 +3,7 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
     state: {
         providers: [],
+        onTimeProvider: [],
         oneProvider: {}
     },
     getters: { 
@@ -42,6 +43,18 @@ export default {
         },
         setProviderState(state, provider) {
             state.oneProvider = provider
+        },
+
+        filterPByMaterial(state, material) {
+            let idProvider = material.ProvidersMaterial.providerId
+            if(!state.onTimeProvider.length)
+                state.onTimeProvider = state.providers
+            state.providers = state.providers.filter(p =>
+                p.id == idProvider )
+        },
+        clearFilterProviders(state) {
+            if(state.onTimeProvider.length)
+                state.providers = state.onTimeProvider
         }
     }
 }

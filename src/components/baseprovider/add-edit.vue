@@ -62,30 +62,62 @@
                     </div>
                 </div>
                 <h3 class="link_h3" @click='openMaterial'>Поставляемый материал</h3>
-                <div class="scroll-table">
-                     <table style="width: 100%"> 
-                        <tr>
-                            <th>Тип</th>
-                            <th>Подтип</th>
-                            <th>Наименование</th>
-                        </tr>
-                        <tr v-for='mat in getproviderMaterial' :key='mat' class="td-row">
-                            <td>{{ mat.mat ? mat.mat[0].name : '' }}</td>
-                            <td>{{ mat.pt ? mat.pt[0].name : '' }}</td>
-                            <td>{{ mat.m ? mat.m.name : '' }}</td>
-                        </tr>
-                        <tr v-for='mat in materialList' :key="mat">
-                            <td>{{ mat.mat.material.name }}</td>
-                            <td>{{ mat.mat.materials[0].name }}</td>
-                            <td>{{ mat.mat.name }}</td>
-                        </tr>
-                        <tr v-for="ff in 10" :key="ff" class="td-row">
-                            <td>...</td>
-                            <td>...</td>
-                            <td>...</td>
-                        </tr>
-                    </table>
-                </div>
+              <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
+                                        <table style="width: 33%; height: max-content;"> 
+                                            <tr>
+                                                <th>Тип</th>
+                                            </tr>
+                                             <tr>
+                                                <td>
+                                                    <Search 
+                                                        :placeholder='`Поиск `'
+                                                        @unmount='searchMat' 
+                                                    />
+                                                </td>
+                                             </tr>
+                                            <tr v-for='t in getproviderTypeM' 
+                                                :key='t'
+                                                class='td-row'
+                                                @click='filterByType(t)'>
+                                                <td>{{ t.name }}</td>
+                                            </tr>
+                                        </table>
+                                        <table style="width: 33%; height: max-content;"> 
+                                            <tr>
+                                                <th>Подтип</th>
+                                            </tr>
+                                             <tr>
+                                                <td>
+                                                    <Search 
+                                                        :placeholder='`Поиск `'
+                                                        @unmount='searchPT' 
+                                                    />
+                                                </td>
+                                             </tr>
+                                            <tr v-for='t in getproviderPTypeM' 
+                                                :key='t'
+                                                class='td-row'
+                                                @click='filterByPType(t)'>
+                                                <td>{{ t.name }}</td>
+                                            </tr>
+                                        </table>
+                                        <table style="width: 33%; height: max-content;"> 
+                                            <tr>
+                                                <th>Наименование</th>
+                                            </tr>
+                                             <tr>
+                                                <td>
+                                                    <Search 
+                                                        :placeholder='`Поиск `'
+                                                        @unmount='searchName' 
+                                                    />
+                                                </td>
+                                             </tr>
+                                            <tr v-for='t in getproviderMaterial' :key='t'>
+                                                <td>{{ t.name}}</td>
+                                            </tr>
+                                        </table>
+                                    </div>
             </div>
         </div>
              <div class="edit-save-block block">
@@ -123,11 +155,11 @@
 
 import AddContact from './add-contact.vue';
 import { random, isEmpty } from 'lodash';
-import { mapActions, mapGetters } from 'vuex'
+import { mapActions, mapGetters, mapMutations } from 'vuex'
 import AddFile from '@/components/filebase/addfile.vue'
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
 import OpensFile from '@/components/filebase/openfile.vue'
-
+import Search from '@/components/search.vue'
 export default {
     data() {
         return {
@@ -164,10 +196,21 @@ export default {
             keyWhenModalGenerateFileOpen: random(10, 1222)
         }
     },
-    computed: mapGetters(['getSetProvider', 'getproviderMaterial']),
-    components: {AddContact, AddFile, ModalBaseMaterial, OpensFile},
+    computed: mapGetters([
+        'getSetProvider', 
+        'getproviderTypeM', 
+        'getproviderPTypeM', 
+        'getproviderMaterial',]),
+    components: {Search, AddContact, AddFile, ModalBaseMaterial, OpensFile},
     methods: {
         ...mapActions(['addOneProvider']),
+        ...mapMutations([
+             'filterByProviderPM',
+            'filterByProviderPTypeM',
+            'filterByProviderTypeM',
+            'filterToClickProviderTypeM',
+            'filterToClickProviderPTypeM'
+        ]),
         unmount(data) {
             if(!data)
                 return 0;
@@ -243,6 +286,23 @@ export default {
                 this.keyWhenModalGenerateFileOpen = random(10, 1222)
             }
         },
+
+        searchName(str) {
+            this.filterByProviderPM(str)
+        },
+        searchPT(str) {
+            this.filterByProviderPTypeM(str)
+        },
+        searchMat(str) {
+            this.filterByProviderTypeM(str)
+        },
+
+        filterByType(t) {
+            this.filterToClickProviderTypeM(t)
+        },
+        filterByPType(t) {
+            this.filterToClickProviderPTypeM(t)
+        }
     },
     async mounted() {
         if(this.$route.params.type == 'edit') {

@@ -35,7 +35,7 @@
             <router-link to="/opertechproc">
                 <div class="type-operation">
                     <span>6.</span>
-                    <span>Операции технического процесса</span>
+                    <span>Операции технологического процесса</span>
                 </div>
             </router-link>
             <router-link to="/instrosn">

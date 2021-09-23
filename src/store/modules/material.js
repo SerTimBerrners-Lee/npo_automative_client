@@ -23,7 +23,16 @@ export default {
 
         searchTypeM: [],
         searchPTypeM: [],
-        searchMaterial: []
+        searchMaterial: [],
+
+        //* Поиск по глобальному провайдеру
+        GlobalProviderTypeM: [],
+        GlobalProviderPTypeM: [],
+        GlobalProviderPM: [],
+
+        sGlobalProviderTypeM: [],
+        sGlobalProviderPTypeM: [],
+        sGlobalProviderPM: [],
     },
     getters: {
         alltypeM(state) {
@@ -49,6 +58,15 @@ export default {
         },
         getproviderMaterial(state) {
             return state.providerPM
+        },
+        getGlobalProviderTypeM(state) {
+            return state.GlobalProviderTypeM
+        },
+        getGlobalProviderPTypeM(state) {
+            return state.GlobalProviderPTypeM
+        },
+        getGlobalProviderPM(state) {
+            return state.GlobalProviderPM
         }
     },
     actions: { 
@@ -340,7 +358,91 @@ export default {
                 state.stateMaterialTime = state.providerPM
             else 
                 state.providerPM = state.stateMaterialTime
-            state.providerPM = state.providerPM.filter(m => m.materialsId == t.id)
+
+            state.providerPM = t.podPodMaterials
+        },
+
+
+        // Фильтруем все для глобального поиска по провайдеру
+        globalProviderFilter(state, provider) {
+            for(let prov of provider) {
+                if(!prov.materials.length) continue;
+                for(let mat of prov.materials) {
+                    let check = true
+                    for(let m of state.GlobalProviderPM) {
+                        if(m.id == mat.id)
+                            check = false
+                    }
+                    if(check)
+                        state.GlobalProviderPM.push(mat)
+                    check = true
+                }
+            }
+            // Находим все типы
+            for(let pm of state.GlobalProviderPM) {
+                for(let type of state.typeM) {
+                    if(pm.materialsId == type.id) {
+                        let check = true
+                        for(let tt of state.GlobalProviderTypeM) {
+                            if(tt.id == type.id)
+                                check = false
+                        } 
+                        if(check)
+                            state.GlobalProviderTypeM.push(type)
+                        check = true
+                    }
+                }
+                // Находим все подтипы
+                for(let pt of state.podTypeM) {
+                    if(pt.podPodMaterials.length) {
+                        for(let ppt of pt.podPodMaterials) {
+                            if(ppt.id == pm.id) {
+                                let check = true
+                                for(let pTM of state.GlobalProviderPTypeM) {
+                                    if(pTM.id == pt.id)
+                                        check = false
+                                }
+                                if(check)
+                                    state.GlobalProviderPTypeM.push(pt)
+                                check = true
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        filterByProviderGTypeM(state, str) {
+            if(!state.sGlobalProviderTypeM.length) 
+            state.sGlobalProviderTypeM =  state.GlobalProviderTypeM
+
+            state.GlobalProviderTypeM = state.sGlobalProviderTypeM
+            if(!str) 
+                return
+
+            state.GlobalProviderTypeM = state.GlobalProviderTypeM
+                .filter(t =>  (t.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
+        },
+        filterByProviderGPTypeM(state, str) {
+            if(!state.sGlobalProviderPTypeM.length) 
+            state.sGlobalProviderPTypeM =  state.GlobalProviderPTypeM
+
+            state.GlobalProviderPTypeM = state.sGlobalProviderPTypeM
+            if(!str) 
+                return
+
+            state.GlobalProviderPTypeM = state.GlobalProviderPTypeM
+                .filter(t =>  (t.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
+        },
+        filterByProviderGNameM(state, str) {
+            if(!state.sGlobalProviderPM.length) 
+            state.sGlobalProviderPM =  state.GlobalProviderPM
+
+            state.GlobalProviderPM = state.sGlobalProviderPM
+            if(!str) 
+                return
+
+            state.GlobalProviderPM = state.GlobalProviderPM
+                .filter(t =>  (t.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
         },
 
         toEmptyPPT(state) {

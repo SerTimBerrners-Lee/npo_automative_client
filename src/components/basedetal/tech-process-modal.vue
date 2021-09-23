@@ -27,8 +27,8 @@
                                 v-model="operation.name"
                                 style='font-weight:bold;'
                                 >
-                                <option v-for='(op, inx) in operatioinList' 
-                                    :key='op' :value='inx'>{{ op }}</option>
+                                <option v-for='op in getTypeOperations' 
+                                    :key='op' :value='op.id'>{{ op.name }}</option>
                             </select>
                         </td>
                         <td>{{ operation.preTime }}</td>
@@ -223,7 +223,7 @@ export default {
       keyWhenModalGenerateFileOpen: random(10, 323e8),
     }
   },
-  computed: mapGetters(['allOperationNewList']),
+  computed: mapGetters(['allOperationNewList', 'getTypeOperations']),
   components: {AddFile, AddOperation, MediaSlider, OpensFile},
   methods: {
     destroyModalF() {
@@ -231,7 +231,11 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['updateOperationTech', 'banOperation', 'createTechProcess', 'fetchTechProcess']),
+    ...mapActions(['updateOperationTech', 
+        'banOperation', 
+        'createTechProcess', 
+        'fetchTechProcess', 
+        'getAllTypeOperations']),
     ...mapMutations(['allOperationMutations', 'removeOperationStorage']),
     addDock(val) {
       val.target.files.forEach(f => {
@@ -332,7 +336,11 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
+
+    this.getAllTypeOperations()
+
     if(this.$props.techProcessID) {
+        console.log(this.$props.techProcessID)
         this.fetchTechProcess(this.$props.techProcessID).then((res) => {
             if(!res)
                 return 0

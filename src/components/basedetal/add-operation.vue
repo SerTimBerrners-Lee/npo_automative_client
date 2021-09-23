@@ -10,9 +10,9 @@
           <span>Выберите операцию из списка: </span>
           <select class='select-small' v-model='name'>
             <option 
-              v-for='(operation, inx) in operatioinList' 
+              v-for='operation in getTypeOperations' 
               :key='operation'
-              :value='inx'>{{ operation }}</option>
+              :value='operation.id'>{{ operation.name }}</option>
           </select>
           <div>Подготовительно время, н.ч.:</div>
           <input type="text" v-model='preTime'>
@@ -225,7 +225,7 @@ import AddFile from '@/components/filebase/addfile.vue'
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import PATH_TO_SERVER from '@/js/path.js'
 import OpensFile from '@/components/filebase/openfile.vue'
 
@@ -243,18 +243,6 @@ export default {
       formData: null,
       dataMedia: [],
       randomDataMedia: random(10, 384e12),
-      operatioinList: [
-          'Заготовительная',
-          'Токарная',
-          'Слесарная',
-          'Термообработка',
-          'Фрезерная',
-          'Сверлильная',
-          'Сварочная',
-          'Сборка',
-          'Покраска',
-          'Упаковка',
-      ],
       instrumentKey: random(10, 34e12),
       metInstrumentKey: random(10, 23e9),
       osnInstrumentKey: random(10, 23e9),
@@ -277,13 +265,13 @@ export default {
       mainTime: 0,
       generalCountTime: 0,
       
-      name: 0,
+      name: 1,
       description: '',
       id: null,
 
     }
   },
-  computed: {},
+  computed: mapGetters(['getTypeOperations']),
   components: {AddFile, MediaSlider, BaseTools, BaseEquipment, OpensFile},
   methods: {
     destroyModalF() {
@@ -291,7 +279,7 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['createOperation', 'updateOperation', 'fetchOneOperationById']),
+    ...mapActions(['createOperation', 'updateOperation', 'fetchOneOperationById', 'getAllTypeOperations']),
     saveOperation() {
       if(!this.formData)
         this.formData = new FormData()
@@ -407,6 +395,8 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
+
+    this.getAllTypeOperations()
     
     if(this.$props.operation) {
       // Если есть операция показываем ее для редактирования ()

@@ -6,7 +6,12 @@
             <th>Дата</th>
             <th>Примечание</th>
         </tr>
-        <tr v-for="file in documents" :key="file" class="td-row" @click="propEvent(file)">
+        <tr v-for="file in documents" 
+            :key="file" 
+            class="td-row" 
+            @click="propEvent(file)"
+            @dblclick="dbEvent(file)"
+            >
             <td>{{ file.type }}</td>
             <td width="400px">{{ file.name }}</td>
             <td>{{ file.updatedAt ?
@@ -34,7 +39,16 @@ export default {
         },
         propEvent(file) {
             this.$emit('pushFile', file)
+        },
+        dbEvent(file) {
+            this.$emit('dbPushFile', file)
         }
     }
 }
 </script>
+
+<style scoped>
+table{
+    user-select: none;
+}
+</style>
