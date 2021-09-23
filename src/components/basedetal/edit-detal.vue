@@ -195,7 +195,7 @@
                 :techProcessID='techProcessID'
             />
             <h3 class="link_h3">Себестоимость</h3>
-            <h3 class="link_h3">История изменений</h3>
+            <h3 class="link_h3" @click='historyAction'>История изменений</h3>
             <h3 class="link_h3">Принадлежность</h3>
           </div>
         </div>
@@ -257,6 +257,13 @@
             />
         </div>
     </div>
+    <HistoryActions 
+      v-if='showHAction'
+      :key='hAactionKey'
+      :type='"Деталь"'
+      :name='obj.name'
+      :actions='actions'
+    />
   </div>
 </template>
 
@@ -270,6 +277,7 @@ import PATH_TO_SERVER from '@/js/path.js'
 import { isEmpty } from 'lodash'
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import OpensFile from '@/components/filebase/openfile.vue'
+import HistoryActions from '@/components/history-action.vue'
 
 export default {
   data() {
@@ -316,10 +324,15 @@ export default {
       showFile: false,
       keyWhenModalGenerateFileOpen: random(10, 323e8),
 
+      showHAction: false,
+      hAactionKey: random(1, 999),
+
+      actions: []
+
     }
   },
   computed: mapGetters(['getOneSelectDetal', 'getUsers']),
-  components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile},
+  components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions},
   methods: {
     ...mapActions(['createNewDetal', 'fetchUpdateDetal', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
@@ -500,6 +513,13 @@ export default {
         this.showFile = true
         this.keyWhenModalGenerateFileOpen = random(10, 38e9)
     },
+    historyAction() {
+      if(!this.actions.length)
+        return
+      this.hAactionKey = random(1, 888)
+      this.showHAction = true
+    }
+
   },
   async mounted() {
     if(isEmpty(this.getOneSelectDetal)){
@@ -508,6 +528,8 @@ export default {
         this.removeOperationStorage()
         return 0
     }
+    if(this.getOneSelectDetal.actions)
+      this.actions = this.getOneSelectDetal.actions
 
     this.getAllUsers()
         

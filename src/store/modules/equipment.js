@@ -187,7 +187,7 @@ export default {
         },
         addOneEquipmentType(state, equipments) {
             state.equipmentType.push(equipments)
-        },
+        }, 
         removeEquipmentTyp(state, id) {
             state.equipmentType = state.equipmentType.filter(eq => eq.id != id)
         },

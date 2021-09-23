@@ -50,8 +50,8 @@ export default {
 <style>
   #app {
     font-family: CasperRegular;
-   -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    /* -webkit-font-smoothing: subpixel-antialiased;
+    -moz-osx-font-smoothing: subpixel-antialiased; */
     left: 0;
     top: 0;
   }

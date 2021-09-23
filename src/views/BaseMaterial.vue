@@ -13,13 +13,13 @@
                    <div>
                         <TableMaterial 
                             :alltypeM='alltypeM' 
-                            :title='"Тип (Тип профиля заготовки)"' 
+                            :title='instansLet != 0 && instansLet != 1 ? "Тип (Категория)" : "Тип (Тип профиля заготовки)"' 
                             :type='"type"' 
                             @search='searchTypeM'
                             @clickMat='clickMat' />
                         <TableMaterial 
                             :alltypeM='allPodTypeM' 
-                            :title='"Подтип (Материал заготовки)"' 
+                            :title='instansLet != 0 && instansLet != 1 ? "Тип (Материал)" : "Тип (Тип профиля заготовки)"' 
                             :type='"podM"' 
                             @search='searchPT'
                             @clickMat='clickMat' />
@@ -69,8 +69,9 @@ export default {
             podMaterial: null,
             podPodMaterial: null,
             itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 384522333213313324),
-            span: null
+            keyWhenModalGenerateFileOpen: random(10, 4e4),
+            span: null,
+            instansLet: 0
         }
     },
     components:{TableMaterial, OpensFile, TableNode},
@@ -91,6 +92,7 @@ export default {
             'searchMaterialMutation']),
         instansMaterial(instans, span) {
             this.getInstansMaterial(instans)
+            this.instansLet = instans
 
             if(!this.span)
                 this.span = (this.$refs.all)

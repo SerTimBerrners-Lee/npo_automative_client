@@ -113,11 +113,9 @@ export default {
       this.destroyModalLeft = 'left-block-modal'
       this.destroyModalRight = 'content-modal-right-menu'
       this.hiddens = 'opacity: 1;'
-      if(isEmpty(this.getOneSelectDetal)) {
-          this.destroyModalF()
-          return 0
-      }
-
+      if(isEmpty(this.getOneSelectDetal)) 
+          return this.destroyModalF()
+      
       this.getOneSelectDetal.materials.forEach(element => {
         if(element.id == this.getOneSelectDetal.mat_zag)
             this.mat_zag = element

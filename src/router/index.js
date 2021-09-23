@@ -35,7 +35,6 @@ import AddDetal from '@/components/basedetal/add-detal.vue';
 import EditDetal from '@/components/basedetal/edit-detal.vue'; 
 
 
-
 const routes = [
   {
     path: '/detal/edit',

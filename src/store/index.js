@@ -10,6 +10,7 @@ import instruments from './modules/instruments'
 import equipment from './modules/equipment'
 import detal from './modules/detal'
 import auth from './modules/auth'
+import navigation from './modules/navigation'
 
 export default createStore({
   modules: {
@@ -23,7 +24,8 @@ export default createStore({
     instruments,
     equipment,
     detal,
-    auth
+    auth,
+    navigation
   }
 })
   

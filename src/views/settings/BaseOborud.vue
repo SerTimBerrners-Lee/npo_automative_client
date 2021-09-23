@@ -59,7 +59,8 @@ export default {
             'updateEquipmentType', 
             'createEquipmentPT',
             'updateEquipmentPType',
-            'removeEquipmentPType'
+            'removeEquipmentPType',
+            'getAllEquipmentPType'
         ]),
         ...mapMutations(['filterAllPTEquipment']),
         unmount(res) {
@@ -82,7 +83,7 @@ export default {
         },
         clickEquipmentType(equipment) {
             this.equipment = equipment
-            this.filterAllPTEquipment(this.equipment.equipmentsPT)
+            this.filterAllPTEquipment(this.equipment)
         },
         clickEquipmentPType(equipmentPT) {
             this.equipmentPT = equipmentPT
@@ -97,7 +98,7 @@ export default {
             if(equipment == 'TYPE') 
                 this.parametrs = { equipment, type }
         
-            this.keyModals = random(2, 123123123123123)
+            this.keyModals = random(2, 1222)
             this.showIs = true
         },
         edit(equipment, type = 'edit') {
@@ -122,7 +123,7 @@ export default {
                 }
             }
             
-            this.keyModals = random(2, 123123123123123)
+            this.keyModals = random(2, 3332)
             this.showIs = true
         },
         remove(type) {
@@ -135,6 +136,7 @@ export default {
     },
     async mounted() {
         this.fetchAllEquipmentType()
+        this.getAllEquipmentPType()
     }
 }
 </script>

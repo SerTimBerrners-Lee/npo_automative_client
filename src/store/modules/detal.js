@@ -21,7 +21,14 @@ export default {
     },
     actions: { 
         async createNewDetal(ctx, data) {
+            if(!ctx.getters.getAuth)
+                return 0
+            console.log(data)
+
             const res = await fetch(`${PATH_TO_SERVER}api/detal`, {
+                headers: new Headers({
+                    'Authorization': ctx.getters.getAuth.id
+                })  ,
                 method :  'post',
                 body   :  data
             })
@@ -31,7 +38,13 @@ export default {
             }
         },
         async deleteDetelyId(ctx, id) {
+            if(!ctx.getters.getAuth)
+                return 0
+
             const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`, {
+                headers: new Headers({
+                    'Authorization': ctx.getters.getAuth.id
+                }),
                 method :  'delete'
             })
             if(res.ok) {
@@ -39,7 +52,12 @@ export default {
             }
         },
         async fetchUpdateDetal(ctx, data) {
+            if(!ctx.getters.getAuth)
+                return 0
             const res = await fetch(`${PATH_TO_SERVER}api/detal/update`, {
+                headers: new Headers({
+                    'Authorization': ctx.getters.getAuth.id
+                }), 
                 method :  'post',
                 body   :  data
             })
@@ -101,6 +119,9 @@ export default {
             }
         },
         async createTechProcess(ctx, data) {
+            if(!ctx.getters.getAuth)
+                return 0
+            data.append('responsibleActionId', ctx.getters.getAuth.id)
             const res = await fetch(`${PATH_TO_SERVER}api/detal/techprocess`, {
                 method  :   'post',
                 body    :   data

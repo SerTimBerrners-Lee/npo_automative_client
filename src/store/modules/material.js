@@ -11,7 +11,15 @@ export default {
         onePPT: {},
         linkId: 0,
 
-        providerMaterial: [],
+        providerTypeM: [],
+        providerPTypeM: [],
+        providerPM: [],
+
+        sTypeM: [],
+        sPTypeM: [],
+        sProviderPM: [],
+
+        stateMaterialTime: [],
 
         searchTypeM: [],
         searchPTypeM: [],
@@ -33,8 +41,14 @@ export default {
         getLinkId(state) {
             return state.linkId
         },
+        getproviderTypeM(state) {
+            return state.providerTypeM
+        },
+        getproviderPTypeM(state) {
+            return state.providerPTypeM
+        },
         getproviderMaterial(state) {
-            return state.providerMaterial
+            return state.providerPM
         }
     },
     actions: { 
@@ -267,20 +281,68 @@ export default {
             state.onePPT = {}
         },
         filterMaterialByProvider(state, material) {
-            state.providerMaterial = []
+            state.providerTypeM = []
+            state.providerPTypeM = []
+            state.providerPM = []
+
             material.forEach(m => {
                 if(m.ban)
                     return 0
-
                 let mat = state.typeM.filter(t => t.id == m.materialsId)
                 let pt = state.podTypeM.filter(pt => pt.id == m.ProvidersMaterial.providerId)
-                state.providerMaterial.push({
-                    mat,
-                    pt,
-                    m
-                })
+                state.providerTypeM.push(mat[0])
+                state.providerPTypeM.push(pt[0])
+                state.providerPM.push(m) 
             })
         },
+        filterByProviderPM(state, str) {
+            if(!state.sProviderPM.length) 
+            state.sProviderPM =  state.providerPM
+
+            state.providerPM = state.sProviderPM
+            if(!str) 
+                return
+
+            state.providerPM = state.providerPM
+                .filter(t =>  (t.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
+        },
+        filterByProviderPTypeM(state, str) {
+            if(!state.sPTypeM.length) 
+            state.sPTypeM =  state.providerPTypeM
+
+            state.providerPTypeM = state.sPTypeM
+            if(!str) 
+                return
+
+            state.providerPTypeM = state.providerPTypeM
+                .filter(t =>  (t.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
+        },
+        filterByProviderTypeM(state, str) {
+            if(!state.sTypeM.length) 
+            state.sTypeM =  state.providerTypeM
+
+            state.providerTypeM = state.sTypeM
+            if(!str) 
+                return
+
+            state.providerTypeM = state.providerTypeM
+                .filter(t =>  (t.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
+        },
+        filterToClickProviderTypeM(state, t) {
+            if(!state.stateMaterialTime.length)
+                state.stateMaterialTime = state.providerPM
+            else 
+                state.providerPM = state.stateMaterialTime
+            state.providerPM = state.providerPM.filter(m => m.materialsId == t.id)
+        },
+        filterToClickProviderPTypeM(state, t) {
+            if(!state.stateMaterialTime.length)
+                state.stateMaterialTime = state.providerPM
+            else 
+                state.providerPM = state.stateMaterialTime
+            state.providerPM = state.providerPM.filter(m => m.materialsId == t.id)
+        },
+
         toEmptyPPT(state) {
             state.podMaterial = []
         },

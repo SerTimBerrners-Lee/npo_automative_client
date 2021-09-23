@@ -1,7 +1,7 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import router from './router'
 import store from './store'
+import router from './router'
 import Unicon from 'vue-unicons'
 import { uniTimes, uniSetting, uniUser, uniPower, uniHouseUserMonochrome, uniPlay, uniTrash, uniSearchAlt    } from 'vue-unicons/dist/icons'
 
