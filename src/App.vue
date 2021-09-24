@@ -49,9 +49,9 @@ export default {
 
 <style>
   #app {
-    font-family: CasperRegular;
-    /* -webkit-font-smoothing: subpixel-antialiased;
-    -moz-osx-font-smoothing: subpixel-antialiased; */
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: subpixel-antialiased; 
     left: 0;
     top: 0;
   }
