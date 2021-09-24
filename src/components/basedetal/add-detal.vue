@@ -222,6 +222,12 @@
             />
         </div>
     </div>
+    <InformFolder  :title='titleMessage'
+        :message = 'message'
+        :type = 'type'
+        v-if='showInformPanel'
+        :key='keyInformTip'
+    />
   </div>
 </template>
 
@@ -231,6 +237,8 @@ import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
 import TechProcess from './tech-process-modal.vue'
 import { random, padStart, padEnd } from 'lodash'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
+import { showMessage } from '@/js/'
+import InformFolder from '@/components/InformFolder.vue'
 
 export default {
   data() {
@@ -268,11 +276,17 @@ export default {
       techProcessKey: random(10, 33e6),
       inputMassZag: 0,
       variableDensity: 0,
-      techProcessID: localStorage.getItem('tpID') || null
+      techProcessID: localStorage.getItem('tpID') || null,
+
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
     }
   },
   computed: mapGetters(['getUsers']),
-  components: {AddFile, ModalBaseMaterial, TechProcess},
+  components: {AddFile, ModalBaseMaterial, TechProcess, InformFolder},
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
@@ -307,16 +321,22 @@ export default {
           }
           if(mat == this.materialList.length - 1) {
             this.formData.append('materialList', JSON.stringify(this.materialList))
-            this.createNewDetal(this.formData)
+            this.createNewDetal(this.formData).then(res => {
+              if(res) 
+                showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
+            })
           }
         }
       } else {
-         this.createNewDetal(this.formData)
+         this.createNewDetal(this.formData).then(res => {
+            if(res) 
+              showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
+          })
       }
       
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
-      this.$router.push('/basedetals')
+      setTimeout(() =>  this.$router.push('/basedetals'), 3000)
       
     },
     unmount_tech_process(tp) {
@@ -343,7 +363,6 @@ export default {
       if(!e) 
         return 0
       this.formData = e.formData
-      console.log(e)
     },
     unmount_material(mat) {
       if(this.getOneMaterial) {
@@ -433,7 +452,6 @@ export default {
       if(aCS) {
         aCS = JSON.parse(aCS)
         density = JSON.parse(density)
-        console.log(aCS)
         if(m.material.areaCrossSectional) {
           let dxl = this.obj.DxL.split('x')
           if(dxl.length == 2) 

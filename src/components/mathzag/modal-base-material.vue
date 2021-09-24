@@ -158,6 +158,7 @@ export default {
                     ez: null
                 });
             }
+            console.log(this.materialList)
         },
         delMat(id) {
             this.materialList = this.materialList.filter(mat => mat.mat.id != id)

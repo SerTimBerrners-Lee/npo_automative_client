@@ -112,7 +112,7 @@ export default {
             this.PPTInstrument = PPTInstrument
             this.fetchOneNameInstrument(PPTInstrument.id)
             this.showModalInformation = true;
-            this.keyModalInformation = random(10, 384522333213313324)
+            this.keyModalInformation = random(10, 4444)
         },
         addInstrumentToList() {
             if(!this.PPTInstrument)

@@ -150,10 +150,9 @@ export default {
     addInstrument() {
       if(!this.PTInstrument && !this.TInstrument && this.obj.name.length < 3)
         return 0
-      
+
       if(!this.formData) 
         this.formData = new FormData()
-      this.obj.parentId = this.PTInstrument.id 
 
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
@@ -164,7 +163,7 @@ export default {
       this.formData.append('mountUsed', this.obj.mountUsed)
       this.formData.append('minOstatok', this.obj.minOstatok)
       this.formData.append('description', this.obj.description)
-      this.formData.append('parentId', this.obj.parentId)
+      this.formData.append('parentId', this.PTInstrument.id)
       this.formData.append('providers', this.providersId)
       this.addNameInstrument(this.formData)
       

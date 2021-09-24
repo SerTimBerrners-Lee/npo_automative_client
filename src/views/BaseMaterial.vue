@@ -32,7 +32,7 @@
                    </div>
                     <div class="btn-control" style="margin-top: 10px;">
                         <button class="btn-small btn-add" @click="$router.push({path: '/material/add/create'}) ">Создать</button>
-                        <button class="btn-small btn-add" >Создать копированием</button>
+                        <button class="btn-small btn-add" @click='createCopy'>Создать копированием</button>
                         <button class="btn-small" @click="editMaterial">Редактировать</button>
                     </div>  
                     <div class="btn-control">
@@ -91,14 +91,17 @@ export default {
             'searchPTypeMutation', 
             'searchMaterialMutation']),
         instansMaterial(instans, span) {
-            this.getInstansMaterial(instans)
-            this.instansLet = instans
-
             if(!this.span)
                 this.span = (this.$refs.all)
+            if(span.classList.contains('active')) 
+                return 0  
             this.span.classList.remove('active')
             span.classList.add('active')
             this.span = span
+
+            this.getInstansMaterial(instans)
+            this.instansLet = instans
+
         },
         clickMat(mat, type) {
             if(type == 'type') {
@@ -123,6 +126,11 @@ export default {
             if(!this.podPodMaterial) return 0
             this.addOnePPTyep(this.podPodMaterial)
             this.$router.push({path: '/material/add/edit'}) 
+        },
+        createCopy( ) {
+            if(!this.podPodMaterial) return 0
+            this.addOnePPTyep(this.podPodMaterial)
+            this.$router.push({path: '/material/add/copy'}) 
         },
         banPPM() {
             if(!this.podPodMaterial) return 0
@@ -150,9 +158,6 @@ export default {
 </script>
 
 <style scoped>
-    .type-issue {
-     user-select: none;   
-    }
     .cont {
         display: flex;
         flex-direction: column;

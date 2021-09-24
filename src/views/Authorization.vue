@@ -37,14 +37,20 @@
 
                     <button type="submit" class="btn blues" @click="login">Войти</button>
 
-                    <p class="tabel-placholder"> {{ strTabels.length ? strTabels : "Начните вводить табель"}} </p>
+                    <p class="tabel-placholder" v-if='password_flags'> {{ strTabels.length ? strTabels : "Начните вводить пароль"}} </p>
+                     <p class="tabel-placholder" v-else> {{ strTabels.length ? strTabels : "Начните вводить табель"}} </p>
                 </div>
                 <div class="item-form">
-                    <span class="btn-number" v-for="item in 9" :key="item" @click="tabelStrSplit(item)"> 
+                    <span   class="btn-number" v-for="item in 9" 
+                            :key="item" 
+                            @click="tabelStrSplit(item)"> 
                         {{ item }}
                     </span>
 
-                    <span class="btn-number" v-for="item in 2" :key="item * 20" @click="tabelStrSplit(item == 1 ? 'del' : 0)"> 
+                    <span class="btn-number" 
+                            v-for="item in 2" 
+                            :key="item * 20" 
+                            @click="tabelStrSplit(item == 1 ? 'del' : 0)"> 
                         {{ item == 1 ? 	'&#8592;' : 0 }}
                     </span>
 
@@ -89,6 +95,8 @@ export default {
             type: '',
             showInformPanel: false,
             keyInformTip: 0,
+
+            password_flags: false
         }
     },
     methods: {
@@ -117,22 +125,39 @@ export default {
                 
                 return 
             }
+
             this.strTabels += num
+            if(this.password_flags) {
+                this.$refs.input_password.value = this.strTabels
+            }
 
         },
         tabelSearch() {
-            this.$refs.input_password.focus()
+            let check = false
+            if(this.password_flags) {
+                this.login()
+                this.$refs.input_password.value = ''
+                this.strTabels = ''
+            }
+                
+            
             this.getUsers.forEach((user) => {   
                 if(user.tabel == this.strTabels) {
                     this.selectTabel = user.tabel
                     this.selectLogin = user.login
-                }
+                    this.$refs.input_password.focus()
+                    check = true
+                    this.password_flags = true
+                    this.strTabels = ""
+                } 
             })
-            this.flagsBlocingInput = true
-            setTimeout(() => {
-                this.strTabels = "";
-                this.flagsBlocingInput = false
-            }, 1500)
+            if(!check) {
+                this.flagsBlocingInput = true
+                setTimeout(() => {
+                    this.strTabels = "";
+                    this.flagsBlocingInput = false
+                }, 1500)
+            }
         },
         login() {
             let password = this.$refs.input_password.value

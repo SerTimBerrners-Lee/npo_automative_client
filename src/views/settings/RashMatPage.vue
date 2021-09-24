@@ -1,6 +1,6 @@
 <template>
     <div class="main-dive">
-        <h3>Материалы (типы и подтипы)</h3>
+        <h3>Расходные материалы (типы и подтипы)</h3>
         <div class="cont">
             <TableMaterial :title='"Тип (Тип профиля заготовки)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
             <div class="btn-control">

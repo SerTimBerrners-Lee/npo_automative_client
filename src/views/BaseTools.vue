@@ -27,7 +27,7 @@
     </div>
     <div class="btn-control btn-control-tools-w" style="margin-top: 10px;">
         <button class="btn-small btn-add" @click="$router.push({path: '/instrument/add/create'})">Создать</button>
-        <button class="btn-small btn-add" >Создать копированием</button>
+        <button class="btn-small btn-add" @click='addCopy'>Создать копированием</button>
         <button class="btn-small" @click='edit'>Редактировать</button>
       </div>  
       <div class="btn-control btn-control-tools-w">
@@ -62,7 +62,7 @@
               <button class="btn-small" @click='openDock'>Открыть</button>
             </div>
             <OpensFile 
-                :parametrs='itemFiles' 
+                :parametrs='itemFiles'  
                 v-if="showFile" 
                 @unmount='openFile'
                 :key='keyWhenModalGenerateFileOpen'
@@ -123,6 +123,7 @@ export default {
     },
     clickPTInstrument(PTInstrument) {
       this.PTInstrument = PTInstrument
+      console.log(PTInstrument)
       this.getAllPTInstances(PTInstrument.id)
     },
     clickPPTInstrument(PPTInstrument) {
@@ -132,7 +133,12 @@ export default {
     edit() {
       if(!this.getOneNameInstrument)
         return 0 
-      this.$router.push('/instrument/edit')
+      this.$router.push({path: '/instrument/edit/false'})
+    },
+    addCopy() {
+      if(!this.getOneNameInstrument)
+        return 0 
+      this.$router.push({path: '/instrument/edit/true'})
     },
     banned() {
       if(!this.getOneNameInstrument)
@@ -153,18 +159,19 @@ export default {
     },
     providershow() {
       if(this.getOneNameInstrument.providers.length > 0) {
-        this.keyProvidersModal = random(1, 123123123123)
+        this.keyProvidersModal = random(1, 1111)
         this.showProviders = true
       }
     },
     instansTools(tools, span) {
-      this.getInstansTools(tools)
-
       if(!this.span)
           this.span = (this.$refs.all)
+      if(span.classList.contains('active')) 
+                return 0  
       this.span.classList.remove('active')
       span.classList.add('active')
       this.span = span
+      this.getInstansTools(tools)
     },
     serhType(inst) {
       this.searchTypeInst(inst)

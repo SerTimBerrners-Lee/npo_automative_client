@@ -23,7 +23,6 @@ export default {
         async createNewDetal(ctx, data) {
             if(!ctx.getters.getAuth)
                 return 0
-            console.log(data)
 
             const res = await fetch(`${PATH_TO_SERVER}api/detal`, {
                 headers: new Headers({
@@ -34,7 +33,7 @@ export default {
             })
             if(res.ok) {
                 const result = await res.json()
-                ctx.commit('addNewDetalToArr', result)
+                return result
             }
         },
         async deleteDetelyId(ctx, id) {
@@ -61,7 +60,7 @@ export default {
                 method :  'post',
                 body   :  data
             })
-            console.log(res)
+            return res
         },
         async getAllDetals(ctx) {
             const res = await fetch(`${PATH_TO_SERVER}api/detal`)

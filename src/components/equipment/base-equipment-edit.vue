@@ -178,7 +178,7 @@ export default {
   components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools},
   methods: {
     saveEquipment() {
-        if(!this.obj.id || this.obj.name.length < 3)
+        if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
             return 0
         
         if(!this.formData) 
@@ -187,7 +187,6 @@ export default {
         if(this.providersId)
           this.providersId = JSON.stringify(this.providersId)
 
-        this.formData.append('id', this.obj.id)
         this.formData.append('name', this.obj.name)
         this.formData.append('deliveryTime', this.obj.deliveryTime)
         this.formData.append('responsible', this.obj.responsible)
@@ -195,7 +194,18 @@ export default {
         this.formData.append('description', this.obj.description)
         this.formData.append('providers', this.providersId)
         this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
-        this.updateEquipment(this.formData) 
+        if(this.$route.params.copy == 'false') {
+          this.formData.append('id', this.obj.id)
+          this.updateEquipment(this.formData) 
+        } else {
+          if(!this.equipmentPT && !this.equipmentT)
+            return 0
+          this.formData.append('parentId', this.equipmentPT.id)
+          this.formData.append('rootParentId', this.equipmentT.id)
+          console.log(this.equipmentPT)
+          console.log(this.equipmentT)
+          this.creqteEquipment(this.formData)
+        }
 
     this.$router.push('/baseequipment')
     },
@@ -235,10 +245,14 @@ export default {
                            
         if(this.equipment.nameInstrument)
           this.listInstrument = this.equipment.nameInstrument
-        this.filterAllEquipmentById({ type: this.equipment.rootParentId, pType: this.equipment.parents[0].id})
+
+        if(this.$route.params.copy == 'false') {
+          this.obj.parentId = this.equipment.parents[0].id
+          this.filterAllEquipmentById({ type: this.equipment.rootParentId, pType: this.equipment.parents[0].id})
+        }
+
         this.obj.id = this.equipment.id
         this.obj.name = this.equipment.name
-        this.obj.parentId = this.equipment.parents[0].id
         this.obj.deliveryTime = this.equipment.deliveryTime
         this.obj.invNymber = this.equipment.invNymber
         this.obj.description = this.equipment.description
@@ -256,7 +270,7 @@ export default {
     // ADD FILE and SET INSTRUMENT TO TABLE
     ...mapActions(['fetchAllEquipmentType', 'getAllEdizm', 
     'updateEquipment', 'removeFileEquipment',
-    'getAllUsers']),
+    'getAllUsers', 'creqteEquipment']),
     ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById']),
     clickEquipment(eq) {
       this.equipmentT = eq

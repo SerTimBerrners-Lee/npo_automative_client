@@ -264,6 +264,12 @@
       :name='obj.name'
       :actions='actions'
     />
+    <InformFolder  :title='titleMessage'
+        :message = 'message'
+        :type = 'type'
+        v-if='showInformPanel'
+        :key='keyInformTip'
+    />
   </div>
 </template>
 
@@ -278,8 +284,11 @@ import { isEmpty } from 'lodash'
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import OpensFile from '@/components/filebase/openfile.vue'
 import HistoryActions from '@/components/history-action.vue'
+import { showMessage } from '@/js/'
+import InformFolder from '@/components/InformFolder.vue'
 
 export default {
+  props: ['editAndCopt'],
   data() {
     return {
       obj: {
@@ -327,14 +336,20 @@ export default {
       showHAction: false,
       hAactionKey: random(1, 999),
 
-      actions: []
+      actions: [],
+
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
 
     }
   },
   computed: mapGetters(['getOneSelectDetal', 'getUsers']),
-  components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions},
+  components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions, InformFolder},
   methods: {
-    ...mapActions(['createNewDetal', 'fetchUpdateDetal', 'getAllUsers']),
+    ...mapActions(['createNewDetal', 'fetchUpdateDetal', 'getAllUsers', 'createNewDetal']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
       if(this.obj.name.length < 3) 
@@ -367,14 +382,41 @@ export default {
           }
           if(mat == this.materialList.length - 1) {
             this.formData.append('materialList', JSON.stringify(this.materialList))
-            this.fetchUpdateDetal(this.formData)
+            if(this.$props.editAndCopt == 'true') {
+              this.clearData()
+              this.createNewDetal(this.formData).then(res => {
+                if(res)
+                  showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
+              })
+              return 
+            }
+                
+
+            this.fetchUpdateDetal(this.formData).then(res => {
+              if(res) 
+                showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's', this)
+            })
           }
         }
       } else {
-        this.fetchUpdateDetal(this.formData)
+        if(this.$props.editAndCopt == 'true') {
+          this.clearData()
+          this.createNewDetal(this.formData).then(res => {
+            if(res)
+              showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
+          })
+          return 
+        }
+        this.fetchUpdateDetal(this.formData).then(res => {
+          if(res) 
+            showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's', this)
+        })
       }
 
-      this.$router.push('/basedetals')
+      this.clearData()
+    },
+    clearData() {
+      setTimeout(() =>  this.$router.push('/basedetals'), 3000)
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
     },
@@ -551,7 +593,7 @@ export default {
                 this.mat_zag_zam = e
         })
     }
-    if(this.getOneSelectDetal.techProcesses.length) {
+    if(this.getOneSelectDetal.techProcesses.length && this.$props.editAndCopt == 'false') {
         this.techProcessID = this.getOneSelectDetal.techProcesses[0].id
         localStorage.setItem('tpID', this.techProcessID)
     }

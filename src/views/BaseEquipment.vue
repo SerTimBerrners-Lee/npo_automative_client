@@ -21,7 +21,7 @@
     </div>
     <div class="btn-control btn-control-eq-w" style="margin-top: 10px;">
         <button class="btn-small btn-add" @click="$router.push({path: '/equipment/add'})">Создать</button>
-        <button class="btn-small btn-add" >Создать копированием</button>
+        <button class="btn-small btn-add" @click='copyEquipment'>Создать копированием</button>
         <button class="btn-small" @click='edit'>Редактировать</button>
       </div>  
       <div class="btn-control btn-control-eq-w">
@@ -122,12 +122,18 @@ export default {
       this.fetchOneEquipment(eq.id)
     },
     edit() {
-      if(!this.equipment)
+      if(isEmpty(this.equipment))
         return 0 
-      this.$router.push('/equipment/edit')
+      console.log(this.equipment)
+      this.$router.push({path: '/equipment/edit/false'})
+    },
+    copyEquipment() {
+      if(isEmpty(this.equipment))
+        return 0 
+      this.$router.push({path: '/equipment/edit/true'})
     },
     banned() {
-      if(!this.equipment)
+      if(isEmpty(this.equipment))
         return 0 
       this.banEquipment(this.equipment.id)
     }, 
@@ -145,7 +151,7 @@ export default {
     },
     providershow() {
       if(this.equipment.providers.length > 0) {
-        this.keyProvidersModal = random(1, 123123123123)
+        this.keyProvidersModal = random(1, 2222)
         this.showProviders = true
       }
     },

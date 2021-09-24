@@ -1,7 +1,7 @@
 <template>
   <div class='main-block'>
     <div class="content-left">
-      <h3>{{ $route.params.type == 'create' ? 'Создать': 'Редактировать'}} материал</h3>
+      <h3>{{ $route.params.type == 'create' ? 'Создать': 'Редактировать' || 'Создать с копированием'}} материал</h3>
       <div class="block">
         <p>
             <span class='span-title'>Наименование: </span><input type="text" v-model.trim='obj.name'>
@@ -173,7 +173,7 @@
      <div class="edit-save-block block">
             <button class="btn-status" @click='$router.push("/basematerial")'>Назад</button>
             <button class="btn-status" @click='$router.push("/basematerial")'>Отменить</button>
-            <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type == 'create'">Сохранить</button>
+            <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type != 'edit'">Сохранить</button>
             <button class="btn-status btn-black" @click="addItem(this.getOnePPT.id)" v-if="$route.params.type == 'edit'">Обновить</button>
         </div>
         <ListProvider  
@@ -181,6 +181,12 @@
           :key='keyWhenModalListProvider'
           v-if='showProvider'
           />
+           <InformFolder  :title='titleMessage'
+            :message = 'message'
+            :type = 'type'
+            v-if='showInformPanel'
+            :key='keyInformTip'
+    />
   </div>
 </template>
 
@@ -190,6 +196,8 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'
 import AddFile from '@/components/filebase/addfile.vue'
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { random }  from 'lodash'
+import { showMessage } from '@/js/'
+import InformFolder from '@/components/InformFolder.vue'
 
 export default {
   data() {
@@ -204,8 +212,8 @@ export default {
       showProvider: false,
       providers: [],
       providersId: [],
-      keyWhenModalGenerate: random(10, 384522333213313324),
-      keyWhenModalListProvider: random(10, 384522333213313324),
+      keyWhenModalGenerate: random(10, 3333),
+      keyWhenModalListProvider: random(10, 3333),
       obj: {
         name: '',
         deliveryTime_select: 'Выберите тип ЕИ',
@@ -235,10 +243,16 @@ export default {
           c4: false,
           c5: false
         }
-      }
+      },
+
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
     }
   },
-  components: {TableMaterial, AddFile, ListProvider},
+  components: {TableMaterial, AddFile, ListProvider, InformFolder},
   computed: {
     ...mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial', 'allEdizm', 'getOnePPT', 'getLinkId']),
   },  
@@ -255,7 +269,7 @@ export default {
     },
     addProvider() {
         this.showProvider = true
-        this.keyWhenModalListProvider = random(10, 384522333213313324)
+        this.keyWhenModalListProvider = random(10, 3333)
       },
     file_unmount(e) { 
       if(!e) return 0
@@ -265,7 +279,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384522333213313324)
+      this.keyWhenModalGenerate = random(10, 3333)
       this.isChangeFolderFile = true
     },
     addItem(id = null) {
@@ -287,7 +301,7 @@ export default {
       
       let podTypeId
       
-      this.$route.params.type == 'edit' ? podTypeId = this.getOnePPT.materials[0].id :
+      this.$route.params.type == 'edit' ? podTypeId = this.getOnePPT.podMaterialId :
       podTypeId = this.podMaterial.id
 
       if(this.material)
@@ -351,11 +365,18 @@ export default {
       let kolvo = JSON.stringify({ kolvo: dat.kolvo_select})
       this.formData.append('kolvo', kolvo)
 
-      this.formData.append('providers', this.providersId)
+      this.formData.append('providers', this.providersId) 
 
       this.formData.append('description', dat.description)
-      this.createNewPodPodMaterial(this.formData)
-      this.$router.push('/basematerial')
+      this.createNewPodPodMaterial(this.formData).then(res => {
+        console.log(res)
+        if(res)
+          if(this.$route.params.type == 'edit')
+            showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's', this)
+          else 
+            showMessage('', 'Деталь усешно  создана. Перенаправление на главную страницу...', 's', this)
+      })
+      setTimeout(() => this.$router.push('/basematerial'), 3000)
     },
     ...mapActions(['getAllTypeMaterial', 
       'getOnePodType', 
@@ -425,10 +446,13 @@ export default {
     },
     editGetDataPPT() {
       this.updateInputSelect(this.getOnePPT)
-      this.filterMaterialById(this.getOnePPT.material.id)
-      this.filterPodMaterialById(this.getOnePPT.materials[0].id)
-      // Отфильтровать таблицу так чтобы показывались привязанный материал и привязанный под материал 
-      this.podMaterial = this.getOnePPT
+      if(this.$route.params.type == 'edit') {
+        console.log(this.getOnePPT)
+        this.filterMaterialById(this.getOnePPT.material.id)
+        this.filterPodMaterialById(this.getOnePPT.podMaterialId)
+        this.podMaterial = this.getOnePPT
+      }
+      
       this.obj.description = this.getOnePPT.description
       this.obj.name = this.getOnePPT.name
       if(this.getOnePPT.deliveryTime) {
@@ -457,7 +481,7 @@ export default {
   },
   async mounted() {
     this.getAllEdizm()
-    if(this.$route.params.type == 'edit')
+    if(this.$route.params.type == 'edit' || this.$route.params.type=='copy')
       this.editGetDataPPT()
   }
 }

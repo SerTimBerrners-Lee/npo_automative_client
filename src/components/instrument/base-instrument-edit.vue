@@ -36,14 +36,6 @@
         <div>
           <h3>Параметра</h3>
           <div class="block inputs_block">
-            <!-- <p>
-              <span>Единица измерения: </span>
-              <select class='select-small instr_select' v-model='obj.edzim'>
-                <option>Выберите тип ЕИ</option>
-                <option value="">мм</option>
-                <option value="">м</option>
-              </select>
-            </p> -->
             <p>
               <span>Срок поставки в днях: </span>
                <input type="text" v-model.trim="obj.deliveryTime">
@@ -137,13 +129,13 @@ export default {
         docFiles: [],
         formData: null,
         isChangeFolderFile: false,
-        keyWhenModalGenerate: random(10, 384522333213313324),
+        keyWhenModalGenerate: random(10, 3333),
         itemFiles: null,
         showFile: false,
-        keyWhenModalGenerateFileOpen: random(10, 384522333213313324),
+        keyWhenModalGenerateFileOpen: random(10, 3333),
         documents: [],
         showProvider: false,
-        keyWhenModalListProvider: random(10, 384522333213313324),
+        keyWhenModalListProvider: random(10, 3333),
         providers: [],
         providersId: [],
       obj: {
@@ -166,7 +158,7 @@ export default {
   components: {TableMaterial, AddFile, OpensFile, ListProvider},
   methods: {
     addInstrument() {
-        if(!this.obj.id || this.obj.name.length < 3)
+        if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
             return 0
         
         if(!this.formData) 
@@ -175,14 +167,22 @@ export default {
         if(this.providersId)
           this.providersId = JSON.stringify(this.providersId)
 
-        this.formData.append('id', this.obj.id)
         this.formData.append('name', this.obj.name)
         this.formData.append('deliveryTime', this.obj.deliveryTime)
         this.formData.append('mountUsed', this.obj.mountUsed)
         this.formData.append('minOstatok', this.obj.minOstatok)
         this.formData.append('description', this.obj.description)
         this.formData.append('providers', this.providersId)
-        this.updateNameInstrument(this.formData)
+        if(this.$route.params.copy == 'false') {
+          this.formData.append('id', this.obj.id)
+          this.updateNameInstrument(this.formData)
+        } else {
+          if(!this.PTInstrument && !this.TInstrument)
+            return 0
+          this.formData.append('rootParentId', this.TInstrument.id)
+          this.formData.append('parentId', this.PTInstrument.id)
+          this.addNameInstrument(this.formData)
+        }
 
     this.$router.push('/basetools')
     },
@@ -200,7 +200,7 @@ export default {
     },
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 384^4)
+      this.keyWhenModalListProvider = random(10, 3843)
     },
     setDocs(dc) {
         this.itemFiles = dc
@@ -209,7 +209,7 @@ export default {
         if(isEmpty(this.itemFiles))
             return 0
         this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 384^42)
+        this.keyWhenModalGenerateFileOpen = random(10, 3843)
     },
     openFile(res) { 
         console.log(res)
@@ -219,13 +219,17 @@ export default {
             return this.$router.push('/basetools')
                            
         console.log(this.getOneNameInstrument)
-        this.filterAllInstrumentNyId({
-          type: this.getOneNameInstrument.rootParentId, 
-          pType: this.getOneNameInstrument.parents[0].id
-        })
-        this.obj.id = this.getOneNameInstrument.id
+        if(this.$route.params.copy == 'false') {
+          this.filterAllInstrumentNyId({
+            type: this.getOneNameInstrument.rootParentId, 
+            pType: this.getOneNameInstrument.parents[0].id
+          })
+
+          this.obj.id = this.getOneNameInstrument.id
+          this.obj.parentId = this.getOneNameInstrument.parents[0].id
+        }              
+        
         this.obj.name = this.getOneNameInstrument.name
-        this.obj.parentId = this.getOneNameInstrument.parents[0].id
         this.obj.deliveryTime = this.getOneNameInstrument.deliveryTime
         this.obj.mountUsed = this.getOneNameInstrument.mountUsed
         this.obj.minOstatok = this.getOneNameInstrument.minOstatok
@@ -239,7 +243,12 @@ export default {
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
-    ...mapActions(['fetchAllInstruments', 'getAllEdizm', 'updateNameInstrument', 'removeFileInstrument']),
+    ...mapActions([
+      'fetchAllInstruments', 
+      'getAllEdizm', 
+      'updateNameInstrument', 
+      'removeFileInstrument',
+      'addNameInstrument']),
     ...mapMutations(['filterAllpInstrument', 'filterAllInstrumentNyId']),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
@@ -255,7 +264,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384522333213313324)
+      this.keyWhenModalGenerate = random(10, 3333)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 

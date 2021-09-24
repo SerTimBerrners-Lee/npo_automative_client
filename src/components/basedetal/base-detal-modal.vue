@@ -83,15 +83,23 @@
                             </table>
                         </div>
                     </div>
-                    <div class="btn-control">
+                     <div class="btn-control" v-if='idFile'>
+                            <p>
+                                <button class="btn-small btn-add"
+                                        @click='responsDetal'>
+                                    Выбрать
+                                </button>
+                            </p>
+                    </div>
+                    <div class="btn-control" v-if='!idFile'>
                         <p>
                                 <button class="btn-small btn-add" @click='$router.push("/detal/add")'>Создать</button>
                                 <button class="btn-small btn-add">Создать копированием</button>
                                 <button class="btn-small" @click='editDetal'>Редактировать</button>
                         </p>
-                            <p>
-                                <button class="btn-small" @click='deleteDetal'>В архив</button>
-                            </p>
+                        <p>
+                            <button class="btn-small" @click='deleteDetal'>В архив</button>
+                        </p>
                     </div>
                     <DetalModal
                         :key='detalModalKey'
@@ -114,7 +122,7 @@ import Search from '@/components/search.vue'
 
 export default {
 
-  props: ['techProcessID'],
+  props: ['techProcessID', 'idFile'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -165,6 +173,12 @@ export default {
         if(!this.selectedDetal)
             return 0
         this.deleteDetelyId(this.selectedDetal.id)
+    },
+    responsDetal() {
+        if(!this.selectedDetal)
+            return 0
+        this.$emit("responsDetal", this.selectedDetal)
+        this.destroyModalF()
     }
   },
   async mounted() {

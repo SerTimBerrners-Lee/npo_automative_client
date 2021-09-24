@@ -81,7 +81,7 @@
         <div class="btn-control">
                <p>
                     <button class="btn-small btn-add" @click='$router.push("/detal/add")'>Создать</button>
-                    <button class="btn-small btn-add">Создать копированием</button>
+                    <button class="btn-small btn-add" @click='createCopy'>Создать копированием</button>
                     <button class="btn-small" @click='editDetal'>Редактировать</button>
                </p>
                 <p>
@@ -131,7 +131,13 @@ export default {
             if(!this.selectedDetal)
                 return 0
 
-            this.$router.push("/detal/edit")
+            this.$router.push({path: '/detal/edit/false'})
+        },
+        createCopy() {
+            if(!this.selectedDetal)
+                return 0
+
+            this.$router.push({path: '/detal/edit/true'})
         },
         keySearch(v) {
                 this.filterDetalToArticle(v)

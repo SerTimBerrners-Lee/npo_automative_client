@@ -6,6 +6,9 @@
 .active {
     color: rgb(12, 64, 221);
 }
+.type-issue  {
+    user-select: none;   
+}
 
 .edit-save-block {
     border-bottom: 2px solid black;

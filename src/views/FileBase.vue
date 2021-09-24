@@ -14,7 +14,7 @@
                     <span @click="e => getType('КД', e.target)">Конструкторская документация (тип КД)</span>
                     <span @click="e => getType('ЧЖ', e.target)">Чертижи (тип ЧЖ)</span>
                     <span @click="e => getType('СД', e.target)">Сопутствующие документы (тип СД)</span>
-                </div>
+                </div> 
 
                 <div class="scroll-table" style="height: 600px;">
                     <Tables v-if="nowType == 'all'" 
@@ -40,7 +40,7 @@
                         <option value="ЧЖ">Чертижи (тип ЧЖ)</option>
                         <option value="СД">Сопутствующие документы (тип СД)</option>
                     </select>
-                    <button class="btn-small">Присвоить к...</button>
+                    <button class="btn-small" @click='addingFileToDetal'>Присвоить к...</button>
                     <button class="btn-small">Редактировать</button>
                 </div>
                 <div class="btn-control">
@@ -71,6 +71,12 @@
                 @unmount='unmount'
                 :key='keyWhenModalGenerateFileOpen'
             />
+        <BaseDetalModal 
+            v-if='showBFM'
+            :key='generateKeyBFM'
+            :idFile='itemFiles.id'
+            @responsDetal='responsDetal'
+        />
     </div>
 </template> 
 
@@ -84,6 +90,7 @@ import AddFile from '@/components/filebase/addfile.vue'
 import OpensFile from '@/components/filebase/openfile.vue'
 import { random }  from 'lodash'
 import NodeTable from '@/components/filebase/node-table.vue'
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue'
 
 export default {
     data() {
@@ -106,15 +113,18 @@ export default {
             keyWhenModalGenerateFileOpen: random(10, 38444),
 
             nodeTableKey: random(10, 381e4),
-            WhenModalGenerateFileOpenShow: false
+            WhenModalGenerateFileOpenShow: false,
+
+            showBFM: false,
+            generateKeyBFM: random (1, 999)
         }
     },
     computed: {
         ...mapGetters(['allFiles', 'banFiles']),
     },
-    components: {InformFolder, Tables, AddFile, OpensFile, NodeTable},
+    components: {InformFolder, Tables, AddFile, OpensFile, NodeTable, BaseDetalModal},
     methods: {
-        ...mapActions(['fetchFiles', 'bannedFiles', 'checkedType', 'fetchFileById']),
+        ...mapActions(['fetchFiles', 'bannedFiles', 'checkedType', 'fetchFileById', 'setDetalForFile']),
         getDateRevers(date) {
             return getReversDate(date).date
         },
@@ -130,14 +140,18 @@ export default {
             if(this.itemFiles) {
                 this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
                 this.WhenModalGenerateFileOpenShow = true
-            }
-                
-            else {
+            }else {
                 this.fetchFileById(file.id).then((res) => {
                 this.itemFiles = res
                 this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
                 this.WhenModalGenerateFileOpenShow = true
-            })
+                })
+            }
+        },
+        addingFileToDetal() {
+            if(this.itemFiles) {
+                this.generateKeyBFM = random(5, 9373e2)
+                this.showBFM = true
             }
         },
         changeTypeF() {
@@ -231,6 +245,11 @@ export default {
             })
             this.keyWhenModalGenerate = random(10, 1111)
             this.isChangeFolderFile = true
+        },
+        responsDetal(detal) {
+            if(!detal || !this.itemFiles.id) return 0 //
+            this.setDetalForFile({id_detal: detal.id, id_document: this.itemFiles.id})
+
         }
     },
     async mounted() {

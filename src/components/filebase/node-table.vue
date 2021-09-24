@@ -195,10 +195,9 @@ export default {
             
             this.setTr(e)
 
-            this.getOneDetal(this.selectedDetal.id).then((res) => {
+            this.getOneDetal(this.selectedDetal.id).then(() => {
                 this.detalModalKey = random(1, 34e5)
                 this.detalIsShow = true
-                console.log(res)
             })
         },
         setEq(eq, e) {
@@ -220,9 +219,6 @@ export default {
             this.tr.classList.add('td-row-all')
         }
     },
-    async mounted() {
-        console.log(this.$props.file)
-    }
 }
 </script>
 

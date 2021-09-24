@@ -37,162 +37,165 @@ import EditDetal from '@/components/basedetal/edit-detal.vue';
 
 const routes = [
   {
-    path: '/detal/edit',
-    name: 'EditDetal',
-    component: EditDetal
+    path: '/detal/edit/:editAndCopt',
+    name: 'Редактировать Деталь',
+    component: EditDetal,
+    props: true
   },
   {
     path: '/detal/add',
-    name: 'AddDetal',
+    name: 'Добавить деталь',
     component: AddDetal
   },
   {
-    path: '/equipment/edit',
-    name: 'EditBaseEquipment',
-    component: EditBaseEquipment
+    path: '/equipment/edit/:copy',
+    name: 'Редактировать/Копировать Оборудование',
+    component: EditBaseEquipment,
+    props: true
   },
   {
     path: '/equipment/add',
-    name: 'AddBaseEquipment',
+    name: 'Добавить Оборудование',
     component: AddBaseEquipment
   },
   {
-    path: '/instrument/edit',
-    name: 'EditBaseInstrument',
+    path: '/instrument/edit/:copy',
+    name: 'Редактировать инструмент',
     component: EditBaseInstrument,
+    props: true
   },
   {
     path: '/instrument/add/:type',
-    name: 'AddBaseInstrument',
+    name: 'Добавить инструмент',
     component: AddBaseInstrument,
     props: true
   },
   {
     path: '/baseprovider/addedit/:type',
-    name: 'AddEditBaseProvider',
+    name: 'Добавить/Редактировать Поставщика',
     component: AddEditBaseProvider,
     props: true
   },
   {
     path: '/',
-    name: 'WorkTable',
+    name: 'Главная',
     component: WorkTable
   },
   {
     path: '/material/add/:type',
-    name: 'AddMaterialBase',
+    name: 'Создать/Редактировать',
     component: AddMaterialBase,
     props: true
   },
   {
     path: '/basedetals',
-    name: 'BaseDetals',
+    name: 'База Деталей',
     component: BaseDetals
   },
   {
     path: '/baseequipment',
-    name: 'BaseEquipment',
+    name: 'База Оборудования',
     component: BaseEquipment
   },
   {
     path: '/basetools',
-    name: 'BaseTools',
+    name: 'База Инструмента',
     component: BaseTools
   },
   {
     path: '/baseprovider',
-    name: 'BaseProvider',
+    name: 'База Поставщиков',
     component: BaseProvider
   },
   {
     path: '/basebuyer',
-    name: 'BaseBuyer',
+    name: 'База Покупателей',
     component: BaseBuyer
   },
   {
     path: '/basematerial',
-    name: 'BaseMaterial',
+    name: 'База Материалов',
     component: BaseMaterial
   },
   {
     path: '/filebase',
-    name: 'FileBase',
+    name: 'База Файлов',
     component: FileBase
   },
   {
     path: '/settings',
-    name: 'settings',
+    name: 'Настройки',
     component: settings
   },
   { 
     path: '/employee/edit/:title',
-    name: 'AddEditUser',
+    name: 'Добавить Пользователя',
     component: AddEditUser,
     props: true
   },
   {
     path: '/employee',
-    name: 'UsersPage',
+    name: 'Пользователи',
     component: UsersPage
   },
   {
     path: '/edizm',
-    name: 'EdizmPage',
+    name: 'Единицы измерений',
     component: EdizmPage
   },
   {
     path: '/mathzag',
-    name: 'MatZagPage',
+    name: 'Материалы',
     component: MatZagPage
   },
   {
     path: '/pokdet',
-    name: 'PokDetPage',
+    name: 'Покупные Материалы',
     component: PokDetPage
   },
   {
     path: '/rashmat',
-    name: 'RashMatPage',
+    name: 'Расходные Материалы',
     component: RashMatPage
   },
   {
     path: '/opertechproc',
-    name: 'OperationTehPage',
+    name: 'Типы Операций',
     component: OperationTehPage
   },
   {
     path: '/instrosn',
-    name: 'InstrOsnastPage',
+    name: 'Инструмент и Оснастка',
     component: InstrOsnastPage
   },
   {
     path: '/baseoborud',
-    name: 'BaseOborud',
+    name: 'Оборудование',
     component: BaseOborud
   },
   {
     path: '/basetech',
-    name: 'BaseTechInvPage',
+    name: 'Техника и Инвентарь',
     component: BaseTechInvPage
   },
   {
     path: '/diffsklad',
-    name: 'DiffSklad',
+    name: 'Дефицит',
     component: DiffSklad
   },
   {
     path: '/uthetwtime',
-    name: 'UthetWorkTimePage',
+    name: 'Учет Времени',
     component: UthetWorkTimePage
   },
   {
     path: '/rolesuser',
-    name: 'RoliUserPage',
+    name: 'Роли',
     component: RoliUserPage
   },
   {
     path: '/dolznuser',
-    name: 'DolznUser',
+    name: 'Должности',
     component: DolznUser
     // не подходит страница перезагружается
     // children: [{
@@ -203,17 +206,17 @@ const routes = [
   },
   {
     path: '/libbarysetting',
-    name: 'LibbaryPage',
+    name: 'Библиотека',
     component: LibbaryPage
   },
   {
     path: '/pricehors',
-    name: 'PriceHorsPage',
+    name: 'Стоимость норма-часа',
     component: PriceHorsPage
   },
   {
     path: '/savebasedata',
-    name: 'SaveBaseData',
+    name: 'База Данных',
     component: SaveBaseData
   }
 ]

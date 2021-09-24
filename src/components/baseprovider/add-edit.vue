@@ -62,62 +62,82 @@
                     </div>
                 </div>
                 <h3 class="link_h3" @click='openMaterial'>Поставляемый материал</h3>
-              <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Тип</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchMat' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getproviderTypeM' 
-                                                :key='t'
-                                                class='td-row'
-                                                @click='filterByType(t)'>
-                                                <td>{{ t.name }}</td>
-                                            </tr>
-                                        </table>
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Подтип</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchPT' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getproviderPTypeM' 
-                                                :key='t'
-                                                class='td-row'
-                                                @click='filterByPType(t)'>
-                                                <td>{{ t.name }}</td>
-                                            </tr>
-                                        </table>
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Наименование</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchName' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getproviderMaterial' :key='t'>
-                                                <td>{{ t.name}}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
+              <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " v-if='this.$route.params.type == "edit"' >
+                    <table style="width: 33%; height: max-content;" > 
+                        <tr>
+                            <th>Тип</th>
+                        </tr>
+                            <tr>
+                            <td>
+                                <Search 
+                                    :placeholder='`Поиск `'
+                                    @unmount='searchMat' 
+                                />
+                            </td>
+                            </tr>
+                        <tr v-for='t in getproviderTypeM' 
+                            :key='t'
+                            class='td-row'
+                            @click='filterByType(t)'>
+                            <td>{{ t.name }}</td>
+                        </tr>
+                    </table>
+                    <table style="width: 33%; height: max-content;"> 
+                        <tr>
+                            <th>Подтип</th>
+                        </tr>
+                            <tr>
+                            <td>
+                                <Search 
+                                    :placeholder='`Поиск `'
+                                    @unmount='searchPT' 
+                                />
+                            </td>
+                            </tr>
+                        <tr v-for='t in getproviderPTypeM' 
+                            :key='t'
+                            class='td-row'
+                            @click='filterByPType(t)'>
+                            <td>{{ t.name }}</td>
+                        </tr>
+                    </table>
+                    <table style="width: 33%; height: max-content;"> 
+                        <tr>
+                            <th>Наименование</th>
+                        </tr>
+                            <tr>
+                            <td>
+                                <Search 
+                                    :placeholder='`Поиск `'
+                                    @unmount='searchName' 
+                                />
+                            </td>
+                            </tr>
+                        <tr v-for='t in getproviderMaterial' :key='t'>
+                            <td>{{ t.name}}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="scroll-table" v-else>
+                     <table style="width: 100%"> 
+                        <tr>
+                            <th>Тип</th>
+                            <th>Подтип</th>
+                            <th>Наименование</th>
+                        </tr>
+                        <tr v-for='mat in materialList' :key="mat">
+                            <td>{{ mat.mat.material.name }}</td>
+                            <td>{{ mat.mat.podMaterial.name }}</td>
+                            <td>{{ mat.mat.name }}</td>
+                        </tr>
+                        <tr v-for="ff in 10" :key="ff" class="td-row">
+                            <td>...</td>
+                            <td>...</td>
+                            <td>...</td>
+                        </tr>
+                    </table>
+                </div>
             </div>
         </div>
              <div class="edit-save-block block">
@@ -305,6 +325,11 @@ export default {
         }
     },
     async mounted() {
+        if(this.$route.params.type == 'add') {
+            //  Очищаем прикрепленных поставщиков 
+
+        }
+
         if(this.$route.params.type == 'edit') {
             if(isEmpty(this.getSetProvider))
                 this.$router.push('/baseprovider')

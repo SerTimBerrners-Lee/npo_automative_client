@@ -169,14 +169,14 @@ export default {
             return result
         },
         async createNewPodPodMaterial(ctx, data) {
-            const res = fetch(`${PATH_TO_SERVER}api/settings/material/podpodtype/`, {
+            const res = await fetch(`${PATH_TO_SERVER}api/settings/material/podpodtype/`, {
                 method: 'post',
                 body: data
             })
             if(res.ok) {
                 ctx.dispatch('createTypeM')
                 ctx.commit('onePPTClear')
-                return true
+                return res
             }
         },
         async removePPM(ctx, id) {
@@ -306,10 +306,25 @@ export default {
             material.forEach(m => {
                 if(m.ban)
                     return 0
+                
                 let mat = state.typeM.filter(t => t.id == m.materialsId)
-                let pt = state.podTypeM.filter(pt => pt.id == m.ProvidersMaterial.providerId)
-                state.providerTypeM.push(mat[0])
-                state.providerPTypeM.push(pt[0])
+                let pt = state.podTypeM.filter(pt => pt.id == m.podMaterialId)
+                let check = true
+                for(let e of state.providerTypeM) {
+                    if(e.id == mat[0].id)
+                        check = false
+                } 
+                if(check)
+                    state.providerTypeM.push(mat[0])
+                check = true
+                let check2 = true
+                for(let e of state.providerPTypeM) {
+                    if(e.id == pt[0].id)
+                    check2 = false
+                } 
+                if(check2)
+                    state.providerPTypeM.push(pt[0])
+                check2 = true
                 state.providerPM.push(m) 
             })
         },
@@ -361,12 +376,11 @@ export default {
 
             state.providerPM = t.podPodMaterials
         },
-
-
         // Фильтруем все для глобального поиска по провайдеру
         globalProviderFilter(state, provider) {
             for(let prov of provider) {
-                if(!prov.materials.length) continue;
+                if(!prov.materials.length) 
+                    continue;
                 for(let mat of prov.materials) {
                     let check = true
                     for(let m of state.GlobalProviderPM) {

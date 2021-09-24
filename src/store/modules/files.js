@@ -71,6 +71,16 @@ export default {
             }
             
             return { type: 'e', message: 'Произошла ошика при изменении типа файла'}
+        },
+
+        async setDetalForFile(ctx, data) {
+            await fetch(`${PATH_TO_SERVER}api/documents/setdetal/`, {
+                headers:{
+                    'Content-Type':'application/json'
+                },
+                method: 'PUT',
+                body: JSON.stringify(data)
+            })
         }
     },
     mutations: {
