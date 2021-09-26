@@ -194,25 +194,13 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
       docFiles: [],
-      keyWhenModalGenerate: random(10, 231^2376),
+      keyWhenModalGenerate: random(10, 2319),
       isChangeFolderFile: false,
       formData: null,
       dataMedia: [],
-      randomDataMedia: random(10, 24^4),
+      randomDataMedia: random(10, 2499),
       operationPanelShow: false,
-      operationKey: random(10, 384e10),
-      operatioinList: [
-          'Заготовительная',
-          'Токарная',
-          'Слесарная',
-          'Термообработка',
-          'Фрезерная',
-          'Сверлильная',
-          'Сварочная',
-          'Сборка',
-          'Покраска',
-          'Упаковка',
-      ],
+      operationKey: random(10, 3840),
       tr: null,
       operationSelect: null,
       description: '',
@@ -220,7 +208,7 @@ export default {
 
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(10, 323e8),
+      keyWhenModalGenerateFileOpen: random(10, 999),
     }
   },
   computed: mapGetters(['allOperationNewList', 'getTypeOperations']),
@@ -241,7 +229,7 @@ export default {
       val.target.files.forEach(f => {
         this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 2342e12)
+      this.keyWhenModalGenerate = random(10, 999)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -251,13 +239,13 @@ export default {
       if(all) 
         all.forEach(f => {
           this.dataMedia.push({name: f.name, path: f.url})
-          this.randomDataMedia = random(10, 38e100)
+          this.randomDataMedia = random(10, 999)
         })
     },
     addNewOperation() {
         this.operationSelect = null
         this.operationPanelShow = true
-        this.operationKey = random(10, 38e3)
+        this.operationKey = random(10, 999)
     },
     unmount_operation() {
         console.log(this.allOperationNewList)
@@ -273,7 +261,7 @@ export default {
         if(!this.operationSelect)
             return 0;
         this.operationPanelShow = true
-        this.operationKey = random(10, 38e3)
+        this.operationKey = random(10, 999)
     },
     changeOperation(val, operation, type) {
         let eqID = operation.eqID
@@ -329,7 +317,7 @@ export default {
         if(isEmpty(this.itemFiles))
             return 0
         this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+        this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
   },
   async mounted() {
@@ -340,7 +328,6 @@ export default {
     this.getAllTypeOperations()
 
     if(this.$props.techProcessID) {
-        console.log(this.$props.techProcessID)
         this.fetchTechProcess(this.$props.techProcessID).then((res) => {
             if(!res)
                 return 0

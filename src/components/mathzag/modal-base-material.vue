@@ -39,7 +39,8 @@
                         </tr>
                         <tr v-for='mat of materialList' :key='mat.mat'>
                             <td class='td_kolvo' v-if='!matLightList'>
-                                <input class='inputs-small' 
+                                <input 
+                                    class='inputs-small' 
                                     @change='e => changeArt(e.target, mat)' 
                                     type='text' 
                                     :value='mat.art'>
@@ -98,7 +99,7 @@ export default {
             podMaterial: null,
             podPodMaterial: null,
             itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 384e4),
+            keyWhenModalGenerateFileOpen: random(10, 3844),
 
             destroyModalLeft: 'left-block-modal',
             destroyModalRight: 'content-modal-right-menu',
@@ -112,22 +113,25 @@ export default {
     components: {TableMaterial},
     methods: {
          ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
-        ...mapMutations(['filterMatByPodType', 
+        ...mapMutations(['filterMatByPodType', 'filterMatByPodType',
             'addOnePPTyep', 
             'getInstansMaterial', 
             'throwInstans', 
             'toEmptyPPT',
             'searchTypeMutation', 
             'searchPTypeMutation', 
-            'searchMaterialMutation']),
+            'searchMaterialMutation']), 
         destroyModalF() {
             this.destroyModalLeft = 'left-block-modal-hidden'
             this.destroyModalRight = 'content-modal-right-menu-hidden'
             this.hiddens = 'display: none;'
         },
        clickMat(mat, type) {
-            if(type == 'type') 
+            if(type == 'type') {
                 this.material = mat
+                if(this.$props.instanMaterial == 2 || this.$props.instanMaterial == 3)
+                    this.filterMatByPodType(mat.podMaterials)
+            }
 
             if(type == 'podM') this.getOnePodType(mat.id)
             if(type == 'podPM') {
@@ -158,7 +162,6 @@ export default {
                     ez: null
                 });
             }
-            console.log(this.materialList)
         },
         delMat(id) {
             this.materialList = this.materialList.filter(mat => mat.mat.id != id)

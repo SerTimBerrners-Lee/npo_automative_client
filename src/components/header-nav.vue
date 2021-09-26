@@ -103,6 +103,9 @@ export default {
     top: 0px;
     z-index: 3;
 }
+.rout-nav {
+    overflow: hidden;
+}
 .logo-block {
     display: flex;
     margin-left: 30px;

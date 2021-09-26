@@ -57,7 +57,7 @@
                 <img src="@/assets/img/img13.png" alt="" class="icon-li">
                 <span class="text-item">Задачи на отгрузку</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/sclad')">
                 <img src="@/assets/img/img14.png" alt="" class="icon-li">
                 <span class="text-item">Склад</span>
             </li>

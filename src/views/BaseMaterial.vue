@@ -83,7 +83,7 @@ export default {
             'fetchGetOnePPM', 
             'getAllPodTypeMaterial',
             'fetchGetAllPPM']),
-        ...mapMutations(['filterByNameMaterial', 
+        ...mapMutations(['filterByNameMaterial', 'filterMatByPodType',
             'addOnePPTyep', 
             'getInstansMaterial', 
             'throwInstans',
@@ -107,6 +107,8 @@ export default {
             if(type == 'type') {
                 this.material = mat
                 this.filterByNameMaterial(mat)
+                if(this.instansLet == 2 || this.instansLet == 3)
+                    this.filterMatByPodType(mat.podMaterials)
             }
                 
 

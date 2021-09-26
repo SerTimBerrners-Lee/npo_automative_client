@@ -202,8 +202,7 @@ export default {
             return 0
           this.formData.append('parentId', this.equipmentPT.id)
           this.formData.append('rootParentId', this.equipmentT.id)
-          console.log(this.equipmentPT)
-          console.log(this.equipmentT)
+
           this.creqteEquipment(this.formData)
         }
 
@@ -247,8 +246,8 @@ export default {
           this.listInstrument = this.equipment.nameInstrument
 
         if(this.$route.params.copy == 'false') {
-          this.obj.parentId = this.equipment.parents[0].id
-          this.filterAllEquipmentById({ type: this.equipment.rootParentId, pType: this.equipment.parents[0].id})
+          this.obj.parentId = this.equipment.equipmentPTypeId
+          this.filterAllEquipmentById({type: this.equipment.rootParentId, pType: this.equipment.equipmentPTypeId})
         }
 
         this.obj.id = this.equipment.id

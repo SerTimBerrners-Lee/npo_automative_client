@@ -217,16 +217,15 @@ export default {
     checkedUpdate() {
         if(isEmpty(this.getOneNameInstrument)) 
             return this.$router.push('/basetools')
-                           
-        console.log(this.getOneNameInstrument)
+            
         if(this.$route.params.copy == 'false') {
           this.filterAllInstrumentNyId({
             type: this.getOneNameInstrument.rootParentId, 
-            pType: this.getOneNameInstrument.parents[0].id
+            pType: this.getOneNameInstrument.parent.id
           })
 
           this.obj.id = this.getOneNameInstrument.id
-          this.obj.parentId = this.getOneNameInstrument.parents[0].id
+          this.obj.parentId = this.getOneNameInstrument.parent.id
         }              
         
         this.obj.name = this.getOneNameInstrument.name

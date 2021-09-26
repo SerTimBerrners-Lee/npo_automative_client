@@ -328,4 +328,7 @@ label {
     color: white;
     font-weight: bolder;
 }
+.item-form {
+    user-select: none;
+}
 </style>

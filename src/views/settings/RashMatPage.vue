@@ -37,7 +37,7 @@ export default {
         return {
             typeapp: 'create',
             showIs: false,
-            keyModals: random(20, 2132356723547632),
+            keyModals: random(20, 999),
             parametrs: {},
             itemsSelect: null,
             material: null,
@@ -57,7 +57,7 @@ export default {
             'updatePodMaterial',
             'getAllPodTypeMaterial'
         ]),
-        ...mapMutations(['getInstansMaterial', 'throwInstans']),
+        ...mapMutations(['getInstansMaterial', 'throwInstans', 'filterMatByPodType']),
         unmountAdd(res) {
             if(res.type == 'TYPE') {
                 this.createTypeM({
@@ -68,9 +68,10 @@ export default {
             if(res.type == 'PODTYPE') {
                 this.createPodType({
                     name: res.name,
-                    instansMaterial: 3
+                    instansMaterial: 3,
+                    parentMaterialId: this.material.id
                 })
-            }
+            } 
         },
         unmountUpdate(res) {
             if(res.type == 'TYPE') {
@@ -103,9 +104,12 @@ export default {
                 }
             } 
             if(typeMat == 'PODTYPE' && type == 'create') {
+                if(!this.material)
+                    return 0
                 this.parametrs = {
                     type,
-                    mat: typeMat
+                    mat: typeMat,
+                    material: this.material
                 }
             }
 
@@ -118,12 +122,15 @@ export default {
                     data: this.podType
                 }
             } 
-            this.keyModals = random(20, 213e6)
+            this.keyModals = random(20, 999)
             this.showIs = true
         },
         clickMat(mat, type) {
-            if(type == 'type') 
+            if(type == 'type') {
                 this.material = mat
+                if(mat.podMaterials)
+                    this.filterMatByPodType(mat.podMaterials)
+            }
             if(type == 'podT') 
                 this.podType = mat
         },

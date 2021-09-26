@@ -25,6 +25,7 @@ import BaseProvider from '@/views/BaseProvider.vue';
 import BaseTools from '@/views/BaseTools.vue';
 import BaseEquipment from '@/views/BaseEquipment.vue';
 import BaseDetals from '@/views/BaseDetals.vue';
+import Sclad from '@/views/Sclad.vue';
 import AddMaterialBase from '@/components/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
 import AddBaseInstrument from '@/components/instrument/base-instrument-add.vue'
@@ -36,6 +37,11 @@ import EditDetal from '@/components/basedetal/edit-detal.vue';
 
 
 const routes = [
+  {
+    path: '/sclad',
+    name: 'Склад',
+    component: Sclad
+  },
   {
     path: '/detal/edit/:editAndCopt',
     name: 'Редактировать Деталь',

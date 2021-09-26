@@ -42,7 +42,7 @@ export default {
         return{
             showIs: false,
             parametrs: null,
-            keyModals: random(20, 2132356723547632),
+            keyModals: random(20, 999),
             equipment: null,
             equipmentPT: null
         } 
@@ -83,7 +83,8 @@ export default {
         },
         clickEquipmentType(equipment) {
             this.equipment = equipment
-            this.filterAllPTEquipment(this.equipment)
+            if(equipment.equipmentsPT)
+                this.filterAllPTEquipment(this.equipment)
         },
         clickEquipmentPType(equipmentPT) {
             this.equipmentPT = equipmentPT

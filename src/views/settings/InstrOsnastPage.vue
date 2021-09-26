@@ -42,7 +42,7 @@ export default {
         return{
             showIs: false,
             parametrs: null,
-            keyModals: random(20, 2132356723547632),
+            keyModals: random(20, 999),
             TInstrument: null,
             PTInstrument: null
         }
@@ -84,7 +84,8 @@ export default {
         },
         clickTInstrument(instrument) {
             this.TInstrument = instrument
-            this.filterAllpInstrument(instrument)
+            if(instrument.pInstruments)
+                this.filterAllpInstrument(instrument)
         },
         clickPTInstrument(PTInstrument) {
             this.PTInstrument = PTInstrument
@@ -98,7 +99,7 @@ export default {
             if(instrument == 'TYPE') 
                 this.parametrs = { instrument, type }
         
-            this.keyModals = random(2, 123123123123123)
+            this.keyModals = random(2, 999)
             this.showIs = true
         },
         edit(instrument, type = 'edit') {
@@ -123,7 +124,7 @@ export default {
                 }
             }
             
-            this.keyModals = random(2, 123123123123123)
+            this.keyModals = random(2, 999)
             this.showIs = true
         },
         remove(type) {
