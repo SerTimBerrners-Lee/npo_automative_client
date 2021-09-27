@@ -154,7 +154,6 @@
 
 <script>
 import {  mapActions, mapGetters, mapMutations } from 'vuex'
-import { isEmpty } from 'lodash';
 import showMessage from '@/js/inform_folder.js';
 import InformFolder from '@/components/InformFolder.vue'
 import PATH_TO_SERVER from '@/js/path.js'
@@ -197,7 +196,7 @@ export default {
         ...mapMutations(['selectedUser']),
         userShow(user, e = null) {
             if(user) {
-                this.roles = !isEmpty(user.role) ? user.role.description : '' 
+                this.roles = user.role ? user.role.description : '' 
                 this.initial = user.initial
                 this.tabel = user.tabel
                 this.adress = user.adress
