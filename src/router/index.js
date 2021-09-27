@@ -38,9 +38,15 @@ import EditBaseEquipment from '@/components/equipment/base-equipment-edit.vue';
 import AddDetal from '@/components/basedetal/add-detal.vue'; 
 import EditDetal from '@/components/basedetal/edit-detal.vue'; 
 import CreateCbEd from '@/components/cbed/create-cbed.vue';
+import CreateProduct from '@/components/baseproduct/create-product.vue';
 
 
 const routes = [
+  {
+    path: '/createproduct',
+    name: 'Создать изделие',
+    component: CreateProduct
+  },
   {
     path: '/cbed/create',
     name: 'Создать Сборочную Ед.',

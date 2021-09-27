@@ -3,10 +3,8 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
         <div :class='destroyModalRight'>
            <div :style="hiddens">
-              
-               
                 <div>
-                    <h3>База деталей</h3>
+                    <h3>База сборных единиц</h3>
                     <div class="main_table_control">
                         <div class="scroll-table" >
                         <table class="table-base-detal">
@@ -29,7 +27,7 @@
                         </table>
                         </div>
                         <div class="scroll-table" >
-                            <table class="table-base-detal">
+                             <table class="table-base-detal">
                                 <tr>
                                     <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
                                 </tr>
@@ -39,41 +37,20 @@
                                     <th>Кол-во СБ на Изделие</th>
                                 </tr>
                                 <tr>
-                                    <td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
-                                </tr>
-                                <tr v-for="item in 42" :key="item">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="scroll-table" >
-                            <table class="table-base-detal">
-                                <tr>
-                                    <th colspan="3" scope="col">Деталь (Тип Д)</th>
-                                </tr>
-                                <tr>
-                                    <th>Артикул</th>
-                                    <th>Наименование</th>
-                                    <th>Кол-во Д на СБ</th>
-                                </tr>   
-                                <tr>
                                     <td colspan="3">
                                         <Search 
+                                            :placeholder="'Поиск по Артиклу'"
                                             @unmount='keySearch' 
                                         />
                                     </td>
                                 </tr>
-                                <tr 
-                                    v-for='detal in allDetal' 
-                                    :key='detal'
+                                <tr v-for='cb in allCbed' 
+                                    :key='cb'
                                     class='td-row'
-                                    @click='e => setDetals(detal, e.target.parentElement)'
-                                    >
-                                    <td>{{ detal.articl }}</td>
-                                    <td>{{ detal.name }}</td>
-                                    <td>...</td>
+                                    @click='e => setDetals(cb, e.target.parentElement)'>
+                                    <td>{{ cb.articl }}</td>
+                                    <td>{{ cb.name }}</td>
+                                    <td></td>
                                 </tr>
                                 <tr v-for="item in 42" :key="item">
                                     <td></td>
@@ -86,7 +63,7 @@
                      <div class="btn-control">
                             <p>
                                 <button class="btn-small btn-add"
-                                        @click='responsDetal'>
+                                        @click='responsCbed'>
                                     Выбрать
                                 </button>
                             </p>
@@ -95,8 +72,8 @@
                         :key='detalModalKey'
                         v-if='detalIsShow'
                     />
-                    <!-- Detal List -->
-                    <div v-if='detalList.length > 0'>
+                    <!-- Cbed List -->
+                    <div v-if='cbedList.length > 0'>
                     <table>
                         <tr>
                             <th>Артикул</th>
@@ -105,35 +82,35 @@
                             <th>Количество</th>
                             <th>Действие</th>
                         </tr>
-                        <tr v-for='det of detalList' :key='det'>
+                        <tr v-for='cb of cbedList' :key='cb'>
                             <td class='td_kolvo'>
                                 <input 
                                     class='inputs-small' 
                                     type='text' 
-                                    :value='det.art'
-                                    @change='e => changeArt(e.target, det)'
+                                    :value='cb.art'
+                                    @change='e => changeArt(e.target,cb)'
                                 >
                             </td>
-                            <td>{{ det.det.name }}</td>
+                            <td>{{ cb.cb.name }}</td>
                             <td>
                                <select  class='select-small' 
-                                        @change='e => selecter(e.target, det)' 
-                                        v-model='det.ez'>
-                                    <option value='1' v-if="det.ez == 1 || det.ez"> шт</option> 
-                                    <option value='2' v-if="det.ez == 2 || det.ez"> л </option>
-                                    <option value='3' v-if="det.ez == 3 || det.ez"> кг</option> 
-                                    <option value='4' v-if="det.ez == 4 || det.ez"> м </option>
-                                    <option value='5' v-if="det.ez == 5 || det.ez"> м.куб</option> 
+                                        @change='e => selecter(e.target, cb)' 
+                                        v-model='cb.ez'>
+                                    <option value='1' v-if="cb.ez == 1 || cb.ez"> шт</option> 
+                                    <option value='2' v-if="cb.ez == 2 || cb.ez"> л </option>
+                                    <option value='3' v-if="cb.ez == 3 || cb.ez"> кг</option> 
+                                    <option value='4' v-if="cb.ez == 4 || cb.ez"> м </option>
+                                    <option value='5' v-if="cb.ez == 5 || cb.ez"> м.куб</option> 
                                 </select>   
                             </td>
                             <td class='td_kolvo' >
                                 <input class='inputs-small' 
                                     type='text' 
-                                    :value='det.kol'
-                                    @change='e => changeArt(e.target, det)'
+                                    :value='cb.kol'
+                                    @change='e => changeArt(e.target, cb)'
                                     >
                             </td>
-                            <td class='delete_span' @click='delDet(det.det.id)'>удалить</td>
+                            <td class='delete_span' @click='delCbed(cb.cb.id)'>удалить</td>
                         </tr>
                     </table>
                 </div>
@@ -142,8 +119,8 @@
                    <div class="btn-control out-btn-control">
                     <button class="btn-status btn-black" 
                             style="height: 0px;" 
-                            @click='returnDetalList' 
-                            v-if='detalList'>
+                            @click='returnCbedList' 
+                            v-if='cbedList'>
                             Добавить выбранное</button>
                 </div>
                
@@ -161,22 +138,22 @@ import Search from '@/components/search.vue'
 
 export default {
 
-  props: ['techProcessID', 'idFile', 'getListDetal', 'listDetal'],
+  props: ['techProcessID', 'idFile', 'getListCbed', 'listCbed'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
       
-        selectedDetal: null,
+        selectedCbed: null,
         tr: null,
-        detalModalKey: random(1, 123e2), 
+        detalModalKey: random(1, 123e2),
         detalIsShow: false,
 
-        detalList: []
+        cbedList: []
     }
   },
-  computed: mapGetters(['allDetal']),
+  computed: mapGetters(['allCbed']),
   components: {DetalModal, Search},
   methods: {
     destroyModalF() {
@@ -184,55 +161,41 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['getAllDetals', 'deleteDetelyId']),
-    ...mapMutations(['addOneSelectDetal', 'filterDetalToArticle']),
+    ...mapActions(['getAllCbed']),
+    ...mapMutations([]),
     setDetals(detal, e) {
-        this.selectedDetal = detal
+        console.log('CHECK')
+        this.selectedCbed = detal
             if(this.tr) 
             this.tr.classList.remove('td-row-all')
         
         this.tr = e
         this.tr.classList.add('td-row-all')
-        this.addOneSelectDetal(this.selectedDetal)
 
-        this.detalModalKey = random(1, 999)
-        this.detalIsShow = true
-    },
-    editDetal() {
-        if(!this.selectedDetal)
-            return 0
-
-        this.$router.push("/detal/edit")
+        // this.detalModalKey = random(1, 999)
+        // this.detalIsShow = true
     },
     keySearch(v) {
-        setTimeout(() => {
-            this.filterDetalToArticle(v)
-        }, 
-        500)
+        console.log(v)
     },
-    deleteDetal() {
-        if(!this.selectedDetal)
-            return 0
-        this.deleteDetelyId(this.selectedDetal.id)
-    },
-    responsDetal() {
-        if(!this.selectedDetal)
+    responsCbed() {
+        if(!this.selectedCbed)
             return 0
         
-        if(this.$props.getListDetal) {
+        if(this.$props.getListCbed) {
             let add = true
-            if(this.detalList.length > 0) {
-                for(let det of this.detalList) {
-                    if(det.det.id == this.selectedDetal.id)
+            if(this.cbedList.length > 0) {
+                for(let cb of this.cbedList) {
+                    if(cb.cb.id == this.selectedCbed.id)
                         add = false
                 }
             }
             if(add) {
-                this.detalList.push({ 
+                this.cbedList.push({ 
                     art: '',
-                    det: {
-                        name: this.selectedDetal.name,
-                        id: this.selectedDetal.id
+                    cb: {
+                        name: this.selectedCbed.name,
+                        id: this.selectedCbed.id
                     },
                     kol: 1,
                     ez: 1
@@ -240,24 +203,24 @@ export default {
             }
             return 0
         }
-        this.$emit("responsDetal", this.selectedDetal)
+        this.$emit("responsCbed", this.selectedCbed)
         this.destroyModalF()
     },
-    returnDetalList() {
-        this.$emit("responsDetal", this.detalList)
+    returnCbedList() {
+        this.$emit("responsCbed", this.cbedList)
         this.destroyModalF()
     },
-    changeKolvo(val, det) {
-        det.kol = val.value
+    changeKolvo(val, cb) {
+        cb.kol = val.value
     },
-    changeArt(val, det) {
-        det.art = val.value
+    changeArt(val, cb) {
+        cb.art = val.value
     },
-    selecter(val, det) {
-        det.ez = val.value
+    selecter(val, cb) {
+        cb.ez = val.value
     },
-    delDet(id) {
-        this.detalList = this.detalList.filter(det => det.det.id != id)
+    delCbed(id) {
+        this.cbedList = this.cbedList.filter(cb => cb.cb.id != id)
     },
   },
   async mounted() {
@@ -265,9 +228,9 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-    this.getAllDetals()
-    if(this.$props.listDetal)
-        this.detalList = this.$props.listDetal
+    this.getAllCbed()
+    if(this.$props.listCbed)
+        this.cbedList = this.$props.listCbed
   }
 }
 </script>

@@ -1,9 +1,9 @@
 <template>
   <div class='main_block_content'>
-    <div class="left_content">
-      <h3>Создать сборочную единицу</h3>
-      <div class="block title_block">
+     <h3>Создать изделие</h3>
+    <div class="block title_block">
         <p>
+          <span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'>
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
           <span>Ответственный: </span>
@@ -15,7 +15,8 @@
             </select> 
         </p>
       </div>
-
+    <div class="content_block">
+      <div class="left_content">
         <div class="content_left_block">
           <div class="content_left_block_left">
             <div>
@@ -26,6 +27,20 @@
                   <th>Наименование</th>
                   <th>Ед.</th>
                   <th>Кол-вл</th>
+                </tr>
+                 <tr>
+                  <th colspan="4">Сборочные Единицы (Тип СБ)</th>
+                </tr>
+                <tr v-for='cb in listCbed' :key='cb.cb'>
+                  <td>{{ cb.art }} </td>
+                  <td>{{ cb.cb.name }}</td>
+                  <td> <span v-if="cb.ez == 1"> шт</span> 
+                        <span v-if="cb.ez == 2"> л </span>
+                        <span v-if="cb.ez == 3"> кг</span> 
+                        <span v-if="cb.ez == 4"> м </span>
+                        <span v-if="cb.ez == 5"> м.куб</span>
+                  </td>
+                  <td>{{ cb.kol }}</td>
                 </tr>
                 <tr>
                   <th colspan="4">Детали (Тип Д)</th>
@@ -90,13 +105,55 @@
                 <select class="btn-add select-small" v-model='select_model'>
                     <option value="1">Добавить</option>
                     <option value="2"
+                        @click='select_model = 1; addCbed()'>Сборочную единицу (тип СБ)</option>
+                    <option value="3"
                         @click='select_model = 1; addDetal()'>Деталь (тип Д)</option>
-                    <option value="3" 
-                        @click='select_model = 1; addPokDet()'>Стандартную или покупную деталь (тип ПД)</option>
                     <option value="4" 
+                        @click='select_model = 1; addPokDet()'>Стандартную или покупную деталь (тип ПД)</option>
+                    <option value="5" 
                         @click='select_model = 1; addPokMat()'>Расходный материал (тип РМ)</option>
                 </select>
               </div>
+               <div>
+              <h3>Параметры</h3>
+              <table class="tables_bf">
+                <tr>
+                  <th>Наименование</th> 
+                  <th>ЕИ</th>
+                  <th>Значение</th>
+                </tr>
+                <tr class='tr_haracteristic td-row' 
+                    v-for='(par, inx) in obj.parametrs' 
+                    :key='par'
+                    @click='selectParametrs = {par, inx}'
+                    >
+                  <td>
+                    <input 
+                      type="text" 
+                      :value='par.name' 
+                      class='inputs-small'
+                      @change='e => changeParametrs(e.target.value, "name", inx)'></td>
+                  <td>
+                    <input 
+                      type="text" 
+                      :value='par.ez'
+                      style="width: 50px; text-align:center;"
+                      class='inputs-small small'
+                      @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
+                  <td>
+                    <input 
+                      type="text" 
+                      :value='par.znach'
+                      style="width: 50px; text-align:center;"
+                      class='inputs-small'
+                      @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
+                </tr>
+              </table>
+              <div class="btn-control">
+                <button class="btn-add btn-small" @click='addParametrs'>Добавить</button>
+                <button class="btn-small" @click='removeParametrs'>Удалить</button>
+              </div>
+            </div>
             </div>
           </div>
           <div class="content_left_block_right">
@@ -138,46 +195,6 @@
       </div>
 
     <div class="right_content">
-         <div>
-              <h3>Параметры</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th> 
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr>
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(par, inx) in obj.parametrs' 
-                    :key='par'
-                    @click='selectParametrs = {par, inx}'
-                    >
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.name' 
-                      class='inputs-small'
-                      @change='e => changeParametrs(e.target.value, "name", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.ez'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small small'
-                      @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.znach'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
-                </tr>
-              </table>
-              <div class="btn-control">
-                <button class="btn-add btn-small" @click='addParametrs'>Добавить</button>
-                <button class="btn-small" @click='removeParametrs'>Удалить</button>
-              </div>
-            </div>
           <div>
               <h3>Характеристики</h3>
               <table class="tables_bf">
@@ -220,11 +237,19 @@
             </div>
         <h3 class="link_h3">Принадлежность</h3>
     </div>
+    </div>
     <InformFolder  :title='titleMessage'
         :message = 'message'
         :type = 'type'
         v-if='showInformPanel'
         :key='keyInformTip'
+    />
+    <BaseCbedModal 
+      v-if='showCbed'
+      :key='generateKeyCbed'
+      @responsCbed='responsCbed'
+      :getListCbed='true'
+      :listCbed='listCbed'
     />
   </div>
 </template>
@@ -238,6 +263,7 @@ import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { showMessage } from '@/js/'
 import InformFolder from '@/components/InformFolder.vue'
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue'
+import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue'
 
 export default {
   data() {
@@ -251,8 +277,10 @@ export default {
                 { name: 'Норма времени на сборку', ez: 'ч', znach: '1'}
             ],
             haracteriatic: [
-            { name: 'Масса детали', ez: 'кг', znach: '48'}
+            { name: 'Рекомендуемый остаток', ez: 'шт', znach: '1'},
+            { name: 'Минимальный остаток', ez: 'шт', znach: '1'}
             ],
+            fabricNumber: ''
             
         },
         docFiles: [],
@@ -264,6 +292,7 @@ export default {
         materialList: [],
         listPokDet: [],
         listDetal: [],
+        listCbed: [],
 
         listMaterials: [],
 
@@ -285,13 +314,16 @@ export default {
         select_model: 1,
 
         showBFM: false,
-        generateKeyBFM: random (1, 999)
+        generateKeyBFM: random (1, 999),
+
+        showCbed: false,
+        generateKeyCbed: random(1, 999)
         }
   },
   computed: mapGetters(['getUsers']),
-  components: {AddFile, ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal},
+  components: {AddFile, ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal, BaseCbedModal},
   methods: {
-    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd']),
+    ...mapActions(['createNewProduct', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
       // Проверяем введенные данные 
@@ -308,9 +340,12 @@ export default {
       this.formData.append('description', this.obj.description)
       this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      this.formData.append('fabricNumber', this.obj.fabricNumber)
 
       if(this.listDetal.length)
         this.formData.append('listDetal', JSON.stringify(this.listDetal))
+      if(this.listCbed.length)
+        this.formData.append('listCbed', JSON.stringify(this.listCbed))
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
           this.listPokDet[mat].mat = {
@@ -336,12 +371,11 @@ export default {
 
       showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
 
-      console.log('craete')
-      this.createNewCbEd(this.formData)
+      this.createNewProduct(this.formData)
 
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
-      setTimeout(() =>  this.$router.push('/cbed'), 3000)
+      setTimeout(() =>  this.$router.push('/product'), 3000)
       
     },
     unmount_tech_process(tp) {
@@ -393,6 +427,10 @@ export default {
         this.showBFM = true
         this.generateKeyBFM = random(1, 11999)
     },
+    addCbed() {
+      this.showCbed = true;
+      this.generateKeyCbed = random(1, 999)
+    },
     responsDetal(detal) {
         this.listDetal = detal
     },
@@ -422,7 +460,6 @@ export default {
       if(inst == 'znach')  {
         this.obj.haracteriatic[inx].znach = val
       }
-      console.log(this.obj.haracteriatic)
     },
     changeParametrs(val, inst, inx) {
         if(inst == 'name')  
@@ -432,7 +469,6 @@ export default {
         if(inst == 'znach')  {
             this.obj.parametrs[inx].znach = val
         }
-        console.log(this.obj.parametrs)
     },
     showTechProcess() {
       this.techProcessIsShow = true
@@ -443,6 +479,9 @@ export default {
       this.$router.push("/cbed")
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
+    },
+    responsCbed(res) {
+      this.listCbed = res
     }
   },
   async mounted() {
@@ -454,6 +493,9 @@ export default {
 <style scoped>
 .sle {
   background-color: white;
+}
+.content_block {
+  display: flex;
 }
 .absolute_znach {
   position: absolute;
@@ -511,18 +553,11 @@ export default {
   .left_content {
     width: 1050px;
   }
-  .main_block_content {
-    display: flex;
-  }
   textarea {
     width: 100%;
   }
   .right_content {
     padding: 10px;
-    margin-top: 20px;
-  }
-  .right_content h3 {
-    margin-left: 40px;
   }
   .td_link {
     cursor: pointer;

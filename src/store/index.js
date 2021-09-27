@@ -12,7 +12,8 @@ import detal from './modules/detal'
 import auth from './modules/auth'
 import navigation from './modules/navigation'
 import operation from './modules/operation'
-import cbed from './modules/cbed'
+import cbed from './modules/cbed';
+import product from './modules/product';
 
 export default createStore({
   modules: {
@@ -29,7 +30,8 @@ export default createStore({
     auth,
     navigation,
     operation,
-    cbed
+    cbed,
+    product
   }
 })
   

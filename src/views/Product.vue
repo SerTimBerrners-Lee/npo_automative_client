@@ -1,7 +1,7 @@
 <template>
-    <div>
-        <h3>Изделия</h3>
+    <div class='main_product_block'>
         <div class='block_product'>
+             <h3>Изделия</h3>
              <div class="main_table_control">
                 <div class="scroll-table" >
                 <table class="table-base-detal">
@@ -20,6 +20,15 @@
                                 @unmount='keySearch' 
                             />
                         </td>
+                    </tr>
+                    <tr v-for='product in allProduct' 
+                        :key='product'
+                        class='td-row'
+                        @click='e => setProduct(product, e.target.parentElement)'
+                        >
+                        <td>{{ product.fabricNumber }}</td>
+                        <td>{{ product.articl }}</td>
+                        <td>{{ product.name }}</td>
                     </tr>
                     <tr v-for="item in 40" :key="item">
                         <td></td>
@@ -94,10 +103,10 @@ export default {
             keyWhenModalGenerateFileOpen: random(1, 23123)
         }
     },
-    computed: mapGetters([]),
+    computed: mapGetters(['allProduct']),
     components: {Search, OpensFile},
     methods: {
-        ...mapActions([]),
+        ...mapActions(['getAllProduct']),
         ...mapMutations([]),
         setProduct(product, e) {
             this.selecteProduct = product
@@ -114,7 +123,7 @@ export default {
             // this.$router.push({path: '/detal/edit/false'})
         },
         create() {
-
+            this.$router.push('/createproduct')
         },
         createCopy() {
             if(!this.selecteProduct)
@@ -128,12 +137,18 @@ export default {
         deleteProduct() {
             if(!this.selecteProduct)
                 return 0
-        }
+        },
+        setDocs(dc) {
+            this.itemFiles = dc
+            this.showFile = true
+            this.keyWhenModalGenerateFileOpen = random(1, 23123)
+        },
 
     },
 
 
     async mounted() {
+        this.getAllProduct()
     }
 }
 </script>
@@ -172,6 +187,16 @@ export default {
     }
     .block_product {
         width: 400px;
+    }
+    .right_info_block {
+        width: 400px;
+    }
+    .main_product_block {
+        display: flex;
+    }
+    .right_info_block {
+        margin:10px;
+        margin-top: 70px;
     }
 
 </style>
