@@ -26,6 +26,9 @@ import BaseTools from '@/views/BaseTools.vue';
 import BaseEquipment from '@/views/BaseEquipment.vue';
 import BaseDetals from '@/views/BaseDetals.vue';
 import Sclad from '@/views/Sclad.vue';
+import CbEd from '@/views/CbEd.vue';
+import Product from '@/views/Product.vue';
+
 import AddMaterialBase from '@/components/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
 import AddBaseInstrument from '@/components/instrument/base-instrument-add.vue'
@@ -34,9 +37,25 @@ import AddBaseEquipment from '@/components/equipment/base-equipment-add.vue';
 import EditBaseEquipment from '@/components/equipment/base-equipment-edit.vue';
 import AddDetal from '@/components/basedetal/add-detal.vue'; 
 import EditDetal from '@/components/basedetal/edit-detal.vue'; 
+import CreateCbEd from '@/components/cbed/create-cbed.vue';
 
 
 const routes = [
+  {
+    path: '/cbed/create',
+    name: 'Создать Сборочную Ед.',
+    component: CreateCbEd
+  },
+  {
+    path: '/product',
+    name: 'Продукция НПО Автомотив',
+    component: Product
+  },
+  {
+    path: '/cbed',
+    name: 'Сборочная Еденица',
+    component: CbEd
+  },
   {
     path: '/sclad',
     name: 'Склад',

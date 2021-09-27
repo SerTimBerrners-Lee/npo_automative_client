@@ -5,25 +5,25 @@
            <div :style="hiddens">
                 <h3>Добавление материала</h3>
                 <div class="body_table_instr">
-                        <TableMaterial 
-                            :alltypeM='alltypeM' 
-                            :title='"Тип (Тип профиля заготовки)"' 
-                            :type='"type"' 
-                            @clickMat='clickMat'
-                            @search='searchTypeM'
-                             />
-                        <TableMaterial 
-                            :alltypeM='allPodTypeM' 
-                            :title='"Подтип (Материал заготовки)"' 
-                            :type='"podM"' 
-                            @search='searchPT'
-                            @clickMat='clickMat' />
-                        <TableMaterial 
-                            :alltypeM='getOnePodMaterial' 
-                            :title='"Наименование (Марка / типоразмер)"' 
-                            :type='"podPM"' 
-                            @search='searchM' 
-                            @clickMat='clickMat' />
+                    <TableMaterial 
+                        :alltypeM='alltypeM' 
+                        :title='instanMaterial != 0 && instanMaterial != 1 ? "Тип (Категория)" : "Тип (Тип профиля заготовки)"' 
+                        :type='"type"' 
+                        @clickMat='clickMat'
+                        @search='searchTypeM'
+                            />
+                    <TableMaterial 
+                        :alltypeM='allPodTypeM' 
+                        :title='instanMaterial != 0 && instanMaterial != 1 ? "Подтип (Материал)" : "Подтип (Материал заготовки)"' 
+                        :type='"podM"' 
+                        @search='searchPT'
+                        @clickMat='clickMat' />
+                    <TableMaterial 
+                        :alltypeM='getOnePodMaterial' 
+                        :title='"Наименование (Марка / типоразмер)"' 
+                        :type='"podPM"' 
+                        @search='searchM' 
+                        @clickMat='clickMat' />
                 </div>
                  <div class="btn-control body_table_instr" v-if='!getOneMaterial'>
                     <button class="btn-small btn-add" @click='addMaterialToList'>Выбрать</button>
@@ -112,7 +112,7 @@ export default {
     computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
     components: {TableMaterial},
     methods: {
-         ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
+        ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
         ...mapMutations(['filterMatByPodType', 'filterMatByPodType',
             'addOnePPTyep', 
             'getInstansMaterial', 
@@ -197,7 +197,6 @@ export default {
         },
         selecter(val, mat) {
             mat.ez = val.value
-            console.log(mat)
         },
         searchTypeM(val) {
             this.searchTypeMutation(val)
@@ -234,19 +233,6 @@ export default {
         width: 100px;
         max-width: 97%;
         text-align: center;
-    }
-    .delete_span {
-        font-size: 11px;
-        cursor: pointer;
-        display: flex;
-        justify-content:center;
-        align-items:center;
-        color: rgb(211, 102, 102);
-        border: none;
-        font-weight: bold;
-    }
-    .delete_span:hover{
-        color: rgb(184, 52, 52);
     }
     .body_table_instr {
      width: 1150px;

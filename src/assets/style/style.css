@@ -9,6 +9,19 @@
 .type-issue  {
     user-select: none;   
 }
+.delete_span {
+    font-size: 11px;
+    cursor: pointer;
+    display: flex;
+    justify-content:center;
+    align-items:center;
+    color: rgb(211, 102, 102);
+    border: none;
+    font-weight: bold;
+}
+.delete_span:hover{
+    color: rgb(184, 52, 52);
+}
 
 .edit-save-block {
     border-bottom: 2px solid black;

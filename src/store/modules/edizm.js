@@ -47,9 +47,9 @@ export default {
                 method: 'delete'
             })
             const result = await res.json()
-            console.log(result)
-
             ctx.dispatch('getAllEdizm')
+            return result
+
         },
         async updateEdizm(ctx, ez) {
 

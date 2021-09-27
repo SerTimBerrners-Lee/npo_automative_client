@@ -25,7 +25,6 @@ export default {
     },
     mounted() {
         this.destrouCommponent = true
-        console.log(1)
         this.$props.type == 'w' ?
             this.typeMessage = 'warning-message' :
             this.$props.type == 'e' ?

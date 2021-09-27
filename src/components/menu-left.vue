@@ -1,7 +1,7 @@
 <template>
     <div class="nav-menu">
         <ul class="menu-ul">
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/product')">
                 <img src="@/assets/img/shop.png" alt="" class="icon-li">
                 <span class="text-item">Продукция НПО Автомотив</span>
             </li>
@@ -17,7 +17,7 @@
                 <img src="@/assets/img/img4.png" alt="" class="icon-li">
                 <span class="text-item">Задачи</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/cbed')">
                 <img src="@/assets/img/img5.png" alt="" class="icon-li">
                 <span class="text-item">База сборочных едениц</span>
             </li>

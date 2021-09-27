@@ -83,7 +83,7 @@
                             </table>
                         </div>
                     </div>
-                     <div class="btn-control" v-if='idFile'>
+                     <div class="btn-control">
                             <p>
                                 <button class="btn-small btn-add"
                                         @click='responsDetal'>
@@ -91,22 +91,61 @@
                                 </button>
                             </p>
                     </div>
-                    <div class="btn-control" v-if='!idFile'>
-                        <p>
-                                <button class="btn-small btn-add" @click='$router.push("/detal/add")'>Создать</button>
-                                <button class="btn-small btn-add">Создать копированием</button>
-                                <button class="btn-small" @click='editDetal'>Редактировать</button>
-                        </p>
-                        <p>
-                            <button class="btn-small" @click='deleteDetal'>В архив</button>
-                        </p>
-                    </div>
                     <DetalModal
                         :key='detalModalKey'
                         v-if='detalIsShow'
                     />
+                    <!-- Detal List -->
+                    <div v-if='detalList.length > 0'>
+                    <table>
+                        <tr>
+                            <th>Артикул</th>
+                            <th>Выбранное</th>
+                            <th>ЕИ</th>
+                            <th>Количество</th>
+                            <th>Действие</th>
+                        </tr>
+                        <tr v-for='det of detalList' :key='det'>
+                            <td class='td_kolvo'>
+                                <input 
+                                    class='inputs-small' 
+                                    type='text' 
+                                    :value='det.art'
+                                    @change='e => changeArt(e.target, det)'
+                                >
+                            </td>
+                            <td>{{ det.det.name }}</td>
+                            <td>
+                               <select  class='select-small' 
+                                        @change='e => selecter(e.target, det)' 
+                                        v-model='det.ez'>
+                                    <option value='1' v-if="det.ez == 1 || det.ez"> шт</option> 
+                                    <option value='2' v-if="det.ez == 2 || det.ez"> л </option>
+                                    <option value='3' v-if="det.ez == 3 || det.ez"> кг</option> 
+                                    <option value='4' v-if="det.ez == 4 || det.ez"> м </option>
+                                    <option value='5' v-if="det.ez == 5 || det.ez"> м.куб</option> 
+                                </select>   
+                            </td>
+                            <td class='td_kolvo' >
+                                <input class='inputs-small' 
+                                    type='text' 
+                                    :value='det.kol'
+                                    @change='e => changeArt(e.target, det)'
+                                    >
+                            </td>
+                            <td class='delete_span' @click='delDet(det.det.id)'>удалить</td>
+                        </tr>
+                    </table>
                 </div>
-                   
+                </div>
+
+                   <div class="btn-control out-btn-control">
+                    <button class="btn-status btn-black" 
+                            style="height: 0px;" 
+                            @click='returnDetalList' 
+                            v-if='detalList'>
+                            Добавить выбранное</button>
+                </div>
                
            </div>
         </div>
@@ -122,7 +161,7 @@ import Search from '@/components/search.vue'
 
 export default {
 
-  props: ['techProcessID', 'idFile'],
+  props: ['techProcessID', 'idFile', 'getListDetal'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -132,7 +171,9 @@ export default {
         selectedDetal: null,
         tr: null,
         detalModalKey: random(1, 123e2),
-        detalIsShow: false
+        detalIsShow: false,
+
+        detalList: []
     }
   },
   computed: mapGetters(['allDetal']),
@@ -154,7 +195,7 @@ export default {
         this.tr.classList.add('td-row-all')
         this.addOneSelectDetal(this.selectedDetal)
 
-        this.detalModalKey = random(1, 34e5)
+        this.detalModalKey = random(1, 999)
         this.detalIsShow = true
     },
     editDetal() {
@@ -177,9 +218,47 @@ export default {
     responsDetal() {
         if(!this.selectedDetal)
             return 0
+        
+        if(this.$props.getListDetal) {
+            let add = true
+            if(this.detalList.length > 0) {
+                for(let det of this.detalList) {
+                    if(det.det.id == this.selectedDetal.id)
+                        add = false
+                }
+            }
+            if(add) {
+                this.detalList.push({ 
+                    art: '',
+                    det: {
+                        name: this.selectedDetal.name,
+                        id: this.selectedDetal.id
+                    },
+                    kol: 1,
+                    ez: 1
+                });
+            }
+            return 0
+        }
         this.$emit("responsDetal", this.selectedDetal)
         this.destroyModalF()
-    }
+    },
+    returnDetalList() {
+        this.$emit("responsDetal", this.detalList)
+        this.destroyModalF()
+    },
+    changeKolvo(val, det) {
+        det.kol = val.value
+    },
+    changeArt(val, det) {
+        det.art = val.value
+    },
+    selecter(val, det) {
+        det.ez = val.value
+    },
+    delDet(id) {
+        this.detalList = this.detalList.filter(det => det.det.id != id)
+    },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -192,6 +271,12 @@ export default {
 </script>
 
 <style scoped>
+    .delete_span {
+        padding-top: 2px;
+    }
+    .out-btn-control {
+        margin-top: 20px;
+    }
     .table-base-detal {
         float: left;
         width: 400px;
