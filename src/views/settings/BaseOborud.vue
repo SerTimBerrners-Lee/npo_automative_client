@@ -1,6 +1,6 @@
 <template>
     <div class="main-dive">
-        <h3>База Оборудования (типы и подтипы)</h3>
+        <h3>8. База Оборудования (типы и подтипы)</h3>
         <div class="cont">
             <TableMaterial :title='"Тип"' 
                 :alltypeM="allEquipmentType" 

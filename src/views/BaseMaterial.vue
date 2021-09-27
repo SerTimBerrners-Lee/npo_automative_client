@@ -19,7 +19,7 @@
                             @clickMat='clickMat' />
                         <TableMaterial 
                             :alltypeM='allPodTypeM' 
-                            :title='instansLet != 0 && instansLet != 1 ? "Тип (Материал)" : "Тип (Тип профиля заготовки)"' 
+                            :title='instansLet != 0 && instansLet != 1 ? "Подтип (Материал)" : "Подтип (Материал заготовки)"' 
                             :type='"podM"' 
                             @search='searchPT'
                             @clickMat='clickMat' />

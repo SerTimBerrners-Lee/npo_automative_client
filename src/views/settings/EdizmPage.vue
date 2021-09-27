@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Единицы измерения</h3>
+        <h3>2. Единицы измерения</h3>
         <div class="cont">
             <table class="edizm-table" style="width: 400px">
                 <tr>

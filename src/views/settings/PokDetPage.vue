@@ -1,8 +1,8 @@
 <template>
     <div class="main-dive">
-        <h3>Покупные Материалы (типы и подтипы)</h3>
+        <h3>4. Покупные Детали (типы и подтипы)</h3>
         <div class="cont">
-            <TableMaterial :title='"Тип (Тип профиля заготовки)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
+            <TableMaterial :title='"Тип (Тип категория)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
             <div class="btn-control">
                 <button class="btn-add btn-small" @click='createEditMat("TYPE")'>Создать</button>
                 <button class="btn-small"  @click='createEditMat("TYPE", "edit")'>Редактировать</button>
@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="cont">
-            <TableMaterial :title='"Подтип (Материал заготовки)"' :alltypeM="allPodTypeM" :type="'podT'" @clickMat="clickMat"/>
+            <TableMaterial :title='"Подтип (Материл)"' :alltypeM="allPodTypeM" :type="'podT'" @clickMat="clickMat"/>
             <div class="btn-control">
                 <button class="btn-add btn-small" @click='createEditMat("PODTYPE")'>Создать</button>
                 <button class="btn-small" @click="createEditMat('PODTYPE', 'edit')">Редактировать</button>

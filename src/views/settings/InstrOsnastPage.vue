@@ -1,6 +1,6 @@
 <template>
     <div class="main-dive">
-        <h3>База инструмента и оснастки (типы и подтипы)</h3>
+        <h3>7. База инструмента и оснастки (типы и подтипы)</h3>
         <div class="cont">
             <TableMaterial :title='"Тип (инструмента или оснастки)"' 
                 :alltypeM="allTInstrument" 

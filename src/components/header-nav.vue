@@ -21,8 +21,8 @@
                     </span>
                     <span class="role"> 
                         {{ 
-                            getAuth && getAuth.roles.length ? 
-                                getAuth.roles[0].description : ''
+                            getAuth && getAuth.role ? 
+                                getAuth.role.description : ''
                         }}
                     </span>
                 </p>

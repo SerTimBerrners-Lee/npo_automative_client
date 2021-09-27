@@ -180,7 +180,7 @@ export default ({
 
             itemFiles: null,
             showFile: false,
-            keyWhenModalGenerateFileOpen: random(10, 323e8),
+            keyWhenModalGenerateFileOpen: random(10, 999),
         }
     },
     computed: {
@@ -304,7 +304,7 @@ export default ({
             this.object.email = this.getSelectedUser.email
             this.object.initial = this.getSelectedUser.initial
             this.object.tabel = this.getSelectedUser.tabel
-            this.object.roles = this.getSelectedUser.roles[0].id
+            this.object.roles = this.getSelectedUser.role.id
             this.object.dateWork = this.getSelectedUser.dateWork
             this.object.dateUnWork = this.getSelectedUser.dateUnWork
             this.object.login = this.getSelectedUser.login

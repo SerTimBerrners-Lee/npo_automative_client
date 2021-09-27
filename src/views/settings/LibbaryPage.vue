@@ -1,6 +1,6 @@
 <template>
     <div>
-        <h3>Разделы библиотеки</h3>
+        <h3>14. Разделы библиотеки</h3>
         <img style='position: fixed ;
                 z-index: 12;
                 width: 700px;

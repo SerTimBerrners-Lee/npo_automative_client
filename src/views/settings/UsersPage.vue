@@ -1,7 +1,7 @@
 <template>
     <div>
         <div class="table-content">
-        <h3 class="h3-title">Сотрудники</h3>
+        <h3 class="h3-title">1. Сотрудники</h3>
         <div class="type-issue">
             <span @click="knowGet = !knowGet" 
                     v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
@@ -197,7 +197,7 @@ export default {
         ...mapMutations(['selectedUser']),
         userShow(user, e = null) {
             if(user) {
-                this.roles = !isEmpty(user.roles[0]) ? user.roles[0].description : '' 
+                this.roles = !isEmpty(user.role) ? user.role.description : '' 
                 this.initial = user.initial
                 this.tabel = user.tabel
                 this.adress = user.adress
