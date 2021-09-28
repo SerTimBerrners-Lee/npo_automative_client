@@ -43,6 +43,7 @@ import CreateProduct from '@/components/baseproduct/create-product.vue';
 import EditProduct from '@/components/baseproduct/edit-product.vue';
 import CreateBuyer from '@/components/basebuyer/add-buyer.vue';
 import EditBuyer from '@/components/basebuyer/edit-buyer.vue';
+import NotFound from '@/components/not-found.vue'
 
 const routes = [
   {
@@ -272,6 +273,11 @@ const routes = [
     path: '/savebasedata',
     name: 'База Данных',
     component: SaveBaseData
+  },
+  { 
+    path: "/:catchAll(.*)", 
+    name: 'Страница не найдена', 
+    component: NotFound, 
   }
 ]
 
