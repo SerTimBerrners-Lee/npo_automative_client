@@ -1,21 +1,23 @@
 <template>
   <div class='main_block_content'>
-    <div class="left_content">
-      <h3>Создать сборочную единицу</h3>
-      <div class="block title_block">
+     <h3>Редактировать изделие</h3>
+    <div class="block title_block">
         <p>
+          <span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'>
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
           <span>Ответственный: </span>
             <select class="select-small sle"  
                     v-model='obj.responsible'>
-              <option v-for='user in getUsers' 
-                      :key='user' 
-                      :value='user.id'>{{ user.login }}</option>
+              <option 
+                    v-for='user in getUsers' 
+                    :key='user' 
+                    :value='user.id'>{{ user.login }}</option>
             </select> 
         </p>
       </div>
-
+    <div class="content_block">
+      <div class="left_content">
         <div class="content_left_block">
           <div class="content_left_block_left">
             <div>
@@ -27,7 +29,7 @@
                   <th>Ед.</th>
                   <th>Кол-вл</th>
                 </tr>
-                <tr>
+                 <tr>
                   <th colspan="4">Сборочные Единицы (Тип СБ)</th>
                 </tr>
                 <tr v-for='cb in listCbed' :key='cb.cb'>
@@ -91,13 +93,13 @@
                 @unmount_material='unmount_material'
                 :instanMaterial='instanMaterial'
                 :getOneMaterial='false'
-                :allMaterial='listMaterials'
+                :allMaterial='listMaterials' 
               /> 
               <BaseDetalModal 
                 v-if='showBFM'
                 :key='generateKeyBFM'
                 @responsDetal='responsDetal'
-                :getListDetal='true' 
+                :getListDetal='true'
                 :listDetal='listDetal'
                 />
               <div class="btn-control">
@@ -113,50 +115,9 @@
                         @click='select_model = 1; addPokMat()'>Расходный материал (тип РМ)</option>
                 </select>
               </div>
-            </div>
-          </div>
-          <div class="content_left_block_right">
-            <div>
-              <h3>Описание / Примечание</h3>
-              <textarea class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
-            </div>
-            <div>
-            <h3>Документы</h3>
-            <div class="pointer-files-to-add">
-                <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-            </div>
-            <AddFile :parametrs='docFiles' 
-                    :typeGetFile='"getfile"'
-                    v-if="isChangeFolderFile" 
-                    @unmount='file_unmount'
-                    :key='keyWhenModalGenerate'
-                />
-            </div>
-            <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
-            <TechProcess 
-              v-if='techProcessIsShow'
-              :key='techProcessKey'
-              @unmount='unmount_tech_process'
-              :techProcessID='techProcessID'
-            />
-            <h3 class="link_h3">Себестоимость</h3>
-            <h3 class="link_h3">История изменений</h3>
-          </div>
-        </div>
-        <div class="btn-control out-btn-control control-save" >
-          <button class="btn-status"
-                  @click='exit'
-                  >Отменить</button>
-          <button class="btn-status btn-black" 
-            style="height: 0px;" @click='saveDetal'>Сохранить</button>
-          </div>
-      </div>
-
-    <div class="right_content">
-         <div>
+               <div>
               <h3>Параметры</h3>
-              <table class="tables_bf">
+              <table class="tables_bf"> 
                 <tr>
                   <th>Наименование</th> 
                   <th>ЕИ</th>
@@ -194,6 +155,73 @@
                 <button class="btn-small" @click='removeParametrs'>Удалить</button>
               </div>
             </div>
+            </div>
+          </div>
+          <div class="content_left_block_right">
+            <div>
+              <h3>Описание / Примечание</h3>
+              <textarea class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
+            </div>
+            <div>
+                <table style='width: 100%;'>
+                <tr>
+                    <th >Файл</th>
+                </tr>
+                <tr 
+                    v-for='doc in  documentsData' 
+                    :key='doc'
+                    class='td-row'
+                    @click='setDocs(doc)'
+                    >
+                    <td>{{ doc.name }}</td>
+                </tr>
+            </table>
+            </div>
+            <div>
+            <h3>Документы</h3>
+            <div class="pointer-files-to-add">
+                <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
+                <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+            </div>
+            <AddFile :parametrs='docFiles' 
+                    :typeGetFile='"getfile"'
+                    v-if="isChangeFolderFile" 
+                    @unmount='file_unmount'
+                    :key='keyWhenModalGenerate'
+                />
+            </div>
+            <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
+            <TechProcess 
+              v-if='techProcessIsShow'
+              :key='techProcessKey'
+              @unmount='unmount_tech_process'
+              :techProcessID='techProcessID'
+            />
+            <h3 class="link_h3">Себестоимость</h3>
+            <h3 class="link_h3">История изменений</h3>
+          </div>
+        </div>
+        <div class="btn-control out-btn-control control-save" >
+          <button class="btn-status"
+                  @click='exit'
+                  >Отменить</button>
+          <button class="btn-status btn-black" 
+            style="height: 0px;" @click='saveDetal'>Сохранить</button>
+          </div>
+      </div>
+
+    <div class="right_content">
+      <div v-if='dataMedia'>
+           <h3>Медиа файлы</h3>
+            <MediaSlider 
+                v-if='dataMedia' 
+                :static='true' 
+                :data='dataMedia' 
+                :key='randomDataMedia'
+                :width='"width: 30%;"'
+                :width_main='"width: 97%;"'
+                />
+       </div>
           <div>
               <h3>Характеристики</h3>
               <table class="tables_bf">
@@ -201,7 +229,7 @@
                   <th>Наименование</th> 
                   <th>ЕИ</th>
                   <th>Значение</th>
-                </tr>
+                </tr> 
                 <tr class='tr_haracteristic td-row' 
                     v-for='(har, inx) in obj.haracteriatic' 
                     :key='har'
@@ -236,18 +264,24 @@
             </div>
         <h3 class="link_h3">Принадлежность</h3>
     </div>
+    </div>
     <InformFolder  :title='titleMessage'
         :message = 'message'
         :type = 'type'
         v-if='showInformPanel'
         :key='keyInformTip'
     />
-     <BaseCbedModal 
+    <BaseCbedModal 
       v-if='showCbed'
       :key='generateKeyCbed'
       @responsCbed='responsCbed'
       :getListCbed='true'
       :listCbed='listCbed'
+    />
+    <OpensFile 
+        :parametrs='itemFiles' 
+        v-if="showFile" 
+        :key='keyWhenModalGenerateFileOpen'
     />
   </div>
 </template>
@@ -256,13 +290,15 @@
 import AddFile from '@/components/filebase/addfile.vue'
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
 import TechProcess from '@/components/basedetal/tech-process-modal.vue'
-import { random } from 'lodash'
+import { random, isEmpty } from 'lodash'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { showMessage } from '@/js/'
 import InformFolder from '@/components/InformFolder.vue'
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue'
-import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue'
-
+import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
+import PATH_TO_SERVER from '@/js/path';
+import MediaSlider from '@/components/filebase/media-slider.vue'
+import OpensFile from '@/components/filebase/openfile.vue'
 
 export default {
   data() {
@@ -276,8 +312,10 @@ export default {
                 { name: 'Норма времени на сборку', ez: 'ч', znach: '1'}
             ],
             haracteriatic: [
-            { name: 'Масса детали', ez: 'кг', znach: '48'}
+            { name: 'Рекомендуемый остаток', ez: 'шт', znach: '1'},
+            { name: 'Минимальный остаток', ez: 'шт', znach: '1'}
             ],
+            fabricNumber: ''
             
         },
         docFiles: [],
@@ -314,18 +352,29 @@ export default {
         generateKeyBFM: random (1, 999),
 
         showCbed: false,
-        generateKeyCbed: random(1, 999)
+        generateKeyCbed: random(1, 999),
+
+        id: null,
+        documentsData: [],
+        dataMedia: [],
+        randomDataMedia: random(10, 24^4),
+
+        showFile: false,
+        keyWhenModalGenerateFileOpen: random(10, 999),
         }
   },
-  computed: mapGetters(['getUsers']),
-  components: {AddFile, 
+  computed: mapGetters(['getUsers', 'getOneSelectProduct']),
+  components: {
+      AddFile, 
       ModalBaseMaterial, 
       TechProcess, 
       InformFolder, 
       BaseDetalModal, 
-      BaseCbedModal},
+      BaseCbedModal,
+      MediaSlider,
+      OpensFile,},
   methods: {
-    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd']),
+    ...mapActions(['createNewProduct', 'getAllUsers', 'updateProduct']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
       // Проверяем введенные данные 
@@ -342,12 +391,12 @@ export default {
       this.formData.append('description', this.obj.description)
       this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      this.formData.append('fabricNumber', this.obj.fabricNumber)
 
       if(this.listDetal.length)
         this.formData.append('listDetal', JSON.stringify(this.listDetal))
       if(this.listCbed.length)
         this.formData.append('listCbed', JSON.stringify(this.listCbed))
-
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
           this.listPokDet[mat].mat = {
@@ -371,21 +420,24 @@ export default {
           }
       }
 
-      showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
-
-      console.log('craete')
-      this.createNewCbEd(this.formData)
+      if(this.$route.params.copy == 'false')  { 
+        this.formData.append('id', this.id)
+        showMessage('', 'Изделие усешно обновлена. Перенаправление на главную страницу...', 's', this)
+        this.updateProduct(this.formData)
+      } else {
+        showMessage('', 'Изделие усешно создано. Перенаправление на главную страницу...', 's', this)
+        this.createNewProduct(this.formData)
+      }
 
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
-      setTimeout(() =>  this.$router.push('/cbed'), 3000)
+      setTimeout(() =>  this.$router.push('/product'), 3000)
       
     },
     unmount_tech_process(tp) {
       if(tp.id) {
         this.techProcessID = tp.id
         localStorage.setItem('tpID', this.techProcessID)
-
       }
     },
     addDock(val) {
@@ -428,9 +480,6 @@ export default {
       this.showCbed = true;
       this.generateKeyCbed = random(1, 999)
     },
-    responsCbed(res) {
-      this.listCbed = res
-    },
     responsDetal(detal) {
         this.listDetal = detal
     },
@@ -460,7 +509,6 @@ export default {
       if(inst == 'znach')  {
         this.obj.haracteriatic[inx].znach = val
       }
-      console.log(this.obj.haracteriatic)
     },
     changeParametrs(val, inst, inx) {
         if(inst == 'name')  
@@ -470,7 +518,6 @@ export default {
         if(inst == 'znach')  {
             this.obj.parametrs[inx].znach = val
         }
-        console.log(this.obj.parametrs)
     },
     showTechProcess() {
       this.techProcessIsShow = true
@@ -478,20 +525,63 @@ export default {
     },
 
     exit(){
-      this.$router.push("/cbed")
+      this.$router.push("/product")
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
-    }
+    },
+    responsCbed(res) {
+      this.listCbed = res 
+    },
+    setDocs(dc) {
+        this.itemFiles = dc
+        this.showFile = true
+        this.keyWhenModalGenerateFileOpen = random(10, 1111);
+    },
+    updateForEdit() {
+        this.obj.name = this.getOneSelectProduct.name
+        this.obj.articl = this.getOneSelectProduct.articl
+        this.obj.responsible = this.getOneSelectProduct.user ? this.getOneSelectProduct.user.id :  null
+        this.obj.description = this.getOneSelectProduct.description
+        this.obj.parametrs = JSON.parse(this.getOneSelectProduct.parametrs)
+        this.obj.haracteriatic = JSON.parse(this.getOneSelectProduct.haracteriatic)
+        this.materialList = this.getOneSelectProduct.materialList ? JSON.parse(this.getOneSelectProduct.materialList) : []
+        this.listPokDet = this.getOneSelectProduct.listPokDet ? JSON.parse(this.getOneSelectProduct.listPokDet) : []
+        this.listDetal = this.getOneSelectProduct.listDetal ? JSON.parse(this.getOneSelectProduct.listDetal) : []
+        this.listCbed = this.getOneSelectProduct.listCbed ? JSON.parse(this.getOneSelectProduct.listCbed) : []
+        this.obj.fabricNumber = this.getOneSelectProduct.fabricNumber
+
+        if(this.$route.params.copy == 'false')  {
+            this.documentsData = this.getOneSelectProduct.documents
+            this.getOneSelectProduct.documents.forEach((d) => {
+                this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+            })
+            this.randomDataMedia = random(10, 38100) 
+
+            this.techProcessID =  !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses[0].id : null
+            localStorage.setItem('tpID', this.techProcessID)
+
+            this.id = this.getOneSelectProduct.id
+        }
+    },
   },
   async mounted() {
+    if(isEmpty(this.getOneSelectProduct)) {
+      this.$router.push('/product')
+      return 
+    } 
+
     this.getAllUsers()
-  } 
+    this.updateForEdit()
+  }
 }
 </script>
 
 <style scoped>
 .sle {
   background-color: white;
+}
+.content_block {
+  display: flex;
 }
 .absolute_znach {
   position: absolute;
@@ -549,18 +639,11 @@ export default {
   .left_content {
     width: 1050px;
   }
-  .main_block_content {
-    display: flex;
-  }
   textarea {
     width: 100%;
   }
   .right_content {
     padding: 10px;
-    margin-top: 20px;
-  }
-  .right_content h3 {
-    margin-left: 40px;
   }
   .td_link {
     cursor: pointer;

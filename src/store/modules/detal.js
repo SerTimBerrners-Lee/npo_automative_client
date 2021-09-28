@@ -4,6 +4,7 @@ export default {
     state: {
         detal: [],
         filterDetal: [],
+        middleware_detals: [],
         select_detal: {},
         operationNewList: localStorage.getItem('newOperationItem') ?
             JSON.parse(localStorage.getItem('newOperationItem')) : [],
@@ -192,6 +193,25 @@ export default {
             state.detal = state.detal.filter(detal => detal.id != id)
             if(state.filterDetal.length) 
                 state.filterDetal = state.filterDetal.filter(detal => detal.id)
+        },
+
+        getAllDetalByProduct(state, product) {
+            if(!state.middleware_detals.length)
+                state.middleware_detals = state.detal
+
+            state.detal = state.middleware_detals
+ 
+            let newDetals = []
+            for(let det of state.detal){
+                for(let prod of product.detals) {
+                    if(prod.id == det.id)
+                        newDetals.push(det)
+                }
+            }
+            state.detal = newDetals
+        },
+        clearFilterDetalByProduct(state) {
+            state.detal = state.middleware_detals
         }
     }
 }

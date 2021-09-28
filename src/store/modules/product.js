@@ -36,51 +36,51 @@ export default {
                 ctx.commit('addAllProduct', result)
                 return result
             }
-        }
+        },
 
-        // async deleteDetelyId(ctx, id) {
-        //     if(!ctx.getters.getAuth)
-        //         return 0
+        async updateProduct(ctx, data) {
+            if(!ctx.getters.getAuth)
+                return 0
 
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`, {
-        //         headers: new Headers({
-        //             'Authorization': ctx.getters.getAuth.id
-        //         }),
-        //         method :  'delete'
-        //     })
-        //     if(res.ok) {
-        //         ctx.commit('deleteDetalById', id)
-        //     }
-        // },
-        // async fetchUpdateDetal(ctx, data) {
-        //     if(!ctx.getters.getAuth)
-        //         return 0
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal/update`, {
-        //         headers: new Headers({
-        //             'Authorization': ctx.getters.getAuth.id
-        //         }), 
-        //         method :  'post',
-        //         body   :  data
-        //     })
-        //     return res
-        // },
-        // async getAllDetals(ctx) {
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal`)
-        //     const result = await res.json()
-        //     ctx.commit('setDetalMutation', result)
-        // },
-        // async getOneDetal(ctx, id)  {
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`)
-        //     const result = await res.json()
-        //     ctx.commit('addOneSelectDetal', result)
-        //     return result
-        // },
+            const res = await fetch(`${PATH_TO_SERVER}api/product/update`, {
+                method :  'post',
+                body   :  data
+            })
+            if(res.ok) {
+                const result = await res.json()
+                return result
+            }
+        },
 
+        async fetchDeleteProduct(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/product/${id}`, {method : 'delete'})
+            if(res.ok) {
+                const result = await res.json()
+                ctx.commit('deleteProductById', id)
+                return result
+            }
+        },
     },
     mutations: {
         addAllProduct(state, products) {
-            console.log(products)
             state.product = products.filter(prod => !prod.ban)
-        }
+        },
+        setOneProduct(state, product) {
+            state.select_product = product
+        },
+        deleteProductById(state, id) {
+            state.product = state.product.filter(prod => prod.id != id)
+        },
+        searchProduct(state, str) {
+            if(!state.filterProduct.length)
+                state.filterProduct = state.product
+            
+
+                state.product = state.filterProduct
+
+            state.product = state.product.filter(prod => 
+                prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase()
+            )
+        },
     }
 }

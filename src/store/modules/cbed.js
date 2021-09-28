@@ -3,6 +3,7 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
     state: {
         cbed: [],
+        middleware_state: [],
         filterCbed: [],
         select_cbed: {},
     },
@@ -36,50 +37,74 @@ export default {
                 ctx.commit('addAllCbed', result)
                 return result
             }
+        },
+
+        async updateCbed(ctx, data) {
+            if(!ctx.getters.getAuth)
+                return 0
+
+            const res = await fetch(`${PATH_TO_SERVER}api/cbed/update`, {
+                method :  'post',
+                body   :  data
+            })
+            if(res.ok) {
+                const result = await res.json()
+                console.log(result)
+                return result
+            }
+        },
+
+        async deleteCbedById(ctx, id) {
+            if(!ctx.getters.getAuth)
+                return 0
+
+            const res = await fetch(`${PATH_TO_SERVER}api/cbed/${id}`, {
+                method :  'delete'
+            })
+            if(res.ok) {
+                ctx.commit('deleteCbedByIdMutation', id)
+            }
         }
-
-        // async deleteDetelyId(ctx, id) {
-        //     if(!ctx.getters.getAuth)
-        //         return 0
-
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`, {
-        //         headers: new Headers({
-        //             'Authorization': ctx.getters.getAuth.id
-        //         }),
-        //         method :  'delete'
-        //     })
-        //     if(res.ok) {
-        //         ctx.commit('deleteDetalById', id)
-        //     }
-        // },
-        // async fetchUpdateDetal(ctx, data) {
-        //     if(!ctx.getters.getAuth)
-        //         return 0
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal/update`, {
-        //         headers: new Headers({
-        //             'Authorization': ctx.getters.getAuth.id
-        //         }), 
-        //         method :  'post',
-        //         body   :  data
-        //     })
-        //     return res
-        // },
-        // async getAllDetals(ctx) {
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal`)
-        //     const result = await res.json()
-        //     ctx.commit('setDetalMutation', result)
-        // },
-        // async getOneDetal(ctx, id)  {
-        //     const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`)
-        //     const result = await res.json()
-        //     ctx.commit('addOneSelectDetal', result)
-        //     return result
-        // },
 
     },
     mutations: {
         addAllCbed(state, cbed) {
             state.cbed = cbed.filter(cb => !cb.ban)
+        },
+        setOneCbed(state, cbed) {
+            state.select_cbed = cbed
+        },
+        deleteCbedByIdMutation(state, id) {
+            state.cbed = state.cbed.filter(cb => cb.id != id)
+        },
+        searchCbed(state, str) {
+            if(!state.filterCbed.length)
+                state.filterCbed = state.cbed
+            
+
+                state.cbed = state.filterCbed
+
+            state.cbed = state.cbed.filter(prod => 
+                prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase()
+            )
+        },
+        getAllCbEdByProduct(state, product) {
+            if(!state.middleware_state.length)
+                state.middleware_state = state.cbed
+
+            state.cbed = state.middleware_state
+ 
+            let newCB = []
+            for(let cb of state.cbed){
+                for(let prod of product.cbeds) {
+                    if(prod.id == cb.id)
+                        newCB.push(cb)
+                }
+            }
+            state.cbed = newCB
+        },
+        clearFilterCbedByProduct(state) {
+            state.cbed = state.middleware_state
         }
     }
 }

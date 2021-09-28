@@ -3,51 +3,82 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
         <div :class='destroyModalRight'>
            <div :style="hiddens">
-              
-               
                 <div>
                     <h3>База деталей</h3>
                     <div class="main_table_control">
-                        <div class="scroll-table" >
-                        <table class="table-base-detal">
-                            <tr>
-                                <th colspan="3" scope="col">Изделие</th>
-                            </tr>
-                            <tr>
-                                <th>Заводской номер</th>
-                                <th>Артикул</th>
-                                <th>Наименование</th>
-                            </tr>
-                            <tr >
-                                <td class="tb-title" colspan="3" scope="col"> Без назначенного изделия </td>
-                            </tr> 
-                            <tr v-for="item in 40" :key="item">
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            </tr>
-                        </table>
-                        </div>
-                        <div class="scroll-table" >
-                            <table class="table-base-detal">
-                                <tr>
-                                    <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
-                                </tr>
-                                <tr>
-                                    <th>Артикул</th>
-                                    <th>Наименование</th>
-                                    <th>Кол-во СБ на Изделие</th>
-                                </tr>
-                                <tr>
-                                    <td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
-                                </tr>
-                                <tr v-for="item in 42" :key="item">
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </table>
-                        </div>
+                       <div class="scroll-table" >
+            <table class="table-base-detal">
+                    <tr>
+                        <th colspan="3" scope="col">Изделие</th>
+                    </tr>
+                    <tr>
+                        <th>Заводской номер</th>
+                        <th>Артикул</th>
+                        <th>Наименование</th>
+                    </tr>
+                    <tr >
+                        <td class="tb-title" colspan="3" scope="col"> Без назначенного изделия </td>
+                    </tr> 
+                    <tr>
+                        <td colspan="3">
+                            <Search 
+                                :placeholder="'Поиск по Артиклу'"
+                                @unmount='keySearchProduct' 
+                            />
+                        </td>
+                    </tr>
+                    <tr v-for='product in allProduct' 
+                        :key='product'
+                        class='td-row'
+                        @click='e => setProduct(product, e.target.parentElement)'
+                        >
+                        <td>{{ product.fabricNumber }}</td>
+                        <td>{{ product.articl }}</td>
+                        <td>{{ product.name }}</td>
+                    </tr>
+                    <tr v-for="item in 40" :key="item">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="scroll-table" >
+                <table class="table-base-detal">
+                    <tr>
+                        <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
+                    </tr>
+                    <tr>
+                        <th>Артикул</th>
+                        <th>Наименование</th>
+                        <th>Кол-во СБ на Изделие</th>
+                    </tr>
+                        <tr>
+                            <td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
+                        </tr>
+                    <tr>
+                        <td colspan="3">
+                            <Search 
+                                :placeholder="'Поиск по Артиклу'"
+                                @unmount='keySearchCb' 
+                            />
+                        </td>
+                    </tr>
+                        <tr v-for='cb in allCbed' 
+                        :key='cb'
+                        class='td-row'
+                        @click='e => setCbed(cb, e.target.parentElement)'>
+                        <td>{{ cb.articl }}</td>
+                        <td>{{ cb.name }}</td>
+                        <td></td>
+                    </tr>
+                    <tr v-for="item in 42" :key="item">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
                         <div class="scroll-table" >
                             <table class="table-base-detal">
                                 <tr>
@@ -167,6 +198,11 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
+
+        selectedCbEd: null,
+        selecteProduct: null,
+        tr_cb: null,
+        tr_product: null,
       
         selectedDetal: null,
         tr: null,
@@ -176,7 +212,7 @@ export default {
         detalList: []
     }
   },
-  computed: mapGetters(['allDetal']),
+  computed: mapGetters(['allDetal',  'allCbed', 'allProduct']),
   components: {DetalModal, Search},
   methods: {
     destroyModalF() {
@@ -184,8 +220,20 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['getAllDetals', 'deleteDetelyId']),
-    ...mapMutations(['addOneSelectDetal', 'filterDetalToArticle']),
+    ...mapActions(['getAllDetals', 
+        'deleteDetelyId',
+        'getAllProduct', 
+        'getAllCbed']),
+    ...mapMutations([
+        'addOneSelectDetal', 
+        'filterDetalToArticle',
+        'searchCbed',
+        'searchProduct',
+        'clearFilterDetalByProduct',
+        'getAllDetalByProduct',
+        'clearFilterCbedByProduct',
+        'getAllCbEdByProduct',
+        ]),
     setDetals(detal, e) {
         this.selectedDetal = detal
             if(this.tr) 
@@ -198,6 +246,41 @@ export default {
         this.detalModalKey = random(1, 999)
         this.detalIsShow = true
     },
+     setCbed(cbEd, e) {
+        if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {
+            this.clearFilterDetalByProduct()
+            e.classList.remove('td-row-all')
+            this.selectedCbEd = null
+            return
+        }
+        this.selectedCbEd = cbEd
+            if(this.tr_cb) 
+            this.tr_cb.classList.remove('td-row-all')
+
+            this.getAllDetalByProduct(cbEd)
+    
+        this.tr_cb = e
+        this.tr_cb.classList.add('td-row-all')
+    },
+    setProduct(product, e) {
+        if(this.selecteProduct && this.selecteProduct.id == product.id) {
+            this.clearFilterCbedByProduct()
+            this.clearFilterDetalByProduct()
+            e.classList.remove('td-row-all')
+            this.selecteProduct = null
+            return
+        }
+
+        this.selecteProduct = product
+            if(this.tr_product) 
+            this.tr_product.classList.remove('td-row-all')
+    
+        this.getAllCbEdByProduct(product)
+        this.getAllDetalByProduct(product)
+
+        this.tr_product = e
+        this.tr_product.classList.add('td-row-all')
+    },
     editDetal() {
         if(!this.selectedDetal)
             return 0
@@ -205,10 +288,13 @@ export default {
         this.$router.push("/detal/edit")
     },
     keySearch(v) {
-        setTimeout(() => {
-            this.filterDetalToArticle(v)
-        }, 
-        500)
+        this.filterDetalToArticle(v)
+    },
+    keySearchCb(v) {
+        this.searchCbed(v)
+    },
+    keySearchProduct(v) {
+        this.searchProduct(v)
     },
     deleteDetal() {
         if(!this.selectedDetal)
@@ -264,7 +350,9 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-
+    
+    this.getAllProduct()
+    this.getAllCbed()
     this.getAllDetals()
     if(this.$props.listDetal)
         this.detalList = this.$props.listDetal

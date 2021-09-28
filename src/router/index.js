@@ -38,10 +38,33 @@ import EditBaseEquipment from '@/components/equipment/base-equipment-edit.vue';
 import AddDetal from '@/components/basedetal/add-detal.vue'; 
 import EditDetal from '@/components/basedetal/edit-detal.vue'; 
 import CreateCbEd from '@/components/cbed/create-cbed.vue';
+import EditCbEd from '@/components/cbed/edit-cbed.vue';
 import CreateProduct from '@/components/baseproduct/create-product.vue';
-
+import EditProduct from '@/components/baseproduct/edit-product.vue';
+import CreateBuyer from '@/components/basebuyer/add-buyer.vue';
+import EditBuyer from '@/components/basebuyer/edit-buyer.vue';
 
 const routes = [
+  {
+    path: '/buyer/edit',
+    name: 'Редактировать покупателя',
+    component: EditBuyer
+  },
+  {
+    path: '/buyer/create',
+    name: 'Создать покупателя',
+    component: CreateBuyer
+  },
+  {
+    path: '/product/edit/:copy',
+    name: 'Обновление Изделия',
+    component: EditProduct,
+  },
+  {
+    path: '/cbed/edit/:copy',
+    name: 'Обновление',
+    component: EditCbEd
+  },
   {
     path: '/createproduct',
     name: 'Создать изделие',

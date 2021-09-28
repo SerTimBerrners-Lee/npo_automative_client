@@ -14,6 +14,7 @@ import navigation from './modules/navigation'
 import operation from './modules/operation'
 import cbed from './modules/cbed';
 import product from './modules/product';
+import buyer from './modules/buyer'
 
 export default createStore({
   modules: {
@@ -31,7 +32,8 @@ export default createStore({
     navigation,
     operation,
     cbed,
-    product
+    product,
+    buyer
   }
 })
   

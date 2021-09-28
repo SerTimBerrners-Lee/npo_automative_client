@@ -1,7 +1,7 @@
 <template>
   <div class='main_block_content'>
     <div class="left_content">
-      <h3>Создать сборочную единицу</h3>
+      <h3>Редактировать сборочную единицу</h3>
       <div class="block title_block">
         <p>
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
@@ -97,7 +97,7 @@
                 v-if='showBFM'
                 :key='generateKeyBFM'
                 @responsDetal='responsDetal'
-                :getListDetal='true' 
+                :getListDetal='true'
                 :listDetal='listDetal'
                 />
               <div class="btn-control">
@@ -119,6 +119,21 @@
             <div>
               <h3>Описание / Примечание</h3>
               <textarea class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
+            </div>
+            <div>
+                <table style='width: 100%;'>
+                <tr>
+                    <th >Файл</th>
+                </tr>
+                <tr 
+                    v-for='doc in  documentsData' 
+                    :key='doc'
+                    class='td-row'
+                    @click='setDocs(doc)'
+                    >
+                    <td>{{ doc.name }}</td>
+                </tr>
+            </table>
             </div>
             <div>
             <h3>Документы</h3>
@@ -149,11 +164,24 @@
                   @click='exit'
                   >Отменить</button>
           <button class="btn-status btn-black" 
-            style="height: 0px;" @click='saveDetal'>Сохранить</button>
+            style="height: 0px;" 
+                @click='saveDetal'
+                >{{$route.params.copy == "false" ? 'Обновить ' : 'Добавить'}}</button>
           </div>
       </div>
 
     <div class="right_content">
+       <div v-if='dataMedia'>
+           <h3>Медиа файлы</h3>
+            <MediaSlider 
+                v-if='dataMedia' 
+                :static='true' 
+                :data='dataMedia' 
+                :key='randomDataMedia'
+                :width='"width: 30%;"'
+                :width_main='"width: 97%;"'
+                />
+       </div>
          <div>
               <h3>Параметры</h3>
               <table class="tables_bf">
@@ -190,7 +218,8 @@
                 </tr>
               </table>
               <div class="btn-control">
-                <button class="btn-add btn-small" @click='addParametrs'>Добавить</button>
+                <button class="btn-add btn-small" 
+                    @click='addParametrs'>Добавить</button>
                 <button class="btn-small" @click='removeParametrs'>Удалить</button>
               </div>
             </div>
@@ -242,7 +271,12 @@
         v-if='showInformPanel'
         :key='keyInformTip'
     />
-     <BaseCbedModal 
+    <OpensFile 
+        :parametrs='itemFiles' 
+        v-if="showFile" 
+        :key='keyWhenModalGenerateFileOpen'
+    />
+    <BaseCbedModal 
       v-if='showCbed'
       :key='generateKeyCbed'
       @responsCbed='responsCbed'
@@ -256,13 +290,15 @@
 import AddFile from '@/components/filebase/addfile.vue'
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
 import TechProcess from '@/components/basedetal/tech-process-modal.vue'
-import { random } from 'lodash'
+import { random, isEmpty } from 'lodash'
 import { mapActions, mapMutations, mapGetters } from 'vuex'
 import { showMessage } from '@/js/'
 import InformFolder from '@/components/InformFolder.vue'
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue'
+import MediaSlider from '@/components/filebase/media-slider.vue'
+import PATH_TO_SERVER from '@/js/path'
+import OpensFile from '@/components/filebase/openfile.vue'
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue'
-
 
 export default {
   data() {
@@ -313,19 +349,30 @@ export default {
         showBFM: false,
         generateKeyBFM: random (1, 999),
 
+        id: null,
+        documentsData: [],
+        dataMedia: [],
+        randomDataMedia: random(10, 24^4),
+
+        showFile: false,
+        keyWhenModalGenerateFileOpen: random(10, 999),
+
         showCbed: false,
-        generateKeyCbed: random(1, 999)
+        generateKeyCbed: random(1, 999),
         }
   },
-  computed: mapGetters(['getUsers']),
-  components: {AddFile, 
-      ModalBaseMaterial, 
-      TechProcess, 
-      InformFolder, 
-      BaseDetalModal, 
-      BaseCbedModal},
+  computed: mapGetters(['getUsers', 'getOneSelectCbEd']),
+  components: {
+            AddFile, 
+            OpensFile,  
+            ModalBaseMaterial, 
+            TechProcess, 
+            InformFolder, 
+            BaseDetalModal, 
+            MediaSlider,
+            BaseCbedModal},
   methods: {
-    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd']),
+    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'updateCbed']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
       // Проверяем введенные данные 
@@ -347,7 +394,6 @@ export default {
         this.formData.append('listDetal', JSON.stringify(this.listDetal))
       if(this.listCbed.length)
         this.formData.append('listCbed', JSON.stringify(this.listCbed))
-
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
           this.listPokDet[mat].mat = {
@@ -371,10 +417,14 @@ export default {
           }
       }
 
-      showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
-
-      console.log('craete')
-      this.createNewCbEd(this.formData)
+        if(this.$route.params.copy == 'false') {
+            this.formData.append('id', this.id)
+            this.updateCbed(this.formData)
+            showMessage('', 'Сборочная единица усешно Обновлена. Перенаправление на главную страницу...', 's', this)
+        } else {
+            showMessage('', 'Сборочная единица усешно Создана. Перенаправление на главную страницу...', 's', this)
+            this.createNewCbEd(this.formData)
+        }
 
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
@@ -385,7 +435,6 @@ export default {
       if(tp.id) {
         this.techProcessID = tp.id
         localStorage.setItem('tpID', this.techProcessID)
-
       }
     },
     addDock(val) {
@@ -424,15 +473,15 @@ export default {
         this.showBFM = true
         this.generateKeyBFM = random(1, 11999)
     },
+    responsDetal(detal) {
+        this.listDetal = detal
+    },
     addCbed() {
       this.showCbed = true;
       this.generateKeyCbed = random(1, 999)
     },
     responsCbed(res) {
       this.listCbed = res
-    },
-    responsDetal(detal) {
-        this.listDetal = detal
     },
     addHaracteristic() {
       this.obj.haracteriatic.push({name: '', ez: '', znach: ''})
@@ -460,7 +509,6 @@ export default {
       if(inst == 'znach')  {
         this.obj.haracteriatic[inx].znach = val
       }
-      console.log(this.obj.haracteriatic)
     },
     changeParametrs(val, inst, inx) {
         if(inst == 'name')  
@@ -470,22 +518,55 @@ export default {
         if(inst == 'znach')  {
             this.obj.parametrs[inx].znach = val
         }
-        console.log(this.obj.parametrs)
     },
     showTechProcess() {
       this.techProcessIsShow = true
       this.techProcessKey = random(1, 12e8)
     },
-
     exit(){
       this.$router.push("/cbed")
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
-    }
+    },
+    updateForEdit() {
+        this.obj.name = this.getOneSelectCbEd.name
+        this.obj.articl = this.getOneSelectCbEd.articl
+        this.obj.responsible = this.getOneSelectCbEd.user ? this.getOneSelectCbEd.user.id :  null
+        this.obj.description = this.getOneSelectCbEd.description
+        this.obj.parametrs = JSON.parse(this.getOneSelectCbEd.parametrs)
+        this.obj.haracteriatic = JSON.parse(this.getOneSelectCbEd.haracteriatic)
+        this.materialList = this.getOneSelectCbEd.materialList ? JSON.parse(this.getOneSelectCbEd.materialList) : []
+        this.listPokDet = this.getOneSelectCbEd.listPokDet ? JSON.parse(this.getOneSelectCbEd.listPokDet) : []
+        this.listDetal = this.getOneSelectCbEd.listDetal ? JSON.parse(this.getOneSelectCbEd.listDetal) : []
+        this.listCbed = this.getOneSelectCbEd.listCbed ? JSON.parse(this.getOneSelectCbEd.listCbed) : []
+
+        if(this.$route.params.copy == 'false')  {
+            this.documentsData = this.getOneSelectCbEd.documents
+            this.getOneSelectCbEd.documents.forEach((d) => {
+                this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+            })
+            this.randomDataMedia = random(10, 38100)
+            this.id = this.getOneSelectCbEd.id
+
+            this.techProcessID =  !isEmpty(this.getOneSelectCbEd.techProcesses) ? this.getOneSelectCbEd.techProcesses[0].id : null
+            localStorage.setItem('tpID', this.techProcessID)
+        }
+    },
+    setDocs(dc) {
+        this.itemFiles = dc
+        this.showFile = true
+        this.keyWhenModalGenerateFileOpen = random(10, 1111);
+    },
   },
   async mounted() {
+    if(isEmpty(this.getOneSelectCbEd)) {
+        this.$router.push("/cbed")
+        return 
+    }
     this.getAllUsers()
-  } 
+
+    this.updateForEdit()
+  }
 }
 </script>
 
@@ -558,9 +639,6 @@ export default {
   .right_content {
     padding: 10px;
     margin-top: 20px;
-  }
-  .right_content h3 {
-    margin-left: 40px;
   }
   .td_link {
     cursor: pointer;

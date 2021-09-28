@@ -116,7 +116,7 @@
               </div>
                <div>
               <h3>Параметры</h3>
-              <table class="tables_bf">
+              <table class="tables_bf"> 
                 <tr>
                   <th>Наименование</th> 
                   <th>ЕИ</th>
@@ -382,13 +382,6 @@ export default {
       if(tp.id) {
         this.techProcessID = tp.id
         localStorage.setItem('tpID', this.techProcessID)
-        if(tp.opers.length) {
-          tp.opers.forEach(op => {
-            this.obj.parametrs.preTime.znach = Number(this.obj.parametrs.preTime.znach) + Number(op.preTime)
-            this.obj.parametrs.helperTime.znach = Number(this.obj.parametrs.helperTime.znach) + Number(op.helperTime)
-            this.obj.parametrs.mainTime.znach = Number(this.obj.parametrs.mainTime.znach) + Number(op.mainTime)
-          })
-        }
       }
     },
     addDock(val) {

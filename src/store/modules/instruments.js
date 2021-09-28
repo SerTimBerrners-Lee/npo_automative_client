@@ -269,7 +269,7 @@ export default {
 
             state.TInstrument = state.instansTInstrument
                 .filter(inst => inst.instans == instans)
-            if(state.instansPTInstrument[0].instruments.length) {
+            if(state.instansPTInstrument.length && state.instansPTInstrument[0].instruments.length) {
                 state.PTInstrument = state.instansPTInstrument
                     .filter(inst => inst.instruments[0].instans == instans)
             }

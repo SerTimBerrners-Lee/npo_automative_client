@@ -51,12 +51,35 @@
         </div>
         
         <div class="right_info_block" v-if='selecteProduct'>
+        <h3>Краткая Информация о изделии</h3>
         <div class="block">
-            <h3>Краткая Информация о сборочной единице</h3>
             <p>
-            <span class="title_span">Наименование: </span><span>{{ selecteProduct.name }}</span>
+                <span class="title_span">Наименование: </span>
+                <span style='font-weight:bold;'>{{ selecteProduct.name }}</span>
             </p>
-            <!-- <MediaSlider v-if='equipment.documents.length' :data='equipment.documents' :key='equipment.documents' /> -->
+            <p>
+                <span class="title_span">Артикул: </span>
+                <span style='font-weight:bold;'>{{ selecteProduct.articl }}</span>
+            </p>
+            <p>
+                <span class="title_span">Ответственный: </span>
+                <span style='font-weight:bold;'>{{ selecteProduct.user ? selecteProduct.user.login : ''  }}</span>
+            </p>
+            <MediaSlider  v-if='selecteProduct.documents.length' :data='selecteProduct.documents' :key='selecteProduct.documents' />
+            <div v-if='selecteProduct.haracteriatic'>
+                <h3>Характеристики</h3>
+                <p v-for='har in JSON.parse(selecteProduct.haracteriatic)' :key='har'>
+                    <span>{{ har.name }}({{har.ez}}): </span>
+                    <span style='font-weight:bold;'>{{ har.znach }} </span>
+                </p>
+            </div>
+            <div v-if='selecteProduct.parametrs'>
+                <h3>Параметры</h3>
+                <p v-for='par in JSON.parse(selecteProduct.parametrs)' :key='par'>
+                    <span>{{ par.name }}({{par.ez}}): </span>
+                    <span style='font-weight:bold;'>{{ par.znach }} </span>
+                </p>
+            </div>
             <div>
             <span>Описание / Примечание</span>
             <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
@@ -90,6 +113,7 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import Search from '@/components/search.vue'
 import OpensFile from '@/components/filebase/openfile.vue'
+import MediaSlider from '@/components/filebase/media-slider.vue';
 import { random } from 'lodash'
 
 export default {
@@ -104,15 +128,18 @@ export default {
         }
     },
     computed: mapGetters(['allProduct']),
-    components: {Search, OpensFile},
+    components: {Search, OpensFile, MediaSlider},
     methods: {
-        ...mapActions(['getAllProduct']),
-        ...mapMutations([]),
+        ...mapActions(['getAllProduct', 'fetchDeleteProduct']),
+        ...mapMutations(['setOneProduct', 'searchProduct']),
         setProduct(product, e) {
             this.selecteProduct = product
              if(this.tr) 
                 this.tr.classList.remove('td-row-all')
-            
+            console.log(product)
+        
+            this.setOneProduct(product)
+
             this.tr = e
             this.tr.classList.add('td-row-all')
         },
@@ -120,8 +147,8 @@ export default {
             if(!this.selecteProduct)
                 return 0
 
-            // this.$router.push({path: '/detal/edit/false'})
-        },
+            this.$router.push({path: '/product/edit/false'})
+        }, 
         create() {
             this.$router.push('/createproduct')
         },
@@ -129,14 +156,16 @@ export default {
             if(!this.selecteProduct)
                 return 0
 
-            // this.$router.push({path: '/detal/edit/true'})
+            this.$router.push({path: '/product/edit/true'})
         },
         keySearch(v) {
-                console.log(v)
+            this.searchProduct(v)
         },
         deleteProduct() {
             if(!this.selecteProduct)
                 return 0
+
+            this.fetchDeleteProduct(this.selecteProduct.id)
         },
         setDocs(dc) {
             this.itemFiles = dc
@@ -188,15 +217,12 @@ export default {
     .block_product {
         width: 400px;
     }
-    .right_info_block {
-        width: 400px;
+     .right_info_block {
+        width: 450px;
+        margin-left: 40px;
     }
     .main_product_block {
         display: flex;
-    }
-    .right_info_block {
-        margin:10px;
-        margin-top: 70px;
     }
 
 </style>
