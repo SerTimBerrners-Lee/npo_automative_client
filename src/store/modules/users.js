@@ -69,7 +69,6 @@ export default {
         updateUsers(state, users) { 
             state.users = []
             state.user_ban = []
-            console.log(users)
             state.users = users.filter(user => !user.banned)
             state.user_ban = users.filter(user => user.banned)
         },
