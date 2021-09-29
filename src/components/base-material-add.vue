@@ -170,22 +170,23 @@
     </div>
     <div class="content-right">
     </div>
-     <div class="edit-save-block block">
-            <button class="btn-status" @click='$router.push("/basematerial")'>Назад</button>
-            <button class="btn-status" @click='$router.push("/basematerial")'>Отменить</button>
-            <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type != 'edit'">Сохранить</button>
-            <button class="btn-status btn-black" @click="addItem(this.getOnePPT.id)" v-if="$route.params.type == 'edit'">Обновить</button>
-        </div>
-        <ListProvider  
-          @unmount='pushProvider' 
-          :key='keyWhenModalListProvider'
-          v-if='showProvider'
-          />
-           <InformFolder  :title='titleMessage'
-            :message = 'message'
-            :type = 'type'
-            v-if='showInformPanel'
-            :key='keyInformTip'
+    <div class="edit-save-block block">
+      <button class="btn-status" @click='$router.push("/basematerial")'>Назад</button>
+      <button class="btn-status" @click='$router.push("/basematerial")'>Отменить</button>
+      <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type != 'edit'">Сохранить</button>
+      <button class="btn-status btn-black" @click="addItem(this.getOnePPT.id)" v-if="$route.params.type == 'edit'">Обновить</button>
+    </div>
+    <ListProvider  
+      @unmount='pushProvider' 
+      :key='keyWhenModalListProvider'
+      v-if='showProvider'
+      />
+      <InformFolder  
+        :title='titleMessage'
+        :message = 'message'
+        :type = 'type'
+        v-if='showInformPanel'
+        :key='keyInformTip'
     />
   </div>
 </template>
@@ -372,9 +373,9 @@ export default {
         console.log(res)
         if(res)
           if(this.$route.params.type == 'edit')
-            showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's', this)
+            showMessage('', 'Материал усешно обновлен. Перенаправление на главную страницу...', 's', this)
           else 
-            showMessage('', 'Деталь усешно  создана. Перенаправление на главную страницу...', 's', this)
+            showMessage('', 'Материал усешно создан. Перенаправление на главную страницу...', 's', this)
       })
       setTimeout(() => this.$router.push('/basematerial'), 3000)
     },
@@ -394,6 +395,8 @@ export default {
     clickMat(mat, type) {
       if(type == 'type') {
           this.material = mat
+           if(mat.podMaterials) 
+                this.filterMatByPodType(mat.podMaterials)
           this.obj.name = this.material.name
       }
       if(type == 'podM') {

@@ -1,6 +1,6 @@
 <template>
     <div class="nav-menu">
-        <ul class="menu-ul">
+        <ul class="menu-ul scroll">
             <li class="item-lu" @click="$router.push('/product')">
                 <img src="@/assets/img/shop.png" alt="" class="icon-li">
                 <span class="text-item">Продукция НПО Автомотив</span>
@@ -97,9 +97,9 @@
     li {
         list-style-type: none;
         display: flex;
-        margin-top: 10px;
         cursor: pointer;
-        padding-right: 50px;
+        padding-right: 15px;
+        border-bottom: 1px solid #545454c7;
     }
     li:hover {
         background: #6a6a6a;
@@ -113,6 +113,7 @@
          user-select: none;
          float: left;
          position: fixed;
+         height: 100vh;
     }
     ul {
         margin-left: 0px;
@@ -120,6 +121,9 @@
         padding-top: 30px;
         padding-bottom: 50px;;
         margin-top: 0px;
+        height: 100%;
+        overflow: auto;
+        direction: ltr;
     }
     li>span {
         align-self: center;

@@ -4,7 +4,10 @@ export default {
     state: {
         files: [],
         noBanFiles: [],
-        banFiles: []
+        banFiles: [],
+
+        filterFiles: [],
+        filterBanFiles: []
     },
     getters: {
         allFiles(state) {
@@ -101,6 +104,26 @@ export default {
         },
         getBannedFiles(state){
             state.banFiles = state.files.filter(f => f.banned)
+        },
+        searchToFiles(state, str) {
+            if(!state.filterFiles.length)
+                state.filterFiles = state.noBanFiles
+            
+            state.noBanFiles = state.filterFiles
+
+            state.noBanFiles = state.noBanFiles.filter(file => 
+                file.name.slice(0, str.length).toLowerCase() == str.toLowerCase()
+                )
+        },
+        searchToBanFiles(state, str) {
+            if(!state.filterBanFiles.length)
+                state.filterBanFiles = state.banFiles
+            
+            state.banFiles = state.filterBanFiles
+
+            state.banFiles = state.banFiles.filter(file => 
+                file.name.slice(0, str.length).toLowerCase() == str.toLowerCase()
+                )
         }
     }
 }

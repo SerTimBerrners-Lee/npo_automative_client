@@ -82,7 +82,7 @@ export default {
                 state.filterCbed = state.cbed
             
 
-                state.cbed = state.filterCbed
+            state.cbed = state.filterCbed
 
             state.cbed = state.cbed.filter(prod => 
                 prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase()

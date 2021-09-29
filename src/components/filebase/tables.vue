@@ -6,6 +6,14 @@
             <th>Дата</th>
             <th>Примечание</th>
         </tr>
+       <tr>
+            <td colspan="4">
+                <Search 
+                    :placeholder="'Поиск по Артиклу'"
+                    @unmount='keySearch' 
+                />
+            </td>
+        </tr>
         <tr v-for="file in documents" 
             :key="file" 
             class="td-row" 
@@ -30,9 +38,11 @@
 
 <script>
 import { getReversDate } from '@/js/'
+import Search from '@/components/search.vue'
 
 export default {
     props: ['documents'],
+    components: {Search},
     methods: {
         getDateRevers(date) {
             return getReversDate(date).date
@@ -42,6 +52,9 @@ export default {
         },
         dbEvent(file) {
             this.$emit('dbPushFile', file)
+        },
+        keySearch(str) {
+            this.$emit('keySearch', str)
         }
     }
 }

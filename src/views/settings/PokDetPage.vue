@@ -2,7 +2,11 @@
     <div class="main-dive">
         <h3>4. Покупные Детали (типы и подтипы)</h3>
         <div class="cont">
-            <TableMaterial :title='"Тип (Тип категория)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
+            <TableMaterial 
+                :title='"Тип (Тип категория)"' 
+                :alltypeM="alltypeM" 
+                :type='"type"'
+                 @clickMat="clickMat"/>
             <div class="btn-control">
                 <button class="btn-add btn-small" @click='createEditMat("TYPE")'>Создать</button>
                 <button class="btn-small"  @click='createEditMat("TYPE", "edit")'>Редактировать</button>
@@ -126,7 +130,7 @@ export default {
             this.showIs = true
         },
         clickMat(mat, type) {
-            if(type == 'type') {
+            if(type == 'type') { 
                 if(mat.podMaterials) 
                     this.filterMatByPodType(mat.podMaterials)
                 this.material = mat

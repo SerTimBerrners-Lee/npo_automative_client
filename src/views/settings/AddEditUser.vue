@@ -84,6 +84,12 @@
                             @click="setDocs(doc)">
                             <td> {{ doc.name }}</td>
                         </tr>
+                        <tr v-for='file in fileArrModal' 
+                            class="td-row"  
+                            @click="setDocs(file)"
+                            :key='file'>
+                            <td>{{ file.name }}</td>
+                        </tr>
                     </table>
                     <div class="pointer-files-to-add">
                         <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
@@ -91,8 +97,10 @@
                     </div>
                     <div class="btn-control">
                         <!-- <button class="btn-small">Открыть</button> -->
-                        <button class="btn-small" @click='delitFilesDoc'>Удалить</button>
-                        <button class="btn-small">Добавить из базы</button>
+                        <button class="btn-small"
+                                @click='delitFilesDoc'
+                                 v-if="$route.params.title == 'edit'">Удалить</button>
+                        <button class="btn-small" @click='addInBaseFile'>Добавить из базы</button>
                     </div>
                 </div>
             </div>
@@ -133,6 +141,12 @@
                 v-if="showFile" 
                 :key='keyWhenModalGenerateFileOpen'
             />
+    <BaseFileModal 
+        v-if='showModalFile'
+        :key='fileModalKey'
+        :fileArrModal='fileArrModal'
+        @unmount='unmount_filemodal'
+    />
     </div>
 </template>
 
@@ -145,6 +159,7 @@ import photoPreloadUrl from '@/js/photo_preload.js'
 import {isEmpty, random} from 'lodash'
 import PATH_TO_SERVER from '@/js/path.js'
 import OpensFile from '@/components/filebase/openfile.vue'
+import BaseFileModal from '@/components/filebase/base-files-modal.vue'
 
 export default ({ 
     data() {
@@ -181,6 +196,10 @@ export default ({
             itemFiles: null,
             showFile: false,
             keyWhenModalGenerateFileOpen: random(10, 999),
+
+            fileArrModal: [],
+            fileModalKey: random(10, 999),
+            showModalFile: false,
         }
     },
     computed: {
@@ -188,14 +207,16 @@ export default ({
     },
     components: {
         InformFolder,
-        OpensFile
+        OpensFile,
+        BaseFileModal
     },
     methods: {
         ...mapActions([
             'saveUser', 
             'fetchRoles', 
             'banUserById',
-            'updateUser'
+            'updateUser',
+            'deleteFIleForUser'
         ]),
 
         saveData() {
@@ -220,6 +241,9 @@ export default ({
                     formData.append('document', file)
                 }
             }
+
+            if(this.fileArrModal.length)
+                formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
 
             // А здесь смотрим если редактируем вызываем другую функцию
             if(this.$route.params.title == 'edit') {
@@ -264,8 +288,9 @@ export default ({
             }
         },
         delitFilesDoc(){
-            if(this.selectFiles) {
-                this.docFiles = this.docFiles.filter(f => f.name !== this.selectFiles)
+            if(this.itemFiles && this.docFiles.length) {
+                this.docFiles = this.docFiles.filter(f => f.id != this.itemFiles.id)
+                this.deleteFIleForUser({userId: this.id, fileId: this.itemFiles.id})
             }
         },
         addDock(val) {
@@ -288,6 +313,13 @@ export default ({
             this.showFile = true
             this.keyWhenModalGenerateFileOpen = random(10, 38e9)
         },
+        addInBaseFile() {
+            this.fileModalKey = random(10, 999),
+            this.showModalFile = true 
+        },
+        unmount_filemodal (fileArrModal) {
+            this.fileArrModal = fileArrModal
+        }
     },
     async mounted() {
         this.fetchRoles()

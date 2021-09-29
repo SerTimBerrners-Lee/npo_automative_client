@@ -106,8 +106,8 @@ export default {
         clickMat(mat, type) {
             if(type == 'type') {
                 this.material = mat
-                this.filterByNameMaterial(mat)
-                if(this.instansLet == 2 || this.instansLet == 3)
+                this.filterByNameMaterial(mat) 
+                if(mat.podMaterials && this.instansLet != 1)
                     this.filterMatByPodType(mat.podMaterials)
             }
                 

@@ -3,6 +3,37 @@
     border: none;
 }
 
+html, html * {
+    scrollbar-color: #4e4e4e #e7e7e7;
+    scrollbar-width: auto;
+}
+
+::selection {
+    background: #7c7c7c;
+}
+::-moz-selection {
+    background: #7c7c7c;
+}
+
+::-webkit-scrollbar{
+    width: 5px;
+}
+
+::-webkit-scrollbar-track{
+    background-color: #f9f9fd;
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background: linear-gradient(180deg, #7c7c7c, #141414);
+}
+
+::-webkit-scrollbar-track-piece {
+    border-radius: 10px;
+    background: linear-gradient(180deg, #e2e2e2, #d4d4d4);
+}
+
 .active {
     color: rgb(12, 64, 221);
 }

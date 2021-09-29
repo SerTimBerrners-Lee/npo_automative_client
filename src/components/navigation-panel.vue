@@ -53,6 +53,11 @@ export default {
                 this.$router.push('/')
 
             this.delitPathNavigate(nav.path)
+            if(this.getNav.length > 0) 
+                this.$router.push(this.getNav[0].path)
+            else 
+                this.$router.push('/')
+            
         },
     },
     async mounted() {
@@ -71,7 +76,7 @@ export default {
 
 <style>
 .active-span {
-    border-bottom: 2px solid #1cd413;
+    border-bottom: 2px solid #141414;
 }
 .rout-nav {
     border-bottom: 1px solid #d3d3d3;
@@ -82,6 +87,8 @@ export default {
     margin-top: 10px;
     margin-left: 200px;
     position: fixed;
+    width: 100%;
+    background: #515151;
 }
 .rout-nav>span:hover {
     cursor: pointer;
@@ -96,8 +103,7 @@ export default {
     align-items: center;
     justify-content: center;
     border-left: 1px solid #d3d3d3;
-    border-right: 1px solid #d3d3d3;
-    background-color: rgba(255, 255, 255, 0.808);
+    background-color: rgb(255, 255, 255);
     user-select: none;
     justify-content: space-between;
 }
@@ -106,9 +112,12 @@ export default {
     box-shadow: 11px 3px 10px 1px #e3e3e3;
 }
 .span_name {
-    padding-top: 15px;
-    height: 100%;
-    padding-right: 8px;
+    max-height: 18px;
+    width: max-content;
+    background-color: rgb(255, 255, 255);
+}
+.home-link .unicon {
+    background-color: rgb(255, 255, 255);
 }
 .delit {
     font-size: small;

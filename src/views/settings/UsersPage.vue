@@ -7,7 +7,7 @@
                     v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
         </div>
             <div class="scroll-table" style="height: 690px;">
-            <table>
+            <table> 
                 <tr>
                     <th>Табельный номер</th>
                     <th>Должность</th>
@@ -18,7 +18,7 @@
                     :key="user" @click="e => userShow(user, e.target.parentElement)"
                     >
                     <td class="tabel-td">{{ user.tabel }}</td>
-                    <td>{{ roles }}</td>
+                    <td>{{ user.role ? user.role.description : '' }}</td>
                     <td> {{ user.initial }}</td>
                 </tr>
                 <tr class="td-row"  v-for="iten in 70" :key="iten">

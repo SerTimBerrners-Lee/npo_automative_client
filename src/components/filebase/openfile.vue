@@ -8,14 +8,33 @@
                     <div >
                         <h4>Библиотека документов </h4>
                         <div>
-                            <div class="fb-img-block">
-                                <span class="span-type-files" v-if="docType.type == 'doc'" >
+                            <div class="span-type-files-pdf" 
+                                v-if="docType.typename == 'docx'" >
+                                <iframe id="viewer-frame-pdf" :src='`https://docs.google.com/gview?url=${urlImg}&embedded=true`' 
+                                    frameborder="0" 
+                                    scrolling="no"></iframe>
+                            </div>
+                            <div class="span-type-files-pdf"
+                                v-if='docType.typename == "pdf"'>
+                                 <iframe id="viewer-frame-pdf" :src='urlImg' 
+                                    frameborder="0" 
+                                    scrolling="no"></iframe>
+                            </div>
+                            <div class="fb-img-block" 
+                                v-if="docType.type == 'doc' &&
+                                docType.typename != 'pdf' &&
+                                docType.typename != 'docx'">
+                                <span class="span-type-files">
                                     .{{ docType.typename }}
                                 </span>
-                                <div class="imgShow-modal-div" v-if='docType.type == "img"'>
+                            </div>
+                            <div class="fb-img-block" v-if='docType.type == "img"'>
+                                <div class="imgShow-modal-div">
                                     <img class="imgShow-modal" :src='urlImg' alt="">
                                 </div>
-                                <div class="imgShow-modal-div" v-if='docType.type == "movi"'>
+                            </div>
+                            <div class="fb-img-block" v-if='docType.type == "movi"'>
+                                <div class="imgShow-modal-div">
                                      <video
                                         controls="controls">
                                     <source :src='urlImg' >
@@ -147,6 +166,13 @@ export default {
 </script>
 
 <style scoped>
+    .span-type-files-pdf {
+        height: 500px;
+    }
+    #viewer-frame-pdf {
+        width: 100%;
+        height: 100%;
+    }
     .abnf{
         padding: 10px;
         cursor: pointer;
@@ -176,7 +202,7 @@ export default {
     }
     textarea {
         height: 90px;
-        width: 500px;
+        width: 90%;
         border: 1px solid #d3d3d3;
         border-radius: 4px;
     }

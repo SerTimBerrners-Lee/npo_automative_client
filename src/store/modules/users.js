@@ -63,6 +63,16 @@ export default {
                 return { type: 's', message: 'Пользователь успешно изменен'}
             }
             return { type: 'e', message: 'Произошла ошика при изменении пользователя'}
+        },
+        async deleteFIleForUser(ctx, data) {
+            return await fetch(`${PATH_TO_SERVER}api/users/fileban`, {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({...data})
+            })
         }
     },
     mutations: {

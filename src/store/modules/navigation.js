@@ -12,6 +12,7 @@ export default {
         delitPathNavigate(state, path) {
             if(!state.nav.length)
                 return 
+
             state.nav = state.nav.filter(nav => nav.path != path)
             localStorage.setItem('nav', JSON.stringify(state.nav))
         },
@@ -24,9 +25,9 @@ export default {
                 })
             }
 
+            if(state.nav.length > 8)
+                state.nav.pop()
             state.nav.unshift({name: to.name, path: to.path})
-            if(state.nav.length > 10)
-                state.nav.shift()
             localStorage.setItem('nav', JSON.stringify(state.nav))
         }
     }
