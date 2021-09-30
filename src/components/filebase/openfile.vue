@@ -90,7 +90,7 @@ import { mapActions } from 'vuex'
 import { isArray } from 'lodash'
 import PATH_TO_SERVER from '@/js/path.js'
 
-export default {
+export default { 
     props: ['parametrs'],
     data() {
         return {

@@ -1,7 +1,7 @@
 import { random } from 'lodash';
 
 const imgArr = ['bmp', 'gif', 'jpg', 'png', 'pds', 'tif', 'odg', 'jpeg', 'eps', 'pict', 'pcx', 'ico', 'webp']
-const moviArr = ['mp4']
+const moviArr = ['mp4', 'webm', 'ogv']
 
 const getReversDate = DAT =>  {
     if(!DAT)
@@ -40,7 +40,7 @@ const showMessage = (title, message, type, ctx) =>  {
     if(!input) 
         return 0;
 
-    let typeFile = input.name.split('.')[input.name.split('.').length - 1]
+    let typeFile = input.name.split('.')[input.name.split('.').length - 1].toLowerCase();
     let type;
     for(let imgType of imgArr) {
         if(typeFile == imgType)

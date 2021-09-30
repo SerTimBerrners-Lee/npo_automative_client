@@ -6,6 +6,7 @@
                 <div class="type-issue">
                     <span @click="e => getType('all', e.target)" ref="allFilesLink">Все</span>
                     <span @click="e => getType('banned', e.target)">Архив</span>
+                    <span @click="e => getType('dxf', e.target)">DXF</span>
                     <span @click="e => getType('noInstans', e.target)">Неприсвоенные</span>
                     <span @click="e => getType('NonType', e.target)">Без типа</span>
                 </div>
@@ -218,7 +219,7 @@ export default {
                         return this.arrFileGet = this.arrFileGet.filter(f => f.id != id) 
                     this.arrFileGet = this.allFiles.filter(f => f.type == 'ЧЖ')
                     break;
-                case 'СД':
+                case 'СД': 
                     this.nowType = 'typesFile'
                     if(id)
                         return this.arrFileGet = this.arrFileGet.filter(f => f.id != id) 
@@ -227,6 +228,10 @@ export default {
                 case 'noInstans': 
                     this.nowType = 'typesFile'
                     this.arrFileGet = this.allFiles.filter(f => f.nameInstans == '')
+                    break;
+                case 'dxf':
+                    this.nowType = 'typesFile'
+                    this.arrFileGet = this.arrFileGet.filter(f => f.name.split('.')[f.name.split('.').length - 1].toLowerCase() == 'dxf')
                     break;
                 case 'NonType':
                     this.nowType = 'typesFile'
