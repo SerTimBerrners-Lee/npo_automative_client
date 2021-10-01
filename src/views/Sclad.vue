@@ -6,7 +6,7 @@
             <h3>Склад продукции</h3>
             <div class="block">
                 <div class="type-operation">Дефицит продукции (комплектация изделий)</div>
-                <div class="type-operation">Дефицит Деталией</div>
+                <div class="type-operation" @click="$router.push('/deficitdetal')">Дефицит Деталией</div>
                 <div class="type-operation">Остатки продукции, сборок и деталей на складе</div>
             </div>
         </div>
@@ -19,7 +19,7 @@
                 <div class="type-operation">Заказано / в пути</div>
             </div>
         </div>
-       </div>
+       </div> 
        <div class="footer_left_container">
          <div class="type-operation">Среднестатистическое потребление / Расход ВСЕГО</div>
          <div class="type-operation">Приход на склад от поставщиков и производства</div>

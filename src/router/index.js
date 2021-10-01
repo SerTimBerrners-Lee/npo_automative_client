@@ -44,8 +44,14 @@ import EditProduct from '@/components/baseproduct/edit-product.vue';
 import CreateBuyer from '@/components/basebuyer/add-buyer.vue';
 import EditBuyer from '@/components/basebuyer/edit-buyer.vue';
 import NotFound from '@/components/not-found.vue'
+import DefcitDetal from '@/components/sclad/deficit-detal/deficit-detal.vue'
 
 const routes = [
+  {
+    path: '/deficitdetal',
+    name: 'Дефицит деталей',
+    component: DefcitDetal
+  },
   {
     path: '/buyer/edit',
     name: 'Редактировать покупателя',
