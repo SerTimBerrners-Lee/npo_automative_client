@@ -28,6 +28,7 @@ import BaseDetals from '@/views/BaseDetals.vue';
 import Sclad from '@/views/Sclad.vue';
 import CbEd from '@/views/CbEd.vue';
 import Product from '@/views/Product.vue';
+import IssueShipment from '@/views/IssueShipment.vue';
 
 import AddMaterialBase from '@/components/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
@@ -43,10 +44,33 @@ import CreateProduct from '@/components/baseproduct/create-product.vue';
 import EditProduct from '@/components/baseproduct/edit-product.vue';
 import CreateBuyer from '@/components/basebuyer/add-buyer.vue';
 import EditBuyer from '@/components/basebuyer/edit-buyer.vue';
-import NotFound from '@/components/not-found.vue'
-import DefcitDetal from '@/components/sclad/deficit-detal/deficit-detal.vue'
+import NotFound from '@/components/not-found.vue';
+import DefcitDetal from '@/components/sclad/deficit-detal/deficit-detal.vue';
+import DeficitMaterial from '@/components/sclad/deficit-material/deficit-material.vue';
+import DeficitProd from '@/components/sclad/deficit-prod/deficit-prod.vue';
+import AddOrder from '@/components/issueShipment/add-order.vue';
 
 const routes = [
+  {
+    path: '/addorder',
+    name: 'Добавить Заказ',
+    component: AddOrder
+  },
+  {
+    path: '/issueshipment',
+    name: 'Задачи на отгрузку',
+    component: IssueShipment
+  },
+  {
+    path: '/deficitprod',
+    name: 'Дефицит продукции',
+    component: DeficitProd
+  },
+  {
+    path: '/deficitmaterial',
+    name: 'Дефицит материалов',
+    component: DeficitMaterial
+  },
   {
     path: '/deficitdetal',
     name: 'Дефицит деталей',

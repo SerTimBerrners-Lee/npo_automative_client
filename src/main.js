@@ -3,9 +3,17 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import Unicon from 'vue-unicons'
-import { uniTimes, uniSetting, uniUser, uniPower, uniHouseUserMonochrome, uniPlay, uniTrash, uniSearchAlt    } from 'vue-unicons/dist/icons'
+import { uniTimes, 
+        uniSetting, 
+        uniUser, 
+        uniPower, 
+        uniHouseUserMonochrome, 
+        uniPlay, 
+        uniTrash, 
+        uniSearchAlt,
+        uniCheck    } from 'vue-unicons/dist/icons'
 
-Unicon.add([uniTimes, uniSetting, uniUser, uniPower, uniHouseUserMonochrome, uniPlay, uniTrash, uniSearchAlt   ])
+Unicon.add([uniTimes, uniSetting, uniUser, uniPower, uniHouseUserMonochrome, uniPlay, uniTrash, uniSearchAlt, uniCheck])
 
 createApp(App)
     .use(store)

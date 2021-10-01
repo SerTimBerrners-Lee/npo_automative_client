@@ -53,7 +53,7 @@
                 <img src="@/assets/img/img12.png" alt="" class="icon-li">
                 <span class="text-item">База файлов</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/issueshipment')">
                 <img src="@/assets/img/img13.png" alt="" class="icon-li">
                 <span class="text-item">Задачи на отгрузку</span>
             </li>
