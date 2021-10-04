@@ -1,3 +1,11 @@
+
+.link_gradient{
+  background: 
+  linear-gradient(217deg, rgba(255, 255, 255, 0.67), rgba(255,0,0,0) 70.71%), linear-gradient(127deg, rgba(255, 255, 255, 0.74), rgba(0,255,0,0) 70.71%), linear-gradient(336deg, rgb(255, 255, 255), rgba(253, 253, 253, 0.66) 70.71%);
+
+  border-bottom: 2px solid #141414;
+}
+
 .header_block input[type='text']{
     width: 110px;
 }

@@ -6,7 +6,7 @@
             </router-link>
         </span>
 
-        <div class='links' v-for='(nav, inx) in getNav' :key='nav'>
+        <div v-for='(nav, inx) in getNav' :key='nav' :class='inx == 0 ? "links link_gradient" : "links"'>
             <span class='span_name active-span' v-if='inx == 0' ref='firstSpan'
                 @click='e => pushNavigate(e.target, nav.path)'>{{ nav.name }}</span>
             <span class='span_name' v-if='inx != 0'
@@ -33,20 +33,32 @@ export default {
     methods: {
         ...mapMutations(['delitPathNavigate', 'pushPathNavigate']),
         pushNavigate(span, path){
-            if(this.span)
+            if(this.span) 
                 this.span.classList.remove('active-span')
+            
+            if(this.span && this.span.parentElement)
+                this.span.parentElement.classList.remove('link_gradient')
+                
             this.span = span;
+            this.$refs.firstSpan.parentElement.classList.remove('link_gradient')
             this.$refs.firstSpan.classList.remove('active-span')
-            this.span.classList.add('active-span')
+
+            this.span.parentElement.classList.add('link_gradient')
+
+
+
             this.toClick = true
             this.$router.push(path)
         },
         unactiveClass() {
-            if(this.span)
+            if(this.span) 
                 this.span.classList.remove('active-span')
 
+            if(this.span && this.span.parentElement)
+                this.span.parentElement.classList.remove('link_gradient')
+
             if(this.$refs.firstSpan)
-                this.$refs.firstSpan.classList.add('active-span')
+                this.$refs.firstSpan.parentElement.classList.add('link_gradient')
         },
         delPuth(nav) {
             if(this.getNav.length < 2) 
@@ -114,7 +126,6 @@ export default {
 .span_name {
     max-height: 18px;
     width: max-content;
-    background-color: rgb(255, 255, 255);
 }
 .home-link .unicon {
     background-color: rgb(255, 255, 255);

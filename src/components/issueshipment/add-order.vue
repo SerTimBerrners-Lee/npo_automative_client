@@ -112,4 +112,9 @@ export default {
 textarea {
 	height: 140px;
 }
+.out-btn-control{
+  position: fixed;
+  width: 85%;
+  bottom: 10px;
+}
 </style>
