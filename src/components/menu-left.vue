@@ -5,15 +5,15 @@
                 <img src="@/assets/img/shop.png" alt="" class="icon-li">
                 <span class="text-item">Продукция НПО Автомотив</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/resultwork')">
                 <img src="@/assets/img/img2.png" alt="" class="icon-li">
                 <span class="text-item">Результаты работы</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/library')">
                 <img src="@/assets/img/img3.png" alt="" class="icon-li">
                 <span class="text-item">Библиотека</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/issues')">
                 <img src="@/assets/img/img4.png" alt="" class="icon-li">
                 <span class="text-item">Задачи</span>
             </li>
@@ -61,11 +61,11 @@
                 <img src="@/assets/img/img14.png" alt="" class="icon-li">
                 <span class="text-item">Склад</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/metalloworking')">
                 <img src="@/assets/img/img15.png" alt="" class="icon-li">
                 <span class="text-item">Металлообработка</span>
             </li>
-            <li class="item-lu">
+            <li class="item-lu" @click="$router.push('/assembly')">
                 <img src="@/assets/img/img16.png" alt="" class="icon-li">
                 <span class="text-item">Сборка</span>
             </li>

@@ -40,7 +40,8 @@
 </template>
 <script>
 
-import { mapGetters, mapMutations } from 'vuex'
+import { mapGetters, mapMutations } from 'vuex';
+import { dataFormat, timeFormat } from '@/js/'
 
 export default {
     data() {
@@ -63,19 +64,9 @@ export default {
     methods: {
         ...mapMutations(['unAuth']),
         getClock() {
-            let dat =  new Date()
-            let Day = String(dat.getUTCDate())
-            let Month = String(dat.getMonth() + 1)
-            let Yeard = dat.getFullYear()
-            let Hours = dat.getHours()
-            let Minute = dat.getMinutes()
-
-            let strDat = `${this.addNull(Day)}.${this.addNull(Month)}.${Yeard}  ${this.addNull(Hours)}:${this.addNull(Minute)}`
+            let strDat = dataFormat() + ' ' + timeFormat()
             
             return strDat
-        },
-        addNull(str) {
-            return str.length == 1 ? "0" + str : str
         },
         exit() {
             this.unAuth()

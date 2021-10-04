@@ -15,7 +15,7 @@
             <div class="block">
                 <div class="type-operation" @click="$router.push('/deficitmaterial')">Дефицит материалов</div>
                 <div class="type-operation">Остатки материалов на складе</div>
-                <div class="type-operation">Заказаны у поставщиков</div>
+                <div class="type-operation" @click="$router.push('/ordersuppliers')">Заказаны у поставщиков</div>
                 <div class="type-operation">Заказано / в пути</div>
             </div>
         </div>
@@ -31,7 +31,7 @@
     <div class="right_control">
       <h3>Потребности на план</h3>
       <div class="block">
-        <div class="type-operation">
+        <div class="type-operation" @click="$router.push('/issuetopull')">
           Задачи на отгрузку 
         </div>
         <div class="type-operation">
@@ -43,7 +43,7 @@
         <h3>Комплектация производства (зачистные и заготовительные операции</h3>
         <div class="small-width-div type-operation">Резка круга / профиля</div>
         <div class="small-width-div type-operation">Резка листа</div>
-        <div class="type-operation">
+        <div class="type-operation" @click="$router.push('/completassembl')">
           Комплектация сборок на план
         </div>
       </div>

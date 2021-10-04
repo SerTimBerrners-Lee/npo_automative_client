@@ -35,7 +35,7 @@
                 </tr>
                 <tr>
                 <th>
-                    <unicon name="check" fill="royalblue" />
+                  <unicon name="check" fill="royalblue" />
                 </th> 
                 <th>Тип</th>
                 <th>№ Заказа</th>

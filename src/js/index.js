@@ -35,8 +35,7 @@ const showMessage = (title, message, type, ctx) =>  {
     ctx.$data.keyInformTip = random(21212*3423)
 }
  
-
- const photoPreloadUrl = (input, cb, checkTypes = false) => {
+const photoPreloadUrl = (input, cb, checkTypes = false) => {
     if(!input) 
         return 0;
 
@@ -68,8 +67,31 @@ const showMessage = (title, message, type, ctx) =>  {
     reader.readAsDataURL(input)
 } 
 
+const dataFormat = () => {
+    let dat =  new Date()
+    let Day = String(dat.getUTCDate())
+    let Month = String(dat.getMonth() + 1)
+    let Yeard = dat.getFullYear()
+
+    let splitData = `${addNull(Day)}.${addNull(Month)}.${Yeard}`;
+    return splitData
+}
+
+const timeFormat = () => {
+    let dat =  new Date()
+    let Hours = dat.getHours()
+    let Minute = dat.getMinutes() 
+    let splitTime= `${addNull(Hours)}:${addNull(Minute)}`;
+    return splitTime
+}
+
+const addNull = (str) => str.length == 1 ? "0" + str : str
+
+
 export  {
     getReversDate,
     showMessage,
-    photoPreloadUrl
+    photoPreloadUrl,
+    dataFormat,
+    timeFormat
 }

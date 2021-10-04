@@ -29,11 +29,16 @@ import Sclad from '@/views/Sclad.vue';
 import CbEd from '@/views/CbEd.vue';
 import Product from '@/views/Product.vue';
 import IssueShipment from '@/views/IssueShipment.vue';
+import Assembly from '@/views/Assembly.vue';
+import Metalloworking from '@/views/Metalloworking.vue';
+import Library from '@/views/Library.vue';
+import ResultWork from "@/views/ResultWork.vue";
+import Issues from '@/views/Issues.vue';
 
 import AddMaterialBase from '@/components/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
-import AddBaseInstrument from '@/components/instrument/base-instrument-add.vue'
-import EditBaseInstrument from '@/components/instrument/base-instrument-edit.vue'
+import AddBaseInstrument from '@/components/instrument/base-instrument-add.vue';
+import EditBaseInstrument from '@/components/instrument/base-instrument-edit.vue';
 import AddBaseEquipment from '@/components/equipment/base-equipment-add.vue';
 import EditBaseEquipment from '@/components/equipment/base-equipment-edit.vue';
 import AddDetal from '@/components/basedetal/add-detal.vue'; 
@@ -48,9 +53,64 @@ import NotFound from '@/components/not-found.vue';
 import DefcitDetal from '@/components/sclad/deficit-detal/deficit-detal.vue';
 import DeficitMaterial from '@/components/sclad/deficit-material/deficit-material.vue';
 import DeficitProd from '@/components/sclad/deficit-prod/deficit-prod.vue';
-import AddOrder from '@/components/issueShipment/add-order.vue';
+import AddOrder from '@/components/issueshipment/add-order.vue';
+import CbOperation from '@/components/assembly/cb-operation.vue';
+import DetOperation from '@/components/metalloworking/det-operation.vue';
+import OrderSuppliers from '@/components/sclad/ordersuppliers/ordersuppliers.vue';
+import CompletAssembl from '@/components/sclad/completassembl/completassembl.vue';
+import IssueToPull from '@/components/sclad/issuetopull/issuetopull.vue';
 
 const routes = [
+  {
+    path: '/issuetopull',
+    name: 'Склад Задачи на отгрузку',
+    component: IssueToPull
+  },
+  {
+    path: '/completassembl',
+    name: 'Комплектация сборок ',
+    component: CompletAssembl
+  },
+  {
+    path: '/ordersuppliers',
+    name: 'Заказы у поставщиков ',
+    component: OrderSuppliers
+  },
+  {
+    path: '/issues',
+    name: 'Задачи ',
+    component: Issues
+  },
+  {
+    path: '/resultwork',
+    name: 'Результаты работ ',
+    component: ResultWork
+  },
+  {
+    path: '/library',
+    name: 'Библиотека ',
+    component: Library
+  },
+  {
+    path: '/detoperation',
+    name: 'Детали по операциям',
+    component: DetOperation
+  },
+  {
+    path: '/metalloworking',
+    name: 'Металлообработка',
+    component: Metalloworking
+  },
+  {
+    path: '/cboperation',
+    name: 'СБ по операциям',
+    component: CbOperation
+  },
+  {
+    path: '/assembly',
+    name: 'Сборка',
+    component: Assembly
+  },
   {
     path: '/addorder',
     name: 'Добавить Заказ',
