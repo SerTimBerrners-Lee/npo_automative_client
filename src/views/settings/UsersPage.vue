@@ -6,7 +6,7 @@
             <span @click="knowGet = !knowGet" 
                     v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
         </div>
-            <div class="scroll-table" style="height: 690px;">
+            <div class="scroll-table" style="height: 450px;">
             <table> 
                 <tr>
                     <th>Табельный номер</th>

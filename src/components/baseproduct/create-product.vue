@@ -102,16 +102,14 @@
                 :listDetal='listDetal'
                 />
               <div class="btn-control">
-                <select class="btn-add select-small" v-model='select_model'>
+                <select class="btn-add select-small" 
+                  v-model='select_model'
+                  @change='changeSelected'>
                     <option value="1">Добавить</option>
-                    <option value="2"
-                        @click='select_model = 1; addCbed()'>Сборочную единицу (тип СБ)</option>
-                    <option value="3"
-                        @click='select_model = 1; addDetal()'>Деталь (тип Д)</option>
-                    <option value="4" 
-                        @click='select_model = 1; addPokDet()'>Стандартную или покупную деталь (тип ПД)</option>
-                    <option value="5" 
-                        @click='select_model = 1; addPokMat()'>Расходный материал (тип РМ)</option>
+                    <option value="2">Сборочную единицу (тип СБ)</option>
+                    <option value="3">Деталь (тип Д)</option>
+                    <option value="4">Стандартную или покупную деталь (тип ПД)</option>
+                    <option value="5" >Расходный материал (тип РМ)</option>
                 </select>
               </div>
                <div>
@@ -404,25 +402,30 @@ export default {
           this.materialList = mat.materialList
       }
     },
-    addPokMat() {
-      this.instanMaterial = 3
-      this.listMaterials = this.materialList
-      this.modalMaterialKey = random(10, 2e6)
-      this.modalMaterialIsShow = true
-    },
-    addPokDet() {
-        this.instanMaterial = 2
-        this.listMaterials = this.listPokDet
-        this.modalMaterialKey = random(10, 2e6)
-        this.modalMaterialIsShow = true
-    },
-    addDetal() {
-        this.showBFM = true
-        this.generateKeyBFM = random(1, 11999)
-    },
-    addCbed() {
-      this.showCbed = true;
-      this.generateKeyCbed = random(1, 999)
+    changeSelected() {
+      switch (this.select_model) {
+        case '2':
+          this.showCbed = true;
+          this.generateKeyCbed = random(1, 999)
+          break;
+        case '3':
+          this.showBFM = true
+          this.generateKeyBFM = random(1, 11999)
+          break;
+        case '4':
+          this.instanMaterial = 2
+          this.listMaterials = this.listPokDet
+          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialIsShow = true
+          break;
+        case '5':
+          this.instanMaterial = 3
+          this.listMaterials = this.materialList
+          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialIsShow = true
+          break;
+      }
+      this.select_model = 1;
     },
     responsDetal(detal) {
         this.listDetal = detal

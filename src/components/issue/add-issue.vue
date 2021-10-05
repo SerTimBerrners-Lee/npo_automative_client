@@ -23,13 +23,13 @@
         </p>
         <p>
           <span>Исполнитель: </span>
-          <input type="text">
-          <button class="btn-small btn-add">Добавить</button>
+          <span v-for='user in executorList' :key='user' class='user_select_span'>{{ user.login }}</span>
+          <button class="btn-small btn-add" @click='selectUser("executor")'>Добавить</button>
         </p>
         <p>
           <span>Контролер: </span>
-          <input type="text">
-          <button class="btn-small btn-add">Добавить</button>
+          <span v-for='user in controllerList' :key='user' class='user_select_span'>{{ user.login }}</span>
+          <button class="btn-small btn-add"  @click='selectUser("controller")'>Добавить</button>
         </p>
         <p>
           <span>Время на контроль: </span>
@@ -38,7 +38,9 @@
         </p>
         <p>
           <span>Срочность: </span>
-          <input type="text">
+          <select class='select-small' v-model="srokList[0]">
+            <option v-for='srok in srokList' :key='srok' :value='srok'>{{ srok }}</option>
+          </select>
         </p>
         <p>
           <span>Статус: </span>
@@ -47,39 +49,87 @@
       </div>
       <div>
         <h3>Скриншот</h3>
-        <div></div>
+        <div class="main_screen">
+          <div v-for='scren in docFilesPreload' :key='scren'>
+            <img class='screen_size' :src="scren.url" alt="Изображение">
+          </div>
+          <div>
+            <label for="add_block" class='add_block screen_size'>+</label>
+            <input 
+              id="add_block" 
+              @change="e => addDock(e)" 
+              type="file" 
+              accept="image/png, image/gif, image/jpeg" 
+              style="display:none;">
+          </div>
+        </div>
       </div>
       <div class='prov_block'>
         <h3>Привязка</h3>
-        <p>
+        <div class='izd_block'>
           <span>Изделия, СБ, детали:</span>
-          <span></span>
-          <button class="btn-small btn-add">Добавить</button>
-        </p>
-        <p>
+          <div v-for='izd in izdList' :key='izd' class='izd_block_two'>
+            <span class='user_select_span'>{{ izd.name }}</span>
+            <span class='delete_span' @click='deleteIzd(izd)'><unicon name="minus-square-full" fill="red" height='16' width='16' /></span>
+          </div>
+          <button class="btn-small btn-add" @click='addProduct'>Добавить</button>
+        </div>
+        <div class='izd_block'>
           <span>Файлы:</span>
-          <span></span>
-          <button class="btn-small btn-add">Добавить</button>
-        </p>
+          <div v-for='file in fileArrModal' 
+              class='izd_block_two' 
+              @click="setDocs(file)"
+              :key='file'>
+              <span class='user_select_span'>{{ file.name }}</span>
+          </div>
+          <button class="btn-small btn-add" @click='openFileModal'>Добавить</button>
+        </div>
         <p>
           <span>Общецеховые нужды: </span>
           <input type="text" style='width: 20px'>
         </p>
       </div>
-    </div>
-
-    <div class="btn-control out-btn-control">
+    
+     <div class="btn-control out-btn-control">
       <button class="btn-status" 
         @click='destroyModalF'>Отменить</button>
-          <button class="btn-status btn-black">Дать задачу</button>
+      <button class="btn-status btn-black" @click='addIssue'>Дать задачу</button>
     </div>
 
+    <ModalUsersList 
+      v-if='showModalUser'
+      :key='keyModalUser'
+      :usersList='usersList'
+      @unmount='responseUserList'
+    />
+    </div>
   </div>
+    <BaseProductModal
+    v-if='showModalProduct'
+    :key='keyModalProduct'
+    @responsDetal='responsDetal'
+  />
+  <BaseFileModal 
+    v-if='showModalFile'
+    :key='fileModalKey'
+    :fileArrModal='fileArrModal'
+    @unmount='unmount_filemodal'
+    />
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="showFile" 
+      :key='keyWhenModalGenerateFileOpen'
+    />
 </div>
 </template>
 
 <script>
-import { dataFormat } from '@/js/'
+import ModalUsersList from '@/components/users/modal-list-user.vue';
+import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { dataFormat, photoPreloadUrl } from '@/js/';
+import {random, isEmpty} from 'lodash';
 
 export default {
   props: ['parametrs'],
@@ -87,16 +137,46 @@ export default {
     return {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;'
+      hiddens: 'display: none;',
+
+      showModalUser: false,
+      keyModalUser: random(1, 999),
+
+      controllerList: [],
+      executorList: [],
+      usersList: [],
+      typeUserList: '',
 
 
+      showModalProduct: false,
+      keyModalProduct: random(1, 999),
+      izdList: [],
+
+      fileArrModal: [],
+      fileModalKey: random(10, 999),
+      showModalFile: false,
+
+      itemFiles: null,
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 999),
+
+      srokList: [
+        'Срочно',
+        'Нормально',
+        'Отложено',
+        'На контроль'
+      ],
+
+      docFilesPreload: [],
+      docFiles: [],
+      formData: new FormData()
     }
   },
+  components: {ModalUsersList, BaseProductModal, BaseFileModal, OpensFile},
   mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
-
   },
   methods: {
     destroyModalF() {
@@ -106,20 +186,128 @@ export default {
     },
     dataReturn() {
       return dataFormat()
-    }
+    },
+    addIssue() {
+      this.destroyModalF()
+      this.$emit('unmount', 'test')
+    },  
 
-  }
+    selectUser(type) {
+      this.typeUserList = type
+      if(type == 'executor') 
+        this.usersList = this.executorList
+      if(type == 'controller') 
+        this.usersList = this.controllerList
+
+      this.showModalUser = true
+      this.keyModalUser = random(1, 999)
+    },
+    responseUserList(addUser) {
+      if(this.typeUserList == 'executor')
+        this.executorList = addUser
+      if(this.typeUserList == 'controller')
+        this.controllerList = addUser
+    },
+    responsDetal(res) {
+      if(res) {
+        this.izdList.push({
+          id: res.id,
+          name: res.name
+        })
+      }
+    },
+    addProduct() {
+      this.showModalProduct = true
+      this.keyModalProduct = random(1, 999)
+    },
+    openFileModal() {
+      this.fileModalKey = random(10, 999)
+      this.showModalFile = true
+    },
+    deleteIzd(izd) {
+      console.log(this.izdList)
+      this.izdList = this.izdList.filter(z => z.name != izd.name)
+    },
+    unmount_filemodal(res) {
+      console.log(res)
+    },
+    setDocs(dc) {
+      this.itemFiles = dc
+      if(isEmpty(this.itemFiles))
+        return 0
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
+    },
+    addDock(val) {
+      val.target.files.forEach(f => {
+          photoPreloadUrl(f, (res) => {
+            this.docFilesPreload.push(res)
+          })
+          this.docFiles.push(f)
+          this.formData.append('document', f)
+      })
+
+  },
+    
+  },
 }
 </script>
 
 <style scoped>
-  textarea {
-    height: 130px;
-  }
- .iform_block *, .prov_block * {
-   margin-left: 5px;
- }
- .iform_block input {
-   width: 90px;
- }
+.user_select_span {
+  padding-left: 5px;
+  text-decoration: underline;
+  color: #0008ffce;
+  border-radius: 5px;
+  cursor: pointer;
+}
+.izd_block {
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.izd_block_two {
+  display: flex;
+  align-items: flex-start;
+}
+.delete_span{
+  padding: 0;
+  margin: 0;
+  margin-right: 2px;
+}
+.delete_span div {
+  margin: 0px;
+  padding: 0px;
+}
+textarea {
+  height: 130px;
+}
+.iform_block *, .prov_block * {
+  margin-left: 5px;
+}
+.iform_block input {
+  width: 90px;
+}
+.add_block {
+  background-color: black;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  cursor: pointer;
+}
+.add_block:hover {
+  background-color: rgb(71, 71, 71);
+}
+.main_screen {
+  display: flex;
+  flex-wrap: wrap;
+}
+.screen_size {
+  width: 50px;
+  height: 50px;
+  margin-right: 5px;
+  margin-top: 5px;
+}
 </style>

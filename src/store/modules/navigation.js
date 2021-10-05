@@ -29,6 +29,10 @@ export default {
                 state.nav.pop()
             state.nav.unshift({name: to.name, path: to.path})
             localStorage.setItem('nav', JSON.stringify(state.nav))
+        },
+        deleteAllNav(state){
+            state.nav = []
+            localStorage.setItem('nav', [])
         }
     }
 }

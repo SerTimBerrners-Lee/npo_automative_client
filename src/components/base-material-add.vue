@@ -394,27 +394,29 @@ export default {
     'searchPTypeMutation',]),
     clickMat(mat, type) {
       if(type == 'type') {
-          this.material = mat
-           if(mat.podMaterials) 
-                this.filterMatByPodType(mat.podMaterials)
-          this.obj.name = this.material.name
+        this.material = mat
+        if(mat.podMaterials && mat.instansMaterial != 1) {
+          this.filterMatByPodType(mat.podMaterials)
+        }
+            
+        this.obj.name = this.material.name
       }
       if(type == 'podM') {
-          this.getOnePodType(mat.id).then((mat) => {
-            if(!mat) return 0
-            this.podMaterial = mat
-            if(this.$route.params.type == 'create') 
-              if(JSON.parse(this.podMaterial.density))
-                this.obj.density_input =  JSON.parse(this.podMaterial.density).znach
+        this.getOnePodType(mat.id).then((mat) => {
+          if(!mat) return 0
+          this.podMaterial = mat
+          if(this.$route.params.type == 'create') 
+            if(JSON.parse(this.podMaterial.density))
+              this.obj.density_input =  JSON.parse(this.podMaterial.density).znach
+          
             
-              
-            if(this.material) {
-              this.obj.name = this.material.name + ' ' + this.podMaterial.name
-            } else {
-              this.obj.name = ''
-              this.obj.name = this.obj.name + ' ' + mat.name 
-            }
-          })
+          if(this.material) {
+            this.obj.name = this.material.name + ' ' + this.podMaterial.name
+          } else {
+            this.obj.name = ''
+            this.obj.name = this.obj.name + ' ' + mat.name 
+          }
+        })
       }
     },
     updateInputSelect(mat) {

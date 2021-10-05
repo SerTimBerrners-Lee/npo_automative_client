@@ -14,7 +14,7 @@
       <button class='btn-add btn' @click='addIssue'>Дать задачу</button>
     </div>
 
-    <div>
+    <div> 
       <h3>Задачи для меня</h3>
       <div class="type-issue">
         <span class='first_span'>Новые</span>
@@ -126,6 +126,7 @@
   <AddIssue 
     v-if='showAddIssue'
     :key='keyAddIssue'
+    @unmount='unmount'
   />
 	</div>
 </template>
@@ -145,6 +146,9 @@ export default {
     addIssue() {
       this.showAddIssue = true
       this.keyAddIssue = random(1, 999)
+    },
+    unmount(res) {
+      console.log(res)
     }
 	},
 	async mounted() {

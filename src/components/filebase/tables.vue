@@ -17,7 +17,7 @@
         <tr v-for="file in documents" 
             :key="file" 
             class="td-row" 
-            @click="propEvent(file)"
+            @click="e => propEvent(file, e.target.parentElement)"
             @dblclick="dbEvent(file)"
             >
             <td>{{ file.type }}</td>
@@ -42,12 +42,22 @@ import Search from '@/components/search.vue'
 
 export default {
     props: ['documents'],
+    data() {
+        return {
+            td: null
+        }
+    },
     components: {Search},
     methods: {
         getDateRevers(date) {
             return getReversDate(date).date
         },
-        propEvent(file) {
+        propEvent(file, e) {
+            if(this.td)
+                this.td.classList.remove('td-row-all')
+            this.td = e
+            this.td.classList.add('td-row-all')
+
             this.$emit('pushFile', file)
         },
         dbEvent(file) {

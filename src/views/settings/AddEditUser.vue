@@ -137,10 +137,10 @@
         </div>
         <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='showInformPanel' />
     <OpensFile 
-                :parametrs='itemFiles' 
-                v-if="showFile" 
-                :key='keyWhenModalGenerateFileOpen'
-            />
+        :parametrs='itemFiles' 
+        v-if="showFile" 
+        :key='keyWhenModalGenerateFileOpen'
+    />
     <BaseFileModal 
         v-if='showModalFile'
         :key='fileModalKey'
@@ -311,7 +311,7 @@ export default ({
             if(isEmpty(this.itemFiles))
                 return 0
             this.showFile = true
-            this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+            this.keyWhenModalGenerateFileOpen = random(10, 999)
         },
         addInBaseFile() {
             this.fileModalKey = random(10, 999),

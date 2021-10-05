@@ -25,7 +25,8 @@
                         :documents='allFiles' 
                         @pushFile='getFilesToClick' 
                         @dbPushFile='dbPushFile'
-                        @keySearch='keySearch'/>
+                        @keySearch='keySearch
+                        '/>
                     <Tables v-if="nowType == 'banned'" 
                         :documents='banFiles' 
                         @pushFile='getFilesToClick'

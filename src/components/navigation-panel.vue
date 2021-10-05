@@ -1,18 +1,21 @@
 <template>
     <div class="rout-nav">
-        <span class="home-link">
-            <router-link to="/">
+        <span 
+            class="home-link tooltip" 
+            @dblclick="clearAllNav" 
+            @click='$router.push("/")' 
+            >
+            <span class="tooltiptext">Кликните 2 раза чтобы очистить все вкладки</span>
                 <unicon name="house-user" fill="black" icon-style="monochrome"/>
-            </router-link>
-        </span>
-
+            </span>
+        
         <div v-for='(nav, inx) in getNav' :key='nav' :class='inx == 0 ? "links link_gradient" : "links"'>
             <span class='span_name active-span' v-if='inx == 0' ref='firstSpan'
                 @click='e => pushNavigate(e.target, nav.path)'>{{ nav.name }}</span>
             <span class='span_name' v-if='inx != 0'
                 @click='e => pushNavigate(e.target, nav.path)'>{{ nav.name }}</span>
             <span class='delit'
-                @click='delPuth(nav)'>X</span>
+                @click='delPuth(nav)'><unicon name="minus-square-full" fill="red" width='16' /></span>
         </div>
     </div>
 </template>
@@ -31,7 +34,7 @@ export default {
         ...mapGetters(['getNav']),
     },
     methods: {
-        ...mapMutations(['delitPathNavigate', 'pushPathNavigate']),
+        ...mapMutations(['delitPathNavigate', 'pushPathNavigate', 'deleteAllNav']),
         pushNavigate(span, path){
             if(this.span) 
                 this.span.classList.remove('active-span')
@@ -49,6 +52,9 @@ export default {
 
             this.toClick = true
             this.$router.push(path)
+        },
+        clearAllNav() {
+            this.deleteAllNav()
         },
         unactiveClass() {
             if(this.span) 
@@ -133,11 +139,8 @@ export default {
 .delit {
     font-size: small;
     font-weight: bold;
-    padding: 4px;
+    margin-top: 3px;
+    margin-left: 3px;
     color: #00000073;
-}
-.delit:hover {
-    background: #e6e6e6c5;
-    border-bottom: 1px solid rgb(202, 41, 41);
 }
 </style>
