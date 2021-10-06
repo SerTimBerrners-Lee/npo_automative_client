@@ -28,7 +28,7 @@
                 </tr>
             </table> 
             </div>
-            <div class="btn-control">
+            <div class="btn-control" v-if='getRoleAssets && !getRoleAssets.assets.usersListAssets.read'>
                 <button 
                     @click="userBan"
                     class='btn-small' > 
@@ -39,13 +39,13 @@
                     class='btn-small'>
                     Редактировать</button>
                 <button 
-                    @click="$router.push({path: `/employee/edit/add`})"
-                    class='btn-small'>
+                    @click="addUser"
+                    class='btn-small btn-add'>
                     Добавить
                 </button>
             </div>
         </div>
-        <div class="inform-content">
+        <div class="inform-content" v-if='getRoleAssets && getRoleAssets.assets.usersListAssets.hideUserData'>
             <h3 class="initial-user">{{ initial }}</h3>
             <div class="inform-block">
                 <div class="contact-inform">
@@ -187,7 +187,7 @@ export default {
             span: null
         }
     }, 
-    computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser']),
+    computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser', 'getRoleAssets', 'getAuth']),
     components: {
         InformFolder
     },
@@ -228,7 +228,10 @@ export default {
         userBan() {
             if(!this.id)
                 return showMessage('Ошибка', 'Пользователь не выбран', 'w', this)
-                
+
+            
+            if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone) 
+                return showMessage('', 'Недостаточно прав', 'w', this)
             this.banUserById(this.id).then(mes => {
                 showMessage('', mes.message, mes.type, this)
                 if(mes.type == 's') 
@@ -242,7 +245,17 @@ export default {
             if(!this.getSelectedUser) 
                 return 0
             
-            this.$router.push({path: `/employee/edit/edit`})
+            if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
+                this.$router.push({path: `/employee/edit/edit`})
+            else if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone && this.getRoleAssets.assets.usersListAssets.writeYour) 
+                if(this.getAuth && this.getAuth.id == this.getSelectedUser.id)
+                    this.$router.push({path: `/employee/edit/edit`})
+            else
+                return showMessage('', 'Недостаточно прав', 'w', this)
+        },
+        addUser() {
+            if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
+                this.$router.push({path: `/employee/edit/add`})
         }
     },
     async mounted() {

@@ -73,7 +73,7 @@ export default {
             this.$emit('exit')
             this.$router.push('/')
         }
-    },
+    }, 
     async mounted() {
     }
 }

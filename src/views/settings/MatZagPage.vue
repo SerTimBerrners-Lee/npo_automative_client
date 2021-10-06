@@ -3,7 +3,7 @@
         <h3>3. Материалы (типы и подтипы)</h3>
         <div class="cont">
             <TableMaterial :title='"Тип (Тип профиля заготовки)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small" @click='createEditMat("TYPE")'>Создать</button>
                 <button class="btn-small"  @click='createEditMat("TYPE", "edit")'>Редактировать</button>
                 <button class="btn-small" @click='removeItem("TYPE")'>Удалить</button>
@@ -11,7 +11,7 @@
         </div>
         <div class="cont">
             <TableMaterial :title='"Подтип (Материал заготовки)"' :alltypeM="allPodTypeM" :type="'podT'" @clickMat="clickMat"/>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small" @click='createEditMat("PODTYPE")'>Создать</button>
                 <button class="btn-small" @click="createEditMat('PODTYPE', 'edit')">Редактировать</button>
                 <button class="btn-small" @click="removePodType">Удалить</button>
@@ -36,14 +36,14 @@ export default {
         return {
             typeapp: 'create',
             showIs: false,
-            keyModals: random(20, 2132356723547632),
+            keyModals: random(20, 999),
             parametrs: {},
             itemsSelect: null,
             material: null,
             podType: null
         }
     },
-    computed: mapGetters(['allEdizm', 'alltypeM', 'allPodTypeM']), 
+    computed: mapGetters(['allEdizm', 'alltypeM', 'allPodTypeM', 'getRoleAssets']), 
     components: {addEditMat, TableMaterial},
     methods: {
         ...mapActions(['getAllEdizm', 

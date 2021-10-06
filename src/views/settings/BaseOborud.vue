@@ -6,7 +6,7 @@
                 :alltypeM="allEquipmentType" 
                 :type='"T"' 
                 @clickMat="clickEquipmentType"/>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small" @click='create("TYPE")'>Создать</button>
                 <button class="btn-small"  @click='edit("TYPE", "edit")'>Редактировать</button>
                 <button class="btn-small" @click='remove("TYPE")'>Удалить</button>
@@ -17,7 +17,7 @@
                 :alltypeM="allEquipmentPType" 
                 :type="'PT'" 
                 @clickMat="clickEquipmentPType"/>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small" @click='create("PODTYPE")'>Создать</button>
                 <button class="btn-small" @click="edit('PODTYPE', 'edit')">Редактировать</button>
                 <button class="btn-small" @click="remove('PODTYPE')">Удалить</button>
@@ -48,7 +48,7 @@ export default {
         } 
     },
     computed: mapGetters([
-        'allEquipmentType', 'allEquipmentPType'
+        'allEquipmentType', 'allEquipmentPType', 'getRoleAssets'
         ]),
     components: {addEditEquipment, TableMaterial},
     methods: {

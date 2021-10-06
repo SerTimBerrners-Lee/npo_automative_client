@@ -28,7 +28,7 @@
                     <td>Автоматика</td>
                 </tr>
             </table>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-small btn-add">Создать</button>
                 <button class="btn-small">Редактировать</button>
                 <button class="btn-small">Удалить</button>
@@ -36,3 +36,15 @@
         </div>
     </div>
 </template>
+
+<script>
+import {mapGetters} from 'vuex'
+export default {
+    data() {
+        return{
+
+        }
+    },
+    computed: mapGetters(['getRoleAssets'])
+}
+</script>

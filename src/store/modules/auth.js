@@ -3,11 +3,16 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
     state: {
         auth: localStorage.getItem('auth') ? 
-            JSON.parse(localStorage.getItem('auth')) : null
+            JSON.parse(localStorage.getItem('auth')) : null,
+        roleAssets: localStorage.getItem('roleAssets') ? 
+            JSON.parse(localStorage.getItem('roleAssets')) : null,
     },
     getters: { 
         getAuth(state) {
             return state.auth
+        },
+        getRoleAssets(state) {
+            return state.roleAssets
         }
     }, 
     actions: {
@@ -39,8 +44,13 @@ export default {
         },
         unAuth(state) {
             state.auth = null
+            state.roleAssets = null
             localStorage.removeItem('auth')
-
+            localStorage.removeItem('roleAssets')
+        },
+        setRoleAssets(state, role) {
+            state.roleAssets = role
+            localStorage.setItem('roleAssets', JSON.stringify(state.roleAssets))
         }
     }
 }

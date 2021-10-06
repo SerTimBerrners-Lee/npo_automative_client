@@ -26,7 +26,9 @@
                 </tbody>
             </table>
 
-            <div class="btn-control">
+            <div 
+                class="btn-control" 
+                v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small" @click='addEdizm("create")'>Создать</button>
                 <button class="btn-small" @click='addEdizm("edit")'>Редактировать</button>
                 <button class="btn-small" @click='delitEdizm'>Удалить</button>
@@ -50,17 +52,17 @@ export default {
         return {
             typeapp: 'create',
             showIs: false,
-            keyModals: random(20, 2132356723547632),
+            keyModals: random(20, 999),
             parametrs: {},
             itemsSelect: null
         }
     },
-    computed: mapGetters(['allEdizm', 'allTypeEdizm']),
+    computed: mapGetters(['allEdizm', 'allTypeEdizm', 'getRoleAssets']),
     components: {addEdizm},
     methods: {
         ...mapActions(['getAllEdizm', 'createEdizm', 'removeEdizm', 'updateEdizm']),
         addEdizm(tip) {
-            this.keyModals = random(20, 2132356723547632)
+            this.keyModals = random(20, 999)
             this.showIs = true
             if(tip == 'create') {
                  this.parametrs = {

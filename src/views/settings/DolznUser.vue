@@ -16,7 +16,7 @@
                     <td>{{ role.description }}</td>
                 </tr>
             </table>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-small btn-add" @click="addRole">Создать</button>
                 <button class="btn-small" @click="editRole">Редактировать</button>
                 <button class="btn-small" @click="delitRole">Удалить</button>
@@ -53,7 +53,7 @@ export default {
         InformFolder,
         AddRoles
     },
-    computed: mapGetters(['allRoles']),
+    computed: mapGetters(['allRoles', 'getRoleAssets']),
     methods: {
         ...mapActions(['fetchRoles', 'removeRole', 'createRole', 'editRoleById']),
         addRole() {

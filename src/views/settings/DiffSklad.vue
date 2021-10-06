@@ -23,9 +23,8 @@
                 </p>
             </div>
         </div>
-
            <div class="btn-control out-btn-control" 
-                 v-if='updateDeficit' style='margin-top: 30px;'>
+                 v-if='updateDeficit && getRoleAssets && getRoleAssets.assets.settingsAssets.edit' style='margin-top: 30px;'>
                 <button class="btn-status btn-black" 
                         style="height: 0px;" 
                         @click='setUpdate' >
@@ -47,7 +46,7 @@ export default {
             updateDeficit: false
         }
     },
-    computed: mapGetters(['getDeficit']),
+    computed: mapGetters(['getDeficit', 'getRoleAssets']),
     methods: {
         ...mapActions(['fetchDeficit', 'fetchUpdateDeficit']),
         update() {

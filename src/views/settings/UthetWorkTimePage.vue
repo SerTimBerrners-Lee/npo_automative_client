@@ -26,11 +26,25 @@
                 </tr>
             </table>
 
+            <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+                <button class="btn-add btn-small">Обновить</button>
+            </div>
+
        </div>
     </div>
 </template>
 
+<script>
+import {mapGetters} from 'vuex'
+export default {
+    data() {
+        return{
 
+        }
+    },
+    computed: mapGetters(['getRoleAssets'])
+}
+</script>
 <style scoped>
 .cont>span {
     font-size: 21px;

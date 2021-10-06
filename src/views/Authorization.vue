@@ -73,7 +73,7 @@
 
 <script>
 
-import { mapGetters, mapActions }from 'vuex'
+import { mapGetters, mapActions, mapMutations }from 'vuex'
 import { showMessage } from '@/js/'
 import InformFolder from '@/components/InformFolder.vue'
 export default {
@@ -82,7 +82,7 @@ export default {
         msg: String
     },
     components: {InformFolder},
-    computed: mapGetters(['getUsers']),
+    computed: mapGetters(['getUsers', 'getAuth']),
     data() {
         return {
             selectTabel: null,
@@ -100,7 +100,8 @@ export default {
         }
     },
     methods: {
-        ...mapActions(['getAllUsers', 'loginAuth']),
+        ...mapActions(['getAllUsers', 'loginAuth', 'getUserById']),
+        ...mapMutations(['setRoleAssets', 'updateAuth']),
         changeTabelUser() {
             this.getUsers.forEach((user) => {   
                 if(user.tabel == this.selectTabel) {
@@ -167,11 +168,18 @@ export default {
                 login: this.selectLogin,
                 password
             }).then(res => {
-                if(res.type == 's')  
-                    setTimeout(() => {
+                if(res.type == 's')  {
+                    if(this.getAuth && this.getAuth.id) {
+                        this.getUserById(this.getAuth.id).then(user => {
+                            this.updateAuth(user)
+                            if(user.role && user.role.assets) 
+                                this.setRoleAssets({...user.role, assets: JSON.parse(user.role.assets)})
+                        })
+                    }
+                    setTimeout(() => { 
                         this.$router.push('/')
                     }, 1000)
-
+                }
                 return showMessage('', res.message, res.type, this)
             })
             

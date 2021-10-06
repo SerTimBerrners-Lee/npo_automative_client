@@ -14,9 +14,21 @@
                     <td>199</td>
                 </tr>
             </table>
-            <div class="btn-control">
+            <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-small btn-add">Сохранить</button>
             </div>
         </div>
     </div>
 </template>
+
+<script>
+import {mapGetters} from 'vuex'
+export default {
+    data() {
+        return{
+
+        }
+    },
+    computed: mapGetters(['getRoleAssets'])
+}
+</script>

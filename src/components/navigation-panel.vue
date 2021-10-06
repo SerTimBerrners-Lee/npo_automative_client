@@ -17,22 +17,37 @@
             <span class='delit'
                 @click='delPuth(nav)'><unicon name="minus-square-full" fill="red" width='16' /></span>
         </div>
+        <InformFolder  :title='titleMessage'
+            :message = 'message'
+            :type = 'type'
+            v-if='showInformPanel'
+            :key='keyInformTip'
+        />
     </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations } from 'vuex';
-
+import { assetsFunction } from '@/js/assets.js';
+import { showMessage } from '@/js/'
+import InformFolder from '@/components/InformFolder.vue'
 export default {
     data() {
         return {
             span: null,
-            toClick: false
+            toClick: false,
+
+            titleMessage: '',
+            message: '',
+            type: '',
+            showInformPanel: false,
+            keyInformTip: 0,
         }
     },
     computed:{
-        ...mapGetters(['getNav']),
+        ...mapGetters(['getNav', 'getRoleAssets']),
     },
+    components: {InformFolder},
     methods: {
         ...mapMutations(['delitPathNavigate', 'pushPathNavigate', 'deleteAllNav']),
         pushNavigate(span, path){
@@ -47,9 +62,6 @@ export default {
             this.$refs.firstSpan.classList.remove('active-span')
 
             this.span.parentElement.classList.add('link_gradient')
-
-
-
             this.toClick = true
             this.$router.push(path)
         },
@@ -79,13 +91,20 @@ export default {
         },
     },
     async mounted() {
-        this.$router.beforeEach(async(to) => {
+        this.$router.beforeEach(async(to, from, next) => {
+            if(this.getRoleAssets) {
+                let assets = await assetsFunction(to.path, this.getRoleAssets.assets)
+                if(!assets) {
+                    next(false)
+                    return showMessage('', 'Недостаточно Прав!', 'w', this)
+                } else next()
+            }   else next()
+
             if(!this.toClick) {
                 this.pushPathNavigate(to)
                 this.unactiveClass()    
             }
             this.toClick = false
-                
         })
 
     }
@@ -107,6 +126,7 @@ export default {
     position: fixed;
     width: 100%;
     background: #515151;
+    z-index: 4;
 }
 .rout-nav>span:hover {
     cursor: pointer;

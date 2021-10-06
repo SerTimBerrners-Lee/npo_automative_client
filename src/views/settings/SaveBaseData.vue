@@ -26,22 +26,6 @@
         </div>
         <div class="db-date-block">
             <span class="span_db">Список резервных копий:</span>
-            <div class="card g1">
-                <div>
-                    <img class="img-to-card" src="@/assets/img/db_photo.webp" alt="db">
-                    <span class="date-span-db">
-                        29.08.2021
-                    </span>
-                </div>
-                <div>
-                    <div>
-                        Запустить 
-                    </div>
-                    <div>
-                        Уничтожить 
-                    </div>
-                </div>
-            </div>
             <div class="card g4">
                 <div>
                     <img class="img-to-card" src="@/assets/img/db_photo.webp" alt="db">
@@ -49,7 +33,7 @@
                         30.08.2021
                     </span>
                 </div>
-                <div>
+                <div  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                     <div>
                         Запустить 
                     </div>
@@ -61,6 +45,21 @@
         </div>
     </div>
 </template>
+
+<script>
+import {mapGetters} from 'vuex'
+export default {
+    data() {
+        return{
+
+        }
+    },
+    computed: mapGetters(['getRoleAssets']),
+    async mounted() {
+        console.log(this.getRoleAssets)
+    }
+}
+</script>
 
 <style scoped>
 #db_save {

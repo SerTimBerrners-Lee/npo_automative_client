@@ -52,7 +52,7 @@ export default {
             this.$emit('unmount', null)
         },
         addContact() {
-            if(this.initial.length < 4 || this.description.length < 4) return 0
+            if(this.initial.length < 1) return 0
             this.$emit('unmount', {
                 initial: this.initial,
                 description: this.description

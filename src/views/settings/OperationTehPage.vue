@@ -51,7 +51,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="btn-control">
+            <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                     <button class="btn-small btn-add"
                         @click='addOperation'
                         v-if='!isCreate'>Добавить</button>
@@ -80,7 +80,7 @@ export default {
             span: null
         }
     },
-    computed: mapGetters(['getTypeOperations']),
+    computed: mapGetters(['getTypeOperations', 'getRoleAssets']),
     methods: {
         ...mapActions([
             'createTypeOperation', 

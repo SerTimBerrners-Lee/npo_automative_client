@@ -17,9 +17,11 @@
                 </select>
             </div>
 
-            <button class="btn-add btn" @click='update' v-if="selectRole">Обновить
-                <unicon name="history" fill="black" />
-            </button>
+            <div v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+                <button class="btn-add btn" @click='update' v-if="selectRole">Обновить
+                    <unicon name="history" fill="black" />
+                </button>
+            </div>
         </div>
         <div class="cont-role-user" v-if='selectRole'>
             <div>
@@ -690,7 +692,7 @@
                     </div>
                 </div>
                 <div class="checkboxing-stil">
-                    <span>Редактироваине: </span>
+                    <span>Редактирование: </span>
                     <div>
                         <div class="button r button-3">
                         <input 
@@ -927,47 +929,63 @@
                     </div>
                     </div>
                 </div>
-                <div class="checkboxing-stil">
-                    <span>Дефицит: </span>
-                    <div>
-                        <div class="button r button-3">
-                        <input 
-                            type="checkbox" 
-                            class="checkbox" 
-                            @change="selectRole.assets.settingsAssets.deficit = !selectRole.assets.settingsAssets.deficit"
-                            :checked='selectRole.assets.settingsAssets.deficit'>
-                        <div class="knobs"></div>
-                        <div class="layer"></div>
-                    </div>
-                    </div>
-                </div>
             </div>
         </div>
+        <InformFolder  :title='titleMessage'
+            :message = 'message'
+            :type = 'type'
+            v-if='showInformPanel'
+            :key='keyInformTip'
+        />
     </div>
 </template>
 
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
 export default {
     data() {
         return{
             select_model: 'Выбрать роль',
             selectRole: null,
-            allChange: false
+            allChange: true,
+
+            titleMessage: '',
+            message: '',
+            type: '',
+            showInformPanel: false,
+            keyInformTip: 0,
         }
     },
-    computed: mapGetters(['allRoles']),
+    computed: mapGetters(['allRoles', 'getRoleAssets']),
+    components: {InformFolder},
     methods: {
-        ...mapActions(['fetchRoles']),
+        ...mapActions(['fetchRoles', 'fetchUpdateAssetsRole']),
         select_model_change(e) {
             for(let role of this.allRoles) {
-                if(role.id == e) 
+                if(role.id == e) {
                     this.selectRole = {...role, assets: JSON.parse(role.assets)}
+                    this.allChange = true
+                     Object.keys(this.selectRole.assets).forEach((e) => {
+                         if(this.selectRole.assets[e] == false) 
+                             this.allChange = false
+                     })
+                }
             }
         },
         update() {
-            console.log(this.selectRole)
+            if(!this.selectRole)
+                return 0;
+            
+            this.fetchUpdateAssetsRole(JSON.stringify({
+                id: this.selectRole.id,
+                assets: this.selectRole.assets
+            })).then(res => {
+               res ? showMessage('', 'Доступы обновлены, перезагрузите страницу чтобы изменения вступили в силу.', 's', this)
+                :   showMessage('', 'Неудалось обновить доступы для роли.', 'e', this)
+            })
         },
         allRasdel() {
             if(!this.selectRole)
@@ -981,7 +999,8 @@ export default {
                 }
             })
             
-        }
+        },
+
     },
     async mounted() {
         this.fetchRoles();
@@ -1009,7 +1028,6 @@ export default {
     .cont-role-user {
         width: 1050px;
         padding: 20px;
-
     }
     .checkboxing-stil {
         display: flex;

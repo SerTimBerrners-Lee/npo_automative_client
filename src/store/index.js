@@ -16,6 +16,7 @@ import cbed from './modules/cbed';
 import product from './modules/product';
 import buyer from './modules/buyer';
 import sclad from './modules/sclad';
+import issue from './modules/issue';
 
 export default createStore({
   modules: {
@@ -35,7 +36,8 @@ export default createStore({
     cbed,
     product,
     buyer,
-    sclad
+    sclad,
+    issue
   }
 })
   

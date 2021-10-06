@@ -21,7 +21,7 @@ import HeadersNav from '@/components/header-nav';
 import NavigationPanel from '@/components/navigation-panel';
 import Authorization from '@/views/Authorization.vue';
 import '@/assets/style/style.css'
-import { mapGetters } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex'
 
 export default {
   name: 'App',
@@ -38,11 +38,25 @@ export default {
   },
   computed: mapGetters(['getAuth']),
   methods: {
+    ...mapActions(['getUserById']),
+    ...mapMutations(['updateAuth', 'setRoleAssets']),
     exit() {
       console.log(this.getAuth)
     }
   },
   async mounted() {
+    // Токен обновляется после каждого обновления
+    if(this.getAuth && this.getAuth.id) {
+      let user = await this.getUserById(this.getAuth.id)
+      if(user) {
+        // Обновляем пользователя 
+        this.updateAuth(user)
+        // Обновляем роль
+        if(user.role && user.role.assets) {
+          this.setRoleAssets({...user.role, assets: JSON.parse(user.role.assets)})
+        }
+      }
+    }
   }
 }
 </script>

@@ -14,6 +14,7 @@ export default {
             const res = await fetch(`${PATH_TO_SERVER}api/roles/`)
             const result = await res.json()
             ctx.commit('updateRoles', result);
+            return true
         },
         async removeRole(ctx, id) {
             const res = await fetch(`${PATH_TO_SERVER}api/roles/` + id, {
@@ -44,7 +45,6 @@ export default {
             }
         },
         async editRoleById(ctx, param) {
-            console.log(param)
             const res = await fetch(`${PATH_TO_SERVER}api/roles/update`, {
                 method: 'post',
                 headers: {
@@ -62,6 +62,20 @@ export default {
             } else {
                 return 'error'
             }
+        },
+        async fetchUpdateAssetsRole(ctx, data) {
+            const res = await fetch(`${PATH_TO_SERVER}api/roles/assets`, {
+                method: 'post',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+                body: data
+            })
+            if(res.ok) {
+                ctx.dispatch('fetchRoles')
+                return true
+            }
         }
     },
     mutations: {
@@ -70,6 +84,6 @@ export default {
         },
         filterById(state, id) {
             state.roles = state.roles.filter(el => el.id != id)
-        }
+        },
     }
 }

@@ -20,7 +20,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="btn-control">
+            <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small">Создать</button>
                 <button class="btn-small">Редактировать</button>
                 <button class="btn-small">Удалить</button>
@@ -37,7 +37,7 @@
                     </tr>
                 </table>
             </div>
-            <div class="btn-control">
+            <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small">Создать</button>
                 <button class="btn-small">Редактировать</button>
                 <button class="btn-small">Удалить</button>
@@ -45,3 +45,15 @@
         </div>
     </div>
 </template>
+
+<script>
+import {mapGetters} from 'vuex'
+export default {
+    data() {
+        return{
+
+        }
+    },
+    computed: mapGetters(['getRoleAssets'])
+}
+</script>

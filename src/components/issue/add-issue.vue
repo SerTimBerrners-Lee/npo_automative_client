@@ -5,21 +5,21 @@
     <div :style="hiddens" >
       <h3>Новая задача №  от {{ dataReturn() }}</h3>
 			<h3>Примечание</h3>
-			<textarea></textarea>
+			<textarea v-model='description'></textarea>
       <div class='iform_block'>
         <h3>Информация</h3>
         <p>
           <span>Дата использования: </span>
-          <input type="text">
+          <input type="text" v-model='dateUse'>
         </p>
         <p>
           <span>Норма времени на выполнение: </span>
-          <input type="text">
+          <input type="text" v-model='normTime'>
           <span>ч.</span>
         </p>
         <p>
           <span>Источник: </span>
-          <input type="text">
+          <input type="text" :value='sourse.login'>
         </p>
         <p>
           <span>Исполнитель: </span>
@@ -38,13 +38,13 @@
         </p>
         <p>
           <span>Срочность: </span>
-          <select class='select-small' v-model="srokList[0]">
-            <option v-for='srok in srokList' :key='srok' :value='srok'>{{ srok }}</option>
+          <select class='select-small' v-model="srok">
+            <option v-for='(srok, inx) in srokList' :key='srok' :value='inx'>{{ srok }}</option>
           </select>
         </p>
         <p>
           <span>Статус: </span>
-          <input type="text">
+          <input type="text" v-model='status'>
         </p>
       </div>
       <div>
@@ -86,7 +86,7 @@
         </div>
         <p>
           <span>Общецеховые нужды: </span>
-          <input type="text" style='width: 20px'>
+          <input type="text" style='width: 20px' v-model='shopNeeds'>
         </p>
       </div>
     
@@ -130,6 +130,7 @@ import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { dataFormat, photoPreloadUrl } from '@/js/';
 import {random, isEmpty} from 'lodash';
+import {mapGetters, mapActions} from 'vuex';
 
 export default {
   props: ['parametrs'],
@@ -142,15 +143,11 @@ export default {
       showModalUser: false,
       keyModalUser: random(1, 999),
 
-      controllerList: [],
-      executorList: [],
       usersList: [],
       typeUserList: '',
 
-
       showModalProduct: false,
       keyModalProduct: random(1, 999),
-      izdList: [],
 
       fileArrModal: [],
       fileModalKey: random(10, 999),
@@ -169,16 +166,32 @@ export default {
 
       docFilesPreload: [],
       docFiles: [],
-      formData: new FormData()
+      formData: new FormData(),
+
+      description: '',
+      dateUse: '',
+      normTime: '',
+      sourse: '',
+      srok: '0',
+      status: '',
+      controllerList: [],
+      executorList: [],
+      izdList: [],
+      shopNeeds: ''
     }
   },
   components: {ModalUsersList, BaseProductModal, BaseFileModal, OpensFile},
-  mounted() {
+  computed: mapGetters(['getAuth']),
+  async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
+
+    if(this.getAuth)
+      this.sourse = {login: this.getAuth.login, id: this.getAuth.id}
   },
   methods: {
+    ...mapActions(['createIssue']),
     destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -190,6 +203,20 @@ export default {
     addIssue() {
       this.destroyModalF()
       this.$emit('unmount', 'test')
+
+      this.formData.append('description', this.description)
+      this.formData.append('dateUse', this.dateUse)
+      this.formData.append('normTime', this.normTime)
+      this.formData.append('sourse', this.sourse)
+      this.formData.append('srok', this.srok)
+      this.formData.append('status', this.status)
+      this.formData.append('controllerList', JSON.stringify(this.controllerList))
+      this.formData.append('executorList', JSON.stringify(this.executorList))
+      this.formData.append('izdList', JSON.stringify(this.izdList))
+      this.formData.append('shopNeeds', this.shopNeeds)
+      this.formData.append('fileArrModal', this.fileArrModal)
+
+      this.createIssue(this.formData)
     },  
 
     selectUser(type) {
@@ -247,9 +274,9 @@ export default {
           this.formData.append('document', f)
       })
 
+    },
   },
-    
-  },
+
 }
 </script>
 

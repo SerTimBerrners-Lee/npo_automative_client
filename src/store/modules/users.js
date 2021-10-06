@@ -73,6 +73,14 @@ export default {
                 },
                 body: JSON.stringify({...data})
             })
+        },
+
+        async getUserById(ctx, id) {
+            const res = await fetch(`${PATH_TO_SERVER}api/users/${id}`)
+            if(res.ok) { 
+                const respons = await res.json()
+                return respons
+            }
         }
     },
     mutations: {

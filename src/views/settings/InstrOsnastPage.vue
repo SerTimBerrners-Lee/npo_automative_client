@@ -6,7 +6,7 @@
                 :alltypeM="allTInstrument" 
                 :type='"T"' 
                 @clickMat="clickTInstrument"/>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small" @click='create("TYPE")'>Создать</button>
                 <button class="btn-small"  @click='edit("TYPE", "edit")'>Редактировать</button>
                 <button class="btn-small" @click='remove("TYPE")'>Удалить</button>
@@ -17,7 +17,7 @@
                 :alltypeM="allPTInstrument" 
                 :type="'PT'" 
                 @clickMat="clickPTInstrument"/>
-            <div class="btn-control">
+            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
                 <button class="btn-add btn-small" @click='create("PODTYPE")'>Создать</button>
                 <button class="btn-small" @click="edit('PODTYPE', 'edit')">Редактировать</button>
                 <button class="btn-small" @click="remove('PODTYPE')">Удалить</button>
@@ -47,7 +47,7 @@ export default {
             PTInstrument: null
         }
     },
-    computed: mapGetters(['allTInstrument', 'allPTInstrument']),
+    computed: mapGetters(['allTInstrument', 'allPTInstrument', 'getRoleAssets']),
     components: {addEditInstruent, TableMaterial},
     methods: {
         ...mapActions(['addNewTInstrument', 
