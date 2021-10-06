@@ -7,9 +7,9 @@
 					<div class="scroll-table" style="height: 690px;">
 						<table> 
 							<tr>
-								<th>Табельный номер</th>
-								<th>Должность</th>
-								<th style="width: 300px;">Инициалы</th>
+								<th style='width:10%;'>Табельный номер</th>
+								<th style='width:40%;'>Должность</th>
+								<th style='width:50%;'>Инициалы</th>
 							</tr>
 							<tr 
 								class="td-row" 
@@ -130,5 +130,8 @@ export default {
   textarea {
     height: 130px;
   }
+	table td:first-child {
+		text-align: center;
+	}
  
 </style>

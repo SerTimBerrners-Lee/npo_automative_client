@@ -2,7 +2,7 @@
     <div>
         <h3>12. Роли пользователей</h3>
         <div class='header_block'> 
-            <div>
+            <div> 
                 <span class="span-role">Роль: </span>
                 <select 
                     name="sel" 
@@ -377,7 +377,7 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <!-- <div>
                 <h3>Продукция НПО Автомотив</h3>
                 <div class="checkboxing-stil">
                     <span>Просмотр: </span>
@@ -421,7 +421,7 @@
                     </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div>
                 <h3>Сотрудники</h3>
                 <div class="checkboxing-stil">
@@ -439,7 +439,10 @@
                     </div>
                 </div>
                 <div class="checkboxing-stil">
-                    <span>Просмотр: </span>
+                    <span class='tooltip'>Просмотр: 
+                        <span class="tooltiptext">Когда включен "просмотр", пользователь может только просматривать. какие либо действия (Создать/Редактировать) для него недоступны!</span> 
+                    </span>
+                    
                     <div>
                         <div class="button r button-3">
                         <input 
@@ -481,7 +484,7 @@
                     </div>
                 </div>
             </div>
-            <div>
+            <!-- <div>
                 <h3>Себестоимость</h3>
                 <div class="checkboxing-stil">
                     <span>Просмотр: </span>
@@ -497,8 +500,8 @@
                     </div>
                     </div>
                 </div>
-            </div>
-            <div>
+            </div> -->
+            <!-- <div>
                 <h3>База файлов</h3>
                 <div class="checkboxing-stil">
                     <span>Просмотр: </span>
@@ -542,8 +545,8 @@
                     </div>
                     </div>
                 </div>
-            </div>
-            <div>
+            </div> -->
+            <!-- <div>
                 <h3>Технологические операции</h3>
                 <div class="checkboxing-stil">
                     <span>Заготовительная:</span>
@@ -674,11 +677,13 @@
                     </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div>
                 <h3>Настройки</h3>
                 <div class="checkboxing-stil">
-                    <span>Просмотр: </span>
+                    <span class='tooltip'>Просмотр: 
+                        <span class="tooltiptext">Если отключена возможность "Редактирование". <br>Когда включен "просмотр", пользователь может только просматривать. какие либо действия (Создать/Редактировать) для него недоступны!</span> 
+                    </span>
                     <div>
                         <div class="button r button-3">
                         <input 
@@ -692,7 +697,9 @@
                     </div>
                 </div>
                 <div class="checkboxing-stil">
-                    <span>Редактирование: </span>
+                    <span class='tooltip'>Редактирование: 
+                        <span class="tooltiptext"><strong class='warning'>опасно</strong> Если вы уберете для себя эту возможность, вы не сможете вернуть ее назад!!!</span> 
+                    </span>
                     <div>
                         <div class="button r button-3">
                         <input 
@@ -1033,6 +1040,10 @@ export default {
         display: flex;
         justify-content: space-between;
         margin-bottom: 10px;
+        margin-top: 14px;
+    }
+    .checkboxing-stil>span{
+        padding:1px;
     }
     .btn-add{
         margin-left: 100px;

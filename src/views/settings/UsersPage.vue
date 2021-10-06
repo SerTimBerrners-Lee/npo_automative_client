@@ -267,6 +267,9 @@ export default {
 </script> 
 
 <style scoped>
+table td:first-child {
+    text-align: center;
+}
 .table-content {
     width: max-content;
 }

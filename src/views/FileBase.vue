@@ -140,24 +140,25 @@ export default {
         getFilesToClick(file) {
             this.fetchFileById(file.id).then((res) => {
                 this.itemFiles = res
+                console.log(res)
                 this.nodeTableKey = random(5, 937e2)
             })
         },
         dbPushFile(file) {
             if(this.itemFiles) {
-                this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
+                this.keyWhenModalGenerateFileOpen = random(5, 999)
                 this.WhenModalGenerateFileOpenShow = true
             }else {
                 this.fetchFileById(file.id).then((res) => {
                 this.itemFiles = res
-                this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
+                this.keyWhenModalGenerateFileOpen = random(5, 999)
                 this.WhenModalGenerateFileOpenShow = true
                 })
             }
         },
         addingFileToDetal() {
             if(this.itemFiles) {
-                this.generateKeyBFM = random(5, 9373e2)
+                this.generateKeyBFM = random(5, 999)
                 this.showBFM = true
             }
         },
@@ -267,7 +268,6 @@ export default {
                 this.searchToFiles(str)
             }
             if(!this.searchToArr.length ) {
-                // this.searchFileType != this.nowFileType) {
                 this.searchToArr = this.arrFileGet
                 this.searchFileType = this.nowFileType
             }

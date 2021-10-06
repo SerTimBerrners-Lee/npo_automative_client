@@ -88,10 +88,42 @@ const timeFormat = () => {
 const addNull = (str) => str.length == 1 ? "0" + str : str
 
 
+const dateIncrementHors = (date, hors) =>  {
+    if(date.split('.').length != 3) return ''
+    let day = Number(date.split('.')[0])
+    let mount = Number(date.split('.')[1])  
+    let year = Number(date.split('.')[2]) 
+
+    let endDayMount = new Date(year, mount, 0).getDate()
+
+    let iterationHors = Math.floor(hors / 24)
+    let sumDay = day + iterationHors;
+    let lastDay = day
+    day = day + iterationHors
+
+    while(sumDay > endDayMount){
+        mount = mount + 1
+        if(mount > 12) {
+            mount = 1
+            year++
+        }
+        day = 1
+
+        iterationHors = iterationHors - (endDayMount - lastDay) 
+        endDayMount = new Date(year, mount, 0).getDate()
+        sumDay = day + iterationHors;
+        day = (iterationHors - 1) || 1
+
+    }
+
+    return {day, mount, year, iterationHors}
+}
+
 export  {
     getReversDate,
     showMessage,
     photoPreloadUrl,
     dataFormat,
-    timeFormat
+    timeFormat,
+    dateIncrementHors
 }

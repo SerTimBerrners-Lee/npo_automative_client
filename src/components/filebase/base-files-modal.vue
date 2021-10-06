@@ -20,7 +20,7 @@
                     <span @click="e => getType('СД', e.target)">Сопутствующие документы (тип СД)</span>
                 </div> 
 
-                <div class="scroll-table" style="height: 600px;">
+                <div class="scroll-table" style="height: 600px; max-width: 97%; ">
                     <Tables v-if="nowType == 'all'" 
                         :documents='allFiles' 
                         @pushFile='getFilesToClick' 
@@ -301,6 +301,9 @@ export default {
 <style scoped>
     .delete_span {
         padding-top: 2px;
+    }
+    table{
+        max-width: 97%;
     }
     .out-btn-control {
         margin-top: 20px;

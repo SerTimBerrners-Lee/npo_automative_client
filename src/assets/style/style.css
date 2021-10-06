@@ -1,4 +1,11 @@
 
+
+.warning{
+    font-weight: bold;
+    text-transform: uppercase;
+    color: rgb(190, 22, 22);
+}
+
 .tooltip .tooltiptext {
     visibility: hidden;
     background-color: #464646;

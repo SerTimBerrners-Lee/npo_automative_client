@@ -30,7 +30,6 @@
             <th>Дата задачи</th>
             <th>Осталось дней</th>
             <th>Источник</th>
-            <th>Артикул</th>
             <th>Наименование</th>
             <th>Срочность</th>
             <th>Исполнитель</th>
@@ -40,6 +39,31 @@
             <th>Контроль до</th>
             <th>Время на контроль, ч</th>
             <th>Статус</th>
+          </tr>
+          <tr v-for='issue in getForMeIssue' :key='issue'>
+            <td class='center'>{{ issue.name.split('от')[0].slice(1, 2) }}</td>
+            <td class="center">{{ issue.dateUse }}</td>
+            <td class='center'>{{ incrementDay(issue.dateUse, issue.normTime) }}</td>
+            <td>{{ issue.sourse ? JSON.parse(issue.sourse).login : '' }}</td>
+            <td>{{ issue.name }}</td>
+            <td class='center'>{{ srokList[issue.srok] }}</td>
+            <td>
+              <select class="select-small">
+                <option v-for='us in issue.users' 
+                  :value='us.id' :key='us'>{{ us.login }}</option>
+              </select>
+            </td>
+            <td>{{ dateIncrementHors(issue.dateUse, issue.normTime) }}</td>
+            <td class='center'>{{ issue.normTime }}</td>
+            <td>
+               <select class="select-small">
+                <option v-for='us in issue.controllers' 
+                  :value='us.id' :key='us'>{{ us.login }}</option>
+              </select>
+            </td>
+            <td>{{ dateIncrementHors(issue.dateUse, issue.normTime) }}</td>
+            <td class='center'>{{ issue.srok }}</td>
+            <td>{{ issue.status }}</td>
           </tr>
         </table>
       </div>
@@ -134,29 +158,63 @@
 <script>
 import {random} from 'lodash';
 import AddIssue from '@/components/issue/add-issue.vue';
+import { mapActions, mapGetters } from 'vuex'; 
+import { dateIncrementHors } from '@/js/'
+
 export default {
 	data() {
 		return{
       showAddIssue: false,
-      keyAddIssue: random(1, 999)
+      keyAddIssue: random(1, 999),
+
+      srokList: [
+        'Срочно',
+        'Нормально',
+        'Отложено',
+        'На контроль'
+      ],
 		}
 	},
+  computed: 
+    mapGetters([
+      'getAuth',
+      'getForMeIssue',
+      'getMyIssues',
+      'getMyController'
+    ]),
 	components: {AddIssue},
 	methods: {
+    ...mapActions(['fetchIssueList']),
     addIssue() {
       this.showAddIssue = true
       this.keyAddIssue = random(1, 999)
     },
     unmount(res) {
       console.log(res)
-    }
-	},
+    },
+    dateIncrementHors(date, hors) {
+      let dat = dateIncrementHors(date, hors)
+      return `${dat.day}.${dat.mount}.${dat.year}`
+    },
+    incrementDay(date, hors) {
+      let dat = dateIncrementHors(date, hors)
+      return `${dat.iterationHors}`
+    },
+	}, 
 	async mounted() {
-
+    if(this.getAuth && this.getAuth.id) 
+      this.fetchIssueList(this.getAuth.id)
 	}
 }
 </script>
 <style scoped>
+.center {
+  text-align: center;
+}
+.select-small {
+  border:none;
+  background: white;
+}
 .block {
   padding: 5px;
 }

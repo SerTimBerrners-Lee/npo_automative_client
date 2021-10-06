@@ -207,14 +207,14 @@ export default {
       this.formData.append('description', this.description)
       this.formData.append('dateUse', this.dateUse)
       this.formData.append('normTime', this.normTime)
-      this.formData.append('sourse', this.sourse)
+      this.formData.append('sourse', JSON.stringify(this.sourse))
       this.formData.append('srok', this.srok)
       this.formData.append('status', this.status)
       this.formData.append('controllerList', JSON.stringify(this.controllerList))
       this.formData.append('executorList', JSON.stringify(this.executorList))
       this.formData.append('izdList', JSON.stringify(this.izdList))
       this.formData.append('shopNeeds', this.shopNeeds)
-      this.formData.append('fileArrModal', this.fileArrModal)
+      this.formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
 
       this.createIssue(this.formData)
     },  
@@ -308,6 +308,7 @@ export default {
 }
 textarea {
   height: 130px;
+  width: 99%;
 }
 .iform_block *, .prov_block * {
   margin-left: 5px;
