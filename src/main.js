@@ -12,9 +12,10 @@ import { uniTimes,
         uniTrash, 
         uniSearchAlt,
         uniCheck,
+        uniHistory,
         uniMinusSquareFull     } from 'vue-unicons/dist/icons'
 
-Unicon.add([uniMinusSquareFull, uniTimes, uniSetting, uniUser, uniPower, uniHouseUserMonochrome, uniPlay, uniTrash, uniSearchAlt, uniCheck])
+Unicon.add([uniHistory, uniMinusSquareFull, uniTimes, uniSetting, uniUser, uniPower, uniHouseUserMonochrome, uniPlay, uniTrash, uniSearchAlt, uniCheck])
 
 createApp(App)
     .use(store)
