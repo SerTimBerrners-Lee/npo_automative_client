@@ -40,7 +40,9 @@
             <th>Время на контроль, ч</th>
             <th>Статус</th>
           </tr>
-          <tr v-for='issue in getForMeIssue' :key='issue'>
+          <tr v-for='issue in getForMeIssue' 
+            @click='(issue)'
+            :key='issue'>
             <td class='center'>{{ issue.name.split('от')[0].slice(1, 2) }}</td>
             <td class="center">{{ issue.dateUse }}</td>
             <td class='center'>{{ incrementDay(issue.dateUse, issue.normTime) }}</td>
@@ -62,7 +64,7 @@
               </select>
             </td>
             <td>{{ dateIncrementHors(issue.dateUse, issue.normTime) }}</td>
-            <td class='center'>{{ issue.srok }}</td>
+            <td class='center'>{{ issue.srok_control }}</td>
             <td>{{ issue.status }}</td>
           </tr>
         </table>
@@ -92,6 +94,36 @@
             <th>Выполнить до</th>
             <th>Статус</th>
           </tr>
+          <tr v-for='issue of getMyIssues' 
+            :key='issue' 
+            @click='showIssue(issue)'
+            class='td-row'>
+            <td class='center'>{{ issue.name.split('от')[0].slice(1, 2) }}</td>
+            <td class="center">{{ issue.dateUse }}</td>
+            <td>{{ issue.sourse ? JSON.parse(issue.sourse).login : '' }}</td>
+            <td>
+               <select class="select-small">
+                <option v-for='us in issue.users' 
+                  :value='us.id' :key='us'>{{ us.login }}</option>
+              </select>
+            </td>
+            <td>
+              <select class="select-small">
+                <option v-for='us in issue.controllers' 
+                  :value='us.id' :key='us'>{{ us.login }}</option>
+              </select>
+            </td>
+            <td>{{ issue.description }}</td>
+            <td>
+              <select class="select-small">
+                <option v-for='us in JSON.parse(issue.izdList)' 
+                  :value='us.id' :key='us'>{{ us.name }}</option>
+              </select>
+            </td>
+            <td class='center'>{{ srokList[issue.srok] }}</td>
+            <td>{{ dateIncrementHors(issue.dateUse, issue.normTime) }}</td>
+            <td>{{ issue.status }}</td>
+          </tr>
         </table>
       </div>
     </div>
@@ -110,15 +142,44 @@
           <tr>
             <th>№</th>
             <th>Дата задачи</th>
+            <th>Осталось дней</th>
             <th>Источник</th>
-            <th>Исполнитель</th>
-            <th>Контролер</th>
-            <th>Примечание</th>
-            <th>Привязка</th>
+            <th>Наименование</th>
             <th>Срочность</th>
+            <th>Исполнитель</th>
             <th>Выполнить до</th>
+            <th>Время на выполнение, ч</th>
+            <th>Контролер</th>
             <th>Контроль до</th>
+            <th>Время на контроль, ч</th>
             <th>Статус</th>
+          </tr>
+          <tr v-for='issue in getMyController' 
+            @click='(issue)'
+            :key='issue'>
+            <td class='center'>{{ issue.name.split('от')[0].slice(1, 2) }}</td>
+            <td class="center">{{ issue.dateUse }}</td>
+            <td class='center'>{{ incrementDay(issue.dateUse, issue.normTime) }}</td>
+            <td>{{ issue.sourse ? JSON.parse(issue.sourse).login : '' }}</td>
+            <td>{{ issue.name }}</td>
+            <td class='center'>{{ srokList[issue.srok] }}</td>
+            <td>
+              <select class="select-small">
+                <option v-for='us in issue.users' 
+                  :value='us.id' :key='us'>{{ us.login }}</option>
+              </select>
+            </td>
+            <td>{{ dateIncrementHors(issue.dateUse, issue.normTime) }}</td>
+            <td class='center'>{{ issue.normTime }}</td>
+            <td>
+               <select class="select-small">
+                <option v-for='us in issue.controllers' 
+                  :value='us.id' :key='us'>{{ us.login }}</option>
+              </select>
+            </td>
+            <td>{{ dateIncrementHors(issue.dateUse, issue.normTime) }}</td>
+            <td class='center'>{{ issue.srok_control }}</td>
+            <td>{{ issue.status }}</td>
           </tr>
         </table>
       </div>
@@ -151,6 +212,7 @@
     v-if='showAddIssue'
     :key='keyAddIssue'
     @unmount='unmount'
+    :editIssue='selectedIssue'
   />
 	</div>
 </template>
@@ -173,6 +235,7 @@ export default {
         'Отложено',
         'На контроль'
       ],
+      selectedIssue: null
 		}
 	},
   computed: 
@@ -188,6 +251,7 @@ export default {
     addIssue() {
       this.showAddIssue = true
       this.keyAddIssue = random(1, 999)
+      this.selectedIssue = null
     },
     unmount(res) {
       console.log(res)
@@ -200,6 +264,10 @@ export default {
       let dat = dateIncrementHors(date, hors)
       return `${dat.iterationHors}`
     },
+    showIssue(issue) {
+      this.addIssue()
+      this.selectedIssue = issue
+    }
 	}, 
 	async mounted() {
     if(this.getAuth && this.getAuth.id) 
@@ -208,12 +276,11 @@ export default {
 }
 </script>
 <style scoped>
-.center {
-  text-align: center;
-}
 .select-small {
   border:none;
   background: white;
+  min-width: 95%;
+  max-width: 95%;
 }
 .block {
   padding: 5px;
