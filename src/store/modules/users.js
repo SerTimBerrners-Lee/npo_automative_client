@@ -81,6 +81,7 @@ export default {
                 const respons = await res.json()
                 return respons
             }
+            return false
         }
     },
     mutations: {
