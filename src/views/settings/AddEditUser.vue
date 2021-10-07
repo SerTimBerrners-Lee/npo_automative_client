@@ -154,208 +154,207 @@
 
 import { mapActions, mapGetters } from 'vuex';
 import InformFolder from '@/components/InformFolder.vue';
-import showMessage from '@/js/inform_folder.js'
-import photoPreloadUrl from '@/js/photo_preload.js'
+import {photoPreloadUrl, showMessage} from '@/js/'
 import {isEmpty, random} from 'lodash'
 import PATH_TO_SERVER from '@/js/path.js'
 import OpensFile from '@/components/filebase/openfile.vue'
 import BaseFileModal from '@/components/filebase/base-files-modal.vue'
 
 export default ({ 
-    data() {
-        return {
-            docFiles: [],
-            selectFiles: Object,
-            editTableKontact: false,
-            showInformPanel: false,
-            titleMessage: '',
-            keyInformTip: 21, 
-            message: '',
-            type: '',
-            urlImg: '',
-            imgShow: false,
-            fileFolder: null,
-            object: {
-                adress: '',
-                adressProps: '',
-                phone: '', 
-                email: '',
-                initial: '',
-                tabel: '',
-                roles: '',
-                dateWork: '',
-                dateUnWork: '',
-                login: '',
-                password: '',
-                birthday: '',
-                haracteristic: '',
-                primetch: ''
-            },
-            id: null,
+  data() {
+      return {
+          docFiles: [],
+          selectFiles: Object,
+          editTableKontact: false,
+          showInformPanel: false,
+          titleMessage: '',
+          keyInformTip: 21, 
+          message: '',
+          type: '',
+          urlImg: '',
+          imgShow: false,
+          fileFolder: null,
+          object: {
+              adress: '',
+              adressProps: '',
+              phone: '', 
+              email: '',
+              initial: '',
+              tabel: '',
+              roles: '',
+              dateWork: '',
+              dateUnWork: '',
+              login: '',
+              password: '',
+              birthday: '',
+              haracteristic: '',
+              primetch: ''
+          },
+          id: null,
 
-            itemFiles: null,
-            showFile: false,
-            keyWhenModalGenerateFileOpen: random(10, 999),
+          itemFiles: null,
+          showFile: false,
+          keyWhenModalGenerateFileOpen: random(10, 999),
 
-            fileArrModal: [],
-            fileModalKey: random(10, 999),
-            showModalFile: false,
+          fileArrModal: [],
+          fileModalKey: random(10, 999),
+          showModalFile: false,
+      }
+  },
+  computed: {
+      ...mapGetters(['allRoles', 'getSelectedUser']),
+  },
+  components: {
+    InformFolder,
+    OpensFile,
+    BaseFileModal
+  },
+  methods: {
+    ...mapActions([
+        'saveUser', 
+        'fetchRoles', 
+        'banUserById',
+        'updateUser',
+        'deleteFIleForUser'
+    ]),
+
+    saveData() {
+        if(this.object.tabel.length > 4)
+            return showMessage('', 'Тебель не может быть больше 4-х символов', 'e', this)
+        if( this.object.password.length < 5)
+            return showMessage('', 'Пароль не может быть меньше 5 символов', 'e', this)
+          if(this.object.login.length < 3)
+            return showMessage('', 'Пароль не может быть менее 3-х символов', 'e', this)
+        if(!Number(this.object.tabel))
+            return showMessage('', 'Тебель должен быть числом', 'e', this)
+        this.saveContact()
+        const formData = new FormData()
+        for (let dat in this.object) {
+            formData.append(dat, this.object[dat])
         }
-    },
-    computed: {
-        ...mapGetters(['allRoles', 'getSelectedUser']),
-    },
-    components: {
-        InformFolder,
-        OpensFile,
-        BaseFileModal
-    },
-    methods: {
-        ...mapActions([
-            'saveUser', 
-            'fetchRoles', 
-            'banUserById',
-            'updateUser',
-            'deleteFIleForUser'
-        ]),
+        if(this.fileFolder)
+            formData.append('image', this.fileFolder)
 
-        saveData() {
-            if(this.object.tabel.length > 4)
-                return showMessage('', 'Тебель не может быть больше 4-х символов', 'e', this)
-            if( this.object.password.length < 5)
-                return showMessage('', 'Пароль не может быть меньше 5 символов', 'e', this)
-             if(this.object.login.length < 3)
-                return showMessage('', 'Пароль не может быть менее 3-х символов', 'e', this)
-            if(!Number(this.object.tabel))
-                return showMessage('', 'Тебель должен быть числом', 'e', this)
-            this.saveContact()
-            const formData = new FormData()
-            for (let dat in this.object) {
-                formData.append(dat, this.object[dat])
+        if(this.docFiles.length > 0) {
+            for(let file of this.docFiles) {
+                formData.append('document', file)
             }
-            if(this.fileFolder)
-                formData.append('image', this.fileFolder)
-
-            if(this.docFiles.length > 0) {
-                for(let file of this.docFiles) {
-                    formData.append('document', file)
-                }
-            }
-
-            if(this.fileArrModal.length)
-                formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
-
-            // А здесь смотрим если редактируем вызываем другую функцию
-            if(this.$route.params.title == 'edit') {
-                formData.append('id', this.id)
-                this.updateUser(formData).then(res => {
-                    setTimeout(() => this.$router.push('/employee'), 4000)
-                    if(res.ok)
-                        return showMessage('', 'Данные переданны для обработки на сервер', 'w', this)
-                    else 
-                        return showMessage('', 'Произошла ошибка на сервере', 'e', this)
-                })
-                return 0;
-            }
-
-            this.saveUser(formData).then(m => {
-                if(m.type == 'error')
-                    return showMessage('Ошибка', m.message, 'e', this)
-                if(m.type == 'success') {
-                    showMessage('Успешно', 'Пользователь успешно создан', 's', this)
-                    setTimeout(() => this.$router.push('/employee'), 1000)
-                }
-
-            });
-
-        },
-        fileFolderF(e) {
-            this.fileFolder = e.target.files[0]
-            photoPreloadUrl(this.fileFolder, this)
-        },
-        saveContact() {
-            this.object.adress = this.$refs.adress.textContent
-            this.object.adressProps = this.$refs.adressProps.textContent
-            this.object.phone = this.$refs.phone.textContent
-            this.object.email = this.$refs.email.textContent
-        },
-        editIsContac(isQ) {
-            if(isQ) {
-                this.$refs.adress.textContent = this.object.adress
-                this.$refs.adressProps.textContent = this.object.adressProps
-                this.$refs.phone.textContent = this.object.phone
-                this.$refs.email.textContent = this.object.email
-            }
-        },
-        delitFilesDoc(){
-            if(this.itemFiles && this.docFiles.length) {
-                this.docFiles = this.docFiles.filter(f => f.id != this.itemFiles.id)
-                this.deleteFIleForUser({userId: this.id, fileId: this.itemFiles.id})
-            }
-        },
-        addDock(val) {
-            val.target.files.forEach(f => {
-                this.docFiles.push(f)
-            })
-        },
-        bannedUser() {
-            if(isEmpty(this.getSelectedUser)) 
-                return 0
-            this.banUserById(this.getSelectedUser.id).then(mes => {
-                showMessage('', mes.message, mes.type, this)
-                setTimeout(() => this.$router.push({path: `/employee`}), 1000)
-            })
-        },
-        setDocs(dc) {
-            this.itemFiles = dc
-            if(isEmpty(this.itemFiles))
-                return 0
-            this.showFile = true
-            this.keyWhenModalGenerateFileOpen = random(10, 999)
-        },
-        addInBaseFile() {
-            this.fileModalKey = random(10, 999),
-            this.showModalFile = true 
-        },
-        unmount_filemodal (fileArrModal) {
-            this.fileArrModal = fileArrModal
         }
-    },
-    async mounted() {
-        this.fetchRoles()
+
+        if(this.fileArrModal.length)
+            formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
+
+        // А здесь смотрим если редактируем вызываем другую функцию
         if(this.$route.params.title == 'edit') {
-            if(isEmpty(this.getSelectedUser)) {
-                this.$router.push(`/employee/`)
-                return 0
-            }
-            this.id = this.getSelectedUser.id
-            //Заполняем данные 
-            this.object.adress = this.getSelectedUser.adress
-            this.object.adressProps = this.getSelectedUser.adressProps
-            this.object.phone = this.getSelectedUser.phone
-            this.object.email = this.getSelectedUser.email
-            this.object.initial = this.getSelectedUser.initial
-            this.object.tabel = this.getSelectedUser.tabel
-            this.object.roles = this.getSelectedUser.role ? this.getSelectedUser.role.id : null
-            this.object.dateWork = this.getSelectedUser.dateWork
-            this.object.dateUnWork = this.getSelectedUser.dateUnWork
-            this.object.login = this.getSelectedUser.login
-            this.object.password = this.getSelectedUser.password
-            this.object.birthday = this.getSelectedUser.birthday
-            this.object.haracteristic = this.getSelectedUser.haracteristic
-            this.object.primetch = this.getSelectedUser.primetch
+            formData.append('id', this.id)
+            this.updateUser(formData).then(res => {
+                setTimeout(() => this.$router.push('/employee'), 4000)
+                if(res.ok)
+                    return showMessage('', 'Данные переданны для обработки на сервер', 'w', this)
+                else 
+                    return showMessage('', 'Произошла ошибка на сервере', 'e', this)
+            })
+            return 0;
+        }
 
-            if(this.getSelectedUser.image) {
-                this.imgShow = true
-                this.urlImg = PATH_TO_SERVER+this.getSelectedUser.image
+        this.saveUser(formData).then(m => {
+            if(m.type == 'error')
+                return showMessage('Ошибка', m.message, 'e', this)
+            if(m.type == 'success') {
+                showMessage('Успешно', 'Пользователь успешно создан', 's', this)
+                setTimeout(() => this.$router.push('/employee'), 1000)
             }
 
-            if(this.getSelectedUser.documents.length) {
-                this.docFiles = this.getSelectedUser.documents
-            }
+        });
 
+    },
+    fileFolderF(e) {
+        this.fileFolder = e.target.files[0]
+        photoPreloadUrl(this.fileFolder, this)
+    },
+    saveContact() {
+        this.object.adress = this.$refs.adress.textContent
+        this.object.adressProps = this.$refs.adressProps.textContent
+        this.object.phone = this.$refs.phone.textContent
+        this.object.email = this.$refs.email.textContent
+    },
+    editIsContac(isQ) {
+        if(isQ) {
+            this.$refs.adress.textContent = this.object.adress
+            this.$refs.adressProps.textContent = this.object.adressProps
+            this.$refs.phone.textContent = this.object.phone
+            this.$refs.email.textContent = this.object.email
         }
     },
+    delitFilesDoc(){
+        if(this.itemFiles && this.docFiles.length) {
+            this.docFiles = this.docFiles.filter(f => f.id != this.itemFiles.id)
+            this.deleteFIleForUser({userId: this.id, fileId: this.itemFiles.id})
+        }
+    },
+    addDock(val) {
+        val.target.files.forEach(f => {
+            this.docFiles.push(f)
+        })
+    },
+    bannedUser() {
+        if(isEmpty(this.getSelectedUser)) 
+            return 0
+        this.banUserById(this.getSelectedUser.id).then(mes => {
+            showMessage('', mes.message, mes.type, this)
+            setTimeout(() => this.$router.push({path: `/employee`}), 1000)
+        })
+    },
+    setDocs(dc) {
+        this.itemFiles = dc
+        if(isEmpty(this.itemFiles))
+            return 0
+        this.showFile = true
+        this.keyWhenModalGenerateFileOpen = random(10, 999)
+    },
+    addInBaseFile() {
+        this.fileModalKey = random(10, 999),
+        this.showModalFile = true 
+    },
+    unmount_filemodal (fileArrModal) {
+        this.fileArrModal = fileArrModal
+    }
+  },
+  async mounted() {
+      this.fetchRoles()
+      if(this.$route.params.title == 'edit') {
+          if(isEmpty(this.getSelectedUser)) {
+              this.$router.push(`/employee/`)
+              return 0
+          }
+          this.id = this.getSelectedUser.id
+          //Заполняем данные 
+          this.object.adress = this.getSelectedUser.adress
+          this.object.adressProps = this.getSelectedUser.adressProps
+          this.object.phone = this.getSelectedUser.phone
+          this.object.email = this.getSelectedUser.email
+          this.object.initial = this.getSelectedUser.initial
+          this.object.tabel = this.getSelectedUser.tabel
+          this.object.roles = this.getSelectedUser.role ? this.getSelectedUser.role.id : null
+          this.object.dateWork = this.getSelectedUser.dateWork
+          this.object.dateUnWork = this.getSelectedUser.dateUnWork
+          this.object.login = this.getSelectedUser.login
+          this.object.password = this.getSelectedUser.password
+          this.object.birthday = this.getSelectedUser.birthday
+          this.object.haracteristic = this.getSelectedUser.haracteristic
+          this.object.primetch = this.getSelectedUser.primetch
+
+          if(this.getSelectedUser.image) {
+              this.imgShow = true
+              this.urlImg = PATH_TO_SERVER+this.getSelectedUser.image
+          }
+
+          if(this.getSelectedUser.documents.length) {
+              this.docFiles = this.getSelectedUser.documents
+          }
+
+      }
+  },
 })
 </script>
 

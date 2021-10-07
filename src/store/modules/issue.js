@@ -17,7 +17,7 @@ export default {
 			return state.forMeIssue
 		},
 		getMyIssues(state) {
-			return state.meIssues
+			return state.myIssues
 		},
 		getMyController(state) {
 			return state.myController
@@ -35,12 +35,25 @@ export default {
 				return result
 			}
 		},
+		async updateIssue(ctx, data) {
+			const res = await fetch(`${PATH_TO_SERVER}api/issue`, {
+				method: 'PUT',
+				body: data
+			})
+			if(res.ok) {
+				const result = await res.json()
+				console.log(result)
+				return result
+			}
+		},
 		async fetchIssueList(ctx, userId) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/issue`)
-			const result = await res.json()
-			ctx.commit('updateIssues', result)
-			ctx.commit('issueTypesMutation', userId)
-			return result
+			if(res.ok) {
+				const result = await res.json()
+				ctx.commit('updateIssues', result)
+				ctx.commit('issueTypesMutation', userId)
+				return result
+			}
 		}
 	},
 	mutations: {
@@ -48,11 +61,11 @@ export default {
 			state.issues = result
 		},
 		issueTypesMutation(state, userId) {
-			console.log(state.issues[state.issues.length - 1])
+			state.forMeIssue = []
+			state.myController = []
+			state.myIssues = []
+
 			state.issues.filter(issue => {
-				state.forMeIssue = []
-				state.myController = []
-				state.myIssues = []
 				// задачи для меня
 				if(issue.users && issue.users.length) {
 					issue.users.forEach(user => {
@@ -71,7 +84,8 @@ export default {
 				if(issue.sourse) {
 					try {
 						let issuePars = JSON.parse(issue.sourse)
-						state.myIssues.push(issuePars)
+						if(issuePars.id == userId)
+							state.myIssues.push(issue)
 					} catch(e) {
 						console.error(e)
 					}

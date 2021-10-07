@@ -3,14 +3,19 @@
   <div :class='destroyModalLeft' @click="destroyModalF"></div>
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
-      <h3>Новая задача №  от {{ dataReturn() }}</h3>
+      <h3 v-if='editIssue'>Задача {{ editIssue.name }}</h3>
+      <h3 v-else>Новая задача №  от {{ dataReturn() }}</h3>
 			<h3>Примечание</h3>
 			<textarea v-model='description'></textarea>
       <div class='iform_block'>
         <h3>Информация</h3>
-        <p>
+        <p class='p_picter'>
           <span>Дата использования: </span>
-          <input type="text" v-model='dateUse'>
+          <DatePicterCustom 
+            v-if='dateUse'
+            @unmount='changeDatePicter' 
+            :dateStart='dateUse'
+            />
         </p>
         <p>
           <span>Норма времени на выполнение: </span>
@@ -33,7 +38,7 @@
         </p>
         <p>
           <span>Время на контроль: </span>
-          <input type="text">
+          <input type="text" v-model='srok_control'>
           <span>дней(0-неопределено) </span>
         </p>
         <p>
@@ -82,6 +87,16 @@
               :key='file'>
               <span class='user_select_span'>{{ file.name }}</span>
           </div>
+
+          <!-- Просматриваем временные файлы -->
+          <div v-if='secontDocuments.length'>
+            <div v-for='file in secontDocuments'
+              class='izd_block_two' 
+              @click="setDocs(file)"
+              :key='file'>
+                <span class='user_select_span'>{{ file.name }}</span>
+            </div>
+          </div>
           <button class="btn-small btn-add" @click='openFileModal'>Добавить</button>
         </div>
         <p>
@@ -93,7 +108,7 @@
      <div class="btn-control out-btn-control">
       <button class="btn-status" 
         @click='destroyModalF'>Отменить</button>
-      <button class="btn-status btn-black" @click='addIssue'>Дать задачу</button>
+      <button class="btn-status btn-black" @click='addIssue'>{{ editIssue ? 'Обновить' : 'Дать задачу' }}</button>
     </div>
 
     <ModalUsersList 
@@ -131,9 +146,11 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import { dataFormat, photoPreloadUrl } from '@/js/';
 import {random, isEmpty} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
+import DatePicterCustom from '@/components/date-picter.vue';
+import PATH_TO_SERVER from '@/js/path';
 
 export default {
-  props: ['parametrs'],
+  props: ['parametrs', 'editIssue'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -168,30 +185,43 @@ export default {
       docFiles: [],
       formData: new FormData(),
 
+      showDatePicters: false,
+
       description: '',
       dateUse: '',
       normTime: '',
       sourse: '',
       srok: '0',
+      srok_control: '',
       status: '',
       controllerList: [],
       executorList: [],
       izdList: [],
-      shopNeeds: ''
+      shopNeeds: '',
+      
+      id: null,
+      name: '',
+
+      secontDocuments: [],
+
     }
   },
-  components: {ModalUsersList, BaseProductModal, BaseFileModal, OpensFile},
+  components: {ModalUsersList, BaseProductModal, BaseFileModal, OpensFile, DatePicterCustom},
   computed: mapGetters(['getAuth']),
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
 
-    if(this.getAuth)
+
+    if(this.getAuth && !this.$props.editIssue) {  
+      this.dateUse = new Date().toLocaleDateString("ru-RU"),
       this.sourse = {login: this.getAuth.login, id: this.getAuth.id}
+    }
+    if(this.$props.editIssue) this.updateVarilable(this.$props.editIssue)
   },
   methods: {
-    ...mapActions(['createIssue']),
+    ...mapActions(['createIssue', 'updateIssue']),
     destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -215,8 +245,14 @@ export default {
       this.formData.append('izdList', JSON.stringify(this.izdList))
       this.formData.append('shopNeeds', this.shopNeeds)
       this.formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
+      this.formData.append('srok_control', this.srok_control)
 
-      this.createIssue(this.formData)
+      if(this.$props.editIssue) {
+        this.formData.append('id', this.id)
+        this.formData.append('name', this.name)
+        this.updateIssue(this.formData)
+      } 
+      else this.createIssue(this.formData)
     },  
 
     selectUser(type) {
@@ -252,7 +288,6 @@ export default {
       this.showModalFile = true
     },
     deleteIzd(izd) {
-      console.log(this.izdList)
       this.izdList = this.izdList.filter(z => z.name != izd.name)
     },
     unmount_filemodal(res) {
@@ -273,14 +308,48 @@ export default {
           this.docFiles.push(f)
           this.formData.append('document', f)
       })
-
     },
+    changeDatePicter(val) {
+      this.dateUse = val
+    },
+    updateVarilable(issue) {
+      console.log(issue)
+      this.description = issue.description
+      this.controllerList = JSON.parse(issue.controllerList)
+      this.izdList = JSON.parse(issue.izdList)
+      this.dateUse = issue.dateUse
+      this.executorList = JSON.parse(issue.executorList)
+      this.name = issue.name
+      this.id = issue.id
+      this.normTime = issue.normTime
+      this.shopNeeds = issue.shopNeeds
+      this.srok = issue.srok
+      this.sourse = JSON.parse(issue.sourse)
+      this.status = issue.status
+      this.srok_control = issue.srok_control
+      
+
+      if(issue.documents) {
+        issue.documents.forEach(file => {
+          this.secontDocuments.push(file)
+          photoPreloadUrl(file, (res) => {
+            if(res.type == 'img') 
+              this.docFilesPreload.push({ url: PATH_TO_SERVER + file.path, type: res.type})
+            }, true)
+        })
+      }
+
+    }
   },
 
 }
 </script>
 
 <style scoped>
+.p_picter {
+  display: flex;
+  align-items: center;
+}
 .user_select_span {
   padding-left: 5px;
   text-decoration: underline;

@@ -3,6 +3,7 @@ import App from './App.vue'
 import store from './store'
 import router from './router'
 import Unicon from 'vue-unicons'
+import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import { uniTimes, 
         uniSetting, 
         uniUser, 
@@ -20,6 +21,9 @@ Unicon.add([uniHistory, uniMinusSquareFull, uniTimes, uniSetting, uniUser, uniPo
 createApp(App)
     .use(store)
     .use(router)
+    .use(SetupCalendar, {})
+    .component('Calendar', Calendar)
+    .component('DatePicker', DatePicker)
     .use(Unicon, {
         height: 32, 
         width: 32

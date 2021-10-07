@@ -4,7 +4,7 @@
 		<div :class='destroyModalRight'>
 			<div :style="hiddens" >
 				<h3>Выбрать сотрудника</h3>
-					<div class="scroll-table" style="height: 690px;">
+					<div class="scroll-table" style="height: 690px; width: 99%;">
 						<table> 
 							<tr>
 								<th style='width:10%;'>Табельный номер</th>

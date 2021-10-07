@@ -51,22 +51,30 @@
                 <div class="contact-inform">
                     <div class="data-user-form">
                         <div class="prim">
-                            <p class="p-1">
-                            <span>Должность: </span>
-                            <input type="text" :value='roles'>
-                            <span>Табельный номер: </span>
-                            <input type="text" :value='tabel'>
-                            </p>
+                            <div class="p-1">
+                              <p>
+                                <span>Должность: </span>
+                                <input type="text" :value='roles'>
+                              </p>
+                              <p> 
+                                <span>Табельный номер: </span>
+                                <input type="text" :value='tabel'>
+                              </p>
+                            </div>
                             <p class="p-2">
                                 <span>Дата приема на работу: </span>
                                 <input type="text" :value='dateWork'>
                             </p>
-                            <p class="p-3">
+                            <div class="p-3">
+                              <p>
                                 <span>Логин: </span>
                                 <input type="text" :value='login'>
+                              </p>
+                              <p>
                                 <span>День рождения: </span>
                                 <input type="text" :value='birthday'>
-                            </p>
+                              </p>
+                            </div>
                             <h3>Контактные данные</h3>
                             <p class="p-4">
                                 <span>Моб. телефон: </span>
@@ -154,230 +162,238 @@
 
 <script>
 import {  mapActions, mapGetters, mapMutations } from 'vuex'
-import showMessage from '@/js/inform_folder.js';
+import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue'
 import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
-    data() {
-        return {
-            knowGet: true,
-            titleMessage: '',
-            message: '',
-            type: '',
-            showInformPanel: false,
-            keyInformTip: '',
-            initial: '',
-            tabel: '',
-            adress: '',
-            adressProps: '',
-            dateUnWork: '',
-            dateWork: '',
-            email: '',
-            haracteristic: '',
-            image: '',
-            login: '',
-            password: '',
-            phone: '',
-            primetch: '',
-            birthday: '',
-            roles: '',
-            id: '',
+  data() {
+    return {
+      knowGet: true,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: '',
+      initial: '',
+      tabel: '',
+      adress: '',
+      adressProps: '',
+      dateUnWork: '',
+      dateWork: '',
+      email: '',
+      haracteristic: '',
+      image: '',
+      login: '',
+      password: '',
+      phone: '',
+      primetch: '',
+      birthday: '',
+      roles: '',
+      id: '',
 
-            span: null
-        }
-    }, 
-    computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser', 'getRoleAssets', 'getAuth']),
-    components: {
-        InformFolder
-    },
-    methods: {
-        ...mapActions(['getAllUsers', 'banUserById']),
-        ...mapMutations(['selectedUser']),
-        userShow(user, e = null) {
-            if(user) {
-                this.roles = user.role ? user.role.description : '' 
-                this.initial = user.initial
-                this.tabel = user.tabel
-                this.adress = user.adress
-                this.adressProps = user.adressProps
-                this.dateUnWork = user.dateUnWork
-                this.dateWork = user.dateWork
-                this.email = user.email
-                this.haracteristic = user.haracteristic
-                this.image = PATH_TO_SERVER + user.image
-                this.login = user.login
-                this.password = user.password
-                this.phone = user.phone
-                this.primetch = user.primetch
-                this.birthday = user.birthday
-                this.id = user.id
-                this.documents = user.documents 
-            }
-
-            this.selectedUser(user)
-            
-            if(!e)
-                return 
-            
-            if(this.span)
-                this.span.classList.remove('td-row-all')
-            this.span = e
-            this.span.classList.add('td-row-all')
-        },
-        userBan() {
-            if(!this.id)
-                return showMessage('Ошибка', 'Пользователь не выбран', 'w', this)
-
-            
-            if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone) 
-                return showMessage('', 'Недостаточно прав', 'w', this)
-            this.banUserById(this.id).then(mes => {
-                showMessage('', mes.message, mes.type, this)
-                if(mes.type == 's') 
-                    this.getAllUsers()
-            })
-        },
-        openNewWindow(url) {
-            window.open(PATH_TO_SERVER + url, '_blank')
-        },
-        editUser() {
-            if(!this.getSelectedUser) 
-                return 0
-            
-            if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
-                this.$router.push({path: `/employee/edit/edit`})
-            else if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone && this.getRoleAssets.assets.usersListAssets.writeYour) 
-                if(this.getAuth && this.getAuth.id == this.getSelectedUser.id)
-                    this.$router.push({path: `/employee/edit/edit`})
-            else
-                return showMessage('', 'Недостаточно прав', 'w', this)
-        },
-        addUser() {
-            if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
-                this.$router.push({path: `/employee/edit/add`})
-        }
-    },
-    async mounted() {
-        await this.getAllUsers();
-        if(this.getUsers.length)
-            this.userShow(this.getUsers[0])
+      span: null
     }
+  }, 
+  computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser', 'getRoleAssets', 'getAuth']),
+  components: {
+    InformFolder
+  },
+  methods: {
+    ...mapActions(['getAllUsers', 'banUserById']),
+    ...mapMutations(['selectedUser']),
+    userShow(user, e = null) {
+      if(user) {
+        console.log(user)
+        this.roles = user.role ? user.role.description : '' 
+        this.initial = user.initial
+        this.tabel = user.tabel
+        this.adress = user.adress
+        this.adressProps = user.adressProps
+        this.dateUnWork = user.dateUnWork
+        this.dateWork = user.dateWork
+        this.email = user.email
+        this.haracteristic = user.haracteristic
+        this.image = PATH_TO_SERVER + user.image
+        this.login = user.login
+        this.password = user.password
+        this.phone = user.phone
+        this.primetch = user.primetch
+        this.birthday = user.birthday
+        this.id = user.id
+        this.documents = user.documents 
+      }
+
+      this.selectedUser(user)
+      
+      if(!e)
+        return 
+      
+      if(this.span)
+        this.span.classList.remove('td-row-all')
+      this.span = e
+      this.span.classList.add('td-row-all')
+    },
+    userBan() {
+      if(!this.id)
+        return showMessage('Ошибка', 'Пользователь не выбран', 'w', this)
+
+      
+      if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone) 
+        return showMessage('', 'Недостаточно прав', 'w', this)
+      this.banUserById(this.id).then(mes => {
+        showMessage('', mes.message, mes.type, this)
+        if(mes.type == 's') 
+          this.getAllUsers()
+      })
+    },
+    openNewWindow(url) {
+      window.open(PATH_TO_SERVER + url, '_blank')
+    },
+    editUser() {
+      if(!this.getSelectedUser) 
+        return 0
+      
+      if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
+        this.$router.push({path: `/employee/edit/edit`})
+      else if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone && this.getRoleAssets.assets.usersListAssets.writeYour) 
+        if(this.getAuth && this.getAuth.id == this.getSelectedUser.id)
+          this.$router.push({path: `/employee/edit/edit`})
+      else
+        return showMessage('', 'Недостаточно прав', 'w', this)
+    },
+    addUser() {
+      if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
+        this.$router.push({path: `/employee/edit/add`})
+    }
+  },
+  async mounted() {
+    await this.getAllUsers();
+    if(this.getUsers.length)
+      this.userShow(this.getUsers[0])
+  }
 }
 </script> 
 
 <style scoped>
 table td:first-child {
-    text-align: center;
+  text-align: center;
 }
 .table-content {
-    width: max-content;
+  width: max-content;
 }
 .container>div {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 .container>div>div:last-child {
-    margin-left: 20px;
-    display: flex;
-    flex-direction: column;
+  margin-left: 20px;
+  display: flex;
+  flex-direction: column;
 }
 .initial-user{
-    color: #057dff;
+  color: #057dff;
 }
 .p-1 input{
-    width: 70px;
+  width: 70px;
+}
+.p-1, .p-3 {
+  display: flex;
+  flex-wrap: wrap;
+}
+.p-1 p, .p-3 p {
+  margin-top: 0px;
 }
 .p-2 input{
-    width: 80px;
+  width: 80px;
 }
 .p-3 input{
-    width: 85px;
+  width: 85px;
 }
 .p-4 input{
-    width: 140px;
+  width: 140px;
 }
 .p-5 input{
-    width: 140px;
+  width: 140px;
 }
 .p-5, .p-6, .p-4 {
-    display: flex;
-    justify-content: space-between;
+  display: flex;
+  justify-content: space-between;
 }
 .p-6 input{
-    width: 140px;
+  width: 140px;
 }
 input {
-    margin-left: 4px;
-    margin-right: 4px;
-    border: 1px solid #d3d3d3;
-    border-radius: 4px;
+  margin-left: 4px;
+  margin-right: 4px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
 }
 textarea {
-    height: 90px;
-    width: 400px;
-    border: 1px solid #d3d3d3;
-    border-radius: 4px;
+  height: 90px;
+  width: 400px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
 }
 .inform-block {
-    display: flex;
-    flex-direction: row;
+  display: flex;
+  flex-direction: row;
 }
 .prim {
-    border: 1px solid #d3d3d3;
-    border-radius: 4px;
-    padding: 8px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+  padding: 8px;
 }
 .prim>p {
-    font-size: 14px;
+  font-size: 14px;
 }
 .tabel-td {
-    width: 60px;
+  width: 60px;
 }
 .har-inform {
-    padding: 2px;
-    display: flex;
-    flex-wrap: nowrap;
+  padding: 2px;
+  display: flex;
+  flex-wrap: nowrap;
 }
 .textarea-har {
-    width: 300px;
-    height: 80px;
+  width: 300px;
+  height: 80px;
 }
 .ava-block {
-    width: 260px;
+  width: 260px;
 }
 .ava-block>img {
-    max-width: 260px;
+  max-width: 260px;
 }
 .har-inform>div {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .har-inform>div:last-child {
-    margin-left: 30px;
-    width: 300px;
+  margin-left: 30px;
+  width: 300px;
 }
 .har-inform table {
-    width: 300px;
+  width: 300px;
 }
 .har-inform  button {
-    margin: 5px;
-    float: right;
+  margin: 5px;
+  float: right;
 }
 .working-block {
-    width: max-content;
+  width: max-content;
 }
 table {
-    margin-top: 0px;
+  margin-top: 0px;
 }
 .type-issue>span {
-    font-size: 15px;
+  font-size: 15px;
 }
 .type-issue {
-    display: flex;
-    justify-content: end;
+  display: flex;
+  justify-content: end;
 }
 .h3-title {
-    float: left;
-    user-select: none;
+  float: left;
+  user-select: none;
 }
 </style>

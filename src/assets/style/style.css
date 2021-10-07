@@ -1,28 +1,30 @@
-
+.center {
+  text-align: center;
+}
 
 .warning{
-    font-weight: bold;
-    text-transform: uppercase;
-    color: rgb(190, 22, 22);
+  font-weight: bold;
+  text-transform: uppercase;
+  color: rgb(190, 22, 22);
 }
 
 .tooltip .tooltiptext {
-    visibility: hidden;
-    background-color: #464646;
-    color: #fff;
-    text-align: center;
-    border-radius: 3px;
-    padding: 5px 5px;
-    margin: 10px;
-    border-left: 3px solid rgba(61, 150, 34, 0.788);
+  visibility: hidden;
+  background-color: #464646;
+  color: #fff;
+  text-align: center;
+  border-radius: 3px;
+  padding: 5px 5px;
+  margin: 10px;
+  border-left: 3px solid rgba(61, 150, 34, 0.788);
 
-    /* Position the tooltip */
-    position: absolute;
-    z-index: 999;
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 999;
 }
 
 .tooltip:hover .tooltiptext {
-    visibility: visible;
+  visibility: visible;
 }
 
 .link_gradient{
@@ -33,408 +35,408 @@
 }
 
 .header_block input[type='text']{
-    width: 110px;
+  width: 110px;
 }
 .header_block * {
-    margin-left: 10px;
+  margin-left: 10px;
 }
 .header_block label{
-    color: black;
-    font-size: 14px;
+  color: black;
+  font-size: 14px;
 }
 
 .inputs-small {
-    border: none;
+  border: none;
 }
 
 html, html * {
-    scrollbar-color: #4e4e4e #e7e7e7;
-    scrollbar-width: auto;
+  scrollbar-color: #4e4e4e #e7e7e7;
+  scrollbar-width: auto;
 }
 
 ::selection {
-    background: #7c7c7c;
+  background: #7c7c7c;
 }
 ::-moz-selection {
-    background: #7c7c7c;
+  background: #7c7c7c;
 }
 
 ::-webkit-scrollbar{
-    width: 5px;
+  width: 5px;
 }
 
 ::-webkit-scrollbar-track{
-    background-color: #f9f9fd;
-    border-radius: 10px;
+  background-color: #f9f9fd;
+  border-radius: 10px;
 }
 
 ::-webkit-scrollbar-thumb {
-    border-radius: 10px;
-    background: linear-gradient(180deg, #7c7c7c, #141414);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #7c7c7c, #141414);
 }
 
 ::-webkit-scrollbar-track-piece {
-    border-radius: 10px;
-    background: linear-gradient(180deg, #e2e2e2, #d4d4d4);
+  border-radius: 10px;
+  background: linear-gradient(180deg, #e2e2e2, #d4d4d4);
 }
 
 .active {
-    color: rgb(12, 64, 221);
+  color: rgb(12, 64, 221);
 }
 .type-issue  {
-    user-select: none;   
+  user-select: none;   
 }
 .delete_span {
-    font-size: 11px;
-    cursor: pointer;
-    display: flex;
-    justify-content:center;
-    align-items:center;
-    color: rgb(211, 102, 102);
-    border: none;
-    font-weight: bold;
+  font-size: 11px;
+  cursor: pointer;
+  display: flex;
+  justify-content:center;
+  align-items:center;
+  color: rgb(211, 102, 102);
+  border: none;
+  font-weight: bold;
 }
 .delete_span:hover{
-    color: rgb(184, 52, 52);
+  color: rgb(184, 52, 52);
 }
 
 .edit-save-block {
-    border-bottom: 2px solid black;
-    display: flex;
-    justify-content: end;
-    position: fixed;
-    bottom: 10px;
-    width: 1200px;
-    background-color: #fdfdfd;
+  border-bottom: 2px solid black;
+  display: flex;
+  justify-content: end;
+  position: fixed;
+  bottom: 10px;
+  width: 1200px;
+  background-color: #fdfdfd;
 }
 .edit-save-block * {
-    margin: 8px;
+  margin: 8px;
 }
 .type-issue {
-    margin-top: 20px;
-    margin-bottom: 5px;
+  margin-top: 20px;
+  margin-bottom: 5px;
 }
 
 .main-dive>div {
-    display: flex;
-    flex-direction: column;
+  display: flex;
+  flex-direction: column;
 }
 
 .type-issue span{
-    margin: 10px;
-    text-decoration: line;
-    text-decoration: underline;
-    cursor: pointer;
+  margin: 10px;
+  text-decoration: line;
+  text-decoration: underline;
+  cursor: pointer;
 }
 .scroll-table { 
-    height: 250px;
-    overflow: auto;
-    direction: ltr;
-    width: max-content;
+  height: 250px;
+  overflow: auto;
+  direction: ltr;
+  width: max-content;
 }
 
 .link_h3 {
-    cursor: pointer;
+  cursor: pointer;
 }
 .link_h3:hover {
-    color: rgb(119, 119, 119);
+  color: rgb(119, 119, 119);
 }
 
 .button-cover
 {
-    height: 100px;
-    margin: 20px;
-    background-color: #fff;
-    box-shadow: 0 10px 20px -8px #c5d6d6;
-    border-radius: 4px;
+  height: 100px;
+  margin: 20px;
+  background-color: #fff;
+  box-shadow: 0 10px 20px -8px #c5d6d6;
+  border-radius: 4px;
 }
 
 .button-cover:before
 {
-    counter-increment: button-counter;
-    content: counter(button-counter);
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    color: #d7e3e3;
-    font-size: 8px;
-    line-height: 1;
-    padding: 5px;
+  counter-increment: button-counter;
+  content: counter(button-counter);
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  color: #d7e3e3;
+  font-size: 8px;
+  line-height: 1;
+  padding: 5px;
 }
 
 .button-cover, .knobs, .layer
 {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
 }
 
 .button
 {
-    position: relative;
-    top: 50%;
-    width: 50px;
-    height: 27px;
-    margin: -20px auto 0 auto;
-    overflow: hidden;
+  position: relative;
+  top: 50%;
+  width: 50px;
+  height: 27px;
+  margin: -20px auto 0 auto;
+  overflow: hidden;
 }
 
 .button.r, .button.r .layer
 {
-    border-radius: 100px;
+  border-radius: 100px;
 }
 
 .checkbox
 {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    cursor: pointer;
-    z-index: 3;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+  z-index: 3;
 }
 
 .knobs
 {
-    z-index: 2;
+  z-index: 2;
 }
 
 .layer
 {
-    width: 100%;
-    background-color: #d6d6d6;
-    transition: 0.3s ease all;
-    z-index: 1;
+  width: 100%;
+  background-color: #d6d6d6;
+  transition: 0.3s ease all;
+  z-index: 1;
 }
 
 textarea {
-    border: 1px solid #d3d3d3;
-    border-radius: 4px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
 }
 
 /* Button 3 */
 .button-3 .knobs:before
 {
-    content: '';
-    position: absolute;
-    top: 2px;
-    left: 4px;
-    width: 15px;
-    height: 5px;
-    color: #fff;
-    font-size: 10px;
-    font-weight: bold;
-    text-align: center;
-    line-height: 1;
-    padding: 9px 4px;
-    background-color: #636363;
-    border-radius: 50%;
-    transition: 0.3s ease all, left 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15);
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 4px;
+  width: 15px;
+  height: 5px;
+  color: #fff;
+  font-size: 10px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1;
+  padding: 9px 4px;
+  background-color: #636363;
+  border-radius: 50%;
+  transition: 0.3s ease all, left 0.3s cubic-bezier(0.18, 0.89, 0.35, 1.15);
 }
 
 .button-3 .checkbox:checked + .knobs:before
 {
-    left: 25px;
-    background-color: #ffffff;
+  left: 25px;
+  background-color: #ffffff;
 }
 
 .button-3 .checkbox:checked ~ .layer
 {
-    background-color: #46c7ff;
+  background-color: #46c7ff;
 }
 
 .select-small { 
-    width: max-content;
-    height: 26px;
-    padding: 0px;
-    font-size: 13px;
-    margin-top: 6px;
-    border: 1px solid #d3d3d3;
+  width: max-content;
+  height: 26px;
+  padding: 0px;
+  font-size: 13px;
+  margin-top: 6px;
+  border: 1px solid #d3d3d3;
 }
 .btn-status {
-    background: #fff;
-    padding-bottom: 26px;
-    padding-left: 20px;
-    padding-right: 20px;
-    padding-top: 5px;
-    margin: 5px;
-    border-radius: 0px;
-    border: 1px solid #d3d3d3;
+  background: #fff;
+  padding-bottom: 26px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  margin: 5px;
+  border-radius: 0px;
+  border: 1px solid #d3d3d3;
 }
 
 .btn-black {
-    background-color: #2e2e2e;
-    color:#ffffff;
-    font-weight: bold;
-    font-size: 12px;
+  background-color: #2e2e2e;
+  color:#ffffff;
+  font-weight: bold;
+  font-size: 12px;
 }
 .td-row:hover {
-    background: #b6b6b6;
-    cursor: pointer;
+  background: #b6b6b6;
+  cursor: pointer;
 }
 .td-row-all {
-    background: #b6b6b6;
+  background: #b6b6b6;
 }
 .left-block-modal {
-    width: 70vw;
-    animation: width-right 1s 1 ease;
-    height: 10000px;
-    background: rgb(106, 106, 106);
-    opacity: 0.6;
+  width: 70vw;
+  animation: width-right 1s 1 ease;
+  height: 10000px;
+  background: rgb(106, 106, 106);
+  opacity: 0.6;
 }
 .left-block-modal-hidden {
-    animation: width-right-replace 1s 1 ease;
+  animation: width-right-replace 1s 1 ease;
 }
 .right-menu-modal {
-    position: absolute;
-    right: 0;
-    top: 0;
-    z-index: 10;
-    width: 100%;
-    display: flex;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 10;
+  width: 100%;
+  display: flex;
 }
 .content-modal-right-menu {
-    animation: width 1s 1 ease;
-    height: 10000px;
-    width: 30vw;
-    background: white;
-    padding: 10px;
-    position: absolute;
-    right: 0;
-    top: 0;
+  animation: width 1s 1 ease;
+  height: 10000px;
+  width: 30vw;
+  background: white;
+  padding: 10px;
+  position: absolute;
+  right: 0;
+  top: 0;
 }
 .content-modal-right-menu>div {
-    animation: hidden-content 1s 1 ease;
+  animation: hidden-content 1s 1 ease;
 }
 .right-menu-p{
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: 10px;
-    width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
+  width: 100%;
 }
 
 .content-modal-right-menu-hidden {
-    animation: width-replace 1s 1 ease;
+  animation: width-replace 1s 1 ease;
 }
 .content-modal-right-menu-hidden>div {
-    animation: hidden-content-replace 1s 1 ease;
+  animation: hidden-content-replace 1s 1 ease;
 }
 .out-btn-control {
-    padding: 10px;
-    border: 1px solid #ececec;
-    box-shadow: 2px 3px 4px 0px #0b0b0b;
+  padding: 10px;
+  border: 1px solid #ececec;
+  box-shadow: 2px 3px 4px 0px #0b0b0b;
 }
 
 @keyframes width {
-    from {
-        width: 1vw;
-    }
-    to {
-        width: 30vw;
-    }
+  from {
+    width: 1vw;
+  }
+  to {
+    width: 30vw;
+  }
 }
 @keyframes width-right {
-    from {
-        width: 0vw;
-    }
-    to {
-        width: 70vw;
-    }
+  from {
+    width: 0vw;
+  }
+  to {
+    width: 70vw;
+  }
 }
 @keyframes hidden-content {
-    from {
-        opacity: 0;
-    }
-    80% {
-        opacity: 0;
-    }
-    90% {
-        opacity: 0.5;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes width-replace {
-    from {
-        width: 30vw;
-    }
-    to {
-        width: 00vw;
-    }
+  from {
+    width: 30vw;
+  }
+  to {
+    width: 00vw;
+  }
 }
 @keyframes width-right-replace {
-    from {
-        width: 70vw;
-    }
-    to {
-        width: 0vw;
-    }
+  from {
+    width: 70vw;
+  }
+  to {
+    width: 0vw;
+  }
 }
 @keyframes hidden-content-replace {
-    from {
-        opacity: 1;
-    }
-    20% {
-        opacity: 0;
-    }
-    to {
-        opacity: 0;
-    }
+  from {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
 }
 
 .pointer-files-to-add>label {
-    border: 1px dotted black;
-    font-weight: bold;
-    color: #9d9d9d;
-    padding: 20px;
-    margin: 20px;
-    border-radius: 4px;
+  border: 1px dotted black;
+  font-weight: bold;
+  color: #9d9d9d;
+  padding: 20px;
+  margin: 20px;
+  border-radius: 4px;
 }
 .piubter-files-to-add {
-    height: 100px;
-    display: flex;
+  height: 100px;
+  display: flex;
 }
 
 @font-face {
-    font-family: "CasperRegular";
-    src: url("../fonts/CasperRegular/CasperRegular.eot");
-    src: url("../fonts/CasperRegular/CasperRegular.eot?#iefix")format("embedded-opentype"),
-    url("../fonts/CasperRegular/CasperRegular.woff") format("woff"),
-    url("../fonts/CasperRegular/CasperRegular.ttf") format("truetype");
-    font-style: normal;
-    font-weight: normal;
+  font-family: "CasperRegular";
+  src: url("../fonts/CasperRegular/CasperRegular.eot");
+  src: url("../fonts/CasperRegular/CasperRegular.eot?#iefix")format("embedded-opentype"),
+  url("../fonts/CasperRegular/CasperRegular.woff") format("woff"),
+  url("../fonts/CasperRegular/CasperRegular.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
 
 @font-face {
-    font-family: "CasperBold";
-    src: url("../fonts/CasperBold/CasperBold.eot");
-    src: url("../fonts/CasperBold/CasperBold.eot?#iefix")format("embedded-opentype"),
-    url("../fonts/CasperBold/CasperBold.woff") format("woff"),
-    url("../fonts/CasperBold/CasperBold.ttf") format("truetype");
-    font-style: normal;
-    font-weight: normal;
+  font-family: "CasperBold";
+  src: url("../fonts/CasperBold/CasperBold.eot");
+  src: url("../fonts/CasperBold/CasperBold.eot?#iefix")format("embedded-opentype"),
+  url("../fonts/CasperBold/CasperBold.woff") format("woff"),
+  url("../fonts/CasperBold/CasperBold.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
 
 @font-face {
-    font-family: "CasperItalic";
-    src: url("../fonts/CasperItalic/CasperItalic.eot");
-    src: url("../fonts/CasperItalic/CasperItalic.eot?#iefix")format("embedded-opentype"),
-    url("../fonts/CasperItalic/CasperItalic.woff") format("woff"),
-    url("../fonts/CasperItalic/CasperItalic.ttf") format("truetype");
-    font-style: normal;
-    font-weight: normal;
+  font-family: "CasperItalic";
+  src: url("../fonts/CasperItalic/CasperItalic.eot");
+  src: url("../fonts/CasperItalic/CasperItalic.eot?#iefix")format("embedded-opentype"),
+  url("../fonts/CasperItalic/CasperItalic.woff") format("woff"),
+  url("../fonts/CasperItalic/CasperItalic.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
 
 @font-face {
-    font-family: "CasperBoldItalic";
-    src: url("../fonts/CasperBoldItalic/CasperBoldItalic.eot");
-    src: url("../fonts/CasperBoldItalic/CasperBoldItalic.eot?#iefix")format("embedded-opentype"),
-    url("../fonts/CasperBoldItalic/CasperBoldItalic.woff") format("woff"),
-    url("../fonts/CasperBoldItalic/CasperBoldItalic.ttf") format("truetype");
-    font-style: normal;
-    font-weight: normal;
+  font-family: "CasperBoldItalic";
+  src: url("../fonts/CasperBoldItalic/CasperBoldItalic.eot");
+  src: url("../fonts/CasperBoldItalic/CasperBoldItalic.eot?#iefix")format("embedded-opentype"),
+  url("../fonts/CasperBoldItalic/CasperBoldItalic.woff") format("woff"),
+  url("../fonts/CasperBoldItalic/CasperBoldItalic.ttf") format("truetype");
+  font-style: normal;
+  font-weight: normal;
 }
