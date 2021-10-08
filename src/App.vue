@@ -39,7 +39,7 @@ export default {
   computed: mapGetters(['getAuth']),
   methods: {
     ...mapActions(['getUserById']),
-    ...mapMutations(['updateAuth', 'setRoleAssets']),
+    ...mapMutations(['updateAuth', 'setRoleAssets', 'unAuth']),
     exit() {
       console.log(this.getAuth)
     }
@@ -49,6 +49,11 @@ export default {
     if(this.getAuth && this.getAuth.id) {
       let user = await this.getUserById(this.getAuth.id)
       if(user) {
+        if(!user) {
+          this.unAuth()
+          this.$emit('exit')
+          this.$router.push('/')
+        }
         // Обновляем пользователя 
         this.updateAuth(user)
         // Обновляем роль

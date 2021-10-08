@@ -16,18 +16,17 @@ const showMessage = (title, message, type, ctx) =>  {
   if(!ctx) 
     return 0;
 
-  if(title == '' && type == 's') {
+  if(title == '' && type == 's') 
     ctx.$data.titleMessage = 'Успешно';
-  }
-  if(title == '' && type == 'e') {
+  
+  if(title == '' && type == 'e') 
     ctx.$data.titleMessage = 'Ошибка';
-  }
-  if(title == '' && type == 'w') {
+  
+  if(title == '' && type == 'w') 
     ctx.$data.titleMessage = 'Предупреждение';
-  }
-  if(title == '' && type == '') {
+  
+  if(title == '' && type == '') 
     ctx.$data.titleMessage = 'Информация';
-  }
 
   ctx.$data.message = message;
   ctx.$data.type = type;
