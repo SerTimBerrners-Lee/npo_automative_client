@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div class='picter'>
 		<DatePicker 
 			v-model="date"  
 			:model-config="modelConfig" 
@@ -48,5 +48,8 @@ export default {
 <style scoped>
 input {
 	width: 80px;
+}
+.picter {
+	widows: fit-content;
 }
 </style>

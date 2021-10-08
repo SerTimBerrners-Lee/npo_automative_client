@@ -44,13 +44,13 @@
                     </tr>
                 </table>
             </div>
-						<p class='btn_align_p'>
-									<button class="btn-small btn-add"
-										@click='responsProduct'>
-											Выбрать
-									</button>
-								</p>
-							</div>
+						<p class='btn_align_p'  v-if='$props.enum && $props.enum == "three"'>
+								<button class="btn-small btn-add"
+									@click='responsProduct'>
+										Выбрать
+								</button>
+							</p>
+						</div>
 						<div>
             <div class="scroll-table" >
                 <table class="table-base-detal">
@@ -88,9 +88,9 @@
                     </tr>
                 </table>
             </div>
-						<p class='btn_align_p'>
+						<p class='btn_align_p' v-if='$props.enum && $props.enum == "two" || $props.enum == "three"'>
 									<button class="btn-small btn-add"
-										@click='responsCbed'>
+										@click='responsCbed' >
 											Выбрать
 									</button>
 								</p>
@@ -99,19 +99,19 @@
 								<div class="scroll-table" >
 									<table class="table-base-detal">
 											<tr>
-													<th colspan="3" scope="col">Деталь (Тип Д)</th>
+												<th colspan="3" scope="col">Деталь (Тип Д)</th>
 											</tr>
 											<tr>
-													<th>Артикул</th>
-													<th>Наименование</th>
-													<th>Кол-во Д на СБ</th>
+												<th>Артикул</th>
+												<th>Наименование</th>
+												<th>Кол-во Д на СБ</th>
 											</tr>   
 											<tr>
-													<td colspan="3">
-															<Search 
-																	@unmount='keySearch' 
-															/>
-													</td>
+												<td colspan="3">
+														<Search 
+																@unmount='keySearch' 
+														/>
+												</td>
 											</tr>
 											<tr 
 													v-for='detal in allDetal' 
@@ -124,15 +124,15 @@
 													<td>...</td>
 											</tr>
 											<tr v-for="item in 42" :key="item">
-													<td></td>
-													<td></td>
-													<td></td>
+												<td></td>
+												<td></td>
+												<td></td>
 											</tr>
 									</table>
 								</div>
 								<p class='btn_align_p'>
 									<button class="btn-small btn-add"
-										@click='responsDetal'>
+										@click='returnDetalList'>
 											Выбрать
 									</button>
 								</p>
@@ -200,24 +200,24 @@ import Search from '@/components/search.vue'
 
 export default {
 
-  props: ['techProcessID', 'idFile', 'getListDetal', 'listDetal'],
+  props: ['techProcessID', 'idFile', 'getListDetal', 'listDetal', 'enum'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
 
-        selectedCbEd: null,
-        selecteProduct: null,
-        tr_cb: null,
-        tr_product: null,
-      
-        selectedDetal: null,
-        tr: null,
-        detalModalKey: random(1, 123e2), 
-        detalIsShow: false,
+			selectedCbEd: null,
+			selecteProduct: null,
+			tr_cb: null,
+			tr_product: null,
+		
+			selectedDetal: null,
+			tr: null,
+			detalModalKey: random(1, 123e2), 
+			detalIsShow: false,
 
-        detalList: [],
+			detalList: [],
 
     }
   },
@@ -230,30 +230,30 @@ export default {
       this.hiddens = 'display: none;'
     },
     ...mapActions(['getAllDetals', 
-        'deleteDetelyId',
-        'getAllProduct', 
-        'getAllCbed']),
+			'deleteDetelyId',
+			'getAllProduct', 
+			'getAllCbed']),
     ...mapMutations([
-        'addOneSelectDetal', 
-        'filterDetalToArticle',
-        'searchCbed',
-        'searchProduct',
-        'clearFilterDetalByProduct',
-        'getAllDetalByProduct',
-        'clearFilterCbedByProduct',
-        'getAllCbEdByProduct',
-        ]),
+			'addOneSelectDetal', 
+			'filterDetalToArticle',
+			'searchCbed',
+			'searchProduct',
+			'clearFilterDetalByProduct',
+			'getAllDetalByProduct',
+			'clearFilterCbedByProduct',
+			'getAllCbEdByProduct',
+			]),
     setDetals(detal, e) {
-        this.selectedDetal = detal
-            if(this.tr) 
-            this.tr.classList.remove('td-row-all')
-        
-        this.tr = e
-        this.tr.classList.add('td-row-all')
-        this.addOneSelectDetal(this.selectedDetal)
+			this.selectedDetal = detal
+				if(this.tr) 
+					this.tr.classList.remove('td-row-all')
+			
+			this.tr = e
+			this.tr.classList.add('td-row-all')
+			this.addOneSelectDetal(this.selectedDetal)
 
-        this.detalModalKey = random(1, 999)
-        this.detalIsShow = true
+			this.detalModalKey = random(1, 999)
+			this.detalIsShow = true
     },
     setCbed(cbEd, e) {
 			if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {
@@ -264,7 +264,7 @@ export default {
 			}
 			this.selectedCbEd = cbEd
 				if(this.tr_cb) 
-				this.tr_cb.classList.remove('td-row-all')
+					this.tr_cb.classList.remove('td-row-all')
 				this.getAllDetalByProduct(cbEd)
 	
 			this.tr_cb = e
@@ -281,7 +281,7 @@ export default {
 
 			this.selecteProduct = product
 				if(this.tr_product) 
-				this.tr_product.classList.remove('td-row-all')
+					this.tr_product.classList.remove('td-row-all')
 	
 			this.getAllCbEdByProduct(product)
 			this.getAllDetalByProduct(product)
@@ -290,28 +290,28 @@ export default {
 			this.tr_product.classList.add('td-row-all')
     },
     editDetal() {
-        if(!this.selectedDetal)
-            return 0
+			if(!this.selectedDetal)
+				return 0
 
-        this.$router.push("/detal/edit")
+			this.$router.push("/detal/edit")
     },
     keySearch(v) {
-        this.filterDetalToArticle(v)
+			this.filterDetalToArticle(v)
     },
     keySearchCb(v) {
-        this.searchCbed(v)
+			this.searchCbed(v)
     },
     keySearchProduct(v) {
-        this.searchProduct(v)
+			this.searchProduct(v)
     },
     deleteDetal() {
-        if(!this.selectedDetal)
-            return 0
-        this.deleteDetelyId(this.selectedDetal.id)
+			if(!this.selectedDetal)
+				return 0
+			this.deleteDetelyId(this.selectedDetal.id)
     },
     responsDetal() {
 			if(!this.selectedDetal)
-					return 0
+				return 0
 			
 			if(this.$props.getListDetal) {
 				let add = true
@@ -338,15 +338,15 @@ export default {
 			this.destroyModalF()
     },
 		responsCbed() {
-			this.$emit("responsDetal", this.selectedCbEd)
+			this.$emit("responsDetal", {obj: this.selectedCbEd, type: 'cbed'})
 			this.destroyModalF()
 		},
 		responsProduct() {
-			this.$emit("responsDetal", this.selecteProduct)
+			this.$emit("responsDetal", {obj: this.selecteProduct, type: 'product'})
 			this.destroyModalF()
 		},
     returnDetalList() {
-      this.$emit("responsDetal", this.detalList)
+      this.$emit("responsDetal", {obj: this.selectedDetal, type: 'detal'})
       this.destroyModalF()
     },
     changeKolvo(val, det) {

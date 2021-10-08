@@ -161,7 +161,7 @@
                                 <input class='inputs-small' 
                                     type='text' 
                                     :value='det.kol'
-                                    @change='e => changeArt(e.target, det)'
+                                    @change='e => changeKolvo(e.target, det)'
                                     >
                             </td>
                             <td class='delete_span' @click='delDet(det.det.id)'>удалить</td>
@@ -199,17 +199,17 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
 
-        selectedCbEd: null,
-        selecteProduct: null,
-        tr_cb: null,
-        tr_product: null,
-      
-        selectedDetal: null,
-        tr: null,
-        detalModalKey: random(1, 123e2), 
-        detalIsShow: false,
+      selectedCbEd: null,
+      selecteProduct: null,
+      tr_cb: null,
+      tr_product: null,
+    
+      selectedDetal: null,
+      tr: null,
+      detalModalKey: random(1, 123e2), 
+      detalIsShow: false,
 
-        detalList: []
+      detalList: []
     }
   },
   computed: mapGetters(['allDetal',  'allCbed', 'allProduct']),
@@ -221,129 +221,129 @@ export default {
       this.hiddens = 'display: none;'
     },
     ...mapActions(['getAllDetals', 
-        'deleteDetelyId',
-        'getAllProduct', 
-        'getAllCbed']),
+      'deleteDetelyId',
+      'getAllProduct', 
+      'getAllCbed']),
     ...mapMutations([
-        'addOneSelectDetal', 
-        'filterDetalToArticle',
-        'searchCbed',
-        'searchProduct',
-        'clearFilterDetalByProduct',
-        'getAllDetalByProduct',
-        'clearFilterCbedByProduct',
-        'getAllCbEdByProduct',
-        ]),
+      'addOneSelectDetal', 
+      'filterDetalToArticle',
+      'searchCbed',
+      'searchProduct',
+      'clearFilterDetalByProduct',
+      'getAllDetalByProduct',
+      'clearFilterCbedByProduct',
+      'getAllCbEdByProduct',
+      ]),
     setDetals(detal, e) {
-        this.selectedDetal = detal
-            if(this.tr) 
-            this.tr.classList.remove('td-row-all')
-        
-        this.tr = e
-        this.tr.classList.add('td-row-all')
-        this.addOneSelectDetal(this.selectedDetal)
+      this.selectedDetal = detal
+          if(this.tr) 
+          this.tr.classList.remove('td-row-all')
+      
+      this.tr = e
+      this.tr.classList.add('td-row-all')
+      this.addOneSelectDetal(this.selectedDetal)
 
-        this.detalModalKey = random(1, 999)
-        this.detalIsShow = true
+      this.detalModalKey = random(1, 999)
+      this.detalIsShow = true
     },
      setCbed(cbEd, e) {
-        if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {
-            this.clearFilterDetalByProduct()
-            e.classList.remove('td-row-all')
-            this.selectedCbEd = null
-            return
-        }
-        this.selectedCbEd = cbEd
-            if(this.tr_cb) 
-            this.tr_cb.classList.remove('td-row-all')
+      if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {
+          this.clearFilterDetalByProduct()
+          e.classList.remove('td-row-all')
+          this.selectedCbEd = null
+          return
+      }
+      this.selectedCbEd = cbEd
+          if(this.tr_cb) 
+          this.tr_cb.classList.remove('td-row-all')
 
-            this.getAllDetalByProduct(cbEd)
-    
-        this.tr_cb = e
-        this.tr_cb.classList.add('td-row-all')
+          this.getAllDetalByProduct(cbEd)
+  
+      this.tr_cb = e
+      this.tr_cb.classList.add('td-row-all')
     },
     setProduct(product, e) {
-        if(this.selecteProduct && this.selecteProduct.id == product.id) {
-            this.clearFilterCbedByProduct()
-            this.clearFilterDetalByProduct()
-            e.classList.remove('td-row-all')
-            this.selecteProduct = null
-            return
-        }
+      if(this.selecteProduct && this.selecteProduct.id == product.id) {
+          this.clearFilterCbedByProduct()
+          this.clearFilterDetalByProduct()
+          e.classList.remove('td-row-all')
+          this.selecteProduct = null
+          return
+      }
 
-        this.selecteProduct = product
-            if(this.tr_product) 
-            this.tr_product.classList.remove('td-row-all')
-    
-        this.getAllCbEdByProduct(product)
-        this.getAllDetalByProduct(product)
+      this.selecteProduct = product
+          if(this.tr_product) 
+          this.tr_product.classList.remove('td-row-all')
+  
+      this.getAllCbEdByProduct(product)
+      this.getAllDetalByProduct(product)
 
-        this.tr_product = e
-        this.tr_product.classList.add('td-row-all')
+      this.tr_product = e
+      this.tr_product.classList.add('td-row-all')
     },
     editDetal() {
-        if(!this.selectedDetal)
-            return 0
+      if(!this.selectedDetal)
+          return 0
 
-        this.$router.push("/detal/edit")
+      this.$router.push("/detal/edit")
     },
     keySearch(v) {
-        this.filterDetalToArticle(v)
+      this.filterDetalToArticle(v)
     },
     keySearchCb(v) {
-        this.searchCbed(v)
+      this.searchCbed(v)
     },
     keySearchProduct(v) {
-        this.searchProduct(v)
+      this.searchProduct(v)
     },
     deleteDetal() {
-        if(!this.selectedDetal)
-            return 0
-        this.deleteDetelyId(this.selectedDetal.id)
+      if(!this.selectedDetal)
+          return 0
+      this.deleteDetelyId(this.selectedDetal.id)
     },
     responsDetal() {
-        if(!this.selectedDetal)
-            return 0
-        
-        if(this.$props.getListDetal) {
-            let add = true
-            if(this.detalList.length > 0) {
-                for(let det of this.detalList) {
-                    if(det.det.id == this.selectedDetal.id)
-                        add = false
-                }
-            }
-            if(add) {
-                this.detalList.push({ 
-                    art: '',
-                    det: {
-                        name: this.selectedDetal.name,
-                        id: this.selectedDetal.id
-                    },
-                    kol: 1,
-                    ez: 1
-                });
-            }
-            return 0
+      if(!this.selectedDetal)
+        return 0
+      
+      if(this.$props.getListDetal) {
+        let add = true
+        if(this.detalList.length > 0) {
+          for(let det of this.detalList) {
+            if(det.det.id == this.selectedDetal.id)
+              add = false
+          }
         }
-        this.$emit("responsDetal", this.selectedDetal)
-        this.destroyModalF()
+        if(add) {
+          this.detalList.push({ 
+            art: '',
+            det: {
+              name: this.selectedDetal.name,
+              id: this.selectedDetal.id
+            },
+            kol: 1,
+            ez: 1
+          });
+        }
+        return 0
+      }
+      this.$emit("responsDetal", this.selectedDetal)
+      this.destroyModalF()
     },
     returnDetalList() {
-        this.$emit("responsDetal", this.detalList)
-        this.destroyModalF()
+      this.$emit("responsDetal", this.detalList)
+      this.destroyModalF()
     },
     changeKolvo(val, det) {
-        det.kol = val.value
+      det.kol = val.value
     },
     changeArt(val, det) {
-        det.art = val.value
+      det.art = val.value
     },
     selecter(val, det) {
-        det.ez = val.value
+      det.ez = val.value
     },
     delDet(id) {
-        this.detalList = this.detalList.filter(det => det.det.id != id)
+      this.detalList = this.detalList.filter(det => det.det.id != id)
     },
   },
   async mounted() {
@@ -355,125 +355,125 @@ export default {
     this.getAllCbed()
     this.getAllDetals()
     if(this.$props.listDetal)
-        this.detalList = this.$props.listDetal
+      this.detalList = this.$props.listDetal
   }
 }
 </script>
 
 <style scoped>
-    .delete_span {
-        padding-top: 2px;
-    }
-    .out-btn-control {
-        margin-top: 20px;
-    }
-    .table-base-detal {
-        float: left;
-        width: 400px;
-    }
-    .table-base-detal tr {
-        height: 65px;
-    }
-    .scroll-table {
-        height: 600px;
-        
-    }
-    .tb-title {
-        height: 50px;
-        text-align: center;
-    }
-    .btn-control {
-        width: 1260px;
-        flex-direction: column;
-        align-items: flex-end;
-    }
-    .btn-control button {
-        margin: 2px;
-    }
-    table {
-        font-size: 14px;
-    }
-    .main_table_control {
-        display: flex;
-    }
+.delete_span {
+  padding-top: 2px;
+}
+.out-btn-control {
+  margin-top: 20px;
+}
+.table-base-detal {
+  float: left;
+  width: 400px;
+}
+.table-base-detal tr {
+  height: 65px;
+}
+.scroll-table {
+  height: 600px;
+    
+}
+.tb-title {
+  height: 50px;
+  text-align: center;
+}
+.btn-control {
+  width: 1260px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.btn-control button {
+  margin: 2px;
+}
+table {
+  font-size: 14px;
+}
+.main_table_control {
+  display: flex;
+}
     
 .content-modal-right-menu-hidden {
-    animation: width-replace 1s 1 ease;
+  animation: width-replace 1s 1 ease;
 }
 .content-modal-right-menu-hidden>div {
-    animation: hidden-content-replace 1s 1 ease;
+  animation: hidden-content-replace 1s 1 ease;
 }
 .content-modal-right-menu {
-    animation: width 1s 1 ease;
-    height: 10000px;
-    width: 70%;
+  animation: width 1s 1 ease;
+  height: 10000px;
+  width: 70%;
 }
 .left-block-modal {
-    width: 30%;
-    height: 10000px;
-    animation: width-right 1s 1 ease;
+  width: 30%;
+  height: 10000px;
+  animation: width-right 1s 1 ease;
 }
 .left-block-modal-hidden {
-    animation: width-right-replace 1s 1 ease;
+  animation: width-right-replace 1s 1 ease;
 }
 .content-modal-right-menu>div {
-    animation: hidden-content 1s 1 ease;
+  animation: hidden-content 1s 1 ease;
 }
-    @keyframes width {
-    from {
-        width: 1%;
-    }
-    to {
-        width: 70%;
-    }
+@keyframes width {
+  from {
+      width: 1%;
+  }
+  to {
+      width: 70%;
+  }
 }
 @keyframes width-right {
-    from {
-        width: 0%;
-    }
-    to {
-        width: 30%;
-    }
+  from {
+      width: 0%;
+  }
+  to {
+      width: 30%;
+  }
 }
 @keyframes hidden-content {
-    from {
-        opacity: 0;
-    }
-    80% {
-        opacity: 0;
-    }
-    90% {
-        opacity: 0.5;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+      opacity: 0;
+  }
+  80% {
+      opacity: 0;
+  }
+  90% {
+      opacity: 0.5;
+  }
+  to {
+      opacity: 1;
+  }
 }
 @keyframes width-replace {
-    from {
-        width: 30vw;
-    }
-    to {
-        width: 00vw;
-    }
+  from {
+      width: 30vw;
+  }
+  to {
+      width: 00vw;
+  }
 }
 @keyframes width-right-replace {
-    from {
-        width: 70vw;
-    }
-    to {
-        width: 0vw;
-    }
+  from {
+      width: 70vw;
+  }
+  to {
+      width: 0vw;
+  }
 }
 @keyframes hidden-content-replace {
-    from {
-        opacity: 1;
-    }
-    20% {
-        opacity: 0;
-    }
-    to {
-        opacity: 0;
-    }
+  from {
+      opacity: 1;
+  }
+  20% {
+      opacity: 0;
+  }
+  to {
+      opacity: 0;
+  }
 }
 </style>

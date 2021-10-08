@@ -14,7 +14,9 @@
 				<div class="scroll-table" style='width: 99%;'>
           <table>
             <tr>
-							<th></th>
+							<th>
+								<unicon name="check" fill="royalblue" />
+							</th> 
 							<th>Тип</th>
 							<th>Подтип</th>
 							<th>Наименование</th>

@@ -28,12 +28,12 @@
         </p>
         <p>
           <span>Исполнитель: </span>
-          <span v-for='user in executorList' :key='user' class='user_select_span'>{{ user.login }}</span>
+          <span v-for='user in executorList' :key='user' class='select_span_href'>{{ user.login }}</span>
           <button class="btn-small btn-add" @click='selectUser("executor")'>Добавить</button>
         </p>
         <p>
           <span>Контролер: </span>
-          <span v-for='user in controllerList' :key='user' class='user_select_span'>{{ user.login }}</span>
+          <span v-for='user in controllerList' :key='user' class='select_span_href'>{{ user.login }}</span>
           <button class="btn-small btn-add"  @click='selectUser("controller")'>Добавить</button>
         </p>
         <p>
@@ -74,7 +74,7 @@
         <div class='izd_block'>
           <span>Изделия, СБ, детали:</span>
           <div v-for='izd in izdList' :key='izd' class='izd_block_two'>
-            <span class='user_select_span'>{{ izd.name }}</span>
+            <span class='select_span_href'>{{ izd.name }}</span>
             <span class='delete_span' @click='deleteIzd(izd)'><unicon name="minus-square-full" fill="red" height='16' width='16' /></span>
           </div>
           <button class="btn-small btn-add" @click='addProduct'>Добавить</button>
@@ -85,7 +85,7 @@
               class='izd_block_two' 
               @click="setDocs(file)"
               :key='file'>
-              <span class='user_select_span'>{{ file.name }}</span>
+              <span class='select_span_href'>{{ file.name }}</span>
           </div>
 
           <!-- Просматриваем временные файлы -->
@@ -94,7 +94,7 @@
               class='izd_block_two' 
               @click="setDocs(file)"
               :key='file'>
-                <span class='user_select_span'>{{ file.name }}</span>
+                <span class='select_span_href'>{{ file.name }}</span>
             </div>
           </div>
           <button class="btn-small btn-add" @click='openFileModal'>Добавить</button>
@@ -119,7 +119,7 @@
     />
     </div>
   </div>
-    <BaseProductModal
+  <BaseProductModal
     v-if='showModalProduct'
     :key='keyModalProduct'
     @responsDetal='responsDetal'
@@ -274,8 +274,9 @@ export default {
     responsDetal(res) {
       if(res) {
         this.izdList.push({
-          id: res.id,
-          name: res.name
+          id: res.obj.id,
+          name: res.obj.name,
+          type: res.type
         })
       }
     },
@@ -349,13 +350,6 @@ export default {
 .p_picter {
   display: flex;
   align-items: center;
-}
-.user_select_span {
-  padding-left: 5px;
-  text-decoration: underline;
-  color: #0008ffce;
-  border-radius: 5px;
-  cursor: pointer;
 }
 .izd_block {
   display: flex;

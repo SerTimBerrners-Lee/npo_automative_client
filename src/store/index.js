@@ -17,6 +17,7 @@ import product from './modules/product';
 import buyer from './modules/buyer';
 import sclad from './modules/sclad';
 import issue from './modules/issue';
+import shipments from './modules/shipments';
 
 export default createStore({
   modules: {
@@ -37,7 +38,8 @@ export default createStore({
     product,
     buyer,
     sclad,
-    issue
+    issue,
+    shipments
   }
 })
   
