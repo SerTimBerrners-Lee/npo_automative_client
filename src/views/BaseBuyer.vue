@@ -139,149 +139,148 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 import OpensFile from '@/components/filebase/openfile.vue'
 import random from 'lodash'
-// import Search from '@/components/search.vue'
 
 export default {
-    data() {
-        return {
-            obj: {
-                name: '',
-                inn: '',
-                cpp: '',
-                description: '',
-                contact: [],
-                rekvisit: [],
-                documents: []
-            },
-            buyer: null,
+  data() {
+    return {
+      obj: {
+        name: '',
+        inn: '',
+        cpp: '',
+        description: '',
+        contact: [],
+        rekvisit: [],
+        documents: []
+      },
+      buyer: null,
 
-            itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 1222),
-        }
-    },
-    computed: mapGetters(['allBuyer']),
-    components: {OpensFile},
-    methods: {
-        ...mapActions(['fetchAllBuyers', 'fetchBuyerBan']),
-        ...mapMutations(['setBuyerState']),
-        setBuyer(buyer) {
-            this.setBuyerState(buyer)
-            
-            this.buyer = buyer
-            this.obj.name = buyer.name
-            this.obj.inn = buyer.inn
-            this.obj.cpp = buyer.cpp
-            this.obj.description = buyer.description
-            if(buyer.contacts) 
-                this.obj.contact = JSON.parse(buyer.contacts)
-            
-            if(buyer.rekvisit) 
-                this.obj.rekvisit = JSON.parse(buyer.rekvisit)
-            
-            if(buyer.documents) 
-                this.obj.documents = buyer.documents
-        },
-        clickDoc(files) {
-            if(files) { 
-                this.itemFiles = files
-                this.keyWhenModalGenerateFileOpen = random(10, 1222)
-            }
-        },
-        create() {
-            this.$router.push({path: '/buyer/create'})
-        },
-        edit() {
-            if(!this.buyer)
-                return 0;
-            this.$router.push({path: '/buyer/edit'})
-        },
-        ban() {
-            if(!this.buyer.id)
-                return 0;
-            this.fetchBuyerBan(this.buyer.id)
-        },
-
-    },
-    async mounted() {
-        this.fetchAllBuyers()
+      itemFiles: null,
+      keyWhenModalGenerateFileOpen: random(10, 1222),
     }
+  },
+  computed: mapGetters(['allBuyer']),
+  components: {OpensFile},
+  methods: {
+    ...mapActions(['fetchAllBuyers', 'fetchBuyerBan']),
+    ...mapMutations(['setBuyerState']),
+    setBuyer(buyer) {
+      this.setBuyerState(buyer)
+      
+      this.buyer = buyer
+      this.obj.name = buyer.name
+      this.obj.inn = buyer.inn
+      this.obj.cpp = buyer.cpp
+      this.obj.description = buyer.description
+      if(buyer.contacts) 
+        this.obj.contact = JSON.parse(buyer.contacts)
+      
+      if(buyer.rekvisit) 
+        this.obj.rekvisit = JSON.parse(buyer.rekvisit)
+      
+      if(buyer.documents) 
+        this.obj.documents = buyer.documents
+    },
+    clickDoc(files) {
+      if(files) { 
+        this.itemFiles = files
+        this.keyWhenModalGenerateFileOpen = random(10, 1222)
+      }
+    },
+    create() {
+      this.$router.push({path: '/buyer/create'})
+    },
+    edit() {
+      if(!this.buyer)
+        return 0;
+      this.$router.push({path: '/buyer/edit'})
+    },
+    ban() {
+      if(!this.buyer.id)
+        return 0;
+      this.fetchBuyerBan(this.buyer.id)
+    },
+
+  },
+  async mounted() {
+    this.fetchAllBuyers()
+}
 }
 </script>
 
 <style scoped>
-    .table_rek{
-        width: 420px;
-    }
-    .table-filter-bproveder th {
-        width: 158px;
-    }
-    .left-block-bprovider {
-        width: 528px;
-        float: left;
-    }
-    .left-block-bprovider .btn-control {
-        margin-top: 20px;
-    }
-    .right-block-bprovider {
-        margin-left: 20px;
-        width: 1030px;
-    }
-    .block {
-        display: flex;
-        flex-direction: column;
-    }
-    .flex-box-main {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-    }
-    .first-block-description p {
-        margin-left: 5px;
-        float: left;
-        width: 30%;
-    }
-    .first-block-description input {
-        width: 150px;
-    }
-    textarea {
-        height: 90px;
-        width: 350px;
-        border: 1px solid #d3d3d3;
-        border-radius: 4px;
-    }
-    .block-d-r {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 10px;
-    }
-    .block-d-r>div>div {
-        margin: 5px;
-        margin-top: 10px;
-        margin-left: 5px;
-    }
-    .block-d-r>div {
-        width: 50%;
-    }
-    .block-d-r th {
-        text-align: start;
-    }
-    .btn-black {
-        width:max-content;
-        height: 45px;
-    }
-    .endgroup {
-        display: flex;
-        justify-content: end;
-        margin-top: 20px;
-        align-items: end;
-    }
-    .provider_table {
-        width: 520px;
-    }
-    th {
-        height: 10px;
-    }
-    table * {
-        user-select: none;
-    }
+.table_rek{
+  width: 420px;
+}
+.table-filter-bproveder th {
+  width: 158px;
+}
+.left-block-bprovider {
+  width: 528px;
+  float: left;
+}
+.left-block-bprovider .btn-control {
+  margin-top: 20px;
+}
+.right-block-bprovider {
+  margin-left: 20px;
+  width: 1030px;
+}
+.block {
+  display: flex;
+  flex-direction: column;
+}
+.flex-box-main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.first-block-description p {
+  margin-left: 5px;
+  float: left;
+  width: 30%;
+}
+.first-block-description input {
+  width: 150px;
+}
+textarea {
+  height: 90px;
+  width: 350px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+}
+.block-d-r {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+.block-d-r>div>div {
+  margin: 5px;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+.block-d-r>div {
+  width: 50%;
+}
+.block-d-r th {
+  text-align: start;
+}
+.btn-black {
+  width:max-content;
+  height: 45px;
+}
+.endgroup {
+  display: flex;
+  justify-content: end;
+  margin-top: 20px;
+  align-items: end;
+}
+.provider_table {
+  width: 520px;
+}
+th {
+  height: 10px;
+}
+table * {
+  user-select: none;
+}
 </style>

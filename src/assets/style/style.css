@@ -2,6 +2,32 @@
   text-align: center;
 }
 
+.checkbox_block {
+  cursor: pointer;
+  padding: 5px;
+  background: #e4e4e4ce;
+  border: 2px solid #e4e4e4ce;
+  width: 15px;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
+
+.checkbox_block:hover {
+  background: #4d7ce2ce;
+}
+.checkbox_block_select::after {
+  width: 15px;
+  content: '+';
+  background: #4d7ce2ce;
+  height: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+}
 table td {
 	font-size: 14px;
 }
@@ -266,6 +292,7 @@ textarea {
 
 .select-small { 
   width: max-content;
+  max-width: 200px;
   height: 26px;
   padding: 0px;
   font-size: 13px;

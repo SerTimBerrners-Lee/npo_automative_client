@@ -307,7 +307,7 @@ export default {
   text-align: center;
 }
 .btn-control {
-  width: 1260px;
+  width: 100%;
   flex-direction: column;
   align-items: flex-end;
 }
@@ -345,59 +345,59 @@ table {
 }
 @keyframes width {
   from {
-      width: 1%;
+    width: 1%;
   }
   to {
-      width: 70%;
+    width: 70%;
   }
 }
 @keyframes width-right {
   from {
-      width: 0%;
+    width: 0%;
   }
   to {
-      width: 30%;
+    width: 30%;
   }
 }
 @keyframes hidden-content {
   from {
-      opacity: 0;
+    opacity: 0;
   }
   80% {
-      opacity: 0;
+    opacity: 0;
   }
   90% {
-      opacity: 0.5;
+    opacity: 0.5;
   }
   to {
-      opacity: 1;
+    opacity: 1;
   }
 }
 @keyframes width-replace {
   from {
-      width: 30vw;
+    width: 30vw;
   }
   to {
-      width: 00vw;
+    width: 00vw;
   }
 }
 @keyframes width-right-replace {
   from {
-      width: 70vw;
+    width: 70vw;
   }
   to {
-      width: 0vw;
+    width: 0vw;
   }
 }
 @keyframes hidden-content-replace {
   from {
-      opacity: 1;
+    opacity: 1;
   }
   20% {
-      opacity: 0;
+    opacity: 0;
   }
   to {
-      opacity: 0;
+    opacity: 0;
   }
 }
 </style>

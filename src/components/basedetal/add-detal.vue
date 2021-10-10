@@ -481,6 +481,9 @@ export default {
 .sle {
   background-color: white;
 }
+select {
+  width: 100px;
+}
 .absolute_znach {
   position: absolute;
   margin-left: 90px;
@@ -493,68 +496,68 @@ export default {
   bottom: 10px;
   background-color: white;
 }
-  .small {
-    width: 120px;
-  }
-  .tr_haracteristic td {
-    height: 10px;
-  }
-  .td_center {
-    text-align: center;
-  }
-  .title_block{
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-  }
-  .title_block p * {
-    margin-left: 5px;
-  }
-  .title_block input{
-    width: 190px;
-  }
-  .content_left_block {
-    width: 100%;
-    display: flex;
-  }
-  .content_left_block>div {
-    margin: 10px;
-  }
-  .tables_bf th {
-    width: 100%
-  }
-  .content_left_block_left {
-    width: 50%;
-  }
-  .content_left_block_right{
-    width: 50%;
-  }
-  .left_content {
-    width: 1050px;
-  }
-  .main_block_content {
-    display: flex;
-  }
-  textarea {
-    width: 100%;
-  }
-  .right_content {
-    padding: 10px;
-    margin-top: 20px;
-  }
-  .right_content h3 {
-    margin-left: 40px;
-  }
-  .td_link {
-    cursor: pointer;
-    user-select: none;
-    text-decoration: underline;
-    color: rgb(17, 90, 124);
-    font-size: 14px;
-    text-align: center;
-    font-weight: bold;
-  }
-  .td_link:hover {
-    color: rgb(36, 140, 189);
-  }
+.small {
+  width: 120px;
+}
+.tr_haracteristic td {
+  height: 10px;
+}
+.td_center {
+  text-align: center;
+}
+.title_block{
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+}
+.title_block p * {
+  margin-left: 5px;
+}
+.title_block input{
+  width: 190px;
+}
+.content_left_block {
+  width: 100%;
+  display: flex;
+}
+.content_left_block>div {
+  margin: 10px;
+}
+.tables_bf th {
+  width: 100%
+}
+.content_left_block_left {
+  width: 50%;
+}
+.content_left_block_right{
+  width: 50%;
+}
+.left_content {
+  width: 1050px;
+}
+.main_block_content {
+  display: flex;
+}
+textarea {
+  width: 100%;
+}
+.right_content {
+  padding: 10px;
+  margin-top: 20px;
+}
+.right_content h3 {
+  margin-left: 40px;
+}
+.td_link {
+  cursor: pointer;
+  user-select: none;
+  text-decoration: underline;
+  color: rgb(17, 90, 124);
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+}
+.td_link:hover {
+  color: rgb(36, 140, 189);
+}
 </style>

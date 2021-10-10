@@ -198,20 +198,20 @@ export default {
   font-size: 13px;
   color: #009fff;
 }
-  .main_content {
-    width: 1600px;
-    display: flex;
-    flex-direction: row;
-  }
-  .body_table {
-    width: 1150px;
-    display: flex;
-    flex-direction: column;
-  }
-  .right_info_block {
-    width: 450px;
-  }
-  .btn-control-tools-w {
-        width: 1100px;
-    }
+.main_content {
+  width: 1600px;
+  display: flex;
+  flex-direction: row;
+}
+.body_table {
+  width: 1150px;
+  display: flex;
+  flex-direction: column;
+}
+.right_info_block {
+  width: 450px;
+}
+.btn-control-tools-w {
+  width: 1100px;
+}
 </style>

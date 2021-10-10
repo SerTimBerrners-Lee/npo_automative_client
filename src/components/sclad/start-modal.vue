@@ -53,12 +53,10 @@
           <input type="text">
         </p>
       </div>
-
       <div>
         <h3>Примечание</h3>
         <textarea></textarea>
       </div>
-
       <div class="btn-control out-btn-control">
         <button 
         class="btn-status"
@@ -104,38 +102,37 @@ export default {
 </script>
 
 <style scoped>
-  .head_block {
-    display: flex;
-    justify-content: space-between;
-    background: #c1c1c1;
-    padding-left: 10px;
-    padding-right: 10px;
-    height: 40px;
-    align-items: center;
-  }
-  .out-btn-control {
-    width: 96%;
-  }
-  table{ 
-    width: 100%;
-    margin-bottom: 50px;
-  }
-  .block input {
-    width: 50px;
-  }
-  .block * {
-    margin: 3px;
-  }
-  .block {
-    display: flex;
-  }
-  .block p {
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-  }
-  textarea {
-    height: 130px;
-  }
- 
+.head_block {
+  display: flex;
+  justify-content: space-between;
+  background: #c1c1c1;
+  padding-left: 10px;
+  padding-right: 10px;
+  height: 40px;
+  align-items: center;
+}
+.out-btn-control {
+  width: 96%;
+}
+table{ 
+  width: 100%;
+  margin-bottom: 50px;
+}
+.block input {
+  width: 50px;
+}
+.block * {
+  margin: 3px;
+}
+.block {
+  display: flex;
+}
+.block p {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+textarea {
+  height: 130px;
+}
 </style>

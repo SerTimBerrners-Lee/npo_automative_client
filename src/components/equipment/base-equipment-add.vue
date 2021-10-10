@@ -238,61 +238,61 @@ export default {
 .sle {
   background-color: white;
 }
-  .block_name {
-    display: flex;
-  }
-  .instr_select {
-    width: 210px;
-  }
-  .name_p{
-    display: flex;
-    align-items: center;
-    margin-left: 10px;
-  }
-  .name_p * {
-    margin-left: 5px;
-  }
-  .name_p input {
-    width: 70%;
-  }
-  .block_name {
-    width: 1200px;
-    padding: 5px;
-  }
-  .width-260{
-    width: 260px;
-  }
-  .main_contents {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-  }
-  .left_content {
-    width: 600px;
-    display: flex;
-    flex-direction: column;
-  }
-  .right_content {
-    width: 600px;
-  }
-  textarea {
-    width: 545px;
-  }
-  .inputs_block p {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .table_provider {
-    width: 100%;
-  }
-  .table_provider th:first-child {
-    width: 30%;
-  }
-  .pointer-files-to-add {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.block_name {
+  display: flex;
+}
+.instr_select {
+  width: 210px;
+}
+.name_p{
+  display: flex;
+  align-items: center;
+  margin-left: 10px;
+}
+.name_p * {
+  margin-left: 5px;
+}
+.name_p input {
+  width: 70%;
+}
+.block_name {
+  width: 1200px;
+  padding: 5px;
+}
+.width-260{
+  width: 260px;
+}
+.main_contents {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+.left_content {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+.right_content {
+  width: 600px;
+}
+textarea {
+  width: 545px;
+}
+.inputs_block p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.table_provider {
+  width: 100%;
+}
+.table_provider th:first-child {
+  width: 30%;
+}
+.pointer-files-to-add {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>

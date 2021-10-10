@@ -394,34 +394,34 @@ export default {
         this.formData.append('listCbed', JSON.stringify(this.listCbed))
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
-          this.listPokDet[mat].mat = {
-          id: this.listPokDet[mat].mat.id,
-          name: this.listPokDet[mat].mat.name,
-          kolvo: this.listPokDet[mat].mat.kolvo
-          }
-          if(mat == this.listPokDet.length - 1) {
-            this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
-          }
+        this.listPokDet[mat].mat = {
+        id: this.listPokDet[mat].mat.id,
+        name: this.listPokDet[mat].mat.name,
+        kolvo: this.listPokDet[mat].mat.kolvo
+        }
+        if(mat == this.listPokDet.length - 1) {
+          this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
+        }
       }
 
       for(let mat = 0; mat < this.materialList.length; mat++) {
-          this.materialList[mat].mat = {
-          id: this.materialList[mat].mat.id,
-          name: this.materialList[mat].mat.name,
-          kolvo: this.materialList[mat].mat.kolvo
-          }
-          if(mat == this.materialList.length - 1) {
-            this.formData.append('materialList', JSON.stringify(this.materialList))
-          }
+        this.materialList[mat].mat = {
+        id: this.materialList[mat].mat.id,
+        name: this.materialList[mat].mat.name,
+        kolvo: this.materialList[mat].mat.kolvo
+        }
+        if(mat == this.materialList.length - 1) {
+          this.formData.append('materialList', JSON.stringify(this.materialList))
+        }
       }
 
         if(this.$route.params.copy == 'false') {
-            this.formData.append('id', this.id)
-            this.updateCbed(this.formData)
-            showMessage('', 'Сборочная единица усешно Обновлена. Перенаправление на главную страницу...', 's', this)
+          this.formData.append('id', this.id)
+          this.updateCbed(this.formData)
+          showMessage('', 'Сборочная единица усешно Обновлена. Перенаправление на главную страницу...', 's', this)
         } else {
-            showMessage('', 'Сборочная единица усешно Создана. Перенаправление на главную страницу...', 's', this)
-            this.createNewCbEd(this.formData)
+          showMessage('', 'Сборочная единица усешно Создана. Перенаправление на главную страницу...', 's', this)
+          this.createNewCbEd(this.formData)
         }
 
       localStorage.removeItem("tpID")
@@ -433,6 +433,13 @@ export default {
       if(tp.id) {
         this.techProcessID = tp.id
         localStorage.setItem('tpID', this.techProcessID)
+        if(tp.opers.length) {
+          this.obj.parametrs[0].znach  = 0
+          tp.opers.forEach(op => {
+            this.obj.parametrs[0].znach = 
+              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime))
+          })
+        }
       }
     },
     addDock(val) {
@@ -499,10 +506,10 @@ export default {
       }
     },
     removeParametrs() {
-        if(this.selectParametrs) {
-            this.obj.parametrs.splice(this.selectParametrs.inx, 1)
-            this.selectParametrs = null
-        }
+      if(this.selectParametrs) {
+        this.obj.parametrs.splice(this.selectParametrs.inx, 1)
+        this.selectParametrs = null
+      }
     },
     changeHaracteristic(val, inst, inx) {
       if(inst == 'name')  
@@ -514,13 +521,13 @@ export default {
       }
     },
     changeParametrs(val, inst, inx) {
-        if(inst == 'name')  
-            this.obj.parametrs[inx].name = val
-        if(inst == 'ez')  
-            this.obj.parametrs[inx].ez = val
-        if(inst == 'znach')  {
-            this.obj.parametrs[inx].znach = val
-        }
+      if(inst == 'name')  
+        this.obj.parametrs[inx].name = val
+      if(inst == 'ez')  
+        this.obj.parametrs[inx].ez = val
+      if(inst == 'znach')  {
+        this.obj.parametrs[inx].znach = val
+      }
     },
     showTechProcess() {
       this.techProcessIsShow = true
@@ -532,39 +539,39 @@ export default {
       this.removeOperationStorage()
     },
     updateForEdit() {
-        this.obj.name = this.getOneSelectCbEd.name
-        this.obj.articl = this.getOneSelectCbEd.articl
-        this.obj.responsible = this.getOneSelectCbEd.user ? this.getOneSelectCbEd.user.id :  null
-        this.obj.description = this.getOneSelectCbEd.description
-        this.obj.parametrs = JSON.parse(this.getOneSelectCbEd.parametrs)
-        this.obj.haracteriatic = JSON.parse(this.getOneSelectCbEd.haracteriatic)
-        this.materialList = this.getOneSelectCbEd.materialList ? JSON.parse(this.getOneSelectCbEd.materialList) : []
-        this.listPokDet = this.getOneSelectCbEd.listPokDet ? JSON.parse(this.getOneSelectCbEd.listPokDet) : []
-        this.listDetal = this.getOneSelectCbEd.listDetal ? JSON.parse(this.getOneSelectCbEd.listDetal) : []
-        this.listCbed = this.getOneSelectCbEd.listCbed ? JSON.parse(this.getOneSelectCbEd.listCbed) : []
+      this.obj.name = this.getOneSelectCbEd.name
+      this.obj.articl = this.getOneSelectCbEd.articl
+      this.obj.responsible = this.getOneSelectCbEd.user ? this.getOneSelectCbEd.user.id :  null
+      this.obj.description = this.getOneSelectCbEd.description
+      this.obj.parametrs = JSON.parse(this.getOneSelectCbEd.parametrs)
+      this.obj.haracteriatic = JSON.parse(this.getOneSelectCbEd.haracteriatic)
+      this.materialList = this.getOneSelectCbEd.materialList ? JSON.parse(this.getOneSelectCbEd.materialList) : []
+      this.listPokDet = this.getOneSelectCbEd.listPokDet ? JSON.parse(this.getOneSelectCbEd.listPokDet) : []
+      this.listDetal = this.getOneSelectCbEd.listDetal ? JSON.parse(this.getOneSelectCbEd.listDetal) : []
+      this.listCbed = this.getOneSelectCbEd.listCbed ? JSON.parse(this.getOneSelectCbEd.listCbed) : []
 
-        if(this.$route.params.copy == 'false')  {
-            this.documentsData = this.getOneSelectCbEd.documents
-            this.getOneSelectCbEd.documents.forEach((d) => {
-                this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
-            })
-            this.randomDataMedia = random(10, 38100)
-            this.id = this.getOneSelectCbEd.id
+      if(this.$route.params.copy == 'false')  {
+        this.documentsData = this.getOneSelectCbEd.documents
+        this.getOneSelectCbEd.documents.forEach((d) => {
+            this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+        })
+        this.randomDataMedia = random(10, 38100)
+        this.id = this.getOneSelectCbEd.id
 
-            this.techProcessID =  !isEmpty(this.getOneSelectCbEd.techProcesses) ? this.getOneSelectCbEd.techProcesses[0].id : null
-            localStorage.setItem('tpID', this.techProcessID)
-        }
+        this.techProcessID =  !isEmpty(this.getOneSelectCbEd.techProcesses) ? this.getOneSelectCbEd.techProcesses[0].id : null
+        localStorage.setItem('tpID', this.techProcessID)
+      }
     },
     setDocs(dc) {
-        this.itemFiles = dc
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 1111);
+      this.itemFiles = dc
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 1111);
     },
   },
   async mounted() {
     if(isEmpty(this.getOneSelectCbEd)) {
-        this.$router.push("/cbed")
-        return 
+      this.$router.push("/cbed")
+      return 
     }
     this.getAllUsers()
 
@@ -589,73 +596,73 @@ export default {
   bottom: 10px;
   background-color: white;
 }
-  .small {
-    width: 120px;
-  }
-  .tr_haracteristic td {
-    height: 10px;
-  }
-  .td_center {
-    text-align: center;
-  }
-  .title_block{
-    width: 98%;
+.small {
+  width: 120px;
+}
+.tr_haracteristic td {
+  height: 10px;
+}
+.td_center {
+  text-align: center;
+}
+.title_block{
+  width: 98%;
+  display: flex;
+  justify-content: space-between;
+}
+.title_block p * {
+  margin-left: 5px;
+}
+.title_block input{
+  width: 190px;
+}
+.title_block  {
+    height: 47px;
     display: flex;
-    justify-content: space-between;
-  }
-  .title_block p * {
-    margin-left: 5px;
-  }
-  .title_block input{
-    width: 190px;
-  }
-  .title_block  {
-      height: 47px;
-      display: flex;
-      align-items: center;
-  }
-  .content_left_block {
-    width: 100%;
-    display: flex;
-  }
-  .content_left_block>div {
-    margin: 10px;
-  }
-  .tables_bf th {
-    width: 100%
-  }
-  .content_left_block_left {
-    width: 50%;
-  }
-  .content_left_block_right{
-    width: 50%;
-  }
-  .left_content {
-    width: 1050px;
-  }
-  .main_block_content {
-    display: flex;
-  }
-  textarea {
-    width: 100%;
-  }
-  .right_content {
-    padding: 10px;
-    margin-top: 20px;
-  }
-  .td_link {
-    cursor: pointer;
-    user-select: none;
-    text-decoration: underline;
-    color: rgb(17, 90, 124);
-    font-size: 14px;
-    text-align: center;
-    font-weight: bold;
-  }
-  .td_link:hover {
-    color: rgb(36, 140, 189);
-  }
-  .select-small {
-      width: 110px;
-  }
+    align-items: center;
+}
+.content_left_block {
+  width: 100%;
+  display: flex;
+}
+.content_left_block>div {
+  margin: 10px;
+}
+.tables_bf th {
+  width: 100%
+}
+.content_left_block_left {
+  width: 50%;
+}
+.content_left_block_right{
+  width: 50%;
+}
+.left_content {
+  width: 1050px;
+}
+.main_block_content {
+  display: flex;
+}
+textarea {
+  width: 100%;
+}
+.right_content {
+  padding: 10px;
+  margin-top: 20px;
+}
+.td_link {
+  cursor: pointer;
+  user-select: none;
+  text-decoration: underline;
+  color: rgb(17, 90, 124);
+  font-size: 14px;
+  text-align: center;
+  font-weight: bold;
+}
+.td_link:hover {
+  color: rgb(36, 140, 189);
+}
+.select-small {
+    width: 110px;
+}
 </style>

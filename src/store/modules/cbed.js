@@ -64,6 +64,16 @@ export default {
       if(res.ok) {
         ctx.commit('deleteCbedByIdMutation', id)
       }
+    },
+    
+    async fetchCbedToShipments({commit}) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/shipments`)
+
+      if(res.ok) {
+        const result = await res.json()
+        commit('addAllCbed', result)
+        return result 
+      }
     }
 
   },
@@ -81,7 +91,6 @@ export default {
       if(!state.filterCbed.length)
         state.filterCbed = state.cbed
       
-
       state.cbed = state.filterCbed
 
       state.cbed = state.cbed.filter(prod => 

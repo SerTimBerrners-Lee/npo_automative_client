@@ -135,151 +135,149 @@ import { random } from 'lodash';
 import Search from '@/components/search.vue'
 
 export default {
-    data() {
-        return {
-            selectedCbEd: null,
-            selecteProduct: null,
-            tr_cb: null,
-            tr_product: null,
+  data() {
+    return {
+      selectedCbEd: null,
+      selecteProduct: null,
+      tr_cb: null,
+      tr_product: null,
 
 
-            selectedDetal: null,
-            tr: null,
-            detalModalKey: random(1, 123e2),
-            detalIsShow: false
-        }
-    },
-    computed: mapGetters(['allDetal', 'allCbed', 'allProduct']),
-    components: {DetalModal, Search},
-    methods: {
-        ...mapActions([
-                'getAllDetals', 
-                'deleteDetelyId', 
-                'getAllProduct', 
-                'getAllCbed']),
-        ...mapMutations([
-                'addOneSelectDetal', 
-                'filterDetalToArticle',
-                'clearFilterCbedByProduct',
-                'getAllCbEdByProduct',
-                'searchCbed',
-                'searchProduct',
-                'getAllDetalByProduct',
-                'clearFilterDetalByProduct']),
-        setDetals(detal, e) {
-            this.selectedDetal = detal
-             if(this.tr) 
-                this.tr.classList.remove('td-row-all')
-            
-            this.tr = e
-            this.tr.classList.add('td-row-all')
-            this.addOneSelectDetal(this.selectedDetal)
-
-            this.detalModalKey = random(1, 34e5)
-            this.detalIsShow = true
-        },
-        setCbed(cbEd, e) {
-            if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {
-                this.clearFilterDetalByProduct()
-                e.classList.remove('td-row-all')
-                this.selectedCbEd = null
-                return
-            }
-            this.selectedCbEd = cbEd
-             if(this.tr_cb) 
-                this.tr_cb.classList.remove('td-row-all')
-
-             this.getAllDetalByProduct(cbEd)
-        
-            this.tr_cb = e
-            this.tr_cb.classList.add('td-row-all')
-        },
-        setProduct(product, e) {
-            if(this.selecteProduct && this.selecteProduct.id == product.id) {
-                this.clearFilterCbedByProduct()
-                this.clearFilterDetalByProduct()
-                e.classList.remove('td-row-all')
-                this.selecteProduct = null
-                return
-            }
-
-            this.selecteProduct = product
-             if(this.tr_product) 
-                this.tr_product.classList.remove('td-row-all')
-        
-            this.getAllCbEdByProduct(product)
-            this.getAllDetalByProduct(product)
-
-            this.tr_product = e
-            this.tr_product.classList.add('td-row-all')
-        },
-        editDetal() {
-            if(!this.selectedDetal)
-                return 0
-
-            this.$router.push({path: '/detal/edit/false'})
-        },
-        createCopy() {
-            if(!this.selectedDetal)
-                return 0
-
-            this.$router.push({path: '/detal/edit/true'})
-        },
-        keySearch(v) {
-            this.filterDetalToArticle(v)
-        },
-        keySearchCb(v) {
-            this.searchCbed(v)
-        },
-        keySearchProduct(v) {
-            this.searchProduct(v)
-        },
-        deleteDetal() {
-            if(!this.selectedDetal)
-                return 0
-            this.deleteDetelyId(this.selectedDetal.id)
-        }
-
-    },
-
-
-    async mounted() {
-        this.getAllProduct()
-        this.getAllCbed()
-        this.getAllDetals()
+      selectedDetal: null,
+      tr: null,
+      detalModalKey: random(1, 123e2),
+      detalIsShow: false
     }
+  },
+  computed: mapGetters(['allDetal', 'allCbed', 'allProduct']),
+  components: {DetalModal, Search},
+  methods: {
+    ...mapActions([
+        'getAllDetals', 
+        'deleteDetelyId', 
+        'getAllProduct', 
+        'getAllCbed']),
+    ...mapMutations([
+        'addOneSelectDetal', 
+        'filterDetalToArticle',
+        'clearFilterCbedByProduct',
+        'getAllCbEdByProduct',
+        'searchCbed',
+        'searchProduct',
+        'getAllDetalByProduct',
+        'clearFilterDetalByProduct']),
+    setDetals(detal, e) {
+      this.selectedDetal = detal
+        if(this.tr) 
+          this.tr.classList.remove('td-row-all')
+      
+      this.tr = e
+      this.tr.classList.add('td-row-all')
+      this.addOneSelectDetal(this.selectedDetal)
+
+      this.detalModalKey = random(1, 34e5)
+      this.detalIsShow = true
+    },
+    setCbed(cbEd, e) {
+      if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {
+        this.clearFilterDetalByProduct()
+        e.classList.remove('td-row-all')
+        this.selectedCbEd = null
+        return
+      }
+      this.selectedCbEd = cbEd
+        if(this.tr_cb) 
+          this.tr_cb.classList.remove('td-row-all')
+
+        this.getAllDetalByProduct(cbEd)
+  
+      this.tr_cb = e
+      this.tr_cb.classList.add('td-row-all')
+    },
+    setProduct(product, e) {
+      if(this.selecteProduct && this.selecteProduct.id == product.id) {
+        this.clearFilterCbedByProduct()
+        this.clearFilterDetalByProduct()
+        e.classList.remove('td-row-all')
+        this.selecteProduct = null
+        return
+      }
+
+      this.selecteProduct = product
+        if(this.tr_product) 
+          this.tr_product.classList.remove('td-row-all')
+  
+      this.getAllCbEdByProduct(product)
+      this.getAllDetalByProduct(product)
+
+      this.tr_product = e
+      this.tr_product.classList.add('td-row-all')
+    },
+    editDetal() {
+      if(!this.selectedDetal)
+        return 0
+
+      this.$router.push({path: '/detal/edit/false'})
+    },
+    createCopy() {
+      if(!this.selectedDetal)
+        return 0
+
+      this.$router.push({path: '/detal/edit/true'})
+    },
+    keySearch(v) {
+      this.filterDetalToArticle(v)
+    },
+    keySearchCb(v) {
+      this.searchCbed(v)
+    },
+    keySearchProduct(v) {
+      this.searchProduct(v)
+    },
+    deleteDetal() {
+      if(!this.selectedDetal)
+        return 0
+      this.deleteDetelyId(this.selectedDetal.id)
+    }
+
+  },
+  async mounted() {
+    this.getAllProduct()
+    this.getAllCbed()
+    this.getAllDetals()
+  }
 }
 </script>
 
 <style scoped>
-    .table-base-detal {
-        float: left;
-        width: 400px;
-    }
-    .table-base-detal tr {
-        height: 65px;
-    }
-    .scroll-table {
-        height: 600px;
-        
-    }
-    .tb-title {
-        height: 50px;
-        text-align: center;
-    }
-    .btn-control {
-        width: 1260px;
-        flex-direction: column;
-        align-items: flex-end;
-    }
-    .btn-control button {
-        margin: 2px;
-    }
-    table {
-        font-size: 14px;
-    }
-    .main_table_control {
-        display: flex;
-    }
+.table-base-detal {
+  float: left;
+  width: 400px;
+}
+.table-base-detal tr {
+  height: 65px;
+}
+.scroll-table {
+  height: 600px;
+  
+}
+.tb-title {
+  height: 50px;
+  text-align: center;
+}
+.btn-control {
+  width: 1260px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.btn-control button {
+  margin: 2px;
+}
+table {
+  font-size: 14px;
+}
+.main_table_control {
+  display: flex;
+}
 
 </style>

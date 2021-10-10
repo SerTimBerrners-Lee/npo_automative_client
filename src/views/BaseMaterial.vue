@@ -162,11 +162,11 @@ export default {
 </script>
 
 <style scoped>
-    .cont {
-        display: flex;
-        flex-direction: column;
-    }
-    .nav-base-file-page {
-        display: flex;
-    }
+.cont {
+  display: flex;
+  flex-direction: column;
+}
+.nav-base-file-page {
+  display: flex;
+}
 </style>

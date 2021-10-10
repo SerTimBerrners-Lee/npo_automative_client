@@ -59,11 +59,6 @@ export default {
       hiddens: 'display: none;',
     }
   },
-  mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;' 
-  },
   methods: {
     destroyModalF() {
         this.destroyModalLeft = 'left-block-modal-hidden'
@@ -73,34 +68,38 @@ export default {
     start() {
       this.destroyModalF()      
     }
-  }
+  },
+  mounted() {
+    this.destroyModalLeft = 'left-block-modal'
+    this.destroyModalRight = 'content-modal-right-menu'
+    this.hiddens = 'opacity: 1;' 
+  },
 }
 </script>
 
 <style scoped>
-  .out-btn-control {
-    width: 96%;
-  }
-  table{ 
-    width: 100%;
-    margin-bottom: 50px;
-  }
-  .block input {
-    width: 50px;
-  }
-  .block * {
-    margin: 3px;
-  }
-  .block {
-    display: flex;
-  }
-  .block p {
-    display: flex;
-    align-items: center;
-    font-size: 13px;
-  }
-  textarea {
-    height: 130px;
-  }
- 
+.out-btn-control {
+  width: 96%;
+}
+table{ 
+  width: 100%;
+  margin-bottom: 50px;
+}
+.block input {
+  width: 50px;
+}
+.block * {
+  margin: 3px;
+}
+.block {
+  display: flex;
+}
+.block p {
+  display: flex;
+  align-items: center;
+  font-size: 13px;
+}
+textarea {
+  height: 130px;
+}
 </style>

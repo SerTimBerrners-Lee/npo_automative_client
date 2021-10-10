@@ -1,66 +1,66 @@
 <template>
-    <div class="right-div-bfp">
+  <div class="right-div-bfp">
     <h3>Принадлежность</h3>
     <div class="block scroll-table node_item">
-        <h3 class="link_h3" @click='showIzd = !showIzd'>Изделие</h3>
-        <div class="scroll-table table-fbp" v-if='showIzd'>
-            <table>
-            <tr>
-                <th>Артикул </th>
-                <th>Наименование</th>
-            </tr>
-            <tr v-for="u in 10" :key="u" class="td-row">
-                <td>...</td>
-                <td>...</td>
-            </tr>
+      <h3 class="link_h3" @click='showIzd = !showIzd'>Изделие</h3>
+      <div class="scroll-table table-fbp" v-if='showIzd'>
+          <table>
+          <tr>
+            <th>Артикул </th>
+            <th>Наименование</th>
+          </tr>
+          <tr v-for="u in 10" :key="u" class="td-row">
+            <td>...</td>
+            <td>...</td>
+          </tr>
         </table>
-        </div>
-        <h3 class="link_h3" @click='showSB = !showSB'>Сборочная единица</h3>
-        <div class="scroll-table table-fbp" v-if='showSB'>
-            <table>
-            <tr class="td-row">
-                <th>Артикул </th>
-                <th>Наименование</th>
-            </tr>
-            <tr v-for="u in 10" :key="u" class="td-row">
-                <td>...</td>
-                <td>...</td>
-            </tr>
+      </div>
+      <h3 class="link_h3" @click='showSB = !showSB'>Сборочная единица</h3>
+      <div class="scroll-table table-fbp" v-if='showSB'>
+          <table>
+          <tr class="td-row">
+            <th>Артикул </th>
+            <th>Наименование</th>
+          </tr>
+          <tr v-for="u in 10" :key="u" class="td-row">
+            <td>...</td>
+            <td>...</td>
+          </tr>
         </table>
-        </div>
-        <h3 class="link_h3" @click='showDetal = !showDetal'>
-                Деталь {{ material.detals ? material.detals.length : '' }} </h3>
-        <div class="scroll-table table-fbp" v-if='showDetal'>
-            <table>
-                <tr class="td-row">
-                    <th>Артикул </th>
-                    <th>Наименование</th>
-                </tr>
-                <tr v-for='detal in material.detals' 
-                    :key="detal"
-                    class="td-row"
-                    @click='e => setDetals(detal, e.target.parentElement)'
-                >
-                    <td>{{ detal.articl }}</td>
-                    <td>{{ detal.name }}</td>
-                </tr>
-                <tr v-for="u in 10" :key="u" class="td-row">
-                    <td>...</td>
-                    <td>...</td>
-                </tr>
-            </table>
-        </div>
+      </div>
+      <h3 class="link_h3" @click='showDetal = !showDetal'>
+              Деталь {{ material.detals ? material.detals.length : '' }} </h3>
+      <div class="scroll-table table-fbp" v-if='showDetal'>
+        <table>
+          <tr class="td-row">
+            <th>Артикул </th>
+            <th>Наименование</th>
+          </tr>
+          <tr v-for='detal in material.detals' 
+            :key="detal"
+            class="td-row"
+            @click='e => setDetals(detal, e.target.parentElement)'
+          >
+            <td>{{ detal.articl }}</td>
+            <td>{{ detal.name }}</td>
+          </tr>
+          <tr v-for="u in 10" :key="u" class="td-row">
+            <td>...</td>
+            <td>...</td>
+          </tr>
+        </table>
+      </div>
     </div>
     <div class="btn-control">
-        <button class="btn-small">
-            Сохранить в виде отчета EXEL
-        </button>
+      <button class="btn-small">
+        Сохранить в виде отчета EXEL
+      </button>
     </div>
     <DetalModal
-        :key='detalModalKey'
-        v-if='detalIsShow'
+      :key='detalModalKey'
+      v-if='detalIsShow'
     />
-</div>
+  </div>
 </template>
 
 <script>
@@ -69,55 +69,54 @@ import { mapActions } from 'vuex';
 import { random } from 'lodash'
 
 export default {
-    props: ['material'],
-    data() {
-        return {
-            showIzd: false,
-            showSB: false,
-            showDetal: false,
+  props: ['material'],
+  data() {
+    return {
+      showIzd: false,
+      showSB: false,
+      showDetal: false,
 
-            selectedDetal: null,
-            tr: null,
-            detalModalKey: random(1, 123e2),
-            detalIsShow: false
-        }
-    },
-    components: {DetalModal},
-    methods: {
-        ...mapActions(['getOneDetal']),
-        setDetals(detal, e) {
-            this.selectedDetal = detal
-             if(this.tr) 
-                this.tr.classList.remove('td-row-all')
-            
-            this.tr = e
-            this.tr.classList.add('td-row-all')
-            this.getOneDetal(this.selectedDetal.id).then((res) => {
-                this.detalModalKey = random(1, 34e5)
-                this.detalIsShow = true
-                console.log(res)
-            })
-        },
+      selectedDetal: null,
+      tr: null,
+      detalModalKey: random(1, 123e2),
+      detalIsShow: false
     }
+  },
+  components: {DetalModal},
+  methods: {
+    ...mapActions(['getOneDetal']),
+    setDetals(detal, e) {
+      this.selectedDetal = detal
+        if(this.tr) 
+          this.tr.classList.remove('td-row-all')
+      
+      this.tr = e
+      this.tr.classList.add('td-row-all')
+      this.getOneDetal(this.selectedDetal.id).then(() => {
+        this.detalModalKey = random(1, 34e5)
+        this.detalIsShow = true
+      })
+    },
+  }
 }
 </script>
 
 
 <style scoped>
 .right-div-bfp {
-        width: 414px;
-        margin-left: 10px;
-    }
-    th {
-        width: 350px;
-    }
-    .node_item {
-        width: 400px;
-        height: 700px;
-    }
-    .table-fbp {
-        width:100%;
-        max-height: 250px;
-        height: auto;
-    }
+  width: 414px;
+  margin-left: 10px;
+}
+th {
+  width: 350px;
+}
+.node_item {
+  width: 400px;
+  height: 700px;
+}
+.table-fbp {
+  width:100%;
+  max-height: 250px;
+  height: auto;
+}
 </style>

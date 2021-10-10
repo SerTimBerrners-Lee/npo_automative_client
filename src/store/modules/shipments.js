@@ -2,12 +2,16 @@ import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
 	state: {
-		shipments: []
+		shipments: [],
+		shipments_sclad: []
 	},
 	getters: { 
 		getShipments(state) {
 			return state.shipments
-		}
+		},
+		getShipmentsSclad(state) {
+			return state.shipments_sclad
+		},
 	}, 
 	actions: {
 		async fetchCreateShipments(ctx, data) { 
@@ -32,11 +36,36 @@ export default {
 				ctx.commit('allShipments', result)
 				return result
 			}
+		},
+		async fetchAllShipmentsSclad(ctx, bools) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/sclad/${bools}`)
+			if(res.ok) {
+				const result = await res.json()
+				ctx.commit('shipmentsSclad', result)
+				return result
+			}
+		},
+
+		async fetchChangeToSclad(ctx, id) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/sclad/${id}`, {
+				method: 'PUT'
+			})
+			if(res.ok) {
+				ctx.commit('deletToListShipments', id)
+				return true
+			}
+				
 		}
 	},
 	mutations: {
 		allShipments(state, result) {
 			state.shipments = result
+		},
+		shipmentsSclad(state, result) {
+			state.shipments_sclad = result
+		},
+		deletToListShipments(state, id) {
+			state.shipments_sclad = state.shipments_sclad.filter(sh => sh.id != id)
 		}
 	}
 }

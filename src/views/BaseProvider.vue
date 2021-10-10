@@ -265,230 +265,230 @@ import random from 'lodash'
 import Search from '@/components/search.vue'
 
 export default {
-    data() {
-        return {
-            obj: {
-                name: '',
-                inn: '',
-                cpp: '',
-                description: '',
-                contact: [],
-                rekvisit: [],
-                documents: []
-            },
-            materials: [],
-            provider: null,
+  data() {
+    return {
+      obj: {
+        name: '',
+        inn: '',
+        cpp: '',
+        description: '',
+        contact: [],
+        rekvisit: [],
+        documents: []
+      },
+      materials: [],
+      provider: null,
 
-            itemFiles: null,
-            keyWhenModalGenerateFileOpen: random(10, 1222),
+      itemFiles: null,
+      keyWhenModalGenerateFileOpen: random(10, 1222),
 
-            sName: '',
-            sPT: '',
-            sMat: ''
-        }
-    },
-    computed: mapGetters(['allProvider', 
-        'getproviderTypeM', 
-        'getproviderPTypeM', 
-        'getproviderMaterial',
-        'getGlobalProviderTypeM',
-        'getGlobalProviderPTypeM',
-        'getGlobalProviderPM']),
-    components: {OpensFile, Search},
-    methods: {
-        ...mapActions(['fetchGetProviders', 
-            'fetchProviderBan', 
-            'getAllTypeMaterial', 
-            'getAllPodTypeMaterial', 
-            'fetchGetAllPPM']),
-        ...mapMutations(['setProviderState', 
-        'filterMaterialByProvider', 
-        'filterByProviderPM',
-        'filterByProviderPTypeM',
-        'filterByProviderTypeM',
-        'filterToClickProviderTypeM',
-        'filterToClickProviderPTypeM',
-        'globalProviderFilter',
-        
-        'filterByProviderGTypeM',
-        'filterByProviderGPTypeM',
-        'filterByProviderGNameM',
-
-        'filterPByMaterial',
-        'clearFilterProviders'
-        ]),
-        setProvider(provider) {
-            this.materials = provider.materials;
-            if(this.materials) 
-                this.filterMaterialByProvider(this.materials);
-            this.provider = provider
-            this.setProviderState(provider)
-            this.obj.name = provider.name
-            this.obj.inn = provider.inn
-            this.obj.cpp = provider.cpp
-            this.obj.description = provider.description
-            if(provider.contacts) 
-                this.obj.contact = JSON.parse(provider.contacts)
-            
-            if(provider.rekvisit) 
-                this.obj.rekvisit = JSON.parse(provider.rekvisit)
-            
-            if(provider.documents) 
-                this.obj.documents = provider.documents
-            
-        },
-        clickDoc(files) {
-            if(files) { 
-                this.itemFiles = files
-                this.keyWhenModalGenerateFileOpen = random(10, 1222)
-            }
-        },
-        banProvider() {
-            if(!this.provider.id)
-                return 0;
-            this.fetchProviderBan(this.provider.id)
-        },
-        editProvider() {
-            if(!this.provider)
-                return 0;
-            this.$router.push({path: '/baseprovider/addedit/edit'})
-        },
-        keySearch(key) {
-            console.log(key)
-        },
-        sNameF(str) {
-            this.sName = str
-        },
-        sPTF(str) {
-            this.sPT = str
-        },
-        sMatF(str) {
-            this.sMat = str
-        },
-        searchName(str) {
-            this.filterByProviderPM(str)
-        },
-        searchPT(str) {
-            this.filterByProviderPTypeM(str)
-        },
-        searchMat(str) {
-            this.filterByProviderTypeM(str)
-        },
-
-
-        filterByType(t) {
-            this.filterToClickProviderTypeM(t)
-        },
-        filterByPType(t) {
-            this.filterToClickProviderPTypeM(t)
-        },
-
-        searchGT(t) {
-            this.filterByProviderGTypeM(t)
-        },
-        searchGPT(t) {
-            this.filterByProviderGPTypeM(t)
-        },
-        searchGName(t) {
-            this.filterByProviderGNameM(t)
-        },
-        clicksGName(t) {
-            this.filterPByMaterial(t)
-        },
-
-
-        clearFilter() {
-            this.clearFilterProviders()
-        },
-        clearFilterByNode() {
-            if(this.materials.length)
-                this.filterMaterialByProvider(this.materials);
-        }
-    },
-    async mounted() {
-        await this.fetchGetProviders()
-        await this.getAllTypeMaterial()
-        await this.getAllPodTypeMaterial()
-        // При загрузки страницы начинаем фильтровать материал 
-        this.globalProviderFilter(this.allProvider)
+      sName: '',
+      sPT: '',
+      sMat: ''
     }
+  },
+  computed: mapGetters(['allProvider', 
+    'getproviderTypeM', 
+    'getproviderPTypeM', 
+    'getproviderMaterial',
+    'getGlobalProviderTypeM',
+    'getGlobalProviderPTypeM',
+    'getGlobalProviderPM']),
+  components: {OpensFile, Search},
+  methods: {
+    ...mapActions(['fetchGetProviders', 
+        'fetchProviderBan', 
+        'getAllTypeMaterial', 
+        'getAllPodTypeMaterial', 
+        'fetchGetAllPPM']),
+    ...mapMutations(['setProviderState', 
+    'filterMaterialByProvider', 
+    'filterByProviderPM',
+    'filterByProviderPTypeM',
+    'filterByProviderTypeM',
+    'filterToClickProviderTypeM',
+    'filterToClickProviderPTypeM',
+    'globalProviderFilter',
+    
+    'filterByProviderGTypeM',
+    'filterByProviderGPTypeM',
+    'filterByProviderGNameM',
+
+    'filterPByMaterial',
+    'clearFilterProviders'
+    ]),
+    setProvider(provider) {
+      this.materials = provider.materials;
+      if(this.materials) 
+        this.filterMaterialByProvider(this.materials);
+      this.provider = provider
+      this.setProviderState(provider)
+      this.obj.name = provider.name
+      this.obj.inn = provider.inn
+      this.obj.cpp = provider.cpp
+      this.obj.description = provider.description
+      if(provider.contacts) 
+        this.obj.contact = JSON.parse(provider.contacts)
+      
+      if(provider.rekvisit) 
+        this.obj.rekvisit = JSON.parse(provider.rekvisit)
+      
+      if(provider.documents) 
+        this.obj.documents = provider.documents
+        
+    },
+    clickDoc(files) {
+      if(files) { 
+        this.itemFiles = files
+        this.keyWhenModalGenerateFileOpen = random(10, 1222)
+      }
+    },
+    banProvider() {
+      if(!this.provider.id)
+        return 0;
+      this.fetchProviderBan(this.provider.id)
+    },
+    editProvider() {
+      if(!this.provider)
+        return 0;
+      this.$router.push({path: '/baseprovider/addedit/edit'})
+    },
+    keySearch(key) {
+      console.log(key)
+    },
+    sNameF(str) {
+      this.sName = str
+    },
+    sPTF(str) {
+      this.sPT = str
+    },
+    sMatF(str) {
+      this.sMat = str
+    },
+    searchName(str) {
+      this.filterByProviderPM(str)
+    },
+    searchPT(str) {
+      this.filterByProviderPTypeM(str)
+    },
+    searchMat(str) {
+      this.filterByProviderTypeM(str)
+    },
+
+
+    filterByType(t) {
+      this.filterToClickProviderTypeM(t)
+    },
+    filterByPType(t) {
+      this.filterToClickProviderPTypeM(t)
+    },
+
+    searchGT(t) {
+      this.filterByProviderGTypeM(t)
+    },
+    searchGPT(t) {
+      this.filterByProviderGPTypeM(t)
+    },
+    searchGName(t) {
+      this.filterByProviderGNameM(t)
+    },
+    clicksGName(t) {
+      this.filterPByMaterial(t)
+    },
+
+
+    clearFilter() {
+      this.clearFilterProviders()
+    },
+    clearFilterByNode() {
+      if(this.materials.length)
+        this.filterMaterialByProvider(this.materials);
+    }
+  },
+  async mounted() {
+    await this.fetchGetProviders()
+    await this.getAllTypeMaterial()
+    await this.getAllPodTypeMaterial()
+    // При загрузки страницы начинаем фильтровать материал 
+    this.globalProviderFilter(this.allProvider)
+  }
 }
 </script>
 
 <style scoped>
-    .table_rek{
-        width: 420px;
-    }
-    .table-filter-bproveder th {
-        width: 158px;
-    }
-    .left-block-bprovider {
-        width: 528px;
-        float: left;
-    }
-    .left-block-bprovider .btn-control {
-        margin-top: 20px;
-    }
-    .right-block-bprovider {
-        margin-left: 20px;
-        width: 1030px;
-    }
-    .block {
-        display: flex;
-        flex-direction: column;
-    }
-    .flex-box-main {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-    }
-    .first-block-description p {
-        margin-left: 5px;
-        float: left;
-        width: 30%;
-    }
-    .first-block-description input {
-        width: 150px;
-    }
-    textarea {
-        height: 90px;
-        width: 350px;
-        border: 1px solid #d3d3d3;
-        border-radius: 4px;
-    }
-    .block-d-r {
-        display: flex;
-        flex-wrap: wrap;
-        padding: 10px;
-    }
-    .block-d-r>div>div {
-        margin: 5px;
-        margin-top: 10px;
-        margin-left: 5px;
-    }
-    .block-d-r>div {
-        width: 50%;
-    }
-    .block-d-r th {
-        text-align: start;
-    }
-    .btn-black {
-        width:max-content;
-        height: 45px;
-    }
-    .endgroup {
-        display: flex;
-        justify-content: end;
-        margin-top: 20px;
-        align-items: end;
-    }
-    .provider_table {
-        width: 520px;
-    }
-    th {
-        height: 10px;
-    }
-    table * {
-        user-select: none;
-    }
+.table_rek{
+  width: 420px;
+}
+.table-filter-bproveder th {
+  width: 158px;
+}
+.left-block-bprovider {
+  width: 528px;
+  float: left;
+}
+.left-block-bprovider .btn-control {
+  margin-top: 20px;
+}
+.right-block-bprovider {
+  margin-left: 20px;
+  width: 1030px;
+}
+.block {
+  display: flex;
+  flex-direction: column;
+}
+.flex-box-main {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+}
+.first-block-description p {
+  margin-left: 5px;
+  float: left;
+  width: 30%;
+}
+.first-block-description input {
+  width: 150px;
+}
+textarea {
+  height: 90px;
+  width: 350px;
+  border: 1px solid #d3d3d3;
+  border-radius: 4px;
+}
+.block-d-r {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 10px;
+}
+.block-d-r>div>div {
+  margin: 5px;
+  margin-top: 10px;
+  margin-left: 5px;
+}
+.block-d-r>div {
+  width: 50%;
+}
+.block-d-r th {
+  text-align: start;
+}
+.btn-black {
+  width:max-content;
+  height: 45px;
+}
+.endgroup {
+  display: flex;
+  justify-content: end;
+  margin-top: 20px;
+  align-items: end;
+}
+.provider_table {
+  width: 520px;
+}
+th {
+  height: 10px;
+}
+table * {
+  user-select: none;
+}
 </style>

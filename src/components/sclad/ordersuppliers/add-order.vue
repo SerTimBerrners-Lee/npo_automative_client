@@ -68,27 +68,26 @@
 <script>
 
 export default {
-    props: ['parametrs'],
-    data() {
-        return {
-            destroyModalLeft: 'left-block-modal',
-            destroyModalRight: 'content-modal-right-menu',
-            hiddens: 'opacity: 1;',
-            
-        }
-    },
-    async mounted() {
-        this.destroyModalLeft = 'left-block-modal'
-        this.destroyModalRight = 'content-modal-right-menu'
-        this.hiddens = 'opacity: 1;'
-    },
-    methods: {
-      destroyModalF() {
-        this.destroyModalLeft = 'left-block-modal-hidden'
-        this.destroyModalRight = 'content-modal-right-menu-hidden'
-        this.hiddens = 'display: none;'
-      },
+  props: ['parametrs'],
+  data() {
+    return {
+      destroyModalLeft: 'left-block-modal',
+      destroyModalRight: 'content-modal-right-menu',
+      hiddens: 'opacity: 1;',   
     }
+  },
+  async mounted() {
+      this.destroyModalLeft = 'left-block-modal'
+      this.destroyModalRight = 'content-modal-right-menu'
+      this.hiddens = 'opacity: 1;'
+  },
+  methods: {
+    destroyModalF() {
+      this.destroyModalLeft = 'left-block-modal-hidden'
+      this.destroyModalRight = 'content-modal-right-menu-hidden'
+      this.hiddens = 'display: none;'
+    },
+  }
 }
 </script>
 

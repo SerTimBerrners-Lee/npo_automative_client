@@ -167,44 +167,45 @@ export default {
     }
   },
   updated() {
-      if(isEmpty(this.equipment))
-        this.$router.push('/baseequipment')
+    if(isEmpty(this.equipment))
+      this.$router.push('/baseequipment')
   },
-  computed: mapGetters(['allEquipmentType', 
-                        'allEquipmentPType', 
-                        'allEdizm', 
-                        'equipment',
-                        'getUsers']),
+  computed: mapGetters([
+    'allEquipmentType', 
+    'allEquipmentPType', 
+    'allEdizm', 
+    'equipment',
+    'getUsers']),
   components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools},
   methods: {
     saveEquipment() {
-        if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
-            return 0
-        
-        if(!this.formData) 
-            this.formData = new FormData()
-        
-        if(this.providersId)
-          this.providersId = JSON.stringify(this.providersId)
+      if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
+        return 0
+      
+      if(!this.formData) 
+        this.formData = new FormData()
+      
+      if(this.providersId)
+        this.providersId = JSON.stringify(this.providersId)
 
-        this.formData.append('name', this.obj.name)
-        this.formData.append('deliveryTime', this.obj.deliveryTime)
-        this.formData.append('responsible', this.obj.responsible)
-        this.formData.append('invNymber', this.obj.invNymber)
-        this.formData.append('description', this.obj.description)
-        this.formData.append('providers', this.providersId)
-        this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
-        if(this.$route.params.copy == 'false') {
-          this.formData.append('id', this.obj.id)
-          this.updateEquipment(this.formData) 
-        } else {
-          if(!this.equipmentPT && !this.equipmentT)
-            return 0
-          this.formData.append('parentId', this.equipmentPT.id)
-          this.formData.append('rootParentId', this.equipmentT.id)
+      this.formData.append('name', this.obj.name)
+      this.formData.append('deliveryTime', this.obj.deliveryTime)
+      this.formData.append('responsible', this.obj.responsible)
+      this.formData.append('invNymber', this.obj.invNymber)
+      this.formData.append('description', this.obj.description)
+      this.formData.append('providers', this.providersId)
+      this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
+      if(this.$route.params.copy == 'false') {
+        this.formData.append('id', this.obj.id)
+        this.updateEquipment(this.formData) 
+      } else {
+        if(!this.equipmentPT && !this.equipmentT)
+          return 0
+        this.formData.append('parentId', this.equipmentPT.id)
+        this.formData.append('rootParentId', this.equipmentT.id)
 
-          this.creqteEquipment(this.formData)
-        }
+        this.creqteEquipment(this.formData)
+      }
 
     this.$router.push('/baseequipment')
     },
@@ -213,8 +214,8 @@ export default {
       this.instrumentIsShow = true
     },
     removeFile() {
-        if(isEmpty(this.itemFiles))
-            return 0
+      if(isEmpty(this.itemFiles))
+        return 0
     },
     pushProvider(provider) { 
       if(!provider)
@@ -239,31 +240,31 @@ export default {
         console.log(res)
     },
     checkedUpdate() {
-        if(isEmpty(this.equipment)) 
-            return this.$router.push('/baseequipment')
-                           
-        if(this.equipment.nameInstrument)
-          this.listInstrument = this.equipment.nameInstrument
+      if(isEmpty(this.equipment)) 
+          return this.$router.push('/baseequipment')
+                          
+      if(this.equipment.nameInstrument)
+        this.listInstrument = this.equipment.nameInstrument
 
-        if(this.$route.params.copy == 'false') {
-          this.obj.parentId = this.equipment.equipmentPTypeId
-          this.filterAllEquipmentById({type: this.equipment.rootParentId, pType: this.equipment.equipmentPTypeId})
-        }
+      if(this.$route.params.copy == 'false') {
+        this.obj.parentId = this.equipment.equipmentPTypeId
+        this.filterAllEquipmentById({type: this.equipment.rootParentId, pType: this.equipment.equipmentPTypeId})
+      }
 
-        this.obj.id = this.equipment.id
-        this.obj.name = this.equipment.name
-        this.obj.deliveryTime = this.equipment.deliveryTime
-        this.obj.invNymber = this.equipment.invNymber
-        this.obj.description = this.equipment.description
-        this.documents = this.equipment.documents
-        this.providers = this.equipment.providers
-        this.providers.forEach(provider => {
-          this.providersId.push({id: provider.id})
-        })
-        
-        if(this.equipment.user) {
-          this.obj.responsible = this.equipment.user.id
-        }
+      this.obj.id = this.equipment.id
+      this.obj.name = this.equipment.name
+      this.obj.deliveryTime = this.equipment.deliveryTime
+      this.obj.invNymber = this.equipment.invNymber
+      this.obj.description = this.equipment.description
+      this.documents = this.equipment.documents
+      this.providers = this.equipment.providers
+      this.providers.forEach(provider => {
+        this.providersId.push({id: provider.id})
+      })
+      
+      if(this.equipment.user) {
+        this.obj.responsible = this.equipment.user.id
+      }
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
@@ -309,57 +310,57 @@ export default {
     width: 590px;
     margin-left: 10px;   
 }
-  .instr_select {
-    width: 210px;
-  }
-  .name_p{
-    display: flex;
-    align-items: center;
-  }
-  .name_p * {
-    margin-left: 5px;
-  }
-  .name_p input {
-    width: 70%;
-  }
-  .block_name {
-    width: 1200px;
-    padding: 5px;
-  }
-  .width-260{
-    width: 260px;
-  }
-  .main_contents {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-  }
-  .left_content {
-    width: 600px;
-    display: flex;
-    flex-direction: column;
-  }
-  .right_content {
-    width: 600px;
-  }
-  textarea {
-    width: 545px;
-  }
-  .inputs_block p {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .table_provider {
-    width: 100%;
-  }
-  .table_provider th:first-child {
-    width: 30%;
-  }
-  .pointer-files-to-add {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.instr_select {
+  width: 210px;
+}
+.name_p{
+  display: flex;
+  align-items: center;
+}
+.name_p * {
+  margin-left: 5px;
+}
+.name_p input {
+  width: 70%;
+}
+.block_name {
+  width: 1200px;
+  padding: 5px;
+}
+.width-260{
+  width: 260px;
+}
+.main_contents {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+.left_content {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+.right_content {
+  width: 600px;
+}
+textarea {
+  width: 545px;
+}
+.inputs_block p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.table_provider {
+  width: 100%;
+}
+.table_provider th:first-child {
+  width: 30%;
+}
+.pointer-files-to-add {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>

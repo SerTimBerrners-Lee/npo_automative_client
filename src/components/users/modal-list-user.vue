@@ -69,17 +69,6 @@ export default {
     }
   },
 	computed: mapGetters(['getUsers']),
-  async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;' 
-
-		this.getAllUsers();
-		
-
-		if(this.$props.usersList && this.$props.usersList.length)
-			this.userListArr = this.$props.usersList
-  },
   methods: {
 		...mapActions(['getAllUsers']),
     destroyModalF() {
@@ -122,7 +111,18 @@ export default {
 		deleteUser(user) {
 			this.userListArr = this.userListArr.filter(u => u.id != user.id)
 		}
-  }
+  },
+	async mounted() {
+    this.destroyModalLeft = 'left-block-modal'
+    this.destroyModalRight = 'content-modal-right-menu'
+    this.hiddens = 'opacity: 1;' 
+
+		this.getAllUsers();
+		
+
+		if(this.$props.usersList && this.$props.usersList.length)
+			this.userListArr = this.$props.usersList
+  },
 }
 </script>
 

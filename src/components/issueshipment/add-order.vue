@@ -26,8 +26,8 @@
 					@unmount='changeDatePicterShipments' 
 					:dateStart='date_shipments'
 					/>
-				<span>Бронь:</span>
-				<input type="text" v-model='bron'>
+				<label for='bran'>Бронь:</label>
+				<input id='bran' type="checkbox" v-model='bron'>
 				<span>Основание:</span>
 				<input type="text" v-model='base'>
 				<span>Покупатель:</span>
@@ -148,7 +148,7 @@ export default {
 			date_shipments: new Date().toLocaleDateString("ru-RU"),
 			kolvo: '',
 			day_when_shipments: '',
-			bron: '',
+			bron: false,
 			base: '',
 			buyer: 1,
 			to_sklad: false,
@@ -240,7 +240,7 @@ export default {
 			if(
 				!this.date_order || !this.date_shipments 
 				|| !this.kolvo || !this.day_when_shipments
-				|| !this.bron || !this.base || !this.select_product
+				|| !this.base || !this.select_product
 				|| !this.description || !this.buyer
 				) 
 				return showMessage('', 'Все поля должны быть заполнены', 'w', this)

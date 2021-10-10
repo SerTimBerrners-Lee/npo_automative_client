@@ -178,46 +178,46 @@ export default {
 </script>
 
 <style scoped>
-  .block_cb_ed {
-    width: 870px;
-  }
-  .table-base-detal {
-    float: left;
-    width: 400px;
-  }
-  .table-base-detal tr {
-    height: 65px;
-  }
-  .scroll-table {
-    height: 600px;
-      
-  }
-  .tb-title {
-    height: 50px;
-    text-align: center;
-  }
-  .btn-control {
-    flex-direction: column;
-    align-items: flex-end;
-  }
-  .btn-control button {
-    margin: 2px;
-  }
-  table {
-    font-size: 14px;
-  }
-  .main_table_control {
-    display: flex;
-  }
-  .block_product {
-    width: 400px;
-  }
-  .right_info_block {
-    width: 450px;
-    margin-left: 40px;
-  }
-  .main_product_block {
-    display: flex;
-  }
+.block_cb_ed {
+  width: 870px;
+}
+.table-base-detal {
+  float: left;
+  width: 400px;
+}
+.table-base-detal tr {
+  height: 65px;
+}
+.scroll-table {
+  height: 600px;
+    
+}
+.tb-title {
+  height: 50px;
+  text-align: center;
+}
+.btn-control {
+  flex-direction: column;
+  align-items: flex-end;
+}
+.btn-control button {
+  margin: 2px;
+}
+table {
+  font-size: 14px;
+}
+.main_table_control {
+  display: flex;
+}
+.block_product {
+  width: 400px;
+}
+.right_info_block {
+  width: 450px;
+  margin-left: 40px;
+}
+.main_product_block {
+  display: flex;
+}
 
 </style>

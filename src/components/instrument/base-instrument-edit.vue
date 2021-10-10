@@ -124,20 +124,20 @@ import { isEmpty }  from 'lodash'
 export default {
   data() {
     return {
-        TInstrument: null,
-        PTInstrument: null,
-        docFiles: [],
-        formData: null,
-        isChangeFolderFile: false,
-        keyWhenModalGenerate: random(10, 3333),
-        itemFiles: null,
-        showFile: false,
-        keyWhenModalGenerateFileOpen: random(10, 3333),
-        documents: [],
-        showProvider: false,
-        keyWhenModalListProvider: random(10, 3333),
-        providers: [],
-        providersId: [],
+      TInstrument: null,
+      PTInstrument: null,
+      docFiles: [],
+      formData: null,
+      isChangeFolderFile: false,
+      keyWhenModalGenerate: random(10, 3333),
+      itemFiles: null,
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 3333),
+      documents: [],
+      showProvider: false,
+      keyWhenModalListProvider: random(10, 3333),
+      providers: [],
+      providersId: [],
       obj: {
         name: '',
         parentId: null,
@@ -151,46 +151,46 @@ export default {
     }
   },
   updated() {
-      if(isEmpty(this.getOneNameInstrument))
-        this.$router.push('/basetools')
+    if(isEmpty(this.getOneNameInstrument))
+      this.$router.push('/basetools')
   },
   computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getOneNameInstrument']),
   components: {TableMaterial, AddFile, OpensFile, ListProvider},
   methods: {
     addInstrument() {
-        if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
-            return 0
-        
-        if(!this.formData) 
-            this.formData = new FormData()
-        
-        if(this.providersId)
-          this.providersId = JSON.stringify(this.providersId)
+      if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
+          return 0
+      
+      if(!this.formData) 
+          this.formData = new FormData()
+      
+      if(this.providersId)
+        this.providersId = JSON.stringify(this.providersId)
 
-        this.formData.append('name', this.obj.name)
-        this.formData.append('deliveryTime', this.obj.deliveryTime)
-        this.formData.append('mountUsed', this.obj.mountUsed)
-        this.formData.append('minOstatok', this.obj.minOstatok)
-        this.formData.append('description', this.obj.description)
-        this.formData.append('providers', this.providersId)
-        if(this.$route.params.copy == 'false') {
-          this.formData.append('id', this.obj.id)
-          this.updateNameInstrument(this.formData)
-        } else {
-          if(!this.PTInstrument && !this.TInstrument)
-            return 0
-          this.formData.append('rootParentId', this.TInstrument.id)
-          this.formData.append('parentId', this.PTInstrument.id)
-          this.addNameInstrument(this.formData)
-        }
+      this.formData.append('name', this.obj.name)
+      this.formData.append('deliveryTime', this.obj.deliveryTime)
+      this.formData.append('mountUsed', this.obj.mountUsed)
+      this.formData.append('minOstatok', this.obj.minOstatok)
+      this.formData.append('description', this.obj.description)
+      this.formData.append('providers', this.providersId)
+      if(this.$route.params.copy == 'false') {
+        this.formData.append('id', this.obj.id)
+        this.updateNameInstrument(this.formData)
+      } else {
+        if(!this.PTInstrument && !this.TInstrument)
+          return 0
+        this.formData.append('rootParentId', this.TInstrument.id)
+        this.formData.append('parentId', this.PTInstrument.id)
+        this.addNameInstrument(this.formData)
+      }
 
-    this.$router.push('/basetools')
+      this.$router.push('/basetools')
     },
     removeFile() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        this.removeFileInstrument(this.itemFiles.id)
-        this.documents = this.document.filter(dc => dc.id != this.itemFiles.id   )
+      if(isEmpty(this.itemFiles))
+        return 0
+      this.removeFileInstrument(this.itemFiles.id)
+      this.documents = this.document.filter(dc => dc.id != this.itemFiles.id   )
     },
     pushProvider(provider) { 
       if(!provider)
@@ -206,38 +206,38 @@ export default {
         this.itemFiles = dc
     },
     openDock() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 3843)
+      if(isEmpty(this.itemFiles))
+        return 0
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 3843)
     },
     openFile(res) { 
-        console.log(res)
+      console.log(res)
     },
     checkedUpdate() {
-        if(isEmpty(this.getOneNameInstrument)) 
-            return this.$router.push('/basetools')
-            
-        if(this.$route.params.copy == 'false') {
-          this.filterAllInstrumentNyId({
-            type: this.getOneNameInstrument.rootParentId, 
-            pType: this.getOneNameInstrument.parent.id
-          })
-
-          this.obj.id = this.getOneNameInstrument.id
-          this.obj.parentId = this.getOneNameInstrument.parent.id
-        }              
-        
-        this.obj.name = this.getOneNameInstrument.name
-        this.obj.deliveryTime = this.getOneNameInstrument.deliveryTime
-        this.obj.mountUsed = this.getOneNameInstrument.mountUsed
-        this.obj.minOstatok = this.getOneNameInstrument.minOstatok
-        this.obj.description = this.getOneNameInstrument.description
-        this.documents = this.getOneNameInstrument.documents
-        this.providers = this.getOneNameInstrument.providers
-        this.providers.forEach(provider => {
-          this.providersId.push({id: provider.id})
+      if(isEmpty(this.getOneNameInstrument)) 
+        return this.$router.push('/basetools')
+          
+      if(this.$route.params.copy == 'false') {
+        this.filterAllInstrumentNyId({
+          type: this.getOneNameInstrument.rootParentId, 
+          pType: this.getOneNameInstrument.parent.id
         })
+
+        this.obj.id = this.getOneNameInstrument.id
+        this.obj.parentId = this.getOneNameInstrument.parent.id
+      }              
+      
+      this.obj.name = this.getOneNameInstrument.name
+      this.obj.deliveryTime = this.getOneNameInstrument.deliveryTime
+      this.obj.mountUsed = this.getOneNameInstrument.mountUsed
+      this.obj.minOstatok = this.getOneNameInstrument.minOstatok
+      this.obj.description = this.getOneNameInstrument.description
+      this.documents = this.getOneNameInstrument.documents
+      this.providers = this.getOneNameInstrument.providers
+      this.providers.forEach(provider => {
+        this.providersId.push({id: provider.id})
+      })
 
     },
 
@@ -282,60 +282,60 @@ export default {
 
 <style>
 .file_table {
-    width: 590px;
-    margin-left: 10px;   
+  width: 590px;
+  margin-left: 10px;   
 }
-  .instr_select {
-    width: 210px;
-  }
-  .name_p{
-    display: flex;
-    align-items: center;
-  }
-  .name_p * {
-    margin-left: 5px;
-  }
-  .name_p input {
-    width: 70%;
-  }
-  .block_name {
-    width: 1200px;
-    padding: 5px;
-  }
-  .width-260{
-    width: 260px;
-  }
-  .main_contents {
-    display: flex;
-    width: 100%;
-    flex-direction: row;
-  }
-  .left_content {
-    width: 600px;
-    display: flex;
-    flex-direction: column;
-  }
-  .right_content {
-    width: 600px;
-  }
-  textarea {
-    width: 545px;
-  }
-  .inputs_block p {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  .table_provider {
-    width: 100%;
-  }
-  .table_provider th:first-child {
-    width: 30%;
-  }
-  .pointer-files-to-add {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+.instr_select {
+  width: 210px;
+}
+.name_p{
+  display: flex;
+  align-items: center;
+}
+.name_p * {
+  margin-left: 5px;
+}
+.name_p input {
+  width: 70%;
+}
+.block_name {
+  width: 1200px;
+  padding: 5px;
+}
+.width-260{
+  width: 260px;
+}
+.main_contents {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+}
+.left_content {
+  width: 600px;
+  display: flex;
+  flex-direction: column;
+}
+.right_content {
+  width: 600px;
+}
+textarea {
+  width: 545px;
+}
+.inputs_block p {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.table_provider {
+  width: 100%;
+}
+.table_provider th:first-child {
+  width: 30%;
+}
+.pointer-files-to-add {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 </style>

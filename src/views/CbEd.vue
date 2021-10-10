@@ -220,7 +220,7 @@ export default {
     },
     deleteCbEd() { 
       if(!this.selectedCbEd)
-          return 0
+        return 0
 
       this.deleteCbedById(this.selectedCbEd.id)
     },
@@ -231,8 +231,6 @@ export default {
     },
 
   },
-
-
   async mounted() {
     this.getAllProduct()
     this.getAllCbed()
@@ -241,44 +239,44 @@ export default {
 </script>
 
 <style scoped>
-    .block_cb_ed {
-        width: 870px;
-    }
-    .table-base-detal {
-        float: left;
-        width: 400px;
-    }
-    .table-base-detal tr {
-        height: 65px;
-    }
-    .scroll-table {
-        height: 600px;
-        
-    }
-    .tb-title {
-        height: 50px;
-        text-align: center;
-    }
-    .btn-control {
-        width: 840px;
-        flex-direction: column;
-        align-items: flex-end;
-    }
-    .btn-control button {
-        margin: 2px;
-    }
-    table {
-        font-size: 14px;
-    }
-    .main_table_control {
-        display: flex;
-    }
-    .right_info_block {
-        width: 450px;
-        margin-top: 20px;
-    }
-    .main_cbed {
-        display: flex;
-    }
+.block_cb_ed {
+  width: 870px;
+}
+.table-base-detal {
+  float: left;
+  width: 400px;
+}
+.table-base-detal tr {
+  height: 65px;
+}
+.scroll-table {
+  height: 600px;
+  
+}
+.tb-title {
+  height: 50px;
+  text-align: center;
+}
+.btn-control {
+  width: 840px;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.btn-control button {
+  margin: 2px;
+}
+table {
+  font-size: 14px;
+}
+.main_table_control {
+  display: flex;
+}
+.right_info_block {
+  width: 450px;
+  margin-top: 20px;
+}
+.main_cbed {
+  display: flex;
+}
 
 </style>
