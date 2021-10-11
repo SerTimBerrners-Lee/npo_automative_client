@@ -84,8 +84,6 @@ export default {
   props: {
     msg: String
   },
-  components: {InformFolder},
-  computed: mapGetters(['getUsers', 'getAuth']),
   data() {
     return {
       selectTabel: null,
@@ -102,6 +100,8 @@ export default {
       password_flags: false
     }
   },
+  components: {InformFolder},
+  computed: mapGetters(['getUsers', 'getAuth']),
   methods: {
     ...mapActions(['getAllUsers', 'loginAuth', 'getUserById']),
     ...mapMutations(['setRoleAssets', 'updateAuth', 'unAuth']),
