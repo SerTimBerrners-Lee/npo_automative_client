@@ -33,7 +33,7 @@ npm run lint
 	* любые другие 
 	* methods
 	* mounted
-
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+* структура файла в компонентах ВСЕГДА:
+	* html
+	* script
+	* css

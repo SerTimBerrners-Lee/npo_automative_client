@@ -18,6 +18,8 @@ import buyer from './modules/buyer';
 import sclad from './modules/sclad';
 import issue from './modules/issue';
 import shipments from './modules/shipments';
+import assemble from './modules/assemble';
+import metaloworking from './modules/metaloworking'
 
 export default createStore({
   modules: {
@@ -39,7 +41,9 @@ export default createStore({
     buyer,
     sclad,
     issue,
-    shipments
+    shipments,
+    assemble,
+    metaloworking
   }
 })
   

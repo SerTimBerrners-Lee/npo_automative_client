@@ -34,7 +34,7 @@
             <button class="btn-small btn-add" @click="$router.push({path: '/material/add/create'}) ">Создать</button>
             <button class="btn-small btn-add" @click='createCopy'>Создать копированием</button>
             <button class="btn-small" @click="editMaterial">Редактировать</button>
-          </div>  
+          </div> 
           <div class="btn-control">
           <button class="btn-small" @click='banPPM'>В архив</button>
         </div>

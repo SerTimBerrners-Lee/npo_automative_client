@@ -1,10 +1,18 @@
 .center {
   text-align: center;
 }
-
+.center_block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.link_img{
+  width: 15px;
+  cursor: pointer;
+}
 .checkbox_block {
   cursor: pointer;
-  padding: 5px;
   background: #e4e4e4ce;
   border: 2px solid #e4e4e4ce;
   width: 15px;
@@ -324,11 +332,12 @@ textarea {
   background: #b6b6b6;
 }
 .left-block-modal {
-  width: 70vw;
+  width: 70%;
   animation: width-right 1s 1 ease;
   height: 10000px;
   background: rgb(106, 106, 106);
   opacity: 0.6;
+  position: fixed;
 }
 .left-block-modal-hidden {
   animation: width-right-replace 1s 1 ease;
@@ -344,12 +353,13 @@ textarea {
 .content-modal-right-menu {
   animation: width 1s 1 ease;
   height: 10000px;
-  width: 30vw;
+  width: 30%;
   background: white;
   padding: 10px;
   position: absolute;
   right: 0;
   top: 0;
+  position: fixed;
 }
 .content-modal-right-menu>div {
   animation: hidden-content 1s 1 ease;
@@ -379,7 +389,7 @@ textarea {
     width: 1vw;
   }
   to {
-    width: 30vw;
+    width: 30%;
   }
 }
 @keyframes width-right {
@@ -387,7 +397,7 @@ textarea {
     width: 0vw;
   }
   to {
-    width: 70vw;
+    width: 70%;
   }
 }
 @keyframes hidden-content {
@@ -406,7 +416,7 @@ textarea {
 }
 @keyframes width-replace {
   from {
-    width: 30vw;
+    width: 30%;
   }
   to {
     width: 00vw;
@@ -414,7 +424,7 @@ textarea {
 }
 @keyframes width-right-replace {
   from {
-    width: 70vw;
+    width: 70%;
   }
   to {
     width: 0vw;

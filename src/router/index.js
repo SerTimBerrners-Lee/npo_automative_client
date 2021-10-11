@@ -30,12 +30,12 @@ import CbEd from '@/views/CbEd.vue';
 import Product from '@/views/Product.vue';
 import IssueShipment from '@/views/IssueShipment.vue';
 import Assembly from '@/views/Assembly.vue';
-import Metalloworking from '@/views/Metalloworking.vue';
+import Metalloworking from '@/views/Metalloworking.vue'; 
 import Library from '@/views/Library.vue';
 import ResultWork from "@/views/ResultWork.vue";
 import Issues from '@/views/Issues.vue';
 
-import AddMaterialBase from '@/components/base-material-add.vue';
+import AddMaterialBase from '@/components/mathzag/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
 import AddBaseInstrument from '@/components/instrument/base-instrument-add.vue';
 import EditBaseInstrument from '@/components/instrument/base-instrument-edit.vue';

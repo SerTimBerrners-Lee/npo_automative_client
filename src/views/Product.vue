@@ -15,10 +15,10 @@
               </tr>
               <tr>
                 <td colspan="3">
-                    <Search 
-                        :placeholder="'Поиск по Артиклу'"
-                        @unmount='keySearch' 
-                    />
+                  <Search 
+                    :placeholder="'Поиск по Артиклу'"
+                    @unmount='keySearch' 
+                  />
                 </td>
               </tr>
               <tr v-for='product in allProduct' 
@@ -134,6 +134,7 @@ export default {
     ...mapMutations(['setOneProduct', 'searchProduct']),
     setProduct(product, e) {
       this.selecteProduct = product
+      console.log(product)
       if(this.tr) 
         this.tr.classList.remove('td-row-all')
       this.setOneProduct(product)

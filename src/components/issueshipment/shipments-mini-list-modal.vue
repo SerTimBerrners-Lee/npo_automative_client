@@ -64,6 +64,7 @@ export default {
         this.destroyModalLeft = 'left-block-modal-hidden'
         this.destroyModalRight = 'content-modal-right-menu-hidden'
         this.hiddens = 'display: none;'
+        this.$emit('unmount', true)
     },
     setShipment(shipment, e) {
       if(this.tr && this.selectedShip.id == shipment.id) {

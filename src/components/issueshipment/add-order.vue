@@ -20,7 +20,7 @@
 			</p>
 			<p class='p_flex'>
 				<span>Рабочих дней до отгрузки:</span>
-				<input type="text" v-model='day_when_shipments'>
+				<input type="number" min='0' v-model='day_when_shipments'>
 				<span>Дата отгрузки:</span>
 				<DatePicterCustom 
 					@unmount='changeDatePicterShipments' 
@@ -147,7 +147,7 @@ export default {
 			date_order: new Date().toLocaleDateString("ru-RU"),
 			date_shipments: new Date().toLocaleDateString("ru-RU"),
 			kolvo: '',
-			day_when_shipments: '',
+			day_when_shipments: 0,
 			bron: false,
 			base: '',
 			buyer: 1,
@@ -239,8 +239,8 @@ export default {
 		save_order() {
 			if(
 				!this.date_order || !this.date_shipments 
-				|| !this.kolvo || !this.day_when_shipments
-				|| !this.base || !this.select_product
+				|| !this.kolvo || !this.base 
+				|| !this.select_product
 				|| !this.description || !this.buyer
 				) 
 				return showMessage('', 'Все поля должны быть заполнены', 'w', this)
@@ -261,6 +261,8 @@ export default {
 				description: this.description,
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
 			} 
+
+			console.log(234234)
 			this.fetchCreateShipments(data).then(res => {
 				setTimeout(() => this.$router.push('/issueshipment'), 3000)
 				if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's', this)

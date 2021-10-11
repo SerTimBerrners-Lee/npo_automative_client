@@ -52,12 +52,14 @@
 						<td>{{ shipments.base }}</td>
 						<td>{{ shipments.buyer.name }}</td>
 						<td></td>
-						<td></td>
+						<td>{{ shipments.status }}</td>
 						<td>{{ dateIncrementHors(shipments.date_order, shipments.day_when_shipments) }}</td>
 						<td></td>
 						<td></td>
 						<td></td>
-						<td>{{ shipments.description }}</td>
+						<td class='center'>
+              <img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
+            </td>
 					</tr>
 				</table>
 			</div>
@@ -78,6 +80,11 @@
         </button>
       </div>
 		</div>
+		<DescriptionModal 
+      v-if='showDescriptionModal'
+      :key='descriptionKey'
+      :parametrs='description'
+    />
 
 	</div>
 </template> 
@@ -85,14 +92,21 @@
 <script>
 import {mapActions, mapGetters} from 'vuex';
 import { dateIncrementHors } from '@/js/';
+import DescriptionModal from '@/components/description-modal.vue';
+import {random} from 'lodash';
 export default {
 	data() {
 		return {
 			selectShipments: null,
-			tr: null
+			tr: null,
+
+			showDescriptionModal: false,
+      descriptionKey: random(1, 999),
+      description: '',
 		}	
 	},
 	computed: mapGetters(['getShipments']),
+	components: {DescriptionModal},
 	methods: {
 		...mapActions(['fetchAllShipments']),
 		setShipments(shipments, e) {
@@ -106,6 +120,11 @@ export default {
 			console.log(shipments)
 			this.selectShipments = shipments;
 		},
+		openDescription(description) {
+      this.showDescriptionModal = true
+      this.descriptionKey = random(1, 999)
+      this.description = description
+    },
 		dateIncrementHors(date, day) {
       let dat = dateIncrementHors(date, day*24)
       return `${dat.day}.${dat.mount}.${dat.year}`

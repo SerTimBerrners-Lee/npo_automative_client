@@ -3,9 +3,9 @@
     <div class="logo-block">
         <img src="@/assets/logo2.png" alt="logo" class="logo-po">
         <div>
-            <span class="title-logo">Система</span>
-            <span class="title-logo">Эффективного</span>
-            <span class="title-logo">Производства</span>
+          <span class="title-logo">Система</span>
+          <span class="title-logo">Эффективного</span>
+          <span class="title-logo">Производства</span>
         </div>
     </div>
     <div class="clock">
@@ -21,8 +21,8 @@
           </span>
           <span class="role"> 
             {{ 
-              getAuth && getAuth.role ? 
-                getAuth.role.description : ''
+            getAuth && getAuth.role ? 
+              getAuth.role.description : ''
             }}
           </span>
         </p>

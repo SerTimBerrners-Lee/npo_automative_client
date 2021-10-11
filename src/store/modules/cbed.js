@@ -65,14 +65,12 @@ export default {
         ctx.commit('deleteCbedByIdMutation', id)
       }
     },
-    
-    async fetchCbedToShipments({commit}) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/shipments`)
 
+    async getOneCbEdById(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/${id}`)
       if(res.ok) {
         const result = await res.json()
-        commit('addAllCbed', result)
-        return result 
+        return result
       }
     }
 

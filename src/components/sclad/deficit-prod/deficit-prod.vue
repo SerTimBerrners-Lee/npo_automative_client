@@ -58,7 +58,7 @@
             <th>Принадлежность</th>
           </tr>
           <tr v-for='shipments of selectShipment.cbeds' :key='shipments'>
-            <td class='center checkbox_parent' >
+            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
               <p class="checkbox_block" @click='e => toProduction(shipments, e.target)'></p>
             </td>
             <td class='center'>СБ</td>
@@ -66,7 +66,9 @@
             <td class='center'>{{ selectShipment.date_order }}</td>
             <td class='center'>{{ shipments.articl }}</td>
             <td class='center'>{{ shipments.name }}</td>
-            <td class='center'>{{ }}</td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='showParents(shipments, "cb")' class='link_img' atl='Показать' />
+            </td>
             <td class='center'>{{ getDeficitIzd('cbed', shipments.id) }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ 0 }}</td>
@@ -80,18 +82,22 @@
             <td class='center'>{{  }}</td>
             <td class='center'>Заказано</td>
             <td class='center'>{{ selectShipment.date_shipments }}</td>
-            <td class='center'>{{ selectShipment.description }}</td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='openDescription(selectShipment.description)' class='link_img' atl='Показать' />
+            </td>
           </tr>
           <tr v-for='shipments of selectShipment.detals' :key='shipments'>
             <td class='center checkbox_parent' >
               
             </td>
-            <td class='center'> Д</td>
+            <td class='center'> Д </td>
             <td class='center'>{{ selectShipment.number_order }}</td>
             <td class='center'>{{ selectShipment.date_order }}</td>
             <td class='center'>{{ shipments.articl }}</td>
             <td class='center'>{{ shipments.name }}</td>
-            <td class='center'>{{ }}</td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='showParents(shipments, "det")' class='link_img' atl='Показать' />
+            </td>
             <td class='center'>{{ getDeficitIzd('detal', shipments.id) }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ 0 }}</td>
@@ -103,7 +109,9 @@
             <td class='center'>{{  }}</td>
             <td class='center'>Заказано</td>
             <td class='center'>{{ selectShipment.date_shipments }}</td>
-            <td class='center'>{{ selectShipment.description }}</td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='openDescription(selectShipment.description)' class='link_img' atl='Показать' />
+            </td>
           </tr>
         </table>
       </div>
@@ -115,8 +123,9 @@
       <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
     </div>
     <StartPraduction 
-      v-if='showProductionModal'
+      v-if='parametrs'
       :key='startProductionModalKey'
+      :parametrs='parametrs'
     />
     <DescriptionModal 
       v-if='showDescriptionModal'
@@ -130,6 +139,18 @@
     <ShipmentsMiniList
       v-if='showShipment'
       :key='shipmentKey'
+      @unmount='unmount_sh_list'
+    />
+    <ProductListModal
+      v-if='productListForIzd'
+      :key='keyParentsModal'
+      :parametrs='productListForIzd'
+    />
+    <InformFolder  :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
     />
   </div>
 </template>
@@ -138,41 +159,70 @@ import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue'
 import StartPraduction from '@/components/sclad/start-production-modal.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
+import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
+import { showMessage } from '@/js/'
+import InformFolder from '@/components/InformFolder.vue'
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex'
 
 export default {
   data() {
     return {
-      showProductionModal: false,
+      parametrs: null,
       startProductionModalKey: random(1, 888),
 
       showDescriptionModal: false,
       descriptionKey: random(1, 999),
+      description: '',
 
       showShipment: false,
       shipmentKey: random(1, 999),
 
-      description: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: random(1, 999),
+
+      
       
       showNormTimeOperation: false,
       normTimeOperationKey: random(1, 888),
 
+      keyParentsModal: random(1, 999),
+      productListForIzd: null,
+
       selectShipment: [],
 
       selected_checkbox: null,
-      select_izd: null
+      select_izd: null,
+      
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
-  components: {StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList},
+  components: {StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList, ProductListModal, InformFolder},
   methods: {
-    ...mapActions(['fetchAllShipmentsSclad']),
+    ...mapActions(['fetchAllShipmentsSclad', 'getOneCbEdById']),
+    unmount_sh_list(res) {
+      if(res) this.fetchAllShipmentsSclad(true)
+    },
     start() {
-      this.showProductionModal = true;
+      if(!this.select_izd || !this.selectShipment)
+        return showMessage('', 'Для начала выберите СБ и заказ', 'w', this)
+      this.parametrs = {
+        izd: this.select_izd, 
+        shipments: this.selectShipment,
+        type: 'cb'
+      }
       this.startProductionModalKey = random(1, 999)
     },
+    openDescription(description) {
+      this.showDescriptionModal = true
+      this.descriptionKey = random(1, 999)
+      this.description = description
+    },
     normTimeOperation() {
+      if(!this.select_izd)
+        return showMessage('', 'Для начала выберите СБ', 'w', this)
       this.showNormTimeOperation = true;
       this.normTimeOperationKey = random(1, 999)
     },
@@ -183,7 +233,6 @@ export default {
     setShipment(shipment) {
       let list_izd = JSON.parse(shipment.list_cbed_detal)
       this.selectShipment = {...shipment, list_cbed_detal: list_izd}
-      console.log(this.selectShipment)
     },
     getDeficitIzd(type, id) {
       for(let izd of this.selectShipment.list_cbed_detal) {
@@ -211,6 +260,12 @@ export default {
       } catch(e) {
         console.log(e)
       }
+    },
+    showParents(shipments, type) {
+      this.getOneCbEdById(shipments.id).then(res => {
+        this.productListForIzd = { products: res.products, type, id: shipments.id }
+        this.keyParentsModal = random(1, 999)
+      })
     }
   },
   async mounted() {
