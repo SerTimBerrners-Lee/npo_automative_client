@@ -30,6 +30,14 @@ export default {
 			if(res.ok) 
 				return true
 			return false
+    },
+    async fetchMetaloworkingById(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`)
+			if(res.ok) {
+				const result = await res.json()
+        console.log(result)
+				return result
+			}
     }
   },
   mutations: {

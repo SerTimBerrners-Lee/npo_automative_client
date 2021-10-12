@@ -4,7 +4,7 @@
     <div :class='destroyModalRight'>
       <div :style="hiddens">
         <h3>Карточка файла</h3>
-        <div class="block">
+        <div class="block"> 
           <div >
               <h4>Библиотека документов </h4>
             <div>
@@ -41,8 +41,8 @@
                 </video>
                 </div>
               </div>
-              <div class="slider" v-if='isArrayFile'>
-                <span> {{ file_increment }} / {{ file.length }}</span>
+              <div class="slider" v-if='file.length > 1'>
+                <span> {{ file_increment  }} / {{ file.length - 1}}</span>
                 <span class="btn-small btn-add abnf" @click="nextFile">Следующий</span>
               </div>
               <table>
@@ -50,7 +50,7 @@
                   <th>Файл</th>
                 </tr>
                 <tr>
-                  <td>{{ parametrs.name }}</td>
+                  <td>{{ this.file[file_increment] ? this.file[file_increment].name : ''}}</td>
                 </tr>
               </table>
               <div class="btn-control">
@@ -63,21 +63,21 @@
                   <h4>Детальная информация</h4>
                   <p><b>Файл: </b><span> {{ docType.typename }}</span></p>
                   <p><b>Ответственный: </b><span></span></p>
-                  <p><b>Версия: </b><span> {{ parametrs.version }}</span></p>
-                  <p><b>Тип: </b><span> {{ parametrs.type }}</span></p>
+                  <p><b>Версия: </b><span> {{ this.file[file_increment] ? this.file[file_increment].version : '' }}</span></p>
+                  <p><b>Тип: </b><span> {{ this.file[file_increment] ? this.file[file_increment].type : '' }}</span></p>
                   <h4>Принадлежность</h4>
-                  <span> {{ parametrs.nameInstans == 'p' ? 'Страница пользователя' : parametrs.nameInstans}}</span>
+                  <span></span>
                 </div>
                 <div class="right-block">
                   <h4>Примечание</h4>
-                  <textarea cols="30" rows="10" :value='parametrs.description'></textarea>
+                  <textarea cols="30" rows="10" :value='this.file[file_increment] ? this.file[file_increment].description : ""'></textarea>
                   <h4>История изменений</h4>
                   <button class="btn-small">Просмотреть другие версии документа</button>
                 </div>
               </div>
             </div>
           </div>
-          </div>
+          </div> 
       </div>
     </div>
   </div>
@@ -86,9 +86,9 @@
 <script>
 
 import { photoPreloadUrl } from '@/js/';
-import { mapActions } from 'vuex'
-import { isArray } from 'lodash'
-import PATH_TO_SERVER from '@/js/path.js'
+import { mapActions } from 'vuex';
+import {isArray} from 'lodash';
+import PATH_TO_SERVER from '@/js/path.js';
 
 export default { 
   props: ['parametrs'],
@@ -102,9 +102,7 @@ export default {
       imgShow: false,
       showDocType: false,
       docType: {},
-      arrItemsFile: [],
-      isArrayFile: false,
-      file: null,
+      file: [],
       file_increment: 0
     }
   },
@@ -117,25 +115,23 @@ export default {
       this.$emit('unmount', null)
     },
     nextFile(){
-      if(this.file_increment == this.file.length) {
+      if(this.file_increment == this.file.length - 1) 
         this.file_increment = 0
-      } else {
-        this.file_increment++
-      } 
+      else this.file_increment++
+      
       this.showDocs(this.file[this.file_increment])
     },
     showDocs(file) {
-      if(!file) return 0
+      if(!file) 
+        return 0
       photoPreloadUrl(file, (res) => {
         this.docType = {...res}
       }, true)
       this.urlImg = PATH_TO_SERVER + file.path
+      
     },
     addFiles() {
       this.destroyModalF()
-    },
-    fileRead(val, folder, index) {
-      this.arrItemsFile[index][folder] = val
     },
     openfile(url) {
       window.open(url, '_blank')
@@ -154,12 +150,10 @@ export default {
     } 
 
     let file = this.$props.parametrs
-    this.file = this.$props.parametrs
-    if(isArray(this.$props.parametrs)) {
-      file = file[0]
-      this.isArrayFile = true
-    }
-    this.showDocs(file)
+    if(isArray(file)) this.file = file
+    else this.file.push(file)
+
+    this.showDocs(this.file[0])
       
   },
 }

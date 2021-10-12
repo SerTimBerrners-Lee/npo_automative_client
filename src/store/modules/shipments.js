@@ -37,6 +37,29 @@ export default {
 				return result
 			}
 		},
+		async fetchAllShipmentsById(ctx, id) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`)
+			if(res.ok) {
+				const result = await res.json()
+				return result
+			}
+		},
+		async fetchAllShipmentsAssemble(ctx) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/assemble`)
+			if(res.ok) {
+				const result = await res.json()
+				ctx.commit('allShipments', result)
+				return result
+			}
+		},
+		async fetchAllShipmentsMetaloworking(ctx) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/metaloworking`)
+			if(res.ok) {
+				const result = await res.json()
+				ctx.commit('allShipments', result)
+				return result
+			}
+		},
 		async fetchAllShipmentsSclad(ctx, bools) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/sclad/${bools}`)
 			if(res.ok) {

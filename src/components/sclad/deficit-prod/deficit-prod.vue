@@ -74,7 +74,7 @@
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ getDeficitIzd('cbed', shipments.id) }}</td>
             <td class='center'>{{ shipments.parametrs ? JSON.parse(shipments.parametrs)[0].znach : '' }}</td>
-            <td class='center'>{{ getDeficitIzd('cbed', shipments.id) }}</td>
+            <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ getDeficitIzd('cbed', shipments.id) }}</td>
             <td class='center'>{{ shipments.parametrs ? 
               Number(JSON.parse(shipments.parametrs)[0].znach) * getDeficitIzd('cbed', shipments.id) 
               : '' }}</td>
@@ -160,8 +160,8 @@ import StartPraduction from '@/components/sclad/start-production-modal.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex'
 
@@ -182,8 +182,6 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: random(1, 999),
-
-      
       
       showNormTimeOperation: false,
       normTimeOperationKey: random(1, 888),
@@ -196,6 +194,7 @@ export default {
       selected_checkbox: null,
       select_izd: null,
       
+      kolvo_all: null,
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
@@ -208,9 +207,13 @@ export default {
     start() {
       if(!this.select_izd || !this.selectShipment)
         return showMessage('', 'Для начала выберите СБ и заказ', 'w', this)
+      let kolvo_order_byer = this.getDeficitIzd('cbed', this.select_izd.id)
+      this.kolvo_all = this.kolvo_all || kolvo_order_byer
       this.parametrs = {
         izd: this.select_izd, 
         shipments: this.selectShipment,
+        kolvo_order_byer, 
+        kolvo_all: this.kolvo_all,
         type: 'cb'
       }
       this.startProductionModalKey = random(1, 999)
@@ -266,6 +269,11 @@ export default {
         this.productListForIzd = { products: res.products, type, id: shipments.id }
         this.keyParentsModal = random(1, 999)
       })
+    },
+    alt(e) {
+      if(!this.select_izd)
+        return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w', this)
+      this.kolvo_all = e.innerText
     }
   },
   async mounted() {
@@ -282,7 +290,7 @@ export default {
 .block {
   padding: 5px;
 }
-.block .btn {
+.block .btn { 
   margin: 0px;
 }
 </style>

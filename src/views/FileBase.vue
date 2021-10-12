@@ -73,7 +73,7 @@
       :key='keyWhenModalGenerate' />
     <OpensFile 
       :parametrs='itemFiles' 
-      v-if="WhenModalGenerateFileOpenShow" 
+      v-if="showModalOpenFile" 
       @unmount='unmount'
       :key='keyWhenModalGenerateFileOpen'
       />
@@ -119,9 +119,9 @@ export default {
       isChangeFolderFile: false,
       keyWhenModalGenerate: random(10, 38444),
       keyWhenModalGenerateFileOpen: random(10, 38444),
+      showModalOpenFile: false,
 
       nodeTableKey: random(10, 381e4),
-      WhenModalGenerateFileOpenShow: false,
 
       showBFM: false,
       generateKeyBFM: random (1, 999)
@@ -140,18 +140,20 @@ export default {
     getFilesToClick(file) {
       this.fetchFileById(file.id).then((res) => {
         this.itemFiles = res
-        this.nodeTableKey = random(5, 937e2)
+        this.nodeTableKey = random(5, 999)
       })
     },
     dbPushFile(file) {
       if(this.itemFiles) {
         this.keyWhenModalGenerateFileOpen = random(5, 999)
-        this.WhenModalGenerateFileOpenShow = true
+        this.showModalOpenFile = true
       }else {
         this.fetchFileById(file.id).then((res) => {
-        this.itemFiles = res
-        this.keyWhenModalGenerateFileOpen = random(5, 999)
-        this.WhenModalGenerateFileOpenShow = true
+          if(res) {
+            this.itemFiles = res
+            this.keyWhenModalGenerateFileOpen = random(5, 999)
+            this.showModalOpenFile = true
+          } 
         })
       }
     },
@@ -244,6 +246,8 @@ export default {
     unmount(res){
       if(!res) {
         this.docFiles = []
+        this.itemFiles = null,
+        this.showModalOpenFile = false
         return 0;
       }
       showMessage('', res.message, res.type, this)

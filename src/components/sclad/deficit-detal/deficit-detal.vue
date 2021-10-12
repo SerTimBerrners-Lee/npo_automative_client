@@ -15,7 +15,7 @@
 
       <div class='table_block'>
         <div class="table-scroll">
-        <table style='width: 200px;'>
+        <table style='width: 200px;'> 
           <tr>
             <th>Заказ покупателя из задач на отгрузку</th>
           </tr>
@@ -70,7 +70,7 @@
               <td class='center'>{{ 0 }}</td>
               <td class='center'>{{ 0 }}</td>
               <td class='center'>{{ getDeficitIzd('detal', shipments.id)  }}</td>
-              <td class='center'>{{ getDeficitIzd('detal', shipments.id)  }}</td>
+              <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ getDeficitIzd('detal', shipments.id)  }}</td>
               <td class='center'>да</td>
 
               <td class='center'>{{ JSON.parse(shipments.parametrs).preTime.znach }}</td>
@@ -162,6 +162,8 @@ export default {
  
       showShipment: false,
       shipmentKey: random(1, 999),
+
+      kolvo_all: 0
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
@@ -174,10 +176,14 @@ export default {
     start() {
       if(!this.select_izd || !this.selectShipment)
         return showMessage('', 'Для начала выберите Д и заказ', 'w', this)
+      let kolvo_order_byer = this.getDeficitIzd('detal', this.select_izd.id)
+      this.kolvo_all = this.kolvo_all || kolvo_order_byer
       this.parametrs = {
         izd: this.select_izd, 
         shipments: this.selectShipment,
-        type: 'det'
+        type: 'det',
+        kolvo_order_byer,
+        kolvo_all: this.kolvo_all
       }
       this.startProductionModalKey = random(1, 999)
     },
@@ -227,6 +233,11 @@ export default {
       this.descriptionKey = random(1, 999)
       this.description = description
     },
+    alt(e) {
+      if(!this.select_izd)
+        return showMessage('', 'Для начала выберите Деталь, иначе данные не сохранятся!', 'w', this)
+      this.kolvo_all = e.innerText
+    }
   },
   async mounted() {
     await this.fetchAllShipmentsSclad(true)

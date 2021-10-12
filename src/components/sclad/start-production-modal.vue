@@ -81,12 +81,13 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: random(1, 999),
-
-
+      
       date_order: '',
       number_order: '',
       date_shipments: '',
       description: '',
+      kolvo_order_buyer: 0,
+      kolvo_all: 0,
 
       komplect: []
     }
@@ -109,6 +110,8 @@ export default {
         date_shipments: this.date_shipments,
         description: this.description,
         shipments_id: this.$props.parametrs.shipments.id,
+        kolvo_order_byer: this.$props.parametrs.kolvo_order_byer,
+        kolvo_all: this.$props.parametrs.kolvo_all
       }
 
       if(this.$props.parametrs.type == 'cb') {

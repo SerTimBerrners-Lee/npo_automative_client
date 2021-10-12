@@ -8,10 +8,10 @@
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
           <span>Ответственный: </span>
             <select class="select-small sle"  
-                    v-model='obj.responsible'>
+              v-model='obj.responsible'>
               <option v-for='user in getUsers' 
-                      :key='user' 
-                      :value='user.id'>{{ user.login }}</option>
+                :key='user' 
+                :value='user.id'>{{ user.login }}</option>
             </select> 
         </p>
       </div>
@@ -33,11 +33,12 @@
                 <tr v-for='cb in listCbed' :key='cb.cb'>
                   <td>{{ cb.art }} </td>
                   <td>{{ cb.cb.name }}</td>
-                  <td> <span v-if="cb.ez == 1"> шт</span> 
-                        <span v-if="cb.ez == 2"> л </span>
-                        <span v-if="cb.ez == 3"> кг</span> 
-                        <span v-if="cb.ez == 4"> м </span>
-                        <span v-if="cb.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="cb.ez == 1"> шт</span> 
+                    <span v-if="cb.ez == 2"> л </span>
+                    <span v-if="cb.ez == 3"> кг</span> 
+                    <span v-if="cb.ez == 4"> м </span>
+                    <span v-if="cb.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ cb.kol }}</td>
                 </tr>
@@ -47,11 +48,12 @@
                 <tr v-for='detal in listDetal' :key='detal.det'>
                   <td>{{ detal.art }} </td>
                   <td>{{ detal.det.name }}</td>
-                  <td> <span v-if="detal.ez == 1"> шт</span> 
-                        <span v-if="detal.ez == 2"> л </span>
-                        <span v-if="detal.ez == 3"> кг</span> 
-                        <span v-if="detal.ez == 4"> м </span>
-                        <span v-if="detal.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="detal.ez == 1"> шт</span> 
+                    <span v-if="detal.ez == 2"> л </span>
+                    <span v-if="detal.ez == 3"> кг</span> 
+                    <span v-if="detal.ez == 4"> м </span>
+                    <span v-if="detal.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ detal.kol }}</td>
                 </tr>
@@ -61,11 +63,12 @@
                 <tr v-for='material in listPokDet' :key='material.mat'>
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="material.ez == 1"> шт</span> 
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -148,7 +151,7 @@
                   >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" @click='saveDetal'>Сохранить</button>
-          </div>
+        </div>
       </div>
 
     <div class="right_content">

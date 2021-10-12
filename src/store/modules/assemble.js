@@ -10,12 +10,12 @@ export default {
     },
   }, 
   actions: {
-    async fetchAssemble() { 
+    async fetchAssemble(ctx) { 
       const res = await fetch(`${PATH_TO_SERVER}api/assemble`)
 			if(res.ok) {
 				const result = await res.json()
-				console.log(result)
-			}
+				ctx.commit('allAssemble', result)
+			} 
     },
 		async fetchCreateAssemble(ctx, data) { 
       const res = await fetch(`${PATH_TO_SERVER}api/assemble`, {
@@ -30,7 +30,15 @@ export default {
 			if(res.ok) 
 				return true
 			return false
-    }
+    },
+
+    async fetchAssembleById(ctx, id) { 
+      const res = await fetch(`${PATH_TO_SERVER}api/assemble/${id}`)
+			if(res.ok) {
+				const result = await res.json()
+				return result
+			} 
+    },
   },
   mutations: {
     allAssemble(state, result) { 

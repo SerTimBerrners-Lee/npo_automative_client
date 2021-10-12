@@ -70,9 +70,12 @@ export default {
     },
     async getOneDetal(ctx, id)  {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`)
-      const result = await res.json()
-      ctx.commit('addOneSelectDetal', result)
-      return result
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('addOneSelectDetal', result)
+        return result
+      }
+      
     },
     async createOperation(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/operation`, {

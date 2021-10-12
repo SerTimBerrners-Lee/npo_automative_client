@@ -114,53 +114,55 @@
         </div>
     </div>
     <div class="block-three">
-        <h3>Результаты работы</h3>
-        <div class="result-work">
-            <span>Выбрать период, с: </span>
-            <input type="text" class="calendar-input">
-            <span>по: </span>
-            <input type="text" class="calendar-input">
-            <button>Сбросить период или дату</button>
-            <span>Кол-во рабочих дней в периоде: </span>
-            <input type="text" class="input-periud">
-        </div>
-        <div class="scroll-table" style="width: inherit;">
-            <table class="wort-page-table">
-                <tr>
-                    <th colspan="11" scope="colgroup"></th>
-                    <th colspan="3" scope="colgroup">За 1 шт.</th>
-                    <th colspan="3" scope="colgroup">За партию.</th>
-                    <th colspan="7" scope="colgroup"></th>
-                </tr>
-                <tr>
-                    <th>Табельный номер</th>
-                    <th>Сотрудник</th>
-                    <th>Дата</th>
-                    <th>Наименование действия(выполнение задания, выполнение операции с производства или сборки, действия в ПО Конструктор - создал, изменил и т.д)</th>
-                    <th>Тип </th>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Заказ</th>
-                    <th>Время</th>
-                    <th>Примечание</th>
-                    <th>Кол-во, шт.</th>
-                    <th>Подготовит-е время, н.ч.</th>
-                    <th>Вспомогат-е время, н.ч.</th>
-                    <th>Машинное время, н.ч.</th>
-                    <th>Подготовит-е время, н.ч.</th>
-                    <th>Вспомогат-е время, н.ч.</th>
-                    <th>Машинное время, н.ч.</th>
-                    <th>Всего, н.ч.</th>
-                    <th>Задания, н.ч.</th>
-                    <th>План за день, н.ч.</th>
-                    <th>Итого по сотруднику за день.</th>
-                    <th>План за период, н.ч.</th>
-                    <th>Итого по сотруднику за период, н.ч.</th>
-                    <th>Потери выработки за период, н.ч.</th>
-                </tr>
-            </table>
-        </div>
-        <button class="print_btn">Печать</button>
+      <h3>Результаты работы</h3>
+      <div class="result-work">
+        <span>Выбрать период, с: </span>
+        <input type="text" class="calendar-input">
+        <span>по: </span>
+        <input type="text" class="calendar-input">
+        <button class='btn-small'>Сбросить период или дату</button>
+        <span>Кол-во рабочих дней в периоде: </span>
+        <input type="text" class="input-periud">
+      </div>
+      <div class="scroll-table" style="width: inherit;">
+        <table class="wort-page-table">
+          <tr>
+            <th colspan="11" scope="colgroup"></th>
+            <th colspan="3" scope="colgroup">За 1 шт.</th>
+            <th colspan="3" scope="colgroup">За партию.</th>
+            <th colspan="7" scope="colgroup"></th>
+          </tr>
+          <tr>
+            <th>Табельный номер</th>
+            <th>Сотрудник</th>
+            <th>Дата</th>
+            <th>Наименование действия(выполнение задания, выполнение операции с производства или сборки, действия в ПО Конструктор - создал, изменил и т.д)</th>
+            <th>Тип </th>
+            <th>Артикул</th>
+            <th>Наименование</th>
+            <th>Заказ</th>
+            <th>Время</th>
+            <th>Примечание</th>
+            <th>Кол-во, шт.</th>
+            <th>Подготовит-е время, н.ч.</th>
+            <th>Вспомогат-е время, н.ч.</th>
+            <th>Машинное время, н.ч.</th>
+            <th>Подготовит-е время, н.ч.</th>
+            <th>Вспомогат-е время, н.ч.</th>
+            <th>Машинное время, н.ч.</th>
+            <th>Всего, н.ч.</th>
+            <th>Задания, н.ч.</th>
+            <th>План за день, н.ч.</th>
+            <th>Итого по сотруднику за день.</th>
+            <th>План за период, н.ч.</th>
+            <th>Итого по сотруднику за период, н.ч.</th>
+            <th>Потери выработки за период, н.ч.</th>
+          </tr>
+        </table>
+      </div>
+      <div class="btn-control">
+        <button class="btn-small">Печать</button>
+      </div>
     </div>
   </div>
 </template>
