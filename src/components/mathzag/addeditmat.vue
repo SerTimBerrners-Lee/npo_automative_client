@@ -6,177 +6,177 @@
       <div v-if="parametrs.mat == 'TYPE'">
         <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
         <div class="block">
-            <p class='p_modal_name'> 
-                <span>Наименование: </span>
-                <input type="text" v-model.trim='obj.inputs'>
-            </p>
+          <p class='p_modal_name'> 
+            <span>Наименование: </span>
+            <input type="text" v-model.trim='obj.inputs'>
+          </p>
         </div>
         <h4>Характеристики</h4>
         <table style="width: 100%;">
-            <tr>
-                <th>Наименование</th>
-                <th>
-                    ЕИ
-                </th>
-                <th>Значение</th>
-            </tr>
-            <tr>
-                <td  @click='obj.length_permanent = ""'>Длина (L)</td>
-                <td>
-                    м, мм
-                </td>
-                <td class="input_znach">
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio" value="permanent" v-model="obj.length_permanent">
-                  </p>
-                 <p>
-                    <span> Переменное </span>
-                    <input type="radio"  value="variable" v-model="obj.length_permanent">
-                 </p>
-                </td>
-            </tr>
-            <tr>
-                <td  @click='obj.width_permanent = ""'>Ширина (A)</td>
-                <td>
-                    м, мм
-                </td>
-                <td class="input_znach" >
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio" value="permanent" v-model="obj.width_permanent">
-                  </p>
-                 <p>
-                    <span> Переменное </span>
-                    <input type="radio" value="variable" v-model="obj.width_permanent">
-                 </p>
-                </td>
-            </tr>
-            <tr>
-                <td @click='obj.height_permanent = ""'>Высота (B)</td>
-                <td>
-                   м, мм
-                </td>
-                <td class="input_znach">
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio"  value="permanent" v-model="obj.height_permanent">
-                  </p>
-                 <p>
-                    <span>  Переменное </span>
-                    <input type="radio" value="variable" v-model="obj.height_permanent">
-                 </p>
-                </td>
-            </tr>
-            <tr>
-                <td @click='obj.wallThickness_permanent = ""'>Толщина стенки (С)</td>
-                <td>
-                   мм
-                </td>
-                <td class="input_znach">
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio" value="permanent" v-model="obj.wallThickness_permanent">
-                  </p>
-                 <p>
-                    <span> Переменное </span>
-                    <input type="radio" value="variable" v-model="obj.wallThickness_permanent">
-                 </p>
-                </td>
-            </tr>
-            <tr>
-                <td @click='obj.outsideDiametr_permanent = ""'>Наружный Диаметр (D)</td>
-                <td>
-                    мм
-                </td>
-                <td class="input_znach">
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio" value="permanent" v-model="obj.outsideDiametr_permanent">
-                  </p>
-                 <p>
-                    <span> Переменное </span>
-                    <input type="radio" value="variable" v-model="obj.outsideDiametr_permanent">
-                 </p>
-                </td>
-            </tr>
-              <tr>
-                <td @click='obj.thickness_permanent = ""'>Толщина </td>
-                <td>
-                    мм
-                </td>
-                <td class="input_znach">
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio" value="permanent" v-model="obj.thickness_permanent">
-                  </p>
-                 <p>
-                    <span> Переменное </span>
-                    <input type="radio" value="variable" v-model="obj.thickness_permanent">
-                 </p>
-                </td>
-            </tr>
-            <tr>
-                <td @click='obj.areaCrossSectional_permanent = ""'>Площадь сечения (S)</td>
-                <td>
-                   м2
-                </td>
-                <td class="input_znach">
-                 <p>
-                    <span> Постоянное </span>
-                    <input type="radio" value="permanent" v-model="obj.areaCrossSectional_permanent">
-                  </p>
-                 <p>
-                    <span> Переменное </span>
-                    <input type="radio" value="variable" v-model="obj.areaCrossSectional_permanent">
-                 </p>
-                </td>
-            </tr>
+          <tr>
+            <th>Наименование</th>
+            <th>
+                ЕИ
+            </th>
+            <th>Значение</th>
+          </tr>
+          <tr>
+            <td  @click='obj.length_permanent = ""'>Длина (L)</td>
+            <td>
+                м, мм
+            </td>
+            <td class="input_znach">
+              <p>
+                <span> Постоянное </span>
+                <input type="radio" value="permanent" v-model="obj.length_permanent">
+              </p>
+              <p>
+                <span> Переменное </span>
+                <input type="radio"  value="variable" v-model="obj.length_permanent">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td  @click='obj.width_permanent = ""'>Ширина (A)</td>
+            <td>
+                м, мм
+            </td>
+            <td class="input_znach" >
+              <p>
+                <span> Постоянное </span>
+                <input type="radio" value="permanent" v-model="obj.width_permanent">
+              </p>
+              <p>
+                <span> Переменное </span>
+                <input type="radio" value="variable" v-model="obj.width_permanent">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td @click='obj.height_permanent = ""'>Высота (B)</td>
+            <td>
+                м, мм
+            </td>
+            <td class="input_znach">
+              <p>
+                <span> Постоянное </span>
+                <input type="radio"  value="permanent" v-model="obj.height_permanent">
+              </p>
+              <p>
+                <span>  Переменное </span>
+                <input type="radio" value="variable" v-model="obj.height_permanent">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td @click='obj.wallThickness_permanent = ""'>Толщина стенки (С)</td>
+            <td>
+                мм
+            </td>
+            <td class="input_znach">
+              <p>
+                <span> Постоянное </span>
+                <input type="radio" value="permanent" v-model="obj.wallThickness_permanent">
+              </p>
+              <p>
+                <span> Переменное </span>
+                <input type="radio" value="variable" v-model="obj.wallThickness_permanent">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td @click='obj.outsideDiametr_permanent = ""'>Наружный Диаметр (D)</td>
+            <td>
+                мм
+            </td>
+            <td class="input_znach">
+              <p>
+                <span> Постоянное </span>
+                <input type="radio" value="permanent" v-model="obj.outsideDiametr_permanent">
+              </p>
+              <p>
+                <span> Переменное </span>
+                <input type="radio" value="variable" v-model="obj.outsideDiametr_permanent">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td @click='obj.thickness_permanent = ""'>Толщина </td>
+            <td>
+                мм
+            </td>
+            <td class="input_znach">
+              <p>
+                <span> Постоянное </span>
+                <input type="radio" value="permanent" v-model="obj.thickness_permanent">
+              </p>
+              <p>
+                <span> Переменное </span>
+                <input type="radio" value="variable" v-model="obj.thickness_permanent">
+              </p>
+            </td>
+          </tr>
+          <tr>
+            <td @click='obj.areaCrossSectional_permanent = ""'>Площадь сечения (S)</td>
+            <td>
+                м2
+            </td>
+            <td class="input_znach">
+              <p>
+                <span> Постоянное </span>
+                <input type="radio" value="permanent" v-model="obj.areaCrossSectional_permanent">
+              </p>
+              <p>
+                <span> Переменное </span>
+                <input type="radio" value="variable" v-model="obj.areaCrossSectional_permanent">
+              </p>
+            </td>
+          </tr>
         </table>
         <span class='snoska'>* Для сброса выбранного кликните на наименование характеристики</span>
         <div class="btn-control out-btn-control">
-            <button class="btn-status btn-black" @click='addEditMaterial'>Сохранить</button>
-            <button class="btn-status" @click='destroyModalF'>Отменить</button>
+          <button class="btn-status btn-black" @click='addEditMaterial'>Сохранить</button>
+          <button class="btn-status" @click='destroyModalF'>Отменить</button>
         </div>
       </div>
         <div v-if="parametrs.mat == 'PODTYPE'">
         <h3>{{ titleapp }} типа материала (тип профиля заготовки) </h3>
         <div class="block">
-            <p class='p_modal_name'> 
-                <span>Наименование: </span>
-                <input type="text" v-model.trim='obj_podType.inputs'>
-            </p>
+          <p class='p_modal_name'> 
+            <span>Наименование: </span>
+            <input type="text" v-model.trim='obj_podType.inputs'>
+          </p>
         </div>
         <h4>Характеристики</h4>
         <table style="width: 100%;">
-            <tr>
-                <th>Наименование</th>
-                <th>
-                    ЕИ
-                </th>
-                <th>Значение</th>
-            </tr>
-            <tr>
-                <td>Плотность</td>
-                <td>
-                    кг/м.куб
-                </td>
-                <td class="input_znach">
-                  <input style='border: none; width: 97%; height: 100%' type="text" v-model="obj_podType.density_permanent">
-                </td>
-            </tr>
+          <tr>
+            <th>Наименование</th>
+            <th>
+                ЕИ
+            </th>
+            <th>Значение</th>
+          </tr>
+          <tr>
+            <td>Плотность</td>
+            <td>
+                кг/м.куб
+            </td>
+            <td class="input_znach">
+              <input style='border: none; width: 97%; height: 100%' type="text" v-model="obj_podType.density_permanent">
+            </td>
+          </tr>
             
         </table>
         <span class='snoska'>* Для сброса выбранного кликните на наименование характеристики</span>
         <div class="btn-control out-btn-control" v-if='parametrs.mat != "PODTYPE"'>
-            <button class="btn-status btn-black" v-if="parametrs.type == 'create'" @click='addEditMaterial'>Сохранить</button>
-            <button class="btn-status btn-black" v-if="parametrs.type == 'edit'" @click='addEditMaterial'>Обновить</button>
-            <button class="btn-status" @click='destroyModalF'>Отменить</button>
+          <button class="btn-status btn-black" v-if="parametrs.type == 'create'" @click='addEditMaterial'>Сохранить</button>
+          <button class="btn-status btn-black" v-if="parametrs.type == 'edit'" @click='addEditMaterial'>Обновить</button>
+          <button class="btn-status" @click='destroyModalF'>Отменить</button>
         </div>
         <div class="btn-control out-btn-control" v-if='parametrs.mat == "PODTYPE"'>
-            <button class="btn-status btn-black" v-if="parametrs.type == 'create'" @click='addEditPodMaterial'>Сохранить</button>
-            <button class="btn-status btn-black" v-if="parametrs.type == 'edit'" @click='addEditPodMaterial'>Обновить</button>
-            <button class="btn-status" @click='destroyModalF'>Отменить</button>
+          <button class="btn-status btn-black" v-if="parametrs.type == 'create'" @click='addEditPodMaterial'>Сохранить</button>
+          <button class="btn-status btn-black" v-if="parametrs.type == 'edit'" @click='addEditPodMaterial'>Обновить</button>
+          <button class="btn-status" @click='destroyModalF'>Отменить</button>
         </div>
       </div>
     </div>
@@ -227,7 +227,7 @@ export default {
             density: {
               edizm: 11,
               znach: this.obj_podType.density_permanent
-            },
+            }, 
             name: this.obj_podType.inputs
           }
         })

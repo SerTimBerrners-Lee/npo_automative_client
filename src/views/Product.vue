@@ -82,7 +82,7 @@
         </div>
         <div>
         <span>Описание / Примечание</span>
-        <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
+        <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
         </div>
         <div v-if='selecteProduct.documents.length > 0'>
           <h3>Документы</h3>

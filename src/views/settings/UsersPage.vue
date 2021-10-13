@@ -90,7 +90,7 @@
                             </p>
                         </div>
                         <h3>Примечание</h3>
-                        <textarea class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
+                        <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
                     </div>
                 </div>
                 <div class="har-inform">
@@ -101,7 +101,7 @@
                     </div>
                     <div class="ava-right-block">
                         <h3 style='margin-top: 0px;'>Характеристика</h3>
-                        <textarea class="textarea-har" cols="30" rows="10" v-text='haracteristic'></textarea>
+                        <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='haracteristic'></textarea>
                         <h3>Документы</h3>
                         <table>
                             <tr>

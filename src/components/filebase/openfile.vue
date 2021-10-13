@@ -70,7 +70,7 @@
                 </div>
                 <div class="right-block">
                   <h4>Примечание</h4>
-                  <textarea cols="30" rows="10" :value='this.file[file_increment] ? this.file[file_increment].description : ""'></textarea>
+                  <textarea maxlength='250' cols="30" rows="10" :value='this.file[file_increment] ? this.file[file_increment].description : ""'></textarea>
                   <h4>История изменений</h4>
                   <button class="btn-small">Просмотреть другие версии документа</button>
                 </div>

@@ -59,58 +59,10 @@
     <div class="block-two">
         <h3>План по операциям</h3>
         <div class="operation-block">
-            <div class="type-operation">
-                <span>0.</span>
-                <span>Заготовительная</span>
-            </div>
-            <div class="type-operation">
-                <span>1.</span>
-                <span>Токарная</span>
-            </div>
-            <div class="type-operation">
-                <span>2.</span>
-                <span>Фрезерная</span>
-            </div>
-            <div class="type-operation">
-                <span>3.</span>
-                <span>Координатно-сверильная</span>
-            </div>
-            <div class="type-operation">
-                <span>4.</span>
-                <span>Сверлильная</span>
-            </div>
-            <div class="type-operation">
-                <span>5.</span>
-                <span>Термическая</span>
-            </div>
-            <div class="type-operation">
-                <span>6.</span>
-                <span>Сварочные работы</span>
-            </div>
-            <div class="type-operation">
-                <span>7.</span>
-                <span>Мойка</span>
-            </div>
-            <div class="type-operation">
-                <span>8.</span>
-                <span>Зачистные работы</span>
-            </div>
-            <div class="type-operation">
-                <span>9.</span>
-                <span>Слесарные</span>
-            </div>
-            <div class="type-operation">
-                <span>10.</span>
-                <span>Покраска</span>
-            </div>
-            <div class="type-operation">
-                <span>11.</span>
-                <span>Сборка</span>
-            </div>
-            <div class="type-operation">
-                <span>12.</span>
-                <span>Упаковка</span>
-            </div>
+          <div class="type-operation" v-for='(operation, inx) of getTypeOperations' :key='operation'>
+            <span>{{ inx }}.</span>
+            <span>{{ operation.name }}</span>
+          </div>
         </div>
     </div>
     <div class="block-three">
@@ -183,10 +135,11 @@ export default {
   },
   computed: mapGetters([
     'getAuth',
-    'getForMeIssue'
+    'getForMeIssue',
+    'getTypeOperations'
   ]),
   methods: {
-    ...mapActions(['fetchIssueList']),
+    ...mapActions(['fetchIssueList', 'getAllTypeOperations']),
     dateIncrementHors(date, hors) {
       let dat = dateIncrementHors(date, hors)
       return `${dat.day}.${dat.mount}.${dat.year}`
@@ -199,6 +152,7 @@ export default {
   async mounted() {
     if(this.getAuth && this.getAuth.id) 
       this.fetchIssueList(this.getAuth.id)
+    this.getAllTypeOperations()
   }
 }
 </script>

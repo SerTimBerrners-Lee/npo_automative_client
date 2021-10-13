@@ -116,7 +116,7 @@
           <div class="content_left_block_right">
             <div>
               <h3>Описание / Примечание</h3>
-              <textarea class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
+              <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
                 <table style='width: 100%;'>
@@ -397,7 +397,7 @@ export default {
         this.listPokDet[mat].mat = {
         id: this.listPokDet[mat].mat.id,
         name: this.listPokDet[mat].mat.name,
-        kolvo: this.listPokDet[mat].mat.kolvo
+        kol: this.listPokDet[mat].mat.kol
         }
         if(mat == this.listPokDet.length - 1) {
           this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
@@ -408,7 +408,7 @@ export default {
         this.materialList[mat].mat = {
         id: this.materialList[mat].mat.id,
         name: this.materialList[mat].mat.name,
-        kolvo: this.materialList[mat].mat.kolvo
+        kol: this.materialList[mat].mat.kol
         }
         if(mat == this.materialList.length - 1) {
           this.formData.append('materialList', JSON.stringify(this.materialList))
@@ -470,18 +470,19 @@ export default {
           break;
         case '3':
           this.showBFM = true
-          this.generateKeyBFM = random(1, 11999)
+          this.generateKeyBFM = random(1, 999)
           break;
         case '4':
           this.instanMaterial = 2
           this.listMaterials = this.listPokDet
-          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
         case '5':
           this.instanMaterial = 3
           this.listMaterials = this.materialList
-          this.modalMaterialKey = random(10, 2e6)
+          console.log(this.materialList)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
       }

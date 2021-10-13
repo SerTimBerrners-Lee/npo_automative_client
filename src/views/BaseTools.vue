@@ -46,7 +46,7 @@
          <MediaSlider v-if='getOneNameInstrument.documents.length' :data='getOneNameInstrument.documents' :key='getOneNameInstrument.documents' />
         <div>
           <span>Описание / Примечание</span>
-          <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
+          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
         </div>
          <div v-if='getOneNameInstrument.documents.length > 0'>
             <h3>Документы</h3>

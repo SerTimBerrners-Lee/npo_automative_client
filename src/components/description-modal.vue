@@ -4,7 +4,7 @@
     <div :class='destroyModalRight'>
       <div :style="hiddens" >
         <h3>Примечание</h3>
-        <textarea v-model='description'></textarea>
+        <textarea maxlength='250' v-model='description'></textarea>
       </div>
     </div>
   </div>

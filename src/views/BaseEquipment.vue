@@ -39,7 +39,7 @@
         <MediaSlider v-if='equipment.documents.length' :data='equipment.documents' :key='equipment.documents' />
         <div>
           <span>Описание / Примечание</span>
-          <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='equipment.description'> </textarea>
+          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='equipment.description'> </textarea>
         </div>
          <div v-if='equipment.documents.length > 0'>
             <h3>Документы</h3>

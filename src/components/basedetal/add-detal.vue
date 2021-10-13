@@ -56,7 +56,7 @@
             </div>
             <div>
               <h3>Описание / Примечание</h3>
-              <textarea class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
+              <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
           </div>
           <div class="content_left_block_right">
@@ -317,7 +317,7 @@ export default {
           this.materialList[mat].mat = {
             id: this.materialList[mat].mat.id,
             name: this.materialList[mat].mat.name,
-            kolvo: this.materialList[mat].mat.kolvo
+            kol: this.materialList[mat].mat.kolvo
           }
           if(mat == this.materialList.length - 1) {
             this.formData.append('materialList', JSON.stringify(this.materialList))

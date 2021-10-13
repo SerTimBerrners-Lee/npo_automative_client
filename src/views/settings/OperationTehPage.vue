@@ -14,7 +14,7 @@
             <th>Вспомогательное</th>
             <th>Основное</th>
           </tr>
-          <tr class="td-row" 
+          <tr class="td-row"  
             v-for="(operation, inx) in operations" 
             :key="operation"
             @click='e => selectedF(operation, e.target.parentElement)'

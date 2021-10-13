@@ -168,7 +168,7 @@
         </div>
         <div>
           <h3>Примечание</h3>
-          <textarea cols="30" rows="10" 
+          <textarea maxlength='250' cols="30" rows="10" 
             v-model='description'></textarea>
         </div>
       </div>

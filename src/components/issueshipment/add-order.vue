@@ -3,8 +3,6 @@
 		<h3>Создать заказ</h3>
 		<div class="block">
 			<p class='p_flex'>
-				<!-- <span>Номер заказа: </span>
-				<input type="text" v-model='number_order'> -->
 				<span>Дата заказа:</span>
 				<DatePicterCustom 
 					@unmount='changeDatePicter' 
@@ -16,7 +14,7 @@
 					class='select_span_href'>{{ select_product.name }}</span>
 				<button class="btn-small btn-add" @click='selectProduct'>Выбрать</button>
 				<span>Количество:</span>
-				<input type="number" min='1' v-model='kolvo'>
+				<input type="number" min='1' v-model='kol'>
 			</p>
 			<p class='p_flex'>
 				<span>Рабочих дней до отгрузки:</span>
@@ -57,11 +55,11 @@
 						class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
 						<td>{{ inx + 1 }}</td>
 						<td>{{ obj.obj.name }}</td>
-						<td>
+						<td class='center'>
 							<input 
 								type="text" 
-								:value='obj.kolvo'
-								class='input_kol' 
+								:value='obj.kol'
+								class='input_kol center' 
 								@change="e => editKolVo(inx, e.target.value)">
 						</td>
 					</tr>
@@ -70,10 +68,31 @@
 					<button class="btn-small" @click='deleteCbEdDetal'>Удалить</button>
 					<button class="btn-small" @click='addCbEdDetal'>Добавить СБ/деталь</button>
 				</div>
+
+				<h3>Материалы (ПД), (РМ)</h3>
+				<table>
+					<tr>
+						<th>№</th>
+						<th>Наименование</th>
+						<th>Кол-во</th>
+					</tr>
+					<tr v-for='(mat, inx) of list_material' :key='mat'>
+						<td class='center'>{{ inx + 1 }}</td>
+						<td>{{ mat.obj.name }}</td>
+						<td class='center tooltip'>
+							<input 
+								type="text" 
+								:value='mat.kol'
+								class='input_kol center' 
+								@change="e => editKolVoMat(inx, e.target.value)">
+								<span class="tooltiptext">{{ mat.kol }}</span>
+						</td>
+					</tr>
+				</table>
 			</div>
 			<div>
 				<h3>Примечание</h3>
-				<textarea  v-model='description'></textarea>
+				<textarea maxlength='250' v-model='description'></textarea>
 			</div>
 		</div>
 		<div class="btn-control out-btn-control">
@@ -101,7 +120,6 @@
 		:key='keyProductModal'
 		@unmount='unmount_product'
 	/>
-
 	<BaseProductModal
 		v-if='showModalDetalCb'
 		:key='keyModalDetalCb'
@@ -146,7 +164,7 @@ export default {
 			
 			date_order: new Date().toLocaleDateString("ru-RU"),
 			date_shipments: new Date().toLocaleDateString("ru-RU"),
-			kolvo: '',
+			kol: 1,
 			day_when_shipments: 0,
 			bron: false,
 			base: '',
@@ -155,12 +173,23 @@ export default {
 			select_product: null,
 			description: '',
 			list_cbed_detal: [],
+			list_material: [],
 		}
+	},
+	watch: {
+		kol: function(znach) {
+			if(!this.select_product) return 0 
+			this.list_cbed_detal = []
+			this.list_material = []
+			for(let inx = 0; inx < znach; inx++) {
+				this.checkedJsonList(this.select_product)
+			}
+		},	
 	},
 	computed: mapGetters(['allBuyer']),
 	components: {DatePicterCustom, ProductList, BaseProductModal, InformFolder},
 	methods: {
-		...mapActions(['fetchCreateShipments', 'fetchAllBuyers']),
+		...mapActions(['fetchCreateShipments', 'fetchAllBuyers', 'getOneCbEdById', 'getOneDetal']),
 		addCbEdDetal() {
 			this.showModalDetalCb = true;
 			this.keyModalDetalCb = random(1, 999)
@@ -177,43 +206,121 @@ export default {
 		},
 		unmount_product(product) {
 			if(!product) return 0
+			this.list_cbed_detal = []
+			this.list_material= []
 			
 			this.select_product = product
-	
-			if(product.cbeds && product.cbeds.length && product.listCbed) {
-				let list_cbed = JSON.parse(product.listCbed)
-				this.getElement(product.cbeds, list_cbed, 'cbed')
-			}
-			if(product.detals && product.detals.length && product.listDetal) {
-				let list_detal = JSON.parse(product.listDetal)
-				this.getElement(product.detals, list_detal, 'detal')
-			}
-			
+			this.checkedJsonList(product)
 		},
-		getElement(elements, list_pars, type, ) {
-			for(let element of elements) {
-				let kolvo = 1;
-				for(let item of list_pars) {
-					let id = type =='cbed' ? item.cb.id : item.det.id
-					if(id== element.id)	
-						kolvo = item.kol
+		checkedJsonList(izd) {
+			if(izd.cbeds && izd.cbeds.length && izd.listCbed) {
+				let list_cbed = JSON.parse(izd.listCbed)
+				this.pushElement(izd.cbeds, list_cbed, 'cbed')
+				for(let cb of list_cbed ) {
+					this.getOneCbEdById(cb.cb.id).then(res => {
+						let cbeds =  res.listCbed ? JSON.parse(res.listCbed) : []
+						if(cbeds.length) {
+							for(let inx in cbeds) {
+								cbeds[inx] = cbeds[inx].cb
+							}
+						}
+						for(let i = 0; i < cb.kol; i++) {
+							this.checkedJsonList({...res, cbeds})
+						}
+					}) 
 				}
-				this.list_cbed_detal.push({
-					type,
-					obj: {id: element.id, name: element.name},
-					kolvo
-				})
+			}
+
+			if(izd.detals && izd.detals.length && izd.listDetal) {
+				let list_detals = JSON.parse(izd.listDetal)
+				this.pushElement(izd.detals, list_detals, 'detal')
+				for(let det of list_detals ) {
+					this.getOneDetal(det.det.id).then(res => {
+						for(let i = 0; i < det.kol; i++) {
+							this.checkedJsonList(res)
+						}
+					}) 
+				}
+			}
+
+			if(izd.materials && izd.materials.length) {
+				if(izd.materialList) 
+					this.pushElement(izd.materials, JSON.parse(izd.materialList), 'mat')
+					
+				if(izd.listPokDet) 
+					this.pushElement(izd.materials, JSON.parse(izd.listPokDet), 'mat')
+			}
+		},
+		pushElement(elements, list_pars, type) {
+			for(let element of elements) {
+				let kol = 1;
+				let material = false;
+				for(let item of list_pars) {
+					let id;
+					switch(type) {
+						case 'cbed':
+							id = item.cb.id;
+							break;
+						case 'detal':
+							id = item.det.id
+							break;
+						case 'mat':
+							id = item.mat.id
+							break;
+					}
+					if(id == element.id)	 {
+						material = true
+						kol = item.kol
+					}
+				}
+				if(type == 'mat' && material) {
+					// Перед тем как пушить проверяем на совпадение 
+					let check = true
+					for(let mat = 0; mat < this.list_material.length; mat++) {
+						if(element.id == this.list_material[mat].obj.id) {
+							this.list_material[mat].kol = Number(this.list_material[mat].kol) + Number(kol)
+							check = false
+						}	
+					}
+					if(check) {
+						this.list_material.push({
+							type,
+							obj: {id: element.id, name: element.name},
+							kol
+						})
+					} else check = true
+					material = false
+				} else if(type != 'mat')  {
+					let check = true
+					for(let iz = 0; iz < this.list_cbed_detal.length; iz++) {
+						if(element.id == this.list_cbed_detal[iz].obj.id && element.name == this.list_cbed_detal[iz].obj.name) {
+							this.list_cbed_detal[iz].kol = Number(this.list_cbed_detal[iz].kol) + Number(kol)
+							check = false
+						}	
+					}
+					if(check) {
+						this.list_cbed_detal.push({
+							type,
+							obj: {id: element.id, name: element.name},
+							kol
+						})
+					} else check = true
+				}
+						
 			}
 		},
 		responseDetalCb(res) {
 			this.list_cbed_detal.push({
 				...res, 
 				obj: {id: res.obj.id, name: res.obj.name},
-				kolvo: 1
+				kol: 1
 			})
 		},
 		editKolVo(inx, val) {
-			this.list_cbed_detal[inx].kolvo = val
+			this.list_cbed_detal[inx].kol = val
+		},
+		editKolVoMat(inx, val) {
+			this.list_material[inx].kol = val
 		},
 		deleteCbEdDetal() {
 			if(this.select_tr_inx == null) return 0;
@@ -239,7 +346,7 @@ export default {
 		save_order() {
 			if(
 				!this.date_order || !this.date_shipments 
-				|| !this.kolvo || !this.base 
+				|| !this.kol || !this.base 
 				|| !this.select_product
 				|| !this.description || !this.buyer
 				) 
@@ -248,7 +355,7 @@ export default {
 			const data = {
 				date_order: this.date_order,
 				date_shipments: this.date_shipments,
-				kolvo: this.kolvo,
+				kol: this.kol,
 				day_when_shipments: this.day_when_shipments,
 				bron: this.bron,
 				base: this.base,
@@ -260,9 +367,9 @@ export default {
 				},
 				description: this.description,
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
+				list_material: JSON.stringify(this.list_material)
 			} 
 
-			console.log(234234)
 			this.fetchCreateShipments(data).then(res => {
 				setTimeout(() => this.$router.push('/issueshipment'), 3000)
 				if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's', this)
@@ -276,6 +383,9 @@ export default {
 }
 </script>
 <style scoped>
+table {
+	width: 100%;
+}
 select {
 	width: 100px;
 }

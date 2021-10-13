@@ -23,7 +23,7 @@
       </div>
       <div>
         <h3>Примечание</h3>
-        <textarea  v-model='description'></textarea>
+        <textarea  maxlength='250' v-model='description'></textarea>
       </div>
       <div>
         <h3>Комплектация</h3>

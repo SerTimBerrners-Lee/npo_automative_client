@@ -158,7 +158,7 @@
           <div class="content_left_block_right">
             <div>
               <h3>Описание / Примечание</h3>
-              <textarea class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
+              <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
                 <table style='width: 100%;'>
@@ -400,18 +400,18 @@ export default {
           this.listPokDet[mat].mat = {
           id: this.listPokDet[mat].mat.id,
           name: this.listPokDet[mat].mat.name,
-          kolvo: this.listPokDet[mat].mat.kolvo
+          kol: this.listPokDet[mat].mat.kolvo
           }
           if(mat == this.listPokDet.length - 1) {
             this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
           }
       }
-
+      
       for(let mat = 0; mat < this.materialList.length; mat++) {
           this.materialList[mat].mat = {
           id: this.materialList[mat].mat.id,
           name: this.materialList[mat].mat.name,
-          kolvo: this.materialList[mat].mat.kolvo
+          kol: this.materialList[mat].mat.kolvo
           }
           if(mat == this.materialList.length - 1) {
             this.formData.append('materialList', JSON.stringify(this.materialList))

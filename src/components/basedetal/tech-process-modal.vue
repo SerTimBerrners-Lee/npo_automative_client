@@ -138,7 +138,7 @@
                 <div class="desctiption_container">
                     <div>
                         <h3>Описание / примечание</h3>
-                        <textarea cols="30" rows="10" v-model='description'></textarea>
+                        <textarea maxlength='250' cols="30" rows="10" v-model='description'></textarea>
                     </div>
                     <div>
                         <h3>История изменений</h3>

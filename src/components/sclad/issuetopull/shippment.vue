@@ -37,7 +37,7 @@
 
       <div>
         <h3>Примечание</h3>
-        <textarea></textarea>
+        <textarea maxlength='250'></textarea>
       </div>
 
       <div>

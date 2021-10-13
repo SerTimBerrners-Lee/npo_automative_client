@@ -38,7 +38,7 @@
         </div>
         <div>
           <h3>Описание / Примечание</h3>
-          <textarea v-model="obj.description" cols="30" rows="10"></textarea>
+          <textarea maxlength='250' v-model="obj.description" cols="30" rows="10"></textarea>
         </div>
       </div>
 

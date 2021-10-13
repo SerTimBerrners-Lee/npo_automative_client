@@ -112,7 +112,7 @@
       </div>
       <div>
       <h3>Описание / Примечание</h3>
-      <textarea style="width: 90%; height: 120px;" cols="30" rows="10" :value='selectedCbEd.description'> </textarea>
+      <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selectedCbEd.description'> </textarea>
       </div>
       <div v-if='selectedCbEd.documents.length > 0'>
           <h3>Документы</h3>

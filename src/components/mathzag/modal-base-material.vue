@@ -48,11 +48,11 @@
                 <td>{{ mat.mat.name }}</td>
                 <td v-if='!matLightList'>
                   <select class='select-small' @change='e => selecter(e.target, mat)' v-model='mat.ez'>
-                    <option value='1' v-if="mat.ez == 1 || JSON.parse(mat.mat.kolvo).c1"> шт</option> 
-                    <option value='2' v-if="mat.ez == 2 || JSON.parse(mat.mat.kolvo).c2"> л </option>
-                    <option value='3' v-if="mat.ez == 3 || JSON.parse(mat.mat.kolvo).c3"> кг</option> 
-                    <option value='4' v-if="mat.ez == 4 || JSON.parse(mat.mat.kolvo).c4"> м </option>
-                    <option value='5' v-if="mat.ez == 5 || JSON.parse(mat.mat.kolvo).c5"> м.куб</option> 
+                    <option value='1' v-if="mat.ez == 1"> шт</option> 
+                    <option value='2' v-if="mat.ez == 2"> л </option>
+                    <option value='3' v-if="mat.ez == 3"> кг</option> 
+                    <option value='4' v-if="mat.ez == 4"> м </option>
+                    <option value='5' v-if="mat.ez == 5"> м.куб</option> 
                   </select>       
                 </td>
                 <td class='td_kolvo' v-if='!matLightList'>
@@ -94,7 +94,7 @@ export default {
   props: [
     'allMaterial', 
     'instanMaterial', 
-    'getOneMaterial',
+    'getOneMaterial', 
     'matLightList'],
   data() {
     return {
@@ -220,12 +220,12 @@ export default {
     await this.getAllTypeMaterial()
     await this.getAllPodTypeMaterial()
     if(this.$props.instanMaterial) 
-        this.getInstansMaterial(this.$props.instanMaterial)
+      this.getInstansMaterial(this.$props.instanMaterial)
     if(this.$props.allMaterial) {
-          this.materialList = this.$props.allMaterial
-          this.materialList.forEach((el) => {
-              this.materialListId.push(el.mat.id)
-          })
+      this.materialList = this.$props.allMaterial
+      this.materialList.forEach((el) => {
+          this.materialListId.push(el.mat.id)
+      })
     }
   }
 }

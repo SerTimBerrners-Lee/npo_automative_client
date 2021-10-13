@@ -27,7 +27,7 @@
        </div>
        <div>
          <h3>Описание / примечание</h3>
-         <textarea cols="30" rows="10" v-model.trim="obj.description"></textarea>
+         <textarea maxlength='250' cols="30" rows="10" v-model.trim="obj.description"></textarea>
        </div>
        <h3> История изменений</h3>
        <h3>Принадлежность</h3>

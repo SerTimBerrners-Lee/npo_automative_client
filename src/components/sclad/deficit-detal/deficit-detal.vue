@@ -169,11 +169,11 @@ export default {
   computed: mapGetters(['getShipmentsSclad']),
   components: {StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal, InformFolder},
   methods: {
-    ...mapActions(['fetchAllShipmentsSclad', 'getOneCbEdById']),
+    ...mapActions(['fetchAllShipmentsSclad', 'getOneDetal']),
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
     },
-    start() {
+    start() { 
       if(!this.select_izd || !this.selectShipment)
         return showMessage('', 'Для начала выберите Д и заказ', 'w', this)
       let kolvo_order_byer = this.getDeficitIzd('detal', this.select_izd.id)
@@ -222,9 +222,9 @@ export default {
         console.log(e)
       }
     },
-    showParents(shipments, type) {
-      this.getOneCbEdById(shipments.id).then(res => {
-        this.productListForIzd = { products: res.products, type, id: shipments.id }
+    showParents(detal, type) {
+      this.getOneDetal(detal.id).then(res => {
+        this.productListForIzd = { products: res.products, type, id: detal.id }
         this.keyParentsModal = random(1, 999)
       })
     },

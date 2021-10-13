@@ -4,12 +4,12 @@
       <h3>{{ $route.params.type == 'create' ? 'Создать': 'Редактировать' || 'Создать с копированием'}} материал</h3>
       <div class="block">
         <p>
-            <span class='span-title'>Наименование: </span><input type="text" v-model.trim='obj.name'>
-            <span class='span-title'>Материал: </span>
-            <span v-if='getLinkId == 0'>Все типы</span>
-            <span v-if='getLinkId == 1'>Материалы для деталей</span>
-             <span v-if='getLinkId == 2'>Покупные детали </span>
-              <span v-if='getLinkId == 3'>Расходные материалы</span>
+          <span class='span-title'>Наименование: </span><input type="text" v-model.trim='obj.name'>
+          <span class='span-title'>Материал: </span>
+          <span v-if='getLinkId == 0'>Все типы</span>
+          <span v-if='getLinkId == 1'>Материалы для деталей</span>
+          <span v-if='getLinkId == 2'>Покупные детали </span>
+          <span v-if='getLinkId == 3'>Расходные материалы</span>
         </p>
       </div>
       <h3>Выбор типа и подипа</h3>
@@ -32,7 +32,7 @@
               @clickMat='clickMat' />
           </div>
           <h3>Описание / Примечание</h3>
-          <textarea cols="30" rows="10" v-model='obj.description'></textarea>
+          <textarea maxlength='250' cols="30" rows="10" v-model='obj.description'></textarea>
           <h3>История изменений</h3>
           <h3>Принадлежность</h3>
         </div>
@@ -56,11 +56,11 @@
             <tr>
               <td>Количество</td>
               <td colspan="2"> 
-                  <input value='1' type="checkbox" v-model="obj.kolvo_select.c1"> шт 
-                  <input value='2' type="checkbox" v-model="obj.kolvo_select.c2"> л 
-                  <input value='3' type="checkbox" v-model="obj.kolvo_select.c3"> кг 
-                  <input value='4' type="checkbox" v-model="obj.kolvo_select.c4"> м 
-                  <input value='5' type="checkbox" v-model="obj.kolvo_select.c5"> м.куб 
+                <input value='1' type="checkbox" v-model="obj.kolvo_select.c1"> шт 
+                <input value='2' type="checkbox" v-model="obj.kolvo_select.c2"> л 
+                <input value='3' type="checkbox" v-model="obj.kolvo_select.c3"> кг 
+                <input value='4' type="checkbox" v-model="obj.kolvo_select.c4"> м 
+                <input value='5' type="checkbox" v-model="obj.kolvo_select.c5"> м.куб 
               </td>
             </tr>
           </table>
@@ -74,32 +74,19 @@
 
             <tr v-if='material && material.length && JSON.parse(material.length).znach == "permanent" || this.obj.length_input'>
               <td>Длина (Д)</td>
-              <td>
-                <select class="select-small" v-model="obj.length_select">
-                  <option>Выберите тип ЕИ</option>
-                  <option value='6'>м (метр)</option>
-                  <option value='7'>мм (миллиметр)</option>
-                </select></td>
+              <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.length_input'></td>
             </tr>
 
             <tr v-if='material && material.width && JSON.parse(material.width).znach == "permanent" || this.obj.width_input'>
               <td>Ширина (Ш)</td>
-              <td><select class="select-small" v-model="obj.width_select">
-                  <option >Выберите тип ЕИ</option>
-                  <option value='6'>м (метр)</option>
-                  <option value='7'>мм (миллиметр)</option>
-                </select></td>
+              <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.width_input'></td>
             </tr>
             
             <tr v-if='material && material.height && JSON.parse(material.height).znach == "permanent" || this.obj.height_input'>
               <td>Высота (В)</td>
-              <td><select class="select-small" v-model="obj.height_select">
-                  <option>Выберите тип ЕИ</option>
-                  <option value='6'>м (метр)</option>
-                  <option value='7'>мм (миллиметр)</option>
-                </select></td>
+              <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.height_input'></td>
             </tr>
           
@@ -117,11 +104,7 @@
            
             <tr v-if='material && material.thickness && JSON.parse(material.thickness).znach == "permanent" || this.obj.thickness_input'>
               <td>Толщина </td>
-              <td><select class="select-small" v-model="obj.thickness_select">
-                  <option>Выберите тип ЕИ</option>
-                  <option value='6'>м (метр)</option>
-                  <option value='7'>мм (миллиметр)</option>
-                </select></td>
+              <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.thickness_input'></td>
             </tr>
 
@@ -160,11 +143,11 @@
         <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
       </div>
       <AddFile :parametrs='docFiles' 
-                :typeGetFile='"getfile"'
-                v-if="isChangeFolderFile" 
-                @unmount='file_unmount'
-                :key='keyWhenModalGenerate'
-                 />
+              :typeGetFile='"getfile"'
+              v-if="isChangeFolderFile" 
+              @unmount='file_unmount'
+              :key='keyWhenModalGenerate'
+                />
         </div>
       </div>
     </div>
@@ -309,39 +292,35 @@ export default {
         this.formData.append('rootParentId', this.material.id)
       this.formData.append('podTypeId', podTypeId)
       this.formData.append('name', dat.name)
-      let length = dat.length_select != 'Выберите тип ЕИ' &&
-      dat.length_select  ? JSON.stringify({
-        edizm: dat.length_select,
+      let length = JSON.stringify({
+        edizm: 7,
         znach: dat.length_input
-      }) : JSON.stringify({})
+      })
       this.formData.append('length', length)
-      let width = dat.width_select != 'Выберите тип ЕИ'  &&
-      dat.width_select ? JSON.stringify({
-        edizm: dat.width_select,
+      let width = JSON.stringify({
+        edizm: 7,
         znach: dat.width_input
-      }) : JSON.stringify({})
+      }) 
       this.formData.append('width', width)
-      let height = dat.height_select != 'Выберите тип ЕИ' &&
-      dat.height_select ? JSON.stringify({
-        edizm: dat.height_select,
+      let height = JSON.stringify({
+        edizm: 7,
         znach: dat.height_input
-      }) : JSON.stringify({})
+      })
       this.formData.append('height', height)
-      let wallThickness = dat.wallThickness_input ? JSON.stringify({
+      let wallThickness =  JSON.stringify({
         edizm: 7,
         znach: dat.wallThickness_input
-      }) : JSON.stringify({})
+      })
       this.formData.append('wallThickness', wallThickness)
-      let outsideDiametr = dat.outsideDiametr_input ? JSON.stringify({
+      let outsideDiametr = JSON.stringify({
         edizm: 7,
         znach: dat.outsideDiametr_input
-      }) : JSON.stringify({})
+      }) 
       this.formData.append('outsideDiametr', outsideDiametr)
-      let thickness = dat.thickness_selecter != 'Выберите тип ЕИ'  &&
-      dat.thickness_select ? JSON.stringify({
-        edizm: dat.thickness_select,
+      let thickness = JSON.stringify({
+        edizm: 7,
         znach: dat.thickness_input
-      }) : JSON.stringify({})
+      }) 
       this.formData.append('thickness', thickness)
 
       let areaCrossSectional =  JSON.stringify({
@@ -452,7 +431,9 @@ export default {
     editGetDataPPT() {
       this.updateInputSelect(this.getOnePPT)
       if(this.$route.params.type == 'edit') {
-        console.log(this.getOnePPT)
+        if(!this.getOnePPT || !this.getOnePPT.material) 
+          return this.$router.push('/basematerial')
+        
         this.filterMaterialById(this.getOnePPT.material.id)
         this.filterPodMaterialById(this.getOnePPT.podMaterialId)
         this.podMaterial = this.getOnePPT

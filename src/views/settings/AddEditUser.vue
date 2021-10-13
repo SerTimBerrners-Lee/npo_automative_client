@@ -108,9 +108,9 @@
             <div class="center-cont">
 
                 <h3>Характеристика</h3>
-                <textarea cols="30" rows="10" v-model="object.haracteristic"></textarea>
+                <textarea maxlength='250' cols="30" rows="10" v-model="object.haracteristic"></textarea>
                 <h3>Примечание</h3>
-                <textarea cols="30" rows="10" v-model="object.primetch"></textarea>
+                <textarea maxlength='250' cols="30" rows="10" v-model="object.primetch"></textarea>
                 <h3>Роль пользователя</h3>
                 <h3>История изменений</h3>
             </div>

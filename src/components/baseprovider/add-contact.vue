@@ -11,7 +11,7 @@
           </p>
           <p>
             <span>Описаниее, информация для связи: </span>
-            <textarea  cols="30" rows="10" v-model='description'></textarea>
+            <textarea  maxlength='250' cols="30" rows="10" v-model='description'></textarea>
           </p>
         </div>
         <div class="btn-control out-btn-control">
