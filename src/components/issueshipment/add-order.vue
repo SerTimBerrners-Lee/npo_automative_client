@@ -254,8 +254,8 @@ export default {
 									parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
 									parse_str = JSON.stringify(parse_str)
 								} else
-										parse_str = JSON.stringify({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
-								this.checkedJsonList([{...res, materialList: parse_str}])
+										parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1}])
+								this.checkedJsonList({...res, materialList: parse_str})
 								mat_true = false
 							}
 							else this.checkedJsonList(res)
