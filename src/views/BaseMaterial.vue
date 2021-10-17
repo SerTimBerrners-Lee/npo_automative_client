@@ -11,7 +11,7 @@
         </div>
         <div class="cont">
           <div>
-             <TableMaterial 
+            <TableMaterial 
               :alltypeM='alltypeM' 
               :title='instansLet != 0 && instansLet != 1 ? "Тип (Категория)" : "Тип (Тип профиля заготовки)"' 
               :type='"type"' 
@@ -64,15 +64,15 @@ import TableNode from '@/components/mathzag/table-node.vue'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
 export default {
   data() {
-      return {
-          material: null,
-          podMaterial: null,
-          podPodMaterial: null,
-          itemFiles: null,
-          keyWhenModalGenerateFileOpen: random(10, 4e4),
-          span: null,
-          instansLet: 0
-      }
+    return {
+      material: null,
+      podMaterial: null,
+      podPodMaterial: null,
+      itemFiles: null,
+      keyWhenModalGenerateFileOpen: random(10, 4e4),
+      span: null,
+      instansLet: 0
+    }
   },
   components:{TableMaterial, OpensFile, TableNode},
   computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
@@ -105,13 +105,11 @@ export default {
     },
     clickMat(mat, type) {
       if(type == 'type') {
-          this.material = mat
-          this.filterByNameMaterial(mat) 
-          if(mat.podMaterials && this.instansLet != 1) 
-            this.filterMatByPodType(mat.podMaterials)
-          
+        this.material = mat
+        this.filterByNameMaterial(mat) 
+        if(mat.podMaterials && this.instansLet != 1) 
+          this.filterMatByPodType(mat.podMaterials)
       }
-          
 
       if(type == 'podM') 
         this.getOnePodType(mat.id)

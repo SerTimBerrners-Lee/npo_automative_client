@@ -212,13 +212,46 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/materialdeficit`)
       if(res.ok) {
         const result = await res.json()
-        console.log(result)
-        ctx.commit('pushAllPPT', result)
+        ctx.commit('pushAllDeficit', result)
         return result
       }
     }
   },
   mutations: {
+    pushAllDeficit(state, result) {
+      state.podMaterial = result 
+      for(let mat of result) {
+        let check = false
+        if(mat.material) {
+          for(let inx in state.typeM) {
+            if(state.typeM[inx].id == mat.material.id) {
+              check = true
+              state.typeM[inx].podPodMaterials.push(mat)
+            }
+          }
+          if(!check) 
+            state.typeM.push({ ...mat.material, podPodMaterials: [mat]})        
+            else check = false 
+          if(!state.typeM.length)
+            state.typeM.push({ ...mat.material, podPodMaterials: [mat]})
+        }
+     
+        if(mat.podMaterial) {
+          for(let inx in state.podTypeM) {
+            if(state.podTypeM[inx].id == mat.podMaterial.id) {
+              check = true
+              state.podMaterial[inx].podPodMaterials.push(mat)
+            }
+          }
+          if(!check) 
+            state.podTypeM.push({ ...mat.podMaterial, podPodMaterials: [mat]})        
+            else check = false 
+          if(!state.podTypeM.length)
+            state.podTypeM.push({ ...mat.podMaterial, podPodMaterials: [mat]})
+        } 
+      }
+
+    },
     throwInstans(state) {
       state.instansTypeM = []
       state.instansPodTypeM = []
