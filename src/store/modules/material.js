@@ -2,212 +2,221 @@ import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
   state: {
-      typeM: [],
-      instansTypeM: [],
-      podTypeM: [],
-      instansPodTypeM: [],
-      
-      podMaterial: [],
-      onePPT: {},
-      linkId: 0,
+    typeM: [],
+    instansTypeM: [],
+    podTypeM: [],
+    instansPodTypeM: [],
+    
+    podMaterial: [],
+    onePPT: {},
+    linkId: 0,
 
-      providerTypeM: [],
-      providerPTypeM: [],
-      providerPM: [],
+    providerTypeM: [],
+    providerPTypeM: [],
+    providerPM: [],
 
-      sTypeM: [],
-      sPTypeM: [],
-      sProviderPM: [],
+    sTypeM: [],
+    sPTypeM: [],
+    sProviderPM: [],
 
-      stateMaterialTime: [],
+    stateMaterialTime: [],
 
-      searchTypeM: [],
-      searchPTypeM: [],
-      searchMaterial: [],
+    searchTypeM: [],
+    searchPTypeM: [],
+    searchMaterial: [],
 
-      //* Поиск по глобальному провайдеру
-      GlobalProviderTypeM: [],
-      GlobalProviderPTypeM: [],
-      GlobalProviderPM: [],
+    //* Поиск по глобальному провайдеру
+    GlobalProviderTypeM: [],
+    GlobalProviderPTypeM: [],
+    GlobalProviderPM: [],
 
-      sGlobalProviderTypeM: [],
-      sGlobalProviderPTypeM: [],
-      sGlobalProviderPM: [],
+    sGlobalProviderTypeM: [],
+    sGlobalProviderPTypeM: [],
+    sGlobalProviderPM: [],
   },
   getters: {
-      alltypeM(state) {
-          return state.typeM
-      },
-      allPodTypeM(state) {
-          return state.podTypeM
-      },
-      getOnePodMaterial(state) {
-          return state.podMaterial
-      },
-      getOnePPT(state) {
-          return state.onePPT
-      },
-      getLinkId(state) {
-          return state.linkId
-      },
-      getproviderTypeM(state) {
-          return state.providerTypeM
-      },
-      getproviderPTypeM(state) {
-          return state.providerPTypeM
-      },
-      getproviderMaterial(state) {
-          return state.providerPM
-      },
-      getGlobalProviderTypeM(state) {
-          return state.GlobalProviderTypeM
-      },
-      getGlobalProviderPTypeM(state) {
-          return state.GlobalProviderPTypeM
-      },
-      getGlobalProviderPM(state) {
-          return state.GlobalProviderPM
-      }
+    alltypeM(state) {
+      return state.typeM
+    },
+    allPodTypeM(state) {
+      return state.podTypeM
+    },
+    getOnePodMaterial(state) {
+      return state.podMaterial
+    },
+    getOnePPT(state) {
+      return state.onePPT
+    },
+    getLinkId(state) {
+      return state.linkId
+    },
+    getproviderTypeM(state) {
+      return state.providerTypeM
+    },
+    getproviderPTypeM(state) {
+      return state.providerPTypeM
+    },
+    getproviderMaterial(state) {
+      return state.providerPM
+    },
+    getGlobalProviderTypeM(state) {
+      return state.GlobalProviderTypeM
+    },
+    getGlobalProviderPTypeM(state) {
+      return state.GlobalProviderPTypeM
+    },
+    getGlobalProviderPM(state) {
+      return state.GlobalProviderPM
+    }
   },
   actions: { 
-      async getAllTypeMaterial(ctx) {
-        const res =  await fetch(`${PATH_TO_SERVER}api/settings/material`)
-        const result = await res.json()
+    async getAllTypeMaterial(ctx) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/settings/material`)
+      const result = await res.json()
 
-        await ctx.commit("getTypeMaterial", result)
-        return result
-      },
-      async getAllPodTypeMaterial(ctx) {
-        const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial`)
-        const result = await res.json()
+      await ctx.commit("getTypeMaterial", result)
+      return result
+    },
+    async getAllPodTypeMaterial(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial`)
+      const result = await res.json()
 
-        await ctx.commit('filterMatByPodType', result)
-        return result
-      },
-      async createTypeM(ctx, material) {
-        const res = await fetch(`${PATH_TO_SERVER}api/settings/material`, {
-          method: 'post',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            ...material
-          })
+      await ctx.commit('filterMatByPodType', result)
+      return result
+    },
+    async createTypeM(ctx, material) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/material`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...material
         })
-        
+      })
+      
+      const result = await res.json()
+      ctx.commit('addTypeMaterial', result)
+    },
+    async createPodType(ctx, pod_type) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...pod_type
+        })
+      })
+      
+      if(res.ok) {
         const result = await res.json()
-        ctx.commit('addTypeMaterial', result)
-      },
-      async createPodType(ctx, pod_type) {
-        const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype`, {
-          method: 'post',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            ...pod_type
-          })
-        })
-        
-        if(res.ok) {
-          const result = await res.json()
-          ctx.commit('createPodType', result)
-        }
-      },
-      async removeMaterial(ctx, id) {
+        ctx.commit('createPodType', result)
+      }
+    },
+    async removeMaterial(ctx, id) {
       const res =  await fetch(`${PATH_TO_SERVER}api/settings/material/${id}`, {
           method: 'delete'
         })
         if(res.ok)
           ctx.commit('deleteMaterial', id)
-      },
-      async updateTypeM(ctx, material) {
-        const res = await fetch(`${PATH_TO_SERVER}api/settings/material/update`, {
-          method: 'post',
-          headers: {
-            'Accept': 'application/json',
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            ...material
-          })
-        });
-
-        const result = await res.json()
-        ctx.commit('updateMaterial', result)
-      },
-      async updatePodMaterial(ctx, podM) {
-          const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/update`, {
-            method: 'post',
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-              ...podM
-            })
-          });
-
-          const result = await res.json()
-          ctx.commit('updatePodMaterial', {result, matId: podM.parentId} )
-      },
-      async deletePodType(ctx, id) {
-          const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/${id}`, {
-            method: 'delete'
-          })
-
-          if(res.ok)
-              ctx.commit('deletePodMaterial', id)
-      },
-      async getOnePodType(ctx, id) {
-          const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${id}`)
-          const result = await res.json()
-          
-          ctx.commit('addOnePodType', result)
-          return result
-      },
-      async createNewPodPodMaterial(ctx, data) {
-        const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/`, {
-          method: 'post',
-          body: data
+    },
+    async updateTypeM(ctx, material) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/material/update`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...material
         })
-        if(res.ok) {
-          ctx.commit('onePPTClear')
-          return res
-        }
-      },
-      async removePPM(ctx, id) {
-          const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`, {
-              method: 'delete'
-          })
-          if(res.ok)
-              ctx.dispatch('getAllTypeMaterial')
-      },
-      async bannedPPM(ctx, id) {
-          const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`)
-          if(res.ok) {
-              ctx.dispatch('getAllTypeMaterial')
-              ctx.commit('bannedPPM', id)
-          }
-      },
-      async fetchGetOnePPM(ctx, id) {
-          const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/get/${id}`)
-          if(res.ok) {
-              const result = await res.json()
-              ctx.commit('addOnePPTyep', result)
-              return result
-          }
-      },
-      async fetchGetAllPPM(ctx) {
-          const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype`)
-          if(res.ok) {
-              const result = await res.json()
-              ctx.commit('pushAllPPT', result)
-              return result
-          }
+      });
+
+      const result = await res.json()
+      ctx.commit('updateMaterial', result)
+    },
+    async updatePodMaterial(ctx, podM) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/update`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...podM
+        })
+      });
+
+      const result = await res.json()
+      ctx.commit('updatePodMaterial', {result, matId: podM.parentId} )
+    },
+    async deletePodType(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/${id}`, {
+        method: 'delete'
+      })
+
+      if(res.ok)
+          ctx.commit('deletePodMaterial', id)
+    },
+    async getOnePodType(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${id}`)
+      const result = await res.json()
+      
+      ctx.commit('addOnePodType', result)
+      return result
+    },
+    async createNewPodPodMaterial(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/`, {
+        method: 'post',
+        body: data
+      })
+      if(res.ok) {
+      ctx.commit('onePPTClear')
+        return res
       }
+    },
+    async removePPM(ctx, id) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`, {
+        method: 'delete'
+      })
+      if(res.ok)
+        ctx.dispatch('getAllTypeMaterial')
+    },
+    async bannedPPM(ctx, id) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`)
+      if(res.ok) {
+        ctx.dispatch('getAllTypeMaterial')
+        ctx.commit('bannedPPM', id)
+      }
+    },
+    async fetchGetOnePPM(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/get/${id}`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('addOnePPTyep', result)
+        return result
+      }
+    },
+    async fetchGetAllPPM(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('pushAllPPT', result)
+        return result
+      }
+    },
+    async fetchGetAllDeficitPPM(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialdeficit`)
+      if(res.ok) {
+        const result = await res.json()
+        console.log(result)
+        ctx.commit('pushAllPPT', result)
+        return result
+      }
+    }
   },
   mutations: {
     throwInstans(state) {

@@ -11,14 +11,32 @@
 		</div>
 
 		<div>
-			<div class="scroll-table" style='width: 99%;'>
-				<table>
+			<div class="scroll-table table_material">
+				<table style="width: 200px;">
 					<tr>
-						<th>
-							<unicon name="check" fill="royalblue" />
-						</th> 
+						<th>Категория</th>
+					</tr>
+					<tr>
+						<td>Все</td>
+					</tr>
+					<tr>
+						<td>Материалы </td>
+					</tr>
+					<tr>
+						<td>Покупные детали</td>
+					</tr>
+					<tr>
+						<td>Расходные материалы</td>
+					</tr>
+				</table>
+				<table style="width: 300px;">
+					<tr>
 						<th>Тип</th>
 						<th>Подтип</th>
+					</tr>
+				</table>
+				<table>
+					<tr>
 						<th>Наименование</th>
 						<th>ЕИ</th>
 						<th>Остаток на дату</th>
@@ -52,8 +70,8 @@
 	</div>
 </template>
 
-<script>
-
+<script> 
+import { mapGetters, mapActions } from 'vuex';
 import {random} from 'lodash';
 import Start from '../start-modal.vue'
 export default {
@@ -64,14 +82,26 @@ export default {
 		}
 	},
 	components: {Start},
+	computed: mapGetters(['getOnePodMaterial']),
 	methods: {
+		...mapActions(['fetchGetAllDeficitPPM']),
 		start() {
 			this.showStart = true;
 			this.startKey = random(1, 999);
 		}
 	},
 	async mounted() {
-
+		await this.fetchGetAllDeficitPPM()
+		console.log(this.getOnePodMaterial)
 	}
 }
 </script>
+
+<style scoped>
+.table_material {
+	display: flex;
+}
+table {
+	height: fit-content;
+}
+</style>

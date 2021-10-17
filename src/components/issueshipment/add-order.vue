@@ -233,11 +233,32 @@ export default {
 
 			if(izd.detals && izd.detals.length && izd.listDetal) {
 				let list_detals = JSON.parse(izd.listDetal)
+				
 				this.pushElement(izd.detals, list_detals, 'detal')
 				for(let det of list_detals ) {
 					this.getOneDetal(det.det.id).then(res => {
+						// Найти материал и инкремировать его
 						for(let i = 0; i < det.kol; i++) {
-							this.checkedJsonList(res)
+							let mat_true = false
+							let material_find
+							for(let material of res.materials) {
+								if(material.id == res.mat_zag) {
+									mat_true = true
+									material_find = material
+								}
+							}
+							if(mat_true) {
+								let parse_str
+								if(res.materialList) {
+									parse_str = JSON.parse(res.materialList)
+									parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
+									parse_str = JSON.stringify(parse_str)
+								} else
+										parse_str = JSON.stringify({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
+								this.checkedJsonList([{...res, materialList: parse_str}])
+								mat_true = false
+							}
+							else this.checkedJsonList(res)
 						}
 					}) 
 				}

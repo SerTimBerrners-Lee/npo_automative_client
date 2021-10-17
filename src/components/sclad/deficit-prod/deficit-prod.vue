@@ -240,7 +240,7 @@ export default {
     getDeficitIzd(type, id) {
       for(let izd of this.selectShipment.list_cbed_detal) {
         if(izd.type == type && izd.obj.id == id)
-          return izd.kolvo
+          return izd.kol
       }
     },
     toProduction(izd, e) {
@@ -256,10 +256,10 @@ export default {
       this.selected_checkbox.classList.add('checkbox_block_select')
       this.select_izd = izd
     },
-    parseParametrsDetal(parametrs, kolvo = 1) {
+    parseParametrsDetal(parametrs, kol = 1) {
       try {
         let pars = JSON.parse(parametrs)
-        return Number(pars.helperTime.znach) + Number(pars.mainTime.znach) * kolvo
+        return Number(pars.helperTime.znach) + Number(pars.mainTime.znach) * kol
       } catch(e) {
         console.log(e)
       }
