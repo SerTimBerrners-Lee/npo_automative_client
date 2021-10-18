@@ -224,7 +224,7 @@ export default {
     },
     showParents(detal, type) {
       this.getOneDetal(detal.id).then(res => {
-        this.productListForIzd = { products: res.products, type, id: detal.id }
+        this.productListForIzd = { products: res.products, cbeds: res.cbed, type, id: detal.id }
         this.keyParentsModal = random(1, 999)
       })
     },

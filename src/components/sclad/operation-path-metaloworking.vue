@@ -5,24 +5,24 @@
       <div :style="hiddens">
         <h3>Путь сборочной единицы</h3>
         <div class="block"> 
-					<table>
+					<table v-if='metaloworking && shipments'>
 						<tr>
 							<th>№ Заказа</th>
 							<th>Срок отгрузки</th>
 							<th>Изделие</th>
-							<th>Сборочная единица</th>
+							<th>Деталь</th>
 							<th>Артикул</th>
 							<th>Кол-во, шт</th>
 							<th>Готовность %</th>
 							<th>Готовность к сборке</th>
 						</tr>
-						<tr v-for='sh of assemble.shipments' :key='sh'>
+						<tr v-for='sh of metaloworking.shipments' :key='sh'>
 							<td>{{ sh.number_order }}</td>
 							<td>{{ sh.date_shipments }}</td>
 							<td>{{ shipments ? shipments.product.name : '' }}</td>
-							<td>{{ assemble.cbed.name}}</td>
+							<td>{{ metaloworking.detal.name}}</td>
 							<td>{{ shipments ? shipments.product.articl : '' }}</td>
-							<td>{{ assemble.kolvo_all }}</td>
+							<td>{{ metaloworking.kolvo_all }}</td>
 							<td>{{ 0 }}</td>
 							<td>{{ 0 }}</td>
 						</tr>
@@ -30,12 +30,12 @@
         </div> 
 				<div>
 					<h3>Комплектация</h3>
-					<table>
+					<table v-if='komplect'>
 						<tr>
 							<th>Артикул</th>
 							<th>Наименование</th>
 							<th>Ед.</th>
-							<th>Кол-во на 1 СБ</th>
+							<th>Кол-во на 1 Деталь</th>
 							<th>Кол-во всего, шт</th>
 							<th>Дефицит всего, шт.</th>
 						</tr>
@@ -54,6 +54,21 @@
 							<td></td>
 						</tr>
 					</table>
+          <h3>Материал</h3> 
+          <div class='head_block'>
+            <div>
+              <p>Тип: </p>
+              <p style='font-weight: bold;'>{{ material ? material.material.name : '' }}</p>
+            </div>
+            <div>
+              <p>Подтип: </p>
+              <p style='font-weight: bold;'>{{ material ? material.podMaterial.name : '' }}</p>
+            </div>
+            <div>
+              <p>Наименование: </p>
+              <p style='font-weight: bold;'>{{ material ? material.name : '' }}</p>
+            </div>
+          </div>
 				</div>
 
 				<div>
@@ -89,7 +104,7 @@
 import { mapActions } from 'vuex';
 
 export default { 
-  props: ['assemble'],
+  props: ['metaloworking'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -97,11 +112,12 @@ export default {
       hiddens: 'opacity: 1;',
 
 			shipments: null,
-			komplect: []
+			komplect: [],
+      material: null
     }
   },
   methods: {
-    ...mapActions(['fetchAllShipmentsById']),
+    ...mapActions(['fetchAllShipmentsById', 'getOneDetal', 'fetchGetOnePPM']),
 		destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -113,61 +129,32 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-		if(this.$props.assemble.shipments) 
-			this.fetchAllShipmentsById(this.$props.assemble.shipments[0].id).then(response => this.shipments = response)
+		if(this.$props.metaloworking && this.$props.metaloworking.shipments) 
+			this.fetchAllShipmentsById(this.$props.metaloworking.shipments[0].id).then(response => this.shipments = response)
 
-		if(this.$props.assemble.cbed) {
-				let izd = this.$props.assemble.cbed
-				console.log(izd)
-				if(izd.listCbed) {
-					let cb = JSON.parse(izd.listCbed)
-					for(let iz of cb) {
-						this.komplect.push({
-							type: 'СБ',
-							art: iz.art,
-							name: iz.cb.name,
-							kol: iz.kol,
-							ez: iz.ez,
-						})
-					}
-				}
-				if(izd.listDetal) {
-					let cb = JSON.parse(izd.listDetal)
-					for(let iz of cb) {
-						this.komplect.push({
-							type: 'Д',
-							art: iz.art,
-							name: iz.det.name,
-							kol: iz.kol,
-							ez: iz.ez,
-						})
-					}
-				}
-				if(izd.listPokDet) {
-					let cb = JSON.parse(izd.listPokDet)
-					for(let iz of cb) {
-						console.log(iz)
-						this.komplect.push({
-							type: 'ПД',
-							art: iz.art,
-							name: iz.mat.name,
-							kol: iz.kol,
-							ez: iz.ez,
-						})
-					}
-				}
+    let MW = this.$props.metaloworking
+		if(MW && MW.detal) {
+				let izd = MW.detal
+        this.getOneDetal(izd.id).then(res => {
+          console.log(res)
+        })
 				if(izd.materialList) {
-					let cb = JSON.parse(izd.materialList)
-					for(let iz of cb) {
+					let mat = JSON.parse(izd.materialList)
+					for(let m of mat) {
 						this.komplect.push({
 							type: 'РМ',
-							art: iz.art,
-							name: iz.mat.name,
-							kol: iz.kol,
-							ez: iz.ez,
+							art: m.art,
+							name: m.mat.name,
+							kol: m.kol,
+							ez: m.ez,
 						})
 					}
 			}
+
+      if(!MW.detal.mat_zag) return
+      this.fetchGetOnePPM(MW.detal.mat_zag).then(res => {
+        this.material = res
+      })
 		}
 		
 
@@ -176,6 +163,20 @@ export default {
 </script>
 
 <style scoped>
+.head_block {
+  display: flex;
+  justify-content: space-between;
+  background: #c1c1c1;
+  padding-left: 10px;
+  padding-right: 10px;
+  flex-direction: column;
+}
+.head_block div {
+  display: flex;
+}
+.head_block div p {
+  width: 50%;
+}
 .span-type-files-pdf {
   height: 500px;
 }

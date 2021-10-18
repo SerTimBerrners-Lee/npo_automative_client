@@ -4,7 +4,9 @@ export default {
   state: {
     providers: [],
     onTimeProvider: [],
-    oneProvider: {}
+    oneProvider: {},
+
+    deliveries: []
   },
   getters: { 
     allProvider(state) {
@@ -12,13 +14,19 @@ export default {
     },
     getSetProvider(state) {
       return state.oneProvider
+    },
+    getAllDeliveries(state) {
+      return state.deliveries
     }
   },
   actions: { 
     async fetchGetProviders(ctx) {
       const res =  await fetch(`${PATH_TO_SERVER}api/provider`)
-      const result = await res.json()
-      ctx.commit("setAllProvider", result)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit("setAllProvider", result)
+        return result
+      }
     },
     async addOneProvider(ctx, provider) {
       const res =  await fetch(`${PATH_TO_SERVER}api/provider`, {
@@ -32,9 +40,40 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/provider/ban/${id}`)
       if(res.ok)
         ctx.commit('removeProvider', id)
-    }
+    },
+    async fetchNewDeliveries(ctx, data) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveried`, {
+        method: 'POST',
+        body:   data
+      })
+      if(res.ok) {
+        console.log(res)
+        return true
+      }
+    },
+    async fetchGetDeliveries(ctx) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveried`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit("setAllDeliveries", result)
+        return result
+      }
+    },
+    async updateDeliveries(ctx, data) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveried/update`, {
+        method: 'POST',
+        body:   data
+      })
+      if(res.ok) {
+        console.log(res)
+        return true
+      }
+    },
   },
   mutations: {
+    setAllDeliveries(state, result) {
+      state.deliveries = result
+    },
     setAllProvider(state, result) {
       state.providers = result.filter(provider => !provider.ban)
     },

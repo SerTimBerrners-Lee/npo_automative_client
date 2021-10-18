@@ -200,7 +200,7 @@ export default {
   computed: mapGetters(['getShipmentsSclad']),
   components: {StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList, ProductListModal, InformFolder},
   methods: {
-    ...mapActions(['fetchAllShipmentsSclad', 'getOneCbEdById']),
+    ...mapActions(['fetchAllShipmentsSclad', 'getOneCbEdById', 'getOneDetal']),
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
     },
@@ -264,11 +264,19 @@ export default {
         console.log(e)
       }
     },
-    showParents(shipments, type) {
-      this.getOneCbEdById(shipments.id).then(res => {
-        this.productListForIzd = { products: res.products, type, id: shipments.id }
-        this.keyParentsModal = random(1, 999)
-      })
+    showParents(izd, type) {
+      if(type == 'cb') {
+        this.getOneCbEdById(izd.id).then(res => {
+          this.productListForIzd = { products: res.products, type, id: izd.id }
+          this.keyParentsModal = random(1, 999)
+        })
+      } else {
+        this.getOneDetal(izd.id).then(res => {
+          this.productListForIzd = { products: res.products, cbeds: res.cbed, type, id: izd.id }
+          this.keyParentsModal = random(1, 999)
+        })
+      }
+      
     },
     alt(e) {
       if(!this.select_izd)

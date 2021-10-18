@@ -76,14 +76,54 @@
 						<td 
 							@click='e => setMaterial(material, e.target)'
 							class='td-row'> {{ material.name }}</td>
-							<td v-html="getKolvoMaterial(material.kolvo)">
+							<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
+							</td>
+							<td class='center'>
+								{{ material.material_kolvo }}
+							</td>
+							<td class='center'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ material.shipments_kolvo }}
+							</td>	
+							<td class='center'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ -material.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ 0 }}
+							</td>
+							<td class='center'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ 0 }}
+							</td>
+							<td class='center'>
+								{{  }}
+							</td>
+							<td class='center'>
+								{{  }}
+							</td>
+							<td class='center'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								Не заказано
 							</td>
 					</tr>
 				</table>
 			</div>
 			<div class='btn-control'>
-				<button class="btn-small btn-add" 
-					@click='start'> Запустить </button>
 				<button class="btn-small"> Выгрузка в Excel </button>
 				<button class="btn-small"> Печать отчета </button>
 			</div>
@@ -97,14 +137,10 @@
 
 <script> 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import {random} from 'lodash';
-import Start from '../start-modal.vue'
+// import {random} from 'lodash';
 export default {
 	data() {
 		return {
-			showStart: false,
-			startKey: random(1, 999),
-
 			span: null,
 			instansLet: 0,
 
@@ -112,15 +148,11 @@ export default {
 			span_material: null,
 		}
 	},
-	components: {Start},
+	components: {},
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM']),
 		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
-		start() {
-			this.showStart = true;
-			this.startKey = random(1, 999);
-		},
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -148,6 +180,7 @@ export default {
 			this.span_material.classList.add('td-row-all')
 
 			this.material = material
+			console.log(material)
 		},
 		getKolvoMaterial(kol) {
 			try {
@@ -176,5 +209,9 @@ export default {
 }
 table {
 	height: fit-content;
+}
+.span_td {
+	display:  flex;
+	flex-direction: column;
 }
 </style>

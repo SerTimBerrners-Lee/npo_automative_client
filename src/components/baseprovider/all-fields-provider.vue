@@ -1,94 +1,96 @@
 <template>
 <div class="right-menu-modal">
-        <div :class='destroyModalLeft' @click="destroyModalF"></div>
-        <div :class='destroyModalRight'>
-           <div :style="hiddens">
-                <div> 
-                    <div class="flex-box-main">
-                        <div class="left-block-bprovider">
-                            <h3>База поставщиков</h3>
-                            <div class="scroll-table">
-                                <table class="provider_table_modal"> 
-                                    <tr>
-                                        <th>ИНН</th>
-                                        <th style="width: 440px;">Наименование поставщика</th>
-                                    </tr>
-                                    <tr v-for="provider in allProvider" 
-                                    :key="provider" 
-                                    class="td-row"
-                                    @click="setProvider(provider)">
-                                        <td>{{ provider.inn }}</td>
-                                        <td>{{ provider.name }}</td>
-                                    </tr>
-                                    <tr v-for="i in 10" :key="i">
-                                        <td>...</td><td>...</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="right-block-bprovider">
-                            <h3>Подробная информация о поставщике</h3>
-                            <div class="block">
-                                <div class="first-block-description">
-                                    <p>
-                                        <span>Наименование: </span><input type="text" :value="obj.name">
-                                    </p>
-                                    <p>
-                                        <span>ИНН: </span><input type="text" :value="obj.inn">
-                                    </p>
-                                    <p>
-                                        <span>КПП: </span><input type="text" :value="obj.cpp">
-                                    </p>
-                                </div>
-                                <div>
-                                    <div class="block-d-r">
-                                        <div>
-                                            <div>
-                                                <h3>Реквизиты</h3>
-                                                <table class="table_rek">
-                                                    <tr class="td-row" v-for="rek in obj.rekvisit" :key='rek'>
-                                                        <th>{{ rek.name }}</th>
-                                                        <td>{{ rek.description }}</td>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div>
-                                                <h3>Контакты</h3>
-                                                <table class="table_rek">
-                                                    <tr class="td-row" v-for="cont in obj.contact" :key='cont'>
-                                                        <th> {{ cont.initial }}</th>
-                                                        <th> {{ cont.description }}</th>
-                                                    </tr>
-                                                </table>
-                                            </div>
-                                            <div>
-                                                <h3>Описание / примечание</h3>
-                                                <textarea maxlength='250' :value="obj.description" class="table_rek"></textarea>
-                                                <h3>История изменений</h3>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                </div>
-                            </div>
-                            <div>
-                            <div class="btn-control block endgroup">
-                                <button class=" btn-black">Печать подробной информации о поставщике</button>
-                            </div>
-                            </div>
-                        </div>
+  <div :class='destroyModalLeft' @click="destroyModalF"></div>
+  <div :class='destroyModalRight'>
+    <div :style="hiddens">
+      <div> 
+        <div class="flex-box-main">
+          <div class="left-block-bprovider">
+            <h3>База поставщиков</h3>
+            <div class="scroll-table">
+              <table class="provider_table_modal"> 
+                <tr>
+                  <th>ИНН</th>
+                  <th style="width: 440px;">Наименование поставщика</th>
+                </tr>
+                <tr v-for="provider in allProvider" 
+                  :key="provider" 
+                  class="td-row"
+                  @click="setProvider(provider)">
+                  <td>{{ provider.inn }}</td>
+                  <td>{{ provider.name }}</td>
+                </tr>
+                <tr v-for="i in 10" :key="i">
+                  <td>...</td><td>...</td>
+                </tr>
+              </table>
+              <div class="btn-control" v-if='getProvider'>
+                <button class="btn-small btn-add" @click='returnProvider'>Выбрать поставщика</button>
+              </div>
+            </div>
+          </div>
+          <div class="right-block-bprovider">
+            <h3>Подробная информация о поставщике</h3>
+            <div class="block">
+              <div class="first-block-description">
+                <p>
+                  <span>Наименование: </span><input type="text" :value="obj.name">
+                </p>
+                <p>
+                  <span>ИНН: </span><input type="text" :value="obj.inn">
+                </p>
+                <p>
+                  <span>КПП: </span><input type="text" :value="obj.cpp">
+                </p>
+              </div>
+              <div>
+                <div class="block-d-r">
+                  <div>
+                    <div>
+                      <h3>Реквизиты</h3>
+                      <table class="table_rek">
+                        <tr class="td-row" v-for="rek in obj.rekvisit" :key='rek'>
+                          <th>{{ rek.name }}</th>
+                          <td>{{ rek.description }}</td>
+                        </tr>
+                      </table>
                     </div>
-                    <OpensFile 
-                        :parametrs='itemFiles' 
-                        v-if="itemFiles != null" 
-                        @unmount='openFile'
-                        :key='keyWhenModalGenerateFileOpen'
-                    />
+                    <div>
+                      <h3>Контакты</h3>
+                      <table class="table_rek">
+                        <tr class="td-row" v-for="cont in obj.contact" :key='cont'>
+                          <th> {{ cont.initial }}</th>
+                          <th> {{ cont.description }}</th>
+                        </tr>
+                      </table>
+                    </div>
+                    <div>
+                      <h3>Описание / примечание</h3>
+                      <textarea maxlength='250' :value="obj.description" class="table_rek"></textarea>
+                      <h3>История изменений</h3>
+                    </div>
+                  </div>
                 </div>
-           </div>
+                    
+                </div>
+              </div>
+              <div>
+              <div class="btn-control block endgroup">
+                <button class=" btn-black">Печать подробной информации о поставщике</button>
+              </div>
+              </div>
+          </div>
         </div>
+        <OpensFile 
+          :parametrs='itemFiles' 
+          v-if="itemFiles != null" 
+          @unmount='openFile'
+          :key='keyWhenModalGenerateFileOpen'
+        />
+      </div>
     </div>
-
+  </div>
+</div>
 </template>
 
 <script>
@@ -96,7 +98,7 @@ import OpensFile from '@/components/filebase/openfile.vue'
 import random from 'lodash'
 
 export default {
-  props: ['allProvider'],
+  props: ['allProvider', 'getProvider'],
   data() {
     return {
       obj: {
@@ -145,6 +147,11 @@ export default {
         this.obj.documents = provider.documents
         
     },
+    returnProvider() {
+      if(!this.provider) return 0
+      this.$emit('unmount', this.provider)
+      this.destroyModalF()
+    }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -173,7 +180,6 @@ export default {
 }
 .right-block-bprovider {
   margin-left: 20px;
-  width: 1030px;
 }
 .block {
   display: flex;
@@ -186,12 +192,14 @@ export default {
 }
 .first-block-description p {
   margin-left: 5px;
-  float: left;
-  width: 30%;
+  width: 80%;
+  display: flex;
+  justify-content: space-between;
 }
-.first-block-description input {
-  width: 150px;
+.first-block-description p * {
+  margin-left: 5px;
 }
+
 textarea {
   height: 90px;
   width: 350px;
@@ -282,11 +290,10 @@ textarea {
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
-
-  width: 80vw;
+  width: 50%  ;
 }
 .left-block-modal {
-  width: 20vw;
+  width: 50%;
   animation: width-right 1s 1 ease;
 }
 .left-block-modal-hidden {
@@ -300,7 +307,7 @@ textarea {
     width: 1vw;
   }
   to {
-    width: 80vw;
+    width: 50%;
   }
 }
 @keyframes width-right {
@@ -308,7 +315,7 @@ textarea {
     width: 0vw;
   }
   to {
-    width: 20vw;
+    width: 50%;
   }
 }
 @keyframes hidden-content {
@@ -327,7 +334,7 @@ textarea {
 }
 @keyframes width-replace {
   from {
-    width: 20vw;
+    width: 50%;
   }
   to {
     width: 00vw;
@@ -335,7 +342,7 @@ textarea {
 }
 @keyframes width-right-replace {
   from {
-    width: 80vw;
+    width: 50%;
   }
   to {
     width: 0vw;

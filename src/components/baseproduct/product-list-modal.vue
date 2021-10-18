@@ -24,6 +24,27 @@
               </td>
             </tr>
 					</table>
+          <div v-if='$props.parametrs.cbeds'>
+            <h3>Сборочная единица</h3>
+            <table>
+              <tr>
+                <th>Артикул</th>
+                <th>Наименование</th>
+                <th>ЕИ</th>
+                <th>Кол-во на изделие</th>
+              </tr>
+              <tr v-for='cbed of $props.parametrs.cbeds' :key='cbed'>
+                <td>{{ cbed.articl }}</td>
+                <td>{{ cbed.name }}</td>
+                <td>шт</td>
+                <td>
+                
+                   {{  parseIzd(cbed) }}
+                  
+                </td>
+              </tr>
+            </table>
+          </div>
 				</div>
       </div>
     </div>
@@ -58,7 +79,8 @@ export default {
           if(izd.cb.id == this.$props.parametrs.id) 
             return izd.kol
         }
-         if(this.$props.parametrs.type == 'det') {
+        if(this.$props.parametrs.type == 'det') {
+          console.log('izd')
           if(izd.det.id == this.$props.parametrs.id) 
             return izd.kol
         }

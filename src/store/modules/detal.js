@@ -4,7 +4,7 @@ export default {
   state: {
     detal: [],
     filterDetal: [],
-    middleware_detals: [],
+    middleware_detals: [], 
     select_detal: {},
     operationNewList: localStorage.getItem('newOperationItem') ?
       JSON.parse(localStorage.getItem('newOperationItem')) : [],

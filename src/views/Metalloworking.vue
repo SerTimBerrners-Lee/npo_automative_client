@@ -30,8 +30,7 @@
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
             <th>Габариты заготовки</th>
-            <th>Тип заготовки</th>
-            <th>Материал</th>
+            <th>Тип заготовки | Материал</th>
             <th>Операции</th>
             <th>Готовность</th>
             <th>Статус</th>
@@ -47,8 +46,9 @@
             <td class='center'>{{ metalowork.kolvo_all }}</td>
             <td class='center'>{{ metalowork.kolvo_order_byer }}</td>
             <td class='center'>{{ metalowork.detal.DxL }}</td>
-            <td>{{  }}</td>
-            <td>{{  }}</td>
+             <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='openMaterialDetal(metalowork.detal)' class='link_img' atl='Показать' />
+            </td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
@@ -81,7 +81,7 @@
       :key='keyWhenModalGenerateFileOpen'
       />
     <OperationPathModal
-      :assemble='assemble_props'
+      :metaloworking='metaloworking_props'
       v-if="showOperationPathModal" 
       :key='keyOperationPathModal'
     />
@@ -91,6 +91,11 @@
       :type = 'type'
       v-if='showInformPanel'
       :key='keyInformTip'
+    />
+    <MaterialInfo 
+      :parametrs='data_material_info'
+      v-if='data_material_info'
+      :key='key_material_info'
     />
 	</div>
 </template>
@@ -104,10 +109,10 @@ import OperationPathModal from '@/components/sclad/operation-path-metaloworking.
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import {random} from 'lodash';
+import MaterialInfo from '@/components/mathzag/detals-material-modal.vue';
 export default {
 	data() {
 		return{
-
       metaloworking: [],
 
       descriptionKey: random(1, 999),
@@ -123,13 +128,16 @@ export default {
       keyOperationPathModal: random(1, 999),
       showOperationPathModal: false,
 
+      data_material_info: null,
+      key_material_info: random(1, 999),
+
       metaloworking_props: null
 		}
 	},
 	computed: mapGetters(['getShipments']),
-	components: {DescriptionModal, OpensFile, OperationPathModal, InformFolder},
+	components: {DescriptionModal, OpensFile, OperationPathModal, InformFolder, MaterialInfo},
 	methods: {
-    ...mapActions(['fetchAllShipmentsMetaloworking', 'fetchMetaloworkingById', 'getOneDetal']),
+    ...mapActions(['fetchAllShipmentsMetaloworking', 'fetchMetaloworkingById', 'getOneDetal', 'fetchGetOnePPM']),
     toSetOrders(shipments, e) {
       if(e.classList.item(1)) {
         shipments.metaloworking.forEach(or => { this.metaloworking = this.metaloworking.filter(el => el.id != or.id)})
@@ -157,6 +165,14 @@ export default {
       this.descriptionKey = random(1, 999)
       this.description = description
     },
+    openMaterialDetal(detal) { 
+      if(!detal.mat_zag) return
+      this.fetchGetOnePPM(detal.mat_zag).then(res => {
+        this.data_material_info = res;
+        this.key_material_info = random(1, 999)
+      })
+      
+    }
   },
 	async mounted() {
     await this.fetchAllShipmentsMetaloworking() 

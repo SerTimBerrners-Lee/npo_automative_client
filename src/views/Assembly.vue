@@ -8,7 +8,7 @@
       <div class="table-scroll">
         <table>
           <tr>
-            <th><unicon name="check" fill="royalblue" /></th>
+            <th><unicon name="check" fill="royalblue" /></th> 
             <th>Заказ покупателя из задач на отгрузку</th>
             <th>Дата отгрузки покупателю</th>
           </tr>
