@@ -42,8 +42,8 @@
 						<td>{{ shipments.product.name }}</td>
 						<td>
 							<div class='osob' v-if='shipments.list_cbed_detal'>
-									<p v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'
-										:key='izd'><b>{{ inx + '. ' }}</b> {{ izd.obj.name }}</p>
+								<p v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'
+									:key='izd'><b>{{ inx + '. ' }}</b> {{ izd.obj.name }}</p>
 							</div>
 						</td>
 						<td>{{ shipments.kolvo }}</td>

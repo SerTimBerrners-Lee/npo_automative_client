@@ -55,11 +55,12 @@
       </div>
     </div>
   </div>
-  <InformFolder  :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='showInformPanel'
-      :key='keyInformTip'
+  <InformFolder  
+    :title='titleMessage'
+    :message = 'message'
+    :type = 'type'
+    v-if='showInformPanel'
+    :key='keyInformTip'
     />
 </div>
 </template>
@@ -111,7 +112,7 @@ export default {
         description: this.description,
         shipments_id: this.$props.parametrs.shipments.id,
         kolvo_order_byer: this.$props.parametrs.kolvo_order_byer,
-        kolvo_all: this.$props.parametrs.kolvo_all
+        kolvo_all: Number(this.$props.parametrs.kolvo_all)
       }
 
       if(this.$props.parametrs.type == 'cb') {
@@ -128,11 +129,11 @@ export default {
       }
     },
     endResult(res) {
-        if(res) {
-          this.destroyModalF()
-          return showMessage('', 'Изделие отправлено в производство', 's', this)
-        } else return showMessage('', 'Произошла ошибка...', 'e', this)
-      }
+      if(res) {
+        this.destroyModalF()
+        return showMessage('', 'Изделие отправлено в производство', 's', this)
+      } else return showMessage('', 'Произошла ошибка...', 'e', this)
+    }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -140,6 +141,11 @@ export default {
     this.hiddens = 'opacity: 1;' 
 
     if(this.$props.parametrs && this.$props.parametrs.shipments) {
+      if(!Number(this.$props.parametrs.kolvo_all)) {
+        setTimeout(() => this.destroyModalF(), 2000)
+        return showMessage('', 'Выбраннове количество должно быть числом и больше 0', 'w', this)
+      }
+        
       
       this.date_order = this.$props.parametrs.shipments.date_order
       this.number_order = this.$props.parametrs.shipments.number_order

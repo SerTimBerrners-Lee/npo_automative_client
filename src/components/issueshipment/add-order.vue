@@ -69,7 +69,7 @@
 					<button class="btn-small" @click='addCbEdDetal'>Добавить СБ/деталь</button>
 				</div>
 
-				<h3>Материалы (ПД), (РМ)</h3>
+				<!-- <h3>Материалы (ПД), (РМ)</h3>
 				<table>
 					<tr>
 						<th>№</th>
@@ -88,7 +88,7 @@
 								<span class="tooltiptext">{{ mat.kol }}</span>
 						</td>
 					</tr>
-				</table>
+				</table> -->
 			</div>
 			<div>
 				<h3>Примечание</h3>
@@ -173,14 +173,12 @@ export default {
 			select_product: null,
 			description: '',
 			list_cbed_detal: [],
-			list_material: [],
 		}
 	},
 	watch: {
 		kol: function(znach) {
 			if(!this.select_product) return 0 
 			this.list_cbed_detal = []
-			this.list_material = []
 			for(let inx = 0; inx < znach; inx++) {
 				this.checkedJsonList(this.select_product)
 			}
@@ -207,7 +205,6 @@ export default {
 		unmount_product(product) {
 			if(!product) return 0
 			this.list_cbed_detal = []
-			this.list_material= []
 			
 			this.select_product = product
 			this.checkedJsonList(product)
@@ -233,11 +230,9 @@ export default {
 
 			if(izd.detals && izd.detals.length && izd.listDetal) {
 				let list_detals = JSON.parse(izd.listDetal)
-				
 				this.pushElement(izd.detals, list_detals, 'detal')
 				for(let det of list_detals ) {
 					this.getOneDetal(det.det.id).then(res => {
-						// Найти материал и инкремировать его
 						for(let i = 0; i < det.kol; i++) {
 							let mat_true = false
 							let material_find
@@ -264,18 +259,18 @@ export default {
 				}
 			}
 
-			if(izd.materials && izd.materials.length) {
-				if(izd.materialList) 
-					this.pushElement(izd.materials, JSON.parse(izd.materialList), 'mat')
+			// if(izd.materials && izd.materials.length) {
+			// 	if(izd.materialList) 
+			// 		this.pushElement(izd.materials, JSON.parse(izd.materialList), 'mat')
 					
-				if(izd.listPokDet) 
-					this.pushElement(izd.materials, JSON.parse(izd.listPokDet), 'mat')
-			}
+			// 	if(izd.listPokDet) 
+			// 		this.pushElement(izd.materials, JSON.parse(izd.listPokDet), 'mat')
+			// }
 		},
 		pushElement(elements, list_pars, type) {
 			for(let element of elements) {
 				let kol = 1;
-				let material = false;
+				// let material = false;
 				for(let item of list_pars) {
 					let id;
 					switch(type) {
@@ -285,33 +280,28 @@ export default {
 						case 'detal':
 							id = item.det.id
 							break;
-						case 'mat':
-							id = item.mat.id
-							break;
 					}
-					if(id == element.id)	 {
-						material = true
+					if(id == element.id)
 						kol = item.kol
-					}
 				}
-				if(type == 'mat' && material) {
-					// Перед тем как пушить проверяем на совпадение 
-					let check = true
-					for(let mat = 0; mat < this.list_material.length; mat++) {
-						if(element.id == this.list_material[mat].obj.id) {
-							this.list_material[mat].kol = Number(this.list_material[mat].kol) + Number(kol)
-							check = false
-						}	
-					}
-					if(check) {
-						this.list_material.push({
-							type,
-							obj: {id: element.id, name: element.name},
-							kol
-						})
-					} else check = true
-					material = false
-				} else if(type != 'mat')  {
+				// if(type == 'mat' && material) {
+				// 	let check = true
+				// 	for(let mat = 0; mat < this.list_material.length; mat++) {
+				// 		if(element.id == this.list_material[mat].obj.id) {
+				// 			this.list_material[mat].kol = Number(this.list_material[mat].kol) + Number(kol)
+				// 			check = false
+				// 		}	
+				// 	}
+				// 	if(check) {
+				// 		this.list_material.push({
+				// 			type,
+				// 			obj: {id: element.id, name: element.name},
+				// 			kol
+				// 		})
+				// 	} else check = true 
+				// 	material = false
+				// }
+				if(type != 'mat')  {
 					let check = true
 					for(let iz = 0; iz < this.list_cbed_detal.length; iz++) {
 						if(element.id == this.list_cbed_detal[iz].obj.id && element.name == this.list_cbed_detal[iz].obj.name) {
@@ -339,9 +329,6 @@ export default {
 		},
 		editKolVo(inx, val) {
 			this.list_cbed_detal[inx].kol = val
-		},
-		editKolVoMat(inx, val) {
-			this.list_material[inx].kol = val
 		},
 		deleteCbEdDetal() {
 			if(this.select_tr_inx == null) return 0;
@@ -388,7 +375,6 @@ export default {
 				},
 				description: this.description,
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
-				list_material: JSON.stringify(this.list_material)
 			} 
 
 			this.fetchCreateShipments(data).then(res => {

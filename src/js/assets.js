@@ -1,6 +1,4 @@
 
-
-
 const assetsFunction = (path, assets) => {
 	switch (path) {
 		case '/': 

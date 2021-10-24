@@ -130,7 +130,7 @@
                                 </div>
                                 <div>
                                     <h3>Описание / примечание</h3>
-                                    <textarea maxlength='250' :value="obj.description" class="table_rek"></textarea>
+                                    <textarea maxlength='250' :value="obj.description"></textarea>
                                     <h3>История изменений</h3>
                                 </div>
                             </div>
@@ -452,7 +452,7 @@ export default {
 }
 textarea {
   height: 90px;
-  width: 350px;
+  width: 99%;
   border: 1px solid #d3d3d3;
   border-radius: 4px;
 }

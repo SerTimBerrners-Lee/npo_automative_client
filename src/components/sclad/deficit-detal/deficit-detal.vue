@@ -208,7 +208,7 @@ export default {
       if(this.selected_checkbox && this.select_izd && this.select_izd.id == izd.id) {
         this.selected_checkbox = null
         return this.select_izd = null
-      }
+      } 
       
       this.selected_checkbox = e;
       this.selected_checkbox.classList.add('checkbox_block_select')

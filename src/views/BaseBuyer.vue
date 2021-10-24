@@ -67,7 +67,7 @@
                   </div>
                   <div>
                     <h3>Описание / примечание</h3>
-                    <textarea maxlength='250' :value="obj.description" class="table_rek"></textarea>
+                    <textarea maxlength='250' :value="obj.description"></textarea>
                   </div>
               </div>
                 <div>

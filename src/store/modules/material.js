@@ -235,12 +235,15 @@ export default {
           if(!state.typeM.length)
             state.typeM.push({ ...mat.material, podPodMaterials: [mat]})
         }
-     
+        check = false
         if(mat.podMaterial) {
           for(let inx in state.podTypeM) {
             if(state.podTypeM[inx].id == mat.podMaterial.id) {
               check = true
-              state.podMaterial[inx].podPodMaterials.push(mat)
+              if(state.podMaterial[inx].podPodMaterials && state.podMaterial[inx].podPodMaterials.length) 
+                state.podMaterial[inx].podPodMaterials.push(mat)
+              else 
+                state.podMaterial[inx].podPodMaterials = [mat]
             }
           }
           if(!check) 

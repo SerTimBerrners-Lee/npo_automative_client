@@ -516,7 +516,7 @@ textarea {
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
-  height: 10000px;
+  height: 100vh;
   width: 70%;
 }
 .left-block-modal {

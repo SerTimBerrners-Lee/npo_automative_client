@@ -343,7 +343,7 @@ table {
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
-  height: 10000px;
+  height: 100vh;
   width: 50%;
 }
 .left-block-modal {

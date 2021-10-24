@@ -59,8 +59,14 @@ import DetOperation from '@/components/metalloworking/det-operation.vue';
 import OrderSuppliers from '@/components/sclad/ordersuppliers/ordersuppliers.vue';
 import CompletAssembl from '@/components/sclad/completassembl/completassembl.vue';
 import IssueToPull from '@/components/sclad/issuetopull/issuetopull.vue';
+import OrderToWay from '@/components/sclad/ordertoway/indexway.vue';
 
 const routes = [
+  {
+    path: '/ordertoway',
+    name: 'Заказано / в пути',
+    component: OrderToWay 
+  },
   {
     path: '/issuetopull',
     name: 'Склад Задачи на отгрузку',

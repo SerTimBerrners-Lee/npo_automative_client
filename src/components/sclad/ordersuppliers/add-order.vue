@@ -367,81 +367,80 @@ table {
   align-items: center;
 }
 .content-modal-right-menu-hidden {
-    animation: width-replace 1s 1 ease;
+  animation: width-replace 1s 1 ease;
 }
 .content-modal-right-menu-hidden>div {
-    animation: hidden-content-replace 1s 1 ease;
+  animation: hidden-content-replace 1s 1 ease;
 }
 .content-modal-right-menu {
-    animation: width 1s 1 ease;
-
-    width: 40vw;
+  animation: width 1s 1 ease;
+  width: 40vw;
 }
 .left-block-modal {
-    width: 60vw;
-    animation: width-right 1s 1 ease;
+  width: 60vw;
+  animation: width-right 1s 1 ease;
 }
 .left-block-modal-hidden {
-    animation: width-right-replace 1s 1 ease;
+  animation: width-right-replace 1s 1 ease;
 }
 .content-modal-right-menu>div {
-    animation: hidden-content 1s 1 ease;
+  animation: hidden-content 1s 1 ease;
 }
-    @keyframes width {
-    from {
-        width: 1vw;
-    }
-    to {
-        width: 40vw;
-    }
+@keyframes width {
+  from {
+    width: 1vw;
+  }
+  to {
+    width: 40vw;
+  }
 }
 @keyframes width-right {
-    from {
-        width: 0vw;
-    }
-    to {
-        width: 60vw;
-    }
+  from {
+    width: 0vw;
+  }
+  to {
+    width: 60vw;
+  }
 }
 @keyframes hidden-content {
-    from {
-        opacity: 0;
-    }
-    80% {
-        opacity: 0;
-    }
-    90% {
-        opacity: 0.5;
-    }
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
 }
 @keyframes width-replace {
-    from {
-        width: 60vw;
-    }
-    to {
-        width: 00vw;
-    }
+  from {
+    width: 60vw;
+  }
+  to {
+    width: 00vw;
+  }
 }
 @keyframes width-right-replace {
-    from {
-        width: 50vw;
-    }
-    to {
-        width: 0vw;
-    }
+  from {
+    width: 50vw;
+  }
+  to {
+    width: 0vw;
+  }
 }
 @keyframes hidden-content-replace {
-    from {
-        opacity: 1;
-    }
-    20% {
-        opacity: 0;
-    }
-    to {
-        opacity: 0;
-    }
+  from {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
 }
 </style>
