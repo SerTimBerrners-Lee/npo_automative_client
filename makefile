@@ -6,3 +6,5 @@ stop:
 	docker stop npo-client
 rmi:
 	docker rmi npo-client
+copy:
+	mv ./dist/* /var/www/html/
