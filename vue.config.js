@@ -1,4 +1,8 @@
 module.exports = {
+	devServer: {
+    compress: true,
+		disableHostCheck: true, 
+  }
   // chainWebpack: config => {
   //   config.module
   //     .rule('vue')
