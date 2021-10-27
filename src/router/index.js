@@ -60,8 +60,15 @@ import OrderSuppliers from '@/components/sclad/ordersuppliers/ordersuppliers.vue
 import CompletAssembl from '@/components/sclad/completassembl/completassembl.vue';
 import IssueToPull from '@/components/sclad/issuetopull/issuetopull.vue';
 import OrderToWay from '@/components/sclad/ordertoway/indexway.vue';
+import MovingOrder from '@/components/sclad/movingorder/movingorder.vue';
+
 
 const routes = [
+  {
+    path: '/movingorder',
+    name: 'Приход на склад',
+    component: MovingOrder 
+  },
   {
     path: '/ordertoway',
     name: 'Заказано / в пути',

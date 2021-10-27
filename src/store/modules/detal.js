@@ -75,7 +75,6 @@ export default {
         ctx.commit('addOneSelectDetal', result)
         return result
       }
-      
     },
     async createOperation(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/operation`, {

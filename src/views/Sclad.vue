@@ -5,24 +5,24 @@
           <div>
             <h3>Склад продукции</h3>
             <div class="block">
-                <div class="type-operation" @click="$router.push('/deficitprod')">Дефицит продукции (комплектация изделий)</div>
-                <div class="type-operation" @click="$router.push('/deficitdetal')">Дефицит Деталией</div>
-                <div class="type-operation">Остатки продукции, сборок и деталей на складе</div>
+              <div class="type-operation" @click="$router.push('/deficitprod')">Дефицит продукции (комплектация изделий)</div>
+              <div class="type-operation" @click="$router.push('/deficitdetal')">Дефицит Деталией</div>
+              <div class="type-operation">Остатки продукции, сборок и деталей на складе</div>
             </div>
         </div>
         <div>
-            <h3>Склад Материалы</h3>
-            <div class="block">
-                <div class="type-operation" @click="$router.push('/deficitmaterial')">Дефицит материалов</div>
-                <div class="type-operation">Остатки материалов на складе</div>
-                <div class="type-operation" @click="$router.push('/ordersuppliers')">Заказаны у поставщиков</div>
-                <div class="type-operation">Заказано / в пути</div>
-            </div>
+          <h3>Склад Материалы</h3>
+          <div class="block">
+            <div class="type-operation" @click="$router.push('/deficitmaterial')">Дефицит материалов</div>
+            <div class="type-operation">Остатки материалов на складе</div>
+            <div class="type-operation" @click="$router.push('/ordersuppliers')">Заказаны у поставщиков</div>
+            <div class="type-operation" @click="$router.push('/ordertoway')">Заказано / в пути</div>
+          </div>
         </div>
        </div> 
        <div class="footer_left_container">
          <div class="type-operation">Среднестатистическое потребление / Расход ВСЕГО</div>
-         <div class="type-operation">Приход на склад от поставщиков и производства</div>
+         <div class="type-operation" @click="$router.push('/movingorder')">Приход на склад от поставщиков и производства</div>
          <div class="type-operation">Расход со склада</div>
          <div class="type-operation">Перемещение: склад / производство / офис</div>
          <div class="type-operation">Склад отходов</div>
