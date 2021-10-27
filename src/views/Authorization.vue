@@ -220,6 +220,7 @@ h2 {
   margin-left: 0px;
   padding-top: 20px;
   padding-left: 10px;
+  overflow: scroll;
 }
 
 

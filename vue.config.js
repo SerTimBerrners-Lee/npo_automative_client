@@ -1,23 +1,9 @@
 module.exports = {
-  // chainWebpack: config => {
-  //   config.module
-  //     .rule('vue')
-	// 		.user('vue-style-loader')
-  //       .tap(options => {
-  //         // modify the options...
-  //         return options
-  //       })
-  // }
-	// module: {
-	// 	rules: [
-	// 		{
-	// 			test: /\.scss$/,
-	// 			use: [
-	// 				'vue-style-loader',
-  //         'css-loader',
-  //         'sass-loader'
-	// 			]
-	// 		}
-	// 	]
-	// }
+	devServer: process.env.VUE_APP_IS_PROD === 'true' ?	{
+    compress: true,
+		public: 'npo-automotive.ru'
+  } : {
+		compress: true,
+		disableHostCheck: true
+	}
 }
