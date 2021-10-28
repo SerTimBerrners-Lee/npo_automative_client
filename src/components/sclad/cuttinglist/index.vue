@@ -1,141 +1,92 @@
 <template>
 	<div>
-		<h3>Комплектация производства - Заготовительная операция - Листовая резка</h3>
+		<h3>Комплектация производства - Заготовительная операция - Листовая Резка</h3>
 		<div>
 			<div class="block header_block">
 				<DatePicterRange 
           @unmount='changeDatePicterRange'  
         />
+				<div>
+					<span>Быстрые фильтры: </span>
+					<label for="process">По статусу "В процессе"</label>
+					<input id='process' type="checkbox">
+					<label for="not_zag">По статусу "Нет заготовки"</label>
+					<input id='not_zag' type="checkbox" >
+				</div>
 			</div>
 		</div>
 
-		<div>
-			<div class="scroll-table table_material">
-				<table style="width: 200px;">
-					<tr>
-						<th>Категория</th>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(0, e.target.parentElement)'>
-						<td>Все</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(1, e.target.parentElement)'>
-						<td>Материалы </td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
-						<td>Покупные детали</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
-						<td>Расходные материалы</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Тип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='typ of alltypeM' 
-						:key='typ'
-						@click='clickMat(typ)'>
-						<td>{{ typ.name }}</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Подтип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='p_type of allPodTypeM' 
-						:key='p_type'
-						@click='clickMat(p_type)'>
-						<td>{{ p_type.name }}</td>
-					</tr>
-				</table>
+    <div class='table_block'>
+      <div class="table-scroll">
+        <table>
+          <tr>
+            <th><unicon name="check" fill="royalblue" /></th>
+            <th>Заказ покупателя из задач на отгрузку</th>
+            <th>Дата отгрузки покупателю</th>
+          </tr>
+           <tr v-for='order of getShipments' :key='order'>
+            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+              <p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
+            </td>
+            <td>{{ order.number_order }}</td>
+            <td>{{ order.date_shipments }}</td>
+          </tr>
+        </table>
+      </div>
+			<!-- Заготовка -->
+			<div class="scroll-table table_material" style='margin-left: 5px;'>
 				<table>
 					<tr>
-						<th>Наименование</th>
-						<th>ЕИ</th>
-						<th>Остаток на дату</th>
-						<th>План расход на план</th>
-						<th>План остаток</th>
-						<th>Среднестат. расход</th>
-						<th>Мин. остаток</th>
-						<th>Рекомендованный остаток</th>
-						<th>Дефицит</th>
-						<th>Дефицит в рублях</th>
-						<th>Рекомендованный заказ</th>
-						<th>План приход (данные по счету)</th>
-						<th>Дата прихода</th>
-						<th>План остаток после план прихода</th>
-						<th>План дефицит/Профицит</th>
-						<th>Статус</th>
+						<th colspan='6'></th>
+						<th colspan='3'>Заготовки по КД</th>
+						<th colspan='3'>Заготовка выданная по факту</th>
+						<th colspan='17'></th>
 					</tr>
-					<tr v-for='material of getOnePodMaterial' :key='material'>
-						<td 
-							@click='e => setMaterial(material, e.target)'
-							class='td-row'> {{ material.name }}</td>
-							<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
-							</td>
-							<td class='center'>
-								{{ material.material_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>	
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ -material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{  }}
-							</td>
-							<td class='center'>
-								{{  }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								Не заказано
-							</td>
+					<tr>
+						<th>
+							<unicon name="check" fill="royalblue" />
+						</th> 
+						<th>№ Заказа склада</th>
+						<th>Артикул детали</th>
+						<th>Наименование детали</th>
+						<th>Кол-во Всего по заказу склад, шт</th>
+						<th>Кол-во в т.ч. по заказу покупателя, шт.</th>
+						<th>Тип заготовки</th>
+						<th>Габариты заготовки, мм.</th>
+						<th>Масса заготовки, кг</th>
+						<th>Тип заготовки</th>
+						<th>Габариты заготовки, мм</th>
+						<th>Масса заготовки, кг</th>
+						<th>Перерасход, кг</th>
+						<th>Предыдущая операция</th>
+						<th>Статус</th>
+						<th>Сделано шт</th>
+						<th>Осталось шт</th>
+						<th>Норма времени на 1 шт., ч</th>
+						<th>Дата исполнения </th>
+						<th>Кол-во, шт.</th>
+						<th>Ширина пропила, мм</th>
+						<th>Норма расхода на 1 шт., кг</th>
+						<th>Итого отходы, кг</th>
+						<th>Исполнитель </th>
+						<th>Следующая операция</th>
+						<th>Документы</th>
+						<th>Примечание</th>
+						<th>Дата отметки</th>
+						<th>Отметка о выполнении</th>
 					</tr>
 				</table>
 			</div>
-			<div class='btn-control'>
-				<button class="btn-small"> Выгрузка в Excel </button>
-				<button class="btn-small"> Печать отчета </button>
-			</div>
 		</div>
-		<Start
-			v-if='showStart'
-			:key='startKey'
-		/>
+		<div class="btn-control">
+			<button class="btn-small">Печать задания</button>
+			<button class="btn-small btn-add">Создать накладную на передачу заготовок на металлообработку</button>
+		</div>
 	</div>
 </template>
 
 <script> 
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
@@ -148,72 +99,21 @@ export default {
 		}
 	},
 	components: {DatePicterRange},
-	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
+	computed: mapGetters(['getShipments']),
 	methods: {
-		...mapActions(['fetchGetAllDeficitPPM']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
-		instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
-
-      this.span = span
-			this.span.classList.add('td-row-all')
-
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
-
-    },
-		clickMat(mat) {
-			this.filterByNameMaterial(mat) 
-    },
-		setMaterial(material, span) {
-			if(this.material && this.material.id == material.id && this.span_material) {
-				this.material = null;
-				return this.span_material = null
-			}
-			if(this.span_material)
-				this.span_material.classList.remove('td-row-all')
-			this.span_material = span
-			this.span_material.classList.add('td-row-all')
-
-			this.material = material
-			console.log(material)
-		},
-		getKolvoMaterial(kol) {
-			try {
-				let pars_json = JSON.parse(kol)
-				let str = ''
-				if(pars_json.c1) str = '<span> шт </span>'
-				if(pars_json.c2) str = str + '<span> л </span>'
-				if(pars_json.c3) str = str + '<span> кг </span>'
-				if(pars_json.c4) str = str + '<span> м </span>'
-				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str
-			} catch (e) {
-				console.log(e)
-			}
-		},
+		...mapActions(['fetchAllShipments']),
 		changeDatePicterRange(val) {
       console.log(val)
+    },
+		toSetOrders(shipments, e) {
+      if(e.classList.item(1)) 
+        return e.classList.remove('checkbox_block_select')
+      
+      e.classList.add('checkbox_block_select')
     }
 	},
 	async mounted() {
-		this.fetchGetAllDeficitPPM()
+		this.fetchAllShipments()
 	}
 }
 </script>
-
-<style scoped>
-.table_material {
-	display: flex;
-}
-table {
-	height: fit-content;
-}
-.span_td {
-	display:  flex;
-	flex-direction: column;
-}
-</style>

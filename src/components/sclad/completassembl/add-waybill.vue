@@ -144,10 +144,6 @@ export default {
 </script>
 
 <style scoped>
-.th_black{
-  background: #323232;
-  color: #f3f1f1;
-}
 th {
   font-size: 14px;
 }

@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div> 
 		<h3>Комплектация сборок на план</h3>
     <div class='table_block'>
       <div class="table-scroll">
@@ -9,9 +9,16 @@
             <th>Заказ покупателя из задач на отгрузку</th>
             <th>Дата отгрузки покупателю</th>
           </tr>
+           <tr v-for='order of getShipments' :key='order'>
+            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+              <p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
+            </td>
+            <td>{{ order.number_order }}</td>
+            <td>{{ order.date_shipments }}</td>
+          </tr>
         </table>
       </div>
-      <div class="table-scroll" style='margin-left: 5px;'>
+       <div class="table-scroll" style='margin-left: 5px;'>
         <table>
           <tr>
             <th colspan="2"></th>
@@ -32,6 +39,7 @@
         </table>
       </div>
     </div>
+
      <div class="btn-control">
         <button class="btn-small btn-add" @click='addWaynill'>Создать накладную комплектации сборочного участка</button>
       </div>
@@ -45,30 +53,39 @@
 
 <script>
 import AddWaybill from './add-waybill.vue';
+import {mapGetters, mapActions} from 'vuex';
 import {random} from 'lodash';
 export default {
 	data() {
 		return{
       showAddWaybill: false,
-      keyAddWaybill: random(1, 999)
+      keyAddWaybill: random(1, 999),
+
+      shipments: null
 		}
 	},
 	components: {AddWaybill},
+  computed: mapGetters(['getShipments']),
 	methods: {
+    ...mapActions(['fetchAllShipments']),
     addWaynill() {
       this.showAddWaybill = true;
       this.keyAddWaybill = random(1, 999)
+    },
+    toSetOrders(shipments, e) {
+      if(e.classList.item(1)) 
+        return e.classList.remove('checkbox_block_select')
+      
+      e.classList.add('checkbox_block_select')
+      console.log(shipments)
     }
 	},
 	async mounted() {
-
+    this.fetchAllShipments()
 	}
 }
 </script>
 <style scoped>
-.table_block{
-  display: flex;
-}
 .block {
   padding: 5px;
 }

@@ -2,194 +2,65 @@
 	<div>
 		<h3>Среднестатистическое потребление</h3>
 		<div>
-			<div class="scroll-table table_material">
-				<table style="width: 200px;">
-					<tr>
-						<th>Категория</th>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(0, e.target.parentElement)'>
-						<td>Все</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(1, e.target.parentElement)'>
-						<td>Материалы </td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
-						<td>Покупные детали</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
-						<td>Расходные материалы</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Тип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='typ of alltypeM' 
-						:key='typ'
-						@click='clickMat(typ)'>
-						<td>{{ typ.name }}</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Подтип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='p_type of allPodTypeM' 
-						:key='p_type'
-						@click='clickMat(p_type)'>
-						<td>{{ p_type.name }}</td>
-					</tr>
-				</table>
-				<table>
-					<tr>
-						<th>Наименование</th>
-						<th>ЕИ</th>
-						<th>Остаток на дату</th>
-						<th>План расход на план</th>
-						<th>План остаток</th>
-						<th>Среднестат. расход</th>
-						<th>Мин. остаток</th>
-						<th>Рекомендованный остаток</th>
-						<th>Дефицит</th>
-						<th>Дефицит в рублях</th>
-						<th>Рекомендованный заказ</th>
-						<th>План приход (данные по счету)</th>
-						<th>Дата прихода</th>
-						<th>План остаток после план прихода</th>
-						<th>План дефицит/Профицит</th>
-						<th>Статус</th>
-					</tr>
-					<tr v-for='material of getOnePodMaterial' :key='material'>
-						<td 
-							@click='e => setMaterial(material, e.target)'
-							class='td-row'> {{ material.name }}</td>
-							<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
-							</td>
-							<td class='center'>
-								{{ material.material_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>	
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ -material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{  }}
-							</td>
-							<td class='center'>
-								{{  }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								Не заказано
-							</td>
-					</tr>
-				</table>
-			</div>
-			<div class='btn-control'>
-				<button class="btn-small"> Выгрузка в Excel </button>
-				<button class="btn-small"> Печать отчета </button>
+			<div class="type-issue">
+        <span class='active'>Продукция</span>
+        <span>СБ, Д</span>
+        <span>Материалы и прочее</span>
+      </div>
+			<div class='table-main'>
+				<div class="scroll-table" >
+					<table>
+						<tr>
+							<th rowspan="2">Заводской номер</th>
+							<th rowspan="2">Артикул</th>
+							<th rowspan="2">Наименование</th>
+							<th colspan="3">Расчетные значения</th>
+						</tr>
+						<tr>
+							<th>ЕИ</th>
+							<th style='width: 50px;'>Минимальный остаток - 1 мес. потребления.</th>
+							<th style='width: 50px;'>Минимальный остаток - 3 мес. потребления.</th>
+						</tr>
+						<tr v-for='tt of 44' :key='tt'>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+						</tr>
+					</table>
+				</div>
+				<div class="btn-control">
+					<button class="btn-small btn-add" @click='openGraph'>График потребления</button>
+				</div>
 			</div>
 		</div>
-		<Start
-			v-if='showStart'
-			:key='startKey'
+		<Graph 
+			v-if='show_graph'
+			:key='key_graph'
 		/>
 	</div>
 </template>
 
 <script> 
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-// import {random} from 'lodash';
+import Graph from './graph.vue';
+import { random } from 'lodash';
 export default {
 	data() {
 		return {
-			span: null,
-			instansLet: 0,
-
-			material: null,
-			span_material: null,
+			show_graph: false,
+			key_graph: random(1, 999)
 		}
 	},
-	components: {},
-	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
+	components: {Graph},
 	methods: {
-		...mapActions(['fetchGetAllDeficitPPM']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
-		instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
-
-      this.span = span
-			this.span.classList.add('td-row-all')
-
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
-
-    },
-		clickMat(mat) {
-			this.filterByNameMaterial(mat) 
-    },
-		setMaterial(material, span) {
-			if(this.material && this.material.id == material.id && this.span_material) {
-				this.material = null;
-				return this.span_material = null
-			}
-			if(this.span_material)
-				this.span_material.classList.remove('td-row-all')
-			this.span_material = span
-			this.span_material.classList.add('td-row-all')
-
-			this.material = material
-			console.log(material)
-		},
-		getKolvoMaterial(kol) {
-			try {
-				let pars_json = JSON.parse(kol)
-				let str = ''
-				if(pars_json.c1) str = '<span> шт </span>'
-				if(pars_json.c2) str = str + '<span> л </span>'
-				if(pars_json.c3) str = str + '<span> кг </span>'
-				if(pars_json.c4) str = str + '<span> м </span>'
-				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str
-			} catch (e) {
-				console.log(e)
-			}
+		openGraph() {
+			this.show_graph = true
+			this.key_graph = random(1, 999)
 		}
 	},
 	async mounted() {
-		this.fetchGetAllDeficitPPM()
 	}
 }
 </script>
@@ -198,11 +69,17 @@ export default {
 .table_material {
 	display: flex;
 }
-table {
-	height: fit-content;
+.scroll-table {
+	height: 700px;
 }
 .span_td {
 	display:  flex;
 	flex-direction: column;
+}
+.table-main {
+	width: max-content;
+}
+.btn-control {
+	margin-top: 10px;
 }
 </style>

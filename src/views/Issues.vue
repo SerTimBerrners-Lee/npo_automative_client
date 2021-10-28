@@ -9,7 +9,6 @@
       </div>
       <button class='btn-add btn' @click='addIssue'>Дать задачу</button>
     </div>
-
     <div> 
       <h3>Задачи для меня</h3>
       <div class="type-issue">

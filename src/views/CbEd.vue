@@ -6,23 +6,20 @@
         <div class="scroll-table" >
           <table class="table-base-detal">
             <tr>
-                <th colspan="3" scope="col">Изделие</th>
+              <th colspan="3" scope="col">Изделие</th>
             </tr>
             <tr>
-                <th>Заводской номер</th>
-                <th>Артикул</th>
-                <th>Наименование</th>
+              <th>Заводской номер</th>
+              <th>Артикул</th>
+              <th>Наименование</th>
             </tr>
-            <tr >
-                <td class="tb-title" colspan="3" scope="col"> Без назначенного изделия </td>
-            </tr> 
             <tr>
-                <td colspan="3">
-                    <Search 
-                          :placeholder="'Поиск по Артиклу'"
-                        @unmount='keySearchProduct' 
-                    />
-                </td>
+              <td colspan="3">
+                <Search 
+                  :placeholder="'Поиск по Артиклу'"
+                  @unmount='keySearchProduct' 
+                />
+              </td>
             </tr>
             <tr v-for='product in allProduct' 
                 :key='product'
@@ -42,35 +39,35 @@
         </div>
         <div class="scroll-table" >
           <table class="table-base-detal">
-              <tr>
-                  <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
-              </tr>
-              <tr>
-                  <th>Артикул</th>
-                  <th>Наименование</th>
-                  <th>Кол-во СБ на Изделие</th>
-              </tr>
-              <tr>
-                  <td colspan="3">
-                      <Search 
-                          :placeholder="'Поиск по Артиклу'"
-                          @unmount='keySearch' 
-                      />
-                  </td>
-              </tr>
-                <tr v-for='cb in allCbed' 
-                  :key='cb'
-                  class='td-row'
-                  @click='e => setCbed(cb, e.target.parentElement)'>
-                  <td>{{ cb.articl }}</td>
-                  <td>{{ cb.name }}</td>
-                  <td></td>
-              </tr>
-              <tr v-for="item in 42" :key="item">
-                  <td></td>
-                  <td></td>
-                  <td></td>
-              </tr>
+            <tr>
+              <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
+            </tr>
+            <tr>
+              <th>Артикул</th>
+              <th>Наименование</th>
+              <th>Кол-во СБ на Изделие</th>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <Search 
+                  :placeholder="'Поиск по Артиклу'"
+                  @unmount='keySearch' 
+                />
+              </td>
+            </tr>
+              <tr v-for='cb in allCbed' 
+                :key='cb'
+                class='td-row'
+                @click='e => setCbed(cb, e.target.parentElement)'>
+                <td>{{ cb.articl }}</td>
+                <td>{{ cb.name }}</td>
+                <td></td>
+            </tr>
+            <tr v-for="item in 42" :key="item">
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
           </table>
         </div>
       </div>
@@ -87,7 +84,7 @@
     </div>
     
     <div class="right_info_block" v-if='selectedCbEd'>
-        <h3>Краткая Информация о сборочной единице</h3>
+      <h3>Краткая Информация о сборочной единице</h3>
     <div class="block">
       <p>
         <span class="title_span">Наименование: </span><span style='font-weight:bold;'>{{ selectedCbEd.name }}</span>
@@ -97,43 +94,44 @@
       </p>
       <MediaSlider v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
       <div v-if='selectedCbEd.haracteriatic'>
-          <h3>Характеристики</h3>
-          <p v-for='har in JSON.parse(selectedCbEd.haracteriatic)' :key='har'>
-              <span>{{ har.name }}({{har.ez}}): </span>
-              <span style='font-weight:bold;'>{{ har.znach }} </span>
-          </p>
+        <h3>Характеристики</h3>
+        <p v-for='har in JSON.parse(selectedCbEd.haracteriatic)' :key='har'>
+          <span>{{ har.name }}({{har.ez}}): </span>
+          <span style='font-weight:bold;'>{{ har.znach }} </span>
+        </p>
       </div>
       <div v-if='selectedCbEd.parametrs'>
-          <h3>Параметры</h3>
-          <p v-for='par in JSON.parse(selectedCbEd.parametrs)' :key='par'>
-              <span>{{ par.name }}({{par.ez}}): </span>
-              <span style='font-weight:bold;'>{{ par.znach }} </span>
-          </p>
+        <h3>Параметры</h3>
+        <p v-for='par in JSON.parse(selectedCbEd.parametrs)' :key='par'>
+          <span>{{ par.name }}({{par.ez}}): </span>
+          <span style='font-weight:bold;'>{{ par.znach }} </span>
+        </p>
       </div>
       <div>
       <h3>Описание / Примечание</h3>
       <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selectedCbEd.description'> </textarea>
       </div>
       <div v-if='selectedCbEd.documents.length > 0'>
-          <h3>Документы</h3>
-          <table style="width: 100%;">
-              <tr>
-                  <th>Файл</th>
-              </tr> 
-              <tr class="td-row" v-for='doc in selectedCbEd.documents' :key='doc'
-                    @click='setDocs(doc)'>
-                  <td>{{ doc.name }}</td>
-              </tr>
-          </table>
-          <div class="btn-control" style='width: 100%'>
-          <button class="btn-small" @click='openDock'>Открыть</button>
-          </div>
-          <OpensFile 
-              :parametrs='itemFiles' 
-              v-if="showFile" 
-              @unmount='openFile'
-              :key='keyWhenModalGenerateFileOpen'
-          />
+        <h3>Документы</h3>
+        <table style="width: 100%;">
+          <tr>
+            <th>Файл</th>
+          </tr> 
+          <tr class="td-row" v-for='doc in selectedCbEd.documents' 
+            :key='doc'
+              @click='setDocs(doc)'>
+            <td>{{ doc.name }}</td>
+          </tr>
+        </table>
+        <div class="btn-control" style='width: 100%'>
+        <button class="btn-small" @click='openDock'>Открыть</button>
+        </div>
+        <OpensFile 
+          :parametrs='itemFiles' 
+          v-if="showFile" 
+          @unmount='openFile'
+          :key='keyWhenModalGenerateFileOpen'
+        />
       </div> 
     </div>
     </div>
@@ -141,10 +139,10 @@
 </template>
  
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import Search from '@/components/search.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
-import { random } from 'lodash'
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import Search from '@/components/search.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { random } from 'lodash';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 
 export default {
@@ -200,7 +198,7 @@ export default {
     },
     editCbEd() {
       if(!this.selectedCbEd)
-          return 0
+        return 0
 
       this.$router.push({path: '/cbed/edit/false'})
     },
@@ -209,7 +207,7 @@ export default {
     },
     createCopy() {
       if(!this.selectedCbEd)
-          return 0
+        return 0
 
       this.$router.push({path: '/cbed/edit/true'})
     },

@@ -6,7 +6,6 @@
           @unmount='changeDatePicterRange'  
         />
 		</div>
-
 		<div>
 			<h3>Комлектация</h3>
 			<div class="table-scroll">

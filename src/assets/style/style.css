@@ -1,6 +1,16 @@
 .center {
   text-align: center;
 }
+.th_black{
+  background: #323232;
+  color: #f3f1f1;
+}
+.table_block{
+  display: flex;
+}
+.td_ocean {
+  background: #badfff;
+}
 .center_block {
   display: flex;
   align-items: center;

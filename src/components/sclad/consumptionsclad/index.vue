@@ -1,141 +1,119 @@
 <template>
-	<div>
-		<h3>Расход со склада</h3>
-		<div>
-			<div class="block header_block">
-				<DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
+	<div class='main'>
+		<div class="left">
+			<h3>Расход со склада</h3>
+			<div>
+				<div class="block header_block">
+					<DatePicterRange 
+						@unmount='changeDatePicterRange'  
+					/>
+				</div>
+			</div>
+
+			<div>
+				<div class='scroll-table'>
+					<table>
+						<tr>
+							<th rowspan='2'>
+								<unicon name="check" fill="royalblue" />
+							</th>
+							<th colspan='7'>Накладные</th>
+							<th colspan='4'>Информация о заказе</th>
+						</tr>
+						<tr>
+							<th>№</th>
+							<th>Дата</th>
+							<th>Статус</th>
+							<th>Тип</th>
+							<th>Артикул</th>
+							<th>Наименование</th>
+							<th>Кол-во</th>
+							<th>№ Заказа</th>
+							<th>Дата</th>
+							<th>Изделие</th>
+							<th>Заказчик</th>
+						</tr>
+						<tr v-for='t of 44' :key='t'>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+							<td>...</td>
+						</tr>
+					</table>
+				</div>
+				<div class="btn-control">
+					<button class="btn-small btn-del">Пометка на удаление</button>
+					<button class="btn-small">Изменить</button>
+					<button class="btn-small">Просмотр</button>
+					<button class="btn-small">Печать</button>
+				</div>
 			</div>
 		</div>
-
-		<div>
-			<div class="scroll-table table_material">
-				<table style="width: 200px;">
-					<tr>
-						<th>Категория</th>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(0, e.target.parentElement)'>
-						<td>Все</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(1, e.target.parentElement)'>
-						<td>Материалы </td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
-						<td>Покупные детали</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
-						<td>Расходные материалы</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Тип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='typ of alltypeM' 
-						:key='typ'
-						@click='clickMat(typ)'>
-						<td>{{ typ.name }}</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Подтип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='p_type of allPodTypeM' 
-						:key='p_type'
-						@click='clickMat(p_type)'>
-						<td>{{ p_type.name }}</td>
-					</tr>
-				</table>
+		<div class="right">
+			<h3>Выдано</h3>
+			<div class="block">
 				<table>
 					<tr>
-						<th>Наименование</th>
-						<th>ЕИ</th>
-						<th>Остаток на дату</th>
-						<th>План расход на план</th>
-						<th>План остаток</th>
-						<th>Среднестат. расход</th>
-						<th>Мин. остаток</th>
-						<th>Рекомендованный остаток</th>
-						<th>Дефицит</th>
-						<th>Дефицит в рублях</th>
-						<th>Рекомендованный заказ</th>
-						<th>План приход (данные по счету)</th>
-						<th>Дата прихода</th>
-						<th>План остаток после план прихода</th>
-						<th>План дефицит/Профицит</th>
-						<th>Статус</th>
+						<th class='th_black' colspan='5'>Сборки(СБ)</th>
+						<th class='th_black' colspan="2">Выдано</th>
 					</tr>
-					<tr v-for='material of getOnePodMaterial' :key='material'>
-						<td 
-							@click='e => setMaterial(material, e.target)'
-							class='td-row'> {{ material.name }}</td>
-							<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
-							</td>
-							<td class='center'>
-								{{ material.material_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>	
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ -material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{  }}
-							</td>
-							<td class='center'>
-								{{  }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								Не заказано
-							</td>
+					<tr>
+						<td>Артикул</td>
+						<td>Наименование</td>
+						<td>ЕИ</td>
+						<td>Потребность на 1 сборку</td>
+						<td>Потребность итого</td>
+						<td class='td_ocean'>Дата</td>
+						<td class='td_ocean'>Кол-во</td>
+					</tr>
+
+					<tr>
+						<th class='th_black' colspan='5'>Детали(Д)</th>
+						<th class='th_black' colspan='2'>Выдано</th>
+					</tr>
+					<tr>
+						<td>Артикул</td>
+						<td>Наименование</td>
+						<td>ЕИ</td>
+						<td>Потребность на 1 сборку</td>
+						<td>Потребность итого</td>
+						<td class='td_ocean'>Дата</td>
+						<td class='td_ocean'>Кол-во</td>
+					</tr>
+				</table>
+
+				<table>
+					<tr>
+						<th class='th_black' colspan='5'>Покупные детали и расходные материалы(ПД и РМ)</th>
+						<th class='th_black' colspan='5'>Выдано по факту</th>
+					</tr>
+					<tr>
+						<td>Артикул</td>
+						<td>Наименование</td>
+						<td>ЕИ</td>
+						<td>Потребность на 1 сборку</td>
+						<td>Потребность итого</td>
+						<td class='td_ocean'>Дата</td>
+						<td class='td_ocean'>Аналог</td>
+						<td class='td_ocean'>Артикул</td>
+						<td class='td_ocean'>Наименование</td>
+						<td class='td_ocean'>Кол-во</td>
 					</tr>
 				</table>
 			</div>
-			<div class='btn-control'>
-				<button class="btn-small"> Выгрузка в Excel </button>
-				<button class="btn-small"> Печать отчета </button>
-			</div>
 		</div>
-		<Start
-			v-if='showStart'
-			:key='startKey'
-		/>
 	</div>
 </template>
 
 <script> 
-import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
@@ -148,69 +126,39 @@ export default {
 		}
 	},
 	components: {DatePicterRange},
-	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
-		...mapActions(['fetchGetAllDeficitPPM']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
-		instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
-
-      this.span = span
-			this.span.classList.add('td-row-all')
-
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
-
-    },
-		clickMat(mat) {
-			this.filterByNameMaterial(mat) 
-    },
-		setMaterial(material, span) {
-			if(this.material && this.material.id == material.id && this.span_material) {
-				this.material = null;
-				return this.span_material = null
-			}
-			if(this.span_material)
-				this.span_material.classList.remove('td-row-all')
-			this.span_material = span
-			this.span_material.classList.add('td-row-all')
-
-			this.material = material
-			console.log(material)
-		},
-		getKolvoMaterial(kol) {
-			try {
-				let pars_json = JSON.parse(kol)
-				let str = ''
-				if(pars_json.c1) str = '<span> шт </span>'
-				if(pars_json.c2) str = str + '<span> л </span>'
-				if(pars_json.c3) str = str + '<span> кг </span>'
-				if(pars_json.c4) str = str + '<span> м </span>'
-				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str
-			} catch (e) {
-				console.log(e)
-			}
-		},
 		changeDatePicterRange(val) {
       console.log(val)
     }
 	},
 	async mounted() {
-		this.fetchGetAllDeficitPPM()
 	}
 }
 </script>
 
 <style scoped>
-.table_material {
+.scroll-table {
+	height: 600px;
+	width: 100%;
+}
+.left {
+	width: 1200px;
+}
+.main {
 	display: flex;
+	width: 2000px;
+}
+.main>div {
+	margin: 5px; 
+}
+.right {
+	width: 700px;
+	overflow: scroll;
+	height: max-content;
+	padding-bottom: 100px;
 }
 table {
-	height: fit-content;
+	width: 100%;
 }
 .span_td {
 	display:  flex;
