@@ -145,7 +145,6 @@
 
 <script> 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
 		return {
@@ -156,7 +155,6 @@ export default {
 			span_material: null,
 		}
 	},
-	components: {DatePicterRange},
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM', 'getShipments']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM', 'fetchAllShipments']),
@@ -204,9 +202,6 @@ export default {
 				console.log(e)
 			}
 		},
-		changeDatePicterRange(val) {
-      console.log(val)
-    },
 		toSetOrders(shipments, e) {
       if(e.classList.item(1)) 
         return e.classList.remove('checkbox_block_select')
