@@ -3,15 +3,15 @@
     <h3>Задачи на отгрузку</h3>
     <div>
       <div class="block header_block">
-        <span>Выбрать период, с:</span>
-        <input type="text">
-        <span>по: </span><input type="text">
-        <button class="btn-small">Сбросить период или дату</button>
-        <span>Фильтры:</span>
-        <label for='z'>Не учитывать "На склад"</label><input id='z' type="checkbox">
+       <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
+        <div>
+          <span>Фильтры:</span>
+          <label for='z'>Не учитывать "На склад"</label><input id='z' type="checkbox">
+        </div>
       </div>
     </div>
-
     <div>
       <div class="scroll-table" style='width: 99%;'>
       <table>
@@ -73,6 +73,7 @@
 import DescriptionModal from '@/components/description-modal.vue';
 import Shipment from './shippment.vue';
 import {random} from 'lodash';
+import DatePicterRange from '@/components/date-picter-range.vue';
 
 export default {
   data() {
@@ -86,7 +87,7 @@ export default {
       description: '',
     }
   },
-  components: {DescriptionModal, Shipment},
+  components: {DatePicterRange, DescriptionModal, Shipment},
   methods: {
     openDescription() {
       this.showDescriptionModal = true
@@ -96,6 +97,9 @@ export default {
     openShipment() {
       this.showShipmentModal = true;
       this.shipmentKey = random(1, 999)
+    },
+    changeDatePicterRange(val) {
+      console.log(val)
     }
   },
   async mounted() {

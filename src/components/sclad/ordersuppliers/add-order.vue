@@ -20,7 +20,7 @@
           <p>
             <span>Планируемая дата прихода:</span>
             <DatePicterCustom 
-              @unmount='changeDatePicterShipments' 
+              @unmount='changeDatePicterShipments'  
               :dateStart='date_shipments'
             />
             <span>НДС: </span>

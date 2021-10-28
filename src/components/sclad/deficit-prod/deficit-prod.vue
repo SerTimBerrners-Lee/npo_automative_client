@@ -3,14 +3,15 @@
     <h3>Дефицит продукции (комплектации изделий)</h3>
     <div>
       <div class="block header_block">
-        <span>Выбрать период, с:</span>
-        <input type="text">
-        <span>по: </span><input type="text">
-        <button class="btn-small">Сбросить период или дату</button>
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
         <span>Фильтры по статусу:</span>
-        <label for='z'>Заказано</label><input id='z' type="checkbox">
-        <label for='zn'>Не заказано</label><input id='zn' type="checkbox">
-        <label for='end'>Выполнено</label><input id='end' type='checkbox'>
+        <div>
+          <label for='z'>Заказано</label><input id='z' type="checkbox">
+          <label for='zn'>Не заказано</label><input id='zn' type="checkbox">
+          <label for='end'>Выполнено</label><input id='end' type='checkbox'>
+        </div>
       </div>
     </div>
     
@@ -163,7 +164,8 @@ import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import {random} from 'lodash';
-import {mapGetters, mapActions} from 'vuex'
+import {mapGetters, mapActions} from 'vuex';
+import DatePicterRange from '@/components/date-picter-range.vue';
 
 export default {
   data() {
@@ -198,7 +200,7 @@ export default {
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
-  components: {StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList, ProductListModal, InformFolder},
+  components: {DatePicterRange, StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList, ProductListModal, InformFolder},
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'getOneCbEdById', 'getOneDetal']),
     unmount_sh_list(res) {
@@ -282,6 +284,9 @@ export default {
       if(!this.select_izd)
         return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w', this)
       this.kolvo_all = e.innerText
+    },
+    changeDatePicterRange(val) {
+      console.log(val)
     }
   },
   async mounted() {
@@ -300,5 +305,9 @@ export default {
 }
 .block .btn { 
   margin: 0px;
+}
+.header_block {
+  display: flex;
+  align-items: center;
 }
 </style>

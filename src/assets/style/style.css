@@ -88,8 +88,12 @@ table th {
 .header_block input[type='text']{
   width: 110px;
 }
-.header_block * {
+.header_block span {
   margin-left: 10px;
+}
+.header_block {
+  display: flex;
+  align-items: center;
 }
 .header_block label{
   color: black;
@@ -298,6 +302,13 @@ textarea {
   background-color: #46c7ff;
 }
 
+.btn-add {
+  background:#00fb91;
+}
+
+.btn-del {
+  background:#ee09428f;
+}
 .select-small { 
   width: max-content;
   max-width: 200px;

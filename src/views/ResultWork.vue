@@ -5,12 +5,10 @@
       <span>По сотрудникам</span>
       <span>По оборудованию</span>
     </div>
-		<div class="block">
-      <span>Выбрать период, с:</span>
-      <input type="text">
-      <span>по:</span>
-      <input type="text">
-      <button class="btn-small">Сбросить период или дату</button>
+		<div class="block header_block">
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
       <span>Кол-во рабочих дней в период:</span>
       <input type="text">
     </div>
@@ -65,15 +63,17 @@
 </template>
 
 <script>
-
+import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
 		return{
 		}
 	},
-	components: {},
+	components: {DatePicterRange},
 	methods: {
-	
+    changeDatePicterRange(val) {
+      console.log(val)
+    }
 	},
 	async mounted() {
 

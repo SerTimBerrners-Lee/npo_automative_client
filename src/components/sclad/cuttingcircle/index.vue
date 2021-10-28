@@ -1,10 +1,12 @@
 <template>
 	<div>
-		<h3>Дефицит материалов</h3>
+		<h3>Комплектация производства - Заготовительная операция - Резка круга / профиля</h3>
 		<div>
-			<DatePicterRange 
+			<div class="block header_block">
+				<DatePicterRange 
           @unmount='changeDatePicterRange'  
         />
+			</div>
 		</div>
 
 		<div>
@@ -125,6 +127,10 @@
 				<button class="btn-small"> Печать отчета </button>
 			</div>
 		</div>
+		<Start
+			v-if='showStart'
+			:key='startKey'
+		/>
 	</div>
 </template>
 
@@ -190,8 +196,8 @@ export default {
 			}
 		},
 		changeDatePicterRange(val) {
-			console.log(val)
-		}
+      console.log(val)
+    }
 	},
 	async mounted() {
 		this.fetchGetAllDeficitPPM()

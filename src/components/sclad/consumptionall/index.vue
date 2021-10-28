@@ -1,12 +1,6 @@
 <template>
 	<div>
-		<h3>Дефицит материалов</h3>
-		<div>
-			<DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
-		</div>
-
+		<h3>Среднестатистическое потребление</h3>
 		<div>
 			<div class="scroll-table table_material">
 				<table style="width: 200px;">
@@ -125,12 +119,16 @@
 				<button class="btn-small"> Печать отчета </button>
 			</div>
 		</div>
+		<Start
+			v-if='showStart'
+			:key='startKey'
+		/>
 	</div>
 </template>
 
 <script> 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
+// import {random} from 'lodash';
 export default {
 	data() {
 		return {
@@ -141,7 +139,7 @@ export default {
 			span_material: null,
 		}
 	},
-	components: {DatePicterRange},
+	components: {},
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM']),
@@ -188,9 +186,6 @@ export default {
 			} catch (e) {
 				console.log(e)
 			}
-		},
-		changeDatePicterRange(val) {
-			console.log(val)
 		}
 	},
 	async mounted() {

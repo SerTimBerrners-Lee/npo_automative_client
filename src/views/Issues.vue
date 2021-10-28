@@ -3,13 +3,9 @@
 		<h3>Задачи</h3>
     <div class='head_block'>
       <div class="block">
-        <span>Дата:</span>
-        <input type="text">
-        <span>Выбрать период, с:</span>
-        <input type="text">
-        <span>по:</span>
-        <input type="text">
-        <button class="btn-small">Сбросить период или дату</button>
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
       </div>
       <button class='btn-add btn' @click='addIssue'>Дать задачу</button>
     </div>
@@ -221,7 +217,8 @@
 import {random} from 'lodash';
 import AddIssue from '@/components/issue/add-issue.vue';
 import { mapActions, mapGetters } from 'vuex'; 
-import { dateIncrementHors } from '@/js/'
+import { dateIncrementHors } from '@/js/';
+import DatePicterRange from '@/components/date-picter-range.vue';
 
 export default {
 	data() {
@@ -245,7 +242,7 @@ export default {
       'getMyIssues',
       'getMyController'
     ]),
-	components: {AddIssue},
+	components: {AddIssue, DatePicterRange},
 	methods: {
     ...mapActions(['fetchIssueList']),
     addIssue() {
@@ -267,6 +264,9 @@ export default {
     showIssue(issue) {
       this.addIssue()
       this.selectedIssue = issue
+    },
+    changeDatePicterRange(val) {
+      console.log(val)
     }
 	}, 
 	async mounted() {

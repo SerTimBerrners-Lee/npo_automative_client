@@ -85,7 +85,7 @@
         <img src="@/assets/img/img20.png" alt="" class="icon-li">
         <span class="text-item">Отчеты</span>
       </li>
-      <li class="item-lu">
+      <li class="item-lu" @click="$router.push('/layot')">
         <img src="@/assets/img/img21.png" alt="" class="icon-li">
         <span class="text-item">Рекламация</span>
       </li>

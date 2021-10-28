@@ -3,10 +3,9 @@
     <h3>Заказано у поставщиков</h3>
     <div>
       <div class="block header_block">
-        <span>Выбрать период, с:</span>
-        <input type="text">
-        <span>по: </span><input type="text">
-        <button class="btn-small">Сбросить период или дату</button>
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
       </div>
     </div>
 
@@ -88,20 +87,21 @@
 import AddOrder from './add-order.vue';
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
+import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
 		return {
       showAddOrder: false,
       AddOrderKey: random(1, 999),
-
+ 
       detals_order: [],
       span: null,
       order: null,
-      order_parametr: null
+      order_parametr: null,
 		}
 	},
   computed: mapGetters(['getAllDeliveries']),
-	components: {AddOrder},
+	components: {AddOrder, DatePicterRange},
 	methods: {
     ...mapActions(['fetchGetDeliveries']),
     unmount_order() {
@@ -134,6 +134,9 @@ export default {
       this.showAddOrder = true
       this.AddOrderKey = random(1, 999)
       this.order_parametr = this.order
+    },
+    changeDatePicterRange(val) {
+      console.log(val)
     }
 	},
 	async mounted() {
