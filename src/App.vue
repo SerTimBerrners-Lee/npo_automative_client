@@ -164,9 +164,6 @@ a {
   display: flex;
   justify-content: flex-end;
 }
-.btn-add {
-  background:#00fb91;
-}
 .btn-small {
   border: none;
   border-radius: 4px;

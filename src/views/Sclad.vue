@@ -5,27 +5,27 @@
           <div>
             <h3>Склад продукции</h3>
             <div class="block">
-                <div class="type-operation" @click="$router.push('/deficitprod')">Дефицит продукции (комплектация изделий)</div>
-                <div class="type-operation" @click="$router.push('/deficitdetal')">Дефицит Деталией</div>
-                <div class="type-operation">Остатки продукции, сборок и деталей на складе</div>
+              <div class="type-operation" @click="$router.push('/deficitprod')">Дефицит продукции (комплектация изделий)</div>
+              <div class="type-operation" @click="$router.push('/deficitdetal')">Дефицит Деталией</div>
+              <div class="type-operation" @click="$router.push('/ostatokprod')">Остатки продукции, сборок и деталей на складе</div>
             </div>
         </div>
         <div>
-            <h3>Склад Материалы</h3>
-            <div class="block">
-                <div class="type-operation" @click="$router.push('/deficitmaterial')">Дефицит материалов</div>
-                <div class="type-operation">Остатки материалов на складе</div>
-                <div class="type-operation" @click="$router.push('/ordersuppliers')">Заказаны у поставщиков</div>
-                <div class="type-operation">Заказано / в пути</div>
-            </div>
+          <h3>Склад Материалы</h3>
+          <div class="block">
+            <div class="type-operation" @click="$router.push('/deficitmaterial')">Дефицит материалов</div>
+            <div class="type-operation" @click="$router.push('/ostatolmat')">Остатки материалов на складе</div>
+            <div class="type-operation" @click="$router.push('/ordersuppliers')">Заказаны у поставщиков</div>
+            <div class="type-operation" @click="$router.push('/ordertoway')">Заказано / в пути</div>
+          </div>
         </div>
        </div> 
        <div class="footer_left_container">
-         <div class="type-operation">Среднестатистическое потребление / Расход ВСЕГО</div>
-         <div class="type-operation">Приход на склад от поставщиков и производства</div>
-         <div class="type-operation">Расход со склада</div>
-         <div class="type-operation">Перемещение: склад / производство / офис</div>
-         <div class="type-operation">Склад отходов</div>
+         <div class="type-operation" @click="$router.push('/consumptionall')">Среднестатистическое потребление / Расход ВСЕГО</div>
+         <div class="type-operation" @click="$router.push('/comingsclad')">Приход на склад от поставщиков и производства</div>
+         <div class="type-operation" @click="$router.push('/consumptionsclad')">Расход со склада</div>
+         <div class="type-operation" @click="$router.push('/movingorder')">Перемещение: склад / производство / офис</div>
+         <div class="type-operation" @click="$router.push('/scladtrash')">Склад отходов</div>
        </div>
     </div>
     <div class="right_control">
@@ -34,15 +34,15 @@
         <div class="type-operation" @click="$router.push('/issuetopull')">
           Задачи на отгрузку 
         </div>
-        <div class="type-operation">
+        <div class="type-operation" @click="$router.push('/defmatplan')">
           Дефицит материалов на план (металлообработка)
         </div>
-        <div class="type-operation">
+        <div class="type-operation" @click="$router.push('/defmatplanass')">
           Дефицит материалов на план (сборка)
         </div>
         <h3>Комплектация производства (зачистные и заготовительные операции</h3>
-        <div class="small-width-div type-operation">Резка круга / профиля</div>
-        <div class="small-width-div type-operation">Резка листа</div>
+        <div class="small-width-div type-operation" @click="$router.push('/cuttingcircle')">Резка круга / профиля</div>
+        <div class="small-width-div type-operation" @click="$router.push('/cuttinglist')">Резка листа</div>
         <div class="type-operation" @click="$router.push('/completassembl')">
           Комплектация сборок на план
         </div>

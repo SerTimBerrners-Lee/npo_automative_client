@@ -34,6 +34,7 @@ import Metalloworking from '@/views/Metalloworking.vue';
 import Library from '@/views/Library.vue';
 import ResultWork from "@/views/ResultWork.vue";
 import Issues from '@/views/Issues.vue';
+import Layot from '@/views/Layt.vue';
 
 import AddMaterialBase from '@/components/mathzag/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
@@ -60,8 +61,78 @@ import OrderSuppliers from '@/components/sclad/ordersuppliers/ordersuppliers.vue
 import CompletAssembl from '@/components/sclad/completassembl/completassembl.vue';
 import IssueToPull from '@/components/sclad/issuetopull/issuetopull.vue';
 import OrderToWay from '@/components/sclad/ordertoway/indexway.vue';
-
-const routes = [
+import MovingOrder from '@/components/sclad/movingorder/index.vue';
+import OstatolMat from '@/components/sclad/ostatkimat/index.vue';
+import OstatolProdCbDet from '@/components/sclad/ostatk-p-cb-d/index.vue';
+import DefMatPlan from '@/components/sclad/defmatplan/index.vue';
+import DefMatPlanAssembly from '@/components/sclad/defmatplanass/index.vue';
+import CuttingCircle from '@/components/sclad/cuttingcircle/index.vue';
+import CuttingList from '@/components/sclad/cuttinglist/index.vue';
+import ConsumptionAll from '@/components/sclad/consumptionall/index.vue';
+import ConsumptionSclad from '@/components/sclad/consumptionsclad/index.vue';
+import ComingSclad from '@/components/sclad/comingtosclad/index.vue';
+import ScladTrash from '@/components/sclad/scladtrash/index.vue';
+const routes = [ 
+  {
+    path: '/scladtrash',
+    name: 'Склад отходов',
+    component: ScladTrash
+  },
+  {
+    path: '/comingsclad',
+    name: 'Приход на склад',
+    component: ComingSclad
+  },
+  {
+    path: '/consumptionsclad',
+    name: 'Расход склада',
+    component: ConsumptionSclad
+  },
+  {
+    path: '/consumptionall',
+    name: 'Расход всего',
+    component: ConsumptionAll
+  },
+  {
+    path: '/cuttinglist',
+    name: 'Резка листа',
+    component: CuttingList
+  },
+  {
+    path: '/cuttingcircle',
+    name: 'Резка круга',
+    component: CuttingCircle
+  },
+  {
+    path: '/defmatplanass',
+    name: 'Дефицит на сборку',
+    component: DefMatPlanAssembly
+  },
+  {
+    path: '/defmatplan',
+    name: 'Дефицит на металлообработку',
+    component: DefMatPlan
+  },
+  {
+    path: '/ostatokprod',
+    name: 'Остаток продукции',
+    component: OstatolProdCbDet
+  },
+  {
+    path: '/ostatolmat',
+    name: 'Остаток материалов',
+    component: OstatolMat
+  },
+  {
+    path: '/layot',
+    name: 'Новое окно',
+    component: Layot
+  },
+  {
+    path: '/movingorder',
+    name: 'Перемещение',
+    component: MovingOrder 
+  },
   {
     path: '/ordertoway',
     name: 'Заказано / в пути',

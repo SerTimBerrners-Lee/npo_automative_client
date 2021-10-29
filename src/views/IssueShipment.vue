@@ -2,15 +2,10 @@
 	<div>
 		<h3>Задачи на отгрузку</h3>
 		<div class="block header_block">
-			<span>Дата:</span>
-			<input type="text">
-			<span>Выбрать период, с:</span>
-			<input type="text">
-			<span>по:</span>
-			<input type="text">
-			<button class="btn-small">Сбросить период</button>
+			<DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
 		</div>
-
 		<div>
 			<h3>Комлектация</h3>
 			<div class="table-scroll">
@@ -93,6 +88,7 @@
 import {mapActions, mapGetters} from 'vuex';
 import { dateIncrementHors } from '@/js/';
 import DescriptionModal from '@/components/description-modal.vue';
+import DatePicterRange from '@/components/date-picter-range.vue';
 import {random} from 'lodash';
 export default {
 	data() {
@@ -106,7 +102,7 @@ export default {
 		}	
 	},
 	computed: mapGetters(['getShipments']),
-	components: {DescriptionModal},
+	components: {DescriptionModal, DatePicterRange},
 	methods: {
 		...mapActions(['fetchAllShipments']),
 		setShipments(shipments, e) {
@@ -133,6 +129,9 @@ export default {
       let dat = dateIncrementHors(date, day*24)
       return `${dat.iterationHors}`
     },
+		changeDatePicterRange(val) {
+      console.log(val)
+    }
 	},
 	async mounted() {
 		await this.fetchAllShipments()

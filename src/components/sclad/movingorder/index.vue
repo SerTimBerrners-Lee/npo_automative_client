@@ -1,7 +1,15 @@
 <template>
   <div>
-    <h3>Заказано / в пути</h3>
-
+    <h3>Перемещение склад / производство / офис</h3>
+    <div> 
+      <h1>Перемещение склад</h1>
+      <div class="block header_block">
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
+      </div>
+    </div>
+ 
     <div style='width: fit-content;'>
       <div class="scroll-table" style='width: 99%;'>
         <table>
@@ -73,6 +81,7 @@
 <script>
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
+import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
 		return {
@@ -86,7 +95,7 @@ export default {
 		}
 	},
   computed: mapGetters(['getAllDeliveries']),
-	components: {},
+	components: {DatePicterRange},
 	methods: {
     ...mapActions(['fetchGetDeliveries']),
     unmount_order() {
@@ -119,6 +128,9 @@ export default {
       this.showAddOrder = true
       this.AddOrderKey = random(1, 999)
       this.order_parametr = this.order
+    },
+    changeDatePicterRange(val) {
+      console.log(val)
     }
 	},
 	async mounted() {

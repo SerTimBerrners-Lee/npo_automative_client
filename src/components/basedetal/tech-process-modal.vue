@@ -1,178 +1,181 @@
 <template>
-<div class="right-menu-modal">
-        <div :class='destroyModalLeft' @click="destroyModalF"></div>
-        <div :class='destroyModalRight'>
-           <div :style="hiddens">
-                <h3>Технологический процесс</h3>
-                <table>
-                    <tr>
-                        <th>№</th>
-                        <th>Нименование операции</th>
-                        <th>Подготовительное время, н.ч.</th>
-                        <th>Вспомогательное время, н.ч.</th>
-                        <th>Основное время, н.ч.</th>
-                        <th>Требуемое оборудование</th>
-                        <th>Требуемый инструмент</th>
-                        <th>Оснастка</th>
-                        <th>Меритеьный инструмент</th>
-                    </tr>
-                    <tr v-for='(operation, inx) in allOperationNewList' 
-                        :key='operation'
-                        class='td-row'
-                        @click="e => selectTr(e.target, operation)"
-                        >
-                        <td>{{ inx + 1 }}</td>
-                        <td>
-                            <select class="select-small operation_select" 
-                                v-model="operation.name"
-                                style='font-weight:bold;'
-                                >
-                                <option v-for='op in getTypeOperations' 
-                                    :key='op' :value='op.id'>{{ op.name }}</option>
-                            </select>
-                        </td>
-                        <td>{{ operation.preTime }}</td>
-                        <td>{{ operation.helperTime }}</td>
-                        <td>{{ operation.mainTime }}</td>
-                        <td>
-                            <select v-if='operation.eqList' 
-                                class="select-small operation_select"
-                                v-model='operation.eqID'
-                                @change='e=> changeOperation(e.target.value, operation, "eq")'
-                            >
-                                <option v-for='eq in JSON.parse(operation.eqList)' 
-                                        :key='eq' :value='eq.id'>{{ eq.name }}</option>
-                            </select>
-                            <span v-else>-</span>
-                        </td>
-                        <td>
-                            <select v-if='operation.instrumentList' 
-                                class="select-small operation_select"
-                                v-model='operation.instrumentID'
-                                @change='e=> changeOperation(e.target.value, operation, "inst")'
-                            >
-                                <option v-for='inst in JSON.parse(operation.instrumentList)' 
-                                    :key='inst' :value='inst.id'>{{ inst.name }}</option>
-                            </select>
-                            <span v-else>-</span>
-                        </td>
-                        <td>
-                             <select v-if='operation.instrumentOsnList' 
-                                    class="select-small operation_select"
-                                    v-model='operation.instrumentOsnID'
-                                    @change='e=> changeOperation(e.target.value, operation, "osn")'
-                                    >
-                                <option v-for='inst in JSON.parse(operation.instrumentOsnList)' :key='inst' :value='inst.id'>{{ inst.name }}</option>
-                            </select>
-                            <span v-else>-</span>
-                        </td>
-                        <td>
-                            <select v-if='operation.instrumentMerList'  
-                                    class="select-small operation_select"
-                                    v-model='operation.instrumentMerID'
-                                    @change='e=> changeOperation(e.target.value, operation, "mer")'
-                                    >
-                                <option v-for='inst in JSON.parse(operation.instrumentMerList)' :key='inst' :value='inst.id'>{{ inst.name }}</option>
-                            </select>
-                            <span v-else>-</span>
-                        </td>
-                    </tr>
-                </table>
-                <div class="btn-control">
-                    <button class="btn-small btn-add" @click='addNewOperation'>Добавить операцию</button>
-                    <button class="btn-small" @click='editOperation'>Редактировать</button>
-                    <button class="btn-small" @click='bannedOperation'>В архив</button>
-                </div>
-                <div class="file_container">
-                    <div class="slider">
-                        <h3>Фото и видео</h3>
-                        <MediaSlider 
-                          v-if='dataMedia' 
-                          :static='true' 
-                          :data='dataMedia' 
-                          :key='randomDataMedia'
-                          :width='"width: 47%;"'
-                          :width_main='"width: 97%;"'
-                           />
-                    </div>
-                    <div class="docs">
-                        <h3>Документы</h3>
-                        <table>
-                            <tr>
-                                <th>Файл</th>
-                            </tr>
-                            <tr 
-                              v-for='doc in formData ? formData.getAll("document") : []' 
-                              :key='doc'
-                              class='td-row'
-                              >
-                              <td>{{ doc.name }}</td>
-                            </tr>
-                            <tr 
-                              v-for='doc in  documentsData' 
-                              :key='doc'
-                              class='td-row'
-                              @click='setDocs(doc)'
-                              >
-                              <td>{{ doc.name }}</td>
-                            </tr>
-                        </table>
-                        <div class="btn-control" style='width: 100%;'>
-                            <button class="btn-small" @click='openDock'>Открыть</button>
-                            <button class="btn-small">Удалить</button>
-                            <button class="btn-small">Добавить из базы</button>
-                        </div>
-                        <div class="pointer-files-to-add" style='width: 100%;'>
-                          <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                          <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-                        </div>
-                        <AddFile 
-                          :parametrs='docFiles' 
-                          :typeGetFile='"getfile"'
-                          v-if="isChangeFolderFile" 
-                          @unmount='file_unmount'
-                          :key='keyWhenModalGenerate'
-                            />
-                    </div>
-                </div>
-                <div class="desctiption_container">
-                    <div>
-                        <h3>Описание / примечание</h3>
-                        <textarea maxlength='250' cols="30" rows="10" v-model='description'></textarea>
-                    </div>
-                    <div>
-                        <h3>История изменений</h3>
-                        <table>
-                            <tr>
-                                <th>Дата</th>
-                                <th>Пользователь</th>
-                                <th>Действие</th>
-                            </tr>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="btn-control out-btn-control">
-                    <button class="btn-status" @click='destroyModalF'>Отменить</button>
-                    <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
-                    <button class="btn-status btn-black" 
-                            style="height: 0px;" @click='saveTechProcess'>Сохранить</button>
-                </div>
-           </div>
+  <div class="right-menu-modal">
+    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalRight'>
+      <div :style="hiddens">
+        <h3>Технологический процесс</h3>
+        <table>
+          <tr>
+            <th>№</th>
+            <th>Нименование операции</th>
+            <th>Подготовительное время, н.ч.</th>
+            <th>Вспомогательное время, н.ч.</th>
+            <th>Основное время, н.ч.</th>
+            <th>Требуемое оборудование</th>
+            <th>Требуемый инструмент</th>
+            <th>Оснастка</th>
+            <th>Меритеьный инструмент</th>
+          </tr>
+          <tr v-for='(operation, inx) in allOperationNewList' 
+            :key='operation'
+            class='td-row'
+            @click="e => selectTr(e.target, operation)"
+            >
+            <td>{{ inx + 1 }}</td>
+            <td>
+              <select class="select-small operation_select" 
+                v-model="operation.name"
+                style='font-weight:bold;'
+                >
+                <option v-for='op in getTypeOperations' 
+                  :key='op' :value='op.id'>{{ op.name }}</option>
+              </select>
+            </td>
+            <td>{{ operation.preTime }}</td>
+            <td>{{ operation.helperTime }}</td>
+            <td>{{ operation.mainTime }}</td>
+            <td>
+              <select 
+                v-if='operation.eqList' 
+                class="select-small operation_select"
+                v-model='operation.eqID'
+                @change='e=> changeOperation(e.target.value, operation, "eq")'
+              >
+                <option v-for='eq in JSON.parse(operation.eqList)' 
+                  :key='eq' :value='eq.id'>{{ eq.name }}</option>
+              </select>
+              <span v-else>-</span>
+            </td>
+            <td>
+              <select 
+                v-if='operation.instrumentList' 
+                class="select-small operation_select"
+                v-model='operation.instrumentID'
+                @change='e=> changeOperation(e.target.value, operation, "inst")'
+              >
+                <option v-for='inst in JSON.parse(operation.instrumentList)' 
+                  :key='inst' :value='inst.id'>{{ inst.name }}</option>
+              </select>
+              <span v-else>-</span>
+            </td>
+            <td>
+              <select 
+                v-if='operation.instrumentOsnList' 
+                class="select-small operation_select"
+                v-model='operation.instrumentOsnID'
+                @change='e=> changeOperation(e.target.value, operation, "osn")'
+                >
+                <option v-for='inst in JSON.parse(operation.instrumentOsnList)' :key='inst' :value='inst.id'>{{ inst.name }}</option>
+              </select>
+              <span v-else>-</span>
+            </td>
+            <td>
+              <select 
+                v-if='operation.instrumentMerList'  
+                class="select-small operation_select"
+                v-model='operation.instrumentMerID'
+                @change='e=> changeOperation(e.target.value, operation, "mer")'
+                >
+                <option v-for='inst in JSON.parse(operation.instrumentMerList)' :key='inst' :value='inst.id'>{{ inst.name }}</option>
+              </select>
+              <span v-else>-</span>
+            </td>
+          </tr>
+        </table>
+        <div class="btn-control">
+          <button class="btn-small btn-add" @click='addNewOperation'>Добавить операцию</button>
+          <button class="btn-small" @click='editOperation'>Редактировать</button>
+          <button class="btn-small" @click='bannedOperation'>В архив</button>
         </div>
-        <AddOperation 
-            v-if='operationPanelShow' 
-            :key='operationKey'
-            @unmount='unmount_operation'
-            :operation='operationSelect'
-            />
-        <OpensFile 
-                :parametrs='itemFiles' 
-                v-if="showFile" 
-                :key='keyWhenModalGenerateFileOpen'
-            />
-    </div> 
+        <div class="file_container">
+          <div class="slider">
+            <h3>Фото и видео</h3>
+            <MediaSlider 
+              v-if='dataMedia' 
+              :static='true' 
+              :data='dataMedia' 
+              :key='randomDataMedia'
+              :width='"width: 47%;"'
+              :width_main='"width: 97%;"'
+                />
+          </div>
+          <div class="docs">
+            <h3>Документы</h3>
+            <table>
+              <tr>
+                <th>Файл</th>
+              </tr>
+              <tr 
+                v-for='doc in formData ? formData.getAll("document") : []' 
+                :key='doc'
+                class='td-row'
+                >
+                <td>{{ doc.name }}</td>
+              </tr>
+              <tr 
+                v-for='doc in  documentsData' 
+                :key='doc'
+                class='td-row'
+                @click='setDocs(doc)'
+                >
+                <td>{{ doc.name }}</td>
+              </tr>
+            </table>
+            <div class="btn-control" style='width: 100%;'>
+              <button class="btn-small" @click='openDock'>Открыть</button>
+              <button class="btn-small">Удалить</button>
+              <button class="btn-small">Добавить из базы</button>
+            </div>
+            <div class="pointer-files-to-add" style='width: 100%;'>
+              <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
+              <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+            </div>
+            <AddFile 
+              :parametrs='docFiles' 
+              :typeGetFile='"getfile"'
+              v-if="isChangeFolderFile" 
+              @unmount='file_unmount'
+              :key='keyWhenModalGenerate'
+                />
+          </div>
+        </div>
+        <div class="desctiption_container">
+          <div>
+            <h3>Описание / примечание</h3>
+            <textarea maxlength='250' cols="30" rows="10" v-model='description'></textarea>
+          </div>
+          <div>
+            <h3>История изменений</h3>
+            <table>
+              <tr>
+                <th>Дата</th>
+                <th>Пользователь</th>
+                <th>Действие</th>
+              </tr>
+            </table>
+          </div>
+        </div>
 
+        <div class="btn-control out-btn-control">
+          <button class="btn-status" @click='destroyModalF'>Отменить</button>
+          <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
+          <button class="btn-status btn-black" 
+          style="height: 0px;" @click='saveTechProcess'>Сохранить</button>
+        </div>
+      </div>
+    </div>
+    <AddOperation 
+      v-if='operationPanelShow' 
+      :key='operationKey'
+      @unmount='unmount_operation'
+      :operation='operationSelect'
+      />
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="showFile" 
+      :key='keyWhenModalGenerateFileOpen'
+    />
+  </div> 
 </template>
 
 <script>
@@ -242,81 +245,81 @@ export default {
         })
     },
     addNewOperation() {
-        this.operationSelect = null
-        this.operationPanelShow = true
-        this.operationKey = random(10, 999)
+      this.operationSelect = null
+      this.operationPanelShow = true
+      this.operationKey = random(10, 999)
     },
     unmount_operation() {
-        console.log(this.allOperationNewList)
+      console.log(this.allOperationNewList)
     },
     selectTr(e, operation) {
-        if(this.tr)
-            this.tr.classList.remove('td-row-all')
-        this.tr = e.parentElement
-        this.tr.classList.add('td-row-all')
-        this.operationSelect = operation
+      if(this.tr)
+        this.tr.classList.remove('td-row-all')
+      this.tr = e.parentElement
+      this.tr.classList.add('td-row-all')
+      this.operationSelect = operation
     },
     editOperation( ) {
-        if(!this.operationSelect)
-            return 0;
-        this.operationPanelShow = true
-        this.operationKey = random(10, 999)
+      if(!this.operationSelect)
+        return 0;
+      this.operationPanelShow = true
+      this.operationKey = random(10, 999)
     },
     changeOperation(val, operation, type) {
-        let eqID = operation.eqID
-        let instrumentID = operation.instrumentID
-        let instrumentMerID = operation.instrumentMerID
-        let instrumentOsnID = operation.instrumentOsnID
+      let eqID = operation.eqID
+      let instrumentID = operation.instrumentID
+      let instrumentMerID = operation.instrumentMerID
+      let instrumentOsnID = operation.instrumentOsnID
 
-        if(type == 'eq')
-            eqID = val
-        if(type == 'inst')
-            instrumentID = val
-        if(type == 'mer')
-            instrumentMerID = val
-        if(type == 'osn')
-            instrumentOsnID = val
+      if(type == 'eq')
+        eqID = val
+      if(type == 'inst')
+        instrumentID = val
+      if(type == 'mer')
+        instrumentMerID = val
+      if(type == 'osn')
+        instrumentOsnID = val
 
-        this.updateOperationTech({
-            eqID, instrumentID,  instrumentMerID, instrumentOsnID, id: operation.id
-        })
+      this.updateOperationTech({
+        eqID, instrumentID,  instrumentMerID, instrumentOsnID, id: operation.id
+      })
             
     },
     bannedOperation() {
-        if(!this.operationSelect)
-            return 0;
+      if(!this.operationSelect)
+        return 0;
 
-        this.banOperation(this.operationSelect.id)
+      this.banOperation(this.operationSelect.id)
     },
     saveTechProcess() {
-        if(!this.formData)
-            this.formData = new FormData();
-        if(isEmpty(this.allOperationNewList))
-            return 0;
+      if(!this.formData)
+        this.formData = new FormData();
+      if(isEmpty(this.allOperationNewList))
+        return 0;
 
-        let operationList = [];
-        for(let tp = 0; tp < this.allOperationNewList.length; tp++) {
-            operationList.push({  id: this.allOperationNewList[tp].id })
-        }
-        this.formData.append("operationList", JSON.stringify(operationList));
-        this.formData.append("description", this.description);
+      let operationList = [];
+      for(let tp = 0; tp < this.allOperationNewList.length; tp++) {
+        operationList.push({  id: this.allOperationNewList[tp].id })
+      }
+      this.formData.append("operationList", JSON.stringify(operationList));
+      this.formData.append("description", this.description);
 
-        if(this.$props.techProcessID)
-            this.formData.append("id", this.$props.techProcessID);
+      if(this.$props.techProcessID)
+        this.formData.append("id", this.$props.techProcessID);
 
-        this.createTechProcess(this.formData).then((res) => {
-            this.$emit('unmount', { id: res.id, opers: this.allOperationNewList});
-            this.destroyModalF() 
-        })
+      this.createTechProcess(this.formData).then((res) => {
+        this.$emit('unmount', { id: res.id, opers: this.allOperationNewList});
+        this.destroyModalF() 
+      })
     },
     setDocs(dc) {
-        this.itemFiles = dc
+      this.itemFiles = dc
     },
     openDock() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 999)
+      if(isEmpty(this.itemFiles))
+        return 0
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
   },
   async mounted() {
@@ -327,24 +330,24 @@ export default {
     this.getAllTypeOperations()
 
     if(this.$props.techProcessID) {
-        this.fetchTechProcess(this.$props.techProcessID).then((res) => {
-            if(!res)
-                return 0
-            if(res.operations) 
-                this.allOperationMutations(res.operations)
-            this.description = res.description
-            if(!res.documents)
-                return 0
-            this.documentsData = res.documents
+      this.fetchTechProcess(this.$props.techProcessID).then((res) => {
+        if(!res)
+          return 0
+        if(res.operations) 
+          this.allOperationMutations(res.operations)
+        this.description = res.description
+        if(!res.documents)
+          return 0
+        this.documentsData = res.documents
 
-            res.documents.forEach(d => {
-                this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
-            })
-            this.randomDataMedia = random(10, 38100)
-
-        }).catch(() => {
-            this.removeOperationStorage()
+        res.documents.forEach(d => {
+          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
         })
+        this.randomDataMedia = random(10, 38100)
+
+      }).catch(() => {
+      this.removeOperationStorage()
+      })
     } 
   }
 }

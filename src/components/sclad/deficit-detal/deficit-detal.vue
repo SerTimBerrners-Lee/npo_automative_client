@@ -3,14 +3,15 @@
     <h3>Дефицит деталей</h3>
     <div>
       <div class="block header_block">
-        <span>Выбрать период, с:</span>
-        <input type="text">
-        <span>по: </span><input type="text">
-        <button class="btn-small">Сбросить период или дату</button>
-        <span>Фильтры по статусу:</span>
-        <label for='z'>Заказано</label><input id='z' type="checkbox">
-        <label for='zn'>Не заказано</label><input id='zn' type="checkbox">
-        <label for='end'>Выполнено</label><input id='end' type='checkbox'>
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
+        <div>
+          <span>Фильтры по статусу:</span>
+          <label for='z'>Заказано</label><input id='z' type="checkbox">
+          <label for='zn'>Не заказано</label><input id='zn' type="checkbox">
+          <label for='end'>Выполнено</label><input id='end' type='checkbox'>
+        </div>
       </div>
 
       <div class='table_block'>
@@ -131,8 +132,9 @@ import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
+import DatePicterRange from '@/components/date-picter-range.vue';
 
 export default {
   data() {
@@ -167,7 +169,7 @@ export default {
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
-  components: {StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal, InformFolder},
+  components: {DatePicterRange, StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal, InformFolder},
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'getOneDetal']),
     unmount_sh_list(res) {
@@ -237,6 +239,9 @@ export default {
       if(!this.select_izd)
         return showMessage('', 'Для начала выберите Деталь, иначе данные не сохранятся!', 'w', this)
       this.kolvo_all = e.innerText
+    },
+    changeDatePicterRange(val) {
+      console.log(val)
     }
   },
   async mounted() {

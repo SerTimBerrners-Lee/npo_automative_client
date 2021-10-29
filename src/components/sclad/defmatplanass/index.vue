@@ -1,14 +1,25 @@
 <template>
 	<div>
-		<h3>Дефицит материалов</h3>
-		<div>
-			<DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
-		</div>
+		<h3>Дефицит материалов на план (сборка)</h3>
 
-		<div>
-			<div class="scroll-table table_material">
+    <div class='table_block'>
+      <div class="table-scroll">
+        <table>
+          <tr>
+            <th><unicon name="check" fill="royalblue" /></th>
+            <th>Заказ покупателя из задач на отгрузку</th>
+            <th>Дата отгрузки покупателю</th>
+          </tr>
+           <tr v-for='order of getShipments' :key='order'>
+            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+              <p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
+            </td>
+            <td>{{ order.number_order }}</td>
+            <td>{{ order.date_shipments }}</td>
+          </tr>
+        </table>
+      </div>
+			<div class="scroll-table table_material" style='margin-left: 5px;'>
 				<table style="width: 200px;">
 					<tr>
 						<th>Категория</th>
@@ -125,12 +136,15 @@
 				<button class="btn-small"> Печать отчета </button>
 			</div>
 		</div>
+		<Start
+			v-if='showStart'
+			:key='startKey'
+		/>
 	</div>
 </template>
 
 <script> 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
 		return {
@@ -141,10 +155,9 @@ export default {
 			span_material: null,
 		}
 	},
-	components: {DatePicterRange},
-	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
+	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM', 'getShipments']),
 	methods: {
-		...mapActions(['fetchGetAllDeficitPPM']),
+		...mapActions(['fetchGetAllDeficitPPM', 'fetchAllShipments']),
 		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
 		instansMaterial(instans, span) {
       if(this.span) 
@@ -189,12 +202,16 @@ export default {
 				console.log(e)
 			}
 		},
-		changeDatePicterRange(val) {
-			console.log(val)
-		}
+		toSetOrders(shipments, e) {
+      if(e.classList.item(1)) 
+        return e.classList.remove('checkbox_block_select')
+      
+      e.classList.add('checkbox_block_select')
+    }
 	},
 	async mounted() {
 		this.fetchGetAllDeficitPPM()
+		this.fetchAllShipments()
 	}
 }
 </script>
