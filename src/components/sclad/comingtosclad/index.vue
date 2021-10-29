@@ -13,13 +13,13 @@
       <div class="scroll-table" style='width: 99%;'>
         <table>
           <tr>
-            <th>№ Заказа</th>
-            <th>Дата создания</th>
-            <th>Наименование поставщика</th>
-            <th>№ счета и Дата</th>
-            <th>Сумма, руб.</th>
+            <th>№ Накладной</th>
             <th>Дата прихода</th>
-            <th>Статус</th>
+            <th>№ Заказа</th>
+            <th>Поставщик</th>
+            <th>Основание</th>
+            <th>Сумма, руб.</th>
+            <th>Примечание</th>
             <th>Подробнее</th>
           </tr>
           <tr 
@@ -27,13 +27,15 @@
             v-for='order of getAllDeliveries' 
             @click='e => selectOrder(order, e.target.parentElement)'
             :key="order">
-            <td>{{ order.name }}</td>
-            <td>{{ order.date_create }}</td>
-            <td>{{ order.provider.name }}</td>
             <td>{{ order.number_check }}</td>
-            <td>{{ order.count }}</td>
             <td>{{ order.date_shipments }}</td>
-            <td>Заказано</td>
+            <td>{{ order.name }}</td>
+            <td>{{ order.provider.name }}</td>
+            <td @click='openCheck(order.documents)' class='select_span_href'>{{ order.number_check }}</td>
+            <td>{{ order.count }}</td>
+            <td @click='OpenDescription(order.description)' class='center'>
+              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать'/>
+            </td>
             <td class='center tooltip' @mousemove="getDetals(order)">
               <div class="tooltiptext">
                 <table>
@@ -67,13 +69,21 @@
       </table>
       </div>
       <div class='btn-control'>
-        <button 
-          class="btn-small" 
-          @click='editOrder'
-          > Редактировать заказ </button>
-        <button class="btn-small btn-add" @click='addOrder'> Создать заказ </button>
+        <button class='btn-small'> Печать </button>
+        <button class="btn-small btn-add"> Создать Приход </button>
       </div>
     </div>
+    <OpensFile 
+			:parametrs='itemFiles' 
+			v-if="itemFiles" 
+			:key='keyWhenModalGenerateFileOpen'
+    />
+    <DescriptionModal 
+      :key='key_description'
+      v-if='description'
+      @unmount='unmount_description'
+      :parametrs='description'
+    />
   </div>
 </template>
 
@@ -81,6 +91,8 @@
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import DescriptionModal from '@/components/description-modal.vue';
 export default {
 	data() {
 		return {
@@ -90,16 +102,25 @@ export default {
       detals_order: [],
       span: null,
       order: null,
-      order_parametr: null
+      order_parametr: null,
+      itemFiles: null,
+      keyWhenModalGenerateFileOpen: random(1, 999),
+      
+      description: '',
+      key_description: random(1, 999)
+
 		}
 	},
   computed: mapGetters(['getAllDeliveries']),
-	components: {DatePicterRange},
+	components: {DatePicterRange, OpensFile, DescriptionModal},
 	methods: {
     ...mapActions(['fetchGetDeliveries']),
     unmount_order() {
       this.fetchGetDeliveries()
       this.order_parametr = null
+    },
+    unmount_description() {
+      this.description = ''
     },
     addOrder() {
       this.showAddOrder = true
@@ -130,6 +151,16 @@ export default {
     },
     changeDatePicterRange(val) {
       console.log(val)
+    },
+    openCheck(documents) {
+			if(!documents || documents.length == 0)
+				return 0;
+			this.itemFiles = documents[0]
+			this.keyWhenModalGenerateFileOpen = random(1, 999)
+		},
+    OpenDescription(val) {
+      this.description = val
+      this.key_description = random(1, 999)
     }
 	},
 	async mounted() {

@@ -83,7 +83,7 @@
 			:key='keyWhenModalGenerateFileOpen'
     />
   </div>
-</template>
+</template> 
 
 <script>
 import {mapGetters, mapActions, mapMutations} from 'vuex';
@@ -161,7 +161,6 @@ export default {
 				return 0;
 			this.itemFiles = documents[0]
 			this.keyWhenModalGenerateFileOpen = random(1, 999)
-
 		}
 	},
 	async mounted() {

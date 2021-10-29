@@ -27,7 +27,7 @@ export default {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
 			this.hiddens = 'display: none;'
-			this.$emit('unpount', this.description)
+			this.$emit('unmount', this.description)
     }
   },
   mounted() {

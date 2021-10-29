@@ -109,6 +109,8 @@
             <button class="btn-small" @click='clear'>Очистить</button>
             <button class="btn-small" @click='clearToSelect'>Удалить выбранное</button>
           </div>
+          <h3>Примечание</h3>
+          <textarea maxlength='250' class='textarea'  v-model='description'></textarea>
         </div>
 
         <div class="btn-control out-btn-control">
@@ -161,6 +163,7 @@ export default {
       nds: '',
       count: 0,
       material_list: [],
+      description: '',
 
       selected_material: null,
       span_deff: null,
@@ -288,6 +291,7 @@ export default {
       this.formData.append('count', this.count)
       this.formData.append('material_list', JSON.stringify(this.material_list))
       this.formData.append('date_shipments', this.date_shipments)
+      this.formData.append('description', this.description)
 
 
       if(this.$props.order_parametr) {
@@ -312,6 +316,7 @@ export default {
       this.number_check = order.number_check
       this.nds = order.nds
       this.count = order.count
+      this.description = order.description
       if(order.product) {
         try {
           this.material_list = JSON.parse(order.product)
@@ -341,6 +346,11 @@ export default {
 </script>
 
 <style scoped>
+.textarea {
+  margin: 10px;
+  width: 48%;
+  height: 120px;
+}
 .header_block * {
   margin-left: 6px;
 }
