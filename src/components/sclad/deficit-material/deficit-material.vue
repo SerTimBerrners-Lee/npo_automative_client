@@ -145,7 +145,7 @@ export default {
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
+		...mapMutations(['getInstansMaterial', 'filterByNameMaterial', 'clearCascheMaterial']),
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -194,9 +194,10 @@ export default {
 		}
 	},
 	async mounted() {
+		this.clearCascheMaterial()
 		this.fetchGetAllDeficitPPM()
 	}
-}
+} 
 </script>
 
 <style scoped>

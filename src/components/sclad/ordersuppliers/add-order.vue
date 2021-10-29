@@ -20,7 +20,7 @@
           <p>
             <span>Планируемая дата прихода:</span>
             <DatePicterCustom 
-              @unmount='changeDatePicterShipments'  
+              @unmount='unmount_date_picters'  
               :dateStart='date_shipments'
             />
             <span>НДС: </span>
@@ -147,7 +147,7 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',   
 
-      date_shipments: new Date().toLocaleDateString("ru-RU"),
+      date_shipments: null,
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
       isChangeFolderFile: false,
@@ -187,6 +187,9 @@ export default {
     unmount_provider(provider) {
       if(provider)
         this.provider = provider
+    },
+    unmount_date_picters(val) {
+      this.date_shipments = val
     },
     addDock(val) {
       val.target.files.forEach(f => {
@@ -338,6 +341,9 @@ export default {
 </script>
 
 <style scoped>
+.header_block * {
+  margin-left: 6px;
+}
 .btn-file{
   color: black;
   background: #d3d3d3;

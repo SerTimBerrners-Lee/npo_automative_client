@@ -36,6 +36,9 @@ export default {
 	watch: {
 		date: function(val) {
 			this.$emit('unmount', val)
+		},
+		dateStart: function(val) {
+			this.date = val
 		}
 	},
 	async mounted() {

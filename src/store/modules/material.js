@@ -215,14 +215,28 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/materialdeficit`)
       if(res.ok) {
         const result = await res.json()
-        ctx.commit('pushAllDeficit', result)
+        ctx.commit('sortPPMtoParent', result)
+        return result
+      }
+    },
+
+    async fetchGetAllShipmentsPPM(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialshipment`)
+      if(res.ok) {
+        const result = await res.json()
+        let new_result = []
+        for(let obj of result) {
+          new_result.push({...obj.mat, dev: obj.dev})
+        }
+        ctx.commit('sortPPMtoParent', new_result)
+        console.log(result)
         return result
       }
     }
   },
   mutations: {
-    pushAllDeficit(state, result) {
-      state.podMaterial = result 
+    sortPPMtoParent(state, result) {
+      state.podMaterial = result
       for(let mat of result) {
         let check = false
         if(mat.material) {
@@ -546,6 +560,14 @@ export default {
           
       state.podMaterial = state.podMaterial
         .filter(t =>  (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase())
+    },
+    clearCascheMaterial(state) {
+      state.typeM = []
+      state.instansTypeM = []
+      state.podTypeM = []
+      state.instansPodTypeM = []
+      state.podMaterial = []
+      state.onePPT = {}
     }
   }
 }

@@ -1,128 +1,172 @@
 <template>
-  <div>
+  <div class='main'>
     <h3>Заказано / в пути</h3>
 
-    <div style='width: fit-content;'>
-      <div class="scroll-table" style='width: 99%;'>
+		<div>
+			<div class="scroll-table table_material">
+				<table style="width: 200px;">
+					<tr>
+						<th>Категория</th>
+					</tr>
+					<tr class='td-row' @click='e => instansMaterial(0, e.target.parentElement)'>
+						<td>Все</td>
+					</tr>
+					<tr class='td-row' @click='e => instansMaterial(1, e.target.parentElement)'>
+						<td>Материалы </td>
+					</tr>
+					<tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
+						<td>Покупные детали</td>
+					</tr>
+					<tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
+						<td>Расходные материалы</td>
+					</tr>
+				</table>
+				<table style="width: 150px;">
+					<tr>
+						<th>Тип</th>
+					</tr>
+					<tr 
+						class='td-row' 
+						v-for='typ of alltypeM' 
+						:key='typ'
+						@click='clickMat(typ)'>
+						<td>{{ typ.name }}</td>
+					</tr>
+				</table>
+				<table style="width: 150px;">
+					<tr>
+						<th>Подтип</th>
+					</tr>
+					<tr 
+						class='td-row' 
+						v-for='p_type of allPodTypeM' 
+						:key='p_type'
+						@click='clickMat(p_type)'>
+						<td>{{ p_type.name }}</td>
+					</tr>
+				</table>
+
         <table>
-          <tr>
-            <th>№ Заказа</th>
-            <th>Дата создания</th>
-            <th>Наименование поставщика</th>
-            <th>№ счета и Дата</th>
-            <th>Сумма, руб.</th>
+          <tr> 
+            <th>Наименование</th>
+            <th>ЕИ</th>
+            <th style='width: 10px;'>Планируемый приход</th>
             <th>Дата прихода</th>
-            <th>Статус</th>
-            <th>Подробнее</th>
+            <th style='width: 120px;'>План. остаток после план прихода и план. расхода</th>
+            <th>Поставщик</th>
+            <th>№ счета</th>
           </tr>
-          <tr 
-            class='td-row' 
-            v-for='order of getAllDeliveries' 
-            @click='e => selectOrder(order, e.target.parentElement)'
-            :key="order">
-            <td>{{ order.name }}</td>
-            <td>{{ order.date_create }}</td>
-            <td>{{ order.provider.name }}</td>
-            <td>{{ order.number_check }}</td>
-            <td>{{ order.count }}</td>
-            <td>{{ order.date_shipments }}</td>
-            <td>Заказано</td>
-            <td class='center tooltip' @mousemove="getDetals(order)">
-              <div class="tooltiptext">
-                <table>
-                  <tr>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>ЕИ</th>
-                    <th>Кол-во</th>
-                    <th>Сумма, руб (за шт.)</th>
-                    <th>Примечание</th>
-                  </tr>
-                  <tr 
-                    v-for='material of detals_order'
-                    :key='material'
-                    class='td-row'>
-                    <td >{{ material.art }}</td>
-                    <td >{{ material.name }}</td>
-                    <td v-html='material.ez'></td>
-                    <td>{{ material.kol }}</td>
-                    <td
-                      class='tooltip'> {{ material.sum }}
-                      <span class="tooltiptext" >Общая сумма: {{ Number(material.kol) * Number(material.sum)  }}</span>
-                    </td>
-                    <td>{{ material.description }}</td>
-                  </tr>
-                </table>
-              </div>
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
+          <tr v-for='material of getOnePodMaterial' :key='material'>
+						<td 
+							@click='e => setMaterial(material, e.target)'
+							class='td-row'> {{ material.name }}</td>
+            <td
+              class='center' 
+              v-html='getComing(material, "ez")'></td>
+            <td
+              class='center'>{{ getComing(material, 'kol') }}</td>
+            <td class='center'>{{ material.dev ? material.dev.date_shipments : '' }}</td>
+            <td class='center'>{{ materialOstat(material) }}</td>
+            <td>{{ material && material.dev ? material.dev.provider.name : '' }}</td>
+            <td @click='openCheck(material.dev.documents)' class='select_span_href'>{{ material.dev.number_check }}</td>
           </tr>
       </table>
       </div>
-      <div class='btn-control'>
-        <button 
-          class="btn-small" 
-          @click='editOrder'
-          > Редактировать заказ </button>
-        <button class="btn-small btn-add" @click='addOrder'> Создать заказ </button>
-      </div>
+			<div class='btn-control'>
+					<button class="btn-small"> Печать отчета </button>
+				</div>
+      
     </div>
+		<OpensFile 
+			:parametrs='itemFiles' 
+			v-if="itemFiles" 
+			:key='keyWhenModalGenerateFileOpen'
+    />
   </div>
 </template>
 
 <script>
-import {random} from 'lodash';
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
+import { random } from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
 export default {
 	data() {
 		return {
-      showAddOrder: false,
-      AddOrderKey: random(1, 999),
-
-      detals_order: [],
       span: null,
-      order: null,
-      order_parametr: null
+			instansLet: 0,
+
+			material: null,
+			span_material: null,
+
+			itemFiles: null,
+			keyWhenModalGenerateFileOpen: random(1, 999)
 		}
 	},
-  computed: mapGetters(['getAllDeliveries']),
-	components: {},
+  computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
+	components: {OpensFile},
 	methods: {
-    ...mapActions(['fetchGetDeliveries']),
-    unmount_order() {
-      this.fetchGetDeliveries()
-      this.order_parametr = null
-    },
-    addOrder() {
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
-    },
-    getDetals(order) {
-      if(order.product) {
-        try {
-          let prod = JSON.parse(order.product)
-          this.detals_order = prod
-        } catch (e) {
-          console.log(e)
-        }
-      }
-    },
-    selectOrder(order, span) {
-      this.order = order
-      if(this.span)
-        this.span.classList.remove('td-row-all')
+    ...mapActions(['fetchGetAllShipmentsPPM']),
+    ...mapMutations(['getInstansMaterial', 'filterByNameMaterial', 'clearCascheMaterial']),
+		instansMaterial(instans, span) {
+      if(this.span) 
+				this.span.classList.remove('td-row-all')
+			if(this.instansLet == instans)
+				return 0
+
       this.span = span
-      this.span.classList.add('td-row-all')
+			this.span.classList.add('td-row-all')
+
+      this.getInstansMaterial(instans)
+      this.instansLet = instans
+
     },
-    editOrder() {
-      if(!this.order) return 0
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
-      this.order_parametr = this.order
-    }
+		clickMat(mat) {
+			this.filterByNameMaterial(mat) 
+    },
+		setMaterial(material, span) {
+			if(this.material && this.material.id == material.id && this.span_material) {
+				this.material = null;
+				return this.span_material = null
+			}
+			if(this.span_material)
+				this.span_material.classList.remove('td-row-all')
+			this.span_material = span
+			this.span_material.classList.add('td-row-all')
+
+			this.material = material
+		},
+    getComing(mat, type) {
+      if(!mat.dev)
+        return 0
+
+      try{
+        let pars_str = JSON.parse(mat.dev.product)
+        for(let prod of pars_str) {
+          if(prod.id == mat.id) {
+            if(type == 'kol') 
+              return prod.kol
+            if(type == 'ez')
+              return prod.ez
+          }
+        }
+      } catch(e) { console.log(e)}
+      
+    },
+		materialOstat(material) {
+			let res = material.shipments_kolvo - this.getComing(material, 'kol')
+			return res < 0 ? -res : res
+		},
+		openCheck(documents) {
+			if(!documents || documents.length == 0)
+				return 0;
+			this.itemFiles = documents[0]
+			this.keyWhenModalGenerateFileOpen = random(1, 999)
+
+		}
 	},
 	async mounted() {
-    this.fetchGetDeliveries()
+    this.clearCascheMaterial()
+    this.fetchGetAllShipmentsPPM()
 	}
 }
 </script>
@@ -130,5 +174,14 @@ export default {
 <style scoped>
 .tooltiptext {
   margin-top: 40px;
+}
+.table_material {
+	display: flex;
+}
+table {
+  height: fit-content;
+}
+.main {
+	width: fit-content;
 }
 </style>
