@@ -121,6 +121,8 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
+
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -135,7 +137,6 @@ import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
-
 export default {
   data() {
     return {
@@ -165,11 +166,12 @@ export default {
       showShipment: false,
       shipmentKey: random(1, 999),
 
-      kolvo_all: 0
+      kolvo_all: 0,
+      loader: false
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
-  components: {DatePicterRange, StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal, InformFolder},
+  components: { DatePicterRange, StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal, InformFolder},
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'getOneDetal']),
     unmount_sh_list(res) {
@@ -245,7 +247,9 @@ export default {
     }
   },
   async mounted() {
+    this.loader = true
     await this.fetchAllShipmentsSclad(true)
+    this.loader = false
   }
 }
 </script>

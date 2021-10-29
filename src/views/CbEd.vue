@@ -135,6 +135,7 @@
       </div> 
     </div>
     </div>
+    <Loader v-if='loader' />
   </div>
 </template>
  
@@ -155,7 +156,9 @@ export default {
 
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(1, 23123)
+      keyWhenModalGenerateFileOpen: random(1, 23123),
+
+      loader: false
     }
   },
   computed: mapGetters(['allCbed', 'allProduct']),
@@ -231,8 +234,12 @@ export default {
 
   },
   async mounted() {
+    this.loader = true
+
     this.getAllProduct()
-    this.getAllCbed()
+    await this.getAllCbed()
+    
+    this.loader = false
   }
 }
 </script>

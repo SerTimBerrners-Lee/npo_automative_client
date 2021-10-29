@@ -2,7 +2,7 @@
   <div class='main'>
     <h3>Заказано / в пути</h3>
 
-		<div>
+		<div v-if='getOnePodMaterial.length'>
 			<div class="scroll-table table_material">
 				<table style="width: 200px;">
 					<tr>
@@ -74,9 +74,11 @@
       </div>
 			<div class='btn-control'>
 					<button class="btn-small"> Печать отчета </button>
-				</div>
-      
+			</div>
     </div>
+		<div v-else class='center'>Ничего не найдено...</div>
+		<Loader v-if='loader' />
+
 		<OpensFile 
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -99,7 +101,9 @@ export default {
 			span_material: null,
 
 			itemFiles: null,
-			keyWhenModalGenerateFileOpen: random(1, 999)
+			keyWhenModalGenerateFileOpen: random(1, 999),
+
+			loader: false
 		}
 	},
   computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
@@ -139,7 +143,7 @@ export default {
       if(!mat.dev)
         return 0
 
-      try{
+      try {
         let pars_str = JSON.parse(mat.dev.product)
         for(let prod of pars_str) {
           if(prod.id == mat.id) {
@@ -149,7 +153,9 @@ export default {
               return prod.ez
           }
         }
-      } catch(e) { console.log(e)}
+      } catch(e) { 
+				console.log(e)
+			}
       
     },
 		materialOstat(material) {
@@ -164,8 +170,10 @@ export default {
 		}
 	},
 	async mounted() {
+		this.loader = true
     this.clearCascheMaterial()
-    this.fetchGetAllShipmentsPPM()
+    await this.fetchGetAllShipmentsPPM()
+		this.loader = false
 	}
 }
 </script>
@@ -182,5 +190,9 @@ table {
 }
 .main {
 	width: fit-content;
+}
+.else {
+	font-size: 30px;
+	margin: 60px;
 }
 </style>

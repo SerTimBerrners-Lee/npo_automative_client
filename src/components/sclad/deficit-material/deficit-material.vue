@@ -125,6 +125,7 @@
 				<button class="btn-small"> Печать отчета </button>
 			</div>
 		</div>
+		<Loader v-if='loader' />
 	</div>
 </template>
 
@@ -139,6 +140,8 @@ export default {
 
 			material: null,
 			span_material: null,
+
+			loader: false
 		}
 	},
 	components: {DatePicterRange},
@@ -194,8 +197,10 @@ export default {
 		}
 	},
 	async mounted() {
+		this.loader = true
 		this.clearCascheMaterial()
-		this.fetchGetAllDeficitPPM()
+		await this.fetchGetAllDeficitPPM()
+		this.loader = false
 	}
 } 
 </script>

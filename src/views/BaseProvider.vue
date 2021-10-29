@@ -1,261 +1,265 @@
 <template>
-    <div> 
-        <div class="flex-box-main">
-            <div class="left-block-bprovider">
-                 <h3>База поставщиков</h3>
-                <div class="scroll-table">
-                    <table class="provider_table"> 
-                        <tr> 
-                            <th>ИНН</th>
-                            <th style="width: 440px;">Наименование поставщика</th>
+  <div> 
+    <div class="flex-box-main">
+      <div class="left-block-bprovider">
+        <h3>База поставщиков</h3>
+        <div class="scroll-table">
+          <table class="provider_table"> 
+            <tr> 
+              <th>ИНН</th>
+              <th style="width: 440px;">Наименование поставщика</th>
+            </tr>
+            <tr 
+              v-for="provider in allProvider" 
+              :key="provider" 
+              class="td-row"
+              @click="setProvider(provider)">
+              <td>{{ provider.inn }}</td>
+              <td>{{ provider.name }}</td>
+            </tr>
+            <tr v-for="i in 10" :key="i">
+              <td>...</td><td>...</td>
+            </tr>
+          </table>
+        </div>
+        <div class="btn-control">
+          <button class="btn-small btn-add" @click="$router.push({path: '/baseprovider/addedit/add'})">Создать</button>
+          <button class="btn-small" @click="editProvider">Редактировать</button>
+          <button class="btn-small" @click="banProvider">В архив</button>
+        </div>
+        <h3>Фильтр по материалу</h3>
+        <div >
+          <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
+            <table style="width: 33%; height: max-content;"> 
+              <tr>
+                <th>Тип</th>
+              </tr>
+                <tr>
+                  <td>
+                    <Search 
+                      :placeholder='`Поиск `'
+                      @unmount='searchGT' 
+                    />
+                  </td>
+                </tr>
+              <tr 
+                v-for='t in getGlobalProviderTypeM' 
+                :key='t'
+                class='td-row'>
+                <td>{{ t.name }}</td>
+              </tr>
+            </table>
+            <table style="width: 33%; height: max-content;"> 
+              <tr>
+                <th>Подтип</th>
+              </tr>
+                <tr>
+                  <td>
+                    <Search 
+                      :placeholder='`Поиск `'
+                      @unmount='searchGPT' 
+                    />
+                  </td>
+                </tr>
+              <tr 
+                v-for='t in getGlobalProviderPTypeM' 
+                :key='t'
+                class='td-row'
+                >
+                <td>{{ t.name }}</td>
+              </tr>
+            </table>
+            <table style="width: 33%; height: max-content;"> 
+              <tr>
+                <th>Наименование</th>
+              </tr>
+                <tr>
+                  <td>
+                    <Search 
+                      :placeholder='`Поиск `'
+                      @unmount='searchGName' 
+                    />  
+                  </td>
+                </tr>
+              <tr 
+                class='td-row' 
+                v-for='t in getGlobalProviderPM' 
+                :key='t'
+                @click='clicksGName(t)'>
+                <td >{{ t.name}}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div class="btn-control">
+          <button class="btn-small" @click='clearFilter'>Сбросить фильтр </button>
+        </div>
+      </div>
+      <div class="right-block-bprovider">
+        <h3>Подробная информация о поставщике</h3>
+        <div class="block">
+          <div class="first-block-description">
+            <p>
+              <span>Наименование: </span><input type="text" :value="obj.name">
+            </p>
+            <p>
+              <span>ИНН: </span><input type="text" :value="obj.inn">
+            </p>
+            <p>
+              <span>КПП: </span><input type="text" :value="obj.cpp">
+            </p>
+          </div>
+          <div>
+          <div class="block-d-r">
+            <div>
+              <div>
+                <h3>Реквизиты</h3>
+                <table class="table_rek">
+                  <tr class="td-row" v-for="rek in obj.rekvisit" :key='rek'>
+                    <th>{{ rek.name }}</th>
+                    <td>{{ rek.description }}</td>
+                  </tr>
+                </table>
+              </div>
+              <div>
+                <h3>Контакты</h3>
+                <table class="table_rek">
+                  <tr class="td-row" v-for="cont in obj.contact" :key='cont'>
+                    <th> {{ cont.initial }}</th>
+                    <th> {{ cont.description }}</th>
+                  </tr>
+                </table>
+              </div>
+              <div>
+                <h3>Описание / примечание</h3>
+                <textarea maxlength='250' :value="obj.description"></textarea>
+                <h3>История изменений</h3>
+              </div>
+            </div>
+            <div>
+              <div>
+                <div>
+                  <h3>Документы</h3>
+                  <table style="width: 100%">
+                    <tr>
+                      <th>Файл</th>
+                    </tr>
+                    <tr class="td-row" 
+                      v-for="doc in obj.documents" 
+                      :key="doc"
+                      @click="clickDoc(doc)">
+                      <td> {{ doc.name }} </td>
+                    </tr>
+                  </table>
+                </div>
+                </div>
+                <div >
+                  <h3>Поставляемый материал</h3>
+                  <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
+                    <table style="width: 33%; height: max-content;"> 
+                      <tr>
+                        <th>Тип</th>
+                      </tr>
+                        <tr>
+                          <td>
+                            <Search 
+                              :placeholder='`Поиск `'
+                              @unmount='searchMat' 
+                            />
+                          </td>
                         </tr>
-                        <tr v-for="provider in allProvider" 
-                        :key="provider" 
-                        class="td-row"
-                        @click="setProvider(provider)">
-                            <td>{{ provider.inn }}</td>
-                            <td>{{ provider.name }}</td>
+                      <tr 
+                        v-for='t in getproviderTypeM' 
+                        :key='t'
+                        class='td-row'
+                        @click='filterByType(t)'>
+                        <td>{{ t.name }}</td>
+                      </tr>
+                    </table>
+                    <table style="width: 33%; height: max-content;"> 
+                      <tr>
+                        <th>Подтип</th>
+                      </tr>
+                        <tr>
+                          <td>
+                            <Search 
+                              :placeholder='`Поиск `'
+                              @unmount='searchPT' 
+                            />
+                          </td>
                         </tr>
-                        <tr v-for="i in 10" :key="i">
-                            <td>...</td><td>...</td>
+                      <tr 
+                        v-for='t in getproviderPTypeM' 
+                        :key='t'
+                        class='td-row'
+                        @click='filterByPType(t)'>
+                        <td>{{ t.name }}</td>
+                      </tr>
+                    </table>
+                    <table style="width: 33%; height: max-content;"> 
+                      <tr>
+                        <th>Наименование</th>
+                      </tr>
+                        <tr>
+                          <td>
+                            <Search 
+                              :placeholder='`Поиск `'
+                              @unmount='searchName' 
+                            />
+                          </td>
                         </tr>
+                      <tr v-for='t in getproviderMaterial' :key='t'>
+                        <td>{{ t.name}}</td>
+                      </tr>
                     </table>
                 </div>
                 <div class="btn-control">
-                    <button class="btn-small btn-add" @click="$router.push({path: '/baseprovider/addedit/add'})">Создать</button>
-                    <button class="btn-small" @click="editProvider">Редактировать</button>
-                    <button class="btn-small" @click="banProvider">В архив</button>
+                  <button class="btn-small" @click='clearFilterByNode'>Сбросить</button>
                 </div>
-                <h3>Фильтр по материалу</h3>
-               <div >
-                
-                                    <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Тип</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                       @unmount='searchGT' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getGlobalProviderTypeM' 
-                                                :key='t'
-                                                class='td-row'>
-                                                <td>{{ t.name }}</td>
-                                            </tr>
-                                        </table>
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Подтип</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchGPT' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getGlobalProviderPTypeM' 
-                                                :key='t'
-                                                class='td-row'
-                                                >
-                                                <td>{{ t.name }}</td>
-                                            </tr>
-                                        </table>
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Наименование</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchGName' 
-                                                    />  
-                                                </td>
-                                             </tr>
-                                            <tr 
-                                                class='td-row' 
-                                                v-for='t in getGlobalProviderPM' 
-                                                :key='t'
-                                                @click='clicksGName(t)'>
-                                                <td >{{ t.name}}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                </div>
-                            <div class="btn-control">
-                                <button class="btn-small" @click='clearFilter'>Сбросить фильтр </button>
-                            </div>
+              </div>
             </div>
-            <div class="right-block-bprovider">
-                <h3>Подробная информация о поставщике</h3>
-                <div class="block">
-                    <div class="first-block-description">
-                        <p>
-                            <span>Наименование: </span><input type="text" :value="obj.name">
-                        </p>
-                        <p>
-                            <span>ИНН: </span><input type="text" :value="obj.inn">
-                        </p>
-                        <p>
-                            <span>КПП: </span><input type="text" :value="obj.cpp">
-                        </p>
-                    </div>
-                    <div>
-                        <div class="block-d-r">
-                            <div>
-                                <div>
-                                    <h3>Реквизиты</h3>
-                                    <table class="table_rek">
-                                        <tr class="td-row" v-for="rek in obj.rekvisit" :key='rek'>
-                                            <th>{{ rek.name }}</th>
-                                            <td>{{ rek.description }}</td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div>
-                                    <h3>Контакты</h3>
-                                    <table class="table_rek">
-                                        <tr class="td-row" v-for="cont in obj.contact" :key='cont'>
-                                            <th> {{ cont.initial }}</th>
-                                             <th> {{ cont.description }}</th>
-                                        </tr>
-                                    </table>
-                                </div>
-                                <div>
-                                    <h3>Описание / примечание</h3>
-                                    <textarea maxlength='250' :value="obj.description"></textarea>
-                                    <h3>История изменений</h3>
-                                </div>
-                            </div>
-                            <div>
-                                 <div>
-                                <div>
-                                    <h3>Документы</h3>
-                                    <table style="width: 100%">
-                                        <tr>
-                                            <th>Файл</th>
-                                        </tr>
-                                        <tr class="td-row" 
-                                        v-for="doc in obj.documents" 
-                                        :key="doc"
-                                        @click="clickDoc(doc)">
-                                            <td> {{ doc.name }} </td>
-                                        </tr>
-                                    </table>
-                                </div>
-                                </div>
-                                <div >
-                                    <h3>Поставляемый материал</h3>
-                                    <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Тип</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchMat' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getproviderTypeM' 
-                                                :key='t'
-                                                class='td-row'
-                                                @click='filterByType(t)'>
-                                                <td>{{ t.name }}</td>
-                                            </tr>
-                                        </table>
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Подтип</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchPT' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getproviderPTypeM' 
-                                                :key='t'
-                                                class='td-row'
-                                                @click='filterByPType(t)'>
-                                                <td>{{ t.name }}</td>
-                                            </tr>
-                                        </table>
-                                        <table style="width: 33%; height: max-content;"> 
-                                            <tr>
-                                                <th>Наименование</th>
-                                            </tr>
-                                             <tr>
-                                                <td>
-                                                    <Search 
-                                                        :placeholder='`Поиск `'
-                                                        @unmount='searchName' 
-                                                    />
-                                                </td>
-                                             </tr>
-                                            <tr v-for='t in getproviderMaterial' :key='t'>
-                                                <td>{{ t.name}}</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <div class="btn-control">
-                                        <button class="btn-small" @click='clearFilterByNode'>Сбросить</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div>
-                            <h3>Поставки поставщиков</h3>
-                            <div class="scroll-table">
-                                <table>
-                                    <tr>
-                                        <th>№ Заказа</th>
-                                        <th>Дата создания</th>
-                                        <th>№ счета и Дата</th>
-                                        <th>Сумма, руб.</th>
-                                        <th>Дата прихода</th>
-                                        <th>Статус</th>
-                                        <th>Подробнее</th>
-                                    </tr>
-                                    <tr v-for="uu in 40" :key="uu" class="td-row">
-                                        <td>...</td>
-                                        <td>...</td>
-                                        <td>...</td>
-                                        <td>...</td>
-                                        <td>...</td>
-                                        <td>...</td>
-                                        <td>...</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div>
-                <div class="btn-control block endgroup">
-                    <button class=" btn-black">Печать подробной информации о поставщике</button>
-                </div>
-                </div>
+          </div>
+          <div>
+            <h3>Поставки поставщиков</h3>
+            <div class="scroll-table">
+              <table>
+                <tr>
+                  <th>№ Заказа</th>
+                  <th>Дата создания</th>
+                  <th>№ счета и Дата</th>
+                  <th>Сумма, руб.</th>
+                  <th>Дата прихода</th>
+                  <th>Статус</th>
+                  <th>Подробнее</th>
+                </tr>
+                <tr v-for="uu in 40" :key="uu" class="td-row">
+                  <td>...</td>
+                  <td>...</td>
+                  <td>...</td>
+                  <td>...</td>
+                  <td>...</td>
+                  <td>...</td>
+                  <td>...</td>
+                </tr>
+              </table>
             </div>
+          </div>
+          </div>
         </div>
-        <router-view></router-view>
-        <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="itemFiles"
-            :key='keyWhenModalGenerateFileOpen'
-        />
+        <div>
+        <div class="btn-control block endgroup">
+          <button class=" btn-black">Печать подробной информации о поставщике</button>
+        </div>
+        </div>
+      </div>
     </div>
+    <router-view></router-view>
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="itemFiles"
+      :key='keyWhenModalGenerateFileOpen'
+    />
+  </div>
 </template>
 
 <script>

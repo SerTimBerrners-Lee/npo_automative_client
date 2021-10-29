@@ -50,6 +50,8 @@
         @unmount='openFile'
         :key='keyWhenModalGenerateFileOpen'
       />
+
+      <Loader v-if='loader' />
     </div>
   </div>
 </template> 
@@ -71,7 +73,9 @@ export default {
       itemFiles: null,
       keyWhenModalGenerateFileOpen: random(10, 4e4),
       span: null,
-      instansLet: 0
+      instansLet: 0,
+
+      loader: false
     }
   },
   components:{TableMaterial, OpensFile, TableNode},
@@ -154,9 +158,13 @@ export default {
     }
   },
   async mounted() {
-    this.getAllTypeMaterial()
-    this.getAllPodTypeMaterial()
-    this.fetchGetAllPPM()
+    this.loader = true
+    
+    await this.getAllTypeMaterial()
+    await this.getAllPodTypeMaterial()
+    await this.fetchGetAllPPM()
+
+    this.loader = false
   }
 }
 </script>

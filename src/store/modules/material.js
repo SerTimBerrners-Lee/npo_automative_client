@@ -234,7 +234,7 @@ export default {
       }
     }
   },
-  mutations: {
+  mutations: { 
     sortPPMtoParent(state, result) {
       state.podMaterial = result
       for(let mat of result) {

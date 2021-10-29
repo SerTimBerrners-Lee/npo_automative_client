@@ -6,7 +6,7 @@
           <div class="scroll-table" >
             <table class="table-base-detal">
               <tr>
-                  <th colspan="3" scope="col">Изделие</th>
+                <th colspan="3" scope="col">Изделие</th>
               </tr>
               <tr>
                 <th>Заводской номер</th>
@@ -106,6 +106,7 @@
         </div> 
       </div>
     </div>
+    <Loader v-if='loader' />
   </div>
 </template>
  
@@ -124,7 +125,9 @@ export default {
 
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(1, 23123)
+      keyWhenModalGenerateFileOpen: random(1, 23123),
+
+      loader: false
     }
   },
   computed: mapGetters(['allProduct']),
@@ -173,7 +176,9 @@ export default {
     },
   },
   async mounted() {
-    this.getAllProduct()
+    this.loader = true
+    await this.getAllProduct()
+    this.loader = false
   }
 }
 </script>

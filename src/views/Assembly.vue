@@ -87,6 +87,8 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
+
+    <Loader v-if='loader' />
 	</div>
 </template>
 
@@ -116,7 +118,9 @@ export default {
       keyOperationPathModal: random(1, 999),
       showOperationPathModal: false,
 
-      assemble_props: null
+      assemble_props: null,
+
+      loader: false
 		}
 	},
   computed: mapGetters(['getShipments']),
@@ -153,7 +157,9 @@ export default {
     }
 	},
 	async mounted() {
+    this.loader = true
     await this.fetchAllShipmentsAssemble()
+    this.loader = false
 	}
 }
 </script>

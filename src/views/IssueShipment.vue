@@ -81,6 +81,7 @@
       :parametrs='description'
     />
 
+		<Loader v-if='loader' />
 	</div>
 </template> 
 
@@ -99,6 +100,8 @@ export default {
 			showDescriptionModal: false,
       descriptionKey: random(1, 999),
       description: '',
+
+			loader: false
 		}	
 	},
 	computed: mapGetters(['getShipments']),
@@ -134,7 +137,9 @@ export default {
     }
 	},
 	async mounted() {
+		this.loader = true
 		await this.fetchAllShipments()
+		this.loader = false
 	}
 }
 </script>

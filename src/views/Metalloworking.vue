@@ -97,6 +97,8 @@
       v-if='data_material_info'
       :key='key_material_info'
     />
+
+    <Loader v-if='loader' />
 	</div>
 </template>
 
@@ -131,7 +133,9 @@ export default {
       data_material_info: null,
       key_material_info: random(1, 999),
 
-      metaloworking_props: null
+      metaloworking_props: null,
+
+      loader: false
 		}
 	},
 	computed: mapGetters(['getShipments']),
@@ -175,7 +179,9 @@ export default {
     }
   },
 	async mounted() {
+    this.loader = true
     await this.fetchAllShipmentsMetaloworking() 
+    this.loader = false
 	}
 }
 </script>

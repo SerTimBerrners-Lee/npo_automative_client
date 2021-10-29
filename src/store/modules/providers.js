@@ -69,6 +69,15 @@ export default {
         return true
       }
     },
+    async fetchGetDeliveriesCaming(ctx) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveriedcoming`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit("setAllDeliveries", result)
+        console.log(result)
+        return result
+      }
+    },
   },
   mutations: {
     setAllDeliveries(state, result) {

@@ -70,7 +70,7 @@
       </div>
       <div class='btn-control'>
         <button class='btn-small'> Печать </button>
-        <button class="btn-small btn-add"> Создать Приход </button>
+        <button class="btn-small btn-add" @click='startComing()'> Создать Приход </button>
       </div>
     </div>
     <OpensFile 
@@ -84,6 +84,12 @@
       @unmount='unmount_description'
       :parametrs='description'
     />
+    <ComingModal 
+      :key='key_coming'
+      v-if='show_coming'
+    />
+
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -93,6 +99,7 @@ import {mapGetters, mapActions} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DescriptionModal from '@/components/description-modal.vue';
+import ComingModal from './coming-modal.vue';
 export default {
 	data() {
 		return {
@@ -107,14 +114,19 @@ export default {
       keyWhenModalGenerateFileOpen: random(1, 999),
       
       description: '',
-      key_description: random(1, 999)
+      key_description: random(1, 999),
+
+      key_coming: random(1, 999),
+      show_coming: false,
+
+      loader: false
 
 		}
 	},
   computed: mapGetters(['getAllDeliveries']),
-	components: {DatePicterRange, OpensFile, DescriptionModal},
+	components: {DatePicterRange, OpensFile, DescriptionModal, ComingModal},
 	methods: {
-    ...mapActions(['fetchGetDeliveries']),
+    ...mapActions(['fetchGetDeliveriesCaming']),
     unmount_order() {
       this.fetchGetDeliveries()
       this.order_parametr = null
@@ -161,10 +173,16 @@ export default {
     OpenDescription(val) {
       this.description = val
       this.key_description = random(1, 999)
+    },
+    startComing() {
+      this.key_coming = random(1, 999)
+      this.show_coming = true
     }
 	},
 	async mounted() {
-    this.fetchGetDeliveries()
+    this.loader = true
+    await this.fetchGetDeliveriesCaming()
+    this.loader = false
 	}
 }
 </script>

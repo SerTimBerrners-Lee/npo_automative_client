@@ -153,6 +153,8 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
+
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -197,6 +199,8 @@ export default {
       select_izd: null,
       
       kolvo_all: null,
+
+      loader: false
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
@@ -290,7 +294,9 @@ export default {
     }
   },
   async mounted() {
+    this.loader = true
     await this.fetchAllShipmentsSclad(true)
+    this.loader = false
   }
 }
 </script>

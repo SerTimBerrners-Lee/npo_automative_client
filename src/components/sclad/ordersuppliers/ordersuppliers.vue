@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div> 
     <h3>Заказано у поставщиков</h3>
     <div>
       <div class="block header_block">
@@ -80,6 +80,7 @@
       @unmount='unmount_order'
       :order_parametr='order_parametr'
     />
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -98,6 +99,8 @@ export default {
       span: null,
       order: null,
       order_parametr: null,
+
+      loader: false
 		}
 	},
   computed: mapGetters(['getAllDeliveries']),
@@ -140,7 +143,9 @@ export default {
     }
 	},
 	async mounted() {
-    this.fetchGetDeliveries()
+    this.loader = true
+    await this.fetchGetDeliveries()
+    this.loader = false
 	}
 }
 </script>
