@@ -77,8 +77,8 @@ export default {
       await ctx.commit("getTypeMaterial", result)
       return result
     },
-    async getAllPodTypeMaterial(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial`)
+    async getAllPodTypeMaterial(ctx, instans = 'all') {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${instans}`)
       const result = await res.json()
 
       await ctx.commit('filterMatByPodType', result)
@@ -162,11 +162,14 @@ export default {
           ctx.commit('deletePodMaterial', id)
     },
     async getOnePodType(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${id}`)
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerialid/${id}`)
       const result = await res.json()
       
-      ctx.commit('addOnePodType', result)
-      return result
+      if(res.ok) {
+       ctx.commit('addOnePodType', result)
+        console.log(result)
+        return result
+      }
     },
     async createNewPodPodMaterial(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/`, {

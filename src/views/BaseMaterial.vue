@@ -107,8 +107,10 @@ export default {
       if(type == 'type') {
         this.material = mat
         this.filterByNameMaterial(mat) 
-        if(mat.podMaterials && this.instansLet != 1) 
+        if(mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
           this.filterMatByPodType(mat.podMaterials)
+        else 
+          this.getAllPodTypeMaterial(1)
       }
 
       if(type == 'podM') 
