@@ -150,7 +150,7 @@ import AddPosition from './new-position.vue';
 import InformFolder from '@/components/InformFolder.vue';
 import { showMessage } from '@/js/';
 export default {
-  props: ['parametrs'],
+  props: [''],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -186,10 +186,14 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['']),
+  computed: mapGetters(['getAllDeliveries']),
   components: {AddFile, ProviderList, AddPosition, InformFolder},
   methods: {
-    ...mapActions(['fetchGetProviders', 'fetchPushWaybillCreate']),
+    ...mapActions([
+      'fetchGetProviders', 
+      'fetchPushWaybillCreate', 
+      'fetchGetDeliveriesCaming',
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -203,8 +207,11 @@ export default {
         this.document = this.formData.get('document').name
     },
     unmount_provider(provider) {
-      if(provider)
+      if(provider && provider.product) {
         this.provider = provider
+        this.product = provider.product
+      }
+        
     },
     unmount_position(material_list) {
       if(material_list && material_list.length) {
@@ -219,21 +226,30 @@ export default {
       this.isChangeFolderFile = true
     },
     addProvider() {
-      this.fetchGetProviders().then(res => {
-        this.allProvider = res
-        this.key_provider_modal = random(1, 999)
-      })
+      this.key_provider_modal = random(1, 999)
     },
-    editVariable(dev) {
-      if(dev.product) {
-        try {
-          this.product = JSON.parse(dev.product)
-        } catch (e) {
-          console.log(e)
+    editVariable() {
+      // mampping providers
+      let check = true
+      for(let dev of this.getAllDeliveries) {
+        for(let prov = 0; prov < this.allProvider.length; prov++) {
+          if(this.allProvider[prov].id == dev.provider.id && this.allProvider[prov].product && this.allProvider[prov].product.length) {
+            try {
+              let pars = JSON.parse(dev.product)
+              for(let d of pars) {
+                this.allProvider[prov].product.push(d)
+              }
+            } catch (e) {console.log(e)}
+            check = false
+          }
         }
-      }
-      this.provider = dev.provider
-      this.description = dev.description
+
+        if(check) {
+          try {
+            this.allProvider.push({ ...dev.provider, product: JSON.parse(dev.product)})
+          } catch(e) {console.log(e)}
+        } else check = false
+    }
     },
     pushToServer() {
       if(!this.provider)
@@ -244,14 +260,22 @@ export default {
       this.formData.append('product_list', JSON.stringify(this.selected_products))
 
       this.fetchPushWaybillCreate(this.formData)
+      this.destroyModalF()
+      this.$emit('unmount', null)
     },
     setProd(prod) {
       this.selected_products.push(prod)
-      this.product = this.product.filter(p => p.id != prod.id)
+      for(let inx in this.product) {
+        if(this.product[inx].id == prod.id && this.product[inx].art == prod.art)
+          this.product.splice(inx, 1)
+      }
     },
     delProd(prod) {
       this.product.push(prod)
-      this.selected_products = this.selected_products.filter(p => p.id != prod.id)
+      for(let inx in this.selected_products) {
+        if(this.selected_products[inx].id == prod.id && this.selected_products[inx].art == prod.art)
+          this.selected_products.splice(inx, 1)
+      }
     },
     allItemsAdd() {
       for(let prod of this.product) {
@@ -288,8 +312,10 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-    if(this.$props.parametrs) 
-      this.editVariable(this.$props.parametrs)
+    this.loader = true
+    await this.fetchGetDeliveriesCaming()
+    this.editVariable()
+    this.loader = false
       
   },
 }

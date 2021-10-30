@@ -6,7 +6,8 @@ export default {
     onTimeProvider: [],
     oneProvider: {},
 
-    deliveries: []
+    deliveries: [],
+    waybills: []
   },
   getters: { 
     allProvider(state) {
@@ -17,6 +18,9 @@ export default {
     },
     getAllDeliveries(state) {
       return state.deliveries
+    },
+    getAllWaybills(state) {
+      return state.waybills
     }
   },
   actions: { 
@@ -83,12 +87,22 @@ export default {
       })
       if(res.ok) {
         const result = await res.json()
-        console.log(result)
         return result
       }
-    }
+    },
+    async fetchWaybill(ctx) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/provider/waylbil`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit("setAllWaybill", result)
+        return result
+      }
+    },
   },
   mutations: {
+    setAllWaybill(state, result) {
+      state.waybills = result
+    },
     setAllDeliveries(state, result) {
       state.deliveries = result
     },

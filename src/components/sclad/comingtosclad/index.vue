@@ -24,7 +24,7 @@
           </tr>
           <tr 
             class='td-row' 
-            v-for='order of getAllDeliveries' 
+            v-for='order of []' 
             @click='e => selectOrder(order, e.target.parentElement)'
             :key="order">
             <td>{{ order.number_check }}</td>
@@ -70,7 +70,7 @@
       </div>
       <div class='btn-control'>
         <button class='btn-small'> Печать </button>
-        <button class="btn-small btn-add" @click='startComing()'> Создать Приход </button>
+        <button class="btn-small btn-add" @click='startComing'> Создать Приход </button>
       </div>
     </div>
     <OpensFile 
@@ -88,6 +88,7 @@
       :key='key_coming'
       v-if='show_coming'
       :parametrs='order'
+      @unmount='unmount_waybill'
     />
 
     <Loader v-if='loader' />
@@ -124,13 +125,13 @@ export default {
 
 		}
 	},
-  computed: mapGetters(['getAllDeliveries']),
+  computed: mapGetters(['getAllWaybills']),
 	components: {DatePicterRange, OpensFile, DescriptionModal, ComingModal},
 	methods: {
-    ...mapActions(['fetchGetDeliveriesCaming']),
-    unmount_order() {
-      this.fetchGetDeliveries()
-      this.order_parametr = null
+    ...mapActions(['fetchWaybill']),
+    unmount_waybill() {
+      this.loader = true
+      this.fetchWaybill().then(() => this.loader = false)
     },
     unmount_description() {
       this.description = ''
@@ -176,17 +177,14 @@ export default {
       this.key_description = random(1, 999)
     },
     startComing() {
-      if(!this.order)
-        return false
-
-
       this.key_coming = random(1, 999)
       this.show_coming = true
     }
 	},
 	async mounted() {
     this.loader = true
-    await this.fetchGetDeliveriesCaming()
+    await this.fetchWaybill()
+    console.log(this.getAllWaybills)
     this.loader = false
 	}
 }
