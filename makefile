@@ -7,4 +7,4 @@ stop:
 rmi:
 	docker rmi npo-client
 copy:
-	mv ./dist/* /var/www/html/
+	cp -r dist/* /var/www/html
