@@ -259,6 +259,7 @@
       v-if="itemFiles"
       :key='keyWhenModalGenerateFileOpen'
     />
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -288,7 +289,9 @@ export default {
 
       sName: '',
       sPT: '',
-      sMat: ''
+      sMat: '',
+
+      loader: false
     }
   },
   computed: mapGetters(['allProvider', 
@@ -410,11 +413,13 @@ export default {
     }
   },
   async mounted() {
+    this.loader = true
     await this.fetchGetProviders()
     await this.getAllTypeMaterial()
     await this.getAllPodTypeMaterial()
     // При загрузки страницы начинаем фильтровать материал 
     this.globalProviderFilter(this.allProvider)
+    this.loader = false
   }
 }
 </script>

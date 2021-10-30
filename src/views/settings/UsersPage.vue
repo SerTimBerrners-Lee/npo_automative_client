@@ -1,163 +1,165 @@
 <template>
-    <div>
-        <div class="table-content">
-        <h3 class="h3-title">1. Сотрудники</h3>
-        <div class="type-issue">
-            <span @click="knowGet = !knowGet" 
-                    v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
-        </div>
-            <div class="scroll-table" style="height: 450px;">
-            <table> 
-                <tr>
-                    <th>Табельный номер</th>
-                    <th>Должность</th>
-                    <th style="width: 300px;">Инициалы</th>
-                </tr>
-                <tr class="td-row" 
-                    v-for="user in knowGet ? getUsers : getUserBan" 
-                    :key="user" @click="e => userShow(user, e.target.parentElement)"
-                    >
-                    <td class="tabel-td">{{ user.tabel }}</td>
-                    <td>{{ user.role ? user.role.description : '' }}</td>
-                    <td> {{ user.initial }}</td>
-                </tr>
-                <tr class="td-row"  v-for="iten in 70" :key="iten">
-                    <td style='height: 10px;'></td> 
-                    <td></td>
-                    <td></td>
-                </tr>
-            </table> 
-            </div>
-            <div class="btn-control" v-if='getRoleAssets && !getRoleAssets.assets.usersListAssets.read'>
-                <button 
-                    @click="userBan"
-                    class='btn-small' > 
-                    {{ knowGet ? 'В архив' : 'В Активные' }}
-                </button>
-                <button 
-                    @click="editUser"
-                    class='btn-small'>
-                    Редактировать</button>
-                <button 
-                    @click="addUser"
-                    class='btn-small btn-add'>
-                    Добавить
-                </button>
-            </div>
-        </div>
-        <div class="inform-content" v-if='getRoleAssets && getRoleAssets.assets.usersListAssets.hideUserData'>
-            <h3 class="initial-user">{{ initial }}</h3>
-            <div class="inform-block">
-                <div class="contact-inform">
-                    <div class="data-user-form">
-                        <div class="prim">
-                            <div class="p-1">
-                              <p>
-                                <span>Должность: </span>
-                                <input type="text" :value='roles'>
-                              </p>
-                              <p> 
-                                <span>Табельный номер: </span>
-                                <input type="text" :value='tabel'>
-                              </p>
-                            </div>
-                            <p class="p-2">
-                                <span>Дата приема на работу: </span>
-                                <input type="text" :value='dateWork'>
-                            </p>
-                            <div class="p-3">
-                              <p>
-                                <span>Логин: </span>
-                                <input type="text" :value='login'>
-                              </p>
-                              <p>
-                                <span>День рождения: </span>
-                                <input type="text" :value='birthday'>
-                              </p>
-                            </div>
-                            <h3>Контактные данные</h3>
-                            <p class="p-4">
-                                <span>Моб. телефон: </span>
-                                <input type="text" :value='phone'>
-                            </p> 
-                            <p class="p-5">
-                                <span>Постоянный адрес проживания: </span>
-                                <input type="text" :value='adress'>
-                            </p>
-                            <p class="p-6">
-                                <span>Адрес по прописке: </span>
-                                <input type="text" :value='adressProps'>
-                            </p>
-                        </div>
-                        <h3>Примечание</h3>
-                        <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
-                    </div>
-                </div>
-                <div class="har-inform">
-                    <div class="ava-block">
-                        <img :src='image' alt="аватарка"/>
-                            <h3>Роль пользователя</h3>
-                            <h3>Оборот ТМЦ</h3>
-                    </div>
-                    <div class="ava-right-block">
-                        <h3 style='margin-top: 0px;'>Характеристика</h3>
-                        <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='haracteristic'></textarea>
-                        <h3>Документы</h3>
-                        <table>
-                            <tr>
-                                <th>Файл</th>
-                            </tr>
-                            <tr class="td-row" v-for="document in documents" :key="document">
-                                <td @click="openNewWindow(document.path)"> {{ document.name }}</td>
-                            </tr>
-                        </table>
-                        <button class='btn-small'>Скачать</button>
-                        <button class='btn-small'>Открыть</button>
-                    </div>
-                </div>
-            </div>
-            <div class="working-block">
-                <h3>Объем выполненных работ</h3>
-                <div class="result-work">
-                    <span>Дата: </span>
-                    <input type="text" class="calendar-input">
-                    <span>Выбрать период, с: </span>
-                    <input type="text" class="calendar-input">
-                    <span>по: </span>
-                    <input type="text" class="calendar-input">
-                    <button class='btn-small'>Сбросить фильтр</button>
-                </div>
-                <div class="scroll-table" style="height: 190px; margin-left: 10px;">
-                    <table >
-                        <tr>
-                            <th>Дата</th>
-                            <th>№ Заказа</th>
-                            <th>Изделие</th>
-                            <th>Операция</th>
-                            <th>Норма ч.</th>
-                            <th>Кол-во, ч.</th>
-                            <th>Итого, ч.</th>
-                        </tr>
-                        <tr v-for="iten in 6" :key="iten" class="td-row">
-                            <td>13.05.2021</td>
-                            <td>18-225</td>
-                            <td>Выпрессовщик сайдендблоков ВСГ25</td>
-                            <td>Заготовительная</td>
-                            <td>5</td>
-                            <td>4</td>
-                            <td>8</td>
-                        </tr>
-                        <tr>
-                            <th colspan="5" scope="colgroup" style="border: none;"></th>
-                            <th colspan="1" scope="colgroup">Итого, ч:</th>
-                            <th colspan="1" scope="colgroup">46</th>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </div>
-        <InformFolder v-if='showInformPanel' :title='titleMessage' :message='message' :type='type'  :key='keyInformTip' />
+  <div>
+    <div class="table-content">
+      <h3 class="h3-title">1. Сотрудники</h3>
+      <div class="type-issue">
+        <span 
+          @click="knowGet = !knowGet" 
+          v-if="getUserBan.length > 0">{{ knowGet ? 'Архив: '+getUserBan.length : 'Активные пользователи: '+getUsers.length}}</span>
+      </div>
+      <div class="scroll-table" style="height: 450px;">
+        <table> 
+          <tr>
+            <th>Табельный номер</th>
+            <th>Должность</th>
+            <th style="width: 300px;">Инициалы</th>
+          </tr>
+          <tr class="td-row" 
+            v-for="user in knowGet ? getUsers : getUserBan" 
+            :key="user" @click="e => userShow(user, e.target.parentElement)"
+            >
+            <td class="tabel-td">{{ user.tabel }}</td>
+            <td>{{ user.role ? user.role.description : '' }}</td>
+            <td> {{ user.initial }}</td>
+          </tr>
+          <tr class="td-row"  v-for="iten in 70" :key="iten">
+            <td style='height: 10px;'></td> 
+            <td></td>
+            <td></td>
+          </tr>
+        </table> 
+      </div>
+      <div class="btn-control" v-if='getRoleAssets && !getRoleAssets.assets.usersListAssets.read'>
+        <button 
+          @click="userBan"
+          class='btn-small' > 
+          {{ knowGet ? 'В архив' : 'В Активные' }}
+        </button>
+        <button 
+          @click="editUser"
+          class='btn-small'>
+          Редактировать</button>
+        <button 
+          @click="addUser"
+          class='btn-small btn-add'>
+          Добавить
+        </button>
+      </div>
     </div>
+    <div class="inform-content" v-if='getRoleAssets && getRoleAssets.assets.usersListAssets.hideUserData'>
+      <h3 class="initial-user">{{ initial }}</h3>
+      <div class="inform-block">
+        <div class="contact-inform">
+            <div class="data-user-form">
+                <div class="prim">
+                    <div class="p-1">
+                      <p>
+                        <span>Должность: </span>
+                        <input type="text" :value='roles'>
+                      </p>
+                      <p> 
+                        <span>Табельный номер: </span>
+                        <input type="text" :value='tabel'>
+                      </p>
+                    </div>
+                    <p class="p-2">
+                        <span>Дата приема на работу: </span>
+                        <input type="text" :value='dateWork'>
+                    </p>
+                    <div class="p-3">
+                      <p>
+                        <span>Логин: </span>
+                        <input type="text" :value='login'>
+                      </p>
+                      <p>
+                        <span>День рождения: </span>
+                        <input type="text" :value='birthday'>
+                      </p>
+                    </div>
+                    <h3>Контактные данные</h3>
+                    <p class="p-4">
+                        <span>Моб. телефон: </span>
+                        <input type="text" :value='phone'>
+                    </p> 
+                    <p class="p-5">
+                        <span>Постоянный адрес проживания: </span>
+                        <input type="text" :value='adress'>
+                    </p>
+                    <p class="p-6">
+                        <span>Адрес по прописке: </span>
+                        <input type="text" :value='adressProps'>
+                    </p>
+                </div>
+                <h3>Примечание</h3>
+                <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
+            </div>
+        </div>
+        <div class="har-inform">
+          <div class="ava-block">
+            <img :src='image' alt="аватарка"/>
+              <h3>Роль пользователя</h3>
+              <h3>Оборот ТМЦ</h3>
+          </div>
+          <div class="ava-right-block">
+            <h3 style='margin-top: 0px;'>Характеристика</h3>
+            <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='haracteristic'></textarea>
+            <h3>Документы</h3>
+            <table>
+              <tr>
+                <th>Файл</th>
+              </tr>
+              <tr class="td-row" v-for="document in documents" :key="document">
+                <td @click="openNewWindow(document.path)"> {{ document.name }}</td>
+              </tr>
+            </table>
+            <button class='btn-small'>Скачать</button>
+            <button class='btn-small'>Открыть</button>
+          </div>
+        </div>
+      </div>
+      <div class="working-block">
+        <h3>Объем выполненных работ</h3>
+        <div class="result-work">
+          <span>Дата: </span>
+          <input type="text" class="calendar-input">
+          <span>Выбрать период, с: </span>
+          <input type="text" class="calendar-input">
+          <span>по: </span>
+          <input type="text" class="calendar-input">
+          <button class='btn-small'>Сбросить фильтр</button>
+        </div>
+        <div class="scroll-table" style="height: 190px; margin-left: 10px;">
+          <table >
+            <tr>
+              <th>Дата</th>
+              <th>№ Заказа</th>
+              <th>Изделие</th>
+              <th>Операция</th>
+              <th>Норма ч.</th>
+              <th>Кол-во, ч.</th>
+              <th>Итого, ч.</th>
+            </tr>
+            <tr v-for="iten in 6" :key="iten" class="td-row">
+              <td>13.05.2021</td>
+              <td>18-225</td>
+              <td>Выпрессовщик сайдендблоков ВСГ25</td>
+              <td>Заготовительная</td>
+              <td>5</td>
+              <td>4</td>
+              <td>8</td>
+            </tr>
+            <tr>
+              <th colspan="5" scope="colgroup" style="border: none;"></th>
+              <th colspan="1" scope="colgroup">Итого, ч:</th>
+              <th colspan="1" scope="colgroup">46</th>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+    <Loader v-if='loader' />
+    <InformFolder v-if='showInformPanel' :title='titleMessage' :message='message' :type='type'  :key='keyInformTip' />
+  </div>
 </template>
 
 <script>
@@ -192,7 +194,9 @@ export default {
       roles: '',
       id: '',
 
-      span: null
+      span: null,
+
+      loader: false
     }
   }, 
   computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser', 'getRoleAssets', 'getAuth']),
@@ -268,9 +272,12 @@ export default {
     }
   },
   async mounted() {
+    this.loader = true
     await this.getAllUsers();
     if(this.getUsers.length)
       this.userShow(this.getUsers[0])
+
+    this.loader = false
   }
 }
 </script> 

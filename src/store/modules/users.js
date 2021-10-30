@@ -41,10 +41,11 @@ export default {
     },
     async getAllUsers(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/users`)
-      const result = await res.json()
-
-      ctx.commit('updateUsers', result)
-      return result
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('updateUsers', result)
+        return result
+      }
     },
     async banUserById(crx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/users/ban`, {
