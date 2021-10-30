@@ -41,13 +41,14 @@
     </div>
 
      <div class="btn-control">
-        <button class="btn-small btn-add" @click='addWaynill'>Создать накладную комплектации сборочного участка</button>
+        <button class="btn-small btn-add" @click='addWaybill'>Создать накладную комплектации сборочного участка</button>
       </div>
 
       <AddWaybill 
         v-if='showAddWaybill'
         :key='keyAddWaybill'
       />
+      <Loader v-if='loader' />
 	</div>
 </template>
 
@@ -61,14 +62,15 @@ export default {
       showAddWaybill: false,
       keyAddWaybill: random(1, 999),
 
-      shipments: null
+      shipments: null,
+      loader: false
 		}
 	},
 	components: {AddWaybill},
   computed: mapGetters(['getShipments']),
 	methods: {
     ...mapActions(['fetchAllShipments']),
-    addWaynill() {
+    addWaybill() {
       this.showAddWaybill = true;
       this.keyAddWaybill = random(1, 999)
     },
@@ -77,11 +79,12 @@ export default {
         return e.classList.remove('checkbox_block_select')
       
       e.classList.add('checkbox_block_select')
-      console.log(shipments)
     }
 	},
 	async mounted() {
+    this.loader = true
     this.fetchAllShipments()
+    this.loader = false
 	}
 }
 </script>

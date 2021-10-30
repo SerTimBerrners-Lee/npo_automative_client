@@ -65,7 +65,6 @@ export default {
         body:   data
       })
       if(res.ok) {
-        console.log(res)
         return true
       }
     },
@@ -74,10 +73,20 @@ export default {
       if(res.ok) {
         const result = await res.json()
         ctx.commit("setAllDeliveries", result)
-        console.log(result)
         return result
       }
     },
+    async fetchPushWaybillCreate(ctx, data) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/provider/waylbil/create`, {
+        method: 'POST',
+        body:   data
+      })
+      if(res.ok) {
+        const result = await res.json()
+        console.log(result)
+        return result
+      }
+    }
   },
   mutations: {
     setAllDeliveries(state, result) {

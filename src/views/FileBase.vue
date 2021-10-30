@@ -88,15 +88,15 @@
 
 <script>
 
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { getReversDate, showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
-import Tables from '@/components/filebase/tables.vue'
-import AddFile from '@/components/filebase/addfile.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
-import { random }  from 'lodash'
-import NodeTable from '@/components/filebase/node-table.vue'
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue'
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { getReversDate, showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
+import Tables from '@/components/filebase/tables.vue';
+import AddFile from '@/components/filebase/addfile.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { random }  from 'lodash';
+import NodeTable from '@/components/filebase/node-table.vue';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 
 export default {
   data() {

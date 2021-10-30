@@ -17,24 +17,48 @@
           <div class="table-scroll">
             <table>
               <tr>
+                <th
+                  style='cursor: pointer;' 
+                  @click='allItemsAdd'>
+                  <unicon name="check" fill="royalblue" width='20' />
+                </th> 
+                <th>Артикул</th>
                 <th>Наименование</th>
                 <th>ЕИ</th>
-                <th>Дефицит</th>
+                <th>Кол-во</th>
+                <th>Стоимость за ед., руб</th>
+                <th>Сумма, руб</th>
               </tr>
               <tr 
-                v-for='material of getOnePodMaterial' 
-                class='td-row'
-                @click='e => selectDeficitMaterial(material, e.target.parentElement)'
-                :key="material">
-                <td>{{ material.name }}</td>
-                <td v-html='getKolvoMaterial(material.kolvo)'></td>
-                <td class='center'>{{ material.shipments_kolvo }}</td>
+                v-for='(prod, inx) of product' :key='prod'
+                class='td-row'>
+                <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                  <p class="checkbox_block" @click='setProd(prod)'></p>
+                </td>
+                <td contenteditable="true" @keyup="e => editArt(inx, e.target.innerText)">
+                  {{ prod.art }}
+                </td>
+                <td>{{ prod.name }}</td>
+                <td v-html='prod.ez'></td>
+                <td>
+                  <input type="number" 
+                    @change="e => editKol(inx, e.target.value)"
+                    min='0' :value='prod.kol'>
+                </td>
+                <td
+                  class='tooltip'>
+                  <input type="number" 
+                    @change="e => editSum(inx, e.target.value)"
+                    min='0' :value='prod.sum'>
+                  <span class="tooltiptext" contenteditable="false">{{ Number(prod.kol) * Number(prod.sum)  }}</span>
+                </td>
+                <td class='center'>{{ prod.kol * prod.sum }}</td>
               </tr>
             </table>
           </div>
           <div class="btn-control">
             <button 
-              class="btn-small"> Создать новый </button>
+              class="btn-small" @click='newPosition'> Создать новый </button>
           </div>
         </div>
 
@@ -43,36 +67,30 @@
           <div class="table-scroll">
             <table>
               <tr>
+                <th 
+                  style='cursor: pointer;'
+                  @click="allItemsDel">
+                  <unicon name="glass-tea" fill="#ee0942d0" width='20' />
+                </th> 
                 <th>Артикул</th>
                 <th>Наименование</th>
                 <th>ЕИ</th>
                 <th>Кол-во</th>
-                <th>Сумма, руб (за шт.)</th>
-                <th>Примечание</th>
+                <th>Стоимость за ед., руб</th>
+                <th>Сумма, руб</th>
               </tr>
               <tr 
-                v-for='(material, inx) of material_list'
-                :key='material'
-                class='td-row'
-                @click='setSelected(material)'>
-                <td 
-                  @keyup="e => editArt(inx, e.target.innerText)"
-                  contenteditable="true">{{ material.art }}</td>
-                <td >{{ material.name }}</td>
-                <td v-html='material.ez'></td>
-                <td
-                  @keyup="e => editKol(inx, e.target.innerText)"
-                  contenteditable="true">{{ material.kol }}</td>
-                <td
-                  class='tooltip'>
-                  <input type="number" 
-                    @change="e => editSum(inx, e.target.value)"
-                    min='0' :value='material.sum'>
-                  <span class="tooltiptext" contenteditable="false">{{ Number(material.kol) * Number(material.sum)  }}</span>
+                v-for='prod of selected_products' :key='prod'
+                class='td-row'>
+                <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                  <p class="checkbox_block_del" @click='delProd(prod)'></p>
                 </td>
-                <td
-                  @keyup="e => editDescription(inx, e.target.innerText)"
-                  contenteditable="true">{{ material.description }}</td>
+                <td>{{ prod.art }}</td>
+                <td>{{ prod.name }}</td>
+                <td v-html='prod.ez'></td>
+                <td class='center'>{{ prod.kol }}</td>
+                <td class='center'>{{ prod.sum }}</td>
+                <td class='center'>{{ prod.kol * prod.sum }}</td>
               </tr>
             </table>
           </div>
@@ -80,19 +98,18 @@
           <textarea maxlength='250' class='textarea'  v-model='description'></textarea>
         </div>
 
-
         <div class="block" style='padding: 5px;'>
           <p style='margin: 5px;'>
             <label for="docsFileSelected" class='btn-small btn-file'>Прикрепить документ</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-            <span class='active'>{{ name_check }}</span>
+            <span class='active' style='margin-left: 5px;'> {{ document }}</span>
           </p>
         </div>
 
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status">Печать</button>
-          <button class="btn-status btn-black">Создать приход</button>
+          <button class="btn-status btn-black" @click='pushToServer'>Создать приход</button>
         </div>
       </div>
     </div>
@@ -109,8 +126,18 @@
       :getProvider='true'
       @unmount='unmount_provider'
     />
-
+    <AddPosition 
+      :key='key_position'
+      v-if='show_position'
+      @unmount='unmount_position'
+    />
     <Loader v-if='loader' />
+    <InformFolder  :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
+    />
   </div>
 </template>
 
@@ -119,8 +146,11 @@ import AddFile from '@/components/filebase/addfile.vue';
 import { random, toNumber } from 'lodash';
 import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
 import { mapActions, mapGetters } from 'vuex';
+import AddPosition from './new-position.vue';
+import InformFolder from '@/components/InformFolder.vue';
+import { showMessage } from '@/js/';
 export default {
-  props: ['parametrs', 'order_parametr'],
+  props: ['parametrs'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -131,28 +161,35 @@ export default {
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
       isChangeFolderFile: false,
-      name_check: '',
+      document: '',
       formData: new FormData,
+
+      key_position: random(1, 999),
+      show_position: false, 
 
       key_provider_modal: random(1, 999),
       allProvider: [],
       provider: null,
-      number_check:  '',
-      material_list: [],
+
+      product: [],
+      selected_products: [],
       description: '',
 
-      selected_material: null,
-      span_deff: null,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
 
       select_m: null,
 
       loader: false
     }
   },
-  computed: mapGetters(['getOnePodMaterial']),
-  components: {AddFile, ProviderList},
+  computed: mapGetters(['']),
+  components: {AddFile, ProviderList, AddPosition, InformFolder},
   methods: {
-    ...mapActions(['fetchGetProviders', 'fetchGetAllDeficitPPM', 'fetchNewDeliveries', 'updateDeliveries']),
+    ...mapActions(['fetchGetProviders', 'fetchPushWaybillCreate']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -163,11 +200,16 @@ export default {
         return 0
       this.formData = e.formData
       if(this.formData.get('document'))
-        this.name_check = this.formData.get('document').name
+        this.document = this.formData.get('document').name
     },
     unmount_provider(provider) {
       if(provider)
         this.provider = provider
+    },
+    unmount_position(material_list) {
+      if(material_list && material_list.length) {
+        material_list.forEach(e => this.product.push(e))
+      }
     },
     addDock(val) {
       val.target.files.forEach(f => {
@@ -182,147 +224,81 @@ export default {
         this.key_provider_modal = random(1, 999)
       })
     },
-    selectDeficitMaterial(mat, span) {
-      this.selected_material = mat
-      if(this.span_deff)
-        this.span_deff.classList.remove('td-row-all')
-      
-      this.span_deff = span
-      this.span_deff.classList.add('td-row-all')
-    },
-    getKolvoMaterial(kol) {
-			try {
-				let pars_json = JSON.parse(kol)
-				let str = ''
-				if(pars_json.c1) str = '<span> шт </span>'
-				if(pars_json.c2) str = str + '<span> л </span>'
-				if(pars_json.c3) str = str + '<span> кг </span>'
-				if(pars_json.c4) str = str + '<span> м </span>'
-				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str
-			} catch (e) {
-				console.log(e)
-			}
-		},
-    pushMaterial() {
-      if(!this.selected_material)
-        return 0
-      let material = this.selected_material
-      for(let mat of this.material_list) {
-        if(material.id == mat.id) return 0
-      }
-      this.material_list.push({
-        art: '',
-        name: material.name,
-        ez: this.getKolvoMaterial(material.kolvo),
-        kol: material.shipments_kolvo,
-        sum: 0,
-        description: '',
-        id: material.id
-      })
-    },
-    editArt(inx, val) {
-      this.material_list[inx].art = val
-    },
-    editKol(inx, val) {
-      let check = toNumber(val)
-      if(!check) return this.material_list[inx].kol = 0
-
-      this.material_list[inx].kol = toNumber(val)
-    },
-    editSum(inx, val) {
-      this.material_list[inx].sum = val
-      this.changeMainSum()
-    },
-    editDescription(inx, val) {
-      this.material_list[inx].description = val
-    },
-    changeMainSum() {
-      this.count = 0
-      if(this.material_list.length) {
-        this.material_list.forEach(s => 
-          this.count = Number(this.count) + (Number(s.sum) * Number(s.kol))
-        )
-      }
-    },
-    clear() {
-      this.material_list = []
-      this.count = 0
-    },
-    clearToSelect() {
-      if(!this.select_m) return 0
-      this.material_list = this.material_list.filter(e => e.id != this.select_m.id)
-    },
-    setSelected(material) {
-      this.select_m = material
-    },
-    save() {
-      if(!this.provider || !this.material_list.length)
-        return 
-
-      this.formData.append('provider_id', this.provider.id)
-      this.formData.append('number_check', this.number_check)
-      this.formData.append('nds', this.nds)
-      this.formData.append('count', this.count)
-      this.formData.append('material_list', JSON.stringify(this.material_list))
-      this.formData.append('date_shipments', this.date_shipments)
-      this.formData.append('description', this.description)
-
-
-      if(this.$props.order_parametr) {
-        this.formData.append('id', this.$props.order_parametr.id)
-          this.updateDeliveries(this.formData).then(res => {
-            if(res) {
-              this.$emit('unmount', res)
-              return this.destroyModalF()
-            }
-          })
-      } else {
-        this.fetchNewDeliveries(this.formData).then(res => {
-          if(res) {
-            this.$emit('unmount', res)
-            return this.destroyModalF()
-          }
-        })
-      }
-    },
-    editVariables(order) {
-      this.provider = order.provider
-      this.number_check = order.number_check
-      this.nds = order.nds
-      this.count = order.count
-      this.description = order.description
-      if(order.product) {
+    editVariable(dev) {
+      if(dev.product) {
         try {
-          this.material_list = JSON.parse(order.product)
+          this.product = JSON.parse(dev.product)
         } catch (e) {
           console.log(e)
         }
       }
+      this.provider = dev.provider
+      this.description = dev.description
+    },
+    pushToServer() {
+      if(!this.provider)
+        return showMessage('', 'Выберите поставщика!', 'w', this) 
 
-      if(order.documents && order.documents.length) 
-        this.name_check = order.documents[0].name
-      
-      this.date_shipments = order.date_shipments
-    }
+      this.formData.append('provider_id', this.provider.id)
+      this.formData.append('description', this.description)
+      this.formData.append('product_list', JSON.stringify(this.selected_products))
+
+      this.fetchPushWaybillCreate(this.formData)
+    },
+    setProd(prod) {
+      this.selected_products.push(prod)
+      this.product = this.product.filter(p => p.id != prod.id)
+    },
+    delProd(prod) {
+      this.product.push(prod)
+      this.selected_products = this.selected_products.filter(p => p.id != prod.id)
+    },
+    allItemsAdd() {
+      for(let prod of this.product) {
+        this.selected_products.push(prod)
+      }
+      this.product = []
+    },
+    allItemsDel() {
+      for(let prod of this.selected_products) {
+        this.product.push(prod)
+      }
+      this.selected_products = []
+    },
+    newPosition() {
+      this.key_position = random(1, 999)
+      this.show_position = true
+    },
+    editArt(inx, val) {
+      console.log(val)
+      this.product[inx].art = val
+    },
+    editKol(inx, val) {
+      let check = toNumber(val)
+      if(!check) return this.product[inx].kol = 0
+
+      this.product[inx].kol = toNumber(val)
+    },
+    editSum(inx, val) {
+      this.product[inx].sum = val
+    },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-    this.loader = true
-    await this.fetchGetAllDeficitPPM()
-    this.loader = false
-
-    if(this.$props.order_parametr) {
-      this.editVariables(this.$props.order_parametr)
-    }
+    if(this.$props.parametrs) 
+      this.editVariable(this.$props.parametrs)
+      
   },
 }
 </script>
 
 <style scoped>
+input[type='number'] {
+  width: 50px;
+}
 .textarea {
   margin: 10px;
   width: 48%;
@@ -334,6 +310,7 @@ export default {
 label {
   margin: 0px;
   padding: 0px;
+  user-select: none;
 }
 .header_block input[type='checkbox'] {
   width: max-content;

@@ -21,7 +21,7 @@
   width: 15px;
   cursor: pointer;
 }
-.checkbox_block {
+.checkbox_block, .checkbox_block_del {
   cursor: pointer;
   background: #e4e4e4ce;
   border: 2px solid #e4e4e4ce;
@@ -35,6 +35,9 @@
 
 .checkbox_block:hover {
   background: #4d7ce2ce;
+}
+.checkbox_block_del:hover {
+  background: #ee09428f;
 }
 .checkbox_block_select::after {
   width: 15px;

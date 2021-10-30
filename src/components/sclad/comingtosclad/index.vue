@@ -87,6 +87,7 @@
     <ComingModal 
       :key='key_coming'
       v-if='show_coming'
+      :parametrs='order'
     />
 
     <Loader v-if='loader' />
@@ -175,6 +176,10 @@ export default {
       this.key_description = random(1, 999)
     },
     startComing() {
+      if(!this.order)
+        return false
+
+
       this.key_coming = random(1, 999)
       this.show_coming = true
     }
