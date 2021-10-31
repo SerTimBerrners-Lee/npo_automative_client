@@ -31,14 +31,13 @@ export default {
 				return true
 			return false
     },
-
     async fetchAssembleById(ctx, id) { 
       const res = await fetch(`${PATH_TO_SERVER}api/assemble/${id}`)
 			if(res.ok) {
 				const result = await res.json()
 				return result
 			} 
-    },
+    }
   },
   mutations: {
     allAssemble(state, result) { 

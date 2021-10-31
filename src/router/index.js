@@ -55,7 +55,6 @@ import DefcitDetal from '@/components/sclad/deficit-detal/deficit-detal.vue';
 import DeficitMaterial from '@/components/sclad/deficit-material/deficit-material.vue';
 import DeficitProd from '@/components/sclad/deficit-prod/deficit-prod.vue';
 import AddOrder from '@/components/issueshipment/add-order.vue';
-import CbOperation from '@/components/assembly/cb-operation.vue';
 import DetOperation from '@/components/metalloworking/det-operation.vue';
 import OrderSuppliers from '@/components/sclad/ordersuppliers/ordersuppliers.vue';
 import CompletAssembl from '@/components/sclad/completassembl/completassembl.vue';
@@ -177,11 +176,6 @@ const routes = [
     path: '/metalloworking',
     name: 'Металлообработка',
     component: Metalloworking
-  },
-  {
-    path: '/cboperation',
-    name: 'СБ по операциям',
-    component: CbOperation
   },
   {
     path: '/assembly',

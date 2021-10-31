@@ -44,7 +44,7 @@
             <td>{{ dateIncrementHors(issue.dateUse, issue.normTime) }}</td>
             <td class='center'>{{ issue.normTime }}</td>
             <td>
-                <select class="select-small">
+              <select class="select-small">
                 <option v-for='us in issue.controllers' 
                   :value='us.id' :key='us'>{{ us.login }}</option>
               </select>
@@ -57,24 +57,22 @@
       </div>
     </div>
     <div class="block-two">
-        <h3>План по операциям</h3>
-        <div class="operation-block">
-          <div class="type-operation" v-for='(operation, inx) of getTypeOperations' :key='operation'>
-            <span>{{ inx }}.</span>
-            <span>{{ operation.name }}</span>
-          </div>
+      <h3>План по операциям</h3>
+      <div class="operation-block">
+        <div class="type-operation" v-for='(operation, inx) of getTypeOperations' :key='operation'>
+          <span>{{ inx }}.</span>
+          <span>{{ operation.name }}</span>
         </div>
+      </div>
     </div>
-    <div class="block-three">
+    <div>
       <h3>Результаты работы</h3>
-      <div class="result-work">
-        <span>Выбрать период, с: </span>
-        <input type="text" class="calendar-input">
-        <span>по: </span>
-        <input type="text" class="calendar-input">
-        <button class='btn-small'>Сбросить период или дату</button>
+      <div class='header_block'>
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
         <span>Кол-во рабочих дней в периоде: </span>
-        <input type="text" class="input-periud">
+        <input type="number" min='0' class="input-periud">
       </div>
       <div class="scroll-table" style="width: inherit;">
         <table class="wort-page-table">
@@ -121,7 +119,8 @@
 
 <script>
 import { mapGetters, mapActions} from 'vuex';
-import { dateIncrementHors } from '@/js/'
+import { dateIncrementHors } from '@/js/';
+import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
   data() {
     return {
@@ -133,10 +132,11 @@ export default {
       ],
     }
   },
+  components: {DatePicterRange},
   computed: mapGetters([
     'getAuth',
     'getForMeIssue',
-    'getTypeOperations'
+    'getTypeOperations',
   ]),
   methods: {
     ...mapActions(['fetchIssueList', 'getAllTypeOperations']),
@@ -148,6 +148,9 @@ export default {
       let dat = dateIncrementHors(date, hors)
       return `${dat.iterationHors}`
     },
+    changeDatePicterRange(val) {
+			console.log(val)
+		}
   },
   async mounted() {
     if(this.getAuth && this.getAuth.id) 

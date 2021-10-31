@@ -567,7 +567,7 @@ export default {
             })
             this.randomDataMedia = random(10, 38100) 
 
-            this.techProcessID =  !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses[0].id : null
+            this.techProcessID =  !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses.id : null
             localStorage.setItem('tpID', this.techProcessID)
 
             this.id = this.getOneSelectProduct.id

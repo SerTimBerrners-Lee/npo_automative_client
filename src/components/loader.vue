@@ -59,8 +59,72 @@
         />
       </path>
     </svg>
+
+
+
+    <div class='btn_block' v-if='time > 15'>
+      <button class="btn-small" @click='reloadToHome'>
+        Обновить и уйти на главную
+      </button>
+      <button class="btn-small" @click='reload'>
+        Обновить страницу
+      </button>
+    </div>
+
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
+    />
   </div>
 </template>
+
+<script>
+import InformFolder from '@/components/InformFolder.vue';
+import { showMessage } from '@/js/';
+export default {
+  data() {
+    return {
+      time: 0,
+      id_interval: null,
+
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
+    }
+  },
+  watch: {
+    time: function(val) {
+      if(val > 15) {
+        showMessage('', `
+          Загрузка данных превысило: <strong>${this.time} сек</strong>.
+          Вы можете подождать либо уйти со страницы
+        `, 'w', this)
+      }
+    }
+  },
+  components: {InformFolder},
+  methods: {
+    reload() {
+      document.location.reload()
+    },
+    reloadToHome() {
+      document.location.href = '/'
+    }
+  },
+  beforeUnmount() {
+    if(this.id_interval)
+      clearInterval(this.id_interval)
+  },
+  async mounted() {
+    this.id_interval = setInterval(() => this.time++, 1000)
+  }
+}
+</script>
 
 <style scoped>
 .svg-loader{
@@ -74,9 +138,21 @@
   align-items: center;
   height: 100vh;
   width: 100vw;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   background: rgba(212, 212, 212, 0.274);
+  flex-direction: column;
+}
+.btn-small {
+  font-size: 15px;
+  padding: 5px;
+}
+.btn_block   {
+  display: flex;
+  flex-direction: column;
+}
+.btn_block * {
+  margin-top: 10px;
 }
 </style>

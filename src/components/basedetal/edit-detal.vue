@@ -7,12 +7,13 @@
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
           <span>Ответственный: </span>
-          <select class="select-small sle"  
-              v-model='obj.responsible'>
-              <option v-for='user in getUsers' 
-                :key='user' 
-                :value='user.id'>{{ user.login }}</option>
-            </select> 
+          <select 
+            class="select-small sle"  
+            v-model='obj.responsible'>
+            <option v-for='user in getUsers' 
+              :key='user' 
+              :value='user.id'>{{ user.login }}</option>
+          </select> 
         </p>
       </div>
 
@@ -593,8 +594,8 @@ export default {
                 this.mat_zag_zam = e
         })
     }
-    if(this.getOneSelectDetal.techProcesses.length && this.$props.editAndCopt == 'false') {
-        this.techProcessID = this.getOneSelectDetal.techProcesses[0].id
+    if(this.getOneSelectDetal.techProcesses && this.$props.editAndCopt == 'false') {
+        this.techProcessID = this.getOneSelectDetal.techProcesses.id
         localStorage.setItem('tpID', this.techProcessID)
     }
     if(this.getOneSelectDetal.materialList && this.getOneSelectDetal.materialList.length) {

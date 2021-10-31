@@ -56,7 +56,7 @@
 					</table>
 				</div>
 
-				<div>
+				<div v-if='tp'>
 					<h3>Сборка</h3>
 					<table>
 						<tr>
@@ -73,6 +73,26 @@
 							<th>Исполнитель</th>
 							<th>Примечание</th>
 						</tr>
+            <tr v-for='(operation, inx) of tp.operations' :key='operation'>
+              <td>{{ inx + 1 }}</td>
+              <td>{{ getOperationName(operation.tOperationId) }}</td>
+              <td class='center'>{{ Number(operation.preTime) + Number(operation.mainTime) * Number(operation.helperTime) }}</td>
+              <td class='center'>{{ (Number(operation.preTime) + Number(operation.mainTime) * Number(operation.helperTime)) * assemble.kolvo_all  }}</td>
+              <td></td>
+              <td v-html='getStatus(operation.id)'> </td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
+              <td>{{ userWork() }}</td>
+              <td class='center'>
+                <img 
+                  src="@/assets/img/link.jpg" 
+                  @click='openDescription(operation.description)' 
+                  class='link_img' 
+                  atl='Показать' />
+              </td>
+            </tr>
 					</table>
 				</div>
 				<div class="btn-control out-btn-control" style='position:fixed; bottom: 10px; width: 58%;'>
@@ -81,13 +101,19 @@
 				</div>
       </div>
     </div>
+     <Loader v-if='loader' />
+     <DescriptionModal 
+      v-if='show_des'
+      :key='descriptionKey'
+      :parametrs='description'
+    />
   </div>
 </template>
 
 <script>
-
-import { mapActions } from 'vuex';
-
+import { random } from 'lodash';
+import DescriptionModal from '@/components/description-modal.vue';
+import { mapActions, mapGetters } from 'vuex';
 export default { 
   props: ['assemble'],
   data() {
@@ -95,30 +121,92 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
+      description: '',
+      descriptionKey: random(1, 999),
+      show_des: false,
 
 			shipments: null,
-			komplect: []
+      tp: null,
+			komplect: [],
+
+      loader: false,
+
+      typeOperation: null
     }
   },
+  components: {DescriptionModal},
+  computed: mapGetters(['getUsers']),
   methods: {
-    ...mapActions(['fetchAllShipmentsById']),
+    ...mapActions(['fetchAllShipmentsById', 'fetchTechProcess', 'getAllTypeOperations', 'getAllUsers']),
 		destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
+    getOperationName(to_id) {
+      if(!this.typeOperation) {
+        this.getAllTypeOperations(to_id).then(res => {
+          this.typeOperation = res;
+          return operationReturn(res)
+        })
+      } else 
+        return operationReturn(this.typeOperation)
+      function operationReturn(to) {
+        for(let t of to) {
+          if(t.id == to_id)
+            return t.name
+        }
+      }
+    },
+    getStatus(id) {
+      if(!this.tp) return false
+
+      let pug_true = '<p class="success_operation">Готово</p>'
+      let pug_false = '<p class="work_operation">В процессе</p>'
+
+      let index = 0
+      for(let inx in this.tp.operations) {
+        if(this.tp.operations[inx].id == this.$props.assemble.operation_id) 
+          index = inx
+      }
+      // Делаем проверку - если индекс больше - значит уже готов если меньше или равен значит в работе 
+      for(let inx in this.tp.operations) {
+        if(this.tp.operations[inx].id == id) {
+          if(index > inx) return pug_true
+          else return pug_false
+        }
+      }
+    },
+    openDescription(des) {
+      this.descriptionKey = random(1, 999)
+      this.show_des = true
+      this.description = des
+    },
+    userWork() {
+      for(let user of this.getUsers) {
+        if(user.id == this.$props.assemble.cbed.responsibleId)
+          return user.login
+      }
+    }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-		if(this.$props.assemble.shipments) 
+    this.loader = true
+    await this.getAllUsers(true)
+
+    if(this.$props.assemble && this.$props.assemble.tp_id){
+      let res = await this.fetchTechProcess(this.$props.assemble.tp_id)
+      this.tp = res
+    }
+    
+		if(this.$props.assemble && this.$props.assemble.shipments) 
 			this.fetchAllShipmentsById(this.$props.assemble.shipments[0].id).then(response => this.shipments = response)
 
-		if(this.$props.assemble.cbed) {
+		if(this.$props.assemble && this.$props.assemble.cbed) {
 				let izd = this.$props.assemble.cbed
-				console.log(izd)
 				if(izd.listCbed) {
 					let cb = JSON.parse(izd.listCbed)
 					for(let iz of cb) {
@@ -146,7 +234,6 @@ export default {
 				if(izd.listPokDet) {
 					let cb = JSON.parse(izd.listPokDet)
 					for(let iz of cb) {
-						console.log(iz)
 						this.komplect.push({
 							type: 'ПД',
 							art: iz.art,
@@ -169,9 +256,9 @@ export default {
 					}
 			}
 		}
-		
 
-  },
+    this.loader = false
+  }
 }
 </script>
 

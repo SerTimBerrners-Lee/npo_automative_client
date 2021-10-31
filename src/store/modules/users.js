@@ -39,8 +39,8 @@ export default {
         body: data
       })
     },
-    async getAllUsers(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/users`)
+    async getAllUsers(ctx, light = false) {
+      const res = await fetch(`${PATH_TO_SERVER}api/users/data/${light}`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('updateUsers', result)

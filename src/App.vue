@@ -81,32 +81,6 @@ h3 {
   font-weight: unset;
   font-size: 21px;
 }
-.type-operation {
-  width: 210px;
-  height: 70px;
-  border: 1px solid #9b9b9b;
-  border-radius: 7px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin: 10px;
-  user-select: none;
-}
-.type-operation>span:first-child{
-  width: 10%;
-  text-align: center;
-}
-.type-operation>span:last-child {
-  width: 85%;
-  text-align: center;
-}
-.type-operation:hover {
-  cursor: pointer;
-  background: #494949;
-  border: none;
-}
 .operation-block {
   display: flex;
   flex-wrap: wrap;

@@ -60,7 +60,8 @@
         :file='itemFiles'
       />
     </div>
-    <InformFolder  :title='titleMessage'
+    <InformFolder  
+      :title='titleMessage'
       :message = 'message'
       :type = 'type'
       v-if='showInformPanel'

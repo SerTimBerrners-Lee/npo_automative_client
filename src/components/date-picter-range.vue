@@ -1,13 +1,13 @@
 <template>
 	<div class='picter'>
 		<DatePicker 
-			:model-config="modelConfig" 
+			:masks='masks'
       v-model='range'
 			is-dark 
       is-range
 			color='gray'
 			:select-attribute='modelAttribute'
-			> 
+		> 
 			<template v-slot="{ inputValue, inputEvents }">
         <div class='block-picter'>
           <span>Выбрать период, с:</span>
@@ -28,14 +28,12 @@
 </template>
 
 <script>
-
 export default {
 	data() {
 		return {
-			modelConfig: { 
-				type: 'string', 
-				mask: 'DD.MM.YYYY'
-			},
+      masks: {
+        input: 'DD.MM.YYYY'
+      },
 			modelAttribute: {
 				dot: true,
 			},

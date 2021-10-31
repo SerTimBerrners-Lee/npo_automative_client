@@ -7,7 +7,7 @@
         <div class="flex-box-main">
           <div class="left-block-bprovider">
             <h3>База поставщиков</h3>
-            <div class="scroll-table">
+            <div class="scroll-table" style='height: 400px;'>
               <table class="provider_table_modal"> 
                 <tr>
                   <th>ИНН</th>
@@ -24,10 +24,10 @@
                   <td>...</td><td>...</td>
                 </tr>
               </table>
-              <div class="btn-control" v-if='getProvider'>
+            </div>
+            <div class="btn-control" v-if='getProvider'>
                 <button class="btn-small btn-add" @click='returnProvider'>Выбрать поставщика</button>
               </div>
-            </div>
           </div>
           <div class="right-block-bprovider">
             <h3>Подробная информация о поставщике</h3>
@@ -72,7 +72,7 @@
                   </div>
                 </div>
                     
-                </div>
+              </div>
               </div>
               <div>
               <div class="btn-control block endgroup">
@@ -94,9 +94,8 @@
 </template>
 
 <script>
-import OpensFile from '@/components/filebase/openfile.vue'
-import random from 'lodash'
-
+import OpensFile from '@/components/filebase/openfile.vue';
+import random from 'lodash';
 export default {
   props: ['allProvider', 'getProvider'],
   data() {
@@ -120,16 +119,16 @@ export default {
   },
   components: {OpensFile},
   methods: {
+    destroyModalF() {
+      this.destroyModalLeft = 'left-block-modal-hidden'
+      this.destroyModalRight = 'content-modal-right-menu-hidden'
+      this.hiddens = 'display: none;'
+    },
     clickDoc(files) {
       if(files) { 
         this.itemFiles = files
         this.keyWhenModalGenerateFileOpen = random(10, 999)
       }
-    },
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
     },
     setProvider(provider) {
       this.provider = provider
@@ -157,15 +156,14 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-    if(this.$props.allProvider) {
+    if(this.$props.allProvider) 
       this.setProvider(this.$props.allProvider[0])
-    }
   }
 }
 </script>
 
 <style scoped>
-.table_rek{
+.table_rek {
   width: 420px;
 }
 .table-filter-bproveder th {

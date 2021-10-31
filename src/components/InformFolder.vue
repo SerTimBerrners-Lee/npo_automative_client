@@ -6,7 +6,7 @@
         <unicon name="times" fill="black" width="25px" />
       </div>
     </div>
-    <span>{{ message }}</span>
+    <p v-html='message'></p>
   </div>
 </template>
 
@@ -60,19 +60,18 @@ export default {
   cursor: pointer;
   margin-right: 3px;
 }
-.message-folder-block span {
+.message-folder-block span, 
+.message-folder-block p {
   margin-right: 20px;
 }
 .inform-message {
   border-bottom: 4px solid #0074d9;
   background: #d7dfe6;
 }
-
 .error-message {
   border-bottom: 4px solid #ee0000;
   background: #ffc2c2;
 }
-
 .warning-message {
   border-bottom: 4px solid #ffa700;
   background: #ffee63;

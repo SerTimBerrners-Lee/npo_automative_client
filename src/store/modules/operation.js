@@ -35,9 +35,11 @@ export default {
     },
     async getAllTypeOperations(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/typeoperation`)
-      const result = await res.json()
-      ctx.commit('addListTypeOperations', result)
-      return result
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('addListTypeOperations', result)
+        return result
+      }
     },
 
     async deleteTypeOperation(ctx, id) {

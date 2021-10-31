@@ -8,7 +8,6 @@
         />
       </div>
     </div>
-
     <div style='width: fit-content;'>
       <div class="scroll-table" style='width: 99%;'>
         <table>
@@ -24,19 +23,19 @@
           </tr>
           <tr 
             class='td-row' 
-            v-for='order of []' 
+            v-for='waybill of getAllWaybills' 
             @click='e => selectOrder(order, e.target.parentElement)'
-            :key="order">
-            <td>{{ order.number_check }}</td>
-            <td>{{ order.date_shipments }}</td>
-            <td>{{ order.name }}</td>
-            <td>{{ order.provider.name }}</td>
-            <td @click='openCheck(order.documents)' class='select_span_href'>{{ order.number_check }}</td>
-            <td>{{ order.count }}</td>
-            <td @click='OpenDescription(order.description)' class='center'>
+            :key="waybill">
+            <td>{{ waybill.name }}</td>
+            <td>{{ new Date(waybill.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
+            <td>{{  }}</td>
+            <td>{{ waybill.provider.name }}</td>
+            <td @click='openCheck(waybill.documents)' class='select_span_href'>{{ waybill.documents.length ? waybill.documents[0].name : '' }}</td>
+            <td>{{ getAllSum(waybill.product) }}</td>
+            <td @click='OpenDescription(waybill.description)' class='center'>
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать'/>
             </td>
-            <td class='center tooltip' @mousemove="getDetals(order)">
+            <td class='center tooltip' @mousemove="getDetals(waybill)">
               <div class="tooltiptext">
                 <table>
                   <tr>
@@ -87,7 +86,7 @@
     <ComingModal 
       :key='key_coming'
       v-if='show_coming'
-      :parametrs='order'
+      :parametrs='parametrs'
       @unmount='unmount_waybill'
     />
 
@@ -121,7 +120,8 @@ export default {
       key_coming: random(1, 999),
       show_coming: false,
 
-      loader: false
+      loader: false,
+      parametrs: 0
 
 		}
 	},
@@ -148,6 +148,21 @@ export default {
         } catch (e) {
           console.log(e)
         }
+      }
+    },
+    getAllSum(product) {
+      if(!product)
+        return 0;
+
+      try {
+        let count = 0 
+        let pars = JSON.parse(product)
+        for(let prod of pars) {
+          count = count + (Number(prod.kol) * Number(prod.sum))
+        }
+        return count
+      } catch (e) {
+        console.log(e)
       }
     },
     selectOrder(order, span) {
@@ -177,6 +192,7 @@ export default {
       this.key_description = random(1, 999)
     },
     startComing() {
+      this.parametrs = this.getAllWaybills.length
       this.key_coming = random(1, 999)
       this.show_coming = true
     }
@@ -184,7 +200,7 @@ export default {
 	async mounted() {
     this.loader = true
     await this.fetchWaybill()
-    console.log(this.getAllWaybills)
+    console.log(this.getAllWaybills )
     this.loader = false
 	}
 }

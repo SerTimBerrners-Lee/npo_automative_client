@@ -3,7 +3,10 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3>Создать приход. Накладная №1 от 30.10.2021 </h3>
+        <h3>Создать приход. Накладная № 
+          {{ parametrs + 1 }} от 
+          {{ new Date().toLocaleString('ru-RU').split(',')[0] }} 
+        </h3>
         <div class="block header_block">
           <span>Выбор поставщика:</span>
           <input type="text" :value='provider ? provider.name : ""' >
@@ -150,7 +153,7 @@ import AddPosition from './new-position.vue';
 import InformFolder from '@/components/InformFolder.vue';
 import { showMessage } from '@/js/';
 export default {
-  props: [''],
+  props: ['parametrs'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -246,7 +249,9 @@ export default {
 
         if(check) {
           try {
-            this.allProvider.push({ ...dev.provider, product: JSON.parse(dev.product)})
+            let prod = JSON.parse(dev.product)
+            if(prod && prod.length)
+              this.allProvider.push({ ...dev.provider, product: prod})
           } catch(e) {console.log(e)}
         } else check = false
     }
@@ -254,6 +259,8 @@ export default {
     pushToServer() {
       if(!this.provider)
         return showMessage('', 'Выберите поставщика!', 'w', this) 
+      if(!this.formData.get('docs') && !this.formData('document'))
+        return showMessage('', 'Обязательно прикрепите документ!', 'w', this) 
 
       this.formData.append('provider_id', this.provider.id)
       this.formData.append('description', this.description)

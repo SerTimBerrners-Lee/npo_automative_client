@@ -114,6 +114,7 @@ li:hover {
   float: left;
   position: fixed;
   height: 100vh;
+  z-index: 1;
 }
 ul {
   margin-left: 0px;

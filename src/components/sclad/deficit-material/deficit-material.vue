@@ -3,8 +3,8 @@
 		<h3>Дефицит материалов</h3>
 		<div>
 			<DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
+				@unmount='changeDatePicterRange'  
+			/>
 		</div>
 
 		<div>
@@ -208,7 +208,7 @@ export default {
 <style scoped>
 .table_material {
 	display: flex;
-}
+} 
 table {
 	height: fit-content;
 }

@@ -2,7 +2,8 @@
 	<div>
 		<h3>Сборка</h3>
 		<div class="block">
-      <button class="btn" @click='$router.push("/cboperation")'>Сборочные единицы по операциям</button>
+      <button class="btn" @click='OpenCbOperation'>Сборочные единицы по операциям</button>
+      <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
     </div>
     <div class='table_block'>
       <div class="table-scroll">
@@ -87,6 +88,11 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
+    <OperationModal 
+      :key='key_operation_m'
+      v-if='show_operaiton_m && operation_stack.length'
+      :parametrs='operation_stack'
+    />
 
     <Loader v-if='loader' />
 	</div>
@@ -96,10 +102,11 @@
 import {mapActions, mapGetters} from 'vuex';
 import DescriptionModal from '@/components/description-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import OperationPathModal from '@/components/sclad/operation-path-modal.vue';
+import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
+import OperationModal from '@/components/assembly/cb-operation.vue';
 export default {
 	data() {
 		return{
@@ -115,18 +122,28 @@ export default {
       showInformPanel: false,
       keyInformTip: random(1, 999),
 
+      operation_stack: [],
+
       keyOperationPathModal: random(1, 999),
       showOperationPathModal: false,
+      key_operation_m: random(1, 999),
+      show_operaiton_m: false,
 
       assemble_props: null,
 
       loader: false
 		}
 	},
-  computed: mapGetters(['getShipments']),
-	components: {DescriptionModal, OpensFile, OperationPathModal, InformFolder},
+  computed: mapGetters(['getShipments', 'getTypeOperations']),
+	components: {OperationModal, DescriptionModal, OpensFile, OperationPathModal, InformFolder},
 	methods: {
-    ...mapActions(['fetchAllShipmentsAssemble', 'fetchAssembleById', 'getOneCbEdById']),
+    ...mapActions([
+      'fetchAllShipmentsAssemble', 
+      'fetchAssembleById', 
+      'getOneCbEdById', 
+      'fetchTechProcess',
+      'getAllTypeOperations'
+    ]),
     toSetOrders(shipments, e) {
       if(e.classList.item(1)) {
         shipments.assemble.forEach(or => { this.assembles = this.assembles.filter(el => el.id != or.id)})
@@ -154,11 +171,44 @@ export default {
       this.assemble_props = assemble
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true
+    },
+    OpenCbOperation() {
+      this.key_operation_m = random(1, 999)
+      this.show_operaiton_m = true
+    },
+    filterOperation() {
+      for(let ship of this.getShipments) {
+        for(let ass of ship.assemble) {
+          this.getOneCbEdById(ass.cbed_id).then(cbed => {
+            if(cbed.techProcesses) {
+              this.fetchTechProcess(cbed.techProcesses.id).then(tp => {
+                for(let oper of tp.operations) {
+                  for(let ot of this.getTypeOperations) {
+                    if(oper.name == ot.id) {
+                      let check = true
+                      for(let os of this.operation_stack) {
+                        if(os.id == ot.id) check = false
+                      }
+                      if(check) {
+                        console.log(ot)
+                        this.operation_stack.push(ot)
+                      } else check = true
+                    }
+                  }
+                }
+              })
+            }
+
+          })
+        }
+      }
     }
 	},
 	async mounted() {
     this.loader = true
     await this.fetchAllShipmentsAssemble()
+    await this.getAllTypeOperations()
+    this.filterOperation()
     this.loader = false
 	}
 }
