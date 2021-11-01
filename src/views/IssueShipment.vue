@@ -3,8 +3,8 @@
 		<h3>Задачи на отгрузку</h3>
 		<div class="block header_block">
 			<DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
+				@unmount='changeDatePicterRange'  
+			/>
 		</div>
 		<div>
 			<h3>Комлектация</h3>

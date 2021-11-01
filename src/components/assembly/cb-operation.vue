@@ -9,7 +9,8 @@
 					<div 
 						class="type-operation" 
 						v-for='oper of parametrs' 
-						:key='oper'>
+						:key='oper'
+            @click='showOperation(oper)'>
 						<span>{{ oper.id }}.</span>
 						<span>{{ oper.name }}</span>
 					</div>
@@ -19,9 +20,8 @@
     </div>
   </div> 
 </template>
-
+ 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
   props: ['parametrs'],
   data() {
@@ -32,7 +32,6 @@ export default {
 
     }
   },
-  computed: mapGetters(['']),
   components: {},
   methods: {
     destroyModalF() {
@@ -40,8 +39,9 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['']),
-    ...mapMutations(['']),
+    showOperation(oper) {
+       this.$router.push({path: `/assembly/operation-detal/${oper.id}`})
+    }
 
   },
   async mounted() {

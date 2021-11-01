@@ -76,8 +76,8 @@
             <tr v-for='(operation, inx) of tp.operations' :key='operation'>
               <td>{{ inx + 1 }}</td>
               <td>{{ getOperationName(operation.tOperationId) }}</td>
-              <td class='center'>{{ Number(operation.preTime) + Number(operation.mainTime) * Number(operation.helperTime) }}</td>
-              <td class='center'>{{ (Number(operation.preTime) + Number(operation.mainTime) * Number(operation.helperTime)) * assemble.kolvo_all  }}</td>
+              <td class='center'>{{ Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime) }}</td>
+              <td class='center'>{{ (Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime)) * assemble.kolvo_all  }}</td>
               <td></td>
               <td v-html='getStatus(operation.id)'> </td>
               <td></td>

@@ -93,7 +93,8 @@ export default {
       'throwInstans',
       'searchTypeMutation', 
       'searchPTypeMutation', 
-      'searchMaterialMutation']),
+      'searchMaterialMutation', 
+      'clearCascheMaterial']),
     instansMaterial(instans, span) {
       if(!this.span)
         this.span = (this.$refs.all)
@@ -160,6 +161,7 @@ export default {
   async mounted() {
     this.loader = true
     
+    this.clearCascheMaterial()
     await this.getAllTypeMaterial()
     await this.getAllPodTypeMaterial()
     await this.fetchGetAllPPM()

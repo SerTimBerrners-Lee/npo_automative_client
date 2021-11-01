@@ -37,6 +37,14 @@ export default {
 				const result = await res.json()
 				return result
 			} 
+    },
+    async fetchAllAssembleTypeOperation(ctx, op_id) { 
+      const res = await fetch(`${PATH_TO_SERVER}api/assemble/typeoperation/${op_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('allAssemble', result)
+        return result 
+      }
     }
   },
   mutations: {

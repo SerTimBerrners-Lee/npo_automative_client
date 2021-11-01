@@ -111,7 +111,6 @@ export default {
 	data() {
 		return{
       assembles: [],
-
       descriptionKey: random(1, 999),
       description: '',
       itemFiles: [],

@@ -38,6 +38,14 @@ export default {
       }
     },
 
+    async getAllProductByIdLight(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/light/${id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
+
     async updateProduct(ctx, data) {
       if(!ctx.getters.getAuth)
         return 0

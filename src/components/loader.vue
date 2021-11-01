@@ -1,5 +1,6 @@
 <template>
-  <div class='main_svg'>
+  <div>
+    <div class='main_svg'>
     <svg version="1.1" 
       class="svg-loader" 
       xmlns="http://www.w3.org/2000/svg" 
@@ -60,8 +61,6 @@
       </path>
     </svg>
 
-
-
     <div class='btn_block' v-if='time > 15'>
       <button class="btn-small" @click='reloadToHome'>
         Обновить и уйти на главную
@@ -71,7 +70,8 @@
       </button>
     </div>
 
-    <InformFolder  
+  </div>
+  <InformFolder  
       :title='titleMessage'
       :message = 'message'
       :type = 'type'

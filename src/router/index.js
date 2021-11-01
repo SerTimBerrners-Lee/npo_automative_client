@@ -71,7 +71,15 @@ import ConsumptionAll from '@/components/sclad/consumptionall/index.vue';
 import ConsumptionSclad from '@/components/sclad/consumptionsclad/index.vue';
 import ComingSclad from '@/components/sclad/comingtosclad/index.vue';
 import ScladTrash from '@/components/sclad/scladtrash/index.vue';
+import OparationDetalAssembly from '@/components/assembly/operation-detal.vue';
+
 const routes = [ 
+  {
+    path: '/assembly/operation-detal/:operation',
+    name: 'Операции сборки',
+    component: OparationDetalAssembly,
+    props: true
+  },
   {
     path: '/scladtrash',
     name: 'Склад отходов',

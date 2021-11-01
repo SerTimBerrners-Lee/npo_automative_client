@@ -1,7 +1,14 @@
+.hover {
+  user-select: none;
+  cursor: pointer;
+}
+.hover:hover {
+  color: rgba(0, 0, 0, 0.397);
+}
 .type-operation {
   width: 210px;
   height: 70px;
-  border: 1px solid #9b9b9ba4;
+  border: 1px solid #9b9b9b0a;
   border-radius: 7px;
   display: flex;
   justify-content: center;
@@ -23,7 +30,7 @@
 .type-operation:hover {
   cursor: pointer;
   background: #6b6b6b;
-  border: 1px solid #9b9b9b13;
+  border: 1px solid #9b9b9b0a;
 }
 .center {
   text-align: center;

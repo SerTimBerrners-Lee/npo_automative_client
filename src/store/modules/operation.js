@@ -41,7 +41,7 @@ export default {
         return result
       }
     },
-
+    
     async deleteTypeOperation(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/typeoperation/${id}`, {
         method: 'delete'
