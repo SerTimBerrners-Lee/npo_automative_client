@@ -79,7 +79,7 @@
               <td class='center'>{{ Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime) }}</td>
               <td class='center'>{{ (Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime)) * assemble.kolvo_all  }}</td>
               <td></td>
-              <td v-html='getStatus(operation.id)'> </td>
+              <td @click.once='e => returnStatus(operation.id, e.target)' class='hover'>Просмотреть</td>
               <td></td>
               <td></td>
               <td></td>
@@ -114,6 +114,8 @@
 import { random } from 'lodash';
 import DescriptionModal from '@/components/description-modal.vue';
 import { mapActions, mapGetters } from 'vuex';
+import {  getStatus } from '@/js/operation.js';
+
 export default { 
   props: ['assemble'],
   data() {
@@ -158,24 +160,15 @@ export default {
         }
       }
     },
-    getStatus(id) {
+    returnStatus(id, e) {
       if(!this.tp) return false
 
-      let pug_true = '<p class="success_operation">Готово</p>'
-      let pug_false = '<p class="work_operation">В процессе</p>'
-
-      let index = 0
-      for(let inx in this.tp.operations) {
-        if(this.tp.operations[inx].id == this.$props.assemble.operation_id) 
-          index = inx
-      }
-      // Делаем проверку - если индекс больше - значит уже готов если меньше или равен значит в работе 
-      for(let inx in this.tp.operations) {
-        if(this.tp.operations[inx].id == id) {
-          if(index > inx) return pug_true
-          else return pug_false
-        }
-      }
+      getStatus(
+        this.tp.id, 
+        this.$props.assemble.operation_id, 
+        id,
+        'pug'
+      ).then(res => e.innerHTML = res)
     },
     openDescription(des) {
       this.descriptionKey = random(1, 999)

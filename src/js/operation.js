@@ -53,6 +53,8 @@ export async function getStatus(tp_id, operation_id, curr_id=1, return_is='index
 	const tech_proc = await result.json()
 	if(!tech_proc.operations.length) return false
 
+	console.log(tp_id, operation_id, curr_id, return_is)
+
 	let index = 0
 	for(let inx in tech_proc.operations) {
 		if(tech_proc.operations[inx].id == operation_id) 
@@ -62,13 +64,15 @@ export async function getStatus(tp_id, operation_id, curr_id=1, return_is='index
 	if(return_is == 'index')
 		return index
 
-	let pug_true = '<p class="success_operation">Готово</p>'
-	let pug_false = '<p class="work_operation">В процессе</p>'
+	if(return_is == 'pug') {
+		let pug_true = '<p class="success_operation">Готово</p>'
+		let pug_false = '<p class="work_operation">В процессе</p>'
 
-	for(let inx in tp_id.operations) {
-		if(tp_id.operations[inx].id == curr_id) {
-			if(index > inx) return pug_true
-			else return pug_false
+		for(let inx in tech_proc.operations) {
+			if(tech_proc.operations[inx].id == curr_id) {
+				if(index > inx) return pug_true
+				else return pug_false
+			}
 		}
 	}
 }

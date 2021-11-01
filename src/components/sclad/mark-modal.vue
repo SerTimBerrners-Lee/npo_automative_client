@@ -72,7 +72,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import DatePicterCustom from '@/components/date-picter.vue';
-import { afterAndBeforeOperation, getTypeOperationName } from '@/js/operation.js'
+import { afterAndBeforeOperation, getTypeOperationName } from '@/js/operation.js';
 export default {
   props: ['parametrs', 'type'],
   data() {
