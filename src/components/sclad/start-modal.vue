@@ -110,6 +110,7 @@ export default {
   padding-right: 10px;
   height: 40px;
   align-items: center;
+  border-radius: 3px;
 }
 .out-btn-control {
   width: 96%;

@@ -84,6 +84,8 @@
       :idFile='itemFiles.id'
       @responsDetal='responsDetal'
     />
+
+    <Loader v-if='loader' />
   </div>
 </template> 
 
@@ -125,7 +127,8 @@ export default {
       nodeTableKey: random(10, 381e4),
 
       showBFM: false,
-      generateKeyBFM: random (1, 999)
+      generateKeyBFM: random (1, 999),
+      loader: false
     }
   },
   computed: {
@@ -285,11 +288,13 @@ export default {
       this.searchToBanFiles(str)
     }
   },
-  async mounted() {
+  async mounted() { 
     this.targetLink = this.$refs.allFilesLink
-    this.fetchFiles().then(() => {
-      this.getType('all')
-    })
+
+    this.loader = true
+    await this.fetchFiles()
+    this.getType('all')
+    this.loader = false
   }
 }
 </script>

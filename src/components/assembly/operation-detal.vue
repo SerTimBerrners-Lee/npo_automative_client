@@ -60,7 +60,9 @@
 					<td class='center'>
 						<img src="@/assets/img/link.jpg" @click='openDescription(ass.operation.description)' class='link_img' atl='Показать' />
 					</td>
-					<td></td>
+					<td class='center hover' @click='addMark(ass)' >
+						<unicon name="pen" fill="black" width='20' />
+					</td>
 				</tr>
 				<tr v-for='(ass, inx) of getAssembles' :key='ass'>
 					<td>{{ inx + 1}}</td>
@@ -93,6 +95,12 @@
       :key='descriptionKey'
       :parametrs='description'
     />
+		<CreateMark
+			v-if='mark_data'
+			:key='mark_key'
+			:parametrs='mark_data'
+			:type='"cb"'
+		/>
 
 		<Loader v-if='loader' />
 	</div>
@@ -107,6 +115,8 @@ import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import { dateIncrementHors } from '@/js/';
+import CreateMark from '@/components/sclad/mark-modal.vue'; 
+import { afterAndBeforeOperation } from '@/js/operation.js';
 export default {
 	data() {
 		return {
@@ -118,6 +128,9 @@ export default {
 			descriptionKey: random(1, 999),
       description: '',
 
+			mark_key: random(1, 999),
+			mark_data: null,
+
 			titleMessage: '',
       message: '',
       type: '',
@@ -127,13 +140,12 @@ export default {
 		}
 	},
 	computed: mapGetters(['getAssembles', 'getTypeOperations', 'getUsers']),
-	components: {DatePicterRange, OpensFile, InformFolder, DescriptionModal},
+	components: {DatePicterRange, OpensFile, InformFolder, DescriptionModal, CreateMark},
 	methods: {
 		...mapActions([
 			'fetchAllAssembleTypeOperation', 
 			'getAllTypeOperations', 
 			'getAllProductByIdLight',
-			'fetchTechProcess',
 			'fetchOneOperationById',
 			'getAllUsers']),
 		unmount_date_picterRange(val) {
@@ -150,42 +162,14 @@ export default {
 				})
 		},
 		showOperation(ass, type, e) {
-			this.fetchTechProcess(ass.tech_process.id).then(res => {
-				if(res.operations.length) {
-					let beforeOperation = null
-					let afterOperation = null
-					let currentOperation = null
-					let last = true
-					for(let operation of res.operations) {
-						if(operation.id != ass.operation_id && last)
-							beforeOperation = operation
-						if(operation.id == ass.operation_id && last) {
-							currentOperation = operation
-							last = false
-						}
-						if(operation.id != ass.operation_id && !last) {
-							afterOperation = operation
-							break;
-						}
-					}	
-					if(!beforeOperation)
-						beforeOperation = currentOperation
-					if(!afterOperation)
-						afterOperation = currentOperation
-
-					if(type == 'before')
-						e.innerText = this.getTypeOperationName(beforeOperation.name)
-					else
-						e.innerText = this.getTypeOperationName(afterOperation.name)
-				}
-			})
-		},
-		getTypeOperationName(id_operation) {
-			for(let to of this.getTypeOperations) {
-				if(id_operation == to.id) {
-					return to.name
-				}
-			}
+			afterAndBeforeOperation(
+				ass.tp_id, 
+				ass.operation_id, 
+				type,  
+				this.getTypeOperations).then(res => {
+					if(res)
+						e.innerText = res.name
+				})
 		},
 		openDocuments(id) {
       this.fetchOneOperationById(id).then(res => {
@@ -234,6 +218,10 @@ export default {
 				if(user.id == user_id)
 					return user.login
 			}
+		},
+		addMark(ass) {
+			this.mark_key = random(1, 999)
+			this.mark_data = ass
 		}
 	},
 	async mounted() {
