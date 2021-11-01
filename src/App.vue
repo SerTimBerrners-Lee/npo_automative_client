@@ -129,23 +129,6 @@ a {
   text-decoration: none;
   color: #000 !important;
 }
-.btn-control> * {
-  margin: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
-}
-.btn-control {
-  display: flex;
-  justify-content: flex-end;
-}
-.btn-small {
-  border: none;
-  border-radius: 4px;
-  padding-bottom: 20px;
-}
-.btn-small:hover {
-  opacity: 0.7;
-}
 .width-350 {
     width: 350px;
 }
