@@ -270,8 +270,12 @@ export default {
     },
     addItem(id = null) {
       if(this.$route.params.type != 'edit')  {
-        if(this.obj.name == '' || !this.podMaterial && !this.material) 
-          return 0
+        if(this.obj.name == '') 
+          return showMessage('', 'У материала должно быть имя', 'w', this)
+        if(!this.podMaterial)
+          return showMessage('', 'Выберите Подтип для материала', 'w', this)
+        if(!this.material)
+          return showMessage('', 'Выберите Тип для материала', 'w', this)
       }
       if(!this.obj.areaCrossSectional_input && this.podMaterial.instansMaterial == 1)   
         return 0
