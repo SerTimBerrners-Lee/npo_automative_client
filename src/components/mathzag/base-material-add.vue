@@ -469,8 +469,10 @@ export default {
     },
     showParentTandPT() {
       if(!isEmpty(this.getOnePPT) && !this.click_short_t_pt) {
-        this.searchPT(this.getOnePPT.podMaterial.name)
-        this.searchTypeM(this.getOnePPT.material.name)
+        if(this.getOnePPT.podMaterial)
+          this.searchPT(this.getOnePPT.podMaterial.name)
+        if(this.getOnePPT.material)
+          this.searchTypeM(this.getOnePPT.material.name)
         this.click_short_t_pt = true
       } else if(this.click_short_t_pt) {
         this.click_short_t_pt = false
