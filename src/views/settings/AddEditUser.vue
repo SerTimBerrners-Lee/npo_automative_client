@@ -231,11 +231,13 @@ computed: {
 
     saveData() {
       if(this.object.tabel.length > 4)
-        return showMessage('', 'Тебель не может быть больше 4-х символов', 'e', this)
+        return showMessage('', 'Тебель не может быть больше 4-х символов', 'w', this)
       if( this.object.password.length < 5)
-        return showMessage('', 'Пароль не может быть меньше 5 символов', 'e', this)
+        return showMessage('', 'Пароль не может быть меньше 5 символов', 'w', this)
       if(this.object.login.length < 3)
-        return showMessage('', 'Логин не может быть менее 3-х символов', 'e', this)
+        return showMessage('', 'Логин не может быть менее 3-х символов', 'w', this)
+      if(!this.object.roles)
+        return showMessage('', 'Роль должна быть выбрана обязательно!', 'w', this)
       if(!Number(this.object.tabel))
         return showMessage('', 'Тебель должен быть числом', 'e', this)
       this.saveContact()
@@ -255,7 +257,6 @@ computed: {
       if(this.fileArrModal.length)
         formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
 
-      // А здесь смотрим если редактируем вызываем другую функцию
       if(this.$route.params.title == 'edit') {
         formData.append('id', this.id)
         this.updateUser(formData).then(res => {
