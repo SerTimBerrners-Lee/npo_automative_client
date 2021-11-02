@@ -102,7 +102,8 @@ export default {
   methods: {
 		...mapActions([
 			'getAllUsers', 
-			'getAllTypeOperations'
+			'getAllTypeOperations',
+			'fetchCreateMarks'
 		]),
     destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden'
@@ -115,6 +116,11 @@ export default {
 		},
 		save() {
 
+			let data = {
+				
+			}
+
+			this.fetchCreateMarks(data)
 		},
   },
   async mounted() {
