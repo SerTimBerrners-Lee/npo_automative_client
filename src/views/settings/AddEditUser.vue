@@ -1,164 +1,174 @@
 <template> 
-    <div>
-        <h3> {{ $route.params.title == "edit" ? 'Редактировать' : 'Добавить' }} сотрудника</h3>
+  <div>
+    <h3> {{ $route.params.title == "edit" ? 'Редактировать' : 'Добавить' }} сотрудника</h3>
 
-        <div class="block">
-            <p>
-                <span>ФИО: </span> 
-                <input type="text" style="width: 200px;" v-model="object.initial">
-            </p>
-            <p>
-                <span>Должность: </span>
-                <select class="select-small" v-if="allRoles.length > 0" v-model='object.roles'>
-                    <option v-for="role in allRoles" :key='role' :value='role.id' >{{ role.description }}</option>
-                </select>
-                <select class="select-small" v-else>
-                    <option>Нет Ролей</option>
-                </select>
-            </p>
-            <p>
-                <span>Табельный номер: </span>
-                <input type="text" v-model='object.tabel'>      
-            </p>
-            <p>
-                <span>Дата приема на работу: </span>
-                <input type="text" v-model="object.dateWork">
-            </p>
-            <p>
-                <span>Дата увольнения: </span>
-                <input type="text" v-model="object.dateUnWork">
-            </p>
-            <p>
-                <span>Логин: </span>
-                <input type="text" v-model.trim='object.login'>
-            </p>
-            <p>
-                <span>Пароль: </span>
-                <input type="text" v-model.trim="object.password">
-            </p>
-            <p>
-                <span>День рождения: </span>
-                <input type="text" v-model="object.birthday">
-            </p>
-        </div>
-
-        <div class="editblock-main">
-            <div class="left-cont">
-                <div class="addedit-docks">
-                    <h3>Контактные данные</h3>
-                    <table>
-                        <tr>
-                            <th rowspan="1" scope="row" style="width: 250px;">Постоянный адрес проживания</th>
-                            <td ref='adress' v-text='object.adress' style="width: 260px;" :contenteditable="editTableKontact"></td>
-                        </tr>
-                        <tr>
-                            <th rowspan="1" scope="row">Адрес по прописке</th>
-                            <td ref='adressProps' v-text='object.adressProps' :contenteditable="editTableKontact"></td>
-                        </tr>
-                        <tr>
-                            <th rowspan="1" scope="row">Моб. телефон</th>
-                            <td ref='phone' v-text='object.phone' :contenteditable="editTableKontact"></td>
-                        </tr>
-                        <tr>
-                            <th rowspan="1" scope="row">Эл. почта</th>
-                            <td ref='email' v-text='object.email' :contenteditable="editTableKontact"></td>
-                        </tr>
-                    </table>
-                    <div class="btn-control">
-                        <button class="btn-small btn-add " @click="saveContact">
-                            Сохранить
-                        </button>
-                        <button class="btn-small" @click="editIsContac(editTableKontact), editTableKontact = !editTableKontact">{{ !editTableKontact ? 'Редактировать' : 'Отменить редактирование'}}</button>
-                    </div>
-                </div>
-                <div class="addedit-docks">
-                    <h3>Документы</h3>
-                    <table>
-                        <tr>
-                            <th class="width-350" style="width: 520px;">Файл</th>
-                        </tr>
-                        <tr 
-                            class="td-row" 
-                            v-for="doc in docFiles" 
-                            :key="doc"
-                            @click="setDocs(doc)">
-                            <td> {{ doc.name }}</td>
-                        </tr>
-                        <tr v-for='file in fileArrModal' 
-                            class="td-row"  
-                            @click="setDocs(file)"
-                            :key='file'>
-                            <td>{{ file.name }}</td>
-                        </tr>
-                    </table>
-                    <div class="pointer-files-to-add">
-                        <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                        <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-                    </div>
-                    <div class="btn-control">
-                        <!-- <button class="btn-small">Открыть</button> -->
-                        <button class="btn-small"
-                                @click='delitFilesDoc'
-                                 v-if="$route.params.title == 'edit'">Удалить</button>
-                        <button class="btn-small" @click='addInBaseFile'>Добавить из базы</button>
-                    </div>
-                </div>
-            </div>
-
-            <div class="center-cont">
-
-                <h3>Характеристика</h3>
-                <textarea maxlength='250' cols="30" rows="10" v-model="object.haracteristic"></textarea>
-                <h3>Примечание</h3>
-                <textarea maxlength='250' cols="30" rows="10" v-model="object.primetch"></textarea>
-                <h3>Роль пользователя</h3>
-                <h3>История изменений</h3>
-            </div>
-            <div class="img-ava-block">
-                <img :src='urlImg' alt="avatar" v-if="imgShow">
-                <div v-if="!imgShow">
-                    <label for="fileFolder" class="toltip">Нажмите чтобы загрузить фото</label>
-                    <input type="file" @change="e => fileFolderF(e)" id="fileFolder" style="display: none;">
-                </div>
-                 <div v-if="imgShow" class='uploadPhoto'>
-                    <label for="fileFolder2" >Изменить фото</label>
-                    <input type="file" @change="e => fileFolderF(e)" id="fileFolder2" style="display: none;">
-                </div>
-            </div>
-
-        </div>
-
-        <div class="edit-save-block block">
-            <button class="btn-status" 
-                v-if="$route.params.title == 'edit'"
-                @click='bannedUser'>В архив</button>
-            <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
-            <button class="btn-status btn-black" @click="saveData">Сохранить</button>
-        </div>
-        <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='showInformPanel' />
-    <OpensFile 
-        :parametrs='itemFiles' 
-        v-if="showFile" 
-        :key='keyWhenModalGenerateFileOpen'
-    />
-    <BaseFileModal 
-        v-if='showModalFile'
-        :key='fileModalKey'
-        :fileArrModal='fileArrModal'
-        @unmount='unmount_filemodal'
-    />
+    <div class="block">
+      <p class='flex'>
+        <span>ФИО: </span> 
+        <input type="text" style="width: 200px;" v-model="object.initial">
+      </p>
+      <p class='flex'>
+        <span>Должность: </span>
+        <select class="select-small" v-if="allRoles.length > 0" v-model='object.roles'>
+          <option v-for="role in allRoles" :key='role' :value='role.id' >{{ role.description }}</option>
+        </select>
+        <select class="select-small" v-else>
+          <option>Нет Ролей</option>
+        </select>
+      </p>
+      <p class='flex'>
+        <span>Табельный номер: </span>
+        <input type="text" v-model='object.tabel'>      
+      </p>
+      <p class='flex'>
+        <span>Дата приема на работу: </span>
+        <DatePicterCustom 
+          @unmount='change_date_picter' 
+          :dateStart='object.dateWork'
+          :dats='"false"'
+        />
+      </p>
+      <p class='flex'>
+        <span>Дата увольнения: </span>
+        <DatePicterCustom 
+          @unmount='change_date_picter' 
+          :dateStart='object.dateWork'
+          :dats='"false"'
+        />
+      </p>
+      <p class='flex'>
+        <span>Логин: </span>
+        <input type="text" v-model.trim='object.login'>
+      </p>
+      <p class='flex'>
+        <span>Пароль: </span>
+        <input type="text" v-model.trim="object.password">
+      </p>
+      <p class='flex'>
+        <span>День рождения: </span>
+        <DatePicterCustom 
+          @unmount='change_date_picter' 
+          :dateStart='object.birthday'
+          :dats='"false"'
+        />
+      </p>
     </div>
+
+    <div class="editblock-main">
+      <div class="left-cont">
+        <div class="addedit-docks">
+          <h3>Контактные данные</h3>
+          <table>
+            <tr>
+              <th rowspan="1" scope="row" style="width: 250px;">Постоянный адрес проживания</th>
+              <td ref='adress' v-text='object.adress' style="width: 260px;" :contenteditable="editTableKontact"></td>
+            </tr>
+            <tr>
+              <th rowspan="1" scope="row">Адрес по прописке</th>
+              <td ref='adressProps' v-text='object.adressProps' :contenteditable="editTableKontact"></td>
+            </tr>
+            <tr>
+              <th rowspan="1" scope="row">Моб. телефон</th>
+              <td ref='phone' v-text='object.phone' :contenteditable="editTableKontact"></td>
+            </tr>
+            <tr>
+              <th rowspan="1" scope="row">Эл. почта</th>
+              <td ref='email' v-text='object.email' :contenteditable="editTableKontact"></td>
+            </tr>
+          </table>
+          <div class="btn-control">
+            <button class="btn-small btn-add " @click="saveContact">
+                Сохранить
+            </button>
+            <button class="btn-small" @click="editIsContac(editTableKontact), editTableKontact = !editTableKontact">{{ !editTableKontact ? 'Редактировать' : 'Отменить редактирование'}}</button>
+          </div>
+        </div>
+        <div class="addedit-docks">
+          <h3>Документы</h3>
+          <table>
+            <tr>
+              <th class="width-350" style="width: 520px;">Файл</th>
+            </tr>
+            <tr 
+              class="td-row" 
+              v-for="doc in docFiles" 
+              :key="doc"
+              @click="setDocs(doc)">
+              <td> {{ doc.name }}</td>
+            </tr>
+            <tr v-for='file in fileArrModal' 
+              class="td-row"  
+              @click="setDocs(file)"
+              :key='file'>
+              <td>{{ file.name }}</td>
+            </tr>
+          </table>
+          <div class="pointer-files-to-add">
+            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
+            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+          </div>
+          <div class="btn-control">
+            <button class="btn-small"
+              @click='delitFilesDoc'
+              v-if="$route.params.title == 'edit'">Удалить</button>
+            <button class="btn-small" @click='addInBaseFile'>Добавить из базы</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="center-cont">
+        <h3>Характеристика</h3>
+        <textarea maxlength='250' cols="30" rows="10" v-model="object.haracteristic"></textarea>
+        <h3>Примечание</h3>
+        <textarea maxlength='250' cols="30" rows="10" v-model="object.primetch"></textarea>
+        <h3>Роль пользователя</h3>
+        <h3>История изменений</h3>
+      </div>
+      <div class="img-ava-block">
+        <img :src='urlImg' alt="avatar" v-if="imgShow">
+        <div v-if="!imgShow">
+          <label for="fileFolder" class="toltip">Нажмите чтобы загрузить фото</label>
+          <input type="file" @change="e => fileFolderF(e)" id="fileFolder" style="display: none;">
+        </div>
+          <div v-if="imgShow" class='uploadPhoto'>
+          <label for="fileFolder2" >Изменить фото</label>
+          <input type="file" @change="e => fileFolderF(e)" id="fileFolder2" style="display: none;">
+        </div>
+      </div>
+    </div>
+
+    <div class="edit-save-block block">
+        <button class="btn-status" 
+            v-if="$route.params.title == 'edit'"
+            @click='bannedUser'>В архив</button>
+        <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
+        <button class="btn-status btn-black" @click="saveData">Сохранить</button>
+    </div>
+      <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='showInformPanel' />
+  <OpensFile 
+    :parametrs='itemFiles' 
+    v-if="showFile" 
+    :key='keyWhenModalGenerateFileOpen'
+  />
+  <BaseFileModal 
+    v-if='showModalFile'
+    :key='fileModalKey'
+    :fileArrModal='fileArrModal'
+    @unmount='unmount_filemodal'
+  />
+  </div>
 </template>
 
 <script>
 
 import { mapActions, mapGetters } from 'vuex';
 import InformFolder from '@/components/InformFolder.vue';
-import {photoPreloadUrl, showMessage} from '@/js/'
-import {isEmpty, random} from 'lodash'
-import PATH_TO_SERVER from '@/js/path.js'
-import OpensFile from '@/components/filebase/openfile.vue'
-import BaseFileModal from '@/components/filebase/base-files-modal.vue'
+import {photoPreloadUrl, showMessage} from '@/js/';
+import {isEmpty, random} from 'lodash';
+import PATH_TO_SERVER from '@/js/path.js';
+import OpensFile from '@/components/filebase/openfile.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import DatePicterCustom from '@/components/date-picter.vue';
 
 export default ({ 
   data() {
@@ -202,12 +212,13 @@ export default ({
     }
   },
 computed: {
-      ...mapGetters(['allRoles', 'getSelectedUser']),
+    ...mapGetters(['allRoles', 'getSelectedUser']),
   },
   components: {
     InformFolder,
     OpensFile,
-    BaseFileModal
+    BaseFileModal,
+    DatePicterCustom
   },
   methods: {
     ...mapActions([
@@ -364,6 +375,14 @@ computed: {
 </script>
 
 <style scoped>
+.flex {
+  display: flex;
+  align-items: center;
+  margin-top: 0px;
+}
+.flex input {
+  margin-left: 5px;
+}
 .uploadPhoto {
   background: #2b2b2b;
   padding: 4px;

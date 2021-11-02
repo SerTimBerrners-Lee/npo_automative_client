@@ -23,7 +23,7 @@
 				<DatePicterCustom 
 					@unmount='changeDatePicterShipments' 
 					:dateStart='date_shipments'
-					/>
+				/>
 				<label for='bran'>Бронь:</label>
 				<input id='bran' type="checkbox" v-model='bron'>
 				<span>Основание:</span>
@@ -68,27 +68,6 @@
 					<button class="btn-small" @click='deleteCbEdDetal'>Удалить</button>
 					<button class="btn-small" @click='addCbEdDetal'>Добавить СБ/деталь</button>
 				</div>
-
-				<!-- <h3>Материалы (ПД), (РМ)</h3>
-				<table>
-					<tr>
-						<th>№</th>
-						<th>Наименование</th>
-						<th>Кол-во</th>
-					</tr>
-					<tr v-for='(mat, inx) of list_material' :key='mat'>
-						<td class='center'>{{ inx + 1 }}</td>
-						<td>{{ mat.obj.name }}</td>
-						<td class='center tooltip'>
-							<input 
-								type="text" 
-								:value='mat.kol'
-								class='input_kol center' 
-								@change="e => editKolVoMat(inx, e.target.value)">
-								<span class="tooltiptext">{{ mat.kol }}</span>
-						</td>
-					</tr>
-				</table> -->
 			</div>
 			<div>
 				<h3>Примечание</h3>
@@ -258,14 +237,6 @@ export default {
 					}) 
 				}
 			}
-
-			// if(izd.materials && izd.materials.length) {
-			// 	if(izd.materialList) 
-			// 		this.pushElement(izd.materials, JSON.parse(izd.materialList), 'mat')
-					
-			// 	if(izd.listPokDet) 
-			// 		this.pushElement(izd.materials, JSON.parse(izd.listPokDet), 'mat')
-			// }
 		},
 		pushElement(elements, list_pars, type) {
 			for(let element of elements) {
@@ -284,23 +255,6 @@ export default {
 					if(id == element.id)
 						kol = item.kol
 				}
-				// if(type == 'mat' && material) {
-				// 	let check = true
-				// 	for(let mat = 0; mat < this.list_material.length; mat++) {
-				// 		if(element.id == this.list_material[mat].obj.id) {
-				// 			this.list_material[mat].kol = Number(this.list_material[mat].kol) + Number(kol)
-				// 			check = false
-				// 		}	
-				// 	}
-				// 	if(check) {
-				// 		this.list_material.push({
-				// 			type,
-				// 			obj: {id: element.id, name: element.name},
-				// 			kol
-				// 		})
-				// 	} else check = true 
-				// 	material = false
-				// }
 				if(type != 'mat')  {
 					let check = true
 					for(let iz = 0; iz < this.list_cbed_detal.length; iz++) {

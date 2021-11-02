@@ -20,7 +20,7 @@
 <script>
 
 export default {
-	props: ['dateStart'],
+	props: ['dateStart', 'dats'],
 	data() {
 		return {
 			date: new Date().toLocaleDateString("ru-RU"),
@@ -44,6 +44,9 @@ export default {
 	async mounted() {
 		if(this.$props.dateStart)
 			this.date = this.$props.dateStart
+		if(this.$props.dats == 'false') {
+			this.date = null
+		}
 	}
 }
 </script>
