@@ -39,3 +39,17 @@ npm run lint
 	* css
 > Docker используется для запуска в тестовом режиме на проде
 > Проект билдится с помощью make файла и загружается в директорию `/var/www/html` автоматически
+
+# Настройки путей Apache 
+
+> Файл /etc/apache2/apache2.conf потому что .htaccess здесь бесполезен
+```
+<Directory /var/www/html/>
+	RewriteEngine On
+	RewriteBase /
+	RewriteRule ^index\.html$ - [L]
+	RewriteCond %{REQUEST_FILENAME} !-f
+	RewriteCond %{REQUEST_FILENAME} !-d
+	RewriteRule . /index.html [L]
+</Directory>
+```

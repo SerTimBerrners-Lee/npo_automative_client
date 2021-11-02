@@ -28,6 +28,18 @@ export default {
         body: JSON.stringify({...data})
       })
     },
+    async fetchCreateMarks(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/mark`, {
+        method: "post",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({...data})
+      })
+      if(res.ok) return true
+      return false
+    },
   },
   mutations: {
     setDeficit(state, result) { 

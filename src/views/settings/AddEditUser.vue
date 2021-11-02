@@ -224,7 +224,7 @@ computed: {
       if( this.object.password.length < 5)
         return showMessage('', 'Пароль не может быть меньше 5 символов', 'e', this)
       if(this.object.login.length < 3)
-        return showMessage('', 'Пароль не может быть менее 3-х символов', 'e', this)
+        return showMessage('', 'Логин не может быть менее 3-х символов', 'e', this)
       if(!Number(this.object.tabel))
         return showMessage('', 'Тебель должен быть числом', 'e', this)
       this.saveContact()
@@ -237,7 +237,7 @@ computed: {
 
       if(this.docFiles.length > 0) {
         for(let file of this.docFiles) {
-            formData.append('document', file)
+          formData.append('document', file)
         }
       }
 
@@ -259,10 +259,10 @@ computed: {
 
       this.saveUser(formData).then(m => {
         if(m.type == 'error')
-            return showMessage('Ошибка', m.message, 'e', this)
+          return showMessage('Ошибка', m.message, 'e', this)
         if(m.type == 'success') {
-            showMessage('Успешно', 'Пользователь успешно создан', 's', this)
-            setTimeout(() => this.$router.push('/employee'), 1000)
+          showMessage('Успешно', 'Пользователь успешно создан', 's', this)
+          setTimeout(() => this.$router.push('/employee'), 1000)
         }
 
       });
@@ -270,7 +270,12 @@ computed: {
     },
     fileFolderF(e) {
       this.fileFolder = e.target.files[0]
-      photoPreloadUrl(this.fileFolder, this)
+      photoPreloadUrl(this.fileFolder,  res => {
+        if(res && res.url) {
+          this.imgShow = true
+          this.urlImg = res.url
+        }
+      })
     },
     saveContact() {
       this.object.adress = this.$refs.adress.textContent
@@ -308,7 +313,7 @@ computed: {
     setDocs(dc) {
       this.itemFiles = dc
       if(isEmpty(this.itemFiles))
-          return 0
+        return 0
       this.showFile = true
       this.keyWhenModalGenerateFileOpen = random(10, 999)
     },

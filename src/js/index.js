@@ -61,7 +61,8 @@ const photoPreloadUrl = (input, cb, checkTypes = false) => {
 
   const reader = new FileReader()
   reader.onload = function(e){
-    return cb({ type, url: e.target.result})
+    if(e && e.target && e.target.result)
+      return cb({ type, url: e.target.result})
   } 
   reader.readAsDataURL(input)
 } 
