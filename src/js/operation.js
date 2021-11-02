@@ -1,6 +1,6 @@
 import PATH_TO_SERVER from './path'
 
-export async function afterAndBeforeOperation(tp_id, operation_id, type = 'all', to_array) {
+export async function afterAndBeforeOperation(tp_id, operation_id, type = 'all') {
 	const result = await fetch(`${PATH_TO_SERVER}api/detal/techprocess/${tp_id}`)
 	if(!result.ok) return false
 	const res = await result.json()
@@ -28,24 +28,15 @@ export async function afterAndBeforeOperation(tp_id, operation_id, type = 'all',
 		afterOperation = currentOperation
 
 	if(type == 'before')
-		return getTypeOperationName(beforeOperation.name, to_array)
+		return beforeOperation
 	else if(type == 'after')
-		return getTypeOperationName(afterOperation.name, to_array)
+		return afterOperation
 	else 
 		return {
-			before: getTypeOperationName(beforeOperation.name, to_array),
-			after: getTypeOperationName(afterOperation.name, to_array),
+			before: beforeOperation,
+			after: afterOperation
 		}
 }
-
-export const getTypeOperationName = (id_operation, to_array) => {
-	for(let to of to_array) {
-		if(id_operation == to.id) {
-			return to
-		}
-	}
-}
-
 
 export async function getStatus(tp_id, operation_id, curr_id=1, return_is='index') {
 	const result = await fetch(`${PATH_TO_SERVER}api/detal/techprocess/${tp_id}`)

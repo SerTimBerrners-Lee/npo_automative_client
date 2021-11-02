@@ -7,7 +7,7 @@
 				<div class='head_block'>
 					<div class='first_b'>
 						<p>
-							<span>{{ type == 'cb' ? 'СБ:' : 'Д' }} </span>
+							<span>{{ type_izd == 'cb' ? 'СБ:' : 'Д' }} </span>
 							<span style='font-weight: bold;'>{{ obj_name }}</span>
 						</p>
 						<p class='flex_p'>
@@ -23,7 +23,7 @@
 					</p>
 					<p>
 						<span>Выполнено: </span>
-						<span style='font-weight: bold;'>{{ obj_kolvo_create }} из {{obj_kolvo_all}}</span>
+						<span style='font-weight: bold;'>{{ obj_kolvo_create_in_operation }} из {{obj_kolvo_all}}</span>
 					</p>
 				</div>
 
@@ -40,7 +40,7 @@
 						<span style='font-weight: bold;'>Исполнитель:</span>
 						<select 
               class="select-small sle"  
-              v-model='responsible'>
+              v-model='user_id'>
               <option 
                 v-for='user in getUsers' 
                 :key='user' 
@@ -49,7 +49,7 @@
 					</p>
 					<p>
 						<span style='font-weight: bold;'>Количество выполненных деталей:</span>
-						<input type="number" min='1' :max='obj_max_det' v-model='kolvo'>
+						<input type="number" min='1' :max='obj_max_det' v-model='kol'>
 					</p>
 				</div>
 
@@ -72,28 +72,34 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import DatePicterCustom from '@/components/date-picter.vue';
-import { afterAndBeforeOperation, getTypeOperationName } from '@/js/operation.js';
+import { afterAndBeforeOperation } from '@/js/operation.js';
 export default {
-  props: ['parametrs', 'type'],
+  props: ['parametrs', 'type_izd'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
 			loader: false,
+			titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
 
 			obj_name: null,
 			obj_max_det: 1,
 			obj_before: '',
 			obj_curent: '',
 			obj_after: '',
-			obj_kolvo_create: 0,
+			obj_kolvo_create_in_operation: 0,
 			obj_kolvo_all: 0, 
 
 			description: '',
-			responsible: 1,
-			kolvo: 1,
+			user_id: 1,
+			kol: 1,
 			date: new Date().toLocaleDateString("ru-RU"),
+			operation_id: null
 			
     }
   },
@@ -115,12 +121,23 @@ export default {
 			this.date = date
 		},
 		save() {
-
 			let data = {
-				
+				date_build: this.date,
+				kol: this.kol,
+				description: this.description,
+				user_id: this.user_id,
+				oper_id: this.operation_id,
+			}
+			if(this.$props.type_izd == 'cb') {
+				data.ass_id = this.$props.parametrs.id
+			} else if(this.$props.type_izd == 'det') {
+				data.metal_id = this.$props.parametrs.id
 			}
 
-			this.fetchCreateMarks(data)
+			this.fetchCreateMarks(data).then(res => {
+				this.destroyModalF()
+				this.$emit('unmount', res)
+			})
 		},
   },
   async mounted() {
@@ -132,38 +149,28 @@ export default {
 		await this.getAllTypeOperations()
 
 		if(this.$props.parametrs) {
-			if(this.$props.type == 'cb') {
+			if(this.$props.type_izd == 'cb') {
 				let ass = this.$props.parametrs
 				this.obj_name = ass.cbed.name
 				this.obj_max_det = ass.kolvo_all - ass.kolvo_create
-				this.obj_kolvo_create = ass.kolvo_create
+				this.obj_kolvo_create_in_operation = ass.kolvo_create_in_operation
+				console.log(ass)
 				this.obj_kolvo_all = ass.kolvo_all
+				this.operation_id = ass.operation_id
 
-				// Получаем операции до и после
-				let after = null
-				afterAndBeforeOperation(
-					ass.tp_id, 
-					ass.operation_id, 
-					undefined,   
-				this.getTypeOperations).then(res => {
-					if(res) {
-						if(res.before)
-							this.obj_before =  `${res.before.id}. ${res.before.name}`
-						if(res.after)
-							after = res.after
-					}
+				if(!ass.operation) return false;
+				this.obj_curent = `${ass.operation.id}. ${ass.operation.full_name}`
+				afterAndBeforeOperation(ass.tp_id, ass.operation_id)
+					.then(res => {
+						if(res) {
+							if(res.before)
+								if(res.before.id != ass.operation.id)
+									this.obj_before =  `${res.before.id}. ${res.before.full_name}`
+							if(res.after) 
+								if(ass.operation_id != res.after.id)
+									this.obj_after = `${res.after.id}. ${res.after.full_name}`
+						}
 				})
-
-				let curent = getTypeOperationName(ass.operation_id, this.getTypeOperations)
-				if(curent)
-					this.obj_curent = `${curent.id}. ${curent.name}`
-
-				if(after && curent) {
-					if (curent.id != after.id) {
-						this.obj_after = `${after.id}. ${after.name}`
-					}
-				}
-
 			}
 		}
 		this.loader = false

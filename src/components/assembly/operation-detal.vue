@@ -45,9 +45,9 @@
 						class='center hover'>показать</td>
 					<td @click.once='e => showOperation(ass, "before",  e.target)'
 						class='center hover work_operation'>показать</td>
-					<td>{{ ass.status }}</td>
-					<td class='center'>{{ ass.kolvo_create }}</td>
-					<td class='center'>{{ ass.kolvo_all - ass.kolvo_create }}</td>
+					<td :class='ass.status == "Готово" ? "success_operation" : "work_operation" '>{{ ass.status }}</td>
+					<td class='center'>{{ ass.kolvo_create_in_operation }}</td>
+					<td class='center'>{{ ass.kolvo_all - ass.kolvo_create_in_operation }}</td>
 					<td class='center'>{{ getTime(ass.operation).pt + getTime(ass.operation).t }}</td>
 					<td class='center'>{{ getTime(ass.operation).pt + (getTime(ass.operation).t * ass.kolvo_all) }}</td>
 					<td class='center'>{{ dateIncrementHors(undefined, (getTime(ass.operation).pt + (getTime(ass.operation).t * ass.kolvo_all))) }} </td>
@@ -99,7 +99,8 @@
 			v-if='mark_data'
 			:key='mark_key'
 			:parametrs='mark_data'
-			:type='"cb"'
+			:type_izd='"cb"'
+			@unmount='unmount_marks'
 		/>
 
 		<Loader v-if='loader' />
@@ -136,7 +137,7 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
-
+			type_operation_id: null
 		}
 	},
 	computed: mapGetters(['getAssembles', 'getTypeOperations', 'getUsers']),
@@ -151,6 +152,14 @@ export default {
 		unmount_date_picterRange(val) {
       console.log(val)
     },
+		unmount_marks(res) {
+			if(res) {
+				this.fetchAllAssembleTypeOperation(this.type_operation_id)
+				showMessage('', 'Отметка о выполнении успешно создана', 's', this)
+			}
+				else 
+					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
+		},
 		getProduct(shipments, type='number', e) {
 			if(!shipments.length && shipments[0].productId) 
 				return 0
@@ -165,10 +174,9 @@ export default {
 			afterAndBeforeOperation(
 				ass.tp_id, 
 				ass.operation_id, 
-				type,  
-				this.getTypeOperations).then(res => {
+				type).then(res => {
 					if(res)
-						e.innerText = res.name
+						e.innerText = res.full_name
 				})
 		},
 		openDocuments(id) {
@@ -178,25 +186,6 @@ export default {
           this.itemFiles = res.documents
         } else showMessage('', 'Документов нет', 'w', this)
       })
-    },
-		getStatus(id) {
-      if(!this.tp) return false
-
-      let pug_true = '<p class="success_operation">Готово</p>'
-      let pug_false = '<p class="work_operation">В процессе</p>'
-
-      let index = 0
-      for(let inx in this.tp.operations) {
-        if(this.tp.operations[inx].id == this.$props.assemble.operation_id) 
-          index = inx
-      }
-      // Делаем проверку - если индекс больше - значит уже готов если меньше или равен значит в работе 
-      for(let inx in this.tp.operations) {
-        if(this.tp.operations[inx].id == id) {
-          if(index > inx) return pug_true
-          else return pug_false
-        }
-      }
     },
 		openDescription(description) {
       this.descriptionKey = random(1, 999)
@@ -225,17 +214,17 @@ export default {
 		}
 	},
 	async mounted() {
-		let operation_id = this.$route.params.operation
-		if(!operation_id)
+		this.type_operation_id = this.$route.params.operation
+		if(!this.type_operation_id)
 			this.$router.back()
 
 		this.loader = true
-    await this.fetchAllAssembleTypeOperation(operation_id)
+    await this.fetchAllAssembleTypeOperation(this.type_operation_id)
 		await this.getAllTypeOperations()
 		await this.getAllUsers(true)
 
 		for(let to of this.getTypeOperations) {
-			if(to.id == operation_id) 
+			if(to.id == this.type_operation_id) 
 				this.name_operaiton = to.name
 		}
     this.loader = false

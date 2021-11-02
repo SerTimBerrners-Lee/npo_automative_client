@@ -50,11 +50,11 @@
             </td>
             <td>{{  }}</td>
             <td>{{  }}</td>
-            <td>{{  }}</td>
+            <td :class='assemble.status == "Готово" ? "success_operation" : "work_operation" '>{{ assemble.status }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
             </td>
-            <td>{{  }}</td>
+            <td class='hover center' @click='e => showAllTimers(assemble, e.target)'>Посмотреть</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDescription(assemble.description)' class='link_img' atl='Показать' />
             </td>
@@ -162,7 +162,6 @@ export default {
         if(cb.documents && cb.documents.length) {
           this.keyWhenModalGenerateFileOpen = random(1, 999)
           this.itemFiles = cb.documents
-          console.log(this.itemFiles.length)
         } else showMessage('', 'Документов нет', 'w', this)
       })
     },
@@ -189,7 +188,6 @@ export default {
                         if(os.id == ot.id) check = false
                       }
                       if(check) {
-                        console.log(ot)
                         this.operation_stack.push(ot)
                       } else check = true
                     }
@@ -201,6 +199,18 @@ export default {
           })
         }
       }
+    },
+    showAllTimers(ass, e) {
+      let count = 0
+      e.innerText = count
+      if(!ass.tp_id) return false
+      this.fetchTechProcess(ass.tp_id).then(res => {
+        if(!res.operations || res.operations.length <= 0) return 
+        for(let operation of res.operations) {
+          count = (Number(count) + Number(operation.preTime)) + (Number(operation.helperTime) * Number(operation.mainTime))
+        }
+        e.innerText = count
+      })
     }
 	},
 	async mounted() {

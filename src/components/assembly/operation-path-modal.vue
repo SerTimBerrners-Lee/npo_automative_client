@@ -56,9 +56,9 @@
 					</table>
 				</div>
 
-				<div v-if='tp'>
+				<div v-if='operation_list.length'>
 					<h3>Сборка</h3>
-					<table>
+					<table class='table-end'>
 						<tr>
 							<th>№</th>
 							<th>Операции</th>
@@ -68,37 +68,64 @@
 							<th>Статус</th>
 							<th>Сделано, шт.</th>
 							<th>Осталось сделать, шт.</th>
-							<th>Дата исполнения</th>
+              <th>Дата исполнения</th>
 							<th>Кол-во сделано, шт.</th>
 							<th>Исполнитель</th>
 							<th>Примечание</th>
 						</tr>
-            <tr v-for='(operation, inx) of tp.operations' :key='operation'>
-              <td>{{ inx + 1 }}</td>
-              <td>{{ getOperationName(operation.tOperationId) }}</td>
-              <td class='center'>{{ Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime) }}</td>
-              <td class='center'>{{ (Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime)) * assemble.kolvo_all  }}</td>
-              <td></td>
-              <td @click.once='e => returnStatus(operation.id, e.target)' class='hover'>Просмотреть</td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td></td>
-              <td>{{ userWork() }}</td>
-              <td class='center'>
-                <img 
-                  src="@/assets/img/link.jpg" 
-                  @click='openDescription(operation.description)' 
-                  class='link_img' 
-                  atl='Показать' />
-              </td>
-            </tr>
+            <tbody  v-for='(operation, inx) of operation_list' :key='operation'>
+              <tr>
+                <td :rowspan='operation.marks ? operation.marks.length + 1 : 1'>{{ inx + 1 }}</td>
+                <td :rowspan='operation.marks ? operation.marks.length + 1 : 1'>{{ getOperationName(operation.tOperationId) }}</td>
+                <td
+                  :rowspan='operation.marks ? operation.marks.length + 1 : 1' 
+                  class='center'>{{ Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime) }}</td>
+                <td 
+                  :rowspan='operation.marks ? operation.marks.length + 1 : 1'
+                  class='center'>{{ (Number(operation.preTime) + Number(operation.mainTime) + Number(operation.helperTime)) * assemble.kolvo_all  }}</td>
+                <td :rowspan='operation.marks ? operation.marks.length + 1 : 1'></td>
+                <td 
+                  :rowspan='operation.marks ? operation.marks.length + 1 : 1'
+                  v-if='returnStatus(operation)'
+                  class='success_operation'
+                  >Готово</td>
+                <td 
+                  :rowspan='operation.marks ? operation.marks.length + 1 : 1'
+                  v-else
+                  class='work_operation'
+                  >В процессе</td>
+                <td 
+                  :rowspan='operation.marks ? operation.marks.length + 1 : 1'
+                  class='center'>{{ returnKolvoCreate(operation) }}</td>
+                <td 
+                  :rowspan='operation.marks ? operation.marks.length + 1 : 1'
+                  class='center'>{{ returnKolvoBefore(operation) }}</td>
+              </tr>
+              <tr v-for='mark of operation.marks ? operation.marks : []' :key='mark'>
+                <td class='center'>
+                  {{ mark.date_build }}
+                </td>
+                <td class='center'>
+                  {{ mark.kol }}
+                </td>
+                <td class='center'>
+                  {{ returnUser(mark.user_id) }}
+                </td>
+                <td class='center'>
+                  <img 
+                    src="@/assets/img/link.jpg" 
+                    @click='openDescription(mark.description)' 
+                    class='link_img' 
+                    atl='Показать' />
+                </td>
+              </tr>
+            </tbody>
 					</table>
 				</div>
 				<div class="btn-control out-btn-control" style='position:fixed; bottom: 10px; width: 58%;'>
 					<button class="btn-status btn-black" 
 						style="height: 0px;">Печать</button>
-				</div>
+          </div>
       </div>
     </div>
      <Loader v-if='loader' />
@@ -114,7 +141,6 @@
 import { random } from 'lodash';
 import DescriptionModal from '@/components/description-modal.vue';
 import { mapActions, mapGetters } from 'vuex';
-import {  getStatus } from '@/js/operation.js';
 
 export default { 
   props: ['assemble'],
@@ -129,6 +155,7 @@ export default {
 
 			shipments: null,
       tp: null,
+      operation_list: [],
 			komplect: [],
 
       loader: false,
@@ -145,6 +172,12 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
+    returnStatus(oper) {
+      let creater = this.returnKolvoCreate(oper)
+      if(creater)
+        return 1
+      else return 0
+    },
     getOperationName(to_id) {
       if(!this.typeOperation) {
         this.getAllTypeOperations(to_id).then(res => {
@@ -160,16 +193,6 @@ export default {
         }
       }
     },
-    returnStatus(id, e) {
-      if(!this.tp) return false
-
-      getStatus(
-        this.tp.id, 
-        this.$props.assemble.operation_id, 
-        id,
-        'pug'
-      ).then(res => e.innerHTML = res)
-    },
     openDescription(des) {
       this.descriptionKey = random(1, 999)
       this.show_des = true
@@ -178,6 +201,36 @@ export default {
     userWork() {
       for(let user of this.getUsers) {
         if(user.id == this.$props.assemble.cbed.responsibleId)
+          return user.login
+      }
+    },
+    pushMarks(marks) {
+      for(let oper = 0; oper < this.operation_list.length; oper++) {
+        for(let mark of marks) {
+          if(this.operation_list[oper].id == mark.oper_id){
+            if(!this.operation_list[oper].marks) 
+              this.operation_list[oper].marks = [mark]
+            else 
+              this.operation_list[oper].marks.push(mark)
+          }
+        }
+      }
+    },
+    returnKolvoBefore(oper) {
+      let create = this.returnKolvoCreate(oper)
+      return this.$props.assemble.kolvo_all - create < 0 ? 0 : this.$props.assemble.kolvo_all - create
+    },
+    returnKolvoCreate(oper) {
+      if(!oper.marks || !oper.marks.length) return false
+      let kol = 0
+      for(let mark of oper.marks) {
+        kol = kol + mark.kol
+      }
+      return kol
+    },
+    returnUser(user_id) {
+      for(let user of  this.getUsers) {
+        if(user.id == user_id) 
           return user.login
       }
     }
@@ -192,7 +245,10 @@ export default {
 
     if(this.$props.assemble && this.$props.assemble.tp_id){
       let res = await this.fetchTechProcess(this.$props.assemble.tp_id)
-      this.tp = res
+      if(!res || !res.operations) return false
+ 
+      this.operation_list = res.operations
+      this.pushMarks(this.$props.assemble.marks)
     }
     
 		if(this.$props.assemble && this.$props.assemble.shipments) 
@@ -256,6 +312,9 @@ export default {
 </script>
 
 <style scoped>
+.table-end {
+  margin-bottom: 100px;
+}
 .span-type-files-pdf {
   height: 500px;
 }

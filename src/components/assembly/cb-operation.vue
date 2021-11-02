@@ -4,7 +4,6 @@
     <div :class='destroyModalRight'>
       <div :style="hiddens">
         <h3>Сборочные единицы по операциям</h3>
-
 				<div class="operation-block">
 					<div 
 						class="type-operation" 
@@ -48,10 +47,6 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-
-
-		console.log(this.$props.parametrs)
-
   }
 }
 </script>
