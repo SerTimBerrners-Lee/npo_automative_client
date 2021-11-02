@@ -425,7 +425,7 @@
       <div>
           <h3>Сотрудники</h3>
           <div class="checkboxing-stil">
-              <span>Скрыть личн. данные: </span>
+              <span>Просмотр личн. данных: </span>
               <div>
                   <div class="button r button-3">
                   <input 

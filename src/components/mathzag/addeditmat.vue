@@ -4,7 +4,7 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
       <div v-if="parametrs.mat == 'TYPE'">
-        <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
+        <h3 >{{ titleapp }} типа материала (тип профиля заготовки)</h3>
         <div class="block">
           <p class='p_modal_name'> 
             <span>Наименование: </span>
@@ -140,7 +140,7 @@
         </div>
       </div>
         <div v-if="parametrs.mat == 'PODTYPE'">
-        <h3>{{ titleapp }} типа материала (тип профиля заготовки) </h3>
+        <h3>{{ titleapp }} подтипа (Материал заготовки) </h3>
         <div class="block">
           <p class='p_modal_name'> 
             <span>Наименование: </span>

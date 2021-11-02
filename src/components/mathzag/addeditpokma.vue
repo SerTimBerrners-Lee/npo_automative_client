@@ -4,21 +4,22 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
       <div>
-        <h3>{{ titleapp }} типа материала (тип профиля заготовки)</h3>
+        <h3 v-if='parametrs.mat == "TYPE"'>{{ titleapp }} типа материала (тип категория)</h3>
+        <h3 v-else>{{ titleapp }} подтипа</h3>
         <p v-if='parametrs.mat == "PODTYPE"'>
           <span>Тип: </span>
           <span style='font-weight: bold;'> 
-              {{ parametrs.material ?
-                  parametrs.material.name : '' }}</span>
+            {{ parametrs.material ?
+              parametrs.material.name : '' }}</span>
           <span v-if='parametrs.type == "edit"'>
-              {{ parametrs.data.materials ? 
-                  parametrs.data.materials[0].name : '' }}</span>
+            {{ parametrs.data.materials ? 
+              parametrs.data.materials[0].name : '' }}</span>
         </p>
         <div class="block">
-            <p style='display: flex; align-items: center;'> 
-              <span>Наименование: </span>
-              <input type="text" v-model.trim='nameInputs'>
-            </p>
+          <p style='display: flex; align-items: center;'> 
+            <span>Наименование: </span>
+            <input type="text" v-model.trim='nameInputs'>
+          </p>
         </div>
         <div class="btn-control out-btn-control">
           <button class="btn-status btn-black" @click='addMaterial' v-if='parametrs.type == "create"'>Добавить</button>

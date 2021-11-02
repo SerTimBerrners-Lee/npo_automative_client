@@ -303,7 +303,7 @@ export default {
           mainTime: {ez: 'ч', znach: ''}
         },
         haracteriatic: [
-          { name: 'Масса детали', ez: 'кг', znach: '48'}
+          { name: 'Масса детали', ez: 'кг', znach: 0}
         ],
         DxL: 'x',
         massZag: '',

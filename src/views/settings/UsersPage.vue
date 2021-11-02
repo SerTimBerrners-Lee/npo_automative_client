@@ -50,49 +50,49 @@
       <h3 class="initial-user">{{ initial }}</h3>
       <div class="inform-block">
         <div class="contact-inform">
-            <div class="data-user-form">
-                <div class="prim">
-                    <div class="p-1">
-                      <p>
-                        <span>Должность: </span>
-                        <input type="text" :value='roles'>
-                      </p>
-                      <p> 
-                        <span>Табельный номер: </span>
-                        <input type="text" :value='tabel'>
-                      </p>
-                    </div>
-                    <p class="p-2">
-                        <span>Дата приема на работу: </span>
-                        <input type="text" :value='dateWork'>
+          <div class="data-user-form">
+              <div class="prim">
+                  <div class="p-1">
+                    <p>
+                      <span>Должность: </span>
+                      <input type="text" :value='roles'>
                     </p>
-                    <div class="p-3">
-                      <p>
-                        <span>Логин: </span>
-                        <input type="text" :value='login'>
-                      </p>
-                      <p>
-                        <span>День рождения: </span>
-                        <input type="text" :value='birthday'>
-                      </p>
-                    </div>
-                    <h3>Контактные данные</h3>
-                    <p class="p-4">
-                        <span>Моб. телефон: </span>
-                        <input type="text" :value='phone'>
-                    </p> 
-                    <p class="p-5">
-                        <span>Постоянный адрес проживания: </span>
-                        <input type="text" :value='adress'>
+                    <p> 
+                      <span>Табельный номер: </span>
+                      <input type="text" :value='tabel'>
                     </p>
-                    <p class="p-6">
-                        <span>Адрес по прописке: </span>
-                        <input type="text" :value='adressProps'>
+                  </div>
+                  <p class="p-2">
+                      <span>Дата приема на работу: </span>
+                      <input type="text" :value='dateWork'>
+                  </p>
+                  <div class="p-3">
+                    <p>
+                      <span>Логин: </span>
+                      <input type="text" :value='login'>
                     </p>
-                </div>
-                <h3>Примечание</h3>
-                <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
-            </div>
+                    <p>
+                      <span>День рождения: </span>
+                      <input type="text" :value='birthday'>
+                    </p>
+                  </div>
+                  <h3>Контактные данные</h3>
+                  <p class="p-4">
+                      <span>Моб. телефон: </span>
+                      <input type="text" :value='phone'>
+                  </p> 
+                  <p class="p-5">
+                      <span>Постоянный адрес проживания: </span>
+                      <input type="text" :value='adress'>
+                  </p>
+                  <p class="p-6">
+                      <span>Адрес по прописке: </span>
+                      <input type="text" :value='adressProps'>
+                  </p>
+              </div>
+              <h3>Примечание</h3>
+              <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
+          </div>
         </div>
         <div class="har-inform">
           <div class="ava-block">
@@ -119,14 +119,10 @@
       </div>
       <div class="working-block">
         <h3>Объем выполненных работ</h3>
-        <div class="result-work">
-          <span>Дата: </span>
-          <input type="text" class="calendar-input">
-          <span>Выбрать период, с: </span>
-          <input type="text" class="calendar-input">
-          <span>по: </span>
-          <input type="text" class="calendar-input">
-          <button class='btn-small'>Сбросить фильтр</button>
+        <div class="result-work header_block">
+          <DatePicterRange 
+            @unmount='changeDatePicterRange'  
+          />
         </div>
         <div class="scroll-table" style="height: 190px; margin-left: 10px;">
           <table >
@@ -163,10 +159,11 @@
 </template>
 
 <script>
-import {  mapActions, mapGetters, mapMutations } from 'vuex'
+import {  mapActions, mapGetters, mapMutations } from 'vuex';
+import DatePicterRange from '@/components/date-picter-range.vue';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue'
-import PATH_TO_SERVER from '@/js/path.js'
+import InformFolder from '@/components/InformFolder.vue';
+import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
   data() {
@@ -201,7 +198,8 @@ export default {
   }, 
   computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser', 'getRoleAssets', 'getAuth']),
   components: {
-    InformFolder
+    InformFolder,
+    DatePicterRange
   },
   methods: {
     ...mapActions(['getAllUsers', 'banUserById']),

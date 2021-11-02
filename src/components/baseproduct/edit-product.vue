@@ -1,21 +1,21 @@
 <template>
   <div class='main_block_content'>
-     <h3>Редактировать изделие</h3>
+    <h3>Редактировать изделие</h3>
     <div class="block title_block">
-        <p>
-          <span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'>
-          <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
-          <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
-          <span>Ответственный: </span>
-            <select class="select-small sle"  
-                    v-model='obj.responsible'>
-              <option 
-                    v-for='user in getUsers' 
-                    :key='user' 
-                    :value='user.id'>{{ user.login }}</option>
-            </select> 
-        </p>
-      </div>
+      <p>
+        <span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'>
+        <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
+        <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
+        <span>Ответственный: </span>
+          <select class="select-small sle"  
+            v-model='obj.responsible'>
+            <option 
+            v-for='user in getUsers' 
+            :key='user' 
+            :value='user.id'>{{ user.login }}</option>
+          </select> 
+      </p>
+    </div>
     <div class="content_block">
       <div class="left_content">
         <div class="content_left_block">
@@ -36,10 +36,10 @@
                   <td>{{ cb.art }} </td>
                   <td>{{ cb.cb.name }}</td>
                   <td> <span v-if="cb.ez == 1"> шт</span> 
-                        <span v-if="cb.ez == 2"> л </span>
-                        <span v-if="cb.ez == 3"> кг</span> 
-                        <span v-if="cb.ez == 4"> м </span>
-                        <span v-if="cb.ez == 5"> м.куб</span>
+                    <span v-if="cb.ez == 2"> л </span>
+                    <span v-if="cb.ez == 3"> кг</span> 
+                    <span v-if="cb.ez == 4"> м </span>
+                    <span v-if="cb.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ cb.kol }}</td>
                 </tr>
@@ -50,10 +50,10 @@
                   <td>{{ detal.art }} </td>
                   <td>{{ detal.det.name }}</td>
                   <td> <span v-if="detal.ez == 1"> шт</span> 
-                        <span v-if="detal.ez == 2"> л </span>
-                        <span v-if="detal.ez == 3"> кг</span> 
-                        <span v-if="detal.ez == 4"> м </span>
-                        <span v-if="detal.ez == 5"> м.куб</span>
+                    <span v-if="detal.ez == 2"> л </span>
+                    <span v-if="detal.ez == 3"> кг</span> 
+                    <span v-if="detal.ez == 4"> м </span>
+                    <span v-if="detal.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ detal.kol }}</td>
                 </tr>
@@ -64,10 +64,10 @@
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
                   <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -77,11 +77,12 @@
                 <tr v-for='material in materialList' :key='material.mat'>
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="material.ez == 1"> шт</span> 
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -162,18 +163,18 @@
             </div>
             <div>
                 <table style='width: 100%;'>
-                <tr>
+                  <tr>
                     <th >Файл</th>
-                </tr>
-                <tr 
+                  </tr>
+                  <tr 
                     v-for='doc in  documentsData' 
                     :key='doc'
                     class='td-row'
                     @click='setDocs(doc)'
                     >
                     <td>{{ doc.name }}</td>
-                </tr>
-            </table>
+                  </tr>
+              </table>
             </div>
             <div>
             <h3>Документы</h3>
@@ -181,11 +182,12 @@
                 <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
                 <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
             </div>
-            <AddFile :parametrs='docFiles' 
-                    :typeGetFile='"getfile"'
-                    v-if="isChangeFolderFile" 
-                    @unmount='file_unmount'
-                    :key='keyWhenModalGenerate'
+            <AddFile 
+              :parametrs='docFiles' 
+              :typeGetFile='"getfile"'
+              v-if="isChangeFolderFile" 
+              @unmount='file_unmount'
+              :key='keyWhenModalGenerate'
                 />
             </div>
             <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
@@ -200,9 +202,10 @@
           </div>
         </div>
         <div class="btn-control out-btn-control control-save" >
-          <button class="btn-status"
-                  @click='exit'
-                  >Отменить</button>
+          <button 
+            class="btn-status"
+            @click='exit'
+            >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" @click='saveDetal'>Сохранить</button>
           </div>
@@ -210,64 +213,64 @@
 
     <div class="right_content">
       <div v-if='dataMedia'>
-           <h3>Медиа файлы</h3>
-            <MediaSlider 
-                v-if='dataMedia' 
-                :static='true' 
-                :data='dataMedia' 
-                :key='randomDataMedia'
-                :width='"width: 30%;"'
-                :width_main='"width: 97%;"'
-                />
+        <h3>Медиа файлы</h3>
+        <MediaSlider 
+          v-if='dataMedia' 
+          :static='true' 
+          :data='dataMedia' 
+          :key='randomDataMedia'
+          :width='"width: 30%;"'
+          :width_main='"width: 97%;"'
+          />
        </div>
           <div>
-              <h3>Характеристики</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th> 
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr> 
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(har, inx) in obj.haracteriatic' 
-                    :key='har'
-                    @click='selectHaracteristic = {har, inx}'
-                    >
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.name' 
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.ez'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small small'
-                      @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.znach'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
-                </tr>
-              </table>
-              <div class="btn-control">
-                <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
-                <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
-              </div>
+            <h3>Характеристики</h3>
+            <table class="tables_bf">
+              <tr>
+                <th>Наименование</th> 
+                <th>ЕИ</th>
+                <th>Значение</th>
+              </tr> 
+              <tr class='tr_haracteristic td-row' 
+                  v-for='(har, inx) in obj.haracteriatic' 
+                  :key='har'
+                  @click='selectHaracteristic = {har, inx}'
+                  >
+                <td>
+                  <input 
+                    type="text" 
+                    :value='har.name' 
+                    class='inputs-small'
+                    @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
+                <td>
+                  <input 
+                    type="text" 
+                    :value='har.ez'
+                    style="width: 50px; text-align:center;"
+                    class='inputs-small small'
+                    @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
+                <td>
+                  <input 
+                    type="text" 
+                    :value='har.znach'
+                    style="width: 50px; text-align:center;"
+                    class='inputs-small'
+                    @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
+              </tr>
+            </table>
+            <div class="btn-control">
+              <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
+              <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
             </div>
+          </div>
         <h3 class="link_h3">Принадлежность</h3>
     </div>
     </div>
     <InformFolder  :title='titleMessage'
-        :message = 'message'
-        :type = 'type'
-        v-if='showInformPanel'
-        :key='keyInformTip'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
     />
     <BaseCbedModal 
       v-if='showCbed'
@@ -277,26 +280,26 @@
       :listCbed='listCbed'
     />
     <OpensFile 
-        :parametrs='itemFiles' 
-        v-if="showFile" 
-        :key='keyWhenModalGenerateFileOpen'
+      :parametrs='itemFiles' 
+      v-if="showFile" 
+      :key='keyWhenModalGenerateFileOpen'
     />
   </div>
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue'
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
-import TechProcess from '@/components/basedetal/tech-process-modal.vue'
-import { random, isEmpty } from 'lodash'
-import { mapActions, mapMutations, mapGetters } from 'vuex'
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue'
+import AddFile from '@/components/filebase/addfile.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import { random, isEmpty } from 'lodash';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import PATH_TO_SERVER from '@/js/path';
-import MediaSlider from '@/components/filebase/media-slider.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 
 export default {
   data() {
@@ -307,11 +310,11 @@ export default {
             responsible: '',
             description: '',
             parametrs: [
-                { name: 'Норма времени на сборку', ez: 'ч', znach: '1'}
+              { name: 'Норма времени на сборку', ez: 'ч', znach: 0 }
             ],
             haracteriatic: [
-            { name: 'Рекомендуемый остаток', ez: 'шт', znach: '1'},
-            { name: 'Минимальный остаток', ez: 'шт', znach: '1'}
+              { name: 'Рекомендуемый остаток', ez: 'шт', znach: 0},
+              { name: 'Минимальный остаток', ez: 'шт', znach: 0}
             ],
             fabricNumber: ''
             

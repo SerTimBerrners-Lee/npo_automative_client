@@ -34,7 +34,6 @@
 </template>
 
 <script>
-// import { showMessage } from '@/js/';
 import {random} from 'lodash';
 import InformFolder from '@/components/InformFolder.vue';
 export default {

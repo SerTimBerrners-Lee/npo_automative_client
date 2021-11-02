@@ -310,10 +310,10 @@ export default {
             responsible: '',
             description: '',
             parametrs: [
-                { name: 'Норма времени на сборку', ez: 'ч', znach: '1'}
+                { name: 'Норма времени на сборку', ez: 'ч', znach: 0}
             ],
             haracteriatic: [
-            { name: 'Масса детали', ez: 'кг', znach: '48'}
+            { name: 'Масса детали', ez: 'кг', znach: 0}
             ],
             
         },

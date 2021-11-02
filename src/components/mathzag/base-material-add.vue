@@ -12,7 +12,7 @@
           <span v-if='getLinkId == 3'>Расходные материалы</span>
         </p>
       </div>
-      <h3>Выбор типа и подипа</h3>
+      <h3>Выбор типа и подипа <span v-if='$route.params.type == "copy" && !isEmptyForPug(this.getOnePPT)' class='hover' @click='showParentTandPT'> {{ click_short_t_pt ? 'Показать все типы и под типы' : 'Показать тип и подтип копируемого материала' }}</span></h3>
       <div class='main-content-block'>
         <div class="left-block">
           <div>
@@ -142,12 +142,13 @@
         <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
         <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
       </div>
-      <AddFile :parametrs='docFiles' 
-              :typeGetFile='"getfile"'
-              v-if="isChangeFolderFile" 
-              @unmount='file_unmount'
-              :key='keyWhenModalGenerate'
-                />
+      <AddFile 
+        :parametrs='docFiles' 
+        :typeGetFile='"getfile"'
+        v-if="isChangeFolderFile" 
+        @unmount='file_unmount'
+        :key='keyWhenModalGenerate'
+          />
         </div>
       </div>
     </div>
@@ -164,24 +165,24 @@
       :key='keyWhenModalListProvider'
       v-if='showProvider'
       />
-      <InformFolder  
-        :title='titleMessage'
-        :message = 'message'
-        :type = 'type'
-        v-if='showInformPanel'
-        :key='keyInformTip'
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
     />
   </div>
 </template>
 
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue'
-import { mapActions, mapGetters, mapMutations } from 'vuex'
-import AddFile from '@/components/filebase/addfile.vue'
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import AddFile from '@/components/filebase/addfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
-import { random }  from 'lodash'
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
+import { random, isEmpty } from 'lodash';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
 
 export default {
   data() {
@@ -234,6 +235,7 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
+      click_short_t_pt: false
     }
   },
   components: {TableMaterial, AddFile, ListProvider, InformFolder},
@@ -367,10 +369,11 @@ export default {
       'getAllPodTypeMaterial'
       ]),
     ...mapMutations(['filterMatByPodType',
-    'filterMaterialById',
-    'filterPodMaterialById',
-    'searchTypeMutation', 
-    'searchPTypeMutation',]),
+      'filterMaterialById',
+      'filterPodMaterialById',
+      'searchTypeMutation', 
+      'searchPTypeMutation',
+      ]),
     clickMat(mat, type) {
       if(type == 'type') {
         this.material = mat
@@ -464,15 +467,33 @@ export default {
     searchPT(val) {
       this.searchPTypeMutation(val)
     },
+    showParentTandPT() {
+      if(!isEmpty(this.getOnePPT) && !this.click_short_t_pt) {
+        this.searchPT(this.getOnePPT.podMaterial.name)
+        this.searchTypeM(this.getOnePPT.material.name)
+        this.click_short_t_pt = true
+      } else if(this.click_short_t_pt) {
+        this.click_short_t_pt = false
+        this.searchPT('')
+        this.searchTypeM('')
+      }
+    },
+    isEmptyForPug(obj) {
+      return isEmpty(obj)
+    }
   },
   async mounted() {
     this.getAllEdizm()
-    if(this.$route.params.type == 'edit' || this.$route.params.type=='copy')
+    if(this.$route.params.type == 'edit' || this.$route.params.type == 'copy')
       this.editGetDataPPT()
   }
 }
 </script>
 <style scoped>
+.hover {
+  margin-left: 100px;
+  font-size: 14px;
+}
 .edit-save-material-file-folder {
   margin-right: 8 0px;
 }

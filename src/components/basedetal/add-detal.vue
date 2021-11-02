@@ -8,10 +8,10 @@
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
           <span>Ответственный: </span>
             <select class="select-small sle"  
-                    v-model='obj.responsible'>
+              v-model='obj.responsible'>
               <option v-for='user in getUsers' 
-                      :key='user' 
-                      :value='user.id'>{{ user.login }}</option>
+                :key='user' 
+                :value='user.id'>{{ user.login }}</option>
             </select> 
         </p>
       </div>
@@ -34,10 +34,10 @@
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
                   <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -232,13 +232,13 @@
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue'
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
-import TechProcess from './tech-process-modal.vue'
-import { random, padStart, padEnd } from 'lodash'
-import { mapActions, mapMutations, mapGetters } from 'vuex'
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
+import AddFile from '@/components/filebase/addfile.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import TechProcess from './tech-process-modal.vue';
+import { random, padStart, padEnd } from 'lodash';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
 
 export default {
   data() {
@@ -254,7 +254,7 @@ export default {
           mainTime: {ez: 'ч', znach: ''}
         },
         haracteriatic: [
-          { name: 'Масса детали', ez: 'кг', znach: '48'}
+          { name: 'Масса детали', ez: 'кг', znach: 0}
         ],
         DxL: 'x',
         massZag: '',
