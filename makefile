@@ -7,4 +7,5 @@ stop:
 rmi:
 	docker rmi npo-client
 copy:
+	npm run build
 	cp -r dist/* /var/www/html

@@ -30,7 +30,8 @@
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
             <th>Габариты заготовки</th>
-            <th>Тип заготовки | Материал</th>
+            <th>Тип заготовки</th>
+            <th>Материал</th>
             <th>Операции</th>
             <th>Готовность</th>
             <th>Статус</th>
@@ -46,9 +47,8 @@
             <td class='center'>{{ metalowork.kolvo_all }}</td>
             <td class='center'>{{ metalowork.kolvo_order_byer }}</td>
             <td class='center'>{{ metalowork.detal.DxL }}</td>
-             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openMaterialDetal(metalowork.detal)' class='link_img' atl='Показать' />
-            </td>
+            <td class='center'>{{ metalowork.type_material.name }}</td>
+            <td>{{ metalowork.pod_pod_material.name }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>

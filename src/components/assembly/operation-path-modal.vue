@@ -16,12 +16,12 @@
 							<th>Готовность %</th>
 							<th>Готовность к сборке</th>
 						</tr>
-						<tr v-for='sh of assemble.shipments' :key='sh'>
-							<td>{{ sh.number_order }}</td>
-							<td>{{ sh.date_shipments }}</td>
-							<td>{{ shipments ? shipments.product.name : '' }}</td>
+						<tr>
+							<td>{{ assemble.shipments.number_order }}</td>
+							<td>{{ assemble.shipments.date_shipments }}</td>
+							<td>{{ assemble.product ? assemble.product.name : '' }}</td>
 							<td>{{ assemble.cbed.name}}</td>
-							<td>{{ shipments ? shipments.product.articl : '' }}</td>
+							<td>{{ assemble.product ? assemble.product.articl : '' }}</td>
 							<td>{{ assemble.kolvo_all }}</td>
 							<td>{{ 0 }}</td>
 							<td>{{ 0 }}</td>
@@ -221,7 +221,7 @@ export default {
       return this.$props.assemble.kolvo_all - create < 0 ? 0 : this.$props.assemble.kolvo_all - create
     },
     returnKolvoCreate(oper) {
-      if(!oper.marks || !oper.marks.length) return false
+      if(!oper.marks || !oper.marks.length) return 0
       let kol = 0
       for(let mark of oper.marks) {
         kol = kol + mark.kol
@@ -252,7 +252,7 @@ export default {
     }
     
 		if(this.$props.assemble && this.$props.assemble.shipments) 
-			this.fetchAllShipmentsById(this.$props.assemble.shipments[0].id).then(response => this.shipments = response)
+			this.fetchAllShipmentsById(this.$props.assemble.shipments.id).then(response => this.shipments = response)
 
 		if(this.$props.assemble && this.$props.assemble.cbed) {
 				let izd = this.$props.assemble.cbed
