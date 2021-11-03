@@ -55,7 +55,6 @@ import DefcitDetal from '@/components/sclad/deficit-detal/deficit-detal.vue';
 import DeficitMaterial from '@/components/sclad/deficit-material/deficit-material.vue';
 import DeficitProd from '@/components/sclad/deficit-prod/deficit-prod.vue';
 import AddOrder from '@/components/issueshipment/add-order.vue';
-import DetOperation from '@/components/metalloworking/det-operation.vue';
 import OrderSuppliers from '@/components/sclad/ordersuppliers/ordersuppliers.vue';
 import CompletAssembl from '@/components/sclad/completassembl/completassembl.vue';
 import IssueToPull from '@/components/sclad/issuetopull/issuetopull.vue';
@@ -71,11 +70,18 @@ import ConsumptionAll from '@/components/sclad/consumptionall/index.vue';
 import ConsumptionSclad from '@/components/sclad/consumptionsclad/index.vue';
 import ComingSclad from '@/components/sclad/comingtosclad/index.vue';
 import ScladTrash from '@/components/sclad/scladtrash/index.vue';
-import OparationDetalAssembly from '@/components/assembly/operation-detal.vue';
+import OparationDetalAssembly from '@/components/assembly/operation-assemble.vue';
+import OparationDetalMetalloworking from '@/components/metalloworking/operation-metall.vue';
 
 const routes = [ 
   {
-    path: '/assembly/operation-detal/:operation',
+    path: '/metalloworking/operation-metall/:operation',
+    name: 'Операции Металлообработки',
+    component: OparationDetalMetalloworking,
+    props: true
+  },
+  {
+    path: '/assembly/operation-assemble/:operation',
     name: 'Операции сборки',
     component: OparationDetalAssembly,
     props: true
@@ -174,11 +180,6 @@ const routes = [
     path: '/library',
     name: 'Библиотека ',
     component: Library
-  },
-  {
-    path: '/detoperation',
-    name: 'Детали по операциям',
-    component: DetOperation
   },
   {
     path: '/metalloworking',

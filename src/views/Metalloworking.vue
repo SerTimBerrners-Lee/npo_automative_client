@@ -1,8 +1,10 @@
 <template>
 	<div>
 		<h3>Металлообработка</h3>
-		<div class="block">
-      <button class="btn" @click='$router.push("/detoperation")'>Детали по операциям</button>
+		<div class="block"> 
+      <!-- $router.push("/detoperation") -->
+      <button class="btn" @click='openOperation'>Детали по операциям</button>
+      <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
     </div>
     <div class='table_block'>
       <div class="table-scroll">
@@ -92,10 +94,11 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
-    <MaterialInfo 
-      :parametrs='data_material_info'
-      v-if='data_material_info'
-      :key='key_material_info'
+    <OperationModal 
+      :key='key_operation_m'
+      v-if='show_operaiton_m && operation_stack.length'
+      :parametrs='operation_stack'
+      :is_type='"det"'
     />
 
     <Loader v-if='loader' />
@@ -107,11 +110,11 @@
 import {mapActions, mapGetters} from 'vuex';
 import DescriptionModal from '@/components/description-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import OperationPathModal from '@/components/sclad/operation-path-metaloworking.vue';
+import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking.vue';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import {random} from 'lodash';
-import MaterialInfo from '@/components/mathzag/detals-material-modal.vue';
+import OperationModal from '@/components/sclad/workings-operations.vue';
 export default {
 	data() {
 		return{
@@ -121,6 +124,9 @@ export default {
       description: '',
       itemFiles: [],
       keyWhenModalGenerateFileOpen: random(1, 999),
+      key_operation_m: random(1, 999),
+      show_operaiton_m: false, 
+      operation_stack: [],
 
       message: '',
       type: '',
@@ -130,18 +136,25 @@ export default {
       keyOperationPathModal: random(1, 999),
       showOperationPathModal: false,
 
-      data_material_info: null,
-      key_material_info: random(1, 999),
-
       metaloworking_props: null,
 
       loader: false
 		}
 	},
-	computed: mapGetters(['getShipments']),
-	components: {DescriptionModal, OpensFile, OperationPathModal, InformFolder, MaterialInfo},
+	computed: mapGetters([
+    'getShipments',
+    'getTypeOperations',
+    ]),
+	components: {DescriptionModal, OpensFile, OperationPathModal, InformFolder, OperationModal},
 	methods: {
-    ...mapActions(['fetchAllShipmentsMetaloworking', 'fetchMetaloworkingById', 'getOneDetal', 'fetchGetOnePPM']),
+    ...mapActions([
+      'fetchAllShipmentsMetaloworking', 
+      'fetchMetaloworkingById', 
+      'getOneDetal', 
+      'fetchGetOnePPM',
+      'fetchTechProcess',
+      'getAllTypeOperations'
+      ]),
     toSetOrders(shipments, e) {
       if(e.classList.item(1)) {
         shipments.metaloworking.forEach(or => { this.metaloworking = this.metaloworking.filter(el => el.id != or.id)})
@@ -169,18 +182,42 @@ export default {
       this.descriptionKey = random(1, 999)
       this.description = description
     },
-    openMaterialDetal(detal) { 
-      if(!detal.mat_zag) return
-      this.fetchGetOnePPM(detal.mat_zag).then(res => {
-        this.data_material_info = res;
-        this.key_material_info = random(1, 999)
-      })
-      
-    }
+    openOperation() {
+      this.key_operation_m = random(1, 999)
+      this.show_operaiton_m = true
+    },
+    filterOperation() {
+      for(let ship of this.getShipments) {
+        for(let metal of ship.metaloworking) {
+          this.getOneDetal(metal.detal_id).then(det => {
+            if(det.techProcesses) {
+              this.fetchTechProcess(det.techProcesses.id).then(tp => {
+                for(let oper of tp.operations) {
+                  for(let ot of this.getTypeOperations) {
+                    if(oper.name == ot.id) {
+                      let check = true
+                      for(let os of this.operation_stack) {
+                        if(os.id == ot.id) check = false
+                      }
+                      if(check) {
+                        this.operation_stack.push(ot)
+                      } else check = true
+                    }
+                  }
+                }
+              })
+            }
+
+          })
+        }
+      }
+    },
   },
 	async mounted() {
     this.loader = true
     await this.fetchAllShipmentsMetaloworking() 
+    await this.getAllTypeOperations()
+    this.filterOperation()
     this.loader = false
 	}
 }

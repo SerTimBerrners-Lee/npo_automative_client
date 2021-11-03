@@ -5,7 +5,7 @@
     <div :style="hiddens" > 
 
         <div class="right_info_block" >
-        <h3>Краткая Информация об детали</h3>
+        <h3>Краткая Информация о детали</h3>
         <div class="block">
           <p class='name_parg'>
           <span class="title_span">Наименование: </span><span>{{ getOneSelectDetal.name }}</span>

@@ -3,7 +3,7 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3>Сборочные единицы по операциям</h3>
+        <h3>{{ is_type == 'cb' ? "Сборочные единицы" : 'Детали' }} по операциям</h3>
 				<div class="operation-block">
 					<div 
 						class="type-operation" 
@@ -22,7 +22,7 @@
  
 <script>
 export default {
-  props: ['parametrs'],
+  props: ['parametrs', 'is_type'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -39,7 +39,10 @@ export default {
       this.hiddens = 'display: none;'
     },
     showOperation(oper) {
-       this.$router.push({path: `/assembly/operation-detal/${oper.id}`})
+      if(this.$props.is_type == 'cb')
+        this.$router.push({path: `/assembly/operation-assemble/${oper.id}`})
+      if(this.$props.is_type == 'det')
+        this.$router.push({path: `/metalloworking/operation-metall/${oper.id}`})
     }
 
   },

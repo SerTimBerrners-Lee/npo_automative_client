@@ -3,93 +3,56 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3>Путь сборочной единицы</h3>
+        <h3>Производственый путь детали</h3>
         <div class="block"> 
 					<table v-if='metaloworking && shipments'>
 						<tr>
 							<th>№ Заказа</th>
 							<th>Срок отгрузки</th>
 							<th>Изделие</th>
-							<th>Деталь</th>
+              <th>Деталь</th>
 							<th>Артикул</th>
 							<th>Кол-во, шт</th>
 							<th>Готовность %</th>
-							<th>Готовность к сборке</th>
 						</tr>
-						<tr v-for='sh of metaloworking.shipments' :key='sh'>
-							<td>{{ sh.number_order }}</td>
-							<td>{{ sh.date_shipments }}</td>
-							<td>{{ shipments ? shipments.product.name : '' }}</td>
-							<td>{{ metaloworking.detal.name}}</td>
-							<td>{{ shipments ? shipments.product.articl : '' }}</td>
+						<tr>
+							<td>{{ metaloworking.shipments ? metaloworking.shipments.number_order : '' }}</td>
+							<td>{{ metaloworking.shipments ? metaloworking.shipments.date_shipments : '' }}</td>
+							<td>{{ metaloworking.product ? metaloworking.product.name : '' }}</td>
+							<td>{{ metaloworking.detal ? metaloworking.detal.name : ''}}</td>
+							<td>{{ metaloworking.detal ? metaloworking.detal.articl : ''}}</td>
 							<td>{{ metaloworking.kolvo_all }}</td>
-							<td>{{ 0 }}</td>
-							<td>{{ 0 }}</td>
+							<td class='center'>{{ 0 }}</td>
 						</tr>
 					</table>
-        </div> 
-				<div>
-					<h3>Комплектация</h3>
-					<table v-if='komplect'>
-						<tr>
-							<th>Артикул</th>
-							<th>Наименование</th>
-							<th>Ед.</th>
-							<th>Кол-во на 1 Деталь</th>
-							<th>Кол-во всего, шт</th>
-							<th>Дефицит всего, шт.</th>
-						</tr>
-						<tr v-for='komp of komplect' :key='komp'>
-							<td>{{ komp.art }}</td>
-							<td>{{ komp.name }}</td>
-							<td class='center'>
-								<span v-if="komp.ez == 1"> шт</span> 
-								<span v-if="komp.ez == 2"> л </span>
-								<span v-if="komp.ez == 3"> кг</span> 
-								<span v-if="komp.ez == 4"> м </span>
-								<span v-if="komp.ez == 5"> м.куб</span>
-							</td>
-							<td class='center'>{{ komp.kol }}</td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-          <h3>Материал</h3> 
-          <div class='head_block'>
-            <div>
-              <p>Тип: </p>
-              <p style='font-weight: bold;'>{{ material ? material.material.name : '' }}</p>
-            </div>
-            <div>
-              <p>Подтип: </p>
-              <p style='font-weight: bold;'>{{ material ? material.podMaterial.name : '' }}</p>
-            </div>
-            <div>
-              <p>Наименование: </p>
-              <p style='font-weight: bold;'>{{ material ? material.name : '' }}</p>
-            </div>
-          </div>
-				</div>
 
-				<div>
-					<h3>Сборка</h3>
-					<table>
+          <table v-if='metaloworking && shipments'>
 						<tr>
-							<th>№</th>
-							<th>Операции</th>
-							<th>Норма времени на 1 шт.,час</th>
-							<th>Норма времени, итого</th>
-							<th>Выполнено в н/ч</th>
-							<th>Статус</th>
-							<th>Сделано, шт.</th>
-							<th>Осталось сделать, шт.</th>
-							<th>Дата исполнения</th>
-							<th>Кол-во сделано, шт.</th>
-							<th>Исполнитель</th>
-							<th>Примечание</th>
+							<th>Материал</th>
+							<th>Тип заготовки</th>
+							<th>Габариты заготовки, мм</th>
+							<th>Масса заготовки, кг</th>
+							<th>Масса детали, кг</th>
+							<th>Норма расхода итого</th>
+							<th>Кол-во отходов, кг</th>
+						</tr>
+						<tr>
+							<td>{{ metaloworking.pod_pod_material ? metaloworking.pod_pod_material.name : '' }}</td>
+							<td>{{ metaloworking.type_material ? metaloworking.type_material.name : '' }}</td>
+							<td>{{ }}</td>
+              <td>{{ }}</td>
+							<td class='center'>{{ metaloworking.detal ? metaloworking.detal.trash : '' }}</td>
+							<td class='center'>{{ metaloworking.detal ? Number(metaloworking.detal.trash) * metaloworking.kolvo_all : ''}}</td>
+							<td class='center'>{{ metaloworking.detal ? Number(metaloworking.detal.trash) * metaloworking.kolvo_all : '' }}</td>
 						</tr>
 					</table>
-				</div>
+        </div>
+        <OperationTable 
+          :marks='props_mars'
+          :tp_id='props_tp_id'   
+          :izdeles='props_izdeles'
+          v-if='props_tp_id && props_izdeles'
+        />
 				<div class="btn-control out-btn-control" style='position:fixed; bottom: 10px; width: 58%;'>
 					<button class="btn-status btn-black" 
 						style="height: 0px;">Печать</button>
@@ -102,7 +65,7 @@
 <script>
 
 import { mapActions } from 'vuex';
-
+import OperationTable from '@/components/sclad/operation-path-info.vue';
 export default { 
   props: ['metaloworking'],
   data() {
@@ -110,12 +73,16 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
+      props_mars: [],
+      props_tp_id: null, 
+      props_izdeles: null,
 
 			shipments: null,
 			komplect: [],
       material: null
     }
   },
+  components: {OperationTable},
   methods: {
     ...mapActions(['fetchAllShipmentsById', 'getOneDetal', 'fetchGetOnePPM']),
 		destroyModalF() {
@@ -129,8 +96,15 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
+    if(this.$props.metaloworking && this.$props.metaloworking.tp_id && this.$props.metaloworking.marks) {
+
+      this.props_tp_id = this.$props.metaloworking.tp_id
+      this.props_mars = this.$props.metaloworking.marks
+      this.props_izdeles = this.$props.metaloworking
+    }
+
 		if(this.$props.metaloworking && this.$props.metaloworking.shipments) 
-			this.fetchAllShipmentsById(this.$props.metaloworking.shipments[0].id).then(response => this.shipments = response)
+			this.fetchAllShipmentsById(this.$props.metaloworking.shipments.id).then(response => this.shipments = response)
 
     let MW = this.$props.metaloworking
 		if(MW && MW.detal) {

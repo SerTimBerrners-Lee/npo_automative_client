@@ -15,7 +15,7 @@ export default {
 			if(res.ok) {
 				const result = await res.json()
 				ctx.commit('allAssemble', result)
-			} 
+			}  
     },
 		async fetchCreateAssemble(ctx, data) { 
       const res = await fetch(`${PATH_TO_SERVER}api/assemble`, {

@@ -43,7 +43,6 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/users/data/${light}`)
       if(res.ok) {
         const result = await res.json()
-        console.log(result)
         ctx.commit('updateUsers', result)
         return result
       }

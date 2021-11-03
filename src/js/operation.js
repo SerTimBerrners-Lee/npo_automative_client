@@ -44,8 +44,6 @@ export async function getStatus(tp_id, operation_id, curr_id=1, return_is='index
 	const tech_proc = await result.json()
 	if(!tech_proc.operations.length) return false
 
-	console.log(tp_id, operation_id, curr_id, return_is)
-
 	let index = 0
 	for(let inx in tech_proc.operations) {
 		if(tech_proc.operations[inx].id == operation_id) 
@@ -65,5 +63,31 @@ export async function getStatus(tp_id, operation_id, curr_id=1, return_is='index
 				else return pug_false
 			}
 		}
+	}
+}
+
+export class OperationTime {
+	constructor(operation, kol_create_izd = 1) {
+		if(!operation) return false
+
+		this.pt = Number(operation.preTime)
+		this.mt = Number(operation.mainTime)
+		this.ht = Number(operation.helperTime)
+		this.kol_create_izd = Number(kol_create_izd)
+
+		return {
+			count: this.timeKolvo(),
+			pt: this.pt,
+			mt: this.mt,
+			ht: this.ht
+		}
+	}
+	static pt
+	static mt
+	static ht
+	static kol_create_izd 
+
+	timeKolvo() {
+		return this.pt + ((this.mt + this.ht) * this.kol_create_izd)
 	}
 }

@@ -46,9 +46,9 @@
 					<td :class='ass.status == "Готово" ? "success_operation" : "work_operation" '>{{ ass.status }}</td>
 					<td class='center'>{{ ass.kolvo_create_in_operation }}</td>
 					<td class='center'>{{ ass.kolvo_all - ass.kolvo_create_in_operation }}</td>
-					<td class='center'>{{ getTime(ass.operation).pt + getTime(ass.operation).t }}</td>
-					<td class='center'>{{ getTime(ass.operation).pt + (getTime(ass.operation).t * ass.kolvo_all) }}</td>
-					<td class='center'>{{ dateIncrementHors(undefined, (getTime(ass.operation).pt + (getTime(ass.operation).t * ass.kolvo_all))) }} </td>
+					<td class='center'>{{ oneIzdTime(ass.operation) }}</td>
+					<td class='center'>{{ manyIzdTime(ass.operation, ass.kolvo_all) }}</td>
+					<td class='center'>{{ dateIncrementHors(undefined, manyIzdTime(ass.operation, ass.kolvo_all)) }} </td>
 					<td class='center'>{{ responsible(ass.cbed) }}</td>
 					<td @click.once='e => showOperation(ass,  "after", e.target)'
 						class='center hover success_operation'>показать</td>
@@ -73,7 +73,7 @@
 			</div>
 		</div>
 
-		<div v-if='getAssembles.length == 0'>
+		<div v-if='getAssembles.length == 0' style='margin-top: 20px;'>
 			Операций не найдено
 		</div>
 		<OpensFile 
@@ -115,7 +115,7 @@ import InformFolder from '@/components/InformFolder.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import { dateIncrementHors } from '@/js/';
 import CreateMark from '@/components/sclad/mark-modal.vue'; 
-import { afterAndBeforeOperation } from '@/js/operation.js';
+import { afterAndBeforeOperation, OperationTime } from '@/js/operation.js';
 export default {
 	data() {
 		return {
@@ -151,6 +151,7 @@ export default {
       console.log(val)
     },
 		unmount_marks(res) {
+			if(res == 'closed') return false
 			if(res) {
 				this.fetchAllAssembleTypeOperation(this.type_operation_id)
 				showMessage('', 'Отметка о выполнении успешно создана', 's', this)
@@ -179,11 +180,13 @@ export default {
       this.descriptionKey = random(1, 999)
       this.description = description
     },
-		getTime(operation) {
-			return {
-				pt: Number(operation.preTime),
-				t: Number(operation.mainTime) + Number(operation.helperTime)
-			}
+		oneIzdTime(operation) {
+			let ot = new OperationTime(operation)
+			return ot.count
+		},
+		manyIzdTime(operation, kol_create_detal) {
+			let ot = new OperationTime(operation, kol_create_detal)
+			return ot.count
 		},
 		dateIncrementHors(date = new Date().toLocaleDateString("ru-RU"), hrs) {
       let dat = dateIncrementHors(date, hrs)
@@ -215,6 +218,7 @@ export default {
 			if(to.id == this.type_operation_id) 
 				this.name_operaiton = to.name
 		}
+
     this.loader = false
 	}
 }

@@ -2,13 +2,13 @@
 	<div>
 		<h3>Сборка</h3>
 		<div class="block">
-      <button class="btn" @click='OpenCbOperation'>Сборочные единицы по операциям</button>
+      <button class="btn" @click='openOperation'>Сборочные единицы по операциям</button>
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
     </div>
     <div class='table_block'>
       <div class="table-scroll">
         <table>
-          <tr>
+          <tr> 
             <th><unicon name="check" fill="royalblue" /></th> 
             <th>Заказ покупателя из задач на отгрузку</th>
             <th>Дата отгрузки покупателю</th>
@@ -92,6 +92,7 @@
       :key='key_operation_m'
       v-if='show_operaiton_m && operation_stack.length'
       :parametrs='operation_stack'
+      :is_type='"cb"'
     />
 
     <Loader v-if='loader' />
@@ -106,7 +107,7 @@ import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
-import OperationModal from '@/components/assembly/cb-operation.vue';
+import OperationModal from '@/components/sclad/workings-operations.vue';
 export default {
 	data() {
 		return{
@@ -170,7 +171,7 @@ export default {
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true
     },
-    OpenCbOperation() {
+    openOperation() {
       this.key_operation_m = random(1, 999)
       this.show_operaiton_m = true
     },

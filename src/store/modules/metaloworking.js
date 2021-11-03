@@ -10,11 +10,11 @@ export default {
     },
   }, 
   actions: {
-    async fetchMetaloworking() { 
+    async fetchMetaloworking(ctx) { 
       const res = await fetch(`${PATH_TO_SERVER}api/metaloworking`)
 			if(res.ok) {
 				const result = await res.json()
-				console.log(result)
+        ctx.commit('allMetaloworking', result)
 			}
     },
 		async fetchCreateMetaloworking(ctx, data) { 
@@ -38,6 +38,15 @@ export default {
         console.log(result)
 				return result
 			}
+    },
+    async fetchAllMetalloworkingTypeOperation(ctx, op_id) { 
+      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/typeoperation/${op_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        console.log(result)
+        ctx.commit('allMetaloworking', result)
+        return result 
+      }
     }
   },
   mutations: {

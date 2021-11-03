@@ -67,26 +67,25 @@ const photoPreloadUrl = (input, cb, checkTypes = false) => {
   reader.readAsDataURL(input)
 } 
 
+const addNull = (str) => str.length <= 1 ? "0" + str : str
+
 const dataFormat = () => {
   let dat =  new Date()
-  let Day = String(dat.getUTCDate())
-  let Month = String(dat.getMonth() + 1)
+  let Day = addNull(String(dat.getUTCDate()))
+  let Month = addNull((String(dat.getMonth() + 1)))
   let Yeard = dat.getFullYear()
 
-  let splitData = `${addNull(Day)}.${addNull(Month)}.${Yeard}`;
+  let splitData = `${Day}.${Month}.${Yeard}`;
   return splitData
 }
 
 const timeFormat = () => {
   let dat =  new Date()
-  let Hours = dat.getHours()
-  let Minute = dat.getMinutes() 
-  let splitTime= `${addNull(Hours)}:${addNull(Minute)}`;
+  let Hours = addNull(String(dat.getHours()))
+  let Minute = addNull(String(dat.getMinutes()))
+  let splitTime= `${Hours}:${Minute}`;
   return splitTime
 }
-
-const addNull = (str) => str.length == 1 ? "0" + str : str
-
 
 const dateIncrementHors = (date, hors) =>  {
   if(!date || date.split('.').length != 3) return ''

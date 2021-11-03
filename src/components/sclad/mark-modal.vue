@@ -8,13 +8,13 @@
 					<div class='first_b'>
 						<p>
 							<span>{{ type_izd == 'cb' ? 'СБ:' : 'Д' }} </span>
-							<span style='font-weight: bold;'>{{ obj_name }}</span>
+							<span style='font-weight: bold; margin-left: 10px;'>{{ obj_name }}</span>
 						</p>
 						<p class='flex_p'>
 							<span>Дата отметки: </span>
 							<span>{{ new Date().toLocaleString('ru-RU').split(',')[0] }}</span>
 						</p>
-					</div>
+					</div> 
 					<p>
 						<span>Операция: </span>
 						<span class='small_hide'>{{ obj_before }} ></span>
@@ -48,7 +48,7 @@
             </select> 
 					</p>
 					<p>
-						<span style='font-weight: bold;'>Количество выполненных деталей:</span>
+						<span style='font-weight: bold;'>Количество выполненных {{ type_izd == "det" ? "деталей" :"сборочных едениц" }}:</span>
 						<input type="number" min='1' :max='obj_max_det' v-model='kol'>
 					</p>
 				</div>
@@ -115,7 +115,7 @@ export default {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
 			this.hiddens = 'display: none;'
-			this.$emit('unmount', this.description)
+			this.$emit('unmount', 'closed')
     },
 		change_date_picter(date) {
 			this.date = date
@@ -139,6 +139,21 @@ export default {
 				this.$emit('unmount', res)
 			})
 		},
+		showOperationStep(obj) {
+			if(!obj.operation) return false;
+				this.obj_curent = `${obj.operation.id}. ${obj.operation.full_name}`
+				afterAndBeforeOperation(obj.tp_id, obj.operation_id)
+					.then(res => {
+						if(res) {
+							if(res.before)
+								if(res.before.id != obj.operation.id)
+									this.obj_before =  `${res.before.id}. ${res.before.full_name}`
+							if(res.after) 
+								if(res.after.id != obj.operation_id )
+									this.obj_after = `${res.after.id}. ${res.after.full_name}`
+						}
+				})
+		}
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -154,23 +169,20 @@ export default {
 				this.obj_name = ass.cbed.name
 				this.obj_max_det = ass.kolvo_all - ass.kolvo_create
 				this.obj_kolvo_create_in_operation = ass.kolvo_create_in_operation
-				console.log(ass)
 				this.obj_kolvo_all = ass.kolvo_all
 				this.operation_id = ass.operation_id
 
-				if(!ass.operation) return false;
-				this.obj_curent = `${ass.operation.id}. ${ass.operation.full_name}`
-				afterAndBeforeOperation(ass.tp_id, ass.operation_id)
-					.then(res => {
-						if(res) {
-							if(res.before)
-								if(res.before.id != ass.operation.id)
-									this.obj_before =  `${res.before.id}. ${res.before.full_name}`
-							if(res.after) 
-								if(ass.operation_id != res.after.id)
-									this.obj_after = `${res.after.id}. ${res.after.full_name}`
-						}
-				})
+				this.showOperationStep(ass)
+			}
+			if(this.$props.type_izd == 'det') {
+				let metal = this.$props.parametrs
+				this.obj_name = metal.detal.name
+				this.obj_max_det = metal.kolvo_all - metal.kolvo_create
+				this.obj_kolvo_create_in_operation = metal.kolvo_create_in_operation
+				this.obj_kolvo_all = metal.kolvo_all
+				this.operation_id = metal.operation_id
+
+				this.showOperationStep(metal)
 			}
 		}
 		this.loader = false
