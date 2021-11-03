@@ -38,11 +38,9 @@
 					<td>{{ ass.cbed.articl }}</td>
 					<td>{{ ass.cbed.name }}</td>
 					<td class='center'>{{ ass.kolvo_all }}</td>
-					<td class='center'>{{ ass.shipments[0].date_shipments }}</td>
-					<td @click.once='e => getProduct(ass.shipments, "number", e.target)'
-						class='center hover'>показать</td>
-					<td @click.once='e => getProduct(ass.shipments, "name", e.target)'
-						class='center hover'>показать</td>
+					<td class='center'>{{ ass.shipments.date_shipments }}</td>
+					<td class='center'>{{ ass.product ? ass.product.fabricNumber : '' }}</td>
+					<td class='center'>{{ ass.product ? ass.product.name : '' }}</td>
 					<td @click.once='e => showOperation(ass, "before",  e.target)'
 						class='center hover work_operation'>показать</td>
 					<td :class='ass.status == "Готово" ? "success_operation" : "work_operation" '>{{ ass.status }}</td>
@@ -159,16 +157,6 @@ export default {
 			}
 				else 
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
-		},
-		getProduct(shipments, type='number', e) {
-			if(!shipments.length && shipments[0].productId) 
-				return 0
-			this.getAllProductByIdLight(shipments[0].productId).then(res => {
-				if(type == 'number')
-					e.innerText = res.fabricNumber
-				else if(type == 'name')
-					e.innerText = res.name
-				})
 		},
 		showOperation(ass, type, e) {
 			afterAndBeforeOperation(
