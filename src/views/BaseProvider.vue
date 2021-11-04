@@ -95,7 +95,7 @@
           <button class="btn-small" @click='clearFilter'>Сбросить фильтр </button>
         </div>
       </div>
-      <div class="right-block-bprovider">
+      <div class="right-block-bprovider" v-if='provider'>
         <h3>Подробная информация о поставщике</h3>
         <div class="block">
           <div class="first-block-description">

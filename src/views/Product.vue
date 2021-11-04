@@ -2,7 +2,7 @@
   <div class='main_product_block'>
     <div class='block_product'>
         <h3>Изделия</h3>
-        <div class="main_table_control">
+      <div class="main_table_control">
           <div class="scroll-table" >
             <table class="table-base-detal">
               <tr>
@@ -189,14 +189,10 @@ export default {
 }
 .table-base-detal {
   float: left;
-  width: 400px;
-}
-.table-base-detal tr {
-  height: 65px;
+  width: 500px;
 }
 .scroll-table {
-  height: 600px;
-    
+  height: 700px;
 }
 .tb-title {
   height: 50px;
@@ -212,11 +208,14 @@ export default {
 table {
   font-size: 14px;
 }
+td {
+  height: 10px;
+}
 .main_table_control {
   display: flex;
 }
 .block_product {
-  width: 400px;
+  width: 500px;
 }
 .right_info_block {
   width: 450px;

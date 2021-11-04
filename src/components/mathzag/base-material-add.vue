@@ -12,7 +12,7 @@
           <span v-if='getLinkId == 3'>Расходные материалы</span>
         </p>
       </div>
-      <h3>Выбор типа и подипа <span v-if='$route.params.type == "copy" && !isEmptyForPug(this.getOnePPT)' class='hover' @click='showParentTandPT'> {{ click_short_t_pt ? 'Показать все типы и под типы' : 'Показать тип и подтип копируемого материала' }}</span></h3>
+      <h3>Выбор типа и подипа</h3>
       <div class='main-content-block'>
         <div class="left-block">
           <div>
@@ -247,6 +247,20 @@ export default {
       this.$router.push({path: '/basematerial'}) 
   },
   methods: {
+    ...mapActions(['getAllTypeMaterial', 
+      'getOnePodType', 
+      'getAllEdizm', 
+      'podMaterial',
+      'createNewPodPodMaterial',
+      'fetchGetOnePPM',
+      'getAllPodTypeMaterial'
+      ]),
+    ...mapMutations(['filterMatByPodType',
+      'filterMaterialById',
+      'filterPodMaterialById',
+      'searchTypeMutation', 
+      'searchPTypeMutation',
+      ]),
     pushProvider(provider) { 
       if(!provider)
         return 0
@@ -256,7 +270,7 @@ export default {
     addProvider() {
         this.showProvider = true
         this.keyWhenModalListProvider = random(10, 3333)
-      },
+    },
     file_unmount(e) { 
       if(!e) return 0
       this.formData = e.formData
@@ -288,15 +302,12 @@ export default {
 
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
-      
-      let podTypeId
-      
-      this.$route.params.type == 'edit' ? podTypeId = this.getOnePPT.podMaterialId :
-      podTypeId = this.podMaterial.id
+      console.log(this.podMaterial, this.material)
+
 
       if(this.material)
         this.formData.append('rootParentId', this.material.id)
-      this.formData.append('podTypeId', podTypeId)
+      this.formData.append('podTypeId', this.podMaterial.id)
       this.formData.append('name', dat.name)
       let length = JSON.stringify({
         edizm: 7,
@@ -350,12 +361,10 @@ export default {
 
       let kolvo = JSON.stringify({ kolvo: dat.kolvo_select})
       this.formData.append('kolvo', kolvo)
-
       this.formData.append('providers', this.providersId) 
-
       this.formData.append('description', dat.description)
+
       this.createNewPodPodMaterial(this.formData).then(res => {
-        console.log(res)
         if(res)
           if(this.$route.params.type == 'edit')
             showMessage('', 'Материал усешно обновлен. Перенаправление на главную страницу...', 's', this)
@@ -364,20 +373,6 @@ export default {
       })
       setTimeout(() => this.$router.push('/basematerial'), 3000)
     },
-    ...mapActions(['getAllTypeMaterial', 
-      'getOnePodType', 
-      'getAllEdizm', 
-      'podMaterial',
-      'createNewPodPodMaterial',
-      'fetchGetOnePPM',
-      'getAllPodTypeMaterial'
-      ]),
-    ...mapMutations(['filterMatByPodType',
-      'filterMaterialById',
-      'filterPodMaterialById',
-      'searchTypeMutation', 
-      'searchPTypeMutation',
-      ]),
     clickMat(mat, type) {
       if(type == 'type') {
         this.material = mat
@@ -437,26 +432,20 @@ export default {
     },
     editGetDataPPT() {
       this.updateInputSelect(this.getOnePPT)
-      if(this.$route.params.type == 'edit') {
-        if(!this.getOnePPT || !this.getOnePPT.material) 
+        if(!this.getOnePPT || !this.getOnePPT.material || !this.getOnePPT.podMaterialId) 
           return this.$router.push('/basematerial')
         
-        this.filterMaterialById(this.getOnePPT.material.id)
-        this.filterPodMaterialById(this.getOnePPT.podMaterialId)
-        this.podMaterial = this.getOnePPT
-      }
-      
+      this.filterMaterialById(this.getOnePPT.material.id)
+      this.filterPodMaterialById(this.getOnePPT.podMaterialId)
+      this.podMaterial = this.getOnePPT.podMaterial
+      this.material = this.getOnePPT.material
+
       this.obj.description = this.getOnePPT.description
       this.obj.name = this.getOnePPT.name
       if(this.getOnePPT.deliveryTime) {
         this.obj.deliveryTime_select = 9
         this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach
       }
-      this.providers = this.getOnePPT.providers
-      if(this.providers ) 
-        this.providers.forEach(provider => {
-          this.providersId.push({id: provider.id})
-        })
       if(this.getOnePPT.kolvo) {
           this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo)
       }
@@ -464,25 +453,21 @@ export default {
         this.obj.density_select = 10
         this.obj.density_input = JSON.parse(this.getOnePPT.density).znach
       }
+
+      if(this.$route.params.type == 'edit') {
+        this.providers = this.getOnePPT.providers
+        if(this.providers ) 
+          this.providers.forEach(provider => {
+            this.providersId.push({id: provider.id})
+          })
+      }
+      
     },
     searchTypeM(val) {
       this.searchTypeMutation(val)
     },
     searchPT(val) {
       this.searchPTypeMutation(val)
-    },
-    showParentTandPT() {
-      if(!isEmpty(this.getOnePPT) && !this.click_short_t_pt) {
-        if(this.getOnePPT.podMaterial)
-          this.searchPT(this.getOnePPT.podMaterial.name)
-        if(this.getOnePPT.material)
-          this.searchTypeM(this.getOnePPT.material.name)
-        this.click_short_t_pt = true
-      } else if(this.click_short_t_pt) {
-        this.click_short_t_pt = false
-        this.searchPT('')
-        this.searchTypeM('')
-      }
     },
     isEmptyForPug(obj) {
       return isEmpty(obj)

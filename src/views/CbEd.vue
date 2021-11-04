@@ -2,84 +2,86 @@
   <div class='main_cbed'>
     <div class='block_cb_ed'>
       <h3>База сборочных единиц</h3>
-      <div class="main_table_control">
-        <div class="scroll-table" >
-          <table class="table-base-detal">
-            <tr>
-              <th colspan="3" scope="col">Изделие</th>
-            </tr>
-            <tr>
-              <th>Заводской номер</th>
-              <th>Артикул</th>
-              <th>Наименование</th>
-            </tr>
-            <tr>
-              <td colspan="3">
-                <Search 
-                  :placeholder="'Поиск по Артиклу'"
-                  @unmount='keySearchProduct' 
-                />
-              </td>
-            </tr>
-            <tr v-for='product in allProduct' 
-                :key='product'
-                class='td-row'
-                @click='e => setProduct(product, e.target.parentElement)'
-                >
-                <td>{{ product.fabricNumber }}</td>
-                <td>{{ product.articl }}</td>
-                <td>{{ product.name }}</td>
-            </tr>
-            <tr v-for="item in 40" :key="item">
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-          </table>
+      <div class="main">
+        <div class="main_table_control">
+          <div class="scroll-table" >
+            <table class="table-base-detal">
+              <tr>
+                <th colspan="3" scope="col">Изделие</th>
+              </tr>
+              <tr>
+                <th>Заводской номер</th>
+                <th>Артикул</th>
+                <th>Наименование</th>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <Search 
+                    :placeholder="'Поиск по Артиклу'"
+                    @unmount='keySearchProduct' 
+                  />
+                </td>
+              </tr>
+              <tr v-for='product in allProduct' 
+                  :key='product'
+                  class='td-row'
+                  @click='e => setProduct(product, e.target.parentElement)'
+                  >
+                  <td>{{ product.fabricNumber }}</td>
+                  <td>{{ product.articl }}</td>
+                  <td>{{ product.name }}</td>
+              </tr>
+              <tr v-for="item in 40" :key="item">
+                  <td></td>
+                  <td></td>
+                  <td></td>
+              </tr>
+            </table>
+          </div>
+          <div class="scroll-table" >
+            <table class="table-base-detal">
+              <tr>
+                <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
+              </tr>
+              <tr>
+                <th>Артикул</th>
+                <th>Наименование</th>
+                <th>Кол-во СБ на Изделие</th>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <Search 
+                    :placeholder="'Поиск по Артиклу'"
+                    @unmount='keySearch' 
+                  />
+                </td>
+              </tr>
+                <tr v-for='cb in allCbed' 
+                  :key='cb'
+                  class='td-row'
+                  @click='e => setCbed(cb, e.target.parentElement)'>
+                  <td>{{ cb.articl }}</td>
+                  <td>{{ cb.name }}</td>
+                  <td></td>
+              </tr>
+              <tr v-for="item in 42" :key="item">
+                  <td></td>
+                  <td></td>
+                  <td></td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <div class="scroll-table" >
-          <table class="table-base-detal">
-            <tr>
-              <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
-            </tr>
-            <tr>
-              <th>Артикул</th>
-              <th>Наименование</th>
-              <th>Кол-во СБ на Изделие</th>
-            </tr>
-            <tr>
-              <td colspan="3">
-                <Search 
-                  :placeholder="'Поиск по Артиклу'"
-                  @unmount='keySearch' 
-                />
-              </td>
-            </tr>
-              <tr v-for='cb in allCbed' 
-                :key='cb'
-                class='td-row'
-                @click='e => setCbed(cb, e.target.parentElement)'>
-                <td>{{ cb.articl }}</td>
-                <td>{{ cb.name }}</td>
-                <td></td>
-            </tr>
-            <tr v-for="item in 42" :key="item">
-                <td></td>
-                <td></td>
-                <td></td>
-            </tr>
-          </table>
-        </div>
-      </div>
-      <div class="btn-control">
-        <p>
-          <button class="btn-small btn-add" @click='create'>Создать</button>
-          <button class="btn-small btn-add" @click='createCopy'>Создать копированием</button>
-          <button class="btn-small" @click='editCbEd'>Редактировать</button>
-        </p>
+        <div class="btn-control">
           <p>
-            <button class="btn-small" @click='deleteCbEd'>В архив</button>
+            <button class="btn-small btn-add" @click='create'>Создать</button>
+            <button class="btn-small btn-add" @click='createCopy'>Создать копированием</button>
+            <button class="btn-small" @click='editCbEd'>Редактировать</button>
           </p>
+            <p>
+              <button class="btn-small" @click='deleteCbEd'>В архив</button>
+            </p>
+        </div>
       </div>
     </div>
     
@@ -250,21 +252,22 @@ export default {
 }
 .table-base-detal {
   float: left;
-  width: 400px;
+  width: 500px;
 }
-.table-base-detal tr {
-  height: 65px;
+.main {
+  width: fit-content;
+}
+td {
+  height: 10px;
 }
 .scroll-table {
-  height: 600px;
-  
+  height: 700px;
 }
 .tb-title {
   height: 50px;
   text-align: center;
 }
 .btn-control {
-  width: 840px;
   flex-direction: column;
   align-items: flex-end;
 }

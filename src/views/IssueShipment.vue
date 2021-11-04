@@ -41,9 +41,9 @@
 									:key='izd'><b>{{ inx + '. ' }}</b> {{ izd.obj.name }}</p>
 							</div>
 						</td>
-						<td>{{ shipments.kolvo }}</td>
+						<td class='center'>{{ shipments.kol }}</td>
 						<td>{{ dateIncrementHors(shipments.date_order, shipments.day_when_shipments) }}</td>
-						<td>{{ incrementDay(shipments.date_order, shipments.day_when_shipments)  }}</td>
+						<td class='center'>{{ incrementDay(shipments.date_order, shipments.day_when_shipments)  }}</td>
 						<td>{{ shipments.base }}</td>
 						<td>{{ shipments.buyer.name }}</td>
 						<td></td>
