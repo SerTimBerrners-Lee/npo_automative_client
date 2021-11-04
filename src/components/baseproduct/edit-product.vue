@@ -304,81 +304,82 @@ import OpensFile from '@/components/filebase/openfile.vue';
 export default {
   data() {
     return {
-        obj: {
-            articl: '',
-            name: '',
-            responsible: '',
-            description: '',
-            parametrs: [
-              { name: 'Норма времени на сборку', ez: 'ч', znach: 0 }
-            ],
-            haracteriatic: [
-              { name: 'Рекомендуемый остаток', ez: 'шт', znach: 0},
-              { name: 'Минимальный остаток', ez: 'шт', znach: 0}
-            ],
-            fabricNumber: ''
-            
-        },
-        docFiles: [],
-        keyWhenModalGenerate: random(10, 3e2),
-        isChangeFolderFile: false,
-        formData: null,
-        modalMaterialKey: random(10, 12e8),
-        modalMaterialIsShow: false,
-        materialList: [],
-        listPokDet: [],
-        listDetal: [],
-        listCbed: [],
+      obj: {
+        articl: '',
+        name: '',
+        responsible: '',
+        description: '',
+        parametrs: [
+          { name: 'Норма времени на сборку', ez: 'ч', znach: 0 }
+        ],
+        haracteriatic: [
+          { name: 'Рекомендуемый остаток', ez: 'шт', znach: 0},
+          { name: 'Минимальный остаток', ez: 'шт', znach: 0}
+        ],
+        fabricNumber: ''
+      },
+      docFiles: [],
+      keyWhenModalGenerate: random(10, 3e2),
+      isChangeFolderFile: false,
+      formData: null,
+      modalMaterialKey: random(10, 12e8),
+      modalMaterialIsShow: false,
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
 
-        listMaterials: [],
+      listMaterials: [],
 
-        selectHaracteristic: null,
-        selectParametrs: null,
+      selectHaracteristic: null,
+      selectParametrs: null,
 
-        techProcessIsShow: false,
-        techProcessKey: random(10, 33e6),
-        inputMassZag: 0,
-        variableDensity: 0,
-        techProcessID: localStorage.getItem('tpID') || null,
+      techProcessIsShow: false,
+      techProcessKey: random(10, 33e6),
+      inputMassZag: 0,
+      variableDensity: 0,
+      techProcessID: localStorage.getItem('tpID') || null,
 
-        titleMessage: '',
-        message: '',
-        type: '',
-        showInformPanel: false,
-        keyInformTip: 0,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
 
-        select_model: 1,
+      select_model: 1,
 
-        showBFM: false,
-        generateKeyBFM: random (1, 999),
+      showBFM: false,
+      generateKeyBFM: random (1, 999),
 
-        showCbed: false,
-        generateKeyCbed: random(1, 999),
+      showCbed: false,
+      generateKeyCbed: random(1, 999),
 
-        id: null,
-        documentsData: [],
-        dataMedia: [],
-        randomDataMedia: random(10, 24^4),
+      id: null,
+      documentsData: [],
+      dataMedia: [],
+      randomDataMedia: random(10, 24^4),
 
-        showFile: false,
-        keyWhenModalGenerateFileOpen: random(10, 999),
-        }
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 999),
+    }
+  },
+  unmounted() {
+    this.deleteStorageData()
   },
   computed: mapGetters(['getUsers', 'getOneSelectProduct']),
   components: {
-      AddFile, 
-      ModalBaseMaterial, 
-      TechProcess, 
-      InformFolder, 
-      BaseDetalModal, 
-      BaseCbedModal,
-      MediaSlider,
-      OpensFile,},
+    AddFile, 
+    ModalBaseMaterial, 
+    TechProcess, 
+    InformFolder, 
+    BaseDetalModal, 
+    BaseCbedModal,
+    MediaSlider,
+    OpensFile,},
   methods: {
     ...mapActions(['createNewProduct', 'getAllUsers', 'updateProduct']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
-      // Проверяем введенные данные 
       if(this.obj.name.length < 3) 
         return 0
 
@@ -400,14 +401,14 @@ export default {
         this.formData.append('listCbed', JSON.stringify(this.listCbed))
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
-          this.listPokDet[mat].mat = {
+        this.listPokDet[mat].mat = {
           id: this.listPokDet[mat].mat.id,
           name: this.listPokDet[mat].mat.name,
           kol: this.listPokDet[mat].mat.kolvo
-          }
-          if(mat == this.listPokDet.length - 1) {
-            this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
-          }
+        }
+        if(mat == this.listPokDet.length - 1) {
+          this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
+        }
       }
       
       for(let mat = 0; mat < this.materialList.length; mat++) {
@@ -430,8 +431,7 @@ export default {
         this.createNewProduct(this.formData)
       }
 
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
       setTimeout(() =>  this.$router.push('/product'), 3000)
       
     },
@@ -462,10 +462,10 @@ export default {
     },
     unmount_material(mat) {
       if(this.instanMaterial == 2) {
-          this.listPokDet = mat.materialList
+        this.listPokDet = mat.materialList
       }
       if(this.instanMaterial == 3) {
-          this.materialList = mat.materialList
+        this.materialList = mat.materialList
       }
     },
     changeSelected() {
@@ -494,7 +494,7 @@ export default {
       this.select_model = 1;
     },
     responsDetal(detal) {
-        this.listDetal = detal
+      this.listDetal = detal
     },
     addHaracteristic() {
       this.obj.haracteriatic.push({name: '', ez: '', znach: ''})
@@ -509,10 +509,10 @@ export default {
       }
     },
     removeParametrs() {
-        if(this.selectParametrs) {
-            this.obj.parametrs.splice(this.selectParametrs.inx, 1)
-            this.selectParametrs = null
-        }
+      if(this.selectParametrs) {
+        this.obj.parametrs.splice(this.selectParametrs.inx, 1)
+        this.selectParametrs = null
+      }
     },
     changeHaracteristic(val, inst, inx) {
       if(inst == 'name')  
@@ -524,13 +524,13 @@ export default {
       }
     },
     changeParametrs(val, inst, inx) {
-        if(inst == 'name')  
-            this.obj.parametrs[inx].name = val
-        if(inst == 'ez')  
-            this.obj.parametrs[inx].ez = val
-        if(inst == 'znach')  {
-            this.obj.parametrs[inx].znach = val
-        }
+      if(inst == 'name')  
+        this.obj.parametrs[inx].name = val
+      if(inst == 'ez')  
+        this.obj.parametrs[inx].ez = val
+      if(inst == 'znach')  {
+        this.obj.parametrs[inx].znach = val
+      }
     },
     showTechProcess() {
       this.techProcessIsShow = true
@@ -539,43 +539,45 @@ export default {
 
     exit(){
       this.$router.push("/product")
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
     },
     responsCbed(res) {
       this.listCbed = res 
     },
     setDocs(dc) {
-        this.itemFiles = dc
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 1111);
+      this.itemFiles = dc
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 1111);
     },
     updateForEdit() {
-        this.obj.name = this.getOneSelectProduct.name
-        this.obj.articl = this.getOneSelectProduct.articl
-        this.obj.responsible = this.getOneSelectProduct.user ? this.getOneSelectProduct.user.id :  null
-        this.obj.description = this.getOneSelectProduct.description
-        this.obj.parametrs = JSON.parse(this.getOneSelectProduct.parametrs)
-        this.obj.haracteriatic = JSON.parse(this.getOneSelectProduct.haracteriatic)
-        this.materialList = this.getOneSelectProduct.materialList ? JSON.parse(this.getOneSelectProduct.materialList) : []
-        this.listPokDet = this.getOneSelectProduct.listPokDet ? JSON.parse(this.getOneSelectProduct.listPokDet) : []
-        this.listDetal = this.getOneSelectProduct.listDetal ? JSON.parse(this.getOneSelectProduct.listDetal) : []
-        this.listCbed = this.getOneSelectProduct.listCbed ? JSON.parse(this.getOneSelectProduct.listCbed) : []
-        this.obj.fabricNumber = this.getOneSelectProduct.fabricNumber
+      this.obj.name = this.getOneSelectProduct.name
+      this.obj.articl = this.getOneSelectProduct.articl
+      this.obj.responsible = this.getOneSelectProduct.user ? this.getOneSelectProduct.user.id :  null
+      this.obj.description = this.getOneSelectProduct.description
+      this.obj.parametrs = JSON.parse(this.getOneSelectProduct.parametrs)
+      this.obj.haracteriatic = JSON.parse(this.getOneSelectProduct.haracteriatic)
+      this.materialList = this.getOneSelectProduct.materialList ? JSON.parse(this.getOneSelectProduct.materialList) : []
+      this.listPokDet = this.getOneSelectProduct.listPokDet ? JSON.parse(this.getOneSelectProduct.listPokDet) : []
+      this.listDetal = this.getOneSelectProduct.listDetal ? JSON.parse(this.getOneSelectProduct.listDetal) : []
+      this.listCbed = this.getOneSelectProduct.listCbed ? JSON.parse(this.getOneSelectProduct.listCbed) : []
+      this.obj.fabricNumber = this.getOneSelectProduct.fabricNumber
 
-        if(this.$route.params.copy == 'false')  {
-            this.documentsData = this.getOneSelectProduct.documents
-            this.getOneSelectProduct.documents.forEach((d) => {
-                this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
-            })
-            this.randomDataMedia = random(10, 38100) 
+      if(this.$route.params.copy == 'false')  {
+        this.documentsData = this.getOneSelectProduct.documents
+        this.getOneSelectProduct.documents.forEach((d) => {
+            this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+        })
+        this.randomDataMedia = random(10, 38100) 
 
-            this.techProcessID =  !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses.id : null
-            localStorage.setItem('tpID', this.techProcessID)
+        this.techProcessID = !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses.id : null
 
-            this.id = this.getOneSelectProduct.id
-        }
+        this.id = this.getOneSelectProduct.id
+      }
     },
+    deleteStorageData() {
+      localStorage.removeItem("tpID")
+      this.removeOperationStorage()
+    }
   },
   async mounted() {
     if(isEmpty(this.getOneSelectProduct)) {

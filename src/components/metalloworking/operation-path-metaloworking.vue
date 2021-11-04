@@ -31,6 +31,7 @@
 							<th>Материал</th>
 							<th>Тип заготовки</th>
 							<th>Габариты заготовки, мм</th>
+              <!-- Масса заготовки = масса детали + отходы -->
 							<th>Масса заготовки, кг</th>
 							<th>Масса детали, кг</th>
 							<th>Норма расхода итого</th>
@@ -39,9 +40,9 @@
 						<tr>
 							<td>{{ metaloworking.pod_pod_material ? metaloworking.pod_pod_material.name : '' }}</td>
 							<td>{{ metaloworking.type_material ? metaloworking.type_material.name : '' }}</td>
-							<td>{{ }}</td>
-              <td>{{ }}</td>
-							<td class='center'>{{ metaloworking.detal ? metaloworking.detal.trash : '' }}</td>
+							<td class='center'>{{ metaloworking.detal ? metaloworking.detal.DxL : '' }}</td>
+              <td class='center'>{{ metaloworking.detal ? metaloworking.detal.massZag : '' }}</td> 
+							<td class='center'>{{ mass_detal }}</td>
 							<td class='center'>{{ metaloworking.detal ? Number(metaloworking.detal.trash) * metaloworking.kolvo_all : ''}}</td>
 							<td class='center'>{{ metaloworking.detal ? Number(metaloworking.detal.trash) * metaloworking.kolvo_all : '' }}</td>
 						</tr>
@@ -79,12 +80,13 @@ export default {
 
 			shipments: null,
 			komplect: [],
-      material: null
+      material: null,
+      mass_detal: 0
     }
   },
   components: {OperationTable},
   methods: {
-    ...mapActions(['fetchAllShipmentsById', 'getOneDetal', 'fetchGetOnePPM']),
+    ...mapActions(['fetchAllShipmentsById', 'fetchGetOnePPM']),
 		destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -97,10 +99,16 @@ export default {
     this.hiddens = 'opacity: 1;'
 
     if(this.$props.metaloworking && this.$props.metaloworking.tp_id && this.$props.metaloworking.marks) {
-
       this.props_tp_id = this.$props.metaloworking.tp_id
       this.props_mars = this.$props.metaloworking.marks
       this.props_izdeles = this.$props.metaloworking
+
+      try {
+        if(this.$props.metaloworking.detal) 
+          this.mass_detal = JSON.parse(this.$props.metaloworking.detal.haracteriatic)[0].znach
+      } catch (e) {
+        console.log(e)
+      }
     }
 
 		if(this.$props.metaloworking && this.$props.metaloworking.shipments) 
@@ -109,9 +117,6 @@ export default {
     let MW = this.$props.metaloworking
 		if(MW && MW.detal) {
 				let izd = MW.detal
-        this.getOneDetal(izd.id).then(res => {
-          console.log(res)
-        })
 				if(izd.materialList) {
 					let mat = JSON.parse(izd.materialList)
 					for(let m of mat) {

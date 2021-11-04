@@ -1,5 +1,5 @@
 import PATH_TO_SERVER from '@/js/path.js'
-
+ 
 export default {
   state: {
     detal: [],

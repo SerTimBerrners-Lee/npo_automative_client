@@ -127,11 +127,12 @@
                 <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
                 <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
             </div>
-            <AddFile :parametrs='docFiles' 
-                    :typeGetFile='"getfile"'
-                    v-if="isChangeFolderFile" 
-                    @unmount='file_unmount'
-                    :key='keyWhenModalGenerate'
+            <AddFile 
+              :parametrs='docFiles' 
+              :typeGetFile='"getfile"'
+              v-if="isChangeFolderFile" 
+              @unmount='file_unmount'
+              :key='keyWhenModalGenerate'
                 />
             </div>
             <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
@@ -155,95 +156,96 @@
       </div>
 
     <div class="right_content">
-         <div>
-              <h3>Параметры</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th> 
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr>
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(par, inx) in obj.parametrs' 
-                    :key='par'
-                    @click='selectParametrs = {par, inx}'
-                    >
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.name' 
-                      class='inputs-small'
-                      @change='e => changeParametrs(e.target.value, "name", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.ez'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small small'
-                      @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.znach'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
-                </tr>
-              </table>
-              <div class="btn-control">
-                <button class="btn-add btn-small" @click='addParametrs'>Добавить</button>
-                <button class="btn-small" @click='removeParametrs'>Удалить</button>
-              </div>
-            </div>
-          <div>
-              <h3>Характеристики</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th> 
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr>
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(har, inx) in obj.haracteriatic' 
-                    :key='har'
-                    @click='selectHaracteristic = {har, inx}'
-                    >
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.name' 
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.ez'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small small'
-                      @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.znach'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
-                </tr>
-              </table>
-              <div class="btn-control">
-                <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
-                <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
-              </div>
-            </div>
-        <h3 class="link_h3">Принадлежность</h3>
+      <div>
+        <h3>Параметры</h3>
+        <table class="tables_bf">
+          <tr>
+            <th>Наименование</th> 
+            <th>ЕИ</th>
+            <th>Значение</th>
+          </tr>
+          <tr class='tr_haracteristic td-row' 
+              v-for='(par, inx) in obj.parametrs' 
+              :key='par'
+              @click='selectParametrs = {par, inx}'
+              >
+            <td>
+              <input 
+                type="text" 
+                :value='par.name' 
+                class='inputs-small'
+                @change='e => changeParametrs(e.target.value, "name", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='par.ez'
+                style="width: 50px; text-align:center;"
+                class='inputs-small small'
+                @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='par.znach'
+                style="width: 50px; text-align:center;"
+                class='inputs-small'
+                @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
+          </tr>
+        </table>
+        <div class="btn-control">
+          <button class="btn-add btn-small" @click='addParametrs'>Добавить</button>
+          <button class="btn-small" @click='removeParametrs'>Удалить</button>
+        </div>
+      </div>
+      <div>
+        <h3>Характеристики</h3>
+        <table class="tables_bf">
+          <tr>
+            <th>Наименование</th> 
+            <th>ЕИ</th>
+            <th>Значение</th>
+          </tr>
+          <tr class='tr_haracteristic td-row' 
+              v-for='(har, inx) in obj.haracteriatic' 
+              :key='har'
+              @click='selectHaracteristic = {har, inx}'
+              >
+            <td>
+              <input 
+                type="text" 
+                :value='har.name' 
+                class='inputs-small'
+                @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='har.ez'
+                style="width: 50px; text-align:center;"
+                class='inputs-small small'
+                @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='har.znach'
+                style="width: 50px; text-align:center;"
+                class='inputs-small'
+                @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
+          </tr>
+        </table>
+        <div class="btn-control">
+          <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
+          <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
+        </div>
+      </div>
+      <h3 class="link_h3">Принадлежность</h3>
     </div>
-    <InformFolder  :title='titleMessage'
-        :message = 'message'
-        :type = 'type'
-        v-if='showInformPanel'
-        :key='keyInformTip'
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
     />
-     <BaseCbedModal 
+    <BaseCbedModal 
       v-if='showCbed'
       :key='generateKeyCbed'
       @responsCbed='responsCbed'
@@ -268,68 +270,71 @@ import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue'
 export default {
   data() {
     return {
-        obj: {
-            articl: '',
-            name: '',
-            responsible: '',
-            description: '',
-            parametrs: [
-              { name: 'Норма времени на сборку', ez: 'ч', znach: 0}
-            ],
-            haracteriatic: [
-            { name: 'Масса детали', ez: 'кг', znach: 0}
-            ],
-            
-        },
-        docFiles: [],
-        keyWhenModalGenerate: random(10, 3e2),
-        isChangeFolderFile: false,
-        formData: null,
-        modalMaterialKey: random(10, 12e8),
-        modalMaterialIsShow: false,
-        materialList: [],
-        listPokDet: [],
-        listDetal: [],
-        listCbed: [],
+      obj: {
+        articl: '',
+        name: '',
+        responsible: '',
+        description: '',
+        parametrs: [
+          { name: 'Норма времени на сборку', ez: 'ч', znach: 0}
+        ],
+        haracteriatic: [
+          { name: 'Масса детали', ez: 'кг', znach: 0}
+        ],
+          
+      },
+      docFiles: [],
+      keyWhenModalGenerate: random(10, 3e2),
+      isChangeFolderFile: false,
+      formData: null,
+      modalMaterialKey: random(10, 12e8),
+      modalMaterialIsShow: false,
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
 
-        listMaterials: [],
+      listMaterials: [],
 
-        selectHaracteristic: null,
-        selectParametrs: null,
+      selectHaracteristic: null,
+      selectParametrs: null,
 
-        techProcessIsShow: false,
-        techProcessKey: random(10, 33e6),
-        inputMassZag: 0,
-        variableDensity: 0,
-        techProcessID: localStorage.getItem('tpID') || null,
+      techProcessIsShow: false,
+      techProcessKey: random(10, 33e6),
+      inputMassZag: 0,
+      variableDensity: 0,
+      techProcessID: localStorage.getItem('tpID') || null,
 
-        titleMessage: '',
-        message: '',
-        type: '',
-        showInformPanel: false,
-        keyInformTip: 0,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
 
-        select_model: 1,
+      select_model: 1,
 
-        showBFM: false,
-        generateKeyBFM: random (1, 999),
+      showBFM: false,
+      generateKeyBFM: random (1, 999),
 
-        showCbed: false,
-        generateKeyCbed: random(1, 999)
-        }
+      showCbed: false,
+      generateKeyCbed: random(1, 999)
+    }
   },
   computed: mapGetters(['getUsers']),
-  components: {AddFile, 
-      ModalBaseMaterial, 
-      TechProcess, 
-      InformFolder, 
-      BaseDetalModal, 
-      BaseCbedModal},
+  components: {
+    AddFile, 
+    ModalBaseMaterial, 
+    TechProcess, 
+    InformFolder, 
+    BaseDetalModal, 
+    BaseCbedModal},
+  unmounted() {
+    this.deleteStorageData()
+  },
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
-      // Проверяем введенные данные 
       if(this.obj.name.length < 3) 
         return 0
 
@@ -351,36 +356,33 @@ export default {
 
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
-          this.listPokDet[mat].mat = {
+        this.listPokDet[mat].mat = {
           id: this.listPokDet[mat].mat.id,
           name: this.listPokDet[mat].mat.name,
           kol: this.listPokDet[mat].mat.kolvo
-          }
-          if(mat == this.listPokDet.length - 1) {
-            this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
-          }
+        }
+        if(mat == this.listPokDet.length - 1) {
+          this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
+        }
       }
 
       for(let mat = 0; mat < this.materialList.length; mat++) {
-          this.materialList[mat].mat = {
+        this.materialList[mat].mat = {
           id: this.materialList[mat].mat.id,
           name: this.materialList[mat].mat.name,
           kol: this.materialList[mat].mat.kolvo
-          }
-          if(mat == this.materialList.length - 1) {
-            this.formData.append('materialList', JSON.stringify(this.materialList))
-          }
+        }
+        if(mat == this.materialList.length - 1) {
+          this.formData.append('materialList', JSON.stringify(this.materialList))
+        }
       }
 
       showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
 
-      console.log('craete')
       this.createNewCbEd(this.formData)
 
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
       setTimeout(() =>  this.$router.push('/cbed'), 3000)
-      
     },
     unmount_tech_process(tp) {
       if(tp.id) {
@@ -394,6 +396,10 @@ export default {
           })
         }
       }
+    },
+    deleteStorageData() {
+      localStorage.removeItem("tpID")
+      this.removeOperationStorage()
     },
     addDock(val) {
       val.target.files.forEach(f => {
@@ -491,8 +497,7 @@ export default {
 
     exit(){
       this.$router.push("/cbed")
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
     }
   },
   async mounted() {

@@ -21,11 +21,11 @@ export async function afterAndBeforeOperation(tp_id, operation_id, type = 'all')
 			afterOperation = operation
 			break;
 		}
-	}	
+	}
 	if(!beforeOperation)
-		beforeOperation = currentOperation
+		beforeOperation = {full_name: 'Нет'}
 	if(!afterOperation)
-		afterOperation = currentOperation
+		afterOperation = {full_name: 'Эта последняя'}
 
 	if(type == 'before')
 		return beforeOperation
@@ -34,7 +34,8 @@ export async function afterAndBeforeOperation(tp_id, operation_id, type = 'all')
 	else 
 		return {
 			before: beforeOperation,
-			after: afterOperation
+			after: afterOperation,
+			current: currentOperation
 		}
 }
 

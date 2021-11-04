@@ -372,11 +372,13 @@ export default {
     BaseDetalModal, 
     MediaSlider,
     BaseCbedModal},
+  unmounted() {
+    this.deleteStorageData()
+  },
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'updateCbed']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
-      // Проверяем введенные данные 
       if(this.obj.name.length < 3) 
         return 0
 
@@ -418,19 +420,16 @@ export default {
         }
       }
 
-        if(this.$route.params.copy == 'false') {
-          this.formData.append('id', this.id)
-          this.updateCbed(this.formData)
-          showMessage('', 'Сборочная единица усешно Обновлена. Перенаправление на главную страницу...', 's', this)
-        } else {
-          showMessage('', 'Сборочная единица усешно Создана. Перенаправление на главную страницу...', 's', this)
-          this.createNewCbEd(this.formData)
-        }
+      if(this.$route.params.copy == 'false') {
+        this.formData.append('id', this.id)
+        this.updateCbed(this.formData)
+        showMessage('', 'Сборочная единица усешно Обновлена. Перенаправление на главную страницу...', 's', this)
+      } else {
+        showMessage('', 'Сборочная единица усешно Создана. Перенаправление на главную страницу...', 's', this)
+        this.createNewCbEd(this.formData)
+      }
 
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
       setTimeout(() =>  this.$router.push('/cbed'), 3000)
-      
     },
     unmount_tech_process(tp) {
       if(tp.id) {
@@ -444,6 +443,10 @@ export default {
           })
         }
       }
+    },
+    deleteStorageData() {
+      localStorage.removeItem("tpID")
+      this.removeOperationStorage()
     },
     addDock(val) {
       val.target.files.forEach(f => {
@@ -539,8 +542,7 @@ export default {
     },
     exit(){
       this.$router.push("/cbed")
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
     },
     updateForEdit() {
       this.obj.name = this.getOneSelectCbEd.name
@@ -563,7 +565,6 @@ export default {
         this.id = this.getOneSelectCbEd.id
 
         this.techProcessID =  !isEmpty(this.getOneSelectCbEd.techProcesses) ? this.getOneSelectCbEd.techProcesses.id : null
-        localStorage.setItem('tpID', this.techProcessID)
       }
     },
     setDocs(dc) {

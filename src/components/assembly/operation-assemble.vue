@@ -3,10 +3,10 @@
 		<h3>Операция {{ name_operaiton }} </h3>
 
 		<div class="block header_block">
-        <DatePicterRange 
-          @unmount='unmount_date_picterRange'  
-        />
-      </div>
+			<DatePicterRange 
+				@unmount='unmount_date_picterRange'  
+			/>
+		</div>
 
 		<div v-if='getAssembles.length'>
 			<table>
@@ -155,18 +155,14 @@ export default {
 			if(res) {
 				this.fetchAllAssembleTypeOperation(this.type_operation_id)
 				showMessage('', 'Отметка о выполнении успешно создана', 's', this)
-			}
-				else 
+			} else 
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
 		},
 		showOperation(ass, type, e) {
 			afterAndBeforeOperation(
 				ass.tp_id, 
 				ass.operation_id, 
-				type).then(res => {
-					if(res)
-						e.innerText = res.full_name
-				})
+				type).then(res =>	e.innerText = res.full_name)
 		},
 		openDocuments(id) {
       this.fetchOneOperationById(id).then(res => {

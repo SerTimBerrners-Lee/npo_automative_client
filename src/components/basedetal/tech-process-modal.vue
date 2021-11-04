@@ -136,7 +136,7 @@
               v-if="isChangeFolderFile" 
               @unmount='file_unmount'
               :key='keyWhenModalGenerate'
-                />
+            />
           </div>
         </div>
         <div class="desctiption_container">
@@ -227,6 +227,9 @@ export default {
         'fetchTechProcess', 
         'getAllTypeOperations']),
     ...mapMutations(['allOperationMutations', 'removeOperationStorage']),
+    unmount_operation() {
+      
+    },
     addDock(val) {
       val.target.files.forEach(f => {
         this.docFiles.push(f)
@@ -248,9 +251,6 @@ export default {
       this.operationSelect = null
       this.operationPanelShow = true
       this.operationKey = random(10, 999)
-    },
-    unmount_operation() {
-      console.log(this.allOperationNewList)
     },
     selectTr(e, operation) {
       if(this.tr)
@@ -346,7 +346,7 @@ export default {
         this.randomDataMedia = random(10, 38100)
 
       }).catch(() => {
-      this.removeOperationStorage()
+        this.removeOperationStorage()
       })
     } 
   }

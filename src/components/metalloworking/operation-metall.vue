@@ -175,10 +175,7 @@ export default {
 			afterAndBeforeOperation(
 				meatl.tp_id, 
 				meatl.operation_id, 
-				type).then(res => {
-					if(res)
-						e.innerText = res.full_name
-				})
+				type).then(res => e.innerText = res.full_name)
 		},
 		openDocuments(id) {
       this.fetchOneOperationById(id).then(res => {

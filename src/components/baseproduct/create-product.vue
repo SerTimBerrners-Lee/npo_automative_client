@@ -1,20 +1,20 @@
 <template>
   <div class='main_block_content'>
-     <h3>Создать изделие</h3>
+    <h3>Создать изделие</h3>
     <div class="block title_block">
-        <p>
-          <span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'>
-          <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
-          <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
-          <span>Ответственный: </span>
-            <select class="select-small sle"  
-              v-model='obj.responsible'>
-              <option v-for='user in getUsers' 
-                :key='user' 
-                :value='user.id'>{{ user.login }}</option>
-            </select> 
-        </p>
-      </div>
+      <p>
+        <span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'>
+        <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
+        <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
+        <span>Ответственный: </span>
+          <select class="select-small sle"  
+            v-model='obj.responsible'>
+            <option v-for='user in getUsers' 
+              :key='user' 
+              :value='user.id'>{{ user.login }}</option>
+          </select> 
+      </p>
+    </div>
     <div class="content_block">
       <div class="left_content">
         <div class="content_left_block">
@@ -166,11 +166,12 @@
                 <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
                 <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
             </div>
-            <AddFile :parametrs='docFiles' 
-                    :typeGetFile='"getfile"'
-                    v-if="isChangeFolderFile" 
-                    @unmount='file_unmount'
-                    :key='keyWhenModalGenerate'
+            <AddFile 
+              :parametrs='docFiles' 
+              :typeGetFile='"getfile"'
+              v-if="isChangeFolderFile" 
+              @unmount='file_unmount'
+              :key='keyWhenModalGenerate'
                 />
             </div>
             <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
@@ -185,9 +186,10 @@
           </div>
         </div>
         <div class="btn-control out-btn-control control-save" >
-          <button class="btn-status"
-                  @click='exit'
-                  >Отменить</button>
+          <button 
+            class="btn-status"
+            @click='exit'
+            >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" @click='saveDetal'>Сохранить</button>
           </div>
@@ -268,56 +270,59 @@ import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 export default {
   data() {
     return {
-        obj: {
-          articl: '',
-          name: '',
-          responsible: '',
-          description: '',
-          parametrs: [
-            { name: 'Норма времени на сборку', ez: 'ч', znach: 0 }
-          ],
-          haracteriatic: [
-            { name: 'Рекомендуемый остаток', ez: 'шт', znach: 0},
-            { name: 'Минимальный остаток', ez: 'шт', znach: 0}
-          ],
-          fabricNumber: ''
-        },
-        docFiles: [],
-        keyWhenModalGenerate: random(10, 3e2),
-        isChangeFolderFile: false,
-        formData: null,
-        modalMaterialKey: random(10, 12e8),
-        modalMaterialIsShow: false,
-        materialList: [],
-        listPokDet: [],
-        listDetal: [],
-        listCbed: [],
+      obj: {
+        articl: '',
+        name: '',
+        responsible: '',
+        description: '',
+        parametrs: [
+          { name: 'Норма времени на сборку', ez: 'ч', znach: 0 }
+        ],
+        haracteriatic: [
+          { name: 'Рекомендуемый остаток', ez: 'шт', znach: 0},
+          { name: 'Минимальный остаток', ez: 'шт', znach: 0}
+        ],
+        fabricNumber: ''
+      },
+      docFiles: [],
+      keyWhenModalGenerate: random(10, 3e2),
+      isChangeFolderFile: false,
+      formData: null,
+      modalMaterialKey: random(10, 12e8),
+      modalMaterialIsShow: false,
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
 
-        listMaterials: [],
+      listMaterials: [],
 
-        selectHaracteristic: null,
-        selectParametrs: null,
+      selectHaracteristic: null,
+      selectParametrs: null,
 
-        techProcessIsShow: false,
-        techProcessKey: random(10, 33e6),
-        inputMassZag: 0,
-        variableDensity: 0,
-        techProcessID: localStorage.getItem('tpID') || null,
+      techProcessIsShow: false,
+      techProcessKey: random(10, 33e6),
+      inputMassZag: 0,
+      variableDensity: 0,
+      techProcessID: localStorage.getItem('tpID') || null,
 
-        titleMessage: '',
-        message: '',
-        type: '',
-        showInformPanel: false,
-        keyInformTip: 0,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
 
-        select_model: 1,
+      select_model: 1,
 
-        showBFM: false,
-        generateKeyBFM: random (1, 999),
+      showBFM: false,
+      generateKeyBFM: random (1, 999),
 
-        showCbed: false,
-        generateKeyCbed: random(1, 999)
-        }
+      showCbed: false,
+      generateKeyCbed: random(1, 999)
+      }
+  },
+  unmounted() {
+    this.deleteStorageData()
   },
   computed: mapGetters(['getUsers']),
   components: {AddFile, ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal, BaseCbedModal},
@@ -325,7 +330,6 @@ export default {
     ...mapActions(['createNewProduct', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
-      // Проверяем введенные данные 
       if(this.obj.name.length < 3) 
         return 0
 
@@ -347,33 +351,32 @@ export default {
         this.formData.append('listCbed', JSON.stringify(this.listCbed))
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
-          this.listPokDet[mat].mat = {
+        this.listPokDet[mat].mat = {
           id: this.listPokDet[mat].mat.id,
           name: this.listPokDet[mat].mat.name,
           kol: this.listPokDet[mat].mat.kolvo
-          }
-          if(mat == this.listPokDet.length - 1) {
-            this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
-          }
+        }
+        if(mat == this.listPokDet.length - 1) {
+          this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
+        }
       }
 
       for(let mat = 0; mat < this.materialList.length; mat++) {
-          this.materialList[mat].mat = {
+        this.materialList[mat].mat = {
           id: this.materialList[mat].mat.id,
           name: this.materialList[mat].mat.name,
           kol: this.materialList[mat].mat.kolvo
-          }
-          if(mat == this.materialList.length - 1) {
-            this.formData.append('materialList', JSON.stringify(this.materialList))
-          }
+        }
+        if(mat == this.materialList.length - 1) {
+          this.formData.append('materialList', JSON.stringify(this.materialList))
+        }
       }
 
       showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
 
       this.createNewProduct(this.formData)
 
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
       setTimeout(() =>  this.$router.push('/product'), 3000)
       
     },
@@ -404,10 +407,10 @@ export default {
     },
     unmount_material(mat) {
       if(this.instanMaterial == 2) {
-          this.listPokDet = mat.materialList
+        this.listPokDet = mat.materialList
       }
       if(this.instanMaterial == 3) {
-          this.materialList = mat.materialList
+        this.materialList = mat.materialList
       }
     },
     changeSelected() {
@@ -436,7 +439,7 @@ export default {
       this.select_model = 1;
     },
     responsDetal(detal) {
-        this.listDetal = detal
+      this.listDetal = detal
     },
     addHaracteristic() {
       this.obj.haracteriatic.push({name: '', ez: '', znach: ''})
@@ -451,10 +454,10 @@ export default {
       }
     },
     removeParametrs() {
-        if(this.selectParametrs) {
-            this.obj.parametrs.splice(this.selectParametrs.inx, 1)
-            this.selectParametrs = null
-        }
+      if(this.selectParametrs) {
+        this.obj.parametrs.splice(this.selectParametrs.inx, 1)
+        this.selectParametrs = null
+      }
     },
     changeHaracteristic(val, inst, inx) {
       if(inst == 'name')  
@@ -466,13 +469,13 @@ export default {
       }
     },
     changeParametrs(val, inst, inx) {
-        if(inst == 'name')  
-            this.obj.parametrs[inx].name = val
-        if(inst == 'ez')  
-            this.obj.parametrs[inx].ez = val
-        if(inst == 'znach')  {
-            this.obj.parametrs[inx].znach = val
-        }
+      if(inst == 'name')  
+        this.obj.parametrs[inx].name = val
+      if(inst == 'ez')  
+        this.obj.parametrs[inx].ez = val
+      if(inst == 'znach')  {
+        this.obj.parametrs[inx].znach = val
+      }
     },
     showTechProcess() {
       this.techProcessIsShow = true
@@ -481,11 +484,14 @@ export default {
 
     exit(){
       this.$router.push("/cbed")
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
     },
     responsCbed(res) {
       this.listCbed = res
+    },
+    deleteStorageData() {
+      localStorage.removeItem("tpID")
+      this.removeOperationStorage()
     }
   },
   async mounted() {

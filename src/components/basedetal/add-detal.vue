@@ -285,13 +285,15 @@ export default {
       keyInformTip: 0,
     }
   },
+  unmounted() {
+    this.deleteStorageData()
+  },
   computed: mapGetters(['getUsers']),
   components: {AddFile, ModalBaseMaterial, TechProcess, InformFolder},
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
     saveDetal() {
-      // Проверяем введенные данные 
       if(this.obj.name.length < 3) 
         return 0
 
@@ -334,8 +336,7 @@ export default {
           })
       }
       
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
       setTimeout(() =>  this.$router.push('/basedetals'), 3000)
       
     },
@@ -467,6 +468,9 @@ export default {
     },
     exit(){
       this.$router.push("/basedetals")
+      this.deleteStorageData()
+    },
+    deleteStorageData() {
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
     }

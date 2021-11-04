@@ -347,6 +347,9 @@ export default {
 
     }
   },
+  unmounted() {
+    this.deleteStorageData()
+  },
   computed: mapGetters(['getOneSelectDetal', 'getUsers']),
   components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions, InformFolder},
   methods: {
@@ -418,8 +421,7 @@ export default {
     },
     clearData() {
       setTimeout(() =>  this.$router.push('/basedetals'), 3000)
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
     },
     unmount_tech_process(tp) {
       if(tp.id) {
@@ -493,8 +495,8 @@ export default {
         this.obj.haracteriatic[inx].ez = val
       if(inst == 'znach')  {
         this.obj.haracteriatic[inx].znach = val
-        if(inx == 0) 
-          this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
+      if(inx == 0) 
+        this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
       }
     },
     editHarZag(val, inx) {
@@ -505,7 +507,6 @@ export default {
         }
         let dxl = val.split('x')
         if(dxl.length == 2) {
-          // обновляем значения в других инпутах 
           this.obj.massZag = (Number(this.inputMassZag) * Number(dxl[1]))
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
         }
@@ -544,8 +545,7 @@ export default {
     },
     exit(){
       this.$router.push("/basedetals")
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.deleteStorageData()
     },
     setDocs(dc) {
         this.itemFiles = dc
@@ -561,14 +561,16 @@ export default {
         return
       this.hAactionKey = random(1, 888)
       this.showHAction = true
+    },
+    deleteStorageData(){
+      localStorage.removeItem("tpID")
+      this.removeOperationStorage()
     }
 
   },
   async mounted() {
     if(isEmpty(this.getOneSelectDetal)){
         this.$router.push('/basedetals')
-        localStorage.removeItem("tpID")
-        this.removeOperationStorage()
         return 0
     }
     if(this.getOneSelectDetal.actions)
@@ -596,7 +598,6 @@ export default {
     }
     if(this.getOneSelectDetal.techProcesses && this.$props.editAndCopt == 'false') {
         this.techProcessID = this.getOneSelectDetal.techProcesses.id
-        localStorage.setItem('tpID', this.techProcessID)
     }
     if(this.getOneSelectDetal.materialList && this.getOneSelectDetal.materialList.length) {
         this.materialList = JSON.parse(this.getOneSelectDetal.materialList)

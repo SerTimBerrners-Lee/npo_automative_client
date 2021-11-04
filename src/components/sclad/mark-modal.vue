@@ -147,10 +147,10 @@ export default {
 						if(res) {
 							if(res.before)
 								if(res.before.id != obj.operation.id)
-									this.obj_before =  `${res.before.id}. ${res.before.full_name}`
+									this.obj_before =  `${res.before.name}. ${res.before.full_name}`
 							if(res.after) 
 								if(res.after.id != obj.operation_id )
-									this.obj_after = `${res.after.id}. ${res.after.full_name}`
+									this.obj_after = `${res.after.name}. ${res.after.full_name}`
 						}
 				})
 		}
