@@ -247,12 +247,9 @@ export default {
 </script>
 
 <style scoped>
-.block_cb_ed {
-  width: 870px;
-}
 .table-base-detal {
   float: left;
-  width: 500px;
+  width: 470px;
 }
 .main {
   width: fit-content;
@@ -283,6 +280,7 @@ table {
 .right_info_block {
   width: 450px;
   margin-top: 20px;
+  margin-left: 10px;
 }
 .main_cbed {
   display: flex;

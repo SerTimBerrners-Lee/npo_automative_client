@@ -2,182 +2,128 @@
   <div>
     <h3> {{ this.$route.params.type == 'edit' ? 'Редактировать' : 'Создать' }} поставщика</h3>
     <div class="block">
-        <span>Наименование:</span>
-        <input class="input_name" type="text" v-model="obj.name">
-        <span>ИНН:</span>
-        <input type="text" v-model="obj.inn">
-        <span>КПП:</span>
-        <input type="text" v-model="obj.cpp">
+      <span>Наименование:</span>
+      <input class="input_name" type="text" v-model="obj.name">
+      <span>ИНН:</span>
+      <input type="text" v-model="obj.inn">
+      <span>КПП:</span>
+      <input type="text" v-model="obj.cpp">
     </div> 
     <div class="main_content">
-        <div class="left_content">
-            <div>
-                <h3>Реквизиты</h3>
-                <table class="recvizits"> 
-                    <tr v-for="(rek, index) in obj.rekvisit" :key="rek">
-                        <th>{{ rek.name }}</th>
-                        <td class='td-row'>
-                            <input type="text" class="rek" :value="rek.description" @change='e => changeRek(e.target.value, index)'>
-                        </td>
-                    </tr>
-                    
-                </table>
-            </div>
-            <div>
-                <h3>Контакты</h3>
-                <table class="recvizits">
-                    <tr class="td-row" v-for="(cont, index) in obj.contact" :key="cont" @click="getContact(cont, index)">
-                        <th v-text='cont.initial'></th>
-                        <td v-text='cont.description'></td>
-                    </tr>
-                </table>
-                <div class="btn-control">
-                    <button class="btn-small" @click="delContact" v-if="contact">Удалить</button>
-                    <button class="btn-small btn-add" @click="addContact">Добавить</button>
-                </div>
-            </div>
-            <div>
-                <h3>Описание / Примечание</h3>
-                <textarea maxlength='250' v-model="obj.description" cols="30" rows="10"></textarea>
-            </div>
+      <div class="left_content">
+        <div>
+          <h3>Реквизиты</h3>
+          <table class="recvizits"> 
+            <tr v-for="(rek, index) in obj.rekvisit" :key="rek">
+              <th>{{ rek.name }}</th>
+              <td class='td-row'>
+                <input type="text" class="rek" :value="rek.description" @change='e => changeRek(e.target.value, index)'>
+              </td>
+            </tr>
+          </table>
         </div>
+        <div>
+          <h3>Контакты</h3>
+          <table class="recvizits">
+            <tr class="td-row" v-for="(cont, index) in obj.contact" :key="cont" @click="getContact(cont, index)">
+              <th v-text='cont.initial'></th>
+              <td v-text='cont.description'></td>
+            </tr>
+          </table>
+          <div class="btn-control">
+            <button class="btn-small" @click="delContact" v-if="contact">Удалить</button>
+            <button class="btn-small btn-add" @click="addContact">Добавить</button>
+          </div>
+        </div>
+        <div>
+          <h3>Описание / Примечание</h3>
+          <textarea maxlength='250' v-model="obj.description" cols="30" rows="10"></textarea>
+        </div>
+      </div>
 
-        <div class="right_content">
-            <div>
-                <h3>Документы</h3>
-                <table style="width: 100%">
-                    <tr>
-                        <th>Файл</th>
-                    </tr>
-                    <tr class="td-row" 
-                    v-for="doc in obj.documents" 
-                    :key="doc"
-                    @click="clickDoc(doc)">
-                        <td> {{ doc.name }} </td>
-                    </tr>
-                </table>
-                <div class="pointer-files-to-add">
-                    <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                    <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-                </div>
-            </div>
-            <h3 class="link_h3" @click='openMaterial'>Поставляемый материал</h3>
-          <div class="scroll-table" style="width: 100%; display: flex; height: fit-content; flex-direction: column; " v-if='this.$route.params.type == "edit"' >
-                <div style='display: flex;'>
-                    <table style="width: 33%; height: max-content;" > 
-                    <tr>
-                        <th>Тип</th>
-                    </tr>
-                        <tr>
-                        <td>
-                            <Search 
-                                :placeholder='`Поиск `'
-                                @unmount='searchMat' 
-                            />
-                        </td>
-                        </tr>
-                    <tr v-for='t in getproviderTypeM' 
-                        :key='t'
-                        class='td-row'
-                        @click='filterByType(t)'>
-                        <td>{{ t.name }}</td>
-                    </tr>
-                </table>
-                <table style="width: 33%; height: max-content;"> 
-                    <tr>
-                        <th>Подтип</th>
-                    </tr>
-                        <tr>
-                        <td>
-                            <Search 
-                                :placeholder='`Поиск `'
-                                @unmount='searchPT' 
-                            />
-                        </td>
-                        </tr>
-                    <tr v-for='t in getproviderPTypeM' 
-                        :key='t'
-                        class='td-row'
-                        @click='filterByPType(t)'>
-                        <td>{{ t.name }}</td>
-                    </tr>
-                </table>
-                <table style="width: 33%; height: max-content;"> 
-                    <tr>
-                        <th>Наименование</th>
-                    </tr>
-                        <tr>
-                        <td>
-                            <Search 
-                                :placeholder='`Поиск `'
-                                @unmount='searchName' 
-                            />
-                        </td>
-                        </tr>
-                    <tr v-for='t in getproviderMaterial' :key='t'>
-                        <td>{{ t.name}}</td>
-                    </tr>
-                </table>
-                </div>
-            <table style="width: 100%" v-if='materialList.length'> 
-                <tr>
-                    <th scope='col' colspan='3'>Добавленный</th>
-                </tr>
-                <tr>
-                    <th>Тип</th>
-                    <th>Подтип</th>
-                    <th>Наименование</th>
-                </tr>
-                <tr v-for='mat in materialList' :key="mat">
-                    <td>{{ mat.mat.material.name }}</td>
-                    <td>{{ mat.mat.podMaterial.name }}</td>
-                    <td>{{ mat.mat.name }}</td>
-                </tr>
+      <div class="right_content">
+        <div>
+          <h3>Документы</h3>
+          <table style="width: 100%">
+            <tr>
+              <th>Файл</th>
+            </tr>
+            <tr 
+              class="td-row" 
+              v-for="doc in obj.documents" 
+              :key="doc"
+              @click="clickDoc(doc)">
+              <td> {{ doc.name }} </td>
+            </tr>
+          </table>
+          <div class="pointer-files-to-add">
+            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
+            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+          </div>
+        </div>
+        <h3 class="link_h3" @click='openMaterial'>Поставляемый материал</h3>
+        <TableMaterialFilter 
+          :id_product='id_product'
+        />
+
+        <div v-if='materialList.length'>
+          <h3>Добавленные материалы</h3>
+          <div>
+            <table style='width: 100%;'>
+              <tr>
+                <th>Наименование</th>
+              </tr>
+              <tr 
+                v-for='material of materialList' 
+                :key='material'
+                class='td-row'>
+                <td>{{ material.mat.name }}</td>
+              </tr>
             </table>
-            
-            </div>
+          </div>
         </div>
+      </div>
     </div>
-          <div class="edit-save-block block">
-            <button class="btn-status" @click="$router.push('/baseprovider')">Отменить</button>
-            <button class="btn-status btn-black" @click='addProvider'>Сохранить</button>
-        </div>
-        <AddContact 
-            :key='keyModal'
-            @unmount='unmount'
-            v-if="isShow"
+      <div class="edit-save-block block">
+        <button class="btn-status" @click="$router.push('/baseprovider')">Отменить</button>
+        <button class="btn-status btn-black" @click='addProvider'>Сохранить</button>
+      </div>
+      <AddContact 
+        :key='keyModal'
+        @unmount='unmount'
+        v-if="isShow"
+      />
+      <AddFile :parametrs='docFiles' 
+        :typeGetFile='"getfile"'
+        v-if="isChangeFolderFile" 
+        @unmount='file_unmount'
+        :key='keyWhenModalGenerate'
+      />
+      <ModalBaseMaterial 
+        :key='modalMaterialKey'
+        v-if='modalMaterialIsShow'
+        @unmount_material='unmount_material'
+        :instanMaterial='3'
+        :getOneMaterial='false'
+        :matLightList='true'
+        :allMaterial='materialList'
         />
-        <AddFile :parametrs='docFiles' 
-            :typeGetFile='"getfile"'
-            v-if="isChangeFolderFile" 
-            @unmount='file_unmount'
-            :key='keyWhenModalGenerate'
-        />
-        <ModalBaseMaterial 
-            :key='modalMaterialKey'
-            v-if='modalMaterialIsShow'
-            @unmount_material='unmount_material'
-            :instanMaterial='3'
-            :getOneMaterial='false'
-            :matLightList='true'
-            :allMaterial='materialList'
-          />
-        <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="itemFiles"
-            :key='keyWhenModalGenerateFileOpen'
-        />
+      <OpensFile 
+        :parametrs='itemFiles' 
+        v-if="itemFiles"
+        :key='keyWhenModalGenerateFileOpen'
+      />
   </div>
 </template>
 <script scoped>
 
 import AddContact from './add-contact.vue';
 import { random, isEmpty } from 'lodash';
-import { mapActions, mapGetters, mapMutations } from 'vuex'
-import AddFile from '@/components/filebase/addfile.vue'
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
-import Search from '@/components/search.vue'
+import { mapActions, mapGetters } from 'vuex';
+import AddFile from '@/components/filebase/addfile.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
 export default {
   data() {
     return {
@@ -205,6 +151,7 @@ export default {
       isChangeFolderFile: false,
       docFiles: [],
       materials: [],
+      id_product: null,
 
       modalMaterialKey: random(1, 999),
       modalMaterialIsShow: false,
@@ -215,24 +162,24 @@ export default {
     }
   },
   computed: mapGetters([
-    'getSetProvider', 
-    'getproviderTypeM', 
-    'getproviderPTypeM', 
-    'getproviderMaterial',]),
-  components: {Search, AddContact, AddFile, ModalBaseMaterial, OpensFile},
+    'getSetProvider'
+  ]),
+  components: {AddContact, AddFile, ModalBaseMaterial, OpensFile, TableMaterialFilter},
   methods: {
     ...mapActions(['addOneProvider']),
-    ...mapMutations([
-          'filterByProviderPM',
-        'filterByProviderPTypeM',
-        'filterByProviderTypeM',
-        'filterToClickProviderTypeM',
-        'filterToClickProviderPTypeM'
-    ]),
     unmount(data) {
       if(!data)
         return 0;
       this.obj.contact.push({...data})
+    },
+    unmount_material(res) {
+      if(res.materialList) {
+        this.obj.materials = []
+        for(let e of res.materialList) {
+          this.obj.materials.push(e.mat.id)
+        }
+        this.materialList = res.materialList
+      }
     },
     addContact() { 
       this.keyModal = random(1, 22312)
@@ -289,38 +236,12 @@ export default {
       this.modalMaterialKey = random(10, 2e3)
       this.modalMaterialIsShow = true
     },
-    unmount_material(res) {
-      if(res.materialList) {
-        this.obj.materials = []
-        for(let e of res.materialList) {
-          this.obj.materials.push(e.mat.id)
-        }
-        this.materialList = res.materialList
-      }
-    },
     clickDoc(files) {
       if(files) { 
         this.itemFiles = files
         this.keyWhenModalGenerateFileOpen = random(10, 1222)
       }
     },
-
-    searchName(str) {
-      this.filterByProviderPM(str)
-    },
-    searchPT(str) {
-      this.filterByProviderPTypeM(str)
-    },
-    searchMat(str) {
-      this.filterByProviderTypeM(str)
-    },
-
-    filterByType(t) {
-      this.filterToClickProviderTypeM(t)
-    },
-    filterByPType(t) {
-      this.filterToClickProviderPTypeM(t)
-    }
   },
   async mounted() {
     if(this.$route.params.type == 'add') {
@@ -346,11 +267,8 @@ export default {
       if(provider.documents) 
         this.obj.documents = provider.documents
       
-      if(provider.materials) {
-        provider.materials.forEach(e => {
-          this.obj.materials.push(e.id)
-        })
-      }
+      if(provider.materials.length) 
+        this.id_product = provider.id
     }
   }
 }

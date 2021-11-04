@@ -30,7 +30,7 @@
         <button class="btn-small">Выбрать изделие</button>
         <button class="btn-small" style='margin-left: 10px;'>Сбросить фильтр</button>
       </div>
-      <div class="right-block-bprovider">
+      <div class="right-block-bprovider" v-if='buyer'>
         <h3>Подробная информация о покупателе</h3>
         <div class="block">
           <div class="first-block-description">
@@ -47,28 +47,28 @@
           <div>
             <div class="block-d-r">
               <div>
-                  <div>
-                    <h3>Реквизиты</h3>
-                    <table class="table_rek">
-                      <tr class="td-row" v-for="rek in obj.rekvisit" :key='rek'>
-                        <th>{{ rek.name }}</th>
-                        <td>{{ rek.description }}</td>
-                      </tr>
-                    </table>
-                  </div>
-                  <div>
-                    <h3>Контакты</h3>
-                    <table class="table_rek">
-                      <tr class="td-row" v-for="cont in obj.contact" :key='cont'>
-                        <th> {{ cont.initial }}</th>
-                        <th> {{ cont.description }}</th>
-                      </tr>
-                    </table>
-                  </div>
-                  <div>
+                <div>
+                  <h3>Реквизиты</h3>
+                  <table class="table_rek">
+                    <tr class="td-row" v-for="rek in obj.rekvisit" :key='rek'>
+                      <th>{{ rek.name }}</th>
+                      <td>{{ rek.description }}</td>
+                    </tr>
+                  </table>
+                </div>
+                <div>
+                  <h3>Контакты</h3>
+                  <table class="table_rek">
+                    <tr class="td-row" v-for="cont in obj.contact" :key='cont'>
+                      <th> {{ cont.initial }}</th>
+                      <th> {{ cont.description }}</th>
+                    </tr>
+                  </table>
+                </div>
+                <div>
                     <h3>Описание / примечание</h3>
                     <textarea maxlength='250' :value="obj.description"></textarea>
-                  </div>
+                </div>
               </div>
                 <div>
                   <div>
@@ -92,7 +92,7 @@
             </div>
             <div>
               <h3>Заказы покупателя</h3>
-              <div class="scroll-table">
+              <div class="scroll-table" v-if='buyer.shipments && buyer.shipments.length'>
                 <table>
                   <tr>
                     <th>№ Заказа</th>
@@ -104,18 +104,24 @@
                     <th>Примечание</th>
                     <th>Статус</th>
                   </tr>
-                  <tr v-for="uu in 40" :key="uu" class="td-row">
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
+                  <tr 
+                    v-for="shipments in buyer.shipments" 
+                    :key="shipments" 
+                    class="td-row">
+                    <td>{{ shipments.number_order }}</td>
+                    <td>{{ shipments.date_order }}</td>
+                    <td>{{ returnNameProduct(shipments.productId) }}</td>
+                    <td class='center'>{{ shipments.kol }}</td>
+                    <td>{{ shipments.base }}</td>
+                    <td>{{ shipments.date_shipments }}</td>
+                    <td class='center'>
+                      <img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
+                    </td>
+                    <td>{{ shipments.status }}</td>
                     </tr>
                   </table>
-                </div>
+              </div>
+              <div v-else>Нет заказов</div>
             </div>
           </div>
         </div>
@@ -132,15 +138,20 @@
       v-if="itemFiles"
       :key='keyWhenModalGenerateFileOpen'
     />
+    <DescriptionModal
+      v-if='descriptionKey'
+      :key='descriptionKey'
+      :parametrs='description'
+      />
     <Loader v-if='loader' />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import OpensFile from '@/components/filebase/openfile.vue'
-import random from 'lodash'
-
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
+import random from 'lodash';
+import DescriptionModal from '@/components/description-modal.vue';
 export default {
   data() {
     return {
@@ -154,20 +165,25 @@ export default {
         documents: []
       },
       buyer: null,
+      descriptionKey: null,
+      description: '',
 
       itemFiles: null,
       keyWhenModalGenerateFileOpen: random(10, 1222),
       loader: false
     }
   },
-  computed: mapGetters(['allBuyer']),
-  components: {OpensFile},
+  computed: mapGetters(['allBuyer', 'allProduct']),
+  components: {OpensFile, DescriptionModal},
   methods: {
-    ...mapActions(['fetchAllBuyers', 'fetchBuyerBan']),
+    ...mapActions([
+      'fetchAllBuyers', 
+      'fetchBuyerBan', 
+      'getAllProduct'
+    ]),
     ...mapMutations(['setBuyerState']),
     setBuyer(buyer) {
       this.setBuyerState(buyer)
-      
       this.buyer = buyer
       this.obj.name = buyer.name
       this.obj.inn = buyer.inn
@@ -201,11 +217,21 @@ export default {
         return 0;
       this.fetchBuyerBan(this.buyer.id)
     },
-
+    openDescription(description) {
+      this.descriptionKey = random(1, 999)
+      this.description = description
+    },
+    returnNameProduct(id) {
+      for(let product of this.allProduct) {
+        if(product.id == id)
+          return product.name
+      }
+    }
   },
   async mounted() {
     this.loader = true
     await this.fetchAllBuyers()
+    await this.getAllProduct(true)
     this.loader = false
 }
 }

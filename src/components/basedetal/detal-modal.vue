@@ -4,67 +4,67 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 
-        <div class="right_info_block" >
-        <h3>Краткая Информация о детали</h3>
-        <div class="block">
-          <p class='name_parg'>
-          <span class="title_span">Наименование: </span><span>{{ getOneSelectDetal.name }}</span>
+      <div class="right_info_block" >
+      <h3>Краткая Информация о детали</h3>
+      <div class="block">
+        <p class='name_parg'>
+        <span class="title_span">Наименование: </span><span>{{ getOneSelectDetal.name }}</span>
+        </p>
+        <p class='name_parg'>
+        <span class="title_span">Артикул: </span><span>{{ getOneSelectDetal.articl }}</span>
+        </p>
+        <MediaSlider :width='"width: 93%;"' v-if='getOneSelectDetal.documents.length' :data='getOneSelectDetal.documents' :key='getOneSelectDetal.documents' />
+        <div>
+          <h3>Характеристики</h3>
+          <p>
+            <span>Масса(кг):</span>
+            <span style='font-weight: bold;'>{{ JSON.parse(getOneSelectDetal.haracteriatic)[0].znach }}</span>
           </p>
-          <p class='name_parg'>
-          <span class="title_span">Артикул: </span><span>{{ getOneSelectDetal.articl }}</span>
+          <p>
+            <span>Материал:</span>
+            <span style='font-weight: bold;'>{{ mat_zag ? mat_zag.name : '' }}</span>
           </p>
-          <MediaSlider :width='"width: 93%;"' v-if='getOneSelectDetal.documents.length' :data='getOneSelectDetal.documents' :key='getOneSelectDetal.documents' />
-          <div>
-            <h3>Характеристики</h3>
-            <p>
-              <span>Масса(кг):</span>
-              <span style='font-weight: bold;'>{{ JSON.parse(getOneSelectDetal.haracteriatic)[0].znach }}</span>
-            </p>
-            <p>
-              <span>Материал:</span>
-              <span style='font-weight: bold;'>{{ mat_zag ? mat_zag.name : '' }}</span>
-            </p>
-            <p>
-              <span>Масса заготовки(кг):</span>
-              <span style='font-weight: bold;'>{{ getOneSelectDetal.massZag }}</span>
-            </p>
-            <p>
-              <span>Размеры заготовки DxL(мм):</span>
-              <span style='font-weight: bold;'>{{ getOneSelectDetal.DxL }}</span>
-            </p>
-            <p>
-              <span>Норма времени изготовления общая(н.ч.):</span>
-              <span style='font-weight: bold;'>{{ generateTime }}</span>
-            </p>
-          </div>
-          <div 
-            class='scroll-table' 
-            style='width:100%' 
-            v-if='getOneSelectDetal.documents.length > 0'>
-            <h3>Документы</h3>
-            <table style="width: 100%;">
-              <tr>
-                <th>Файл</th>
-              </tr>
-              <tr class="td-row" 
-                v-for='doc in getOneSelectDetal.documents' 
-                :key='doc' @click='setDocs(doc)'>
-                <td>{{ doc.name }}</td>
-              </tr>
-            </table>
-            <div class="btn-control">
-            <button class="btn-small" @click='openDock'>Открыть</button>
-            </div>
-            <OpensFile 
-              :parametrs='itemFiles' 
-              v-if="showFile" 
-              @unmount='openFile'
-              :key='keyWhenModalGenerateFileOpen'
-            />
-          </div>
-          <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
+          <p>
+            <span>Масса заготовки(кг):</span>
+            <span style='font-weight: bold;'>{{ getOneSelectDetal.massZag }}</span>
+          </p>
+          <p>
+            <span>Размеры заготовки DxL(мм):</span>
+            <span style='font-weight: bold;'>{{ getOneSelectDetal.DxL }}</span>
+          </p>
+          <p>
+            <span>Норма времени изготовления общая(н.ч.):</span>
+            <span style='font-weight: bold;'>{{ generateTime }}</span>
+          </p>
         </div>
+        <div 
+          class='scroll-table' 
+          style='width:100%' 
+          v-if='getOneSelectDetal.documents.length > 0'>
+          <h3>Документы</h3>
+          <table style="width: 100%;">
+            <tr>
+              <th>Файл</th>
+            </tr>
+            <tr class="td-row" 
+              v-for='doc in getOneSelectDetal.documents' 
+              :key='doc' @click='setDocs(doc)'>
+              <td>{{ doc.name }}</td>
+            </tr>
+          </table>
+          <div class="btn-control">
+          <button class="btn-small" @click='openDock'>Открыть</button>
+          </div>
+          <OpensFile 
+            :parametrs='itemFiles' 
+            v-if="showFile" 
+            @unmount='openFile'
+            :key='keyWhenModalGenerateFileOpen'
+          />
         </div>
+        <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
+      </div>
+      </div>
 
     </div>
     
@@ -79,11 +79,11 @@
 </template>
 
 <script>
-import OpensFile from '@/components/filebase/openfile.vue'
-import {isEmpty, random} from 'lodash'
-import {mapGetters, mapMutations } from 'vuex'
+import OpensFile from '@/components/filebase/openfile.vue';
+import {isEmpty, random} from 'lodash';
+import {mapGetters, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import TechProcess from './tech-process-modal.vue'
+import TechProcess from './tech-process-modal.vue';
 
 export default {
   props: ['parametrs'],

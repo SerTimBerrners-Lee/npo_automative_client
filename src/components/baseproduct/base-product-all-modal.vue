@@ -4,31 +4,31 @@
 	<div :class='destroyModalRight'>
 		<div :style="hiddens">
 			<div>
-				<h3>База деталей</h3>
+				<h3>База Продукции</h3>
 				<div class="main_table_control">
 					<div>
-				<div class="scroll-table" >
-		<table class="table-base-detal">
-						<tr>
+						<div class="scroll-table" >
+							<table class="table-base-detal">
+							<tr>
 								<th colspan="3" scope="col">Изделие</th>
-						</tr>
-						<tr>
+							</tr>
+							<tr>
 								<th>Заводской номер</th>
 								<th>Артикул</th>
 								<th>Наименование</th>
-						</tr>
-						<tr >
+							</tr>
+							<tr >
 								<td class="tb-title" colspan="3" scope="col"> Без назначенного изделия </td>
-						</tr> 
-						<tr>
-							<td colspan="3">
-								<Search 
-									:placeholder="'Поиск по Артиклу'"
-									@unmount='keySearchProduct' 
-								/>
-							</td>
-						</tr>
-						<tr v-for='product in allProduct' 
+							</tr> 
+							<tr>
+								<td colspan="3">
+									<Search 
+										:placeholder="'Поиск по Артиклу'"
+										@unmount='keySearchProduct' 
+									/>
+								</td>
+							</tr>
+							<tr v-for='product in allProduct' 
 								:key='product'
 								class='td-row'
 								@click='e => setProduct(product, e.target.parentElement)'
@@ -36,156 +36,156 @@
 								<td>{{ product.fabricNumber }}</td>
 								<td>{{ product.articl }}</td>
 								<td>{{ product.name }}</td>
-						</tr>
-						<tr v-for="item in 40" :key="item">
+							</tr>
+							<tr v-for="item in 40" :key="item">
 								<td></td>
 								<td></td>
 								<td></td>
-						</tr>
-				</table>
-		</div>
-		<p class='btn_align_p'  v-if='$props.enum && $props.enum == "three"'>
-				<button class="btn-small btn-add"
-					@click='responsProduct'>
-						Выбрать
-				</button>
-			</p>
-		</div>
-		<div>
-		<div class="scroll-table" >
-				<table class="table-base-detal">
-						<tr>
-								<th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
-						</tr>
-						<tr>
-								<th>Артикул</th>
-								<th>Наименование</th>
-								<th>Кол-во СБ на Изделие</th>
-						</tr>
+							</tr>
+							</table>
+						</div>
+						<p class='btn_align_p'  v-if='$props.enum && $props.enum == "three"'>
+							<button class="btn-small btn-add"
+								@click='responsProduct'>
+									Выбрать
+							</button>
+						</p>
+					</div>
+					<div>
+						<div class="scroll-table" >
+							<table class="table-base-detal">
 								<tr>
-										<td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
+									<th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
 								</tr>
-						<tr>
-								<td colspan="3">
-									<Search 
-										:placeholder="'Поиск по Артиклу'"
-										@unmount='keySearchCb' 
-									/>
-								</td>
-						</tr>
-								<tr v-for='cb in allCbed' 
-								:key='cb'
-								class='td-row'
-								@click='e => setCbed(cb, e.target.parentElement)'>
-								<td>{{ cb.articl }}</td>
-								<td>{{ cb.name }}</td>
-								<td></td>
-						</tr>
-						<tr v-for="item in 42" :key="item">
-								<td></td>
-								<td></td>
-								<td></td>
-						</tr>
-				</table>
-		</div>
-		<p class='btn_align_p' v-if='$props.enum && $props.enum == "two" || $props.enum == "three"'>
-					<button class="btn-small btn-add"
-						@click='responsCbed' >
-							Выбрать
-					</button>
-				</p>
-		</div>
-			<div>
-				<div class="scroll-table" >
-					<table class="table-base-detal">
-							<tr>
-								<th colspan="3" scope="col">Деталь (Тип Д)</th>
-							</tr>
-							<tr>
-								<th>Артикул</th>
-								<th>Наименование</th>
-								<th>Кол-во Д на СБ</th>
-							</tr>   
-							<tr>
-								<td colspan="3">
+								<tr>
+									<th>Артикул</th>
+									<th>Наименование</th>
+									<th>Кол-во СБ на Изделие</th>
+								</tr>
+								<tr>
+									<td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
+								</tr>
+								<tr>
+									<td colspan="3">
 										<Search 
-												@unmount='keySearch' 
+											:placeholder="'Поиск по Артиклу'"
+											@unmount='keySearchCb' 
 										/>
-								</td>
-							</tr>
-							<tr 
-									v-for='detal in allDetal' 
-									:key='detal'
+									</td>
+								</tr>
+								<tr v-for='cb in allCbed' 
+									:key='cb'
 									class='td-row'
-									@click='e => setDetals(detal, e.target.parentElement)'
-									>
-									<td>{{ detal.articl }}</td>
-									<td>{{ detal.name }}</td>
-									<td>...</td>
-							</tr>
-							<tr v-for="item in 42" :key="item">
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-					</table>
+									@click='e => setCbed(cb, e.target.parentElement)'>
+									<td>{{ cb.articl }}</td>
+									<td>{{ cb.name }}</td>
+									<td></td>
+								</tr>
+								<tr v-for="item in 42" :key="item">
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
+							</table>
+						</div>
+						<p class='btn_align_p' v-if='$props.enum && $props.enum == "two" || $props.enum == "three"'>
+							<button class="btn-small btn-add"
+								@click='responsCbed' >
+									Выбрать
+							</button>
+						</p>
+					</div>
+					<div>
+						<div class="scroll-table" >
+							<table class="table-base-detal">
+									<tr>
+										<th colspan="3" scope="col">Деталь (Тип Д)</th>
+									</tr>
+									<tr>
+										<th>Артикул</th>
+										<th>Наименование</th>
+										<th>Кол-во Д на СБ</th>
+									</tr>   
+									<tr>
+										<td colspan="3">
+												<Search 
+														@unmount='keySearch' 
+												/>
+										</td>
+									</tr>
+									<tr 
+											v-for='detal in allDetal' 
+											:key='detal'
+											class='td-row'
+											@click='e => setDetals(detal, e.target.parentElement)'
+											>
+											<td>{{ detal.articl }}</td>
+											<td>{{ detal.name }}</td>
+											<td>...</td>
+									</tr>
+									<tr v-for="item in 42" :key="item">
+										<td></td>
+										<td></td>
+										<td></td>
+									</tr>
+							</table>
+						</div>
+						<p class='btn_align_p'>
+							<button class="btn-small btn-add"
+								@click='returnDetalList'>
+									Выбрать
+							</button>
+						</p>
+					</div>
 				</div>
-				<p class='btn_align_p'>
-					<button class="btn-small btn-add"
-						@click='returnDetalList'>
-							Выбрать
-					</button>
-				</p>
-			</div>
-		</div>
-
-			<DetalModal
+				<DetalModal
 					:key='detalModalKey'
 					v-if='detalIsShow'
-			/>
-			<!-- Detal List -->
-			<div v-if='detalList.length > 0'>
-			<table>
-					<tr>
+				/>
+				<!-- Detal List -->
+				<div v-if='detalList.length > 0'>
+					<table>
+						<tr>
 							<th>Артикул</th>
 							<th>Выбранное</th>
 							<th>ЕИ</th>
 							<th>Количество</th>
 							<th>Действие</th>
-					</tr>
-					<tr v-for='det of detalList' :key='det'>
+						</tr>
+						<tr v-for='det of detalList' :key='det'>
 							<td class='td_kolvo'>
-									<input 
-											class='inputs-small' 
-											type='text' 
-											:value='det.art'
-											@change='e => changeArt(e.target, det)'
-									>
+								<input 
+									class='inputs-small' 
+									type='text' 
+									:value='det.art'
+									@change='e => changeArt(e.target, det)'
+								>
 							</td>
 							<td>{{ det.det.name }}</td>
 							<td>
-									<select  class='select-small' 
-													@change='e => selecter(e.target, det)' 
-													v-model='det.ez'>
-											<option value='1' v-if="det.ez == 1 || det.ez"> шт</option> 
-											<option value='2' v-if="det.ez == 2 || det.ez"> л </option>
-											<option value='3' v-if="det.ez == 3 || det.ez"> кг</option> 
-											<option value='4' v-if="det.ez == 4 || det.ez"> м </option>
-											<option value='5' v-if="det.ez == 5 || det.ez"> м.куб</option> 
-									</select>   
+								<select  
+									class='select-small' 
+									@change='e => selecter(e.target, det)' 
+									v-model='det.ez'>
+									<option value='1' v-if="det.ez == 1 || det.ez"> шт</option> 
+									<option value='2' v-if="det.ez == 2 || det.ez"> л </option>
+									<option value='3' v-if="det.ez == 3 || det.ez"> кг</option> 
+									<option value='4' v-if="det.ez == 4 || det.ez"> м </option>
+									<option value='5' v-if="det.ez == 5 || det.ez"> м.куб</option> 
+								</select>   
 							</td>
 							<td class='td_kolvo' >
-									<input class='inputs-small' 
-											type='text' 
-											:value='det.kol'
-											@change='e => changeArt(e.target, det)'
-											>
+								<input class='inputs-small' 
+									type='text' 
+									:value='det.kol'
+									@change='e => changeArt(e.target, det)'
+									>
 							</td>
 							<td class='delete_span' @click='delDet(det.det.id)'>удалить</td>
-					</tr>
-			</table>
-	</div>
-	</div>
+						</tr>
+					</table>
+				</div>
+			</div>
 		</div>
 	</div>
 </div> 
@@ -193,13 +193,11 @@
 
 <script>
 
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
-import Search from '@/components/search.vue'
-
+import Search from '@/components/search.vue';
 export default {
-
   props: ['techProcessID', 'idFile', 'getListDetal', 'listDetal', 'enum'],
   data() {
     return {
@@ -323,7 +321,7 @@ export default {
 				}
 				if(add) {
 					this.detalList.push({ 
-						art: '',
+						art: this.selectedDetal.articl,
 						det: {
 							name: this.selectedDetal.name,
 							id: this.selectedDetal.id
@@ -392,12 +390,11 @@ export default {
 	float: left;
 	width: 400px;
 }
-.table-base-detal tr {
-	height: 65px;
+td{
+	height: 10px;
 }
 .scroll-table {
 	height: 600px;
-		
 }
 .tb-title {
 	height: 50px;

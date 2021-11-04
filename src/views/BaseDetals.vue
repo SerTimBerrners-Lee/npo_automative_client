@@ -261,7 +261,7 @@ export default {
 <style scoped>
 .table-base-detal {
   float: left;
-  width: 500px;
+  width: 470px;
 }
 .main {
   width: fit-content;

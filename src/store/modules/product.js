@@ -29,8 +29,8 @@ export default {
       }
     },
 
-    async getAllProduct(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/product`)
+    async getAllProduct(ctx, light=false) {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/${light}`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('addAllProduct', result)

@@ -309,8 +309,7 @@ export default {
 			if(
 				!this.date_order || !this.date_shipments 
 				|| !this.kol || !this.base 
-				|| !this.select_product
-				|| !this.description || !this.buyer
+				|| !this.select_product || !this.buyer
 				) 
 				return showMessage('', 'Все поля должны быть заполнены', 'w', this)
 

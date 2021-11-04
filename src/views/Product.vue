@@ -1,42 +1,42 @@
 <template>
   <div class='main_product_block'>
     <div class='block_product'>
-        <h3>Изделия</h3>
+      <h3>Изделия</h3>
       <div class="main_table_control">
-          <div class="scroll-table" >
-            <table class="table-base-detal">
-              <tr>
-                <th colspan="3" scope="col">Изделие</th>
-              </tr>
-              <tr>
-                <th>Заводской номер</th>
-                <th>Артикул</th>
-                <th>Наименование</th>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <Search 
-                    :placeholder="'Поиск по Артиклу'"
-                    @unmount='keySearch' 
-                  />
-                </td>
-              </tr>
-              <tr v-for='product in allProduct' 
-                :key='product'
-                class='td-row'
-                @click='e => setProduct(product, e.target.parentElement)'
-                >
-                <td>{{ product.fabricNumber }}</td>
-                <td>{{ product.articl }}</td>
-                <td>{{ product.name }}</td>
-              </tr>
-              <tr v-for="item in 40" :key="item">
-                <td></td>
-                <td></td>
-                <td></td>
-              </tr>
-            </table>
-          </div>
+        <div class="scroll-table" >
+          <table class="table-base-detal">
+            <tr>
+              <th colspan="3" scope="col">Изделие</th>
+            </tr>
+            <tr>
+              <th>Заводской номер</th>
+              <th>Артикул</th>
+              <th>Наименование</th>
+            </tr>
+            <tr>
+              <td colspan="3">
+                <Search 
+                  :placeholder="'Поиск по Артиклу'"
+                  @unmount='keySearch' 
+                />
+              </td>
+            </tr>
+            <tr v-for='product in allProduct' 
+              :key='product'
+              class='td-row'
+              @click='e => setProduct(product, e.target.parentElement)'
+              >
+              <td>{{ product.fabricNumber }}</td>
+              <td>{{ product.articl }}</td>
+              <td>{{ product.name }}</td>
+            </tr>
+            <tr v-for="item in 40" :key="item">
+              <td></td>
+              <td></td>
+              <td></td>
+            </tr>
+          </table>
+        </div>
       </div>
       <div class="btn-control">
         <p>
@@ -196,7 +196,7 @@ export default {
 }
 .tb-title {
   height: 50px;
-  text-align: center;
+  text-align: center; 
 }
 .btn-control {
   flex-direction: column;

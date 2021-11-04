@@ -5,6 +5,7 @@ import router from './router'
 import Unicon from 'vue-unicons'
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import Loader from '@/components/loader.vue';
+import MiniLoader from '@/components/mini-loader.vue';
 import { uniTimes, 
         uniSetting, 
         uniUser, 
@@ -26,6 +27,7 @@ createApp(App)
     .use(router)
     .use(SetupCalendar, {})
     .component('Loader', Loader)
+    .component('MiniLoader', MiniLoader)
     .component('Calendar', Calendar)
     .component('DatePicker', DatePicker)
     .use(Unicon, {

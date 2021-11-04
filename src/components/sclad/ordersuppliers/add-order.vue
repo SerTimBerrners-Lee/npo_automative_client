@@ -149,7 +149,7 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',   
 
-      date_shipments: null,
+      date_shipments: new Date().toLocaleString('ru-RU').split(',')[0],
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
       isChangeFolderFile: false,

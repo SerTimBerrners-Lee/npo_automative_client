@@ -28,71 +28,14 @@
           <button class="btn-small" @click="banProvider">В архив</button>
         </div>
         <h3>Фильтр по материалу</h3>
-        <div >
-          <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
-            <table style="width: 33%; height: max-content;"> 
-              <tr>
-                <th>Тип</th>
-              </tr>
-                <tr>
-                  <td>
-                    <Search 
-                      :placeholder='`Поиск `'
-                      @unmount='searchGT' 
-                    />
-                  </td>
-                </tr>
-              <tr 
-                v-for='t in getGlobalProviderTypeM' 
-                :key='t'
-                class='td-row'>
-                <td>{{ t.name }}</td>
-              </tr>
-            </table>
-            <table style="width: 33%; height: max-content;"> 
-              <tr>
-                <th>Подтип</th>
-              </tr>
-                <tr>
-                  <td>
-                    <Search 
-                      :placeholder='`Поиск `'
-                      @unmount='searchGPT' 
-                    />
-                  </td>
-                </tr>
-              <tr 
-                v-for='t in getGlobalProviderPTypeM' 
-                :key='t'
-                class='td-row'
-                >
-                <td>{{ t.name }}</td>
-              </tr>
-            </table>
-            <table style="width: 33%; height: max-content;"> 
-              <tr>
-                <th>Наименование</th>
-              </tr>
-                <tr>
-                  <td>
-                    <Search 
-                      :placeholder='`Поиск `'
-                      @unmount='searchGName' 
-                    />  
-                  </td>
-                </tr>
-              <tr 
-                class='td-row' 
-                v-for='t in getGlobalProviderPM' 
-                :key='t'
-                @click='clicksGName(t)'>
-                <td >{{ t.name}}</td>
-              </tr>
-            </table>
-          </div>
+        <div>
+          <TableMaterial 
+            :return='"true"'
+            @unmount='unmount_table_material'
+          />
         </div>
         <div class="btn-control">
-          <button class="btn-small" @click='clearFilter'>Сбросить фильтр </button>
+          <button class="btn-small" @click='clearFilterByNode'>Сбросить фильтр </button>
         </div>
       </div>
       <div class="right-block-bprovider" v-if='provider'>
@@ -153,75 +96,19 @@
                   </table>
                 </div>
                 </div>
-                <div >
+                <div>
                   <h3>Поставляемый материал</h3>
-                  <div class="scroll-table" style="width: 100%; display: flex; height: fit-content;   " >
-                    <table style="width: 33%; height: max-content;"> 
-                      <tr>
-                        <th>Тип</th>
-                      </tr>
-                        <tr>
-                          <td>
-                            <Search 
-                              :placeholder='`Поиск `'
-                              @unmount='searchMat' 
-                            />
-                          </td>
-                        </tr>
-                      <tr 
-                        v-for='t in getproviderTypeM' 
-                        :key='t'
-                        class='td-row'
-                        @click='filterByType(t)'>
-                        <td>{{ t.name }}</td>
-                      </tr>
-                    </table>
-                    <table style="width: 33%; height: max-content;"> 
-                      <tr>
-                        <th>Подтип</th>
-                      </tr>
-                        <tr>
-                          <td>
-                            <Search 
-                              :placeholder='`Поиск `'
-                              @unmount='searchPT' 
-                            />
-                          </td>
-                        </tr>
-                      <tr 
-                        v-for='t in getproviderPTypeM' 
-                        :key='t'
-                        class='td-row'
-                        @click='filterByPType(t)'>
-                        <td>{{ t.name }}</td>
-                      </tr>
-                    </table>
-                    <table style="width: 33%; height: max-content;"> 
-                      <tr>
-                        <th>Наименование</th>
-                      </tr>
-                        <tr>
-                          <td>
-                            <Search 
-                              :placeholder='`Поиск `'
-                              @unmount='searchName' 
-                            />
-                          </td>
-                        </tr>
-                      <tr v-for='t in getproviderMaterial' :key='t'>
-                        <td>{{ t.name}}</td>
-                      </tr>
-                    </table>
-                </div>
-                <div class="btn-control">
-                  <button class="btn-small" @click='clearFilterByNode'>Сбросить</button>
-                </div>
+                  <TableMaterialFilter 
+                    :id_product='id_product'
+                    :key='table_key'
+                    :is_empty='is_empty'
+                  />
               </div>
             </div>
           </div>
           <div>
             <h3>Поставки поставщиков</h3>
-            <div class="scroll-table">
+            <div class="scroll-table" v-if="provider.deliveries && provider.deliveries.length">
               <table>
                 <tr>
                   <th>№ Заказа</th>
@@ -232,17 +119,49 @@
                   <th>Статус</th>
                   <th>Подробнее</th>
                 </tr>
-                <tr v-for="uu in 40" :key="uu" class="td-row">
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
-                  <td>...</td>
+                <tr 
+                  v-for="deliv in provider.deliveries" 
+                  :key="deliv" 
+                  class="td-row">
+                  <td>{{ deliv.id }}</td>
+                  <td>{{ deliv.date_create }}</td>
+                  <td>{{ deliv.number_check }}</td>
+                  <td>{{ deliv.count }}</td>
+                  <td>{{ deliv.date_shipments }}</td>
+                  <td>{{ deliv.status }}</td>
+                  <td class='center tooltip' @mousemove="getDetals(deliv)">
+                    <div class="tooltiptext toltip_position">
+                      <table>
+                        <tr>
+                          <th>Артикул</th>
+                          <th>Наименование</th>
+                          <th>ЕИ</th>
+                          <th>Кол-во</th>
+                          <th>Сумма, руб (за шт.)</th>
+                          <th>Примечание</th>
+                        </tr>
+                        <tr 
+                          v-for='material of detals_order'
+                          :key='material'
+                          class='td-row'>
+                          <td >{{ material.art }}</td>
+                          <td >{{ material.name }}</td>
+                          <td v-html='material.ez'></td>
+                          <td>{{ material.kol }}</td>
+                          <td
+                            class='tooltip'> {{ material.sum }}
+                            <span class="tooltiptext toltip_position_two" >Общая сумма: {{ Number(material.kol) * Number(material.sum)  }}</span>
+                          </td>
+                          <td>{{ material.description }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                    <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+                  </td>
                 </tr>
               </table>
             </div>
+            <div v-else>Поставок нет</div>
           </div>
           </div>
         </div>
@@ -264,11 +183,11 @@
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import OpensFile from '@/components/filebase/openfile.vue'
-import random from 'lodash'
-import Search from '@/components/search.vue'
-
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
+import random from 'lodash';
+import TableMaterial from '@/components/baseprovider/table-materila.vue';
+import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
 export default {
   data() {
     return {
@@ -283,53 +202,56 @@ export default {
       },
       materials: [],
       provider: null,
+      id_product: null,
+      table_key: random(1, 999),
+      is_empty: false,
 
       itemFiles: null,
       keyWhenModalGenerateFileOpen: random(10, 1222),
 
-      sName: '',
-      sPT: '',
-      sMat: '',
-
-      loader: false
+      loader: false,
+      detals_order: []
     }
   },
-  computed: mapGetters(['allProvider', 
-    'getproviderTypeM', 
-    'getproviderPTypeM', 
-    'getproviderMaterial',
-    'getGlobalProviderTypeM',
-    'getGlobalProviderPTypeM',
-    'getGlobalProviderPM']),
-  components: {OpensFile, Search},
+  computed: mapGetters([
+    'allProvider',
+    'getMaterialProvider',
+    'getMaterialTProvider',
+    'getMaterialPTProvider'
+  ]),
+  components: {OpensFile, TableMaterial, TableMaterialFilter},
   methods: {
-    ...mapActions(['fetchGetProviders', 
-        'fetchProviderBan', 
-        'getAllTypeMaterial', 
-        'getAllPodTypeMaterial', 
-        'fetchGetAllPPM']),
-    ...mapMutations(['setProviderState', 
-    'filterMaterialByProvider', 
-    'filterByProviderPM',
-    'filterByProviderPTypeM',
-    'filterByProviderTypeM',
-    'filterToClickProviderTypeM',
-    'filterToClickProviderPTypeM',
-    'globalProviderFilter',
-    
-    'filterByProviderGTypeM',
-    'filterByProviderGPTypeM',
-    'filterByProviderGNameM',
-
-    'filterPByMaterial',
-    'clearFilterProviders'
+    ...mapActions([
+      'fetchGetProviders', 
+      'fetchProviderBan',
+      'fetchGetAllPPM',
+      'materialForProvider'
     ]),
-    setProvider(provider) {
-      this.materials = provider.materials;
-      if(this.materials) 
-        this.filterMaterialByProvider(this.materials);
-      this.provider = provider
+    ...mapMutations([
+      'filterByMaterial',
+      'clearFilterProviders',
+      'setProviderState',
+      'clearCascheMaterial',
+    ]),
+    unmount_table_material(providers) {
+      this.filterByMaterial(providers)
+    },
+    setProvider(provider) { 
+      if(!provider)
+        return false
+      
       this.setProviderState(provider)
+      this.materials = provider.materials;
+      if(this.materials.length) {
+        this.table_key = random(1, 999)
+        this.id_product = provider.id
+        this.is_empty = false
+      } else {
+        this.is_empty = true
+        this.table_key = random(1, 999)
+      }
+      
+      this.provider = provider
       this.obj.name = provider.name
       this.obj.inn = provider.inn
       this.obj.cpp = provider.cpp
@@ -342,7 +264,6 @@ export default {
       
       if(provider.documents) 
         this.obj.documents = provider.documents
-        
     },
     clickDoc(files) {
       if(files) { 
@@ -363,68 +284,40 @@ export default {
     keySearch(key) {
       console.log(key)
     },
-    sNameF(str) {
-      this.sName = str
-    },
-    sPTF(str) {
-      this.sPT = str
-    },
-    sMatF(str) {
-      this.sMat = str
-    },
-    searchName(str) {
-      this.filterByProviderPM(str)
-    },
-    searchPT(str) {
-      this.filterByProviderPTypeM(str)
-    },
-    searchMat(str) {
-      this.filterByProviderTypeM(str)
-    },
-
-
-    filterByType(t) {
-      this.filterToClickProviderTypeM(t)
-    },
-    filterByPType(t) {
-      this.filterToClickProviderPTypeM(t)
-    },
-
-    searchGT(t) {
-      this.filterByProviderGTypeM(t)
-    },
-    searchGPT(t) {
-      this.filterByProviderGPTypeM(t)
-    },
-    searchGName(t) {
-      this.filterByProviderGNameM(t)
-    },
-    clicksGName(t) {
-      this.filterPByMaterial(t)
-    },
-
-
-    clearFilter() {
+    clearFilterByNode() {
       this.clearFilterProviders()
     },
-    clearFilterByNode() {
-      if(this.materials.length)
-        this.filterMaterialByProvider(this.materials);
-    }
+    getDetals(order) {
+      if(order.product) {
+        try {
+          let prod = JSON.parse(order.product)
+          this.detals_order = prod
+        } catch (e) {
+          console.log(e)
+        }
+      }
+    },
   },
   async mounted() {
     this.loader = true
+    this.clearCascheMaterial()
     await this.fetchGetProviders()
-    await this.getAllTypeMaterial()
-    await this.getAllPodTypeMaterial()
-    // При загрузки страницы начинаем фильтровать материал 
-    this.globalProviderFilter(this.allProvider)
     this.loader = false
   }
 }
 </script>
 
 <style scoped>
+.toltip_position {
+  position: absolute;
+  right: 200px;
+}
+.toltip_position_two {
+  margin: 30px;
+}
+.content {
+  margin-right: 100px;
+}
 .table_rek{
   width: 420px;
 }

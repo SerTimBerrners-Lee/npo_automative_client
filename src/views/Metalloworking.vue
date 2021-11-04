@@ -76,7 +76,7 @@
         v-if='description'
         :key='descriptionKey'
         :parametrs='description'
-    />
+      />
     <OpensFile 
       :parametrs='itemFiles' 
       v-if="itemFiles.length" 
