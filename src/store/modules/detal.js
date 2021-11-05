@@ -162,8 +162,11 @@ export default {
       localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
     },
     updateOperationToList(state, operation) {
-      state.operationNewList = state.operationNewList.filter(op => op.id != operation.id)
-      state.operationNewList.push(operation)
+      for(let inx = 0; inx < state.operationNewList.length; inx++) {
+        if(state.operationNewList[inx].id == operation.id) {
+          state.operationNewList[inx] = operation
+        }
+      }
       localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
     },
     removeOperationStorage(state) {
