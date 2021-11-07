@@ -7,11 +7,11 @@
         <div class="block scroll-table">
           <div v-for="(file, index) of arrItemsFile" :key="file">
             <h4>Файл {{index + 1}}</h4>
-            <div>
+            <div class='main_info'>
               <div class="fb-img-block">
                 <span class="span-type-files" v-if='file.typefile != "img"'>.{{ file.typename }}</span>
                 <div class="imgShow-modal-div" v-if="file.typefile == 'img'">
-                    <img class="imgShow-modal" :src="file.url" alt="">
+                  <img class="imgShow-modal" :src="file.url" alt="">
                 </div>
               </div>
               <div class="main-fb-modal-block">
@@ -28,6 +28,8 @@
                 </p>
                 <p>
                   <span>Переименовать: </span><input type="text" :value='file.name.split(".")[0]' @change='e=>fileRead(e.target.value, "NameDocument" , index)'>
+                </p>
+                <p>
                   <span>Версия: </span><input type="text" placeholder="000001" @change='e=>fileRead(e.target.value, "VersionDocument", index)'>
                 </p>
                 <p class="right-menu-p">
@@ -147,6 +149,10 @@ export default {
 </script>
 
 <style scoped>
+.main_info {
+  display: flex;
+  align-items: center;
+}
 .right-menu-p>input {
   width: 70%;
 }

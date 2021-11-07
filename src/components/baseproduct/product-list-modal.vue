@@ -11,7 +11,7 @@
 							<th>Артикул</th>
 							<th>Наименование</th>
 							<th>ЕИ</th>
-							<th>Кол-во на изделие</th>
+							<th style='width: 50px;'>Кол-во на изделие</th>
 						</tr>
             <tr v-for='product of $props.parametrs.products' :key='product'>
               <td>{{ product.articl }}</td>

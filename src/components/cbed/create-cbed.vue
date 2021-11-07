@@ -78,11 +78,12 @@
                 <tr v-for='material in materialList' :key='material.mat'>
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="material.ez == 1"> шт</span> 
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -123,19 +124,13 @@
             </div>
             <div>
             <h3>Документы</h3>
-            <div class="pointer-files-to-add">
-                <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+            <div style='height: 50px;'>
+              <FileLoader 
+                :typeGetFile='"getfile"'
+                @unmount='file_unmount'/>
+              </div>
             </div>
-            <AddFile 
-              :parametrs='docFiles' 
-              :typeGetFile='"getfile"'
-              v-if="isChangeFolderFile" 
-              @unmount='file_unmount'
-              :key='keyWhenModalGenerate'
-                />
-            </div>
-            <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
+            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px'>Технологический процес</h3>
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'
@@ -146,10 +141,11 @@
             <h3 class="link_h3">История изменений</h3>
           </div>
         </div>
-        <div class="btn-control out-btn-control control-save" >
-          <button class="btn-status"
-                  @click='exit'
-                  >Отменить</button>
+        <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.cbedAssets.writeSomeone" >
+          <button 
+            class="btn-status"
+            @click='exit'
+            >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" @click='saveDetal'>Сохранить</button>
         </div>
@@ -204,11 +200,12 @@
             <th>ЕИ</th>
             <th>Значение</th>
           </tr>
-          <tr class='tr_haracteristic td-row' 
-              v-for='(har, inx) in obj.haracteriatic' 
-              :key='har'
-              @click='selectHaracteristic = {har, inx}'
-              >
+          <tr 
+            class='tr_haracteristic td-row' 
+            v-for='(har, inx) in obj.haracteriatic' 
+            :key='har'
+            @click='selectHaracteristic = {har, inx}'
+            >
             <td>
               <input 
                 type="text" 
@@ -256,17 +253,14 @@
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue'
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
-import TechProcess from '@/components/basedetal/tech-process-modal.vue'
-import { random } from 'lodash'
-import { mapActions, mapMutations, mapGetters } from 'vuex'
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue'
-import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue'
-
-
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import { random } from 'lodash';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
+import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 export default {
   data() {
     return {
@@ -284,8 +278,6 @@ export default {
           
       },
       docFiles: [],
-      keyWhenModalGenerate: random(10, 3e2),
-      isChangeFolderFile: false,
       formData: null,
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
@@ -320,9 +312,8 @@ export default {
       generateKeyCbed: random(1, 999)
     }
   },
-  computed: mapGetters(['getUsers']),
+  computed: mapGetters(['getUsers', 'getRoleAssets']),
   components: {
-    AddFile, 
     ModalBaseMaterial, 
     TechProcess, 
     InformFolder, 
@@ -380,7 +371,6 @@ export default {
       showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
 
       this.createNewCbEd(this.formData)
-
       this.deleteStorageData()
       setTimeout(() =>  this.$router.push('/cbed'), 3000)
     },
@@ -401,13 +391,6 @@ export default {
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
     },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 23e4)
-      this.isChangeFolderFile = true
-    },
     file_unmount(e) { 
       if(!e) 
         return 0
@@ -415,10 +398,10 @@ export default {
     },
     unmount_material(mat) {
       if(this.instanMaterial == 2) {
-          this.listPokDet = mat.materialList
+        this.listPokDet = mat.materialList
       }
       if(this.instanMaterial == 3) {
-          this.materialList = mat.materialList
+        this.materialList = mat.materialList
       }
     },
     changeSelected() {

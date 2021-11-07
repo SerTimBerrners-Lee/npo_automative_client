@@ -98,29 +98,35 @@
         </div>
       </div>
     </div>
-        <div class="edit-save-block block">
-          <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
-          <button class="btn-status btn-black" @click="addInstrument">Сохранить</button>
-        </div>
-        <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="showFile" 
-            @unmount='openFile'
-            :key='keyWhenModalGenerateFileOpen'
-        />
+    <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.instrumentAssets.writeSomeone">
+      <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
+      <button class="btn-status btn-black" @click="addInstrument">Сохранить</button>
+    </div>
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="showFile" 
+      @unmount='openFile'
+      :key='keyWhenModalGenerateFileOpen'
+    />
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
+    />
+    <Loader v-if='loader' />
   </div>
 </template>
-
-
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
+import AddFile from '@/components/filebase/addfile.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
-import { random }  from 'lodash'
-import { isEmpty }  from 'lodash'
-
+import { isEmpty, random }  from 'lodash';
+import InformFolder from '@/components/InformFolder.vue';
+import { showMessage } from '@/js/';
 export default {
   data() {
     return {
@@ -147,22 +153,36 @@ export default {
         minOstatok: '',
         description: '',
         id: null
-      }
+      },
+
+      loader: false,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
     }
   },
   updated() {
     if(isEmpty(this.getOneNameInstrument))
       this.$router.push('/basetools')
   },
-  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getOneNameInstrument']),
-  components: {TableMaterial, AddFile, OpensFile, ListProvider},
+  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getOneNameInstrument', 'getRoleAssets']),
+  components: {TableMaterial, AddFile, OpensFile, ListProvider, InformFolder},
   methods: {
     addInstrument() {
-      if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
-          return 0
+      if(this.$route.params.copy == 'false' && !this.obj.id)
+        return 0
+      console.log(this.$route.params.copy )
+      if(this.$route.params.copy != 'false' && !this.PTInstrument)
+        return showMessage('', 'Выберите Подтип', 'w', this)
+      if(this.$route.params.copy != 'false' && !this.TInstrument)
+        return showMessage('', 'Выберите тип', 'w', this)
+      if(this.obj.name.length < 3)
+        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this)
       
       if(!this.formData) 
-          this.formData = new FormData()
+        this.formData = new FormData()
       
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
@@ -272,9 +292,11 @@ export default {
     },
   },
   async mounted() {
-    this.getAllEdizm()
-    this.checkedUpdate()
-    // добавлять документы и удалять их по желанию
+    this.loader = true
+    await this.getAllEdizm()
+    await this.checkedUpdate()
+
+    this.loader = false
   }
 }
 </script>
@@ -296,7 +318,7 @@ export default {
   margin-left: 5px;
 }
 .name_p input {
-  width: 70%;
+  width: 370px;
 }
 .block_name {
   width: 1200px;

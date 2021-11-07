@@ -25,403 +25,771 @@
     </div>
     <div class="cont-role-user" v-if='selectRole'>
       <div>
-          <h3>Доступные разделы</h3>
-          <div class="checkboxing-stil">
-              <span>Все: </span>
-              <div>
-                  <div class="button r button-3">
-                      <input 
-                          type="checkbox" 
-                          @change="allRasdel"
-                          v-model="allChange"
-                          class="checkbox" >
-                      <div class="knobs"></div>
-                      <div class="layer"></div>
-                  </div>
-              </div>
+        <h3>Доступные разделы</h3>
+        <div class="checkboxing-stil">
+          <span>Все: </span>
+          <div>
+            <div class="button r button-3">
+              <input 
+                  type="checkbox" 
+                  @change="allRasdel"
+                  v-model="allChange"
+                  class="checkbox" >
+              <div class="knobs"></div>
+              <div class="layer"></div>
+            </div>
           </div>
-          <div class="checkboxing-stil">
-              <span>Продукция: </span>
-              <div>
-                  <div class="button r button-3">
-                      <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.product = !selectRole.assets.product"
-                          :checked='selectRole.assets.product'>
-                      <div class="knobs"></div>
-                      <div class="layer"></div>
-                  </div>
-              </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Продукция: </span>
+            <div>
+                <div class="button r button-3">
+                    <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.product = !selectRole.assets.product"
+                        :checked='selectRole.assets.product'>
+                    <div class="knobs"></div>
+                    <div class="layer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Результаты работы: </span>
+            <div>
+                <div class="button r button-3">
+                    <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.workResult = !selectRole.assets.workResult"
+                        :checked='selectRole.assets.workResult'>
+                    <div class="knobs"></div>
+                    <div class="layer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Библиотека: </span>
+            <div>
+                <div class="button r button-3">
+                    <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.linrary = !selectRole.assets.linrary"
+                        :checked='selectRole.assets.linrary'>
+                    <div class="knobs"></div>
+                    <div class="layer"></div>
+                </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Задачи: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.issue = !selectRole.assets.issue"
+                        :checked='selectRole.assets.issue'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База сборочных едениц: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseCbed = !selectRole.assets.baseCbed"
+                        :checked='selectRole.assets.baseCbed'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База деталей: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseDetal = !selectRole.assets.baseDetal"
+                        :checked='selectRole.assets.baseDetal'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База материалов: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseMaterial = !selectRole.assets.baseMaterial"
+                        :checked='selectRole.assets.baseMaterial'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База инстр. и оснастки: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseTools = !selectRole.assets.baseTools"
+                        :checked='selectRole.assets.baseTools'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База оборудования: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseEquipment = !selectRole.assets.baseEquipment"
+                        :checked='selectRole.assets.baseEquipment'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База непр. техн. и инв.: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseTech = !selectRole.assets.baseTech"
+                        :checked='selectRole.assets.baseTech'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База поставщиков: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseProvider = !selectRole.assets.baseProvider"
+                        :checked='selectRole.assets.baseProvider'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>База покупателей: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.baseBuyer = !selectRole.assets.baseBuyer"
+                        :checked='selectRole.assets.baseBuyer'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>База файлов: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.baseFile = !selectRole.assets.baseFile"
+              :checked='selectRole.assets.baseFile'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
           </div>
-          <div class="checkboxing-stil">
-              <span>Результаты работы: </span>
-              <div>
-                  <div class="button r button-3">
-                      <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.workResult = !selectRole.assets.workResult"
-                          :checked='selectRole.assets.workResult'>
-                      <div class="knobs"></div>
-                      <div class="layer"></div>
-                  </div>
-              </div>
           </div>
-          <div class="checkboxing-stil">
-              <span>Библиотека: </span>
-              <div>
-                  <div class="button r button-3">
-                      <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.linrary = !selectRole.assets.linrary"
-                          :checked='selectRole.assets.linrary'>
-                      <div class="knobs"></div>
-                      <div class="layer"></div>
-                  </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Задачи: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.issue = !selectRole.assets.issue"
-                          :checked='selectRole.assets.issue'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База сборочных едениц: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseCbed = !selectRole.assets.baseCbed"
-                          :checked='selectRole.assets.baseCbed'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База деталей: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseDetal = !selectRole.assets.baseDetal"
-                          :checked='selectRole.assets.baseDetal'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База материалов: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseMaterial = !selectRole.assets.baseMaterial"
-                          :checked='selectRole.assets.baseMaterial'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База инстр. и оснастки: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseTools = !selectRole.assets.baseTools"
-                          :checked='selectRole.assets.baseTools'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База оборудования: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseEquipment = !selectRole.assets.baseEquipment"
-                          :checked='selectRole.assets.baseEquipment'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База непр. техн. и инв.: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseTech = !selectRole.assets.baseTech"
-                          :checked='selectRole.assets.baseTech'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База поставщиков: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseProvider = !selectRole.assets.baseProvider"
-                          :checked='selectRole.assets.baseProvider'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База покупателей: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseBuyer = !selectRole.assets.baseBuyer"
-                          :checked='selectRole.assets.baseBuyer'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>База файлов: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.baseFile = !selectRole.assets.baseFile"
-                          :checked='selectRole.assets.baseFile'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Задачи на отгрузку: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.issueShipments = !selectRole.assets.issueShipments"
-                          :checked='selectRole.assets.issueShipments'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Склад: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.sclad = !selectRole.assets.sclad"
-                          :checked='selectRole.assets.sclad'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Металлообработка: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                      type="checkbox" 
-                      class="checkbox" 
-                      @change="selectRole.assets.metalloworking = !selectRole.assets.metalloworking"
-                      :checked='selectRole.assets.metalloworking'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Сборка: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.assembly = !selectRole.assets.assembly"
-                          :checked='selectRole.assets.assembly'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Брак: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.brak = !selectRole.assets.brak"
-                          :checked='selectRole.assets.brak'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Отходы: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.trash = !selectRole.assets.trash"
-                          :checked='selectRole.assets.trash'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Списание: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.writeOff = !selectRole.assets.writeOff"
-                          :checked='selectRole.assets.writeOff'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Отчеты: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.raport = !selectRole.assets.raport"
-                          :checked='selectRole.assets.raport'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Рекламация: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.complaint = !selectRole.assets.complaint"
-                          :checked='selectRole.assets.complaint'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Архив: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                      type="checkbox" 
-                      class="checkbox" 
-                      @change="selectRole.assets.archive = !selectRole.assets.archive"
-                      :checked='selectRole.assets.archive'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
-          <div class="checkboxing-stil">
-              <span>Запасной: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.spare = !selectRole.assets.spare"
-                          :checked='selectRole.assets.spare'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
-          </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Задачи на отгрузку: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.issueShipments = !selectRole.assets.issueShipments"
+                        :checked='selectRole.assets.issueShipments'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Склад: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.sclad = !selectRole.assets.sclad"
+                        :checked='selectRole.assets.sclad'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Металлообработка: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                    type="checkbox" 
+                    class="checkbox" 
+                    @change="selectRole.assets.metalloworking = !selectRole.assets.metalloworking"
+                    :checked='selectRole.assets.metalloworking'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Сборка: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.assembly = !selectRole.assets.assembly"
+                        :checked='selectRole.assets.assembly'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Брак: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.brak = !selectRole.assets.brak"
+                        :checked='selectRole.assets.brak'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Отходы: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.trash = !selectRole.assets.trash"
+                        :checked='selectRole.assets.trash'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Списание: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.writeOff = !selectRole.assets.writeOff"
+                        :checked='selectRole.assets.writeOff'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Отчеты: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.raport = !selectRole.assets.raport"
+                        :checked='selectRole.assets.raport'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Рекламация: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.complaint = !selectRole.assets.complaint"
+                        :checked='selectRole.assets.complaint'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Архив: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                    type="checkbox" 
+                    class="checkbox" 
+                    @change="selectRole.assets.archive = !selectRole.assets.archive"
+                    :checked='selectRole.assets.archive'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
+        <div class="checkboxing-stil">
+            <span>Запасной: </span>
+            <div>
+                <div class="button r button-3">
+                <input 
+                        type="checkbox" 
+                        class="checkbox" 
+                        @change="selectRole.assets.spare = !selectRole.assets.spare"
+                        :checked='selectRole.assets.spare'>
+                <div class="knobs"></div>
+                <div class="layer"></div>
+            </div>
+            </div>
+        </div>
       </div>
-      <!-- <div>
-          <h3>Продукция НПО Автомотив</h3>
-          <div class="checkboxing-stil">
-              <span>Просмотр: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                      type="checkbox" 
-                      class="checkbox" 
-                      @change="selectRole.assets.productAssets.read = !selectRole.assets.productAssets.read"
-                      :checked='selectRole.assets.productAssets.read'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
+      <div>
+        <h3>Продукция НПО Автомотив</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.read = !selectRole.assets.productAssets.read"
+              :checked='selectRole.assets.productAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
           </div>
-          <div class="checkboxing-stil">
-              <span>Редактировать свое: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.productAssets.writeYour = !selectRole.assets.productAssets.writeYour"
-                          :checked='selectRole.assets.productAssets.writeYour'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
           </div>
-          <div class="checkboxing-stil">
-              <span>Редактировать других: </span>
-              <div>
-                  <div class="button r button-3">
-                  <input 
-                          type="checkbox" 
-                          class="checkbox" 
-                          @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
-                          :checked='selectRole.assets.productAssets.writeSomeone'>
-                  <div class="knobs"></div>
-                  <div class="layer"></div>
-              </div>
-              </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
           </div>
-      </div> -->
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+      <div>
+        <h3>База Сборочных Едениц</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.cbedAssets.read = !selectRole.assets.cbedAssets.read"
+              :checked='selectRole.assets.cbedAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.cbedAssets.writeSomeone = !selectRole.assets.cbedAssets.writeSomeone"
+              :checked='selectRole.assets.cbedAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div>
+        <h3>База Деталей</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.detalAssets.read = !selectRole.assets.detalAssets.read"
+              :checked='selectRole.assets.detalAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.detalAssets.writeSomeone = !selectRole.assets.detalAssets.writeSomeone"
+              :checked='selectRole.assets.detalAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div>
+        <h3>База Материалов</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.materialAssets.read = !selectRole.assets.materialAssets.read"
+              :checked='selectRole.assets.materialAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.materialAssets.writeSomeone = !selectRole.assets.materialAssets.writeSomeone"
+              :checked='selectRole.assets.materialAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div>
+        <h3>База Оборудования</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.equipmentAssets.read = !selectRole.assets.equipmentAssets.read"
+              :checked='selectRole.assets.equipmentAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.equipmentAssets.writeSomeone = !selectRole.assets.equipmentAssets.writeSomeone"
+              :checked='selectRole.assets.equipmentAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div>
+        <h3>База Инструмента</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.instrumentAssets.read = !selectRole.assets.instrumentAssets.read"
+              :checked='selectRole.assets.instrumentAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.instrumentAssets.writeSomeone = !selectRole.assets.instrumentAssets.writeSomeone"
+              :checked='selectRole.assets.instrumentAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div>
+        <h3>База Поставщиков</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.providerAssets.read = !selectRole.assets.providerAssets.read"
+              :checked='selectRole.assets.providerAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.providerAssets.writeSomeone = !selectRole.assets.providerAssets.writeSomeone"
+              :checked='selectRole.assets.providerAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div>
+        <h3>База Покупателей</h3>
+        <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.buyerAssets.read = !selectRole.assets.buyerAssets.read"
+              :checked='selectRole.assets.buyerAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.buyerAssets.writeSomeone = !selectRole.assets.buyerAssets.writeSomeone"
+              :checked='selectRole.assets.buyerAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
+      <div>
+        <h3>База Файлов</h3>
+        <!-- <div class="checkboxing-stil">
+          <span>Просмотр: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.basefileAssets.read = !selectRole.assets.basefileAssets.read"
+              :checked='selectRole.assets.basefileAssets.read'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+        <div class="checkboxing-stil">
+          <span>Редактирование: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.basefileAssets.writeSomeone = !selectRole.assets.basefileAssets.writeSomeone"
+              :checked='selectRole.assets.basefileAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div>
+        <!-- <div class="checkboxing-stil">
+          <span>Редактировать других: </span>
+          <div>
+            <div class="button r button-3">
+            <input 
+              type="checkbox" 
+              class="checkbox" 
+              @change="selectRole.assets.productAssets.writeSomeone = !selectRole.assets.productAssets.writeSomeone"
+              :checked='selectRole.assets.productAssets.writeSomeone'>
+            <div class="knobs"></div>
+            <div class="layer"></div>
+          </div>
+          </div>
+        </div> -->
+      </div>
+
       <div>
           <h3>Сотрудники</h3>
           <div class="checkboxing-stil">
@@ -945,10 +1313,9 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
+    <Loader v-if='loader' />
   </div>
 </template>
-
-
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
@@ -965,6 +1332,8 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
+
+      loader: false
     }
   },
   computed: mapGetters(['allRoles', 'getRoleAssets']),
@@ -1002,7 +1371,6 @@ export default {
       Object.keys(this.selectRole.assets).forEach((e) => {
         if(this.selectRole.assets[e] == true 
           || this.selectRole.assets[e] == false) {
-
           this.selectRole.assets[e] = this.allChange
         }
       })
@@ -1011,7 +1379,9 @@ export default {
 
   },
   async mounted() {
-    this.fetchRoles();
+    this.loader = true
+    await this.fetchRoles()
+    this.loader = false
   }
 }
 </script>

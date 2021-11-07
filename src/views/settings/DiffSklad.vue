@@ -1,41 +1,41 @@
 <template>
-    <div>
-        <h3>10. Настройки для отображения</h3>
-        <div class="block">
-            <div>
-                <span>Минимальный остаток: </span>
-                <p>
-                    <input type="text" 
-                        v-model="minRemainder"
-                        @keyup="update"
-                    >
-                    <span>мес. потребление</span> 
-                </p>
-            </div>
-            <div>
-                <span>Рекомендуемый остаток: </span>
-                <p>
-                    <input type="text"  
-                        v-model="recommendedRemainder"
-                        @keyup="update"
-                    >
-                    <span>мес. потребление</span> 
-                </p>
-            </div>
-        </div>
-           <div class="btn-control out-btn-control" 
-                 v-if='updateDeficit && getRoleAssets && getRoleAssets.assets.settingsAssets.edit' style='margin-top: 30px;'>
-                <button class="btn-status btn-black" 
-                        style="height: 0px;" 
-                        @click='setUpdate' >
-                        Обновить значения</button>
-            </div>
+  <div>
+    <h3>10. Настройки для отображения</h3>
+    <div class="block">
+      <div>
+        <span>Минимальный остаток: </span>
+        <p>
+          <input type="text" 
+            v-model="minRemainder"
+            @keyup="update"
+          >
+          <span>мес. потребление</span> 
+        </p>
+      </div>
+      <div>
+        <span>Рекомендуемый остаток: </span>
+        <p>
+          <input type="text"  
+            v-model="recommendedRemainder"
+            @keyup="update"
+          >
+          <span>мес. потребление</span> 
+        </p>
+      </div>
     </div>
+      <div 
+        class="btn-control out-btn-control" 
+        v-if='updateDeficit && getRoleAssets && getRoleAssets.assets.settingsAssets.edit' style='margin-top: 30px;'>
+        <button 
+          class="btn-status btn-black" 
+          style="height: 0px;" 
+          @click='setUpdate' >
+          Обновить значения</button>
+      </div>
+  </div>
 </template>
-
 <script>
-
-import { mapGetters, mapActions } from 'vuex'
+import { mapGetters, mapActions } from 'vuex';
 export default {
   data() {
     return {

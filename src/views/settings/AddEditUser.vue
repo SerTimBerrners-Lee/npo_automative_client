@@ -103,11 +103,13 @@
               <td>{{ file.name }}</td>
             </tr>
           </table>
-          <div class="pointer-files-to-add">
-            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+          <div style='height: 50px;'>
+            <FileLoader 
+              :typeGetFile='"getfile"'
+              :return_form_data='"false"'
+              @unmount='file_unmount'/>
           </div>
-          <div class="btn-control">
+          <div class="btn-control" style='margin-top: 100px;'>
             <button class="btn-small"
               @click='delitFilesDoc'
               v-if="$route.params.title == 'edit'">Удалить</button>
@@ -138,11 +140,11 @@
     </div>
 
     <div class="edit-save-block block">
-        <button class="btn-status" 
-            v-if="$route.params.title == 'edit'"
-            @click='bannedUser'>В архив</button>
-        <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
-        <button class="btn-status btn-black" @click="saveData">Сохранить</button>
+      <button class="btn-status" 
+        v-if="$route.params.title == 'edit'"
+        @click='bannedUser'>В архив</button>
+      <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
+      <button class="btn-status btn-black" @click="saveData">Сохранить</button>
     </div>
       <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='showInformPanel' />
   <OpensFile 
@@ -204,6 +206,7 @@ export default ({
 
       itemFiles: null,
       showFile: false,
+      formData: new FormData(),
       keyWhenModalGenerateFileOpen: random(10, 999),
 
       fileArrModal: [],
@@ -228,7 +231,14 @@ computed: {
       'updateUser',
       'deleteFIleForUser'
     ]),
+    file_unmount(val) {
+      if(!val) return false
 
+      this.formData = val.formData
+      for(let data of this.formData.getAll('document')) {
+        this.docFiles.push(data)
+      }
+    },
     saveData() {
       if(this.object.tabel.length > 4)
         return showMessage('', 'Тебель не может быть больше 4-х символов', 'w', this)
@@ -241,25 +251,19 @@ computed: {
       if(!Number(this.object.tabel))
         return showMessage('', 'Тебель должен быть числом', 'e', this)
       this.saveContact()
-      const formData = new FormData()
+
       for (let dat in this.object) {
-        formData.append(dat, this.object[dat])
+        this.formData.append(dat, this.object[dat])
       }
       if(this.fileFolder)
-        formData.append('image', this.fileFolder)
-
-      if(this.docFiles.length > 0) {
-        for(let file of this.docFiles) {
-          formData.append('document', file)
-        }
-      }
+        this.formData.append('image', this.fileFolder)
 
       if(this.fileArrModal.length)
-        formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
+        this.formData.append('fileArrModal', JSON.stringify(this.fileArrModal))
 
       if(this.$route.params.title == 'edit') {
-        formData.append('id', this.id)
-        this.updateUser(formData).then(res => {
+        this.formData.append('id', this.id)
+        this.updateUser(this.formData).then(res => {
           setTimeout(() => this.$router.push('/employee'), 4000)
           if(res.ok)
             return showMessage('', 'Данные переданны для обработки на сервер', 'w', this)
@@ -269,7 +273,7 @@ computed: {
         return 0;
       }
 
-      this.saveUser(formData).then(m => {
+      this.saveUser(this.formData).then(m => {
         if(m.type == 'error')
           return showMessage('Ошибка', m.message, 'e', this)
         if(m.type == 'success') {
@@ -308,11 +312,6 @@ computed: {
         this.docFiles = this.docFiles.filter(f => f.id != this.itemFiles.id)
         this.deleteFIleForUser({userId: this.id, fileId: this.itemFiles.id})
       }
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
     },
     bannedUser() {
       if(isEmpty(this.getSelectedUser)) 

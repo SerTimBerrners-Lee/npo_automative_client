@@ -93,11 +93,12 @@
                   <th>ЕИ</th>
                   <th>Значение</th>
                 </tr>
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(har, inx) in obj.haracteriatic' 
-                    :key='har'
-                    @click='selectHaracteristicFunction(har, inx)'
-                    >
+                <tr 
+                  class='tr_haracteristic td-row' 
+                  v-for='(har, inx) in obj.haracteriatic' 
+                  :key='har'
+                  @click='selectHaracteristicFunction(har, inx)'
+                  >
                   <td>
                     <input 
                       type="text" 
@@ -198,41 +199,37 @@
             <h3 class="link_h3">Принадлежность</h3>
           </div>
         </div>
-        <div class="btn-control out-btn-control control-save" >
-          <button class="btn-status"
-                  @click='exit'
-                  >Отменить</button>
+        <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
+          <button 
+            class="btn-status"
+            @click='exit'
+             >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" @click='saveDetal'>Сохранить</button>
           </div>
       </div>
 
     <div class="right_content">
-       <div>
-          <h3>Документы</h3>
-          <div class="pointer-files-to-add">
-            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-          </div>
-          <AddFile :parametrs='docFiles' 
-                :typeGetFile='"getfile"'
-                v-if="isChangeFolderFile" 
-                @unmount='file_unmount'
-                :key='keyWhenModalGenerate'
-            />
+      <div>
+        <h3>Документы</h3>
+        <div style='height: 50px;'>
+          <FileLoader 
+            :typeGetFile='"getfile"'
+            @unmount='file_unmount'/>
         </div>
+      </div>
     </div>
-    <InformFolder  :title='titleMessage'
-        :message = 'message'
-        :type = 'type'
-        v-if='showInformPanel'
-        :key='keyInformTip'
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
     />
   </div>
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import TechProcess from './tech-process-modal.vue';
 import { random, padStart, padEnd } from 'lodash';
@@ -260,9 +257,6 @@ export default {
         massZag: '',
         trash: ''
       },
-      docFiles: [],
-      keyWhenModalGenerate: random(10, 3e2),
-      isChangeFolderFile: false,
       formData: null,
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
@@ -288,8 +282,8 @@ export default {
   unmounted() {
     this.deleteStorageData()
   },
-  computed: mapGetters(['getUsers']),
-  components: {AddFile, ModalBaseMaterial, TechProcess, InformFolder},
+  computed: mapGetters(['getUsers', 'getRoleAssets']),
+  components: {ModalBaseMaterial, TechProcess, InformFolder},
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
@@ -352,13 +346,6 @@ export default {
           })
         }
       }
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 23e4)
-      this.isChangeFolderFile = true
     },
     file_unmount(e) { 
       if(!e) 

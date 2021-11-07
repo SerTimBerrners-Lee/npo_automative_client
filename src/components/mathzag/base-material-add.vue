@@ -138,23 +138,30 @@
           <div class="btn-control" style="width: 84%;">
             <button class="btn-small btn-add" @click="addProvider">Добавить из базы</button>
           </div>
-      <div class="pointer-files-to-add edit-save-material-file-folder">
-        <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-        <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-      </div>
-      <AddFile 
-        :parametrs='docFiles' 
-        :typeGetFile='"getfile"'
-        v-if="isChangeFolderFile" 
-        @unmount='file_unmount'
-        :key='keyWhenModalGenerate'
-          />
+         <div style='height: 50px; width:85%;'>
+            <FileLoader 
+              :typeGetFile='"getfile"'
+              @unmount='file_unmount'/>
+          </div>
+          <table style='width: 85%; margin-top: 40px;' v-if='arrFileGet.length'>
+            <tr>
+              <th >Файл</th>
+            </tr>
+            <tr 
+              v-for='doc in  arrFileGet' 
+              :key='doc'
+              class='td-row'
+              @click='setDocs(doc)'
+              >
+              <td>{{ doc.name }}</td>
+            </tr>
+          </table>
         </div>
       </div>
     </div>
     <div class="content-right">
     </div>
-    <div class="edit-save-block block">
+    <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.materialAssets.writeSomeone" >
       <button class="btn-status" @click='$router.push("/basematerial")'>Назад</button>
       <button class="btn-status" @click='$router.push("/basematerial")'>Отменить</button>
       <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type != 'edit'">Сохранить</button>
@@ -172,17 +179,22 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="itemFiles" 
+      :key='keyWhenModalGenerateFileOpen'
+    />
   </div>
 </template>
 
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { random, isEmpty } from 'lodash';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 
 export default {
   data() {
@@ -190,15 +202,14 @@ export default {
       material: null,
       podMaterial: null,
       arrFileGet: [],
+      itemFiles: null, 
       nowFileType: '',
-      docFiles: [],
       formData: null,
-      isChangeFolderFile: false,
       showProvider: false,
       providers: [],
       providersId: [],
-      keyWhenModalGenerate: random(10, 3333),
-      keyWhenModalListProvider: random(10, 3333),
+      keyWhenModalListProvider: random(10, 999),
+      keyWhenModalGenerateFileOpen: random(1, 999),
       obj: {
         name: '',
         deliveryTime_select: 'Выберите тип ЕИ',
@@ -238,9 +249,17 @@ export default {
       click_short_t_pt: false
     }
   },
-  components: {TableMaterial, AddFile, ListProvider, InformFolder},
+  components: {TableMaterial, ListProvider, InformFolder, OpensFile},
   computed: {
-    ...mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial', 'allEdizm', 'getOnePPT', 'getLinkId']),
+    ...mapGetters([
+      'alltypeM', 
+      'allPodTypeM', 
+      'getOnePodMaterial', 
+      'allEdizm', 
+      'getOnePPT', 
+      'getLinkId', 
+      'getRoleAssets', 
+    ]),
   },  
   updated() {
     if(this.$route.params.type == 'edit' && !this.getOnePPT.id)
@@ -274,13 +293,6 @@ export default {
     file_unmount(e) { 
       if(!e) return 0
       this.formData = e.formData
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-          this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 3333)
-      this.isChangeFolderFile = true
     },
     addItem(id = null) {
       if(this.$route.params.type != 'edit')  {
@@ -460,8 +472,10 @@ export default {
           this.providers.forEach(provider => {
             this.providersId.push({id: provider.id})
           })
+      if(this.getOnePPT.documents) {
+        this.arrFileGet = this.getOnePPT.documents
       }
-      
+      }      
     },
     searchTypeM(val) {
       this.searchTypeMutation(val)
@@ -471,6 +485,10 @@ export default {
     },
     isEmptyForPug(obj) {
       return isEmpty(obj)
+    },
+    setDocs(doc) {
+      this.itemFiles = doc
+      this.keyWhenModalGenerateFileOpen = random(1, 999)
     }
   },
   async mounted() {

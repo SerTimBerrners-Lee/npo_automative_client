@@ -3,19 +3,21 @@
     <div>
       <h3> Редактировать оборудование </h3>
       <div class="block block_name">
-          <p class="name_p">
-            <span> Наименование: </span><input type="text" v-model.trim="obj.name">
-          </p>
-          <p class="name_p">
-            <span> Ответственный: </span>
-            <select class="select-small sle"  
-                    v-model='obj.responsible'>
-              <option v-for='user in getUsers' 
-                      :key='user' 
-                      :value='user.id'>{{ user.login }}</option>
-            </select> 
-          </p>
-        </div>
+        <p class="name_p">
+          <span> Наименование: </span><input type="text" v-model.trim="obj.name">
+        </p>
+        <p class="name_p">
+          <span> Ответственный: </span>
+          <select 
+            class="select-small sle"  
+            v-model='obj.responsible'>
+            <option 
+              v-for='user in getUsers' 
+              :key='user' 
+              :value='user.id'>{{ user.login }}</option>
+          </select> 
+        </p>
+      </div>
     </div>
     <div class="main_contents">
       <div class="left_content">
@@ -104,22 +106,30 @@
         <h3 @click="addInstrument" class="link_h3">Привязанный инструмент или оснастка</h3>
       </div>
     </div>
-        <div class="edit-save-block block">
-          <button class="btn-status" @click='$router.push("/baseequipment")'>Отменить</button>
-          <button class="btn-status btn-black" @click="saveEquipment">Сохранить</button>
-        </div>
-        <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="showFile" 
-            @unmount='openFile'
-            :key='keyWhenModalGenerateFileOpen'
-        />
-        <BaseTools 
-            :listInstrument='listInstrument'
-            :key='instrumentKey'
-            v-if='instrumentIsShow'
-            @unmount_instrument='unmount_instrument'
-          />
+    <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.equipmentAssets.writeSomeone">
+      <button class="btn-status" @click='$router.push("/baseequipment")'>Отменить</button>
+      <button class="btn-status btn-black" @click="saveEquipment">Сохранить</button>
+    </div>
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="showFile" 
+      @unmount='openFile'
+      :key='keyWhenModalGenerateFileOpen'
+    />
+    <BaseTools 
+      :listInstrument='listInstrument'
+      :key='instrumentKey'
+      v-if='instrumentIsShow'
+      @unmount_instrument='unmount_instrument'
+    />
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
+    />
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -127,13 +137,13 @@
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
+import AddFile from '@/components/filebase/addfile.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
-import { random }  from 'lodash'
-import { isEmpty }  from 'lodash'
+import { isEmpty, random }  from 'lodash';
+import { showMessage } from '@/js/';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
-
+import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return {
@@ -163,7 +173,14 @@ export default {
         responsible: '',
         id: null,
         instrumentIdList: []
-      }
+      },
+
+      loader: false,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
     }
   },
   updated() {
@@ -175,12 +192,19 @@ export default {
     'allEquipmentPType', 
     'allEdizm', 
     'equipment',
-    'getUsers']),
-  components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools},
+    'getUsers', 
+    'getRoleAssets']),
+  components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools, InformFolder},
   methods: {
     saveEquipment() {
-      if(this.$route.params.copy == 'false' && !this.obj.id || this.obj.name.length < 3)
+      if(this.$route.params.copy == 'false' && !this.obj.id)
         return 0
+      if(this.$route.params.copy != 'false' &&  !this.equipmentPT)
+        return showMessage('', 'Выберите Подтип', 'w', this)
+      if( this.$route.params.copy != 'false' && !this.equipmentT)
+        return showMessage('', 'Выберите тип', 'w', this)
+      if(this.obj.name.length < 3)
+        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this)
       
       if(!this.formData) 
         this.formData = new FormData()
@@ -241,7 +265,7 @@ export default {
     },
     checkedUpdate() {
       if(isEmpty(this.equipment)) 
-          return this.$router.push('/baseequipment')
+        return this.$router.push('/baseequipment')
                           
       if(this.equipment.nameInstrument)
         this.listInstrument = this.equipment.nameInstrument
@@ -266,11 +290,13 @@ export default {
         this.obj.responsible = this.equipment.user.id
       }
     },
-
-    // ADD FILE and SET INSTRUMENT TO TABLE
-    ...mapActions(['fetchAllEquipmentType', 'getAllEdizm', 
-    'updateEquipment', 'removeFileEquipment',
-    'getAllUsers', 'creqteEquipment']),
+    ...mapActions([
+      'fetchAllEquipmentType', 
+      'getAllEdizm', 
+      'updateEquipment', 
+      'removeFileEquipment',
+      'getAllUsers', 
+      'creqteEquipment']),
     ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById']),
     clickEquipment(eq) {
       this.equipmentT = eq
@@ -296,9 +322,11 @@ export default {
     }
   },
   async mounted() {
-    this.getAllEdizm()
-    this.checkedUpdate()
-    this.getAllUsers()
+    this.loader = true
+    await this.getAllEdizm()
+    await this.checkedUpdate()
+    await this.getAllUsers()
+    this.loader = false
 
   }
 }
@@ -307,8 +335,8 @@ export default {
 
 <style>
 .file_table {
-    width: 590px;
-    margin-left: 10px;   
+  width: 590px;
+  margin-left: 10px;   
 }
 .instr_select {
   width: 210px;
@@ -321,7 +349,7 @@ export default {
   margin-left: 5px;
 }
 .name_p input {
-  width: 70%;
+  width: 370px;
 }
 .block_name {
   width: 1200px;

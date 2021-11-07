@@ -238,6 +238,9 @@ export default {
 </script>
 
 <style scoped>
+.scroll-table {
+  width: 100%;
+}
 .table_rek{
   width: 420px;
 }

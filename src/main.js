@@ -6,6 +6,7 @@ import Unicon from 'vue-unicons'
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import Loader from '@/components/loader.vue';
 import MiniLoader from '@/components/mini-loader.vue';
+import FileLoader from '@/components/drag-drop-file.vue';
 import { uniTimes, 
         uniSetting, 
         uniUser, 
@@ -30,6 +31,7 @@ createApp(App)
     .component('MiniLoader', MiniLoader)
     .component('Calendar', Calendar)
     .component('DatePicker', DatePicker)
+    .component('FileLoader', FileLoader)
     .use(Unicon, {
         height: 32, 
         width: 32

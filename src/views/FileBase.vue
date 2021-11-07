@@ -34,26 +34,28 @@
             @dbPushFile='dbPushFile'
             @keySearch='keySearch'   />
         </div>
-        <div class="pointer-files-to-add">
-          <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-          <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+        <div v-if="getRoleAssets && getRoleAssets.assets.basefileAssets.writeSomeone">
+          <div style='height: 50px;'>
+            <FileLoader @unmount='unmount'/>
+          </div>
+          <div class="btn-control">
+            <select class="select-small" v-model='changeType' @change="changeTypeF">
+              <option value="Изменить тип">Изменить тип</option>
+              <option value="МД">Медиа (тип МД)</option>
+              <option value="КД">Конструкторская документация (тип КД)</option>
+              <option value="ЧЖ">Чертижи (тип ЧЖ)</option>
+              <option value="СД">Сопутствующие документы (тип СД)</option>
+              <option value="DXF">Резка листа (тип DXF)</option>
+            </select>
+            <button class="btn-small" @click='addingFileToDetal'>Присвоить к...</button>
+            <button class="btn-small">Редактировать</button>
+          </div>
+          <div class="btn-control">
+            <button class="btn-small" v-if='nowType == "banned"' @click='changeBanned'>Вернуть из архива</button>
+            <button class="btn-small" v-if='nowType != "banned"' @click='changeBanned'>В архив</button>
+          </div>
         </div>
-        <div class="btn-control">
-          <select class="select-small" v-model='changeType' @change="changeTypeF">
-            <option value="Изменить тип">Изменить тип</option>
-            <option value="МД">Медиа (тип МД)</option>
-            <option value="КД">Конструкторская документация (тип КД)</option>
-            <option value="ЧЖ">Чертижи (тип ЧЖ)</option>
-            <option value="СД">Сопутствующие документы (тип СД)</option>
-          </select>
-          <button class="btn-small" @click='addingFileToDetal'>Присвоить к...</button>
-          <button class="btn-small">Редактировать</button>
-        </div>
-        <div class="btn-control">
-          <button class="btn-small" v-if='nowType == "banned"' @click='changeBanned'>Вернуть из архива</button>
-          <button class="btn-small" v-if='nowType != "banned"' @click='changeBanned'>В архив</button>
-        </div>
-      </div>
+      </div> 
       <NodeTable 
         :key='nodeTableKey'
         v-if='itemFiles'
@@ -100,7 +102,6 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import { random }  from 'lodash';
 import NodeTable from '@/components/filebase/node-table.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
-
 export default {
   data() {
     return {
@@ -111,7 +112,7 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
-      typeDocs: ['МД', 'КД', 'ЧЖ', 'СД'],
+      typeDocs: ['МД', 'КД', 'ЧЖ', 'СД', 'DXF'],
       targetLink: null,
       nowType: 'all',
       arrFileGet: [],
@@ -120,8 +121,8 @@ export default {
       searchFileType: '',
       docFiles: [],
       isChangeFolderFile: false,
-      keyWhenModalGenerate: random(10, 38444),
-      keyWhenModalGenerateFileOpen: random(10, 38444),
+      keyWhenModalGenerate: random(10, 999),
+      keyWhenModalGenerateFileOpen: random(10, 999),
       showModalOpenFile: false,
 
       nodeTableKey: random(10, 381e4),
@@ -132,7 +133,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['allFiles', 'banFiles']),
+    ...mapGetters(['allFiles', 'banFiles', 'getRoleAssets']),
   },
   components: {InformFolder, Tables, AddFile, OpensFile, NodeTable, BaseDetalModal},
   methods: {
@@ -143,18 +144,19 @@ export default {
     },
     getFilesToClick(file) {
       this.fetchFileById(file.id).then((res) => {
-        this.itemFiles = res
+        this.itemFiles = {...res, type_open_modal: 'edit'}
         this.nodeTableKey = random(5, 999)
       })
+      console.log(this.showModalOpenFile)
     },
     dbPushFile(file) {
       if(this.itemFiles) {
         this.keyWhenModalGenerateFileOpen = random(5, 999)
         this.showModalOpenFile = true
-      }else {
+      } else {
         this.fetchFileById(file.id).then((res) => {
           if(res) {
-            this.itemFiles = res
+            this.itemFiles = {...res, type_open_modal: 'edit'}
             this.keyWhenModalGenerateFileOpen = random(5, 999)
             this.showModalOpenFile = true
           } 
@@ -237,7 +239,10 @@ export default {
           break;
         case 'dxf':
           this.nowType = 'typesFile'
-          this.arrFileGet = this.arrFileGet.filter(f => f.name.split('.')[f.name.split('.').length - 1].toLowerCase() == 'dxf')
+          for(let f of this.allFiles) {
+            if(f.name.split('.')[f.name.split('.').length - 1].toLowerCase() == 'dxf' || f.type == 'DXF') 
+              this.arrFileGet.push(f)
+          }
           break;
         case 'NonType':
           this.nowType = 'typesFile'
@@ -257,13 +262,6 @@ export default {
       showMessage('', res.message, res.type, this)
       this.fetchFiles()
       this.getType('all')
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 1111)
-      this.isChangeFolderFile = true
     },
     responsDetal(detal) {
       if(!detal || !this.itemFiles.id) return 0 //
@@ -315,16 +313,7 @@ export default {
   width: 414px;
   margin-left: 10px;
 }
-.pointer-files-to-add {
-  height: 120px;
-  display: flex;
-  width: 100%;
-}
-.pointer-files-to-add label {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  cursor: pointer;
+.btn-control {
+  margin-top: 30px;
 }
 </style>

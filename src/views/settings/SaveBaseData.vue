@@ -1,67 +1,177 @@
 <template>
   <div>
     <h3>16. Сохранение баз данных, настроек, истории действий</h3>
-    <div class="block">
-      <span class="span_db">Делать резервную копию базы данных каждые: </span>
-      <img style='position: fixed ;
-        z-index: 12;
-        width: 700px;
-        margin: 0 auto;
-        left: 0;
-        right: 0;' 
-        src="@/assets/img/unnamed.jpg" 
-        alt="На реставрации ">
-      <select name="save_time_db" id="db_save">
-        <option>12 ч</option>
-        <option>24 ч</option>
-        <option>2 д</option>
-        <option>4 д</option>
-        <option>6 д</option>
-        <option>8 д</option>
-        <option>12 д</option>
-        <option>Никогда</option>
-      </select>
-      <br>
-      <button class="btn blues">Генерировать новую копию сейчас</button>
-    </div>
-    <div class="db-date-block">
-      <span class="span_db">Список резервных копий:</span>
-      <div class="card g4">
-        <div>
-          <img class="img-to-card" src="@/assets/img/db_photo.webp" alt="db">
-          <span class="date-span-db">
-              30.08.2021
-          </span>
-        </div>
-        <div  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+    <div class='main_db'>
+      <div class="block">
+        <span class="span_db">Делать резервную копию базы данных каждые: </span>
+        <select name="save_time_db" id="db_save">
+          <option>12 ч</option>
+          <option>24 ч</option>
+          <option>2 д</option>
+          <option>4 д</option>
+          <option>6 д</option>
+          <option>8 д</option>
+          <option>12 д</option>
+          <option>Никогда</option>
+        </select>
+        <br>
+        <button class="btn blues" @click='pushNewDB'>Генерировать новую копию сейчас</button>
+
+        <div class="card g4" v-if='select_db'>
           <div>
-              Запустить 
+            <img class="img-to-card" src="@/assets/img/db_photo.webp" alt="db">
+            <span class="date-span-db">
+              {{ select_db.date }}
+            </span>
           </div>
-          <div>
+          <div  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+            <div>
+              Запустить 
+            </div>
+            <div class='delete' @click='dropDB'>
               Уничтожить 
+            </div>
           </div>
         </div>
       </div>
+      <div class="db-date-block">
+        <span class="span_db">Список резервных копий: {{ getDB.length }} копий.</span>
+        <div class="scroll-table">
+          <table>
+            <tr>
+              <th>№</th>
+              <th>Дата и Время</th>
+              <th>Полное название</th>
+              <th>Размер</th>
+            </tr>
+            <tr 
+              v-for='(db, inx) of getDB' 
+              :key="db"
+              class='td-row'
+              @click='setDB(db)'>
+              <td class='center'>{{ inx + 1 }}</td>
+              <td>{{ db.date }}</td>
+              <td>{{ db.name }}</td>
+              <td class='center'>{{ db.size }}</td>
+            </tr>
+          </table>
+        </div>
+      </div>
     </div>
+    <div class='main_db'>
+      <div class="block">
+        <span class="span_db">Бездействие пользователя макс.мин: </span>
+        <input type="number" min='1' v-model='inaction'>
+        <br>
+        <button class="btn blues" @click='saveInaction'>Сохранить</button>
+      </div>
+    </div>
+    <Loader v-if='loader' />
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
+    />
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import {mapGetters, mapActions} from 'vuex';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return{
+      select_db: null,
+      loader: false,
 
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
+
+      inaction: 0
     }
   },
-  computed: mapGetters(['getRoleAssets']),
+  components: {InformFolder},
+  computed: mapGetters(['getRoleAssets', 'getDB']),
+  methods: {
+    ...mapActions([
+      'fetchDB', 
+      'fetchAddDB', 
+      'fetchDropDB', 
+      'fetchInactionHors', 
+      'fetchChangeInaction'
+    ]),
+
+    fetchAllDump() {
+      this.fetchDB().then(() => this.loader = false)
+    },
+    pushNewDB() {
+      this.loader = true
+      this.fetchAddDB().then(res => {
+        if(res)
+          showMessage('', 'Резервная копия успешно сгенерированна', 's', this)
+          else showMessage('', 'Произошла ошибка на сервере', 'e', this)
+
+        this.fetchAllDump()
+      })
+    },
+    setDB(db) {
+      this.select_db = db
+    },
+    dropDB() {
+      if(!this.select_db)
+        return false; 
+      
+      this.fetchDropDB(this.select_db.name).then(res => {
+        if(res)
+          showMessage('', 'Резервная копия успешно удалена', 's', this)
+        this.select_db = null
+      })
+    },
+    saveInaction() {
+      this.fetchChangeInaction(this.inaction).then(res => {
+        if(res) 
+          showMessage('', 'Часы бездействия успешно обновлены', 's', this)
+          else showMessage('', 'Произошла ошибка при обновлении часов', 'e', this)
+      })
+    }
+  },
   async mounted() {
-    console.log(this.getRoleAssets)
+    this.loader = true
+    const res = await this.fetchInactionHors()
+    if(res) this.inaction = res.inaction
+    this.fetchAllDump()
   }
 }
 </script>
 
 <style scoped>
+.delete:hover {
+  background: rgba(172, 74, 74, 0.596);
+}
+.main_db {
+  display: flex;
+}
+input[type=number] {
+  width: 60px;;
+}
+.scroll-table {
+  width: 660px;
+}
+table {
+  width: 100%;
+}
+tr {
+  height: 20px;
+}
+.main_db div {
+  margin: 10px;
+}
 #db_save {
   margin-top: 20px; 
   border: 1px solid #d3d3d3;

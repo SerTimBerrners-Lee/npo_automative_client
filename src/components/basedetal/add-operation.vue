@@ -4,7 +4,6 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens">
       <h3>Добавление операции технологического процесса</h3>
-      
       <div class="block">
         <div class='title_p'>
           <span>Выберите операцию из списка: </span>
@@ -15,12 +14,11 @@
               :value='operation.id'>{{ operation.name }}</option>
           </select>
           <div>Подготовительно время, н.ч.:</div>
-          <input type="text" v-model='preTime'>
-          
+          <input type="number" v-model='preTime' > 
           <div>Вспомогательное время, н.ч.:</div>
-          <input type="text" v-model='helperTime'>
+          <input type="number" v-model='helperTime'>
           <div>Основное время, н.ч.:</div>
-          <input type="text" v-model='mainTime'>
+          <input type="number" v-model='mainTime'>
           <div>Общее число время, ч.:</div>
           <span class='gen_time'>{{Number(preTime)+Number(helperTime)+Number(mainTime)}}</span>
           <div></div>
@@ -119,52 +117,52 @@
         <div>
           <h3>Фото и видео</h3>
           <MediaSlider 
-                v-if='dataMedia' 
-                :static='true' 
-                :data='dataMedia' 
-                :key='randomDataMedia'
-                :width='"width: 31%;"'
-                :width_main='"width: 100%;"'
-                  />
+            v-if='dataMedia' 
+            :static='true' 
+            :data='dataMedia' 
+            :key='randomDataMedia'
+            :width='"width: 31%;"'
+            :width_main='"width: 100%;"'
+              />
         </div>
         <div>
           <h3>Документы</h3>
-              <table>
-                  <tr>
-                      <th>Файл</th>
-                  </tr>
-                  <tr 
-                    v-for='doc in formData ? formData.getAll("document") : []' 
-                    :key='doc'
-                    class='td-row'
-                    >
-                    <td>{{ doc.name }}</td>
-                  </tr>
-                  <tr 
-                    v-for='doc in documentsOperationList' 
-                    :key='doc'
-                    class='td-row'
-                    @click='setDocs(doc)'
-                    >
-                    <td>{{ doc.name }}</td>
-                  </tr>
-              </table>
-              <div class="btn-control" style='width: 100%;'>
-                  <button class="btn-small" @click='openDock'>Открыть</button>
-                  <button class="btn-small">Удалить</button>
-                  <button class="btn-small">Добавить из базы</button>
-              </div>
-              <div class="pointer-files-to-add" style='width: 100%;'>
-                <label for="docsFileSelectedOperation">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                <input id="docsFileSelectedOperation" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-              </div>
-              <AddFile 
-                :parametrs='docFiles' 
-                :typeGetFile='"getfile"'
-                v-if="isChangeFolderFile" 
-                @unmount='file_unmount'
-                :key='keyWhenModalGenerate'
-                  />
+          <table>
+            <tr>
+              <th>Файл</th>
+            </tr>
+            <tr 
+              v-for='doc in formData ? formData.getAll("document") : []' 
+              :key='doc'
+              class='td-row'
+              >
+              <td>{{ doc.name }}</td>
+            </tr>
+            <tr 
+              v-for='doc in documentsOperationList' 
+              :key='doc'
+              class='td-row'
+              @click='setDocs(doc)'
+              >
+              <td>{{ doc.name }}</td>
+            </tr>
+          </table>
+          <div class="btn-control" style='width: 100%;'>
+            <button class="btn-small" @click='openDock'>Открыть</button>
+            <button class="btn-small">Удалить</button>
+            <button class="btn-small">Добавить из базы</button>
+          </div>
+          <div class="pointer-files-to-add" style='width: 100%;'>
+            <label for="docsFileSelectedOperation">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
+            <input id="docsFileSelectedOperation" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+          </div>
+          <AddFile 
+            :parametrs='docFiles' 
+            :typeGetFile='"getfile"'
+            v-if="isChangeFolderFile" 
+            @unmount='file_unmount'
+            :key='keyWhenModalGenerate'
+              />
         </div>
         <div>
           <h3>Примечание</h3>
@@ -174,10 +172,11 @@
       </div>
 
       <div class="btn-control out-btn-control">
-          <button class="btn-status" @click='destroyModalF'>Отменить</button>
-          <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
-          <button class="btn-status btn-black" 
-                  style="height: 0px;" @click='saveOperation'>Сохранить</button>
+        <button class="btn-status" @click='destroyModalF'>Отменить</button>
+        <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
+        <button 
+          class="btn-status btn-black" 
+          style="height: 0px;" @click='saveOperation'>Сохранить</button>
       </div>
     </div>
   </div>
@@ -213,24 +212,18 @@
     v-if="showFile" 
     :key='keyWhenModalGenerateFileOpen'
   />
-
 </div> 
-
 </template>
-
 <script>
-
-import {random, isEmpty } from 'lodash'
-import AddFile from '@/components/filebase/addfile.vue'
+import {random, isEmpty } from 'lodash';
+import AddFile from '@/components/filebase/addfile.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
 import { mapActions, mapGetters } from 'vuex';
-import PATH_TO_SERVER from '@/js/path.js'
-import OpensFile from '@/components/filebase/openfile.vue'
-
+import PATH_TO_SERVER from '@/js/path.js';
+import OpensFile from '@/components/filebase/openfile.vue';
 export default {
-
   props: ['operation'],
   data() {
     return {
@@ -458,7 +451,7 @@ export default {
   width: 100%;
 }
 .title_p input {
-  width: 22px;
+  width: 60px;
   height: fit-content;
 }
 .title_p div {

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @click='alwas'>
     <div id="nav" v-if="getAuth">
         <HeadersNav @exit='exit' />
         <MenuItem />
@@ -22,7 +22,6 @@ import NavigationPanel from '@/components/navigation-panel';
 import Authorization from '@/views/Authorization.vue';
 import '@/assets/style/style.css'
 import { mapGetters, mapActions, mapMutations } from 'vuex'
-
 export default {
   name: 'App',
   components: {
@@ -33,15 +32,29 @@ export default {
   },
   data() {
     return {
-      avtorization: this.getAuth
+      avtorization: this.getAuth,
+      inaction: null,
+
+      id_inaction_interval: null
     }
   },
   computed: mapGetters(['getAuth']),
   methods: {
-    ...mapActions(['getUserById']),
+    ...mapActions([
+      'getUserById', 
+      'fetchInactionHors', 
+    ]),
     ...mapMutations(['updateAuth', 'setRoleAssets', 'unAuth']),
     exit() {
-      console.log(this.getAuth)
+      this.unAuth()
+      this.$router.push('/')
+    },
+    alwas() {
+      if(this.id_inaction_interval)
+        clearInterval(this.id_inaction_interval)
+      this.id_inaction_interval = setInterval(() => {
+          this.exit()
+      }, 60000 * this.inaction)
     }
   },
   async mounted() {
@@ -62,6 +75,10 @@ export default {
         }
       }
     }
+
+    let inaction = await this.fetchInactionHors()
+    if(inaction) 
+      this.inaction = inaction.inaction
   }
 }
 </script>

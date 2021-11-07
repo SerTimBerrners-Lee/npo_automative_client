@@ -162,19 +162,13 @@
             </div>
             <div>
             <h3>Документы</h3>
-            <div class="pointer-files-to-add">
-                <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+            <div style='height: 50px;'>
+              <FileLoader 
+                :typeGetFile='"getfile"'
+                @unmount='file_unmount'/>
             </div>
-            <AddFile 
-              :parametrs='docFiles' 
-              :typeGetFile='"getfile"'
-              v-if="isChangeFolderFile" 
-              @unmount='file_unmount'
-              :key='keyWhenModalGenerate'
-                />
             </div>
-            <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
+            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес</h3>
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'
@@ -231,7 +225,7 @@
                   @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
             </tr>
           </table>
-          <div class="btn-control">
+          <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.productAssets.writeSomeone">
             <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
             <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
           </div>
@@ -257,7 +251,6 @@
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random } from 'lodash';
@@ -266,7 +259,6 @@ import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
-
 export default {
   data() {
     return {
@@ -285,8 +277,6 @@ export default {
         fabricNumber: ''
       },
       docFiles: [],
-      keyWhenModalGenerate: random(10, 3e2),
-      isChangeFolderFile: false,
       formData: null,
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
@@ -324,8 +314,8 @@ export default {
   unmounted() {
     this.deleteStorageData()
   },
-  computed: mapGetters(['getUsers']),
-  components: {AddFile, ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal, BaseCbedModal},
+  computed: mapGetters(['getUsers', 'getRoleAssets']),
+  components: {ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal, BaseCbedModal},
   methods: {
     ...mapActions(['createNewProduct', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage']),
@@ -392,13 +382,6 @@ export default {
           })
         }
       }
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 23e4)
-      this.isChangeFolderFile = true
     },
     file_unmount(e) { 
       if(!e) 

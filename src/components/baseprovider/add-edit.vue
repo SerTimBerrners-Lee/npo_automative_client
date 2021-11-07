@@ -56,12 +56,13 @@
               <td> {{ doc.name }} </td>
             </tr>
           </table>
-          <div class="pointer-files-to-add">
-            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+          <div style='height: 50px;'>
+            <FileLoader 
+              :typeGetFile='"getfile"'
+              @unmount='file_unmount'/>
           </div>
         </div>
-        <h3 class="link_h3" @click='openMaterial'>Поставляемый материал</h3>
+        <h3 class="link_h3" @click='openMaterial' style='margin-top: 30px;'>Поставляемый материал</h3>
         <TableMaterialFilter 
           :id_product='id_product'
         />
@@ -84,7 +85,7 @@
         </div>
       </div>
     </div>
-      <div class="edit-save-block block">
+      <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.providerAssets.writeSomeone">
         <button class="btn-status" @click="$router.push('/baseprovider')">Отменить</button>
         <button class="btn-status btn-black" @click='addProvider'>Сохранить</button>
       </div>
@@ -92,12 +93,6 @@
         :key='keyModal'
         @unmount='unmount'
         v-if="isShow"
-      />
-      <AddFile :parametrs='docFiles' 
-        :typeGetFile='"getfile"'
-        v-if="isChangeFolderFile" 
-        @unmount='file_unmount'
-        :key='keyWhenModalGenerate'
       />
       <ModalBaseMaterial 
         :key='modalMaterialKey'
@@ -120,7 +115,6 @@
 import AddContact from './add-contact.vue';
 import { random, isEmpty } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
@@ -147,8 +141,6 @@ export default {
       isShow: false,
       contact: null,
       formData: null,
-      keyWhenModalGenerate: random(10, 999),
-      isChangeFolderFile: false,
       docFiles: [],
       materials: [],
       id_product: null,
@@ -162,9 +154,10 @@ export default {
     }
   },
   computed: mapGetters([
-    'getSetProvider'
+    'getSetProvider',
+    'getRoleAssets'
   ]),
-  components: {AddContact, AddFile, ModalBaseMaterial, OpensFile, TableMaterialFilter},
+  components: {AddContact, ModalBaseMaterial, OpensFile, TableMaterialFilter},
   methods: {
     ...mapActions(['addOneProvider']),
     unmount(data) {
@@ -224,13 +217,6 @@ export default {
     file_unmount(e) { 
       if(!e) return 0
       this.formData = e.formData
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 3024)
-      this.isChangeFolderFile = true
     },
     openMaterial() {
       this.modalMaterialKey = random(10, 2e3)

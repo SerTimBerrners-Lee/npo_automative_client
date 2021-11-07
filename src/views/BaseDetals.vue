@@ -49,7 +49,7 @@
             <tr>
               <th>Артикул</th>
               <th>Наименование</th>
-              <th>Кол-во СБ на Изделие</th>
+              <th style='width: 50px;'>Кол-во СБ на Изделие</th>
             </tr>
               <tr>
                 <td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
@@ -85,7 +85,7 @@
             <tr>
               <th>Артикул</th>
               <th>Наименование</th>
-              <th>Кол-во Д на СБ</th>
+              <th style='width: 50px;'>Кол-во Д на СБ</th>
             </tr>   
             <tr>
               <td colspan="3">
@@ -133,10 +133,10 @@
 </template>
  
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
-import Search from '@/components/search.vue'
+import Search from '@/components/search.vue';
 
 export default {
   data() {

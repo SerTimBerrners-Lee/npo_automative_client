@@ -1,28 +1,28 @@
 <template>
-    <div class="main-dive">
-        <h3>3. Материалы (типы и подтипы)</h3>
-        <div class="cont">
-            <TableMaterial :title='"Тип (Тип профиля заготовки)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
-            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
-                <button class="btn-add btn-small" @click='createEditMat("TYPE")'>Создать</button>
-                <button class="btn-small"  @click='createEditMat("TYPE", "edit")'>Редактировать</button>
-                <button class="btn-small" @click='removeItem("TYPE")'>Удалить</button>
-            </div>
-        </div>
-        <div class="cont">
-            <TableMaterial :title='"Подтип (Материал заготовки)"' :alltypeM="allPodTypeM" :type="'podT'" @clickMat="clickMat"/>
-            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
-                <button class="btn-add btn-small" @click='createEditMat("PODTYPE")'>Создать</button>
-                <button class="btn-small" @click="createEditMat('PODTYPE', 'edit')">Редактировать</button>
-                <button class="btn-small" @click="removePodType">Удалить</button>
-            </div>
-        </div>
-        <addEditMat
-                @unmount='unmount' 
-                :parametrs='parametrs' 
-                v-if='showIs'
-                :key='keyModals' />
+  <div class="main-dive">
+    <h3>3. Материалы (типы и подтипы)</h3>
+    <div class="cont">
+      <TableMaterial :title='"Тип (Тип профиля заготовки)"' :alltypeM="alltypeM" :type='"type"' @clickMat="clickMat"/>
+      <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+        <button class="btn-add btn-small" @click='createEditMat("TYPE")'>Создать</button>
+        <button class="btn-small"  @click='createEditMat("TYPE", "edit")'>Редактировать</button>
+        <button class="btn-small" @click='removeItem("TYPE")'>Удалить</button>
+      </div>
     </div>
+    <div class="cont">
+      <TableMaterial :title='"Подтип (Материал заготовки)"' :alltypeM="allPodTypeM" :type="'podT'" @clickMat="clickMat"/>
+      <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+        <button class="btn-add btn-small" @click='createEditMat("PODTYPE")'>Создать</button>
+        <button class="btn-small" @click="createEditMat('PODTYPE', 'edit')">Редактировать</button>
+        <button class="btn-small" @click="removePodType">Удалить</button>
+      </div>
+    </div>
+    <addEditMat
+      @unmount='unmount' 
+      :parametrs='parametrs' 
+      v-if='showIs'
+      :key='keyModals' />
+  </div>
 </template>
 
 <script>

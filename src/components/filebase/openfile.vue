@@ -6,7 +6,7 @@
         <h3>Карточка файла</h3>
         <div class="block"> 
           <div >
-              <h4>Библиотека документов </h4>
+            <h4>Библиотека документов </h4>
             <div>
               <div class="span-type-files-pdf" 
                 v-if="docType.typename == 'docx'" >
@@ -54,16 +54,24 @@
                 </tr>
               </table>
               <div class="btn-control">
-                <button class="btn-small">Редактировать</button>
-                <button class="btn-small">На печать</button>
+                <button 
+                  class="btn-small" 
+                  v-if='parametrs.type_open_modal == "edit" && getRoleAssets && getRoleAssets.assets.basefileAssets.writeSomeone' 
+                  @click='e => edit(e.target)'>Редактировать</button>
+                <button class="btn-small" @click="openfile(urlImg)">На печать</button>
                 <button class="btn-small" @click="openfile(urlImg)">Открыть / Скачать</button>
               </div>
-              <div class="main-fb-modal-block">
+              <div class="main-fb-modal-block" v-if='!is_edit'>
                 <div class="left-block">
                   <h4>Детальная информация</h4>
                   <p><b>Файл: </b><span> {{ docType.typename }}</span></p>
-                  <p><b>Ответственный: </b><span></span></p>
-                  <p><b>Версия: </b><span> {{ this.file[file_increment] ? this.file[file_increment].version : '' }}</span></p>
+                  <p><b>Ответственный: </b>
+                    <span>{{ responsible_name }}</span>
+                  </p>
+                  <p><b>Версия: </b>
+                    <span> {{ this.file[file_increment] ? this.file[file_increment].version : '' }}
+                    </span>
+                  </p>
                   <p><b>Тип: </b><span> {{ this.file[file_increment] ? this.file[file_increment].type : '' }}</span></p>
                   <h4>Принадлежность</h4>
                   <span></span>
@@ -75,6 +83,35 @@
                   <button class="btn-small">Просмотреть другие версии документа</button>
                 </div>
               </div>
+              <div class='main-fb-modal-block' v-else>
+                <div>
+                  <p>
+                    <span>Наименование: </span>
+                    <input type="text" v-model='name'>
+                  </p>
+                  <p>
+                    <span>Версия: </span>
+                    <input type="text" v-model='version'>
+                  </p>
+                  <p>
+                    <span>Тип:</span>
+                    <select v-model='type_document' class='select-small'>
+                      <option v-for='docs of typeDocs' :key='docs'>{{ docs }}</option>
+                    </select>
+                  </p>
+                  <p>
+                    <span>Ответственный: </span>
+                    <select v-model='responsible_user_id' class='select-small'>
+                      <option v-for='user of getUsers' :key='user' :value='user.id'>{{ user.login }}</option>
+                    </select>
+                  </p>
+                  <h3>Описание: </h3>
+                    <textarea 
+                      maxlength='250' 
+                      cols="30" 
+                      rows="10" v-model='description'></textarea>
+                </div>
+              </div>
             </div>
           </div>
           </div> 
@@ -82,14 +119,11 @@
     </div>
   </div>
 </template>
-
 <script>
-
 import { photoPreloadUrl } from '@/js/';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import {isArray} from 'lodash';
 import PATH_TO_SERVER from '@/js/path.js';
-
 export default { 
   props: ['parametrs'],
   data() {
@@ -97,17 +131,27 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
-      typeDocs: ['МД', 'КД', 'ЧЖ', 'СД'],
+      typeDocs: ['МД', 'КД', 'ЧЖ', 'СД', 'DXF'],
       urlImg: '',
       imgShow: false,
       showDocType: false,
       docType: {},
       file: [],
-      file_increment: 0
+      file_increment: 0,
+      is_edit: false,
+      responsible_name: "",
+
+      description: '',
+      version: '',
+      type_document: '',
+      responsible_user_id: 0,
+      name: '',
+      id: null
     }
   },
+  computed: mapGetters(['getUsers', 'getRoleAssets']),
   methods: {
-    ...mapActions(['pushDocuments']),
+    ...mapActions(['pushDocuments', 'getAllUsers', 'updateDataFile']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -135,19 +179,69 @@ export default {
     },
     openfile(url) {
       window.open(url, '_blank')
+    },
+    edit(e) {
+      if(this.is_edit) {
+        this.is_edit = false
+        e.innerText = 'Редактировать'
+        this.update()
+      } else {
+        this.is_edit = true
+        e.innerText = 'Сохранить'
+      }
+    },
+    update() {
+      const data = {
+        name: this.name,
+        version: this.version,
+        type: this.type_document,
+        responsible_user_id: this.responsible_user_id,
+        id: this.id,
+        description: this.description
+      }
+
+      this.updateDataFile(data).then(res => {
+        if(res) {
+          setTimeout(() => {
+            this.destroyModalF()
+            this.$emit('unmount', {
+              message: 'Документ успено обновлен',
+              type: 's'
+            })
+          }, 1000)
+        } else
+            this.$emit('unmount', {
+              message: 'Произошла ошибка при обновлении документа',
+              type: 'e'
+            })
+      })
     }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
+
+    this.getAllUsers()
     if(this.parametrs.type == 'create') {
       return 0;
-    } else  {
+    }
+    if(this.parametrs.type_open_modal == 'edit') {
       this.titleapp = 'Редактирование'
-      this.inputs = this.parametrs.description
-      this.inputs_short = this.parametrs.value
+      this.type_document = this.parametrs.type
+      this.description = this.parametrs.description
+      this.responsible_user_id = this.parametrs.responsible_user_id
+      this.name = this.parametrs.name
+      this.version = this.parametrs.version
+      this.id = this.parametrs.id
     } 
+    if(this.$props.parametrs && this.$props.parametrs.responsible_user_id) {
+      for(let user of this.getUsers) {
+        if(user.id == this.$props.parametrs.responsible_user_id) {
+          this.responsible_name = user.login
+        }
+      }
+    }
 
     let file = this.$props.parametrs
     if(isArray(file)) this.file = file
@@ -160,6 +254,9 @@ export default {
 </script>
 
 <style scoped>
+.main-fb-modal-block input {
+  margin-left: 10px;
+}
 .span-type-files-pdf {
   height: 500px;
 }

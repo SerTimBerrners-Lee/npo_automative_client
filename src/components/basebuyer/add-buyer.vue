@@ -2,12 +2,12 @@
   <div>
     <h3> Создать покупателя</h3>
     <div class="block">
-        <span>Наименование:</span>
-        <input class="input_name" type="text" v-model="obj.name">
-        <span>ИНН:</span>
-        <input type="text" v-model="obj.inn">
-        <span>КПП:</span>
-        <input type="text" v-model="obj.cpp">
+      <span>Наименование:</span>
+      <input class="input_name" type="text" v-model="obj.name">
+      <span>ИНН:</span>
+      <input type="text" v-model="obj.inn">
+      <span>КПП:</span>
+      <input type="text" v-model="obj.cpp">
     </div> 
     <div class="main_content">
       <div class="left_content">
@@ -56,53 +56,45 @@
               <td> {{ doc.name }} </td>
             </tr>
           </table>
-          <div class="pointer-files-to-add">
-            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+          <div style='height: 50px;'>
+            <FileLoader 
+              :typeGetFile='"getfile"'
+              @unmount='file_unmount'/>
           </div>
         </div>
 
       </div>
     </div>
-          <div class="edit-save-block block">
-            <button class="btn-status" @click="$router.push('/basebuyer')">Отменить</button>
-            <button class="btn-status btn-black" @click='addbuyer'>Сохранить</button>
-        </div>
-        <AddContact 
-          :key='keyModal'
-          @unmount='unmount'
-          v-if="isShow"
-        />
-        <AddFile :parametrs='docFiles' 
-          :typeGetFile='"getfile"'
-          v-if="isChangeFolderFile" 
-          @unmount='file_unmount'
-          :key='keyWhenModalGenerate'
-        />
-        <OpensFile 
-          :parametrs='itemFiles' 
-          v-if="itemFiles"
-          :key='keyWhenModalGenerateFileOpen'
-        />
-        <InformFolder  :title='titleMessage'
-          :message = 'message'
-          :type = 'type'
-          v-if='showInformPanel'
-          :key='keyInformTip'
-        />
+    <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.buyerAssets.writeSomeone">
+      <button class="btn-status" @click="$router.push('/basebuyer')">Отменить</button>
+      <button class="btn-status btn-black" @click='addbuyer'>Сохранить</button>
+    </div>
+    <AddContact 
+      :key='keyModal'
+      @unmount='unmount'
+      v-if="isShow"
+    />
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="itemFiles"
+      :key='keyWhenModalGenerateFileOpen'
+    />
+    <InformFolder  :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
+    />
   </div>
 </template>
 <script scoped>
 
 import AddContact from '@/components/baseprovider/add-contact.vue';
 import { random } from 'lodash';
-import { mapActions, mapGetters, mapMutations } from 'vuex'
-import AddFile from '@/components/filebase/addfile.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
-
-
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return {
@@ -125,8 +117,6 @@ export default {
       isShow: false,
       contact: null,
       formData: null,
-      keyWhenModalGenerate: random(10, 999),
-      isChangeFolderFile: false,
       docFiles: [],
 
       itemFiles: null,
@@ -139,8 +129,8 @@ export default {
       keyInformTip: 0,
     }
   },
-  computed: mapGetters([]),
-  components: {AddContact, AddFile, OpensFile, InformFolder},
+  computed: mapGetters(['getRoleAssets']),
+  components: {AddContact, OpensFile, InformFolder},
   methods: {
     ...mapActions(['addOneBuyer']),
     ...mapMutations([
@@ -192,13 +182,6 @@ export default {
     file_unmount(e) { 
       if(!e) return 0
       this.formData = e.formData
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 3024)
-      this.isChangeFolderFile = true
     },
     clickDoc(files) {
       if(files) { 

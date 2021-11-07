@@ -19,7 +19,8 @@ import sclad from './modules/sclad';
 import issue from './modules/issue';
 import shipments from './modules/shipments';
 import assemble from './modules/assemble';
-import metaloworking from './modules/metaloworking'
+import metaloworking from './modules/metaloworking';
+import settings from './modules/settings'
 
 export default createStore({
   modules: {
@@ -43,7 +44,8 @@ export default createStore({
     issue,
     shipments,
     assemble,
-    metaloworking
+    metaloworking,
+    settings
   }
 })
   

@@ -7,10 +7,17 @@
           <span class="title-logo">Эффективного</span>
           <span class="title-logo">Производства</span>
         </div>
-    </div>
-    <div class="clock">
-        <span class="data">{{ clocks }}</span>
-        <span class="time"></span>
+    </div> 
+    <div class="clock" >
+        <DatePicker 
+          v-model="date"  
+          is-dark 
+          color='gray'
+          > 
+          <template v-slot="{  inputEvents }">
+            <span class="data" v-on="inputEvents">{{ clocks }}</span>
+          </template>
+        </DatePicker>
     </div>
     <div class="profile" >
       <div @click="$router.push('/')">
@@ -39,15 +46,15 @@
   </div>
 </template>
 <script>
-
 import { mapGetters, mapMutations } from 'vuex';
-import { dataFormat, timeFormat } from '@/js/'
-
+import { dataFormat, timeFormat } from '@/js/';
 export default {
   data() {
+    let date = new Date();
     return {
       clocks: "",
-      idInterval: Number
+      idInterval: Number,
+      date
     }
   },
   computed: mapGetters(['getAuth']),
@@ -55,7 +62,7 @@ export default {
     this.clocks = this.getClock()
     
     this.idInterval = setInterval(() => {
-        this.clocks = this.getClock()
+      this.clocks = this.getClock()
     }, 1000);
   },
   beforeUnmount() {
@@ -69,9 +76,7 @@ export default {
       return strDat
     },
     exit() {
-      this.unAuth()
       this.$emit('exit')
-      this.$router.push('/')
     }
   }, 
   async mounted() {
@@ -92,7 +97,7 @@ export default {
   user-select: none;
   position: fixed;
   top: 0px;
-  z-index: 3;
+  z-index: 4;
 }
 .rout-nav {
   overflow: hidden;

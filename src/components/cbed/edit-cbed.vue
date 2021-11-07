@@ -50,11 +50,12 @@
                 <tr v-for='detal in listDetal' :key='detal.det'>
                   <td>{{ detal.art }} </td>
                   <td>{{ detal.det.name }}</td>
-                  <td> <span v-if="detal.ez == 1"> шт</span> 
-                        <span v-if="detal.ez == 2"> л </span>
-                        <span v-if="detal.ez == 3"> кг</span> 
-                        <span v-if="detal.ez == 4"> м </span>
-                        <span v-if="detal.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="detal.ez == 1"> шт</span> 
+                    <span v-if="detal.ez == 2"> л </span>
+                    <span v-if="detal.ez == 3"> кг</span> 
+                    <span v-if="detal.ez == 4"> м </span>
+                    <span v-if="detal.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ detal.kol }}</td>
                 </tr>
@@ -64,11 +65,12 @@
                 <tr v-for='material in listPokDet' :key='material.mat'>
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="material.ez == 1"> шт</span> 
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -78,11 +80,12 @@
                 <tr v-for='material in materialList' :key='material.mat'>
                   <td>{{ material.art }} </td>
                   <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                        <span v-if="material.ez == 2"> л </span>
-                        <span v-if="material.ez == 3"> кг</span> 
-                        <span v-if="material.ez == 4"> м </span>
-                        <span v-if="material.ez == 5"> м.куб</span>
+                  <td> 
+                    <span v-if="material.ez == 1"> шт</span> 
+                    <span v-if="material.ez == 2"> л </span>
+                    <span v-if="material.ez == 3"> кг</span> 
+                    <span v-if="material.ez == 4"> м </span>
+                    <span v-if="material.ez == 5"> м.куб</span>
                   </td>
                   <td>{{ material.kol }}</td>
                 </tr>
@@ -124,32 +127,27 @@
             <div>
                 <table style='width: 100%;'>
                 <tr>
-                    <th >Файл</th>
+                  <th >Файл</th>
                 </tr>
                 <tr 
-                    v-for='doc in  documentsData' 
-                    :key='doc'
-                    class='td-row'
-                    @click='setDocs(doc)'
-                    >
-                    <td>{{ doc.name }}</td>
+                  v-for='doc in  documentsData' 
+                  :key='doc'
+                  class='td-row'
+                  @click='setDocs(doc)'
+                  >
+                  <td>{{ doc.name }}</td>
                 </tr>
             </table>
             </div>
             <div>
             <h3>Документы</h3>
-            <div class="pointer-files-to-add">
-                <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+            <div style='height: 50px;'>
+              <FileLoader 
+                :typeGetFile='"getfile"'
+                @unmount='file_unmount'/>
             </div>
-            <AddFile :parametrs='docFiles' 
-                    :typeGetFile='"getfile"'
-                    v-if="isChangeFolderFile" 
-                    @unmount='file_unmount'
-                    :key='keyWhenModalGenerate'
-                />
             </div>
-            <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
+            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес</h3>
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'
@@ -160,110 +158,111 @@
             <h3 class="link_h3">История изменений</h3>
           </div>
         </div>
-        <div class="btn-control out-btn-control control-save" >
-          <button class="btn-status"
-                  @click='exit'
-                  >Отменить</button>
+        <div class="btn-control out-btn-control control-save"  v-if="getRoleAssets && getRoleAssets.assets.cbedAssets.writeSomeone" >
+          <button 
+            class="btn-status"
+            @click='exit'
+            >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" 
-                @click='saveDetal'
-                >{{$route.params.copy == "false" ? 'Обновить ' : 'Добавить'}}</button>
+            @click='saveDetal'
+            >{{$route.params.copy == "false" ? 'Обновить ' : 'Добавить'}}</button>
           </div>
       </div>
 
     <div class="right_content">
        <div v-if='dataMedia'>
-           <h3>Медиа файлы</h3>
-            <MediaSlider 
-                v-if='dataMedia' 
-                :static='true' 
-                :data='dataMedia' 
-                :key='randomDataMedia'
-                :width='"width: 30%;"'
-                :width_main='"width: 97%;"'
-                />
+          <h3>Медиа файлы</h3>
+          <MediaSlider 
+            v-if='dataMedia' 
+            :static='true' 
+            :data='dataMedia' 
+            :key='randomDataMedia'
+            :width='"width: 30%;"'
+            :width_main='"width: 97%;"'
+            />
        </div>
          <div>
-              <h3>Параметры</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th> 
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr>
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(par, inx) in obj.parametrs' 
-                    :key='par'
-                    @click='selectParametrs = {par, inx}'
-                    >
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.name' 
-                      class='inputs-small'
-                      @change='e => changeParametrs(e.target.value, "name", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.ez'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small small'
-                      @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='par.znach'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
-                </tr>
-              </table>
-              <div class="btn-control">
-                <button class="btn-add btn-small" 
-                    @click='addParametrs'>Добавить</button>
-                <button class="btn-small" @click='removeParametrs'>Удалить</button>
-              </div>
+            <h3>Параметры</h3>
+            <table class="tables_bf">
+              <tr>
+                <th>Наименование</th> 
+                <th>ЕИ</th>
+                <th>Значение</th>
+              </tr>
+              <tr class='tr_haracteristic td-row' 
+                  v-for='(par, inx) in obj.parametrs' 
+                  :key='par'
+                  @click='selectParametrs = {par, inx}'
+                  >
+                <td>
+                  <input 
+                    type="text" 
+                    :value='par.name' 
+                    class='inputs-small'
+                    @change='e => changeParametrs(e.target.value, "name", inx)'></td>
+                <td>
+                  <input 
+                    type="text" 
+                    :value='par.ez'
+                    style="width: 50px; text-align:center;"
+                    class='inputs-small small'
+                    @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
+                <td>
+                  <input 
+                    type="text" 
+                    :value='par.znach'
+                    style="width: 50px; text-align:center;"
+                    class='inputs-small'
+                    @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
+              </tr>
+            </table>
+            <div class="btn-control" >
+              <button class="btn-add btn-small" 
+                  @click='addParametrs'>Добавить</button>
+              <button class="btn-small" @click='removeParametrs'>Удалить</button>
             </div>
+          </div>
           <div>
-              <h3>Характеристики</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th> 
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr>
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(har, inx) in obj.haracteriatic' 
-                    :key='har'
-                    @click='selectHaracteristic = {har, inx}'
-                    >
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.name' 
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.ez'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small small'
-                      @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.znach'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
-                </tr>
-              </table>
-              <div class="btn-control">
-                <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
-                <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
-              </div>
+            <h3>Характеристики</h3>
+            <table class="tables_bf">
+              <tr>
+                <th>Наименование</th> 
+                <th>ЕИ</th>
+                <th>Значение</th>
+              </tr>
+              <tr class='tr_haracteristic td-row' 
+                  v-for='(har, inx) in obj.haracteriatic' 
+                  :key='har'
+                  @click='selectHaracteristic = {har, inx}'
+                  >
+                <td>
+                  <input 
+                    type="text" 
+                    :value='har.name' 
+                    class='inputs-small'
+                    @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
+                <td>
+                  <input 
+                    type="text" 
+                    :value='har.ez'
+                    style="width: 50px; text-align:center;"
+                    class='inputs-small small'
+                    @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
+                <td>
+                  <input 
+                    type="text" 
+                    :value='har.znach'
+                    style="width: 50px; text-align:center;"
+                    class='inputs-small'
+                    @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
+              </tr>
+            </table>
+            <div class="btn-control">
+              <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
+              <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
             </div>
+          </div>
         <h3 class="link_h3">Принадлежность</h3>
     </div>
     <InformFolder  :title='titleMessage'
@@ -288,7 +287,6 @@
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random, isEmpty } from 'lodash';
@@ -318,8 +316,6 @@ export default {
             
         },
         docFiles: [],
-        keyWhenModalGenerate: random(10, 3e2),
-        isChangeFolderFile: false,
         formData: null,
         modalMaterialKey: random(10, 12e8),
         modalMaterialIsShow: false,
@@ -362,9 +358,8 @@ export default {
         generateKeyCbed: random(1, 999),
         }
   },
-  computed: mapGetters(['getUsers', 'getOneSelectCbEd']),
+  computed: mapGetters(['getUsers', 'getOneSelectCbEd', 'getRoleAssets']),
   components: {
-    AddFile, 
     OpensFile,  
     ModalBaseMaterial, 
     TechProcess, 
@@ -448,13 +443,6 @@ export default {
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
     },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 23e4)
-      this.isChangeFolderFile = true
-    },
     file_unmount(e) { 
       if(!e) 
         return 0
@@ -462,10 +450,10 @@ export default {
     },
     unmount_material(mat) {
       if(this.instanMaterial == 2) {
-          this.listPokDet = mat.materialList
+        this.listPokDet = mat.materialList
       }
       if(this.instanMaterial == 3) {
-          this.materialList = mat.materialList
+        this.materialList = mat.materialList
       }
     },
     changeSelected() {

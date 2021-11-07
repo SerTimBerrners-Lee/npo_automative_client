@@ -88,27 +88,33 @@
             />
       </div>
     </div>
-      <div class="edit-save-block block">
-          <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
-          <button class="btn-status btn-black" @click="addInstrument">Сохранить</button>
-        </div>
-        <ListProvider  
-          @unmount='pushProvider' 
-          :key='keyWhenModalListProvider'
-          v-if='showProvider'
-          />
+    <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.instrumentAssets.writeSomeone">
+      <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
+      <button class="btn-status btn-black" @click="addInstrument">Сохранить</button>
+    </div>
+    <ListProvider  
+      @unmount='pushProvider' 
+      :key='keyWhenModalListProvider'
+      v-if='showProvider'
+      />
+      <InformFolder  
+        :title='titleMessage'
+        :message = 'message'
+        :type = 'type'
+        v-if='showInformPanel'
+        :key='keyInformTip'
+      />
+    <Loader v-if='loader' />
   </div>
 </template>
-
-
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue'
+import AddFile from '@/components/filebase/addfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
-
-import { random }  from 'lodash'
-
+import { random }  from 'lodash';
+import InformFolder from '@/components/InformFolder.vue';
+import { showMessage } from '@/js/';
 export default {
   data() {
     return {
@@ -130,11 +136,18 @@ export default {
         mountUsed: '',
         minOstatok: '',
         description: ''
-      }
+      },
+
+      loader: false,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
     }
   },
-  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getLinkIdInstrument']),
-  components: {TableMaterial, AddFile, ListProvider},
+  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getLinkIdInstrument', 'getRoleAssets']),
+  components: {TableMaterial, AddFile, ListProvider, InformFolder},
   methods: {
     addProvider() {
       this.showProvider = true
@@ -148,8 +161,12 @@ export default {
     },
 
     addInstrument() {
-      if(!this.PTInstrument && !this.TInstrument && this.obj.name.length < 3)
-        return 0
+      if(!this.PTInstrument)
+        return showMessage('', 'Выберите Подтип', 'w', this)
+      if(!this.TInstrument)
+        return showMessage('', 'Выберите тип', 'w', this)
+      if(this.obj.name.length < 3)
+        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this)
 
       if(!this.formData) 
         this.formData = new FormData()
@@ -208,14 +225,16 @@ export default {
     },
   },
   async mounted() {
+    this.loader = true
     await this.fetchAllInstruments()
     await this.getAllEdizm()
     this.getInstansTools(this.getLinkIdInstrument || 0)
     if(!this.getLinkIdInstrument) {
-      this.fetchAllInstruments()
-      this.getPTInstrumentList()
-
+      await this.fetchAllInstruments()
+      await this.getPTInstrumentList()
     }
+
+    this.loader = false
   }
 }
 </script>
@@ -233,7 +252,7 @@ export default {
   margin-left: 5px;
 }
 .name_p input {
-  width: 70%;
+  width: 370px;
 }
 .block_name {
   width: 1200px;

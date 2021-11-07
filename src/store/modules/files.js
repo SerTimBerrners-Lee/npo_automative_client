@@ -59,12 +59,12 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/documents/editype`, {
         method: 'post',
         headers: {
-        'Accept': 'application/json',
-        'Content-Type': 'application/json'
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-        id,
-        type
+          id,
+          type
         })
       });
 
@@ -74,6 +74,22 @@ export default {
       }
       
       return { type: 'e', message: 'Произошла ошика при изменении типа файла'}
+    },
+
+    async updateDataFile(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/update`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+
+      if(res.ok) 
+        return true
+        else 
+          return false
     },
 
     async setDetalForFile(ctx, data) {

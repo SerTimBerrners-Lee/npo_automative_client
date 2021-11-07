@@ -308,6 +308,9 @@ export default {
 </script>
 
 <style scoped>
+.scroll-table {
+  width: 100%;
+}
 .toltip_position {
   position: absolute;
   right: 200px;

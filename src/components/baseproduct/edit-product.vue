@@ -178,19 +178,13 @@
             </div>
             <div>
             <h3>Документы</h3>
-            <div class="pointer-files-to-add">
-                <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-                <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+            <div style='height: 50px;'>
+              <FileLoader 
+                :typeGetFile='"getfile"'
+                @unmount='file_unmount'/>
             </div>
-            <AddFile 
-              :parametrs='docFiles' 
-              :typeGetFile='"getfile"'
-              v-if="isChangeFolderFile" 
-              @unmount='file_unmount'
-              :key='keyWhenModalGenerate'
-                />
             </div>
-            <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
+            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес</h3>
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'
@@ -201,7 +195,7 @@
             <h3 class="link_h3">История изменений</h3>
           </div>
         </div>
-        <div class="btn-control out-btn-control control-save" >
+        <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.productAssets.writeSomeone" >
           <button 
             class="btn-status"
             @click='exit'
@@ -288,7 +282,6 @@
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random, isEmpty } from 'lodash';
@@ -305,7 +298,7 @@ export default {
   data() {
     return {
       obj: {
-        articl: '',
+        articl: '', 
         name: '',
         responsible: '',
         description: '',
@@ -319,8 +312,6 @@ export default {
         fabricNumber: ''
       },
       docFiles: [],
-      keyWhenModalGenerate: random(10, 3e2),
-      isChangeFolderFile: false,
       formData: null,
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
@@ -366,9 +357,8 @@ export default {
   unmounted() {
     this.deleteStorageData()
   },
-  computed: mapGetters(['getUsers', 'getOneSelectProduct']),
+  computed: mapGetters(['getUsers', 'getOneSelectProduct', 'getRoleAssets']),
   components: {
-    AddFile, 
     ModalBaseMaterial, 
     TechProcess, 
     InformFolder, 
@@ -447,13 +437,6 @@ export default {
           })
         }
       }
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 23e4)
-      this.isChangeFolderFile = true
     },
     file_unmount(e) { 
       if(!e) 

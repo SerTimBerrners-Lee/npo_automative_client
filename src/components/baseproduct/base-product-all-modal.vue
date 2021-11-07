@@ -60,7 +60,7 @@
 								<tr>
 									<th>Артикул</th>
 									<th>Наименование</th>
-									<th>Кол-во СБ на Изделие</th>
+									<th style='width: 40px;'>Кол-во СБ на Изделие</th>
 								</tr>
 								<tr>
 									<td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
@@ -104,7 +104,7 @@
 									<tr>
 										<th>Артикул</th>
 										<th>Наименование</th>
-										<th>Кол-во Д на СБ</th>
+										<th style='width: 40px;'> Кол-во Д на СБ</th>
 									</tr>   
 									<tr>
 										<td colspan="3">

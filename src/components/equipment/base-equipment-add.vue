@@ -9,10 +9,11 @@
          <p class="name_p">
           <span> Ответственный: </span>
           <select class="select-small sle"  
-                    v-model='obj.responsible'>
-              <option v-for='user in getUsers' 
-                      :key='user' 
-                      :value='user.id'>{{ user.login }}</option>
+            v-model='obj.responsible'>
+            <option 
+              v-for='user in getUsers' 
+              :key='user' 
+              :value='user.id'>{{ user.login }}</option>
             </select> 
         </p>
       </div>
@@ -86,34 +87,40 @@
             />
       </div>
     </div>
-      <div class="edit-save-block block">
-          <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
-          <button class="btn-status btn-black" @click="addEquipment">Сохранить</button>
-        </div>
-        <ListProvider  
-          @unmount='pushProvider' 
-          :key='keyWhenModalListProvider'
-          v-if='showProvider'
-          />
-          <BaseTools 
-            :listInstrument='listInstrument'
-            :key='instrumentKey'
-            v-if='instrumentIsShow'
-            @unmount_instrument='unmount_instrument'
-          />
+    <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.equipmentAssets.writeSomeone">
+        <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
+        <button class="btn-status btn-black" @click="addEquipment">Сохранить</button>
+      </div>
+      <ListProvider  
+        @unmount='pushProvider' 
+        :key='keyWhenModalListProvider'
+        v-if='showProvider'
+        />
+      <BaseTools 
+        :listInstrument='listInstrument'
+        :key='instrumentKey'
+        v-if='instrumentIsShow'
+        @unmount_instrument='unmount_instrument'
+      />
+      <InformFolder  
+        :title='titleMessage'
+        :message = 'message'
+        :type = 'type'
+        v-if='showInformPanel'
+        :key='keyInformTip'
+      />
+      <Loader v-if='loader' />
   </div>
 </template>
-
-
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue'
+import { showMessage } from '@/js/';
+import AddFile from '@/components/filebase/addfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
-
-import { random }  from 'lodash'
-
+import { random }  from 'lodash';
+import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return {
@@ -138,14 +145,24 @@ export default {
         responsible: '',
         instrumentIdList: []
       },
-      listInstrument: null
+      listInstrument: null,
+
+      loader: false,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
     }
   },
-  computed: mapGetters(['allEquipmentType', 
-                        'allEquipmentPType', 
-                        'allEdizm', 
-                        'getUsers']),
-  components: {TableMaterial, AddFile, ListProvider, BaseTools},
+  computed: mapGetters([
+    'allEquipmentType', 
+    'allEquipmentPType', 
+    'allEdizm', 
+    'getUsers',
+    'getRoleAssets'
+  ]),
+  components: {TableMaterial, AddFile, ListProvider, BaseTools, InformFolder},
   methods: {
     addProvider() {
       this.showProvider = true
@@ -162,8 +179,12 @@ export default {
       this.instrumentIsShow = true
     },
     addEquipment() {
-      if(!this.equipmentPT && !this.equipmentT && this.obj.name.length < 3)
-        return 0
+      if(!this.equipmentPT)
+        return showMessage('', 'Выберите Подтип', 'w', this)
+      if(!this.equipmentT)
+        return showMessage('', 'Выберите тип', 'w', this)
+      if(this.obj.name.length < 3)
+        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this)
       
       if(!this.formData) 
         this.formData = new FormData()
@@ -184,17 +205,18 @@ export default {
 
       this.$router.push('/baseequipment')
     },
-
-    // ADD FILE and SET INSTRUMENT TO TABLE
-    ...mapActions(['fetchAllEquipmentType', 
-                    'getAllEquipmentPType',
-                    'getAllEdizm', 
-                    'creqteEquipment',
-                    'getAllUsers',]),
+    ...mapActions([
+      'fetchAllEquipmentType', 
+      'getAllEquipmentPType',
+      'getAllEdizm', 
+      'creqteEquipment',
+      'getAllUsers'
+      ]),
     ...mapMutations([ 
-        'filterAllPTEquipment',
-        'searchTypeEq',
-        'searchPTypeEq',]),
+      'filterAllPTEquipment',
+      'searchTypeEq',
+      'searchPTypeEq'
+      ]),
     clickEquipment(eq) {
       this.equipmentT = eq
       this.filterAllPTEquipment(eq) 
@@ -225,10 +247,12 @@ export default {
     },
   },
   async mounted() {
-    this.fetchAllEquipmentType()
-    this.getAllEdizm()
-    this.getAllUsers()
-    this.getAllEquipmentPType()
+    this.loader = true
+    await this.fetchAllEquipmentType()
+    await this.getAllEdizm()
+    await this.getAllUsers()
+    await this.getAllEquipmentPType()
+    this.loader = false
   }
 }
 </script>
@@ -253,7 +277,7 @@ export default {
   margin-left: 5px;
 }
 .name_p input {
-  width: 70%;
+  width: 370px;
 }
 .block_name {
   width: 1200px;

@@ -168,10 +168,10 @@
                   <td class='td_center'>кг</td>
                   <td class='td_center'>
                     <input type="text"
-                        @change='e=>editHarZag(e.target.value, "mass")'
-                        style="width: 50px; text-align:center;"
-                        class='inputs-small'
-                        v-model='obj.massZag'>
+                      @change='e=>editHarZag(e.target.value, "mass")'
+                      style="width: 50px; text-align:center;"
+                      class='inputs-small'
+                      v-model='obj.massZag'>
                   </td>
                 </tr>
                 <tr>
@@ -179,10 +179,10 @@
                   <td class='td_center'>кг</td>
                   <td class='td_center'>
                     <input type="text"
-                        @change='e=>editHarZag(e.target.value, "trash")'
-                        style="width: 50px; text-align:center;"
-                        class='inputs-small'
-                        v-model='obj.trash'>
+                      @change='e=>editHarZag(e.target.value, "trash")'
+                      style="width: 50px; text-align:center;"
+                      class='inputs-small'
+                      v-model='obj.trash'>
                   </td>
                 </tr>
               </table>
@@ -190,17 +190,17 @@
 
             <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
             <TechProcess 
-                v-if='techProcessIsShow'
-                :key='techProcessKey'
-                @unmount='unmount_tech_process'
-                :techProcessID='techProcessID'
+              v-if='techProcessIsShow'
+              :key='techProcessKey'
+              @unmount='unmount_tech_process'
+              :techProcessID='techProcessID'
             />
             <h3 class="link_h3">Себестоимость</h3>
             <h3 class="link_h3" @click='historyAction'>История изменений</h3>
             <h3 class="link_h3">Принадлежность</h3>
           </div>
         </div>
-        <div class="btn-control out-btn-control control-save" >
+        <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
           <button class="btn-status"
                   @click='exit'
                   >Отменить</button>
@@ -210,53 +210,47 @@
       </div>
 
     <div class="right_content">
-       <div>
-          <h3>Документы</h3>
-          <div class="slider">
-            <h3>Фото и видео</h3>
-            <MediaSlider 
-                v-if='dataMedia' 
-                :static='true' 
-                :data='dataMedia' 
-                :key='randomDataMedia'
-                :width='"width: 30%;"'
-                :width_main='"width: 97%;"'
-                />
-          </div>
-           <table style='width: 100%;'>
-                <tr>
-                    <th >Файл</th>
-                </tr>
-                <tr 
-                    v-for='doc in  documentsData' 
-                    :key='doc'
-                    class='td-row'
-                    @click='setDocs(doc)'
-                    >
-                    <td>{{ doc.name }}</td>
-                </tr>
-            </table>
-            <div class="btn-control" style='width: 100%;'>
-                <button class="btn-small" @click='openDock'>Открыть</button>
-                <button class="btn-small">Удалить</button>
-                <button class="btn-small">Добавить из базы</button>
-            </div>
-          <div class="pointer-files-to-add">
-            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-          </div>
-          <AddFile :parametrs='docFiles' 
-                :typeGetFile='"getfile"'
-                v-if="isChangeFolderFile" 
-                @unmount='file_unmount'
-                :key='keyWhenModalGenerate'
-            />
-            <OpensFile 
-                :parametrs='itemFiles' 
-                v-if="showFile" 
-                :key='keyWhenModalGenerateFileOpen'
+      <div>
+        <h3>Документы</h3>
+        <div class="slider">
+          <h3>Фото и видео</h3>
+          <MediaSlider 
+            v-if='dataMedia' 
+            :static='true' 
+            :data='dataMedia' 
+            :key='randomDataMedia'
+            :width='"width: 30%;"'
+            :width_main='"width: 97%;"'
             />
         </div>
+          <table style='width: 100%;'>
+            <tr>
+              <th >Файл</th>
+            </tr>
+            <tr 
+              v-for='doc in  documentsData' 
+              :key='doc'
+              class='td-row'
+              @click='setDocs(doc)'
+              >
+              <td>{{ doc.name }}</td>
+            </tr>
+          </table>
+          <div class="btn-control" style='width: 100%;' v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
+            <!-- <button class="btn-small">Удалить</button> -->
+            <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
+          </div>
+        <div style='height: 50px;'>
+          <FileLoader 
+            :typeGetFile='"getfile"'
+            @unmount='file_unmount'/>
+        </div>
+          <OpensFile 
+            :parametrs='itemFiles' 
+            v-if="itemFiles" 
+            :key='keyWhenModalGenerateFileOpen'
+          />
+      </div>
     </div>
     <HistoryActions 
       v-if='showHAction'
@@ -265,29 +259,35 @@
       :name='obj.name'
       :actions='actions'
     />
-    <InformFolder  :title='titleMessage'
-        :message = 'message'
-        :type = 'type'
-        v-if='showInformPanel'
-        :key='keyInformTip'
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
     />
+    <BaseFileModal 
+      v-if='showModalFile'
+      :key='fileModalKey'
+      :fileArrModal='fileArrModal'
+      @unmount='unmount_filemodal'
+  />
   </div>
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue'
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue'
-import TechProcess from './tech-process-modal.vue'
-import { random, padStart, padEnd } from 'lodash'
-import { mapActions, mapMutations, mapGetters } from 'vuex'
-import PATH_TO_SERVER from '@/js/path.js'
-import { isEmpty } from 'lodash'
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import TechProcess from './tech-process-modal.vue';
+import { random, padStart, padEnd } from 'lodash';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
+import PATH_TO_SERVER from '@/js/path.js';
+import { isEmpty } from 'lodash';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import OpensFile from '@/components/filebase/openfile.vue'
-import HistoryActions from '@/components/history-action.vue'
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
-
+import OpensFile from '@/components/filebase/openfile.vue';
+import HistoryActions from '@/components/history-action.vue';
+import { showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default {
   props: ['editAndCopt'],
   data() {
@@ -309,9 +309,9 @@ export default {
         massZag: '',
         trash: ''
       },
-      docFiles: [],
-      keyWhenModalGenerate: random(10, 3e2),
-      isChangeFolderFile: false,
+      showModalFile: false,
+      fileModalKey: random(1, 999),
+      fileArrModal: [],
       formData: null,
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
@@ -331,7 +331,6 @@ export default {
       randomDataMedia: random(10, 24^4),
 
       itemFiles: null,
-      showFile: false,
       keyWhenModalGenerateFileOpen: random(10, 323e8),
 
       showHAction: false,
@@ -350,11 +349,33 @@ export default {
   unmounted() {
     this.deleteStorageData()
   },
-  computed: mapGetters(['getOneSelectDetal', 'getUsers']),
-  components: {AddFile, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions, InformFolder},
+  computed: mapGetters(['getOneSelectDetal', 'getUsers', 'getRoleAssets']),
+  components: {BaseFileModal, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions, InformFolder},
   methods: {
-    ...mapActions(['createNewDetal', 'fetchUpdateDetal', 'getAllUsers', 'createNewDetal']),
+    ...mapActions([
+      'createNewDetal', 
+      'fetchUpdateDetal', 
+      'getAllUsers', 
+      'createNewDetal',
+      'fetchAddFilesForDetal']),
     ...mapMutations(['removeOperationStorage']),
+    unmount_filemodal(res) {
+      if(res && this.id) {
+        const data = {
+          files: res,
+          detal_id: this.id
+        }
+
+        this.fetchAddFilesForDetal(data).then(respons => {
+          if(respons) {
+            res.forEach(e => this.documentsData.push(e))
+            showMessage('', 'Файлы прикреплены к детали', 's', this)
+          } else 
+            showMessage('', 'Не удалось загрузить файлы на сервер', 'e', this)
+        })
+        
+      }
+    },
     saveDetal() {
       if(this.obj.name.length < 3) 
         return 0
@@ -394,8 +415,6 @@ export default {
               })
               return 
             }
-                
-
             this.fetchUpdateDetal(this.formData).then(res => {
               if(res) 
                 showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's', this)
@@ -435,13 +454,6 @@ export default {
           })
         }
       }
-    },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 23e4)
-      this.isChangeFolderFile = true
     },
     file_unmount(e) { 
       if(!e) 
@@ -523,12 +535,12 @@ export default {
       if(oD) {
         oD = JSON.parse(oD)
         if(m.material.outsideDiametr) 
-            this.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
+          this.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
       }
       if(leng) {
         leng = JSON.parse(leng)
         if(m.material.length) 
-            this.obj.DxL = padEnd(this.obj.DxL, this.obj.DxL.length + leng.znach.length, leng.znach)
+          this.obj.DxL = padEnd(this.obj.DxL, this.obj.DxL.length + leng.znach.length, leng.znach)
       }
       if(aCS) {
         aCS = JSON.parse(aCS)
@@ -548,13 +560,8 @@ export default {
       this.deleteStorageData()
     },
     setDocs(dc) {
-        this.itemFiles = dc
-    },
-    openDock() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+      this.itemFiles = dc
+      this.keyWhenModalGenerateFileOpen = random(10, 38e9)
     },
     historyAction() {
       if(!this.actions.length)
@@ -565,13 +572,17 @@ export default {
     deleteStorageData(){
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
+    },
+    addFileModal() {
+      this.fileModalKey = random(1, 999)
+      this.showModalFile = true
     }
 
   },
   async mounted() {
     if(isEmpty(this.getOneSelectDetal)){
-        this.$router.push('/basedetals')
-        return 0
+      this.$router.push('/basedetals')
+      return 0
     }
     if(this.getOneSelectDetal.actions)
       this.actions = this.getOneSelectDetal.actions
@@ -589,24 +600,24 @@ export default {
     this.obj.responsible = this.getOneSelectDetal.user ? 
       this.getOneSelectDetal.user.id : null
     if(this.getOneSelectDetal.materials.length) {
-        this.getOneSelectDetal.materials.forEach(e => {
-            if(this.getOneSelectDetal.mat_zag && this.getOneSelectDetal.mat_zag == e.id)
-                this.mat_zag = e
-            if(this.getOneSelectDetal.mat_zag_zam && this.getOneSelectDetal.mat_zag_zam == e.id)
-                this.mat_zag_zam = e
-        })
+      this.getOneSelectDetal.materials.forEach(e => {
+        if(this.getOneSelectDetal.mat_zag && this.getOneSelectDetal.mat_zag == e.id)
+          this.mat_zag = e
+        if(this.getOneSelectDetal.mat_zag_zam && this.getOneSelectDetal.mat_zag_zam == e.id)
+          this.mat_zag_zam = e
+      })
     }
     if(this.getOneSelectDetal.techProcesses && this.$props.editAndCopt == 'false') {
-        this.techProcessID = this.getOneSelectDetal.techProcesses.id
+      this.techProcessID = this.getOneSelectDetal.techProcesses.id
     }
     if(this.getOneSelectDetal.materialList && this.getOneSelectDetal.materialList.length) {
-        this.materialList = JSON.parse(this.getOneSelectDetal.materialList)
+      this.materialList = JSON.parse(this.getOneSelectDetal.materialList)
     }
     this.id = this.getOneSelectDetal.id
 
     this.documentsData = this.getOneSelectDetal.documents
     this.getOneSelectDetal.documents.forEach(d => {
-        this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+      this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
     })
     this.randomDataMedia = random(10, 38100)
   }

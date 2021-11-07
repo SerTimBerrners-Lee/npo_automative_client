@@ -76,6 +76,21 @@ export default {
         return result
       }
     },
+    async fetchAddFilesForDetal(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/file`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: 'post',
+        body: JSON.stringify(data),
+      })
+      if(res.ok) 
+        return true
+      else 
+        return false
+
+    },
     async createOperation(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/operation`, {
         method :  'post',
