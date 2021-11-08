@@ -378,7 +378,7 @@ export default {
           this.obj.parametrs[0].znach = 0
           tp.opers.forEach(op => {
             this.obj.parametrs[0].znach = 
-              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) / 60
+              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) 
           })
           this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2)
         }

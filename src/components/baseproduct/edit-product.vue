@@ -348,7 +348,7 @@ export default {
       id: null,
       documentsData: [],
       dataMedia: [],
-      randomDataMedia: random(10, 24^4),
+      randomDataMedia: random(10, 999),
 
       showFile: false,
       keyWhenModalGenerateFileOpen: random(10, 999),

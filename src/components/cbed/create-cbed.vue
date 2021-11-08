@@ -279,7 +279,7 @@ export default {
       },
       docFiles: [],
       formData: null,
-      modalMaterialKey: random(10, 12e8),
+      modalMaterialKey: random(10, 999),
       modalMaterialIsShow: false,
       materialList: [],
       listPokDet: [],
@@ -292,7 +292,7 @@ export default {
       selectParametrs: null,
 
       techProcessIsShow: false,
-      techProcessKey: random(10, 33e6),
+      techProcessKey: random(10, 999),
       inputMassZag: 0,
       variableDensity: 0,
       techProcessID: localStorage.getItem('tpID') || null,
@@ -382,7 +382,7 @@ export default {
           this.obj.parametrs[0].znach = 0
           tp.opers.forEach(op => {
             this.obj.parametrs[0].znach = 
-              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) / 60
+              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) 
           })
           this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2)
         }

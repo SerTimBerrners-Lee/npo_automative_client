@@ -344,6 +344,7 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
+      density: 0,
 
     }
   },
@@ -527,10 +528,9 @@ export default {
         let dxl = val.split('x')
         if(dxl.length == 2) {
           if(this.inputMassZag * dxl[1])
-            this.obj.massZag = this.inputMassZag * (Number(dxl[1])/1000)
+            this.obj.massZag = this.density * (this.inputMassZag * (Number(dxl[1])/1000))
           if(this.obj.massZag)
-            this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-          
+            this.obj.trash = this.obj.massZag - this.obj.haracteriatic[0].znach 
         }
       }
     },
@@ -539,9 +539,10 @@ export default {
       this.techProcessKey = random(1, 12e8)
     },
     calcParametr(m) {
-      let oD = m.outsideDiametr
-      let leng = m.length
-      let aCS = m.areaCrossSectional
+      let oD = m.outsideDiametr // Наружный диаметр
+      let leng = m.length // Длина
+      let aCS = m.areaCrossSectional //  Площадь сечения
+      let density = m.density
       if(oD) {
         oD = JSON.parse(oD)
         if(m.material.outsideDiametr) 
@@ -552,16 +553,37 @@ export default {
         if(m.material.length) 
           this.obj.DxL = padEnd(this.obj.DxL, this.obj.DxL.length + leng.znach.length, leng.znach)
       }
+      //  Чтобы узнать Массу нужно ПЛОТНОСТЬ * (ПЛОЩАДЬ СЕЧЕНИЯ * ДЛИНУ)
       if(aCS) {
         aCS = JSON.parse(aCS)
         if(m.material.areaCrossSectional) {
           let dxl = this.obj.DxL.split('x')
-          if(dxl.length == 2) 
-            isNaN(Number(dxl[1]) * Number(aCS.znach)) ? this.obj.massZag = 0 : this.obj.massZag = (Number(dxl[1]) * Number(aCS.znach)) 
-          else 
-            isNaN(aCS.znach) ? this.obj.massZag = 0 : this.obj.massZag = aCS.znach 
+          if(dxl.length == 2 && Number(dxl[1])) {
+            if(isNaN(Number(aCS.znach))) 
+              this.obj.massZag = this.floatParse(aCS.znach) 
+              else this.obj.massZag = aCS.znach 
+            this.inputMassZag = this.obj.massZag
+            if(Number(dxl[1]) * Number(this.obj.massZag))
+              this.obj.massZag = Number(dxl[1]) * Number(this.obj.massZag)
+              else this.obj.massZag = 0
+          } else {
+            if(isNaN(Number(aCS.znach))) 
+              this.obj.massZag = this.floatParse(aCS.znach) 
+            else
+              this.obj.massZag = aCS.znach 
+            this.inputMassZag = this.obj.massZag
+          }
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-          isNaN(Number(aCS.znach)) ? this.inputMassZag = this.floatParse(aCS.znach) : this.inputMassZag = aCS.znach
+
+          console.log(this.inputMassZag)
+        }
+      }
+      if(density) {
+        try {
+          density = JSON.parse(density)
+          this.density = density.znach
+        } catch(e) {
+          console.log(e)
         }
       }
     },

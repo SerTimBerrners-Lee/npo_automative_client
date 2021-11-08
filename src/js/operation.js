@@ -71,9 +71,9 @@ export class OperationTime {
 	constructor(operation, kol_create_izd = 1) {
 		if(!operation) return false
 
-		this.pt = Number(operation.preTime)
-		this.mt = Number(operation.mainTime)
-		this.ht = Number(operation.helperTime)
+		this.pt = Number(operation.preTime) 
+		this.mt = Number(operation.mainTime) 
+		this.ht = Number(operation.helperTime) 
 		this.kol_create_izd = Number(kol_create_izd)
 
 		return {
@@ -89,6 +89,6 @@ export class OperationTime {
 	static kol_create_izd 
 
 	timeKolvo() {
-		return this.pt + ((this.mt + this.ht) * this.kol_create_izd)
+		return ((this.pt + ((this.mt + this.ht) * this.kol_create_izd)) / 60).toFixed(2)
 	}
 }
