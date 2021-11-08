@@ -12,7 +12,12 @@
           />
         </td> 
       </tr>
-      <tr class="td-row" v-for='mat in alltypeM' :key='mat' @click='e =>  {active(e.target); $emit("clickMat", mat, type);}'>
+      <tr 
+        class="td-row" 
+        v-for='mat in alltypeM' 
+        :key='mat' 
+        @click='e =>  {active(e.target); $emit("clickMat", mat, type);}'
+        @dblclick='e =>  {active(e.target); $emit("dbClickMat", mat, type);}'>
         <td>{{ mat.name }}</td>
       </tr>
       <tr class="td-row" v-for="i in 20" :key="i">

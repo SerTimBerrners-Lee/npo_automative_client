@@ -1,6 +1,7 @@
 
 const assetsFunction = (path, assets) => {
-	console.log(assets)
+	if(!assets)	return false
+	
 	switch (path) {
 		case '/': 
 			return true;

@@ -100,6 +100,7 @@
               :key='detal'
               class='td-row'
               @click='e => setDetals(detal, e.target.parentElement)'
+              @dblclick="infoDetal"
               >
               <td>{{ detal.articl }}</td>
               <td>{{ detal.name }}</td>
@@ -137,7 +138,6 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
 import Search from '@/components/search.vue';
-
 export default {
   data() {
     return {
@@ -179,6 +179,9 @@ export default {
       this.tr = e
       this.tr.classList.add('td-row-all')
       this.addOneSelectDetal(this.selectedDetal)
+    },
+    infoDetal() {
+      if(!this.selectedDetal) return false
 
       this.detalModalKey = random(1, 34e5)
       this.detalIsShow = true

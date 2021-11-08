@@ -11,6 +11,7 @@
         <Search 
           :placeholder="'Поиск по Артиклу'"
           @unmount='keySearch' 
+          :search_data='search_data'
         />
       </td>
     </tr>
@@ -37,11 +38,11 @@
 </template>
 
 <script>
-import { getReversDate } from '@/js/'
-import Search from '@/components/search.vue'
+import { getReversDate } from '@/js/';
+import Search from '@/components/search.vue';
 
 export default {
-  props: ['documents'],
+  props: ['documents', 'search_data'],
   data() {
     return {
       td: null

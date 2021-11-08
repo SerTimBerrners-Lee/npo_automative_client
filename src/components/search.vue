@@ -19,7 +19,7 @@
 
 <script>
 export default {
-  props: ['placeholder'],
+  props: ['placeholder', 'search_data'],
   data() {
     return {
       input: ''
@@ -29,6 +29,10 @@ export default {
     key(val) {
       this.$emit('unmount', val)
     }
+  },
+  async mounted() {
+    if(this.$props.search_data)
+      this.input = this.$props.search_data
   }
 }
 </script>

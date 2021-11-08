@@ -25,8 +25,9 @@
                   :documents='allFiles' 
                   @pushFile='getFilesToClick' 
                   @dbPushFile='dbPushFile'
-                  @keySearch='keySearch
-                  '/>
+                  @keySearch='keySearch'
+                  :search_data='search'
+                  />
                 <Tables v-if="nowType == 'banned'" 
                   :documents='banFiles' 
                   @pushFile='getFilesToClick'
@@ -79,7 +80,6 @@
           @unmount='unmount'
           :key='keyWhenModalGenerateFileOpen'
         />
-               
          </div>
         </div>
 </div> 
@@ -87,16 +87,14 @@
 
 <script>
 
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { getReversDate, showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
-import Tables from '@/components/filebase/tables.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
-import { random }  from 'lodash'
-
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { getReversDate, showMessage } from '@/js/';
+import InformFolder from '@/components/InformFolder.vue';
+import Tables from '@/components/filebase/tables.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { random }  from 'lodash';
 export default {
-
-  props: ['fileArrModal'],
+  props: ['fileArrModal', 'search'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',

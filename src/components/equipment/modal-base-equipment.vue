@@ -19,7 +19,8 @@
             :alltypeM="allEquipment" 
             :type="'PPT'" 
             @search='serhEq'
-            @clickMat="clickEquipment"/>
+            @clickMat="clickEquipment"
+            @dbClickMat='dbClickEquipment'/>
         </div>
         <div class="btn-control body_table_instr">
           <button class="btn-small btn-add" @click='addEuipmentToList'>Выбрать</button>
@@ -89,62 +90,64 @@ export default {
         'searchPTypeEq',
         'searchEq',]),
     clickEquipmentType(equipment) { 
-        this.equipmentT = equipment
-        this.filterAllPTEquipment(this.equipmentT)
+      this.equipmentT = equipment
+      this.filterAllPTEquipment(this.equipmentT)
     },
     clickEquipmentPType(equipmentPT) {
-        this.equipmentPT = equipmentPT
-        this.getOneEquipmentPType(equipmentPT.id)
+      this.equipmentPT = equipmentPT
+      this.getOneEquipmentPType(equipmentPT.id)
     },
     clickEquipment(eq) {
-        this.fetchOneEquipment(eq.id).then(() => {
-            this.showModalInformationEq = true;
-            this.keyModalInformation = random(10, 34e121)
-        })
-        
+      this.fetchOneEquipment(eq.id)
+    },
+    dbClickEquipment(eq) {
+      this.fetchOneEquipment(eq.id).then(() => {
+        this.showModalInformationEq = true;
+        this.keyModalInformation = random(10, 34e121)
+      })
     },
     destroyModalF() {
-        this.destroyModalLeft = 'left-block-modal-hidden'
-        this.destroyModalRight = 'content-modal-right-menu-hidden'
-        this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden'
+      this.destroyModalRight = 'content-modal-right-menu-hidden'
+      this.hiddens = 'display: none;'
     },
 
     // ---------------------------------------
     addEuipmentToList() {
-        if(!this.equipment)
-            return 0;
-        
-        let add = true
-        if(this.equipmentList.length > 0) {
-            for(let eq of this.equipmentList) {
-                if(eq.id == this.equipment.id)
-                    add=false
-            }
+      if(!this.equipment)
+        return 0;
+      
+      let add = true
+      if(this.equipmentList.length > 0) {
+        for(let eq of this.equipmentList) {
+          if(eq.id == this.equipment.id)
+            add=false
         }
-        if(add) {
-            this.equipmentListId.push(this.equipment.id)
-            this.equipmentList.push(this.equipment);
-        }
+      }
+      if(add) {
+        this.equipmentListId.push(this.equipment.id)
+        this.equipmentList.push(this.equipment);
+      }
     },
     delEQ(id) {
-        this.equipmentList = this.equipmentList.filter(eq => eq.id != id)
-        this.equipmentListId = this.equipmentListId.filter(eq => eq != id)
+      this.equipmentList = this.equipmentList.filter(eq => eq.id != id)
+      this.equipmentListId = this.equipmentListId.filter(eq => eq != id)
     },
     addEquipment() {
-        this.destroyModalF()
-        this.$emit('unmount_eq', {
-            equipmentListId: this.equipmentListId,
-            equipmentList: this.equipmentList,
-        })
+      this.destroyModalF()
+      this.$emit('unmount_eq', {
+        equipmentListId: this.equipmentListId,
+        equipmentList: this.equipmentList,
+      })
     },
     serhType(eq) {
-        this.searchTypeEq(eq)
+      this.searchTypeEq(eq)
     },
     serhPType(eq) {
-        this.searchPTypeEq(eq)
+      this.searchPTypeEq(eq)
     },
     serhEq(eq) {
-        this.searchEq(eq)
+      this.searchEq(eq)
     }
   },
   async mounted() {

@@ -158,8 +158,8 @@ export default {
     this.generateTime = Number(prs.preTime.znach) + 
       Number(prs.helperTime.znach) + 
       Number(prs.mainTime.znach)
-    if(this.getOneSelectDetal.techProcesses.length)
-      this.techProcessID = this.getOneSelectDetal.techProcesses[0].id
+    if(this.getOneSelectDetal.techProcesses)
+      this.techProcessID = this.getOneSelectDetal.techProcesses.id
   },
 }
 </script>

@@ -13,13 +13,13 @@
               :key='operation'
               :value='operation.id'>{{ operation.name }}</option>
           </select>
-          <div>Подготовительно время, н.ч.:</div>
+          <div>Подготовительно время, н.м.:</div>
           <input type="number" v-model='preTime' > 
-          <div>Вспомогательное время, н.ч.:</div>
+          <div>Вспомогательное время, н.м.:</div>
           <input type="number" v-model='helperTime'>
-          <div>Основное время, н.ч.:</div>
+          <div>Основное время, н.м.:</div>
           <input type="number" v-model='mainTime'>
-          <div>Общее число время, ч.:</div>
+          <div>Общее число время, м.:</div>
           <span class='gen_time'>{{Number(preTime)+Number(helperTime)+Number(mainTime)}}</span>
           <div></div>
         </div>

@@ -27,7 +27,8 @@
             :alltypeM="allPPTInstrument" 
             :type="'PPT'" 
             @search='serhName'
-            @clickMat="clickPPTInstrument"/>
+            @clickMat="clickPPTInstrument"
+            @dbClickMat='dbClickPPTInstrument'/>
         </div>
           <div class="btn-control body_table_instr">
             <button class="btn-small btn-add" @click='addInstrumentToList'>Выбрать</button>
@@ -51,18 +52,13 @@
       </div>
     </div>
     <ModalInformation v-if='showModalInformation' :key='keyModalInformation' />
-
 </div> 
-
 </template>
-
 <script>
-
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import {random} from 'lodash'
-import ModalInformation from '@/components/instrument/modal-information.vue'
-
+import {random} from 'lodash';
+import ModalInformation from '@/components/instrument/modal-information.vue';
 export default {
   props: ['allProvider', 'listInstrument', 'typeInstrument'],
   data() {
@@ -109,6 +105,10 @@ export default {
       this.getAllPTInstances(PTInstrument.id)
     },
     clickPPTInstrument(PPTInstrument) {
+      this.PPTInstrument = PPTInstrument
+      this.fetchOneNameInstrument(PPTInstrument.id)
+    },
+    dbClickPPTInstrument(PPTInstrument) {
       this.PPTInstrument = PPTInstrument
       this.fetchOneNameInstrument(PPTInstrument.id)
       this.showModalInformation = true;

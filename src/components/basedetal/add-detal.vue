@@ -339,11 +339,17 @@ export default {
         this.techProcessID = tp.id
         localStorage.setItem('tpID', this.techProcessID)
         if(tp.opers.length) {
+          this.obj.parametrs.preTime.znach = 0
+          this.obj.parametrs.helperTime.znach = 0
+          this.obj.parametrs.mainTime.znach = 0
           tp.opers.forEach(op => {
             this.obj.parametrs.preTime.znach = Number(this.obj.parametrs.preTime.znach) + Number(op.preTime)
             this.obj.parametrs.helperTime.znach = Number(this.obj.parametrs.helperTime.znach) + Number(op.helperTime)
             this.obj.parametrs.mainTime.znach = Number(this.obj.parametrs.mainTime.znach) + Number(op.mainTime)
           })
+          this.obj.parametrs.preTime.znach = (this.obj.parametrs.preTime.znach / 60).toFixed(2)
+          this.obj.parametrs.helperTime.znach = (this.obj.parametrs.helperTime.znach / 60).toFixed(2)
+          this.obj.parametrs.mainTime.znach = (this.obj.parametrs.mainTime.znach / 60).toFixed(2)
         }
       }
     },
