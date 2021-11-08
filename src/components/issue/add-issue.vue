@@ -19,7 +19,7 @@
         </p>
         <p>
           <span>Норма времени на выполнение: </span>
-          <input type="text" v-model='normTime'>
+          <input type="text" v-model='normTime' :disabled='is_me == "me"'>
           <span>ч.</span>
         </p>
         <p>
@@ -38,7 +38,7 @@
         </p>
         <p>
           <span>Время на контроль: </span>
-          <input type="text" v-model='srok_control'>
+          <input type="text" v-model='srok_control' :disabled='is_me == "me"'>
           <span>дней(0-неопределено) </span>
         </p>
         <p>
@@ -54,12 +54,12 @@
       </div>
       <div>
         <h3>Скриншот</h3>
-        <div class="main_screen">
+        <div class="main_screen" >
           <div v-for='scren in docFilesPreload' :key='scren'>
             <img class='screen_size' :src="scren.url" alt="Изображение">
           </div>
-          <div>
-            <label for="add_block" class='add_block screen_size'>+</label>
+          <div :disabled='is_me == "me"'>
+            <label for="add_block" class='add_block screen_size' >+</label>
             <input 
               id="add_block" 
               @change="e => addDock(e)" 
@@ -101,11 +101,11 @@
         </div>
         <p>
           <span>Общецеховые нужды: </span>
-          <input type="text" style='width: 20px' v-model='shopNeeds'>
+          <input type="text" style='width: 20px' v-model='shopNeeds' :disabled='is_me == "me"'>
         </p>
       </div>
     
-     <div class="btn-control out-btn-control" v-if='is_me != "me"'>
+     <div class="btn-control out-btn-control">
       <button class="btn-status" 
         @click='destroyModalF'>Отменить</button>
       <button class="btn-status btn-black" @click='addIssue'>{{ editIssue ? 'Обновить' : 'Дать задачу' }}</button>
