@@ -28,7 +28,8 @@
               <th>Статус</th>
             </tr>
             <tr v-for='issue in getForMeIssue' 
-              @click='(issue)'
+              @click='$router.push("/issues")'
+              class='td-row'
               :key='issue'>
               <td class='center'>{{ issue.name.split('от')[0].slice(1, 2) }}</td>
               <td class="center">{{ issue.dateUse }}</td>

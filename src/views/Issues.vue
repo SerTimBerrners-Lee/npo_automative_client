@@ -36,7 +36,8 @@
             <th>Статус</th>
           </tr>
           <tr v-for='issue in getForMeIssue' 
-            @click='(issue)'
+            @click='showIssueMe(issue)'
+            class='td-row'
             :key='issue'>
             <td class='center'>{{ issue.name.split('от')[0].slice(1, 2) }}</td>
             <td class="center">{{ issue.dateUse }}</td>
@@ -206,12 +207,13 @@
   <AddIssue 
     v-if='showAddIssue'
     :key='keyAddIssue'
-    @unmount='unmount'
+    @unmount='unmount_issue'
     :editIssue='selectedIssue'
+    :is_me='is_me'
   />
+  <Loader v-if='loader' />
 	</div>
 </template>
-
 <script>
 import {random} from 'lodash';
 import AddIssue from '@/components/issue/add-issue.vue';
@@ -224,14 +226,15 @@ export default {
 		return{
       showAddIssue: false,
       keyAddIssue: random(1, 999),
-
+      is_me: null,
       srokList: [
         'Срочно',
         'Нормально',
         'Отложено',
         'На контроль'
       ],
-      selectedIssue: null
+      selectedIssue: null,
+      loader : false
 		}
 	},
   computed: 
@@ -249,8 +252,11 @@ export default {
       this.keyAddIssue = random(1, 999)
       this.selectedIssue = null
     },
-    unmount(res) {
-      console.log(res)
+    unmount_issue() {
+      if(this.getAuth && this.getAuth.id) 
+        this.fetchIssueList(this.getAuth.id)
+      this.is_me = null;
+      this.selectedIssue = null
     },
     dateIncrementHors(date, hors) {
       let dat = dateIncrementHors(date, hors)
@@ -264,13 +270,19 @@ export default {
       this.addIssue()
       this.selectedIssue = issue
     },
+    showIssueMe(issue) {
+      this.showIssue(issue)
+      this.is_me = 'me'
+    },
     changeDatePicterRange(val) {
       console.log(val)
-    }
+    },
 	}, 
 	async mounted() {
+    this.loadeer = true
     if(this.getAuth && this.getAuth.id) 
       this.fetchIssueList(this.getAuth.id)
+    this.loadeer = false
 	}
 }
 </script>

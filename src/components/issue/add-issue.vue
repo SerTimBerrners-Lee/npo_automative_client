@@ -29,12 +29,12 @@
         <p>
           <span>Исполнитель: </span>
           <span v-for='user in executorList' :key='user' class='select_span_href'>{{ user.login }}</span>
-          <button class="btn-small btn-add" @click='selectUser("executor")'>Добавить</button>
+          <button class="btn-small btn-add" @click='selectUser("executor")' v-if='is_me != "me"'>Добавить</button>
         </p>
         <p>
           <span>Контролер: </span>
           <span v-for='user in controllerList' :key='user' class='select_span_href'>{{ user.login }}</span>
-          <button class="btn-small btn-add"  @click='selectUser("controller")'>Добавить</button>
+          <button class="btn-small btn-add"  @click='selectUser("controller")' v-if='is_me != "me"'>Добавить</button>
         </p>
         <p>
           <span>Время на контроль: </span>
@@ -77,7 +77,7 @@
             <span class='select_span_href'>{{ izd.name }}</span>
             <span class='delete_span' @click='deleteIzd(izd)'><unicon name="minus-square-full" fill="red" height='16' width='16' /></span>
           </div>
-          <button class="btn-small btn-add" @click='addProduct'>Добавить</button>
+          <button class="btn-small btn-add" @click='addProduct' v-if='is_me != "me"'>Добавить</button>
         </div>
         <div class='izd_block'>
           <span>Файлы:</span>
@@ -97,7 +97,7 @@
                 <span class='select_span_href'>{{ file.name }}</span>
             </div>
           </div>
-          <button class="btn-small btn-add" @click='openFileModal'>Добавить</button>
+          <button class="btn-small btn-add" @click='openFileModal' v-if='is_me != "me"'>Добавить</button>
         </div>
         <p>
           <span>Общецеховые нужды: </span>
@@ -105,7 +105,7 @@
         </p>
       </div>
     
-     <div class="btn-control out-btn-control">
+     <div class="btn-control out-btn-control" v-if='is_me != "me"'>
       <button class="btn-status" 
         @click='destroyModalF'>Отменить</button>
       <button class="btn-status btn-black" @click='addIssue'>{{ editIssue ? 'Обновить' : 'Дать задачу' }}</button>
@@ -150,7 +150,7 @@ import DatePicterCustom from '@/components/date-picter.vue';
 import PATH_TO_SERVER from '@/js/path';
 
 export default {
-  props: ['parametrs', 'editIssue'],
+  props: ['parametrs', 'editIssue', 'is_me'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -208,24 +208,13 @@ export default {
   },
   components: {ModalUsersList, BaseProductModal, BaseFileModal, OpensFile, DatePicterCustom},
   computed: mapGetters(['getAuth']),
-  async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;' 
-
-
-    if(this.getAuth && !this.$props.editIssue) {  
-      this.dateUse = new Date().toLocaleDateString("ru-RU"),
-      this.sourse = {login: this.getAuth.login, id: this.getAuth.id}
-    }
-    if(this.$props.editIssue) this.updateVarilable(this.$props.editIssue)
-  },
   methods: {
     ...mapActions(['createIssue', 'updateIssue']),
     destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
 			this.hiddens = 'display: none;'
+      this.$emit('unmount', null)
     },
     dataReturn() {
       return dataFormat()
@@ -303,18 +292,17 @@ export default {
     },
     addDock(val) {
       val.target.files.forEach(f => {
-          photoPreloadUrl(f, (res) => {
-            this.docFilesPreload.push(res)
-          })
-          this.docFiles.push(f)
-          this.formData.append('document', f)
+        photoPreloadUrl(f, (res) => {
+          this.docFilesPreload.push(res)
+        })
+        this.docFiles.push(f)
+        this.formData.append('document', f)
       })
     },
     changeDatePicter(val) {
       this.dateUse = val
     },
     updateVarilable(issue) {
-      console.log(issue)
       this.description = issue.description
       this.controllerList = JSON.parse(issue.controllerList)
       this.izdList = JSON.parse(issue.izdList)
@@ -341,6 +329,17 @@ export default {
       }
 
     }
+  },
+  async mounted() {
+    this.destroyModalLeft = 'left-block-modal'
+    this.destroyModalRight = 'content-modal-right-menu'
+    this.hiddens = 'opacity: 1;' 
+
+    if(this.getAuth && !this.$props.editIssue) {  
+      this.dateUse = new Date().toLocaleDateString("ru-RU"),
+      this.sourse = {login: this.getAuth.login, id: this.getAuth.id}
+    }
+    if(this.$props.editIssue) this.updateVarilable(this.$props.editIssue)
   },
 
 }
