@@ -68,7 +68,7 @@
               @click='e => setCbed(cb, e.target.parentElement)'>
               <td>{{ cb.articl }}</td>
               <td>{{ cb.name }}</td>
-              <td></td>
+              <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
             </tr>
             <tr v-for="item in 42" :key="item">
               <td></td>
@@ -104,7 +104,7 @@
               >
               <td>{{ detal.articl }}</td>
               <td>{{ detal.name }}</td>
-              <td>...</td>
+              <td class='center'>{{ detal.kolvo_for_detal ? detal.kolvo_for_detal : '' }}</td>
             </tr>
             <tr v-for="item in 42" :key="item">
               <td></td>
@@ -158,19 +158,19 @@ export default {
   components: {DetalModal, Search},
   methods: {
     ...mapActions([
-        'getAllDetals', 
-        'deleteDetelyId', 
-        'getAllProduct', 
-        'getAllCbed']),
+      'getAllDetals', 
+      'deleteDetelyId', 
+      'getAllProduct', 
+      'getAllCbed']),
     ...mapMutations([
-        'addOneSelectDetal', 
-        'filterDetalToArticle',
-        'clearFilterCbedByProduct',
-        'getAllCbEdByProduct',
-        'searchCbed',
-        'searchProduct',
-        'getAllDetalByProduct',
-        'clearFilterDetalByProduct']),
+      'addOneSelectDetal', 
+      'filterDetalToArticle',
+      'clearFilterCbedByProduct',
+      'getAllCbEdByProduct',
+      'searchCbed',
+      'searchProduct',
+      'getAllDetalByProduct',
+      'clearFilterDetalByProduct']),
     setDetals(detal, e) {
       this.selectedDetal = detal
         if(this.tr) 

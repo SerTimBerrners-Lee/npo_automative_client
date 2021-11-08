@@ -104,14 +104,34 @@ export default {
       let newCB = []
       for(let cb of state.cbed){
         for(let prod of product.cbeds) {
-          if(prod.id == cb.id)
-            newCB.push(cb)
+          // pars kol 
+          let pars = null;
+          try {
+            if(product.listCbed) 
+              pars = JSON.parse(product.listCbed)
+          } catch (e) {
+            console.log(e)
+          }
+          if(prod.id == cb.id) {
+            let cbed_new = cb
+            if(pars) {
+              for(let uu of pars) {
+                if(uu.cb.id == cb.id)
+                  cbed_new['kolvo_for_product'] = uu.kol
+              }
+            }
+            newCB.push(cbed_new)
+          }
         }
       }
       state.cbed = newCB
     },
     clearFilterCbedByProduct(state) {
-      state.cbed = state.middleware_state
+      state.cbed = state.middleware_state.map(e => {
+        if(e.kolvo_for_product) 
+          e.kolvo_for_product = 0 
+        return e 
+      })
     }
   }
 }

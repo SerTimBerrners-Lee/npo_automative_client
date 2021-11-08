@@ -220,17 +220,37 @@ export default {
 
       state.detal = state.middleware_detals
 
-      let newDetals = []
+      let newDetals = [] 
       for(let det of state.detal){
         for(let prod of product.detals) {
-          if(prod.id == det.id)
-            newDetals.push(det)
+          let pars = null;
+          try {
+            if(product.listDetal) 
+              pars = JSON.parse(product.listDetal)
+          } catch (e) {
+            console.log(e)
+          }
+          if(prod.id == det.id) {
+            let detal_new = det
+            if(pars && !product.fabricNumber) {
+              console.log(pars)
+              for(let uu of pars) {
+                if(uu.det.id == det.id)
+                  detal_new['kolvo_for_detal'] = uu.kol
+              }
+            }
+            newDetals.push(detal_new)
+          }
         }
       }
       state.detal = newDetals
     },
     clearFilterDetalByProduct(state) {
-      state.detal = state.middleware_detals
+      state.detal = state.middleware_detals.map(e => {
+        if(e.kolvo_for_detal) 
+          e.kolvo_for_detal = 0 
+        return e 
+      })
     }
   }
 }
