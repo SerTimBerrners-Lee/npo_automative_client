@@ -153,13 +153,13 @@
                       style="width: 50px; text-align:center;"
                       class='inputs-small'
                       v-model='obj.DxL'>
-                      <div class='absolute_znach'>
+                      <!-- <div class='absolute_znach'>
                         {{ obj.DxL.split('x')
                             .length == 2 ? 
                           `=${obj.DxL.split('x')[0] * obj.DxL.split('x')[1]}`
                           : ''
                         }}
-                      </div>
+                      </div> -->
                   </td>
                 </tr>
                 <tr>
@@ -418,7 +418,7 @@ export default {
         let dxl = val.split('x')
         if(dxl.length == 2) {
           if(this.inputMassZag * dxl[1])
-            this.obj.massZag = this.inputMassZag * dxl[1] 
+            this.obj.massZag = this.inputMassZag * (Number(dxl[1])/1000)
           if(this.obj.massZag)
             this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
         }
@@ -426,7 +426,7 @@ export default {
     },
     showTechProcess() {
       this.techProcessIsShow = true
-      this.techProcessKey = random(1, 12e8)
+      this.techProcessKey = random(1, 999)
     },
     calcParametr(m) {
       let oD = m.outsideDiametr // Наружный диаметр

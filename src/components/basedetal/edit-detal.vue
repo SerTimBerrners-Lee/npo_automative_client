@@ -527,9 +527,10 @@ export default {
         let dxl = val.split('x')
         if(dxl.length == 2) {
           if(this.inputMassZag * dxl[1])
-            this.obj.massZag = this.inputMassZag * dxl[1] 
+            this.obj.massZag = this.inputMassZag * (Number(dxl[1])/1000)
           if(this.obj.massZag)
             this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
+          
         }
       }
     },

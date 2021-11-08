@@ -10,7 +10,7 @@
             <div>
               <div class="span-type-files-pdf" 
                 v-if="docType.typename == 'docx'" >
-                <iframe id="viewer-frame-pdf" :src='`https://docs.google.com/gview?url=${urlImg}&embedded=true`' 
+                <iframe id="viewer-frame-pdf" :src='`https://docs.google.com/viewer?url=${urlImg}&embedded=true`' 
                   frameborder="0" 
                   scrolling="no"></iframe>
               </div>
