@@ -279,7 +279,7 @@
 <script>
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import TechProcess from './tech-process-modal.vue';
-import { random, padStart, padEnd } from 'lodash';
+import { random, padStart, padEnd, isNaN } from 'lodash';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import PATH_TO_SERVER from '@/js/path.js';
 import { isEmpty } from 'lodash';
@@ -526,8 +526,10 @@ export default {
         }
         let dxl = val.split('x')
         if(dxl.length == 2) {
-          this.obj.massZag = (Number(this.inputMassZag) * Number(dxl[1]))
-          this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
+          if(this.inputMassZag * dxl[1])
+            this.obj.massZag = this.inputMassZag * dxl[1] 
+          if(this.obj.massZag)
+            this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
         }
       }
     },
@@ -554,13 +556,16 @@ export default {
         if(m.material.areaCrossSectional) {
           let dxl = this.obj.DxL.split('x')
           if(dxl.length == 2) 
-            this.obj.massZag = (Number(dxl[1]) * Number(aCS.znach))
+            isNaN(Number(dxl[1]) * Number(aCS.znach)) ? this.obj.massZag = 0 : this.obj.massZag = (Number(dxl[1]) * Number(aCS.znach)) 
           else 
-            this.obj.massZag = aCS.znach
+            isNaN(aCS.znach) ? this.obj.massZag = 0 : this.obj.massZag = aCS.znach 
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-          this.inputMassZag = aCS.znach
+          isNaN(Number(aCS.znach)) ? this.inputMassZag = this.floatParse(aCS.znach) : this.inputMassZag = aCS.znach
         }
       }
+    },
+    floatParse(n) {
+      return parseFloat(n.replace(",", "."));
     },
     exit(){
       this.$router.push("/basedetals")

@@ -417,9 +417,10 @@ export default {
         }
         let dxl = val.split('x')
         if(dxl.length == 2) {
-          // обновляем значения в других инпутах 
-          this.obj.massZag = Number(this.variableDensity) * (Number(this.inputMassZag) * (Number(dxl[1])/1000))
-          this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
+          if(this.inputMassZag * dxl[1])
+            this.obj.massZag = this.inputMassZag * dxl[1] 
+          if(this.obj.massZag)
+            this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
         }
       }
     },
@@ -431,33 +432,32 @@ export default {
       let oD = m.outsideDiametr // Наружный диаметр
       let leng = m.length // Длина
       let aCS = m.areaCrossSectional //  Площадь сечения
-      let density = m.density
       if(oD) {
         oD = JSON.parse(oD)
         if(m.material.outsideDiametr) 
-            this.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
+          this.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
       }
       if(leng) {
         leng = JSON.parse(leng)
         if(m.material.length) 
-            this.obj.DxL = padEnd(this.obj.DxL, this.obj.DxL.length + leng.znach.length, leng.znach)
+          this.obj.DxL = padEnd(this.obj.DxL, this.obj.DxL.length + leng.znach.length, leng.znach)
       }
       //  Чтобы узнать Массу нужно ПЛОТНОСТЬ * (ПЛОЩАДЬ СЕЧЕНИЯ * ДЛИНУ)
       if(aCS) {
         aCS = JSON.parse(aCS)
-        density = JSON.parse(density)
         if(m.material.areaCrossSectional) {
           let dxl = this.obj.DxL.split('x')
           if(dxl.length == 2) 
-            this.obj.massZag = Number(density.znach) * ((Number(dxl[1])/1000) * Number(aCS.znach))
+            isNaN(Number(dxl[1]) * Number(aCS.znach)) ? this.obj.massZag = 0 : this.obj.massZag = (Number(dxl[1]) * Number(aCS.znach)) 
           else 
-            this.obj.massZag = aCS.znach
-
+            isNaN(aCS.znach) ? this.obj.massZag = 0 : this.obj.massZag = aCS.znach 
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-          this.inputMassZag = aCS.znach
-          this.variableDensity = Number(density.znach)
+          isNaN(Number(aCS.znach)) ? this.inputMassZag = this.floatParse(aCS.znach) : this.inputMassZag = aCS.znach          
         }
       }
+    },
+    floatParse(n) {
+      return parseFloat(n.replace(",", "."));
     },
     exit(){
       this.$router.push("/basedetals")
