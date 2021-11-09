@@ -146,9 +146,9 @@ export default {
         body: data
       })
       if(res.ok) {
-      ctx.commit('onePPTClear')
-        return res
-      }
+        ctx.commit('onePPTClear')
+        return true
+      } else return false
     },
     async removePPM(ctx, id) {
       const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`, {

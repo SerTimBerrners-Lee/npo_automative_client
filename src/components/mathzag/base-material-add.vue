@@ -12,7 +12,7 @@
           <span v-if='getLinkId == 3'>Расходные материалы</span>
         </p>
       </div>
-      <h3>Выбор типа и подипа</h3> 
+      <h3>Выбор типа и подипа <span class='btn-change-type' v-if='$route.params.type == "edit"' @click='changeTypeForEdit'>Изменить тип и подтип</span></h3> 
       <div class='main-content-block'>
         <div class="left-block">
           <div>
@@ -275,26 +275,22 @@ export default {
       'getRoleAssets', 
     ]),
   },  
-  updated() {
-    if(this.$route.params.type == 'edit' && !this.getOnePPT.id)
-      this.$router.push({path: '/basematerial'}) 
-  },
   methods: {
-    ...mapActions(['getAllTypeMaterial', 
+    ...mapActions(['getAllTypeMaterial',
       'getOnePodType', 
       'getAllEdizm', 
       'podMaterial',
       'createNewPodPodMaterial',
       'fetchGetOnePPM',
       'getAllPodTypeMaterial'
-      ]),
+    ]),
     ...mapMutations(['filterMatByPodType',
       'filterMaterialById',
       'filterPodMaterialById',
       'searchTypeMutation', 
       'searchPTypeMutation',
       'delitPathNavigate',
-      ]),
+    ]),
     unmount_filemodal(res) {
       if(res) 
         this.arrFileGet = res
@@ -331,7 +327,6 @@ export default {
 
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
-
 
       if(this.material)
         this.formData.append('rootParentId', this.material.id)
@@ -396,42 +391,41 @@ export default {
         for(let inx in this.arrFileGet) {
           new_array.push(this.arrFileGet[inx].id)
         }
-      this.formData.append('file_base', JSON.stringify(new_array))
+        this.formData.append('file_base', JSON.stringify(new_array))
       }
 
       this.createNewPodPodMaterial(this.formData).then(res => {
-        if(res)
-          if(this.$route.params.type == 'edit')
+        if(res) {
+          if(this.$route.params.type == "edit") {
             showMessage('', 'Материал усешно обновлен. Перенаправление на главную страницу...', 's', this)
-          else 
+          } else {
             showMessage('', 'Материал усешно создан. Перенаправление на главную страницу...', 's', this)
+          }
+        }
+
+        setTimeout(() => {
+          this.$router.push('/basematerial')
+          this.delitPathNavigate(this.$route.path)
+        }, 3000)
       })
-      setTimeout(() => {
-        this.$router.push('/basematerial')
-        this.delitPathNavigate(this.$route.path)
-      }, 3000)
     },
     clickMat(mat, type) {
       if(type == 'type') {
         this.material = mat
-        if(mat.podMaterials && mat.instansMaterial != 1) {
+        if(mat.podMaterials && mat.instansMaterial != 1) 
           this.filterMatByPodType(mat.podMaterials)
-        }
-            
         this.obj.name = this.material.name
       }
       if(type == 'podM') {
         this.getOnePodType(mat.id).then((mat) => {
           if(!mat) return 0
           this.podMaterial = mat
-          if(this.$route.params.type == 'create') 
             if(JSON.parse(this.podMaterial.density))
               this.obj.density_input =  JSON.parse(this.podMaterial.density).znach
-          
-            
-          if(this.material) {
+        
+          if(this.material)
             this.obj.name = this.material.name + ' ' + this.podMaterial.name
-          } else {
+          else {
             this.obj.name = ''
             this.obj.name = this.obj.name + ' ' + mat.name 
           }
@@ -501,6 +495,10 @@ export default {
         if(this.getOnePPT.documents) 
           this.arrFileGet = this.getOnePPT.documents
       }      
+    },
+    changeTypeForEdit() {
+      this.getAllTypeMaterial()
+      this.getAllPodTypeMaterial()
     },
     searchTypeM(val) {
       this.searchTypeMutation(val)
@@ -597,5 +595,10 @@ table {
   margin: 0px;
   height: 34px;
   border: none;
+}
+.btn-change-type {
+  font-size: 14px;
+  cursor: pointer;
+  color: rgb(197, 82, 82);
 }
 </style>
