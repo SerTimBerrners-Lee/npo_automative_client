@@ -88,7 +88,7 @@
       </div>
     </div>
     <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.equipmentAssets.writeSomeone">
-        <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
+        <button class="btn-status" @click='exit'>Отменить</button>
         <button class="btn-status btn-black" @click="addEquipment">Сохранить</button>
       </div>
       <ListProvider  
@@ -164,6 +164,19 @@ export default {
   ]),
   components: {TableMaterial, AddFile, ListProvider, BaseTools, InformFolder},
   methods: {
+    ...mapActions([
+      'fetchAllEquipmentType', 
+      'getAllEquipmentPType',
+      'getAllEdizm', 
+      'creqteEquipment',
+      'getAllUsers'
+      ]),
+    ...mapMutations([ 
+      'filterAllPTEquipment',
+      'searchTypeEq',
+      'searchPTypeEq',
+      'delitPathNavigate'
+      ]),
     addProvider() {
       this.showProvider = true
       this.keyWhenModalListProvider = random(10, 384e4)
@@ -202,21 +215,8 @@ export default {
       this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
       this.formData.append('rootParentId', this.equipmentT.id)
       this.creqteEquipment(this.formData)
-
-      this.$router.push('/baseequipment')
+      this.exit()
     },
-    ...mapActions([
-      'fetchAllEquipmentType', 
-      'getAllEquipmentPType',
-      'getAllEdizm', 
-      'creqteEquipment',
-      'getAllUsers'
-      ]),
-    ...mapMutations([ 
-      'filterAllPTEquipment',
-      'searchTypeEq',
-      'searchPTypeEq'
-      ]),
     clickEquipment(eq) {
       this.equipmentT = eq
       this.filterAllPTEquipment(eq) 
@@ -245,6 +245,10 @@ export default {
     serhPType(eq) {
       this.searchPTypeEq(eq)
     },
+    exit() {
+      this.$router.push('/baseequipment')
+      this.delitPathNavigate(this.$route.path)
+    }
   },
   async mounted() {
     this.loader = true

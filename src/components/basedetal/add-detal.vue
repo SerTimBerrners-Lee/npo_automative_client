@@ -218,6 +218,9 @@
             @unmount='file_unmount'/>
         </div>
       </div>
+      <div class="btn-control">
+        <button class="btn-small" @click='addFileModal' style='margin-top: 50px;'>Добавить из базы</button>
+      </div>
     </div>
     <InformFolder  
       :title='titleMessage'
@@ -226,6 +229,13 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
+    <BaseFileModal 
+      v-if='showModalFile'
+      :key='fileModalKey'
+      :fileArrModal='documentsData'
+      @unmount='unmount_filemodal'
+      :search='this.obj.articl'
+  />
   </div>
 </template>
 
@@ -236,6 +246,7 @@ import { random, padStart, padEnd } from 'lodash';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 
 export default {
   data() {
@@ -257,6 +268,8 @@ export default {
         massZag: '',
         trash: ''
       },
+      showModalFile: false,
+      fileModalKey: random(1, 999),
       formData: null,
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
@@ -265,6 +278,7 @@ export default {
       mat_zag_zam: 'Задать', 
       getOneMaterial: false,
       materialList: [],
+      documentsData: [],
       selectHaracteristic: null,
       techProcessIsShow: false,
       techProcessKey: random(10, 33e6),
@@ -284,56 +298,13 @@ export default {
     this.deleteStorageData()
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
-  components: {ModalBaseMaterial, TechProcess, InformFolder},
+  components: {ModalBaseMaterial, TechProcess, InformFolder, BaseFileModal},
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers']),
-    ...mapMutations(['removeOperationStorage']),
-    saveDetal() {
-      if(this.obj.name.length < 3) 
-        return 0
-
-      if(!this.formData)
-        this.formData = new FormData()
-
-      this.formData.append('techProcessID', this.techProcessID || null)
-      this.formData.append('name', this.obj.name)
-      this.formData.append('articl', this.obj.articl)
-      this.formData.append('responsible', this.obj.responsible)
-      this.formData.append('description', this.obj.description)
-      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
-      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
-      this.formData.append('DxL', this.obj.DxL)
-      this.formData.append('massZag', this.obj.massZag)
-      this.formData.append('trash', this.obj.trash)
-      this.formData.append('mat_zag', this.mat_zag != 'Задать' ?
-        this.mat_zag.id : null)
-      this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
-         this.mat_zag_zam.id : null)
-      if(this.materialList.length > 0) {
-        for(let mat = 0; mat < this.materialList.length; mat++) {
-          this.materialList[mat].mat = {
-            id: this.materialList[mat].mat.id,
-            name: this.materialList[mat].mat.name,
-            kol: this.materialList[mat].mat.kolvo
-          }
-          if(mat == this.materialList.length - 1) {
-            this.formData.append('materialList', JSON.stringify(this.materialList))
-            this.createNewDetal(this.formData).then(res => {
-              if(res) 
-                showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
-            })
-          }
-        }
-      } else {
-         this.createNewDetal(this.formData).then(res => {
-            if(res) 
-              showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
-          })
-      }
-      
-      this.deleteStorageData()
-      setTimeout(() =>  this.$router.push('/basedetals'), 3000)
-      
+    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    unmount_filemodal(res) {
+      if(res) 
+        this.documentsData = res
     },
     unmount_tech_process(tp) {
       if(tp.id) {
@@ -373,6 +344,65 @@ export default {
 
       if(mat)
         this.materialList = mat.materialList
+    },
+    saveDetal() {
+      if(this.obj.name.length < 3) 
+        return 0
+
+      if(!this.formData)
+        this.formData = new FormData()
+
+      this.formData.append('techProcessID', this.techProcessID || null)
+      this.formData.append('name', this.obj.name)
+      this.formData.append('articl', this.obj.articl)
+      this.formData.append('responsible', this.obj.responsible)
+      this.formData.append('description', this.obj.description)
+      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
+      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      this.formData.append('DxL', this.obj.DxL)
+      this.formData.append('massZag', this.obj.massZag)
+      this.formData.append('trash', this.obj.trash)
+
+      if(this.documentsData.length) {
+        let new_array = []
+        for(let inx in this.documentsData) {
+          new_array.push(this.documentsData[inx].id)
+        }
+        this.formData.append('file_base', JSON.stringify(new_array))
+      }
+
+      this.formData.append('mat_zag', this.mat_zag != 'Задать' ?
+        this.mat_zag.id : null)
+      this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
+         this.mat_zag_zam.id : null)
+      if(this.materialList.length > 0) {
+        for(let mat = 0; mat < this.materialList.length; mat++) {
+          this.materialList[mat].mat = {
+            id: this.materialList[mat].mat.id,
+            name: this.materialList[mat].mat.name,
+            kol: this.materialList[mat].mat.kolvo
+          }
+          if(mat == this.materialList.length - 1) {
+            this.formData.append('materialList', JSON.stringify(this.materialList))
+            this.createNewDetal(this.formData).then(res => {
+              if(res) 
+                showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
+            })
+          }
+        }
+      } else {
+         this.createNewDetal(this.formData).then(res => {
+            if(res) 
+              showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's', this)
+          })
+      }
+      
+      this.deleteStorageData()
+      setTimeout(() =>  {
+        this.$router.push('/basedetals')
+        this.delitPathNavigate(this.$route.path)
+      }, 3000)
+      
     },
     addPokMat() {
       this.instanMaterial = 3
@@ -465,8 +495,6 @@ export default {
             this.inputMassZag = this.obj.massZag
           }
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-
-          console.log(this.inputMassZag)
         }
       }
       if(density) {
@@ -484,10 +512,15 @@ export default {
     exit(){
       this.$router.push("/basedetals")
       this.deleteStorageData()
+      this.delitPathNavigate(this.$route.path)
     },
     deleteStorageData() {
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
+    },
+    addFileModal() {
+      this.fileModalKey = random(1, 999)
+      this.showModalFile = true
     }
   },
   async mounted() {

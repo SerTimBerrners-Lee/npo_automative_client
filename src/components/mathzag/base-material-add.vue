@@ -158,22 +158,6 @@
                 <td>{{ doc.name }}</td>
               </tr>
             </table>
-            <div v-if='fileArrModal.length'>
-              <h3>Добавленные из базы: </h3>
-              <table style='width: 85%;'>
-                <tr>
-                  <th >Файл</th>
-                </tr>
-                <tr 
-                  v-for='doc in  fileArrModal' 
-                  :key='doc'
-                  class='td-row'
-                  @click='setDocs(doc)'
-                  >
-                  <td>{{ doc.name }}</td>
-                </tr>
-              </table>
-            </div>
             <div class="btn-control" style='width: 83%; margin-top: 50px;'>
               <button class="btn-small" @click='addFileModal'>Добавить из базы</button>
             </div>
@@ -184,8 +168,8 @@
     <div class="content-right">
     </div>
     <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.materialAssets.writeSomeone" >
-      <button class="btn-status" @click='$router.push("/basematerial")'>Назад</button>
-      <button class="btn-status" @click='$router.push("/basematerial")'>Отменить</button>
+      <button class="btn-status" @click='exit'>Назад</button>
+      <button class="btn-status" @click='exit'>Отменить</button>
       <button class="btn-status btn-black" @click="addItem" v-if="$route.params.type != 'edit'">Сохранить</button>
       <button class="btn-status btn-black" @click="addItem(this.getOnePPT.id)" v-if="$route.params.type == 'edit'">Обновить</button>
     </div>
@@ -209,20 +193,20 @@
     <BaseFileModal 
       v-if='showModalFile'
       :key='fileModalKey'
-      :fileArrModal='fileArrModal'
+      :fileArrModal='arrFileGet'
       @unmount='unmount_filemodal'
   />
   </div>
 </template>
 
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapActions, mapGetters, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue'   ;
+import { mapActions, mapGetters, mapMutations } from 'vuex'           ;
 import ListProvider from '@/components/baseprovider/list-provider.vue';
-import { random, isEmpty } from 'lodash';
-import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
+import { random, isEmpty } from 'lodash'                              ;
+import { showMessage } from '@/js/'                                   ;
+import InformFolder from '@/components/InformFolder.vue'              ;
+import OpensFile from '@/components/filebase/openfile.vue'            ;
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default {
   data() {
@@ -275,7 +259,6 @@ export default {
       showInformPanel: false,
       keyInformTip: 0,
       click_short_t_pt: false,
-      fileArrModal: [],
       showModalFile: false,
       fileModalKey: random(1, 999),
     }
@@ -310,10 +293,11 @@ export default {
       'filterPodMaterialById',
       'searchTypeMutation', 
       'searchPTypeMutation',
+      'delitPathNavigate',
       ]),
     unmount_filemodal(res) {
       if(res) 
-        this.fileArrModal = res
+        this.arrFileGet = res
     },
     pushProvider(provider) { 
       if(!provider)
@@ -409,10 +393,10 @@ export default {
       this.formData.append('kolvo', kolvo)
       this.formData.append('providers', this.providersId) 
       this.formData.append('description', dat.description)
-      if(this.fileArrModal.length) {
+      if(this.arrFileGet.length) {
         let new_array = []
-        for(let inx in this.fileArrModal) {
-          new_array.push(this.fileArrModal[inx].id)
+        for(let inx in this.arrFileGet) {
+          new_array.push(this.arrFileGet[inx].id)
         }
       this.formData.append('file_base', JSON.stringify(new_array))
       }
@@ -424,7 +408,10 @@ export default {
           else 
             showMessage('', 'Материал усешно создан. Перенаправление на главную страницу...', 's', this)
       })
-      setTimeout(() => this.$router.push('/basematerial'), 3000)
+      setTimeout(() => {
+        this.$router.push('/basematerial')
+        this.delitPathNavigate(this.$route.path)
+      }, 3000)
     },
     clickMat(mat, type) {
       if(type == 'type') {
@@ -513,9 +500,8 @@ export default {
           this.providers.forEach(provider => {
             this.providersId.push({id: provider.id})
           })
-      if(this.getOnePPT.documents) {
-        this.arrFileGet = this.getOnePPT.documents
-      }
+        if(this.getOnePPT.documents) 
+          this.arrFileGet = this.getOnePPT.documents
       }      
     },
     searchTypeM(val) {
@@ -534,6 +520,10 @@ export default {
     addFileModal() {
       this.fileModalKey = random(1, 999)
       this.showModalFile = true
+    },
+    exit() {
+      this.$router.push("/basematerial")
+      this.delitPathNavigate(this.$route.path)
     }
   },
   async mounted() {

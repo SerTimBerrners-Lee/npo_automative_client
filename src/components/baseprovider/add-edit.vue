@@ -86,7 +86,7 @@
       </div>
     </div>
       <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.providerAssets.writeSomeone">
-        <button class="btn-status" @click="$router.push('/baseprovider')">Отменить</button>
+        <button class="btn-status" @click="exit">Отменить</button>
         <button class="btn-status btn-black" @click='addProvider'>Сохранить</button>
       </div>
       <AddContact 
@@ -114,7 +114,7 @@
 
 import AddContact from './add-contact.vue';
 import { random, isEmpty } from 'lodash';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
@@ -160,6 +160,7 @@ export default {
   components: {AddContact, ModalBaseMaterial, OpensFile, TableMaterialFilter},
   methods: {
     ...mapActions(['addOneProvider']),
+    ...mapMutations(['delitPathNavigate']),
     unmount(data) {
       if(!data)
         return 0;
@@ -213,6 +214,7 @@ export default {
 
       this.addOneProvider(this.formData)
       this.$router.push('/baseprovider')
+      this.delitPathNavigate(this.$route.path)
     },
     file_unmount(e) { 
       if(!e) return 0
@@ -228,6 +230,10 @@ export default {
         this.keyWhenModalGenerateFileOpen = random(10, 1222)
       }
     },
+    exit() {
+      this.$router.push('/baseprovider')
+      this.delitPathNavigate(this.$route.path)
+    }
   },
   async mounted() {
     if(this.$route.params.type == 'add') {

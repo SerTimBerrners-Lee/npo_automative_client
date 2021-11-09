@@ -14,7 +14,7 @@
               :value='user.id'>{{ user.login }}</option>
           </select> 
       </p>
-    </div>
+    </div> 
     <div class="content_block">
       <div class="left_content">
         <div class="content_left_block">
@@ -161,12 +161,15 @@
               <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
-            <h3>Документы</h3>
-            <div style='height: 50px;'>
-              <FileLoader 
-                :typeGetFile='"getfile"'
-                @unmount='file_unmount'/>
-            </div>
+              <h3>Документы</h3>
+              <div style='height: 50px;'>
+                <FileLoader 
+                  :typeGetFile='"getfile"'
+                  @unmount='file_unmount'/>
+              </div>
+              <div class="btn-control" style='margin-top: 20px;'>
+                <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
+              </div>
             </div>
             <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес</h3>
             <TechProcess 
@@ -179,7 +182,7 @@
             <h3 class="link_h3">История изменений</h3>
           </div>
         </div>
-        <div class="btn-control out-btn-control control-save" >
+        <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.productAssets.writeSomeone">
           <button 
             class="btn-status"
             @click='exit'
@@ -247,6 +250,13 @@
       :getListCbed='true'
       :listCbed='listCbed'
     />
+    <BaseFileModal 
+      v-if='showModalFile'
+      :key='fileModalKey'
+      :fileArrModal='documentsData'
+      @unmount='unmount_filemodal'
+      :search='this.obj.articl'
+  />
   </div>
 </template>
 
@@ -259,6 +269,7 @@ import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default {
   data() {
     return {
@@ -295,6 +306,7 @@ export default {
       inputMassZag: 0,
       variableDensity: 0,
       techProcessID: localStorage.getItem('tpID') || null,
+      documentsData: [],
 
       titleMessage: '',
       message: '',
@@ -308,20 +320,56 @@ export default {
       generateKeyBFM: random (1, 999),
 
       showCbed: false,
-      generateKeyCbed: random(1, 999)
+      generateKeyCbed: random(1, 999),
+
+      showModalFile: false,
+      fileModalKey: random(1, 999),
       }
   },
   unmounted() {
     this.deleteStorageData()
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
-  components: {ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal, BaseCbedModal},
+  components: {ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal, BaseCbedModal, BaseFileModal},
   methods: {
     ...mapActions(['createNewProduct', 'getAllUsers']),
-    ...mapMutations(['removeOperationStorage']),
+    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    unmount_tech_process(tp) {
+      if(tp.id) {
+        this.techProcessID = tp.id
+        localStorage.setItem('tpID', this.techProcessID)
+        if(tp.opers.length) {
+          this.obj.parametrs[0].znach = 0
+          tp.opers.forEach(op => {
+            this.obj.parametrs[0].znach = 
+              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) 
+          })
+          this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2)
+        }
+      }
+    },
+    file_unmount(e) { 
+      if(!e) 
+        return 0
+      this.formData = e.formData
+    },
+    unmount_filemodal(res) {
+      if(res) 
+        this.documentsData = res
+    },
+    unmount_material(mat) {
+      if(this.instanMaterial == 2) {
+        this.listPokDet = mat.materialList
+      }
+      if(this.instanMaterial == 3) {
+        this.materialList = mat.materialList
+      }
+    },
     saveDetal() {
       if(this.obj.name.length < 3) 
         return 0
+
+      if(this.obj.name) return false
 
       if(!this.formData)
         this.formData = new FormData()
@@ -362,40 +410,23 @@ export default {
         }
       }
 
+      if(this.documentsData.length) {
+        let new_array = []
+        for(let inx in this.documentsData) {
+          new_array.push(this.documentsData[inx].id)
+        }
+        this.formData.append('file_base', JSON.stringify(new_array))
+      }
+
       showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
 
       this.createNewProduct(this.formData)
 
       this.deleteStorageData()
-      setTimeout(() =>  this.$router.push('/product'), 3000)
-      
-    },
-    unmount_tech_process(tp) {
-      if(tp.id) {
-        this.techProcessID = tp.id
-        localStorage.setItem('tpID', this.techProcessID)
-        if(tp.opers.length) {
-          this.obj.parametrs[0].znach = 0
-          tp.opers.forEach(op => {
-            this.obj.parametrs[0].znach = 
-              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) 
-          })
-          this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2)
-        }
-      }
-    },
-    file_unmount(e) { 
-      if(!e) 
-        return 0
-      this.formData = e.formData
-    },
-    unmount_material(mat) {
-      if(this.instanMaterial == 2) {
-        this.listPokDet = mat.materialList
-      }
-      if(this.instanMaterial == 3) {
-        this.materialList = mat.materialList
-      }
+      setTimeout(() =>  {
+        this.$router.push('/product')
+        this.delitPathNavigate(this.$route.path)
+      }, 3000)
     },
     changeSelected() {
       switch (this.select_model) {
@@ -469,6 +500,7 @@ export default {
     exit(){
       this.$router.push("/cbed")
       this.deleteStorageData()
+      this.delitPathNavigate(this.$route.path)
     },
     responsCbed(res) {
       this.listCbed = res
@@ -476,6 +508,10 @@ export default {
     deleteStorageData() {
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
+    },
+    addFileModal() {
+      this.fileModalKey = random(1, 999)
+      this.showModalFile = true
     }
   },
   async mounted() {

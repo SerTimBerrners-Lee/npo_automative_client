@@ -146,6 +146,9 @@
                 :typeGetFile='"getfile"'
                 @unmount='file_unmount'/>
             </div>
+            <div class="btn-control" style='margin-top: 20px;'>
+              <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
+            </div>
             </div>
             <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес</h3>
             <TechProcess 
@@ -265,11 +268,12 @@
           </div>
         <h3 class="link_h3">Принадлежность</h3>
     </div>
-    <InformFolder  :title='titleMessage'
-        :message = 'message'
-        :type = 'type'
-        v-if='showInformPanel'
-        :key='keyInformTip'
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='showInformPanel'
+      :key='keyInformTip'
     />
     <OpensFile 
         :parametrs='itemFiles' 
@@ -283,6 +287,13 @@
       :getListCbed='true'
       :listCbed='listCbed'
     />
+    <BaseFileModal 
+      v-if='showModalFile'
+      :key='fileModalKey'
+      :fileArrModal='documentsData'
+      @unmount='unmount_filemodal'
+      :search='this.obj.articl'
+  />
   </div>
 </template>
 
@@ -298,65 +309,69 @@ import MediaSlider from '@/components/filebase/media-slider.vue';
 import PATH_TO_SERVER from '@/js/path';
 import OpensFile from '@/components/filebase/openfile.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 
 export default {
   data() {
     return {
-        obj: {
-            articl: '',
-            name: '',
-            responsible: '',
-            description: '',
-            parametrs: [
-                { name: 'Норма времени на сборку', ez: 'ч', znach: 0}
-            ],
-            haracteriatic: [
-            { name: 'Масса детали', ez: 'кг', znach: 0}
-            ],
-            
-        },
-        docFiles: [],
-        formData: null,
-        modalMaterialKey: random(10, 999),
-        modalMaterialIsShow: false,
-        materialList: [],
-        listPokDet: [],
-        listDetal: [],
-        listCbed: [],
+      obj: {
+          articl: '',
+          name: '',
+          responsible: '',
+          description: '',
+          parametrs: [
+              { name: 'Норма времени на сборку', ez: 'ч', znach: 0}
+          ],
+          haracteriatic: [
+          { name: 'Масса детали', ez: 'кг', znach: 0}
+          ],
+          
+      },
+      docFiles: [],
+      formData: null,
+      modalMaterialKey: random(10, 999),
+      modalMaterialIsShow: false,
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
 
-        listMaterials: [],
+      listMaterials: [],
 
-        selectHaracteristic: null,
-        selectParametrs: null,
+      selectHaracteristic: null,
+      selectParametrs: null,
 
-        techProcessIsShow: false,
-        techProcessKey: random(10, 999),
-        inputMassZag: 0,
-        variableDensity: 0,
-        techProcessID: localStorage.getItem('tpID') || null,
+      techProcessIsShow: false,
+      techProcessKey: random(10, 999),
+      inputMassZag: 0,
+      variableDensity: 0,
+      techProcessID: localStorage.getItem('tpID') || null,
 
-        titleMessage: '',
-        message: '',
-        type: '',
-        showInformPanel: false,
-        keyInformTip: 0,
+      titleMessage: '',
+      message: '',
+      type: '',
+      showInformPanel: false,
+      keyInformTip: 0,
 
-        select_model: 1,
+      select_model: 1,
 
-        showBFM: false,
-        generateKeyBFM: random (1, 999),
+      showBFM: false,
+      generateKeyBFM: random (1, 999),
 
-        id: null,
-        documentsData: [],
-        dataMedia: [],
-        randomDataMedia: random(10, 999),
+      id: null,
+      documentsData: [],
+      dataMedia: [],
+      randomDataMedia: random(10, 999),
 
-        showFile: false,
-        keyWhenModalGenerateFileOpen: random(10, 999),
+      showFile: false,
+      keyWhenModalGenerateFileOpen: random(10, 999),
 
-        showCbed: false,
-        generateKeyCbed: random(1, 999),
-        }
+      showCbed: false,
+      generateKeyCbed: random(1, 999),
+
+      showModalFile: false,
+      fileModalKey: random(1, 999),
+    }
   },
   computed: mapGetters(['getUsers', 'getOneSelectCbEd', 'getRoleAssets']),
   components: {
@@ -366,13 +381,45 @@ export default {
     InformFolder, 
     BaseDetalModal, 
     MediaSlider,
-    BaseCbedModal},
+    BaseCbedModal, 
+    BaseFileModal},
   unmounted() {
     this.deleteStorageData()
   },
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'updateCbed']),
-    ...mapMutations(['removeOperationStorage']),
+    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    unmount_filemodal(res) {
+      if(res) 
+        this.documentsData = res
+    },
+    unmount_tech_process(tp) {
+      if(tp.id) {
+        this.techProcessID = tp.id
+        localStorage.setItem('tpID', this.techProcessID)
+        if(tp.opers.length) {
+          this.obj.parametrs[0].znach  = 0
+          tp.opers.forEach(op => {
+            this.obj.parametrs[0].znach = 
+              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) 
+          })
+          this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2)
+        }
+      }
+    },
+    file_unmount(e) { 
+      if(!e) 
+        return 0
+      this.formData = e.formData
+    },
+    unmount_material(mat) {
+      if(this.instanMaterial == 2) {
+        this.listPokDet = mat.materialList
+      }
+      if(this.instanMaterial == 3) {
+        this.materialList = mat.materialList
+      }
+    },
     saveDetal() {
       if(this.obj.name.length < 3) 
         return 0
@@ -415,6 +462,14 @@ export default {
         }
       }
 
+      if(this.documentsData.length) {
+        let new_array = []
+        for(let inx in this.documentsData) {
+          new_array.push(this.documentsData[inx].id)
+        }
+        this.formData.append('file_base', JSON.stringify(new_array))
+      }
+
       if(this.$route.params.copy == 'false') {
         this.formData.append('id', this.id)
         this.updateCbed(this.formData)
@@ -424,38 +479,14 @@ export default {
         this.createNewCbEd(this.formData)
       }
 
-      setTimeout(() =>  this.$router.push('/cbed'), 3000)
-    },
-    unmount_tech_process(tp) {
-      if(tp.id) {
-        this.techProcessID = tp.id
-        localStorage.setItem('tpID', this.techProcessID)
-        if(tp.opers.length) {
-          this.obj.parametrs[0].znach  = 0
-          tp.opers.forEach(op => {
-            this.obj.parametrs[0].znach = 
-              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) 
-          })
-          this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2)
-        }
-      }
+      setTimeout(() =>  {
+        this.$router.push('/cbed')
+        this.delitPathNavigate(this.$route.path)
+      }, 3000)
     },
     deleteStorageData() {
       localStorage.removeItem("tpID")
       this.removeOperationStorage()
-    },
-    file_unmount(e) { 
-      if(!e) 
-        return 0
-      this.formData = e.formData
-    },
-    unmount_material(mat) {
-      if(this.instanMaterial == 2) {
-        this.listPokDet = mat.materialList
-      }
-      if(this.instanMaterial == 3) {
-        this.materialList = mat.materialList
-      }
     },
     changeSelected() {
       switch (this.select_model) {
@@ -532,6 +563,7 @@ export default {
     exit(){
       this.$router.push("/cbed")
       this.deleteStorageData()
+      this.delitPathNavigate(this.$route.path)
     },
     updateForEdit() {
       this.obj.name = this.getOneSelectCbEd.name
@@ -559,8 +591,12 @@ export default {
     setDocs(dc) {
       this.itemFiles = dc
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 1111);
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
+    addFileModal() {
+      this.fileModalKey = random(1, 999)
+      this.showModalFile = true
+    }
   },
   async mounted() {
     if(isEmpty(this.getOneSelectCbEd)) {

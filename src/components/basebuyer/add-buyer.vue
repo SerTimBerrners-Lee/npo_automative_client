@@ -66,7 +66,7 @@
       </div>
     </div>
     <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.buyerAssets.writeSomeone">
-      <button class="btn-status" @click="$router.push('/basebuyer')">Отменить</button>
+      <button class="btn-status" @click="exit">Отменить</button>
       <button class="btn-status btn-black" @click='addbuyer'>Сохранить</button>
     </div>
     <AddContact 
@@ -134,6 +134,7 @@ export default {
   methods: {
     ...mapActions(['addOneBuyer']),
     ...mapMutations([
+      'delitPathNavigate'
     ]),
     unmount(data) {
       if(!data)
@@ -153,9 +154,9 @@ export default {
     },
     changeRek(e, inx) {
       this.obj.rekvisit.forEach((rek, index) => {
-          if(index == inx) {
-            this.obj.rekvisit[index].description = e.trim()
-          }
+        if(index == inx) {
+          this.obj.rekvisit[index].description = e.trim()
+        }
       })
     },
     addbuyer() {
@@ -177,7 +178,10 @@ export default {
       this.addOneBuyer(this.formData).then(() => 
         showMessage('', 'Покупатель успешно создан. Перенаправление на главную страницу...', 's', this)
       )
-      setTimeout(() => this.$router.push('/basebuyer'), 3000)
+      setTimeout(() => {
+        this.$router.push('/basebuyer')
+        this.delitPathNavigate(this.$route.path)
+      }, 3000)
     },
     file_unmount(e) { 
       if(!e) return 0
@@ -188,6 +192,10 @@ export default {
         this.itemFiles = files
         this.keyWhenModalGenerateFileOpen = random(10, 1222)
       }
+    },
+    exit() {
+      this.$router.push('/basebuyer')
+      this.delitPathNavigate(this.$route.path)
     }
   },
   async mounted() {

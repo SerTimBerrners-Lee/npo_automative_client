@@ -66,7 +66,7 @@
       </div>
     </div>
     <div class="edit-save-block block"  v-if="getRoleAssets && getRoleAssets.assets.buyerAssets.writeSomeone">
-      <button class="btn-status" @click="$router.push('/basebuyer')">Отменить</button>
+      <button class="btn-status" @click="exit">Отменить</button>
       <button class="btn-status btn-black" @click='addbuyer'>Сохранить</button>
     </div>
     <AddContact 
@@ -95,8 +95,6 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
-
-
 export default {
   data() {
     return {
@@ -138,6 +136,7 @@ export default {
   methods: {
     ...mapActions(['updateOneBuyer']),
     ...mapMutations([
+      'delitPathNavigate'
     ]),
     unmount(data) {
       if(!data)
@@ -183,7 +182,10 @@ export default {
       this.updateOneBuyer(this.formData).then(() => 
           showMessage('', 'Покупатель успешно обновлен. Перенаправление на главную страницу...', 's', this)
       )
-      setTimeout(() => this.$router.push('/basebuyer'), 3000)
+      setTimeout(() => {
+        this.$router.push('/basebuyer')
+        this.delitPathNavigate(this.$route.path)
+      }, 3000)
     },
     file_unmount(e) { 
       if(!e) return 0
@@ -211,6 +213,10 @@ export default {
       if(buyer.documents) 
         this.obj.documents = buyer.documents
     },
+    exit() {
+      this.$router.push('/basebuyer')
+      this.delitPathNavigate(this.$route.path)
+    }
   },
   async mounted() {
     if(isEmpty(this.getSetBuyer)) {

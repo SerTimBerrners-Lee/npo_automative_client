@@ -107,7 +107,7 @@
       </div>
     </div>
     <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.equipmentAssets.writeSomeone">
-      <button class="btn-status" @click='$router.push("/baseequipment")'>Отменить</button>
+      <button class="btn-status" @click='exit'>Отменить</button>
       <button class="btn-status btn-black" @click="saveEquipment">Сохранить</button>
     </div>
     <OpensFile 
@@ -231,7 +231,7 @@ export default {
         this.creqteEquipment(this.formData)
       }
 
-    this.$router.push('/baseequipment')
+      this.exit()
     },
     addInstrument() {
       this.instrumentKey = random(10, 38e9)
@@ -297,7 +297,7 @@ export default {
       'removeFileEquipment',
       'getAllUsers', 
       'creqteEquipment']),
-    ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById']),
+    ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById', 'delitPathNavigate']),
     clickEquipment(eq) {
       this.equipmentT = eq
       this.filterAllPTEquipment(eq)
@@ -319,6 +319,10 @@ export default {
     unmount_instrument(instruement) {
       this.obj.instrumentIdList = instruement.instrumentListId
       this.listInstrument = instruement.instrumentList
+    },
+    exit() {
+      this.$router.push('/baseequipment')
+      this.delitPathNavigate(this.$route.path)
     }
   },
   async mounted() {

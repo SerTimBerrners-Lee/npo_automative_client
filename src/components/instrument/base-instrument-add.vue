@@ -89,7 +89,7 @@
       </div>
     </div>
     <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.instrumentAssets.writeSomeone">
-      <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
+      <button class="btn-status" @click='exit'>Отменить</button>
       <button class="btn-status btn-black" @click="addInstrument">Сохранить</button>
     </div>
     <ListProvider  
@@ -146,9 +146,26 @@ export default {
       keyInformTip: 0,
     }
   },
-  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getLinkIdInstrument', 'getRoleAssets']),
+  computed: mapGetters([
+    'allTInstrument', 
+    'allPTInstrument', 
+    'allEdizm', 
+    'getLinkIdInstrument', 
+    'getRoleAssets'
+  ]),
   components: {TableMaterial, AddFile, ListProvider, InformFolder},
   methods: {
+    ...mapActions(['fetchAllInstruments', 
+      'getAllEdizm', 
+      'addNameInstrument',
+      'getPTInstrumentList'
+    ]),
+    ...mapMutations(['filterAllpInstrument', 
+      'getInstansTools',
+      'searchTypeInst',
+      'searchPTInst',
+      'delitPathNavigate',
+    ]),
     addProvider() {
       this.showProvider = true
       this.keyWhenModalListProvider = random(10, 384^5)
@@ -184,18 +201,10 @@ export default {
       this.formData.append('providers', this.providersId)
       this.addNameInstrument(this.formData)
       
-      this.$router.push('/basetools')
+      this.exit()
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
-    ...mapActions(['fetchAllInstruments', 
-      'getAllEdizm', 
-      'addNameInstrument',
-      'getPTInstrumentList']),
-    ...mapMutations(['filterAllpInstrument', 
-      'getInstansTools',
-      'searchTypeInst',
-      'searchPTInst',]),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
       this.filterAllpInstrument(instrument)
@@ -223,6 +232,10 @@ export default {
     serhPType(inst) {
       this.searchPTInst(inst)
     },
+    exit() {
+      this.$router.push("/basetools")
+      this.delitPathNavigate(this.$route.path)
+    }
   },
   async mounted() {
     this.loader = true

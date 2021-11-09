@@ -99,7 +99,7 @@
       </div>
     </div>
     <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.instrumentAssets.writeSomeone">
-      <button class="btn-status" @click='$router.push("/basetools")'>Отменить</button>
+      <button class="btn-status" @click='exit'>Отменить</button>
       <button class="btn-status btn-black" @click="addInstrument">Сохранить</button>
     </div>
     <OpensFile 
@@ -167,9 +167,26 @@ export default {
     if(isEmpty(this.getOneNameInstrument))
       this.$router.push('/basetools')
   },
-  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allEdizm', 'getOneNameInstrument', 'getRoleAssets']),
+  computed: mapGetters([
+    'allTInstrument', 
+    'allPTInstrument', 
+    'allEdizm', 
+    'getOneNameInstrument', 
+    'getRoleAssets'
+  ]),
   components: {TableMaterial, AddFile, OpensFile, ListProvider, InformFolder},
   methods: {
+    ...mapActions([
+      'fetchAllInstruments', 
+      'getAllEdizm', 
+      'updateNameInstrument', 
+      'removeFileInstrument',
+      'addNameInstrument']),
+    ...mapMutations([
+      'filterAllpInstrument', 
+      'filterAllInstrumentNyId', 
+      'delitPathNavigate'
+    ]),
     addInstrument() {
       if(this.$route.params.copy == 'false' && !this.obj.id)
         return 0
@@ -204,7 +221,7 @@ export default {
         this.addNameInstrument(this.formData)
       }
 
-      this.$router.push('/basetools')
+      this.exit()
     },
     removeFile() {
       if(isEmpty(this.itemFiles))
@@ -262,13 +279,6 @@ export default {
     },
 
     // ADD FILE and SET INSTRUMENT TO TABLE
-    ...mapActions([
-      'fetchAllInstruments', 
-      'getAllEdizm', 
-      'updateNameInstrument', 
-      'removeFileInstrument',
-      'addNameInstrument']),
-    ...mapMutations(['filterAllpInstrument', 'filterAllInstrumentNyId']),
     clickTInstrument(instrument) {
       this.TInstrument = instrument
       this.filterAllpInstrument(instrument)
@@ -290,6 +300,10 @@ export default {
       if(!e) return 0
       this.formData = e.formData
     },
+    exit() {
+      this.$router.push("/basetools")
+      this.delitPathNavigate(this.$route.path)
+    }
   },
   async mounted() {
     this.loader = true

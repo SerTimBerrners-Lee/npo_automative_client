@@ -270,7 +270,7 @@
     <BaseFileModal 
       v-if='showModalFile'
       :key='fileModalKey'
-      :fileArrModal='fileArrModal'
+      :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
   />
@@ -313,7 +313,6 @@ export default {
       },
       showModalFile: false,
       fileModalKey: random(1, 999),
-      fileArrModal: [],
       formData: null,
       modalMaterialKey: random(10, 12e8),
       modalMaterialIsShow: false,
@@ -330,10 +329,10 @@ export default {
       id: null,
       documentsData: [],
       dataMedia: [],
-      randomDataMedia: random(10, 24^4),
+      randomDataMedia: random(10, 999),
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 323e8),
+      keyWhenModalGenerateFileOpen: random(10, 999),
 
       showHAction: false,
       hAactionKey: random(1, 999),
@@ -360,22 +359,48 @@ export default {
       'getAllUsers', 
       'createNewDetal',
       'fetchAddFilesForDetal']),
-    ...mapMutations(['removeOperationStorage']),
+    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_filemodal(res) {
-      if(res && this.id) {
-        const data = {
-          files: res,
-          detal_id: this.id
+      if(res) 
+        this.documentsData = res
+    },
+    file_unmount(e) { 
+      if(!e) 
+        return 0
+      this.formData = e.formData
+    },
+    unmount_material(mat) {
+      if(this.getOneMaterial) {
+        if(!this.mat_zag) {
+          this.mat_zag = mat.material || 'Задать'
+          if(mat.material) 
+            this.calcParametr(mat.material)
         }
+        if(!this.mat_zag_zam)
+          this.mat_zag_zam = mat.material || 'Задать'
+        return 0
+      } 
 
-        this.fetchAddFilesForDetal(data).then(respons => {
-          if(respons) {
-            res.forEach(e => this.documentsData.push(e))
-            showMessage('', 'Файлы прикреплены к детали', 's', this)
-          } else 
-            showMessage('', 'Не удалось загрузить файлы на сервер', 'e', this)
-        })
-        
+      if(mat)
+        this.materialList = mat.materialList
+    },
+    unmount_tech_process(tp) {
+      if(tp.id) {
+        this.techProcessID = tp.id
+        localStorage.setItem('tpID', this.techProcessID)
+        if(tp.opers.length) {
+          this.obj.parametrs.preTime.znach = 0
+          this.obj.parametrs.helperTime.znach = 0
+          this.obj.parametrs.mainTime.znach = 0
+          tp.opers.forEach(op => {
+            this.obj.parametrs.preTime.znach = Number(this.obj.parametrs.preTime.znach) + Number(op.preTime)
+            this.obj.parametrs.helperTime.znach = Number(this.obj.parametrs.helperTime.znach) + Number(op.helperTime)
+            this.obj.parametrs.mainTime.znach = Number(this.obj.parametrs.mainTime.znach) + Number(op.mainTime)
+          })
+          this.obj.parametrs.preTime.znach = (this.obj.parametrs.preTime.znach / 60).toFixed(2)
+          this.obj.parametrs.helperTime.znach = (this.obj.parametrs.helperTime.znach / 60).toFixed(2)
+          this.obj.parametrs.mainTime.znach = (this.obj.parametrs.mainTime.znach / 60).toFixed(2)
+        }
       }
     },
     saveDetal() {
@@ -396,6 +421,15 @@ export default {
       this.formData.append('massZag', this.obj.massZag)
       this.formData.append('trash', this.obj.trash)
       this.formData.append('id', this.id)
+
+      if(this.documentsData.length) {
+        let new_array = []
+        for(let inx in this.documentsData) {
+          new_array.push(this.documentsData[inx].id)
+        }
+        this.formData.append('file_base', JSON.stringify(new_array))
+      }
+
       this.formData.append('mat_zag', this.mat_zag != 'Задать' ?
         this.mat_zag.id : null)
       this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
@@ -442,46 +476,8 @@ export default {
     },
     clearData() {
       setTimeout(() =>  this.$router.push('/basedetals'), 3000)
-      this.deleteStorageData()
-    },
-    unmount_tech_process(tp) {
-      if(tp.id) {
-        this.techProcessID = tp.id
-        localStorage.setItem('tpID', this.techProcessID)
-        if(tp.opers.length) {
-          this.obj.parametrs.preTime.znach = 0
-          this.obj.parametrs.helperTime.znach = 0
-          this.obj.parametrs.mainTime.znach = 0
-          tp.opers.forEach(op => {
-            this.obj.parametrs.preTime.znach = Number(this.obj.parametrs.preTime.znach) + Number(op.preTime)
-            this.obj.parametrs.helperTime.znach = Number(this.obj.parametrs.helperTime.znach) + Number(op.helperTime)
-            this.obj.parametrs.mainTime.znach = Number(this.obj.parametrs.mainTime.znach) + Number(op.mainTime)
-          })
-          this.obj.parametrs.preTime.znach = (this.obj.parametrs.preTime.znach / 60).toFixed(2)
-          this.obj.parametrs.helperTime.znach = (this.obj.parametrs.helperTime.znach / 60).toFixed(2)
-          this.obj.parametrs.mainTime.znach = (this.obj.parametrs.mainTime.znach / 60).toFixed(2)
-        }
-      }
-    },
-    file_unmount(e) { 
-      if(!e) 
-        return 0
-      this.formData = e.formData
-    },
-    unmount_material(mat) {
-      if(this.getOneMaterial) {
-        if(!this.mat_zag) {
-          this.mat_zag = mat.material || 'Задать'
-          if(mat.material) 
-            this.calcParametr(mat.material)
-        }
-        if(!this.mat_zag_zam)
-          this.mat_zag_zam = mat.material || 'Задать'
-        return 0
-      } 
-
-      if(mat)
-        this.materialList = mat.materialList
+      this.deleteStorageData() 
+      this.delitPathNavigate(this.$route.path)
     },
     addPokMat() {
       this.instanMaterial = 3
@@ -574,8 +570,6 @@ export default {
             this.inputMassZag = this.obj.massZag
           }
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-
-          console.log(this.inputMassZag)
         }
       }
       if(density) {
@@ -593,10 +587,11 @@ export default {
     exit(){
       this.$router.push("/basedetals")
       this.deleteStorageData()
+      this.delitPathNavigate(this.$route.path)
     },
     setDocs(dc) {
       this.itemFiles = dc
-      this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     historyAction() {
       if(!this.actions.length)
@@ -612,7 +607,6 @@ export default {
       this.fileModalKey = random(1, 999)
       this.showModalFile = true
     }
-
   },
   async mounted() {
     if(isEmpty(this.getOneSelectDetal)){
