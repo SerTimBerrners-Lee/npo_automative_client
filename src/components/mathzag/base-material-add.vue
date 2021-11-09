@@ -12,7 +12,7 @@
           <span v-if='getLinkId == 3'>Расходные материалы</span>
         </p>
       </div>
-      <h3>Выбор типа и подипа</h3>
+      <h3>Выбор типа и подипа</h3> 
       <div class='main-content-block'>
         <div class="left-block">
           <div>
@@ -138,24 +138,46 @@
           <div class="btn-control" style="width: 84%;">
             <button class="btn-small btn-add" @click="addProvider">Добавить из базы</button>
           </div>
+          <h3>Документы</h3>
          <div style='height: 50px; width:85%;'>
             <FileLoader 
               :typeGetFile='"getfile"'
               @unmount='file_unmount'/>
           </div>
-          <table style='width: 85%; margin-top: 40px;' v-if='arrFileGet.length'>
-            <tr>
-              <th >Файл</th>
-            </tr>
-            <tr 
-              v-for='doc in  arrFileGet' 
-              :key='doc'
-              class='td-row'
-              @click='setDocs(doc)'
-              >
-              <td>{{ doc.name }}</td>
-            </tr>
-          </table>
+          <div>
+            <table style='width: 85%; margin-top: 40px;' v-if='arrFileGet.length'>
+              <tr>
+                <th >Файл</th>
+              </tr>
+              <tr 
+                v-for='doc in  arrFileGet' 
+                :key='doc'
+                class='td-row'
+                @click='setDocs(doc)'
+                >
+                <td>{{ doc.name }}</td>
+              </tr>
+            </table>
+            <div v-if='fileArrModal.length'>
+              <h3>Добавленные из базы: </h3>
+              <table style='width: 85%;'>
+                <tr>
+                  <th >Файл</th>
+                </tr>
+                <tr 
+                  v-for='doc in  fileArrModal' 
+                  :key='doc'
+                  class='td-row'
+                  @click='setDocs(doc)'
+                  >
+                  <td>{{ doc.name }}</td>
+                </tr>
+              </table>
+            </div>
+            <div class="btn-control" style='width: 83%; margin-top: 50px;'>
+              <button class="btn-small" @click='addFileModal'>Добавить из базы</button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -184,6 +206,12 @@
       v-if="itemFiles" 
       :key='keyWhenModalGenerateFileOpen'
     />
+    <BaseFileModal 
+      v-if='showModalFile'
+      :key='fileModalKey'
+      :fileArrModal='fileArrModal'
+      @unmount='unmount_filemodal'
+  />
   </div>
 </template>
 
@@ -195,7 +223,7 @@ import { random, isEmpty } from 'lodash';
 import { showMessage } from '@/js/';
 import InformFolder from '@/components/InformFolder.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default {
   data() {
     return {
@@ -246,10 +274,13 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
-      click_short_t_pt: false
+      click_short_t_pt: false,
+      fileArrModal: [],
+      showModalFile: false,
+      fileModalKey: random(1, 999),
     }
   },
-  components: {TableMaterial, ListProvider, InformFolder, OpensFile},
+  components: {TableMaterial, ListProvider, InformFolder, OpensFile, BaseFileModal},
   computed: {
     ...mapGetters([
       'alltypeM', 
@@ -280,6 +311,10 @@ export default {
       'searchTypeMutation', 
       'searchPTypeMutation',
       ]),
+    unmount_filemodal(res) {
+      if(res) 
+        this.fileArrModal = res
+    },
     pushProvider(provider) { 
       if(!provider)
         return 0
@@ -314,7 +349,6 @@ export default {
 
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
-      console.log(this.podMaterial, this.material)
 
 
       if(this.material)
@@ -375,6 +409,13 @@ export default {
       this.formData.append('kolvo', kolvo)
       this.formData.append('providers', this.providersId) 
       this.formData.append('description', dat.description)
+      if(this.fileArrModal.length) {
+        let new_array = []
+        for(let inx in this.fileArrModal) {
+          new_array.push(this.fileArrModal[inx].id)
+        }
+      this.formData.append('file_base', JSON.stringify(new_array))
+      }
 
       this.createNewPodPodMaterial(this.formData).then(res => {
         if(res)
@@ -489,6 +530,10 @@ export default {
     setDocs(doc) {
       this.itemFiles = doc
       this.keyWhenModalGenerateFileOpen = random(1, 999)
+    },
+    addFileModal() {
+      this.fileModalKey = random(1, 999)
+      this.showModalFile = true
     }
   },
   async mounted() {

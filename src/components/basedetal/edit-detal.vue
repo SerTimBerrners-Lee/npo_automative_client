@@ -150,10 +150,10 @@
                   <td class='td_center'>мм</td>
                   <td class='td_center'>
                     <input type="text"
-                        @change='e=>editHarZag(e.target.value, "DxL")'
-                        style="width: 50px; text-align:center;"
-                        class='inputs-small'
-                        v-model='obj.DxL'>
+                      @change='e=>editHarZag(e.target.value, "DxL")'
+                      style="width: 50px; text-align:center;"
+                      class='inputs-small'
+                      v-model='obj.DxL'>
                     <div class='absolute_znach'>
                         {{ obj.DxL.split('x')
                             .length == 2 ? 
@@ -201,9 +201,10 @@
           </div>
         </div>
         <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
-          <button class="btn-status"
-                  @click='exit'
-                  >Отменить</button>
+          <button 
+            class="btn-status"
+            @click='exit'
+            >Отменить</button>
           <button class="btn-status btn-black" 
             style="height: 0px;" @click='saveDetal'>Сохранить</button>
           </div>
@@ -345,7 +346,6 @@ export default {
       showInformPanel: false,
       keyInformTip: 0,
       density: 0,
-
     }
   },
   unmounted() {

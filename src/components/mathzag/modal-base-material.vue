@@ -4,14 +4,19 @@
       <div :class='destroyModalRight'>
         <div :style="hiddens">
           <h3>Добавление материала</h3>
+          <div class="type-issue">
+            <span ref="all" class='active' @click='e => instansMaterial(0, e.target)'>Все</span>
+            <span @click='e => instansMaterial(1, e.target)'>Материалы для деталей</span>
+            <span @click='e => instansMaterial(2, e.target)'>Покупные детали</span>
+            <span @click='e => instansMaterial(3, e.target)'>Расходные материалы</span>
+          </div>
           <div class="body_table_instr">
             <TableMaterial 
               :alltypeM='alltypeM' 
               :title='instanMaterial != 0 && instanMaterial != 1 ? "Тип (Категория)" : "Тип (Тип профиля заготовки)"' 
               :type='"type"' 
               @clickMat='clickMat'
-              @search='searchTypeM'
-                  />
+              @search='searchTypeM' />
             <TableMaterial 
               :alltypeM='allPodTypeM' 
               :title='instanMaterial != 0 && instanMaterial != 1 ? "Подтип (Материал)" : "Подтип (Материал заготовки)"' 
@@ -144,7 +149,19 @@ export default {
             })
         }
     },
+    instansMaterial(instans, span) {
+      if(!this.span)
+        this.span = (this.$refs.all)
+      if(span.classList.contains('active')) 
+        return 0  
+      this.span.classList.remove('active')
+      span.classList.add('active')
+      this.span = span
 
+      this.getInstansMaterial(instans)
+      this.instansLet = instans
+
+    },
     addMaterialToList() {
         if(!this.podPodMaterial)
             return 0;

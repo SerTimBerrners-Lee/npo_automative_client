@@ -1,88 +1,88 @@
 <template>
-<div class="right-menu-modal">
+  <div class="right-menu-modal">
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
-        <div :class='destroyModalRight'>
-           <div :style="hiddens">
+      <div :class='destroyModalRight'>
+        <div :style="hiddens">
 
-            <div class="nav-base-file-page"> 
-            <div class="left-div-bfp">
-              <h3>База файлов</h3>
-              <div class="type-issue">
-                <span @click="e => getType('all', e.target)" ref="allFilesLink">Все</span>
-                <span @click="e => getType('banned', e.target)">Архив</span>
-                <span @click="e => getType('noInstans', e.target)">Неприсвоенные</span>
-                <span @click="e => getType('NonType', e.target)">Без типа</span>
-              </div>
-              <div class="type-issue">
-                <span @click="e => getType('МД', e.target)">Медиа (тип МД)</span>
-                <span @click="e => getType('КД', e.target)">Конструкторская документация (тип КД)</span>
-                <span @click="e => getType('ЧЖ', e.target)">Чертижи (тип ЧЖ)</span>
-                <span @click="e => getType('СД', e.target)">Сопутствующие документы (тип СД)</span>
-              </div> 
+          <div class="nav-base-file-page"> 
+          <div class="left-div-bfp">
+            <h3>База файлов</h3>
+            <div class="type-issue">
+              <span @click="e => getType('all', e.target)" ref="allFilesLink">Все</span>
+              <span @click="e => getType('banned', e.target)">Архив</span>
+              <span @click="e => getType('noInstans', e.target)">Неприсвоенные</span>
+              <span @click="e => getType('NonType', e.target)">Без типа</span>
+            </div>
+            <div class="type-issue">
+              <span @click="e => getType('МД', e.target)">Медиа (тип МД)</span>
+              <span @click="e => getType('КД', e.target)">Конструкторская документация (тип КД)</span>
+              <span @click="e => getType('ЧЖ', e.target)">Чертижи (тип ЧЖ)</span>
+              <span @click="e => getType('СД', e.target)">Сопутствующие документы (тип СД)</span>
+            </div> 
 
-              <div class="scroll-table" style="height: 600px; max-width: 97%; ">
-                <Tables v-if="nowType == 'all'" 
-                  :documents='allFiles' 
-                  @pushFile='getFilesToClick' 
-                  @dbPushFile='dbPushFile'
-                  @keySearch='keySearch'
-                  :search_data='search'
-                  />
-                <Tables v-if="nowType == 'banned'" 
-                  :documents='banFiles' 
-                  @pushFile='getFilesToClick'
-                  @dbPushFile='dbPushFile'
-                  @keySearch='keyBanSearch'   />
-                <Tables v-if="nowType == 'typesFile'" 
-                  :documents='arrFileGet' 
-                  @pushFile='getFilesToClick'
-                  @dbPushFile='dbPushFile'
-                  @keySearch='keySearch'   />
-              </div>
-              <div class="btn-control">
-                <button class="btn-small btn-add"
-                  @click='addFile'>Выбрать</button>
-              </div>
+            <div class="scroll-table" style="height: 600px; max-width: 97%; ">
+              <Tables v-if="nowType == 'all'" 
+                :documents='allFiles' 
+                @pushFile='getFilesToClick' 
+                @dbPushFile='dbPushFile'
+                @keySearch='keySearch'
+                :search_data='search'
+                />
+              <Tables v-if="nowType == 'banned'" 
+                :documents='banFiles' 
+                @pushFile='getFilesToClick'
+                @dbPushFile='dbPushFile'
+                @keySearch='keyBanSearch'   />
+              <Tables v-if="nowType == 'typesFile'" 
+                :documents='arrFileGet' 
+                @pushFile='getFilesToClick'
+                @dbPushFile='dbPushFile'
+                @keySearch='keySearch'   />
+            </div>
+            <div class="btn-control">
+              <button class="btn-small btn-add"
+                @click='addFile'>Выбрать</button>
+            </div>
 
-              <!-- File List -->
-                <div v-if='modalArrFiles.length > 0'>
-                  <table>
-                    <tr>
-                      <th>Выбранное</th>
-                      <th>Действие</th>
-                    </tr>
-                    <tr v-for='file of modalArrFiles' :key='file'>
-                        
-                      <td>{{ file.name }}</td>
-                      <td class='delete_span' 
-                        @click='delFile(file.id)'>удалить</td>
-                    </tr>
-                  </table>
-              </div>
-              <div class="btn-control out-btn-control">
-                <button class="btn-status btn-black" 
-                  style="height: 0px;" 
-                  @click='returmFileSelectList' 
-                  v-if='modalArrFiles'>
-                  Добавить выбранное</button>
-              </div>
-          </div>
+            <!-- File List -->
+              <div v-if='modalArrFiles.length > 0'>
+                <table>
+                  <tr>
+                    <th>Выбранное</th>
+                    <th>Действие</th>
+                  </tr>
+                  <tr v-for='file of modalArrFiles' :key='file'>
+                      
+                    <td>{{ file.name }}</td>
+                    <td class='delete_span' 
+                      @click='delFile(file.id)'>удалить</td>
+                  </tr>
+                </table>
+            </div>
+            <div class="btn-control out-btn-control">
+              <button class="btn-status btn-black" 
+                style="height: 0px;" 
+                @click='returmFileSelectList' 
+                v-if='modalArrFiles'>
+                Добавить выбранное</button>
+            </div>
         </div>
-        <InformFolder  :title='titleMessage'
-          :message = 'message'
-          :type = 'type'
-          v-if='showInformPanel'
-          :key='keyInformTip'
-        />
-        <OpensFile 
-          :parametrs='itemFiles' 
-          v-if="WhenModalGenerateFileOpenShow" 
-          @unmount='unmount'
-          :key='keyWhenModalGenerateFileOpen'
-        />
-         </div>
-        </div>
-</div> 
+      </div>
+      <InformFolder  :title='titleMessage'
+        :message = 'message'
+        :type = 'type'
+        v-if='showInformPanel'
+        :key='keyInformTip'
+      />
+      <OpensFile 
+        :parametrs='itemFiles' 
+        v-if="WhenModalGenerateFileOpenShow" 
+        @unmount='unmount'
+        :key='keyWhenModalGenerateFileOpen'
+      />
+      </div>
+      </div>
+  </div> 
 </template>
 
 <script>
@@ -145,7 +145,12 @@ export default {
     addFile() {
       if(!this.itemFiles)
         return
-      this.modalArrFiles.push(this.itemFiles)
+
+      let change = true
+      for(let file of this.modalArrFiles) {
+        if(file.id == this.itemFiles.id) change = false
+      }
+      if(change) this.modalArrFiles.push(this.itemFiles)
     },
     dbPushFile(file) {
       if(this.itemFiles) {
