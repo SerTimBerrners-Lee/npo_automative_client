@@ -112,7 +112,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <Loader v-if='loader' />
@@ -125,7 +125,6 @@ import AddFile from '@/components/filebase/addfile.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { isEmpty, random }  from 'lodash';
-import InformFolder from '@/components/InformFolder.vue';
 import { showMessage } from '@/js/';
 export default {
   data() {
@@ -174,7 +173,7 @@ export default {
     'getOneNameInstrument', 
     'getRoleAssets'
   ]),
-  components: {TableMaterial, AddFile, OpensFile, ListProvider, InformFolder},
+  components: {TableMaterial, AddFile, OpensFile, ListProvider},
   methods: {
     ...mapActions([
       'fetchAllInstruments', 

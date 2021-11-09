@@ -263,10 +263,11 @@
         <h3 class="link_h3">Принадлежность</h3>
     </div>
     </div>
-    <InformFolder  :title='titleMessage'
+    <InformFolder  
+      :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <BaseCbedModal 
@@ -297,7 +298,6 @@ import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random, isEmpty } from 'lodash';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import PATH_TO_SERVER from '@/js/path';
@@ -344,7 +344,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 
       select_model: 1,
@@ -374,7 +373,6 @@ export default {
   components: {
     ModalBaseMaterial, 
     TechProcess, 
-    InformFolder, 
     BaseDetalModal, 
     BaseCbedModal,
     MediaSlider,

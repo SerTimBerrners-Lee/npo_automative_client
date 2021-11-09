@@ -115,10 +115,11 @@
       :key='keyParentsModal'
       :parametrs='productListForIzd'
     />
-    <InformFolder  :title='titleMessage'
+    <InformFolder  
+      :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
 
@@ -135,7 +136,6 @@ import {mapGetters, mapActions} from 'vuex';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
   data() {
@@ -148,7 +148,6 @@ export default {
 
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: random(1, 999),
 
       parametrs: null,
@@ -171,7 +170,7 @@ export default {
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
-  components: { DatePicterRange, StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal, InformFolder},
+  components: { DatePicterRange, StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal},
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'getOneDetal']),
     unmount_sh_list(res) {
@@ -221,7 +220,7 @@ export default {
     parseParametrsDetal(parametrs, kol = 1) {
       try {
         let pars = JSON.parse(parametrs)
-        return Number(pars.helperTime.znach) + Number(pars.mainTime.znach) * kol
+        return Number(pars.preTime.znach)+ (Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol
       } catch(e) {
         console.log(e)
       }

@@ -1310,7 +1310,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <Loader v-if='loader' />
@@ -1319,7 +1319,6 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return{
@@ -1330,14 +1329,12 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 
       loader: false
     }
   },
   computed: mapGetters(['allRoles', 'getRoleAssets']),
-  components: {InformFolder},
   methods: {
     ...mapActions(['fetchRoles', 'fetchUpdateAssetsRole']),
     select_model_change(e) {

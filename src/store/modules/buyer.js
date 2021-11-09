@@ -8,10 +8,10 @@ export default {
   },
   getters: { 
     allBuyer(state) {
-        return state.buyer
+      return state.buyer
     },
     getSetBuyer(state) {
-        return state.onebuyer
+      return state.onebuyer
     }
   },
   actions: { 

@@ -68,7 +68,7 @@
             <td class='center'>{{ material.dev ? material.dev.date_shipments : '' }}</td>
             <td class='center'>{{ materialOstat(material) }}</td>
             <td>{{ material && material.dev ? material.dev.provider.name : '' }}</td>
-            <td @click='openCheck(material.dev.documents)' class='select_span_href'>{{ material.dev.number_check }}</td>
+            <td @click='material.dev ? openCheck(material.dev.documents) : false' class='select_span_href'>{{ material.dev ? material.dev.number_check : '' }}</td>
           </tr>
       </table>
       </div>

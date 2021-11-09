@@ -240,7 +240,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <BaseCbedModal 
@@ -266,7 +266,6 @@ import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random } from 'lodash';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
@@ -311,7 +310,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 
       select_model: 1,
@@ -330,7 +328,7 @@ export default {
     this.deleteStorageData()
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
-  components: {ModalBaseMaterial, TechProcess, InformFolder, BaseDetalModal, BaseCbedModal, BaseFileModal},
+  components: {ModalBaseMaterial, TechProcess, BaseDetalModal, BaseCbedModal, BaseFileModal},
   methods: {
     ...mapActions(['createNewProduct', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),

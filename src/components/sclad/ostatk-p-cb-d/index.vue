@@ -38,14 +38,16 @@
           </table>
         </div>
         <div class="scroll-table" >
-          <table class="table-base-detal">
+          <table class="table-base-cbed">
             <tr>
-              <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
+              <th colspan="6" scope="col">Сборочная единица (Тип СБ)</th>
             </tr>
             <tr>
               <th>Артикул</th>
               <th>Наименование</th>
-              <th>Кол-во СБ на Изделие</th>
+              <th style='width: 50px;'>Кол-во СБ на Изделие</th>
+              <th style='width: 50px;'>Остаток на складе</th>
+              <th style='width: 10px;'>Планируемый приход</th>
             </tr>
             <tr>
               <td colspan="3">
@@ -61,12 +63,14 @@
                 @click='e => setCbed(cb, e.target.parentElement)'>
                 <td>{{ cb.articl }}</td>
                 <td>{{ cb.name }}</td>
-                <td></td>
+                <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
+                <td class='center'>{{ cb.cbed_kolvo }}</td>
+                <td class='center'>{{ cb.assemble_kolvo }}</td>
             </tr>
             <tr v-for="item in 42" :key="item">
-                <td></td>
-                <td></td>
-                <td></td>
+              <td></td>
+              <td></td>
+              <td></td>
             </tr>
           </table>
         </div>
@@ -104,6 +108,7 @@ export default {
       'getAllCbEdByProduct',
       'clearFilterCbedByProduct']),
     setCbed(cbEd, e) {
+      console.log(cbEd)
       this.selectedCbEd = CbEdVue
 			if(this.tr_cb) 
 				this.tr_cb.classList.remove('td-row-all')
@@ -114,14 +119,14 @@ export default {
     },
     setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
-				this.clearFilterCbedByProduct()
-				e.classList.remove('td-row-all')
-				this.selecteProduct = null
-				return
+        this.clearFilterCbedByProduct()
+        e.classList.remove('td-row-all')
+        this.selecteProduct = null
+        return
       }
       this.selecteProduct = product
-        if(this.tr_product) 
-          this.tr_product.classList.remove('td-row-all')
+      if(this.tr_product) 
+        this.tr_product.classList.remove('td-row-all')
   
       this.setOneProduct(product)
       this.getAllCbEdByProduct(product)
@@ -144,19 +149,22 @@ export default {
 </script>
 
 <style scoped>
-.block_cb_ed {
-  width: 870px;
-}
 .table-base-detal {
   float: left;
-  width: 400px;
+  width: 470px;
 }
-.table-base-detal tr {
-  height: 65px;
+.table-base-cbed {
+  float: left;
+  width: 700px;
+}
+.main {
+  width: fit-content;
+}
+td {
+  height: 10px;
 }
 .scroll-table {
-  height: 600px;
-  
+  height: 700px;
 }
 .tb-title {
   height: 50px;

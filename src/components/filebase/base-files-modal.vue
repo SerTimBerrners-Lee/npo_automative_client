@@ -68,10 +68,11 @@
             </div>
         </div>
       </div>
-      <InformFolder  :title='titleMessage'
+      <InformFolder  
+        :title='titleMessage'
         :message = 'message'
         :type = 'type'
-        v-if='showInformPanel'
+        v-if='message'
         :key='keyInformTip'
       />
       <OpensFile 
@@ -89,7 +90,6 @@
 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import { getReversDate, showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import Tables from '@/components/filebase/tables.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { random }  from 'lodash';
@@ -106,7 +106,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
       typeDocs: ['МД', 'КД', 'ЧЖ', 'СД'],
       targetLink: null,
@@ -127,7 +126,7 @@ export default {
   computed: {
     ...mapGetters(['allFiles', 'banFiles']),
   },
-  components: {InformFolder, Tables, OpensFile},
+  components: {Tables, OpensFile},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'

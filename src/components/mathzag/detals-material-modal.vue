@@ -24,18 +24,18 @@
       </div>
     </div>
   </div>
-  <InformFolder  :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='showInformPanel'
-      :key='keyInformTip'
+  <InformFolder  
+    :title='titleMessage'
+    :message = 'message'
+    :type = 'type'
+    v-if='message'
+    :key='keyInformTip'
     />
 </div>
 </template>
 
 <script>
 import {random} from 'lodash';
-import InformFolder from '@/components/InformFolder.vue';
 export default {
   props: ['parametrs'],
   data() {
@@ -46,14 +46,12 @@ export default {
 
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: random(1, 999),
 
       komplect: [],
       material: null
     }
   },
-  components: {InformFolder},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'

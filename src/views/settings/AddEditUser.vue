@@ -146,7 +146,7 @@
       <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
       <button class="btn-status btn-black" @click="saveData">Сохранить</button>
     </div>
-      <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='showInformPanel' />
+    <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='message' />
   <OpensFile 
     :parametrs='itemFiles' 
     v-if="showFile" 
@@ -164,7 +164,6 @@
 <script>
 
 import { mapActions, mapGetters } from 'vuex';
-import InformFolder from '@/components/InformFolder.vue';
 import {photoPreloadUrl, showMessage} from '@/js/';
 import {isEmpty, random} from 'lodash';
 import PATH_TO_SERVER from '@/js/path.js';
@@ -178,7 +177,6 @@ export default ({
       docFiles: [],
       selectFiles: Object,
       editTableKontact: false,
-      showInformPanel: false,
       titleMessage: '',
       keyInformTip: 21, 
       message: '',
@@ -218,7 +216,6 @@ computed: {
     ...mapGetters(['allRoles', 'getSelectedUser']),
   },
   components: {
-    InformFolder,
     OpensFile,
     BaseFileModal,
     DatePicterCustom

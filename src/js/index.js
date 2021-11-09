@@ -30,7 +30,6 @@ const showMessage = (title, message, type, ctx) =>  {
 
   ctx.$data.message = message;
   ctx.$data.type = type;
-  ctx.$data.showInformPanel = true
   ctx.$data.keyInformTip = random(21212)
 }
  

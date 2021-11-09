@@ -126,7 +126,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <Loader v-if='loader' />
@@ -143,7 +143,6 @@ import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { isEmpty, random }  from 'lodash';
 import { showMessage } from '@/js/';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
-import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return {
@@ -179,7 +178,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
     }
   },
@@ -194,7 +192,7 @@ export default {
     'equipment',
     'getUsers', 
     'getRoleAssets']),
-  components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools, InformFolder},
+  components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools},
   methods: {
     saveEquipment() {
       if(this.$route.params.copy == 'false' && !this.obj.id)

@@ -101,7 +101,7 @@
         :title='titleMessage'
         :message = 'message'
         :type = 'type'
-        v-if='showInformPanel'
+        v-if='message'
         :key='keyInformTip'
       />
     <Loader v-if='loader' />
@@ -113,7 +113,6 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import AddFile from '@/components/filebase/addfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { random }  from 'lodash';
-import InformFolder from '@/components/InformFolder.vue';
 import { showMessage } from '@/js/';
 export default {
   data() {
@@ -142,7 +141,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
     }
   },
@@ -153,7 +151,7 @@ export default {
     'getLinkIdInstrument', 
     'getRoleAssets'
   ]),
-  components: {TableMaterial, AddFile, ListProvider, InformFolder},
+  components: {TableMaterial, AddFile, ListProvider},
   methods: {
     ...mapActions(['fetchAllInstruments', 
       'getAllEdizm', 

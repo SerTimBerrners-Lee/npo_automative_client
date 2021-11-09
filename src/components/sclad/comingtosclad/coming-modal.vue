@@ -135,10 +135,11 @@
       @unmount='unmount_position'
     />
     <Loader v-if='loader' />
-    <InformFolder  :title='titleMessage'
+    <InformFolder  
+      :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
   </div>
@@ -150,7 +151,6 @@ import { random, toNumber } from 'lodash';
 import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
 import { mapActions, mapGetters } from 'vuex';
 import AddPosition from './new-position.vue';
-import InformFolder from '@/components/InformFolder.vue';
 import { showMessage } from '@/js/';
 export default {
   props: ['parametrs'],
@@ -181,7 +181,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 
       select_m: null,
@@ -190,7 +189,7 @@ export default {
     }
   },
   computed: mapGetters(['getAllDeliveries']),
-  components: {AddFile, ProviderList, AddPosition, InformFolder},
+  components: {AddFile, ProviderList, AddPosition},
   methods: {
     ...mapActions([
       'fetchGetProviders', 

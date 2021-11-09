@@ -264,7 +264,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <BaseFileModal 
@@ -288,7 +288,6 @@ import MediaSlider from '@/components/filebase/media-slider.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import HistoryActions from '@/components/history-action.vue';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default {
   props: ['editAndCopt'],
@@ -342,7 +341,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
       density: 0,
     }
@@ -351,7 +349,7 @@ export default {
     this.deleteStorageData()
   },
   computed: mapGetters(['getOneSelectDetal', 'getUsers', 'getRoleAssets']),
-  components: {BaseFileModal, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions, InformFolder},
+  components: {BaseFileModal, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions},
   methods: {
     ...mapActions([
       'createNewDetal', 

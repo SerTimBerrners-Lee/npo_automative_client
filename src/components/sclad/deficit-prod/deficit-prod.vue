@@ -136,6 +136,8 @@
     <NormTimeOperation
       v-if='showNormTimeOperation'
       :key='normTimeOperationKey'
+      :izdelie='select_izd'
+      :type='type_norm_time'
     />
     <ShipmentsMiniList
       v-if='showShipment'
@@ -147,10 +149,11 @@
       :key='keyParentsModal'
       :parametrs='productListForIzd'
     />
-    <InformFolder  :title='titleMessage'
+    <InformFolder  
+      :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
 
@@ -164,11 +167,10 @@ import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
-
+import { OperationTime } from '@/js/operation.js';
 export default {
   data() {
     return {
@@ -184,7 +186,6 @@ export default {
 
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: random(1, 999),
       
       showNormTimeOperation: false,
@@ -200,11 +201,12 @@ export default {
       
       kolvo_all: null,
 
-      loader: false
+      loader: false,
+      type_norm_time: 'cb'
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
-  components: {DatePicterRange, StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList, ProductListModal, InformFolder},
+  components: {DatePicterRange, StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList, ProductListModal},
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'getOneCbEdById', 'getOneDetal']),
     unmount_sh_list(res) {
@@ -249,6 +251,14 @@ export default {
           return izd.kol
       }
     },
+    oneIzdTime(operation) {
+			let ot = new OperationTime(operation)
+			return ot.count
+		},
+		manyIzdTime(operation, kol_create_detal) {
+			let ot = new OperationTime(operation, kol_create_detal)
+			return ot.count
+		},
     toProduction(izd, e) {
       if(this.selected_checkbox) 
         this.selected_checkbox.classList.remove('checkbox_block_select')
@@ -265,7 +275,7 @@ export default {
     parseParametrsDetal(parametrs, kol = 1) {
       try {
         let pars = JSON.parse(parametrs)
-        return Number(pars.helperTime.znach) + Number(pars.mainTime.znach) * kol
+        return Number(pars.preTime.znach) + (Number(pars.mainTime.znach) + Number(pars.helperTime.znach)) * kol
       } catch(e) {
         console.log(e)
       }

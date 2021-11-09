@@ -226,7 +226,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <BaseFileModal 
@@ -245,7 +245,6 @@ import TechProcess from './tech-process-modal.vue';
 import { random, padStart, padEnd } from 'lodash';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 
 export default {
@@ -289,7 +288,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
       density: 0,
     }
@@ -298,7 +296,7 @@ export default {
     this.deleteStorageData()
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
-  components: {ModalBaseMaterial, TechProcess, InformFolder, BaseFileModal},
+  components: {ModalBaseMaterial, TechProcess, BaseFileModal},
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
