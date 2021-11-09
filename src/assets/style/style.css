@@ -2,6 +2,9 @@
   user-select: none;
   cursor: pointer;
 }
+.first_span {
+  color: #c90000;
+}
 .hover:hover {
   color: rgba(0, 0, 0, 0.397);
 }

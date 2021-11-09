@@ -322,9 +322,7 @@ export default {
         if(!this.material)
           return showMessage('', 'Выберите Тип для материала', 'w', this)
       }
-      if(!this.obj.areaCrossSectional_input && this.podMaterial.instansMaterial == 1)   
-        return 0
-      let dat = this.obj
+      let dat = this.obj 
       
       if(!this.formData) 
         this.formData = new FormData()

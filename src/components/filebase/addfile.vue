@@ -27,7 +27,12 @@
                   </select>
                 </p>
                 <p>
-                  <span>Переименовать: </span><input type="text" :value='file.name.split(".")[0]' @change='e=>fileRead(e.target.value, "NameDocument" , index)'>
+                  <span>Переименовать: </span>
+                  <input 
+                    type="text" 
+                    :value='file.name.slice(0, file.name.length - 1 - file.name.split(".")[file.name.split(".").length - 1].length)' 
+
+                    @change='e=>fileRead(e.target.value, "NameDocument" , index)'>
                 </p>
                 <p>
                   <span>Версия: </span><input type="text" placeholder="000001" @change='e=>fileRead(e.target.value, "VersionDocument", index)'>

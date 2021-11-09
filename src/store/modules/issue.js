@@ -8,6 +8,10 @@ export default {
 		myIssues: [],
 		myController: [],
 
+		instans_for_me: [],
+		instans_to_me: [],
+		instans_controller_me: [],
+		statusList: ['', 'Новое', 'В работе', 'Просроченно', 'Выполнено'],
 	},
 	getters: { 
 		getIssues(state) {
@@ -27,38 +31,49 @@ export default {
 		async createIssue(ctx, data) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/issue`, {
 				method: "post",
-				body: data
+				body: data.data
 			})
 			if(res.ok) {
 				const result = await res.json()
-				ctx.commit('addIssueMutation', result)
+				ctx.commit('pushNewIssue', result)
+				ctx.commit('issueTypesMutation', data.user_id)
 				return result
 			}
 		},
 		async updateIssue(ctx, data) {
 			const res = await fetch(`${PATH_TO_SERVER}api/issue`, {
 				method: 'PUT',
-				body: data
+				body: data.data
 			})
 			if(res.ok) {
 				const result = await res.json()
-				console.log(result)
+				ctx.commit('updateIssueMutation', result)
+				ctx.commit('issueTypesMutation', data.user_id)
 				return result
 			}
-		},
+		}, 
 		async fetchIssueList(ctx, userId) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/issue`)
 			if(res.ok) {
 				const result = await res.json()
-				ctx.commit('updateIssues', result)
+				ctx.commit('addAllIssues', result)
 				ctx.commit('issueTypesMutation', userId)
 				return result
 			}
 		}
 	},
 	mutations: {
-		updateIssues(state, result) { 
+		addAllIssues(state, result) { 
 			state.issues = result
+		},
+		pushNewIssue(state, issue) {
+			state.issues.push(issue)
+		},
+		updateIssueMutation(state, issue) {
+			for(let inx in state.issues) {
+				if(state.issues[inx].id == issue.id)
+					state.issues[inx] = issue
+			}
 		},
 		issueTypesMutation(state, userId) {
 			state.forMeIssue = []
@@ -80,7 +95,7 @@ export default {
 							state.myController.push(issue)
 					})
 				}
-				// которые я сооздал
+				// которые я создал
 				if(issue.sourse) {
 					try {
 						let issuePars = JSON.parse(issue.sourse)
@@ -92,8 +107,29 @@ export default {
 				}
 			})
 		},
-		addIssueMutation(state, issue) {
-			state.issues.push(issue)
+		filterIssueForMe(state, instans) {
+			if(state.instans_for_me.length == 0)
+				state.instans_for_me = state.forMeIssue
+			if(instans == 0)
+				return state.forMeIssue = state.instans_for_me
+
+			state.forMeIssue = state.instans_for_me.filter(e => e.status == state.statusList[instans])
+		},
+		filterIssueToMe(state, instans) {
+			if(state.instans_to_me.length == 0)
+				state.instans_to_me = state.myIssues
+			if(instans == 0)
+				return state.myIssues = state.instans_to_me
+
+			state.myIssues = state.instans_to_me.filter(e => e.status == state.statusList[instans])
+		},
+		filterIssueControllerMe(state, instans) {
+			if(state.instans_controller_me.length == 0)
+				state.instans_controller_me = state.myController
+			if(instans == 0)
+				return state.myController = state.instans_controller_me
+
+			state.myController = state.instans_controller_me.filter(e => e.status == state.statusList[instans])
 		}
 	}
 }

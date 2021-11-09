@@ -48,8 +48,11 @@
           </select>
         </p>
         <p>
+          <!-- status -->
           <span>Статус: </span>
-          <input type="text" v-model='status'>
+          <select class='select-small' v-model="status">
+            <option v-for='srok in statusList' :key='srok' :value='srok'>{{ srok }}</option>
+          </select>
         </p>
       </div>
       <div>
@@ -193,7 +196,8 @@ export default {
       sourse: '',
       srok: '0',
       srok_control: '',
-      status: '',
+      status: 'Новое',
+      statusList: ['Новое', 'В работе', 'Просроченно', 'Выполнено'],
       controllerList: [],
       executorList: [],
       izdList: [],
@@ -239,9 +243,12 @@ export default {
       if(this.$props.editIssue) {
         this.formData.append('id', this.id)
         this.formData.append('name', this.name)
-        this.updateIssue(this.formData)
-      } 
-      else this.createIssue(this.formData)
+        if(this.getAuth && this.getAuth.id)
+          this.updateIssue({data: this.formData, user_id: this.getAuth.id})
+      } else {
+        if(this.getAuth && this.getAuth.id)
+          this.createIssue({data: this.formData, user_id: this.getAuth.id})
+      }
     },  
 
     selectUser(type) {
@@ -316,6 +323,7 @@ export default {
       this.sourse = JSON.parse(issue.sourse)
       this.status = issue.status
       this.srok_control = issue.srok_control
+      console.log(issue)
       
 
       if(issue.documents) {
