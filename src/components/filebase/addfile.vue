@@ -59,97 +59,98 @@
 import { photoPreloadUrl } from '@/js/';
 import { mapActions } from 'vuex'
 export default {
-    props: ['parametrs', 'typeGetFile'],
-    data() {
-      return {
-        destroyModalLeft: 'left-block-modal',
-        destroyModalRight: 'content-modal-right-menu',
-        hiddens: 'opacity: 1;',
-        typeDocs: ['МД', 'КД', 'ЧЖ', 'СД'],
-        urlImg: '',
-        imgShow: false,
-        showDocType: false,
-        docType: '',
-        arrItemsFile: []
-      }
-    },
-    async mounted() {
-      this.destroyModalLeft = 'left-block-modal'
-      this.destroyModalRight = 'content-modal-right-menu'
-      this.hiddens = 'opacity: 1;'
-      if(this.parametrs.type == 'create') {
-        return 0;
-      } else  {
-        this.titleapp = 'Редактирование'
-        this.inputs = this.parametrs.description
-        this.inputs_short = this.parametrs.value
-      }
-      let arr = this.$props.parametrs
-      arr.forEach((doc, index) => {
-        photoPreloadUrl(doc, (res) => {
-          if (res.type == 'img') {
-            arr[index].TypeDocument = ''
-            arr[index].VersionDocument = ''
-            arr[index].DescriptionDocument = ''
-            arr[index].url = res.url 
-            arr[index].NameDocument = ''
-            arr[index].typefile = res.type
-            this.arrItemsFile.push(...[arr[index]])
-          } else { 
-            arr[index].TypeDocument = ''
-            arr[index].VersionDocument = ''
-            arr[index].DescriptionDocument = ''
-            arr[index].NameDocument = ''
-            arr[index].typename = res.typename
-            arr[index].typefile = res.type
-            this.arrItemsFile.push(...[arr[index]])
-          }
-        }) 
-      });
-    },
-    methods: {
-      ...mapActions(['pushDocuments']),
-      destroyModalF() {
-        this.destroyModalLeft = 'left-block-modal-hidden'
-        this.destroyModalRight = 'content-modal-right-menu-hidden'
-        this.hiddens = 'display: none;'
-        this.$emit('unmount', null)
-      },
-      addFiles(getFormData = 'pushfile') {
-        const formData = new FormData()
-        const dataArr = []
-        for(let doc of this.arrItemsFile) {
-          formData.append('document', doc)
-          dataArr.push({
-            type: doc.TypeDocument,
-            version: doc.VersionDocument,
-            description: doc.DescriptionDocument,
-            name: doc.NameDocument,
-            nameInstans: ''
-          })
+  props: ['parametrs', 'typeGetFile'],
+  data() {
+    return {
+      destroyModalLeft: 'left-block-modal',
+      destroyModalRight: 'content-modal-right-menu',
+      hiddens: 'opacity: 1;',
+      typeDocs: ['МД', 'КД', 'ЧЖ', 'СД'],
+      urlImg: '',
+      imgShow: false,
+      showDocType: false,
+      docType: '',
+      arrItemsFile: []
+    }
+  },
+  async mounted() {
+    this.destroyModalLeft = 'left-block-modal'
+    this.destroyModalRight = 'content-modal-right-menu'
+    this.hiddens = 'opacity: 1;'
+    if(this.parametrs.type == 'create') {
+      return 0;
+    } else  {
+      this.titleapp = 'Редактирование'
+      this.inputs = this.parametrs.description
+      this.inputs_short = this.parametrs.value
+    }
+    let arr = this.$props.parametrs
+    arr.forEach((doc, index) => {
+      photoPreloadUrl(doc, (res) => {
+        if (res.type == 'img') {
+          arr[index].TypeDocument = ''
+          arr[index].VersionDocument = ''
+          arr[index].DescriptionDocument = ''
+          arr[index].url = res.url 
+          arr[index].NameDocument = ''
+          arr[index].typefile = res.type
+          this.arrItemsFile.push(...[arr[index]])
+        } else { 
+          arr[index].TypeDocument = ''
+          arr[index].VersionDocument = ''
+          arr[index].DescriptionDocument = ''
+          arr[index].NameDocument = ''
+          arr[index].typename = res.typename
+          arr[index].typefile = res.type
+          this.arrItemsFile.push(...[arr[index]])
         }
-        formData.append('docs', JSON.stringify(dataArr))
+      }) 
+    });
+  },
+  methods: {
+    ...mapActions(['pushDocuments']),
+    destroyModalF() {
+      this.destroyModalLeft = 'left-block-modal-hidden'
+      this.destroyModalRight = 'content-modal-right-menu-hidden'
+      this.hiddens = 'display: none;'
+      this.$emit('unmount', null)
+    },
+    addFiles(getFormData = 'pushfile') {
+      const formData = new FormData()
+      const dataArr = []
+      for(let doc of this.arrItemsFile) {
+        formData.append('document', doc)
+        dataArr.push({
+          type: doc.TypeDocument,
+          version: doc.VersionDocument,
+          description: doc.DescriptionDocument,
+          name: doc.NameDocument,
+          nameInstans: ''
+        })
+      }
+      formData.append('docs', JSON.stringify(dataArr))
 
-        if(getFormData == 'getfile') {
-          this.$emit('unmount', {
-              formData
-          })
-          this.destroyModalF()
-          return 0
-        }
-
-        this.pushDocuments(formData).then(() => {
-          this.$emit('unmount', {
-            type: 'w',
-            message: 'Файлы переданы на сервер для обработки'
-          })
+      if(getFormData == 'getfile') {
+        this.$emit('unmount', {
+          formData
         })
         this.destroyModalF()
-      },
-      fileRead(val, folder, index) {
-        this.arrItemsFile[index][folder] = val
+        return 0
       }
+
+      this.pushDocuments(formData).then((res) => {
+        this.$emit('unmount', {
+          files: res,
+          type: 'w',
+          message: 'Файлы переданы на сервер для обработки'
+        })
+      })
+      this.destroyModalF()
+    },
+    fileRead(val, folder, index) {
+      this.arrItemsFile[index][folder] = val
     }
+  }
 }
 </script>
 

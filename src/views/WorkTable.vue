@@ -1,9 +1,8 @@
 <template>
   <div>
     <div> 
-      <h3>Задачи для меня</h3>
       <div>
-          <IssueForMe />
+        <IssueForMe />
       </div>
     </div>
     <div class="block-two">

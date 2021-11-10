@@ -69,7 +69,8 @@
       v-if='showInformPanel'
       :key='keyInformTip'
     />
-    <AddFile :parametrs='docFiles' 
+    <AddFile 
+      :parametrs='docFiles' 
       v-if="isChangeFolderFile" 
       @unmount='unmount'
       :return_files="push"
@@ -78,14 +79,12 @@
       :parametrs='itemFiles' 
       v-if="showModalOpenFile" 
       @unmount='unmount'
-      :key='keyWhenModalGenerateFileOpen'
-      />
+      :key='keyWhenModalGenerateFileOpen' />
     <BaseDetalModal 
       v-if='showBFM'
       :key='generateKeyBFM'
       :idFile='itemFiles.id'
-      @responsDetal='responsDetal'
-    />
+      @responsDetal='responsDetal' />
 
     <Loader v-if='loader' />
   </div>
@@ -125,7 +124,7 @@ export default {
       keyWhenModalGenerateFileOpen: random(10, 999),
       showModalOpenFile: false,
 
-      nodeTableKey: random(10, 381e4),
+      nodeTableKey: random(10, 999),
 
       showBFM: false,
       generateKeyBFM: random (1, 999),
@@ -133,12 +132,26 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['allFiles', 'banFiles', 'getRoleAssets']),
+    ...mapGetters([
+      'allFiles', 
+      'banFiles', 
+      'getRoleAssets'
+    ]),
   },
   components: {InformFolder, Tables, AddFile, OpensFile, NodeTable, BaseDetalModal},
   methods: {
-    ...mapActions(['fetchFiles', 'bannedFiles', 'checkedType', 'fetchFileById', 'setDetalForFile']),
-    ...mapMutations(['searchToFiles', 'searchToBanFiles']),
+    ...mapActions([
+      'fetchFiles', 
+      'bannedFiles', 
+      'checkedType', 
+      'fetchFileById', 
+      'setDetalForFile'
+    ]),
+    ...mapMutations([
+      'searchToFiles', 
+      'searchToBanFiles',
+      'pushFilesMutation'
+    ]),
     getDateRevers(date) {
       return getReversDate(date).date
     },
@@ -259,8 +272,12 @@ export default {
         this.showModalOpenFile = false
         return 0;
       }
+      if(res.files && res.files.length) {
+        for(let file of res.files) {
+          this.pushFilesMutation(file)
+        }
+      }
       showMessage('', res.message, res.type, this)
-      this.fetchFiles()
       this.getType('all')
     },
     responsDetal(detal) {

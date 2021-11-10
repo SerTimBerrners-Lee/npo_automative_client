@@ -50,7 +50,6 @@
         @unmount='openFile'
         :key='keyWhenModalGenerateFileOpen'
       />
-
       <Loader v-if='loader' />
     </div>
   </div>
@@ -58,12 +57,11 @@
 
 <script>
 
-import TableMaterial from '@/components/mathzag/table-material.vue'
-import OpensFile from '@/components/filebase/openfile.vue'
-import random from 'lodash'
-import TableNode from '@/components/mathzag/table-node.vue'
-
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import random from 'lodash';
+import TableNode from '@/components/mathzag/table-node.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
   data() {
     return {
@@ -106,7 +104,6 @@ export default {
 
       this.getInstansMaterial(instans)
       this.instansLet = instans
-
     },
     clickMat(mat, type) {
       if(type == 'type') {

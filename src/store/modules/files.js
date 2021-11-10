@@ -32,8 +32,10 @@ export default {
         method: 'post',
         body: data
       })
-      if(res.ok ) 
-        ctx.dispatch('fetchFiles')
+      if(res.ok ) {
+        const respons = await res.json()
+        return respons
+      } 
     },
 
     async bannedFiles(ctx, docs) {
@@ -114,6 +116,10 @@ export default {
         state.noBanFiles.push(docs)
         state.banFiles = state.banFiles.filter(f => f.id != docs.id)
       }
+    },
+    pushFilesMutation(state, file) {
+      state.files.push(file)
+      state.noBanFiles.push(file)
     },
     getNoBanFiles(state) {
       state.noBanFiles = state.files.filter(f => !f.banned)
