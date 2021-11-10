@@ -271,8 +271,6 @@ export default {
       state.linkId = 0
     },
     getInstansMaterial(state, instans) {
-      console.log(instans)
-      if(instans) return false
       state.searchMaterial = []
       state.searchPTypeM = []
       state.searchTypeM = []
