@@ -60,15 +60,6 @@ export default {
 				return result
 			}
 		},
-		async fetchAllShipmentsSclad(ctx, bools) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/sclad/${bools}`)
-			if(res.ok) {
-				const result = await res.json()
-				ctx.commit('shipmentsSclad', result)
-				return result
-			}
-		},
-
 		async fetchChangeToSclad(ctx, id) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/sclad/${id}`, {
 				method: 'PUT'

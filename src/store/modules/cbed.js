@@ -72,6 +72,15 @@ export default {
         const result = await res.json()
         return result
       }
+    },
+
+    async setchDeficitCbed(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/deficit`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('addAllCbed', result)
+        return result 
+      }
     }
 
   },

@@ -10,30 +10,16 @@
         <div>
           <label for='z'>Заказано</label><input id='z' type="checkbox">
           <label for='zn'>Не заказано</label><input id='zn' type="checkbox">
-          <label for='end'>Выполнено</label><input id='end' type='checkbox'>
+          <label for='end'>Выполнено</label><input id='end' type='checkbox'> 
         </div>
       </div>
     </div>
     
     <div class='table_block'>
-      <div class="table-scroll">
-        <table style='width: 200px;'>
-          <tr>
-            <th>Заказ покупателя из задач на отгрузку</th>
-          </tr>
-          <tr 
-            v-for='shipment of getShipmentsSclad' 
-            :key='shipment'
-            class='td-row'
-            @click='setShipment(shipment)'>
-            <td> {{ shipment.number_order }} </td>
-          </tr>
-        </table>
-      </div>
       <div class="table-scroll" style='margin-left: 5px;'>
         <table>
           <tr>
-            <th colspan="7">Комплектация сборки, детали</th>
+            <th colspan="6">Комплектация сборки, детали</th>
             <th rowspan="2">Дефицит</th>
             <th rowspan="2">Реальный остаток с учетом планируемых отгрузок</th>
             <th rowspan="2">Минимальный остаток</th>
@@ -53,38 +39,38 @@
             </th> 
             <th>Тип</th>
             <th>№ Заказа</th>
-            <th>Дата заказа</th>
             <th>Артикул</th>
             <th>Наименование</th>
             <th>Принадлежность</th>
           </tr>
-          <tr v-for='shipments of selectShipment.cbeds' :key='shipments'>
+          <tr v-for='cbed of allCbed' :key='cbed'>
             <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-              <p class="checkbox_block" @click='e => toProduction(shipments, e.target)'></p>
+              <p class="checkbox_block" @click='e => toProduction(cbed, e.target)'></p>
             </td>
             <td class='center'>СБ</td>
-            <td class='center'>{{ selectShipment.number_order }}</td>
-            <td class='center'>{{ selectShipment.date_order }}</td>
-            <td class='center'>{{ shipments.articl }}</td>
-            <td class='center'>{{ shipments.name }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='showParents(shipments, "cb")' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" @click='shipmentsShow(cbed.shipments)' class='link_img' atl='Показать' />
             </td>
-            <td class='center'>{{ getDeficitIzd('cbed', shipments.id) }}</td>
+            <td class='center'>{{ cbed.articl }}</td>
+            <td class='center'>{{ cbed.name }}</td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='showParents(cbed, "cb")' class='link_img' atl='Показать' />
+            </td>
+            <td class='center'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ 0 }}</td>
-            <td class='center'>{{ getDeficitIzd('cbed', shipments.id) }}</td>
-            <td class='center'>{{ shipments.parametrs ? JSON.parse(shipments.parametrs)[0].znach : '' }}</td>
-            <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ getDeficitIzd('cbed', shipments.id) }}</td>
-            <td class='center'>{{ shipments.parametrs ? 
-              Number(JSON.parse(shipments.parametrs)[0].znach) * getDeficitIzd('cbed', shipments.id) 
+            <td class='center'>{{ cbed.cbed_kolvo + cbed.shipments_kolvo }}</td>
+            <td class='center'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
+            <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed.cbed_kolvo + cbed.shipments_kolvo }}</td> 
+            <td class='center'>{{ cbed.parametrs ? 
+              Number(JSON.parse(cbed.parametrs)[0].znach) * cbed.shipments_kolvo
               : '' }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{  }}</td>
             <td class='center'>Заказано</td>
-            <td class='center'>{{ selectShipment.date_shipments }}</td>
+            <td class='center'>{{ cbed.date_shipments }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openDescription(selectShipment.description)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" @click='openDescription(cbed.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
           <tr v-for='shipments of selectShipment.detals' :key='shipments'>
@@ -156,6 +142,11 @@
       v-if='message'
       :key='keyInformTip'
     />
+    <ShipmentsModal 
+      :shipments='shipments'
+      v-if='shipments.length'
+      :key='shipmentKey'
+    />
 
     <Loader v-if='loader' />
   </div>
@@ -171,6 +162,7 @@ import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import { OperationTime } from '@/js/operation.js';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 export default {
   data() {
     return {
@@ -181,7 +173,7 @@ export default {
       descriptionKey: random(1, 999),
       description: '',
 
-      showShipment: false,
+      shipments: [],
       shipmentKey: random(1, 999),
 
       message: '',
@@ -205,22 +197,23 @@ export default {
       type_norm_time: 'cb'
     }
   },
-  computed: mapGetters(['getShipmentsSclad']),
-  components: {DatePicterRange, StartPraduction, DescriptionModal, NormTimeOperation, ShipmentsMiniList, ProductListModal},
+  computed: mapGetters(['allCbed']),
+  components: {
+    DatePicterRange, 
+    StartPraduction, 
+    DescriptionModal, 
+    NormTimeOperation, 
+    ShipmentsMiniList, 
+    ProductListModal,
+    ShipmentsModal
+  },
   methods: {
-    ...mapActions(['fetchAllShipmentsSclad', 'getOneCbEdById', 'getOneDetal']),
-    unmount_sh_list(res) {
-      if(res) this.fetchAllShipmentsSclad(true)
-    },
+    ...mapActions(['getOneCbEdById', 'getOneDetal', 'setchDeficitCbed']),
     start() {
       if(!this.select_izd || !this.selectShipment)
         return showMessage('', 'Для начала выберите СБ и заказ', 'w', this)
-      let kolvo_order_byer = this.getDeficitIzd('cbed', this.select_izd.id)
-      this.kolvo_all = this.kolvo_all || kolvo_order_byer
       this.parametrs = {
-        izd: this.select_izd, 
-        shipments: this.selectShipment,
-        kolvo_order_byer, 
+        izd: this.select_izd,
         kolvo_all: this.kolvo_all,
         type: 'cb'
       }
@@ -237,8 +230,8 @@ export default {
       this.showNormTimeOperation = true;
       this.normTimeOperationKey = random(1, 999)
     },
-    shipmentsAdd() {
-      this.showShipment = true
+    shipmentsShow(shipments) {
+      this.shipments = shipments
       this.shipmentKey = random(1, 999)
     },
     setShipment(shipment) {
@@ -305,7 +298,8 @@ export default {
   },
   async mounted() {
     this.loader = true
-    await this.fetchAllShipmentsSclad(true)
+    await this.setchDeficitCbed()
+    console.log(this.allCbed)
     this.loader = false
   }
 }

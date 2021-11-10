@@ -99,6 +99,7 @@
                       <option v-for='docs of typeDocs' :key='docs'>{{ docs }}</option>
                     </select>
                   </p>
+                  <button class='btn-small' @click='convert'>Конвентировать в PNG</button>
                   <p>
                     <span>Ответственный: </span>
                     <select v-model='responsible_user_id' class='select-small'>
@@ -151,7 +152,7 @@ export default {
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
   methods: {
-    ...mapActions(['pushDocuments', 'getAllUsers', 'updateDataFile']),
+    ...mapActions(['pushDocuments', 'getAllUsers', 'updateDataFile', 'convertPdf']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -215,6 +216,9 @@ export default {
               type: 'e'
             })
       })
+    },
+    convert() {
+      this.convertPdf(this.file[this.file_increment].path)
     }
   },
   async mounted() {

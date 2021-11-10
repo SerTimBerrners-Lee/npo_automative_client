@@ -107,8 +107,6 @@ export default {
         number_order: this.number_order,
         date_shipments: this.date_shipments,
         description: this.description,
-        shipments_id: this.$props.parametrs.shipments.id,
-        kolvo_order_byer: this.$props.parametrs.kolvo_order_byer,
         kolvo_all: Number(this.$props.parametrs.kolvo_all)
       }
 
@@ -137,17 +135,19 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
 
-    if(this.$props.parametrs && this.$props.parametrs.shipments) {
+    if(this.$props.parametrs) {
       if(!Number(this.$props.parametrs.kolvo_all)) {
         setTimeout(() => this.destroyModalF(), 2000)
         return showMessage('', 'Выбраннове количество должно быть числом и больше 0', 'w', this)
       }
+
+      console.log(this.$props.parametrs.izd)
         
       
-      this.date_order = this.$props.parametrs.shipments.date_order
-      this.number_order = this.$props.parametrs.shipments.number_order
-      this.date_shipments = this.$props.parametrs.shipments.date_shipments
-      this.description = this.$props.parametrs.shipments.description
+      // this.date_order = this.$props.parametrs.shipments.date_order
+      // this.number_order = this.$props.parametrs.shipments.number_order
+      // this.date_shipments = this.$props.parametrs.shipments.date_shipments
+      // this.description = this.$props.parametrs.shipments.description
     }
     if(this.$props.parametrs && this.$props.parametrs.izd) {
       let izd = this.$props.parametrs.izd
