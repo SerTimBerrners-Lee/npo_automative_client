@@ -38,8 +38,8 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/library/chapter`)
       if(res.ok) {
         const result = await res.json()
-        console.log(result)
         ctx.commit('mutationsAllChapter', result)
+        return result
       }
     },
     async removeChapter(ctx, id) {

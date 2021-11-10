@@ -2,180 +2,180 @@ import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
   state: {
-      TInstrument: [],
-      PTInstrument: [],
-      PPTInstrument: [],
-      nameInstrument: {},
+    TInstrument: [],
+    PTInstrument: [],
+    PPTInstrument: [],
+    nameInstrument: {},
 
-      instansTInstrument: [], 
-      instansPTInstrument: [],
-      linkId: 0,
+    instansTInstrument: [], 
+    instansPTInstrument: [],
+    linkId: 0,
 
-      searchTypeInst: [],
-      searchPTypeInst: [],
-      searchNameInst: []
+    searchTypeInst: [],
+    searchPTypeInst: [],
+    searchNameInst: []
   },
   getters: {
-      allTInstrument(state) {
-          return state.TInstrument
-      },
-      allPTInstrument(state) {
-          return state.PTInstrument
-      },
-      allPPTInstrument(state) {
-          return state.PPTInstrument
-      },
-      getOneNameInstrument(state) {
-          return state.nameInstrument
-      },
-      getLinkIdInstrument(state) {
-          return state.linkId
-      },
+    allTInstrument(state) {
+      return state.TInstrument
+    },
+    allPTInstrument(state) {
+      return state.PTInstrument
+    },
+    allPPTInstrument(state) {
+      return state.PPTInstrument
+    },
+    getOneNameInstrument(state) {
+      return state.nameInstrument
+    },
+    getLinkIdInstrument(state) {
+      return state.linkId
+    },
   },
   actions: { 
-      async fetchAllInstruments(ctx) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument`)
-          const result = await res.json()
-          ctx.commit('addAllTInstrument', result)
-      },
-      async addNewTInstrument(ctx, data) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument`, {
-              method: 'post',
-              headers: { 
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  ...data
-              })
-          })
+    async fetchAllInstruments(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument`)
+      const result = await res.json()
+      ctx.commit('addAllTInstrument', result)
+    },
+    async addNewTInstrument(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument`, {
+        method: 'post',
+        headers: { 
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...data
+        })
+      })
 
-          if(res.ok) {
-              const result = await res.json()
-              ctx.dispatch('fetchAllInstruments')
-              ctx.commit('addOneTInstrument', result)
-          }
-      },
-      async removeTInstrument(ctx, id) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/${id}`, {
-              method: 'delete'
-          })
-          if(res.ok)
-              ctx.commit('removeTInstrument', id)
-      },
-      async updateTInstrument(ctx, data) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/update`, {
-              method: 'post',
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  ...data
-              })
-          })
-          if(res.ok) 
-              ctx.dispatch('fetchAllInstruments')
-      },
-      async addNewPTInstrument(ctx, data) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt`, {
-              method: 'post',
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  ...data
-              })
-          })
-
-          if(res.ok) {
-              const result = await res.json()
-              ctx.commit('addOnePTInstrument', result)
-          }
-      },
-      async removePTInstrument(ctx, id) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`, {
-              method: 'delete'
-          })
-          if(res.ok)
-              ctx.commit('removePTInstrument', id)
-              ctx.dispatch('fetchAllInstruments')
-      },
-      async updatePTInstryment(ctx, data) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/update`, {
-              method: 'post',
-              headers: {
-                  'Accept': 'application/json',
-                  'Content-Type': 'application/json'
-              },
-              body: JSON.stringify({
-                  ...data
-              })
-          })
-          if(res.ok) {
-              const result = await res.json()
-              ctx.commit('updatePTInstrument', result)
-              ctx.dispatch('fetchAllInstruments')
-          }
-      },
-      async getAllPTInstances(ctx, id) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`)
-          const result = await res.json()
-          ctx.commit('getAllName', result)
-      },
-
-      async getPTInstrumentList(ctx) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/`)
-          const result = await res.json()
-
-          ctx.commit('pushPTInstrumentList', result)
-      },
-      async addNameInstrument(ctx, data) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`, {
-              method: 'post',
-              body: data
-          })
-
-          if(res.ok) {
-              const result = await res.json()
-              ctx.dispatch('fetchAllInstruments')
-              ctx.dispatch('getAllNameInstrument')
-              return result
-          }
-      },
-      async fetchOneNameInstrument(ctx, id) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/name/${id}`)
-          const result = await res.json()
-          ctx.commit('addOneNameInstrument', result)
-      },
-      async removeFileInstrument(ctx, id) {
-          await fetch(`${PATH_TO_SERVER}api/instrument/file/${id}`, {
-              method: 'delete'
-          })
-      },
-      async updateNameInstrument(ctx, data) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/update`, {
-              method: 'post',
-              body: data
-          })
-
-          if(res.ok) {
-              const result = await res.json()
-              return result 
-          }
-      },
-      async banNameInstrument(ctx, id) {
-          await fetch(`${PATH_TO_SERVER}api/instrument/ban/${id}`, {
-              method: 'delete'
-          })
-          ctx.commit('hideNameInstrument', id)    
-      },
-      async getAllNameInstrument(ctx) {
-          const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`)
-          const result = await res.json()
-          ctx.commit('pushAllNameInstrument', result)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.dispatch('fetchAllInstruments')
+        ctx.commit('addOneTInstrument', result)
       }
+    },
+    async removeTInstrument(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/${id}`, {
+        method: 'delete'
+      })
+      if(res.ok)
+        ctx.commit('removeTInstrument', id)
+    },
+    async updateTInstrument(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/update`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...data
+        })
+      })
+      if(res.ok) 
+        ctx.dispatch('fetchAllInstruments')
+    },
+    async addNewPTInstrument(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...data
+        })
+      })
+
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('addOnePTInstrument', result)
+      }
+    },
+    async removePTInstrument(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`, {
+        method: 'delete'
+      })
+      if(res.ok)
+        ctx.commit('removePTInstrument', id)
+        ctx.dispatch('fetchAllInstruments')
+    },
+    async updatePTInstryment(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/update`, {
+        method: 'post',
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          ...data
+        })
+      })
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('updatePTInstrument', result)
+        ctx.dispatch('fetchAllInstruments')
+      }
+    },
+    async getAllPTInstances(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`)
+      const result = await res.json()
+      ctx.commit('getAllName', result)
+    },
+
+    async getPTInstrumentList(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/`)
+      const result = await res.json()
+
+      ctx.commit('pushPTInstrumentList', result)
+    },
+    async addNameInstrument(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`, {
+        method: 'post',
+        body: data
+      })
+
+      if(res.ok) {
+        const result = await res.json()
+        ctx.dispatch('fetchAllInstruments')
+        ctx.dispatch('getAllNameInstrument')
+        return result
+      }
+    },
+    async fetchOneNameInstrument(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/name/${id}`)
+      const result = await res.json()
+      ctx.commit('addOneNameInstrument', result)
+    },
+    async removeFileInstrument(ctx, id) {
+      await fetch(`${PATH_TO_SERVER}api/instrument/file/${id}`, {
+        method: 'delete'
+      })
+    },
+    async updateNameInstrument(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/update`, {
+        method: 'post',
+        body: data
+      })
+
+      if(res.ok) {
+        const result = await res.json()
+        return result 
+      }
+    },
+    async banNameInstrument(ctx, id) {
+      await fetch(`${PATH_TO_SERVER}api/instrument/ban/${id}`, {
+        method: 'delete'
+      })
+      ctx.commit('hideNameInstrument', id)    
+    },
+    async getAllNameInstrument(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`)
+      const result = await res.json()
+      ctx.commit('pushAllNameInstrument', result)
+    }
   },
   mutations: { 
     pushAllNameInstrument(state, data) {

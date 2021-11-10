@@ -32,11 +32,10 @@
 </template>
 
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue'
-import addEditInstruent from '@/components/instrument/add-edit-instrument.vue'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { random } from 'lodash'
-
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import addEditInstruent from '@/components/instrument/add-edit-instrument.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { random } from 'lodash';
 export default {
   data() {
     return{
@@ -83,12 +82,12 @@ export default {
       }
     },
     clickTInstrument(instrument) {
-        this.TInstrument = instrument
-        if(instrument.pInstruments)
-            this.filterAllpInstrument(instrument)
+      this.TInstrument = instrument
+      if(instrument.pInstruments)
+        this.filterAllpInstrument(instrument)
     },
     clickPTInstrument(PTInstrument) {
-        this.PTInstrument = PTInstrument
+      this.PTInstrument = PTInstrument
     },
     create(instrument, type = 'create') {
       if(instrument == 'PODTYPE') {

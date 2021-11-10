@@ -1,59 +1,148 @@
 <template>
   <div class="main-dive">
     <h3>9. База непроизводственной техники и инвентаря (типы и подтипы)</h3>
-    <img style='position: fixed ;
-          z-index: 12;
-          width: 700px;
-          margin: 0 auto;
-          left: 0;
-          right: 0;' 
-          src="@/assets/img/unnamed.jpg" 
-          alt="На реставрации ">
     <div class="cont">
       <div class="cont scroll-table scrolls-type-490">
-        <table class="type-table">
-          <tr>
-            <th class="width-350">Тип</th>
-          </tr>
-          <tr class="td-row" v-for="i in 20" :key="i">
-            <td>...</td>
-          </tr>
-        </table>
+        <TableMaterial :title='"Тип"' 
+          :alltypeM="getTInventary" 
+          :type='"T"' 
+          @clickMat="clickTInventary"/>
       </div>
       <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
-        <button class="btn-add btn-small">Создать</button>
-        <button class="btn-small">Редактировать</button>
-        <button class="btn-small">Удалить</button>
+        <button class="btn-add btn-small" @click='create("TYPE")'>Создать</button>
+        <button class="btn-small" @click='edit("TYPE", "edit")'>Редактировать</button>
+        <button class="btn-small" @click='remove("TYPE")'>Удалить</button>
       </div>
     </div>
     <div class="cont">
       <div class="cont scroll-table scrolls-type-490">
-        <table class="type-table">
-          <tr>
-            <th class="width-350">Подтип</th>
-          </tr>
-          <tr class="td-row" v-for="i in 20" :key="i">
-            <td>...</td>
-          </tr>
-        </table>
+        <TableMaterial :title='"Подтип"' 
+          :alltypeM="getPTInventary" 
+          :type="'PT'" 
+          @clickMat="clickPTInventary"/>
       </div>
       <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
-        <button class="btn-add btn-small">Создать</button>
-        <button class="btn-small">Редактировать</button>
-        <button class="btn-small">Удалить</button>
+        <button class="btn-add btn-small" @click='create("PODTYPE")'>Создать</button>
+        <button class="btn-small" @click="edit('PODTYPE', 'edit')">Редактировать</button>
+        <button class="btn-small" @click="remove('PODTYPE')">Удалить</button>
       </div>
     </div>
+    <addEditInventary 
+      :key='keyModalInventary'
+      v-if='showModalInventary'
+      :parametrs='parametrs'
+      @unmount='unmount'
+    />
   </div>
 </template>
 
 <script>
-import {mapGetters} from 'vuex'
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import addEditInventary from '@/components/inventory/add-edit-modal.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { random } from 'lodash';
 export default {
   data() {
     return{
-
+      keyModalInventary: random(1, 999),
+      showModalInventary: false,
+      inventaryT: null,
+      inventaryPT: null,
+      parametrs: null
     }
   },
-  computed: mapGetters(['getRoleAssets'])
+  components: {TableMaterial, addEditInventary},
+  computed: mapGetters(['getRoleAssets', 'getTInventary', 'getPTInventary']),
+  methods: {
+    ...mapActions([
+      'addNewTInventary',
+      'fetchAllInventary',
+      'updateNewTInventary',
+      'removeTInventary',
+      'addNewPTInventary',
+      'updatePTInventary',
+      'fetchAllPInventary',
+      'removePTInventary'
+    ]),
+    ...mapMutations(['']), 
+    unmount(res) {
+      if(!res)
+        return 0
+      if(res.type == "TYPE") {
+        if(res.action == 'edit')
+          this.updateNewTInventary({
+            id: this.inventaryT.id, 
+            name: res.name
+          })
+        if(res.action == 'create')
+          this.addNewTInventary({
+            name: res.name
+          })
+      }
+      if(res.type == "PODTYPE") {
+        console.log(res)
+        if(res.action == 'create') {
+          if(!this.inventaryT) return 0
+          this.addNewPTInventary({name: res.name, inventary_type_id: this.inventaryT.id})
+        }
+        if(res.action == 'edit')
+          this.updatePTInventary({id: this.inventaryPT.id, name: res.name})
+      }
+    },
+    clickTInventary(inventary) {
+      this.inventaryT = inventary
+    },
+    clickPTInventary(inventary) {
+      this.inventaryPT = inventary
+    },
+    create(inventary, type = 'create') {
+      if(inventary == 'PODTYPE') {
+        if(!this.inventaryT)
+          return 0
+        this.parametrs = { inventary, type, parent: this.inventaryT }
+      }
+      if(inventary == 'TYPE') 
+        this.parametrs = { inventary, type }
+  
+      this.keyModalInventary = random(2, 999)
+      this.showModalInventary = true
+    },
+    edit(inventary, type = 'edit') {
+      if(inventary == 'TYPE') {
+        if(!this.inventaryT)
+          return 0
+        this.parametrs = {
+          inventary, 
+          type,
+          data: { name: this.inventaryT.name }
+        }
+      }
+
+      if(inventary == 'PODTYPE') {
+        if(!this.inventaryPT)
+          return 0
+        this.parametrs = {
+          inventary, 
+          type,
+          parent: this.inventaryT,
+          data: { name: this.inventaryPT.name }
+        }
+      }
+      this.keyModalInventary = random(2, 999)
+      this.showModalInventary = true
+    },
+    remove(type) {
+      if(type == 'TYPE' && this.inventaryT) 
+        this.removeTInventary(this.inventaryT.id)
+      if(type == 'PODTYPE' && this.inventaryPT)
+        this.removePTInventary(this.inventaryPT.id)
+    }
+  },
+  async mounted() {
+    this.loader = true;
+    await this.fetchAllInventary()
+    await this.fetchAllPInventary()
+    this.loader = false
+  }
 }
 </script>

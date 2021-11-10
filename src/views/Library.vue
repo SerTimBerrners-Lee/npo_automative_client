@@ -10,20 +10,11 @@
     <div class='table_block'>
       <div class="table-scroll">
         <table>
-          <tr>
-            <th>Разделы</th>
-          </tr>
-          <tr>
-            <th>Гидравлика</th>
-          </tr>
-          <tr>
-            <th>Пневматика</th>
-          </tr>
-          <tr>
-            <th>Автоматика</th>
-          </tr>
-          <tr>
-            <th>Микроэлектроника</th>
+         <tr class='td-row'
+            v-for='chapt of getChapter' 
+            :key='chapt'
+            @class='e => setChapter(chapt, e.target)'>
+            <th>{{ chapt.name }}</th>
           </tr>
         </table>
       </div>
@@ -44,30 +35,63 @@
           <button class="btn-small">В архив</button>
           <button class="btn-small">Забрать себе</button>
           <button class="btn-small">Редактировать</button>
-          <button class="btn-small">Добавить файл или ссылку</button>
+          <button class="btn-small" @click='addFileLink'>Добавить файл или ссылку</button>
           <button class="btn-small btn-add">Скачать</button>
         </div>
       </div>
     </div>
+    <Loader v-if='loader' />
+    <AddFileLink 
+      :key='keyLinlFile'
+      v-if='showLinkFile'
+    />
 	</div>
 </template>
 
 <script>
 
+import { mapGetters, mapActions } from 'vuex';
+import AddFileLink from '@/components/library/add-file.vue';
+import { random } from 'lodash';
 export default {
-	data() {
-		return{
-		}
-	},
-	components: {},
-	methods: {
-	
-	},
-	async mounted() {
-
-	}
+  data() {
+    return {  
+      loader: false,
+      select_chapter: null,
+      span_chapter: null,
+      keyLinlFile: random(1, 999),
+      showLinkFile: false,
+    }
+  },
+  computed: {
+    ...mapGetters([
+      'getChapter'
+    ]),
+  },
+  components: {AddFileLink},
+  methods: {
+    ...mapActions([
+      'getAllChapter'
+    ]),
+    setChapter(chapter, e) {
+      if(this.span_chapter) this.span_chapter.classList.add('td-row-all')
+      this.select_chapter = chapter
+      this.span_chapter = e
+      this.span_chapter.classList.add('td-row-all')
+    },
+    addFileLink() {
+      this.keyLinlFile = random(1, 999)
+      this.showLinkFile = true
+    }
+  },
+  async mounted() { 
+    this.loader = true
+    await this.getAllChapter()
+    this.loader = false
+  }
 }
 </script>
+
 <style scoped>
 .table_block{
   display: flex;

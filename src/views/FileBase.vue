@@ -158,7 +158,6 @@ export default {
         this.itemFiles = {...res, type_open_modal: 'edit'}
         this.nodeTableKey = random(5, 999)
       })
-      console.log(this.showModalOpenFile)
     },
     dbPushFile(file) {
       if(this.itemFiles) {

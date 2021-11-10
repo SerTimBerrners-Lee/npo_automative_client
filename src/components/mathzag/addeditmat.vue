@@ -15,16 +15,12 @@
         <table style="width: 100%;">
           <tr>
             <th>Наименование</th>
-            <th>
-                ЕИ
-            </th>
+            <th>ЕИ</th>
             <th>Значение</th>
           </tr>
           <tr>
             <td  @click='obj.length_permanent = ""'>Длина (L)</td>
-            <td>
-                м, мм
-            </td>
+            <td>м, мм</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -38,9 +34,7 @@
           </tr>
           <tr>
             <td  @click='obj.width_permanent = ""'>Ширина (A)</td>
-            <td>
-                м, мм
-            </td>
+            <td>м, мм</td>
             <td class="input_znach" >
               <p>
                 <span> Постоянное </span>
@@ -54,9 +48,7 @@
           </tr>
           <tr>
             <td @click='obj.height_permanent = ""'>Высота (B)</td>
-            <td>
-                м, мм
-            </td>
+            <td>м, мм</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -70,9 +62,7 @@
           </tr>
           <tr>
             <td @click='obj.wallThickness_permanent = ""'>Толщина стенки (С)</td>
-            <td>
-                мм
-            </td>
+            <td>мм</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -86,9 +76,7 @@
           </tr>
           <tr>
             <td @click='obj.outsideDiametr_permanent = ""'>Наружный Диаметр (D)</td>
-            <td>
-                мм
-            </td>
+            <td>мм</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -102,9 +90,7 @@
           </tr>
           <tr>
             <td @click='obj.thickness_permanent = ""'>Толщина </td>
-            <td>
-                мм
-            </td>
+            <td>мм</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -118,9 +104,7 @@
           </tr>
           <tr>
             <td @click='obj.areaCrossSectional_permanent = ""'>Площадь сечения (S)</td>
-            <td>
-                м2
-            </td>
+            <td>м2</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -151,21 +135,16 @@
         <table style="width: 100%;">
           <tr>
             <th>Наименование</th>
-            <th>
-                ЕИ
-            </th>
+            <th>ЕИ</th>
             <th>Значение</th>
           </tr>
           <tr>
             <td>Плотность</td>
-            <td>
-                кг/м.куб
-            </td>
+            <td>кг/м.куб</td>
             <td class="input_znach">
               <input style='border: none; width: 97%; height: 100%' type="text" v-model="obj_podType.density_permanent">
             </td>
-          </tr>
-            
+          </tr>     
         </table>
         <span class='snoska'>* Для сброса выбранного кликните на наименование характеристики</span>
         <div class="btn-control out-btn-control" v-if='parametrs.mat != "PODTYPE"'>
