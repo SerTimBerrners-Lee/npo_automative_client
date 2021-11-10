@@ -66,7 +66,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <AddFile 
@@ -94,7 +94,6 @@
 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import { getReversDate, showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import Tables from '@/components/filebase/tables.vue';
 import AddFile from '@/components/filebase/addfile.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
@@ -109,7 +108,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
       typeDocs: ['МД', 'КД', 'ЧЖ', 'СД', 'DXF'],
       targetLink: null,
@@ -138,7 +136,7 @@ export default {
       'getRoleAssets'
     ]),
   },
-  components: {InformFolder, Tables, AddFile, OpensFile, NodeTable, BaseDetalModal},
+  components: {Tables, AddFile, OpensFile, NodeTable, BaseDetalModal},
   methods: {
     ...mapActions([
       'fetchFiles', 

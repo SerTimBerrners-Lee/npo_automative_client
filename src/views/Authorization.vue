@@ -68,7 +68,7 @@
       :title='titleMessage' 
       :message='message' 
       :type='type' 
-      v-if='showInformPanel' 
+      v-if='message' 
     />
   </div>
 </template>
@@ -76,9 +76,8 @@
 
 <script>
 
-import { mapGetters, mapActions, mapMutations }from 'vuex'
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
+import { mapGetters, mapActions, mapMutations }from 'vuex';
+import { showMessage } from '@/js/';
 export default {
   name: 'Authorization',
   props: {
@@ -94,13 +93,11 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 
       password_flags: false
     }
   },
-  components: {InformFolder},
   computed: mapGetters(['getUsers', 'getAuth']),
   methods: {
     ...mapActions(['getAllUsers', 'loginAuth', 'getUserById']),

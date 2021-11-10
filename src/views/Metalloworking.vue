@@ -91,7 +91,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <OperationModal 
@@ -112,7 +112,6 @@ import DescriptionModal from '@/components/description-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking.vue';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import {random} from 'lodash';
 import OperationModal from '@/components/sclad/workings-operations.vue';
 export default {
@@ -130,7 +129,6 @@ export default {
 
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: random(1, 999),
 
       keyOperationPathModal: random(1, 999),
@@ -145,7 +143,7 @@ export default {
     'getShipments',
     'getTypeOperations',
     ]),
-	components: {DescriptionModal, OpensFile, OperationPathModal, InformFolder, OperationModal},
+	components: {DescriptionModal, OpensFile, OperationPathModal, OperationModal},
 	methods: {
     ...mapActions([
       'fetchAllShipmentsMetaloworking', 

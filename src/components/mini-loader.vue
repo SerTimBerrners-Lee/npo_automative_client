@@ -75,14 +75,13 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
   </div>
 </template>
 
 <script>
-import InformFolder from '@/components/InformFolder.vue';
 import { showMessage } from '@/js/';
 export default {
   data() {
@@ -93,7 +92,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
     }
   },
@@ -107,7 +105,6 @@ export default {
       }
     }
   },
-  components: {InformFolder},
   methods: {
     reload() {
       document.location.reload()

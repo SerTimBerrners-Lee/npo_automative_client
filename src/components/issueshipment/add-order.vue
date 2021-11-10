@@ -105,10 +105,11 @@
 		:enum='"two"'
 		@responsDetal='responseDetalCb'
   />
-	<InformFolder  :title='titleMessage'
+	<InformFolder  
+		:title='titleMessage'
 		:message = 'message'
 		:type = 'type'
-		v-if='showInformPanel'
+		v-if='message'
 		:key='keyInformTip'
     />
 	</div>
@@ -118,7 +119,6 @@
 import DatePicterCustom from '@/components/date-picter.vue';
 import ProductList from '@/components/baseproduct/all-product-modal.vue';
 import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
-import InformFolder from '@/components/InformFolder.vue';
 import {showMessage} from '@/js/';
 import {mapActions, mapGetters} from 'vuex';
 
@@ -135,7 +135,6 @@ export default {
 			titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 
 			select_tr_inx: null,
@@ -164,7 +163,7 @@ export default {
 		},	
 	},
 	computed: mapGetters(['allBuyer']),
-	components: {DatePicterCustom, ProductList, BaseProductModal, InformFolder},
+	components: {DatePicterCustom, ProductList, BaseProductModal},
 	methods: {
 		...mapActions(['fetchCreateShipments', 'fetchAllBuyers', 'getOneCbEdById', 'getOneDetal']),
 		addCbEdDetal() {

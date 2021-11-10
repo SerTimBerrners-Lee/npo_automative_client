@@ -182,7 +182,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <OpensFile 
@@ -205,7 +205,6 @@ import { mapActions, mapGetters, mapMutations } from 'vuex'           ;
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { random, isEmpty } from 'lodash'                              ;
 import { showMessage } from '@/js/'                                   ;
-import InformFolder from '@/components/InformFolder.vue'              ;
 import OpensFile from '@/components/filebase/openfile.vue'            ;
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default {
@@ -256,14 +255,13 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
       click_short_t_pt: false,
       showModalFile: false,
       fileModalKey: random(1, 999),
     }
   },
-  components: {TableMaterial, ListProvider, InformFolder, OpensFile, BaseFileModal},
+  components: {TableMaterial, ListProvider, OpensFile, BaseFileModal},
   computed: {
     ...mapGetters([
       'alltypeM', 

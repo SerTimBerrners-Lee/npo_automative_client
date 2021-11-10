@@ -27,7 +27,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
   </div>
@@ -36,7 +36,6 @@
 
 <script>
 import {mapGetters, mapActions} from 'vuex';
-import InformFolder from '@/components/InformFolder.vue';
 import {showMessage} from '@/js/';
 export default {
   props: ['parametrs'],
@@ -52,12 +51,10 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
     }
   },
   computed: mapGetters(['getShipmentsSclad']),
-  components: {InformFolder},
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'fetchChangeToSclad']),
     destroyModalF() {

@@ -106,7 +106,7 @@
         :title='titleMessage'
         :message = 'message'
         :type = 'type'
-        v-if='showInformPanel'
+        v-if='message'
         :key='keyInformTip'
       />
       <Loader v-if='loader' />
@@ -120,7 +120,6 @@ import AddFile from '@/components/filebase/addfile.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import { random }  from 'lodash';
-import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return {
@@ -151,7 +150,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
     }
   },
@@ -162,7 +160,7 @@ export default {
     'getUsers',
     'getRoleAssets'
   ]),
-  components: {TableMaterial, AddFile, ListProvider, BaseTools, InformFolder},
+  components: {TableMaterial, AddFile, ListProvider, BaseTools},
   methods: {
     ...mapActions([
       'fetchAllEquipmentType', 

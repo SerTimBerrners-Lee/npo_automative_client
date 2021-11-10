@@ -24,7 +24,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
   </div>
@@ -34,7 +34,6 @@
 import {mapGetters} from 'vuex';
 import PATH_TO_SERVER from '@/js/path';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return{
@@ -43,12 +42,10 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
     }
   },
   computed: mapGetters(['getRoleAssets']),
-  components: {InformFolder},
   methods: {
     async update() {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/normhors`, {

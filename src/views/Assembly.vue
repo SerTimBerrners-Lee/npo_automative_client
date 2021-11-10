@@ -85,7 +85,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <OperationModal 
@@ -106,7 +106,6 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import OperationModal from '@/components/sclad/workings-operations.vue';
 export default {
 	data() {
@@ -119,7 +118,6 @@ export default {
 
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: random(1, 999),
 
       operation_stack: [],
@@ -135,7 +133,12 @@ export default {
 		}
 	},
   computed: mapGetters(['getShipments', 'getTypeOperations']),
-	components: {OperationModal, DescriptionModal, OpensFile, OperationPathModal, InformFolder},
+	components: {
+    OperationModal, 
+    DescriptionModal, 
+    OpensFile, 
+    OperationPathModal
+  },
 	methods: {
     ...mapActions([
       'fetchAllShipmentsAssemble', 

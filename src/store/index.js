@@ -20,7 +20,8 @@ import issue from './modules/issue';
 import shipments from './modules/shipments';
 import assemble from './modules/assemble';
 import metaloworking from './modules/metaloworking';
-import settings from './modules/settings'
+import settings from './modules/settings';
+import library from './modules/library'
 
 export default createStore({
   modules: {
@@ -45,7 +46,8 @@ export default createStore({
     shipments,
     assemble,
     metaloworking,
-    settings
+    settings,
+    library
   }
 })
   

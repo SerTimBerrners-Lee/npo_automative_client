@@ -22,10 +22,10 @@
 						<td>Материалы </td>
 					</tr>
 					<tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
-						<td>Покупные детали</td>
+						<td>Инструмент</td>
 					</tr>
 					<tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
-						<td>Расходные материалы</td>
+						<td>Склад Отходов</td>
 					</tr>
 				</table>
 				<table style="width: 150px;">
@@ -36,7 +36,7 @@
 						class='td-row' 
 						v-for='typ of alltypeM' 
 						:key='typ'
-						@click='clickMat(typ)'>
+						@click='clickMat(typ, "type")'>
 						<td>{{ typ.name }}</td>
 					</tr>
 				</table>
@@ -48,7 +48,7 @@
 						class='td-row' 
 						v-for='p_type of allPodTypeM' 
 						:key='p_type'
-						@click='clickMat(p_type)'>
+						@click='clickMat(p_type, "podM")'>
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
@@ -107,30 +107,26 @@
 							<td class='center'>
 								{{ 0 }}
 							</td>
-							<td class='center'>
-								{{  }}
+							<td class='center tooltip'>
+								{{ material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
+								<div class="tooltiptext" v-if='material.deliveries.length'>
+									<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+								</div>
 							</td>
 							<td class='center'>
-								{{  }}
+								{{ returnOstatokWays(material) - material.shipments_kolvo }}
 							</td>
 							<td class='center'>
 								{{ material.shipments_kolvo }}
 							</td>
 							<td class='center'>
-								Не заказано
+								{{ material.deliveries.length ? "Заказано" : 'Не заказано'}}
 							</td>
 					</tr>
 				</table>
 			</div>
-			<div class='btn-control'>
-				<button class="btn-small"> Выгрузка в Excel </button>
-				<button class="btn-small"> Печать отчета </button>
-			</div>
 		</div>
-		<Start
-			v-if='showStart'
-			:key='startKey'
-		/>
+		<Loader v-if='loader' />
 	</div>
 </template>
 
@@ -142,16 +138,30 @@ export default {
 		return {
 			span: null,
 			instansLet: 0,
+			loader: false, 
 
 			material: null,
 			span_material: null,
 		}
 	},
 	components: {DatePicterRange},
-	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
+	computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
 	methods: {
-		...mapActions(['fetchGetAllDeficitPPM']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
+		...mapActions(['getAllTypeMaterial',
+      'bannedPPM', 
+      'fetchGetOnePPM', 
+      'getAllPodTypeMaterial',
+      'fetchPPMNoLight'
+		]),
+    ...mapMutations(['filterByNameMaterialById', 'filterMatByPodType',
+      'addOnePPTyep', 
+      'getInstansMaterial', 
+      'throwInstans',
+      'searchTypeMutation', 
+      'searchPTypeMutation', 
+      'searchMaterialMutation', 
+      'clearCascheMaterial'
+		]),
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -160,13 +170,8 @@ export default {
 
       this.span = span
 			this.span.classList.add('td-row-all')
-
-      this.getInstansMaterial(instans)
       this.instansLet = instans
 
-    },
-		clickMat(mat) {
-			this.filterByNameMaterial(mat) 
     },
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
@@ -181,6 +186,37 @@ export default {
 			this.material = material
 			console.log(material)
 		},
+		returnOstatokWays(material) {
+			if(!material.deliveries) return '-'
+
+			let count = 0
+			for(let dev of material.deliveries) {
+				if(!dev.product) continue;
+				try { 
+					let pars = JSON.parse(dev.product)
+					for(let product of pars) {
+						if(product.id == material.id)
+							count = count + Number(product.kol)
+					}
+				} catch(e) {
+					console.log(e)
+				}
+			}
+			return count
+		},
+		clickMat(mat, type) {
+      if(type == 'type') {
+        this.material = mat
+        this.filterByNameMaterialById(mat) 
+        if(mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
+          this.filterMatByPodType(mat.podMaterials)
+        else 
+          this.getAllPodTypeMaterial(1)
+      }
+
+      if(type == 'podM') 
+        this.filterByNameMaterialById(mat) 
+    },
 		getKolvoMaterial(kol) {
 			try {
 				let pars_json = JSON.parse(kol)
@@ -199,8 +235,15 @@ export default {
       console.log(val)
     }
 	},
-	async mounted() {
-		this.fetchGetAllDeficitPPM()
+	async mounted() { 
+		this.loader = true
+    
+    this.clearCascheMaterial()
+    await this.getAllTypeMaterial()
+    await this.getAllPodTypeMaterial()
+    await this.fetchPPMNoLight()
+		console.log(this.getOnePodMaterial)
+    this.loader = false
 	}
 }
 </script>
@@ -214,6 +257,10 @@ table {
 }
 .span_td {
 	display:  flex;
+	flex-direction: column;
+}
+.tooltiptext {
+	display: flex;
 	flex-direction: column;
 }
 </style>

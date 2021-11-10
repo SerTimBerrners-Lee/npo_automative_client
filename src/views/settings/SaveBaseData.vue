@@ -71,7 +71,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
   </div>
@@ -80,7 +80,6 @@
 <script>
 import {mapGetters, mapActions} from 'vuex';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return{
@@ -90,13 +89,11 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 
       inaction: 0
     }
   },
-  components: {InformFolder},
   computed: mapGetters(['getRoleAssets', 'getDB']),
   methods: {
     ...mapActions([

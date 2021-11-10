@@ -14,10 +14,10 @@
               <p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
             </td>
             <td>{{ order.number_order }}</td>
-            <td>{{ order.date_shipments }}</td>
+            <td class='center'>{{ order.date_shipments }}</td>
           </tr>
         </table>
-      </div>
+      </div> 
        <div class="table-scroll" style='margin-left: 5px;'>
         <table>
           <tr>
@@ -36,8 +36,21 @@
             <th>Комплектация </th>
             <th>Документы</th>
           </tr>
+          <tr v-for='ass of assembles' :key='ass'>
+            <td>{{ ass.number_order }}</td>
+            <td>{{ ass.shipments.to_sklad ? 'Склад' : returnBuyer(ass.shipments.buyerId) }}</td>
+            <td class='center'>{{ ass.cbed.articl }}</td>
+            <td class='center'>{{ ass.cbed.name }}</td>
+            <td class='center'>{{ ass.kolvo_all }}</td>
+            <td class='center'>{{ ass.kolvo_order_byer }}</td>
+            <td class='center'>{{ 0 }}</td>
+            <td class='center'>{{ 0 }}</td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='openDocuments(ass.cbed.id)' class='link_img' atl='Показать' />
+            </td>
+          </tr>
         </table>
-      </div>
+      </div> 
     </div>
 
      <div class="btn-control">
@@ -48,42 +61,88 @@
         v-if='showAddWaybill'
         :key='keyAddWaybill'
       />
+      <OpensFile 
+        :parametrs='itemFiles' 
+        v-if="itemFiles.length" 
+        :key='keyWhenModalGenerateFileOpen'
+      />
+      <InformFolder  
+        :title='titleMessage'
+        :message = 'message'
+        :type = 'type'
+        v-if='message'
+        :key='keyInformTip'
+      />
       <Loader v-if='loader' />
 	</div>
 </template>
-
 <script>
 import AddWaybill from './add-waybill.vue';
 import {mapGetters, mapActions} from 'vuex';
 import {random} from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { showMessage } from '@/js/';
 export default {
 	data() {
 		return{
       showAddWaybill: false,
       keyAddWaybill: random(1, 999),
 
+      assembles: [],
       shipments: null,
-      loader: false
+      loader: false,
+      keyWhenModalGenerateFileOpen: random(1, 999),
+      itemFiles: [],
+
+      message: '',
+      type: '',
+      keyInformTip: random(1, 999),
 		}
 	},
-	components: {AddWaybill},
-  computed: mapGetters(['getShipments']),
+	components: {AddWaybill, OpensFile},
+  computed: mapGetters([
+      'getShipments',
+      'allBuyer'
+    ]),
 	methods: {
-    ...mapActions(['fetchAllShipments']),
+    ...mapActions([
+      'fetchAllShipmentsAssemble',
+      'fetchAssembleById',
+      'fetchAllBuyers',
+      'getOneCbEdById'
+      ]),
     addWaybill() {
       this.showAddWaybill = true;
       this.keyAddWaybill = random(1, 999)
     },
     toSetOrders(shipments, e) {
-      if(e.classList.item(1)) 
+      if(e.classList.item(1)) {
+        shipments.assemble.forEach(or => { this.assembles = this.assembles.filter(el => el.id != or.id)})
         return e.classList.remove('checkbox_block_select')
-      
+      }
       e.classList.add('checkbox_block_select')
-    }
+      shipments.assemble.forEach(or => { 
+        this.fetchAssembleById(or.id).then(result => this.assembles.push(result))
+      })
+    },
+    returnBuyer(buyer_id) {
+      for(let buyer of this.allBuyer) {
+        if(buyer.id == buyer_id) return buyer.name
+      }
+    },
+    openDocuments(id) {
+      this.getOneCbEdById(id).then(cb => {
+        if(cb.documents && cb.documents.length) {
+          this.keyWhenModalGenerateFileOpen = random(1, 999)
+          this.itemFiles = cb.documents
+        } else showMessage('', 'Документов нет', 'w', this)
+      })
+    },
 	},
 	async mounted() {
     this.loader = true
-    this.fetchAllShipments()
+    await this.fetchAllShipmentsAssemble()
+    await this.fetchAllBuyers()
     this.loader = false
 	}
 }

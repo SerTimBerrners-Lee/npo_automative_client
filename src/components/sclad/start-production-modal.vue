@@ -59,7 +59,7 @@
     :title='titleMessage'
     :message = 'message'
     :type = 'type'
-    v-if='showInformPanel'
+    v-if='message'
     :key='keyInformTip'
     />
 </div>
@@ -68,7 +68,6 @@
 <script>
 import { showMessage } from '@/js/';
 import {random} from 'lodash';
-import InformFolder from '@/components/InformFolder.vue';
 import { mapActions} from 'vuex'
 export default {
   props: ['parametrs'],
@@ -80,7 +79,6 @@ export default {
 
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: random(1, 999),
       
       date_order: '',
@@ -93,7 +91,6 @@ export default {
       komplect: []
     }
   },
-  components: {InformFolder},
   methods: {
     ...mapActions(['fetchCreateAssemble', 'fetchCreateMetaloworking']),
     destroyModalF() {

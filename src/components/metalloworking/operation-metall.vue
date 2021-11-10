@@ -97,7 +97,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
 		<DescriptionModal 
@@ -123,7 +123,6 @@ import random from 'lodash'																								;
 import DatePicterRange from '@/components/date-picter-range.vue'					;
 import OpensFile from '@/components/filebase/openfile.vue'								;
 import { showMessage } from '@/js/'																				;
-import InformFolder from '@/components/InformFolder.vue'									;
 import DescriptionModal from '@/components/description-modal.vue'					;
 import { dateIncrementHors } from '@/js/'																	;
 import CreateMark from '@/components/sclad/mark-modal.vue'								; 
@@ -145,13 +144,12 @@ export default {
 			titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
 			type_operation_id: null
 		}
 	},
 	computed: mapGetters(['getMetaloworkings', 'getTypeOperations', 'getUsers']),
-	components: {DatePicterRange, OpensFile, InformFolder, DescriptionModal, CreateMark},
+	components: {DatePicterRange, OpensFile, DescriptionModal, CreateMark},
 	methods: {
 		...mapActions([
 			'fetchAllMetalloworkingTypeOperation', 

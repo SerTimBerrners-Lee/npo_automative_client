@@ -154,7 +154,7 @@
       </div>
     </div>
     <Loader v-if='loader' />
-    <InformFolder v-if='showInformPanel' :title='titleMessage' :message='message' :type='type'  :key='keyInformTip' />
+    <InformFolder v-if='message' :title='titleMessage' :message='message' :type='type'  :key='keyInformTip' />
   </div>
 </template>
 
@@ -162,7 +162,6 @@
 import {  mapActions, mapGetters, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
@@ -172,7 +171,6 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: '',
       initial: '',
       tabel: '',
@@ -198,7 +196,6 @@ export default {
   }, 
   computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser', 'getRoleAssets', 'getAuth']),
   components: {
-    InformFolder,
     DatePicterRange
   },
   methods: {

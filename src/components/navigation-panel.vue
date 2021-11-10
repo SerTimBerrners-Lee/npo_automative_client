@@ -21,7 +21,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
   </div>
@@ -30,8 +30,7 @@
 <script>
 import { mapGetters, mapMutations } from 'vuex';
 import { assetsFunction } from '@/js/assets.js';
-import { showMessage } from '@/js/'
-import InformFolder from '@/components/InformFolder.vue'
+import { showMessage } from '@/js/';
 export default {
   data() {
     return {
@@ -41,14 +40,12 @@ export default {
       titleMessage: '',
       message: '',
       type: '',
-      showInformPanel: false,
       keyInformTip: 0,
     }
   },
   computed:{
     ...mapGetters(['getNav', 'getRoleAssets']),
   },
-  components: {InformFolder},
   methods: {
     ...mapMutations(['delitPathNavigate', 'pushPathNavigate', 'deleteAllNav']),
     pushNavigate(span, path){

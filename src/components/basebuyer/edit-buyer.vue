@@ -79,10 +79,11 @@
       v-if="itemFiles"
       :key='keyWhenModalGenerateFileOpen'
     />
-    <InformFolder  :title='titleMessage'
+    <InformFolder  
+      :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
   </div>
@@ -94,7 +95,6 @@ import { random, isEmpty } from 'lodash';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 export default {
   data() {
     return {
@@ -132,7 +132,7 @@ export default {
       }
   },
   computed: mapGetters(['getSetBuyer', 'getRoleAssets']),
-  components: {AddContact, OpensFile, InformFolder},
+  components: {AddContact, OpensFile},
   methods: {
     ...mapActions(['updateOneBuyer']),
     ...mapMutations([

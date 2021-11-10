@@ -176,7 +176,6 @@ export default {
       'clearFilterCbedByProduct']),
     setCbed(cbEd, e) {
       this.selectedCbEd = cbEd
-      console.log(cbEd)
         if(this.tr_cb) 
           this.tr_cb.classList.remove('td-row-all')
   
@@ -186,14 +185,14 @@ export default {
     },
     setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
-          this.clearFilterCbedByProduct()
-          e.classList.remove('td-row-all')
-          this.selecteProduct = null
-          return
+        this.clearFilterCbedByProduct()
+        e.classList.remove('td-row-all')
+        this.selecteProduct = null
+        return
       }
       this.selecteProduct = product
-        if(this.tr_product) 
-          this.tr_product.classList.remove('td-row-all')
+      if(this.tr_product) 
+        this.tr_product.classList.remove('td-row-all')
   
       this.setOneProduct(product)
       this.getAllCbEdByProduct(product)
@@ -231,14 +230,13 @@ export default {
     setDocs(dc) {
       this.itemFiles = dc
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(1, 23123)
+      this.keyWhenModalGenerateFileOpen = random(1, 999)
     },
-
   },
   async mounted() {
     this.loader = true
 
-    this.getAllProduct()
+    await this.getAllProduct()
     await this.getAllCbed()
     
     this.loader = false
@@ -248,7 +246,7 @@ export default {
 
 <style scoped>
 .table-base-detal {
-  float: left;
+  float: left; 
   width: 470px;
 }
 .main {

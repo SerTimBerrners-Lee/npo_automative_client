@@ -272,7 +272,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='showInformPanel'
+      v-if='message'
       :key='keyInformTip'
     />
     <OpensFile 
@@ -303,7 +303,6 @@ import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random, isEmpty } from 'lodash';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import InformFolder from '@/components/InformFolder.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import PATH_TO_SERVER from '@/js/path';
@@ -378,7 +377,6 @@ export default {
     OpensFile,  
     ModalBaseMaterial, 
     TechProcess, 
-    InformFolder, 
     BaseDetalModal, 
     MediaSlider,
     BaseCbedModal, 

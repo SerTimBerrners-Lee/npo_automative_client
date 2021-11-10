@@ -27,21 +27,18 @@
       :title='titleMessage' 
       :message='bodyMessage'
       :type='typeMessage'
-      v-if='MessagBlock' />
+      v-if='bodyMessage' />
   </div>
 </template>
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import InformFolder from '@/components/InformFolder.vue'
 import AddRoles from '@/components/dolznuser/addroles.vue';
 import { isEmpty } from 'lodash';
-
 export default {
   data() {
     return {
       role: Object,
-      MessagBlock: false,
       titleMessage: String,
       bodyMessage: String,
       typeMessage: String,
@@ -50,7 +47,6 @@ export default {
     }
   },
   components: {
-    InformFolder,
     AddRoles
   },
   computed: mapGetters(['allRoles', 'getRoleAssets']),
@@ -110,7 +106,6 @@ export default {
       })
     },
     addMessageF(title, body, type) {
-      this.MessagBlock = true
       this.titleMessage = title,
       this.bodyMessage = body,
       this.typeMessage = type 

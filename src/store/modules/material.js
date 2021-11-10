@@ -180,6 +180,14 @@ export default {
         return result
       }
     },
+    async fetchPPMNoLight(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/podtypematerial`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('pushAllPPT', result)
+        return result
+      }
+    },
     async fetchGetAllDeficitPPM(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/materialdeficit`)
       if(res.ok) {
@@ -263,6 +271,8 @@ export default {
       state.linkId = 0
     },
     getInstansMaterial(state, instans) {
+      console.log(instans)
+      if(instans) return false
       state.searchMaterial = []
       state.searchPTypeM = []
       state.searchTypeM = []
@@ -349,6 +359,17 @@ export default {
     },
     filterByNameMaterial(state, mat) {
       state.podMaterial = mat.podPodMaterials
+    },
+    filterByNameMaterialById(state, mat) {
+      if(!mat.podPodMaterials.length) return []
+      if(!state.searchMaterial.length)
+        state.searchMaterial = state.podMaterial
+      let new_arr = state.searchMaterial.map(e => {
+        for(let podm of mat.podPodMaterials) {
+          if(podm.id == e.id) return e
+        }
+      })
+      state.podMaterial = new_arr.filter(e => e)
     },
     pushAllPPT(state, data) {
       state.podMaterial = data
