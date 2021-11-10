@@ -14,7 +14,7 @@
         </div>
       </div>
 
-      <div class='table_block'>
+      <div class='table_block'> 
         <div class="table-scroll">
         <table style='width: 200px;'> 
           <tr>
