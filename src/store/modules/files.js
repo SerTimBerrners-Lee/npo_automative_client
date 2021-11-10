@@ -103,21 +103,6 @@ export default {
         body: JSON.stringify(data)
       })
     },
-
-    async convertPdf(ctx, path) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/convert/pdf/`, {
-        method: 'PUT',
-        headers:{
-          'Content-Type':'application/json'
-        },
-        body: JSON.stringify({path})
-      })
-      if(res.ok) {
-        const result = await res.json()
-        console.log(result)
-        return result
-      }
-    }
   },
   mutations: {
     updateFiles(state, files) {
