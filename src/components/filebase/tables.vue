@@ -20,6 +20,7 @@
       class="td-row" 
       @click="e => propEvent(file, e.target.parentElement)"
       @dblclick="dbEvent(file)"
+      :class='file.banned ? "del_background" : ""'
       >
       <td>{{ file.type }}</td>
       <td width="400px">{{ file.name }}</td>

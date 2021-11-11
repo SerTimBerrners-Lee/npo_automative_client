@@ -61,12 +61,21 @@ export default {
         method :  'post',
         body   :  data
       })
-      return res
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('fetchUpdateDetalMutation', result)
+        return result
+      }
     },
     async getAllDetals(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal`)
       const result = await res.json()
       ctx.commit('setDetalMutation', result)
+    },
+    async getAllDetalsArticl() {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/articl`)
+      const result = await res.json()
+      return result
     },
     async getOneDetal(ctx, id)  {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`)
@@ -164,6 +173,11 @@ export default {
   mutations: {
     addNewDetalToArr(state, detal) {
       state.detal.push(detal)
+    },
+    fetchUpdateDetalMutation(state, new_detal) {
+      for(let inx in state.detal) {
+        if(state.detal[inx].id == new_detal.id) state.detal[inx] = new_detal
+       }
     },
     addOneSelectDetal(state, detal) {
       state.select_detal = detal

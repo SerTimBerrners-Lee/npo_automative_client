@@ -364,10 +364,20 @@ export default {
 
       showModalFile: false,
       fileModalKey: random(1, 999),
+      data_arr: [],
     }
   },
   unmounted() {
     this.deleteStorageData()
+  },
+  watch: {
+    'obj.articl': function (val, last_val) {
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
+					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
+			}
+    }
   },
   computed: mapGetters(['getUsers', 'getOneSelectProduct', 'getRoleAssets']),
   components: {
@@ -379,7 +389,12 @@ export default {
     OpensFile,
     BaseFileModal},
   methods: {
-    ...mapActions(['createNewProduct', 'getAllUsers', 'updateProduct']),
+    ...mapActions([
+      'createNewProduct', 
+      'getAllUsers', 
+      'updateProduct', 
+      'getAllArticlProduct'
+    ]),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
      unmount_tech_process(tp) {
       if(tp.id) {
@@ -559,7 +574,7 @@ export default {
     setDocs(dc) {
       this.itemFiles = dc
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 1111);
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     updateForEdit() {
       this.obj.name = this.getOneSelectProduct.name
@@ -603,6 +618,8 @@ export default {
 
     this.getAllUsers()
     this.updateForEdit()
+    this.data_arr = await this.getAllArticlProduct()
+    console.log(this.data_arr)
   }
 }
 </script>

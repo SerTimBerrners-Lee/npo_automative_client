@@ -2,29 +2,45 @@
     <div class="right-div-bfp">
     <h3>Принадлежность</h3>
     <div class="block scroll-table node_item">
-      <h3 class="link_h3" @click='showIzd = !showIzd'>Изделие</h3>
+      <h3 class="link_h3" @click='showIzd = !showIzd'>Изделие
+        {{ file.products ? file.products.length : '' }} </h3>
       <div class="scroll-table table-fbp" v-if='showIzd'>
         <table>
           <tr>
             <th>Артикул </th>
             <th>Наименование</th>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr v-for='product in file.products' 
+            :key="product"
+            class="td-row"
+          >
+            <td>{{ product.articl }}</td>
+            <td>{{ product.name }}</td>
+          </tr>
+          <tr class="td-row">
             <td>...</td>
             <td>...</td>
           </tr>
         </table>
       </div>
-      <h3 class="link_h3" @click='showSB = !showSB'>Сборочная единица</h3>
+      <h3 class="link_h3" @click='showSB = !showSB'>Сборочная единица
+        {{ file.cbeds ? file.cbeds.length : '' }} </h3>
       <div class="scroll-table table-fbp" v-if='showSB'>
         <table>
           <tr class="td-row">
-              <th>Артикул </th>
-              <th>Наименование</th>
+            <th>Артикул </th>
+            <th>Наименование</th>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
-              <td>...</td>
-              <td>...</td>
+          <tr v-for='cbed in file.cbeds' 
+            :key="cbed"
+            class="td-row"
+          >
+            <td>{{ cbed.articl }}</td>
+            <td>{{ cbed.name }}</td>
+          </tr>
+          <tr class="td-row">
+            <td>...</td>
+            <td>...</td>
           </tr>
         </table>
       </div>
@@ -44,7 +60,7 @@
             <td>{{ detal.articl }}</td>
             <td>{{ detal.name }}</td>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr class="td-row">
             <td>...</td>
             <td>...</td>
           </tr>
@@ -65,29 +81,29 @@
           >
             <td>{{ material.name }}</td>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr class="td-row">
             <td>...</td>
           </tr>
         </table>
       </div>
 
       <h3 class="link_h3" @click='showEQ = !showEQ'>
-          Оборудование {{ file.equipments ? file.equipments.length : '' }} </h3>
+        Оборудование {{ file.equipments ? file.equipments.length : '' }} </h3>
       <div class="scroll-table table-fbp" v-if='showEQ'>
         <table>
-            <tr class="td-row">
-              <th>Наименование</th>
-            </tr>
-            <tr v-for='equipment in file.equipments' 
-              :key="equipment"
-              class="td-row"
-              @click='e => setEq(equipment, e.target.parentElement)'
-            >
-              <td>{{ equipment.name }}</td>
-            </tr>
-            <tr v-for="u in 10" :key="u" class="td-row">
-              <td>...</td>
-            </tr>
+          <tr class="td-row">
+            <th>Наименование</th>
+          </tr>
+          <tr v-for='equipment in file.equipments' 
+            :key="equipment"
+            class="td-row"
+            @click='e => setEq(equipment, e.target.parentElement)'
+          >
+            <td>{{ equipment.name }}</td>
+          </tr>
+          <tr class="td-row">
+            <td>...</td>
+          </tr>
         </table>
       </div>
 
@@ -105,14 +121,14 @@
           >
             <td>{{ provider.name }}</td>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr class="td-row">
             <td>...</td>
           </tr>
         </table>
       </div>
 
-        <h3 class="link_h3" @click='showUsers = !showUsers'>
-          Пользователи {{ file.users ? file.users.length : '' }} </h3>
+      <h3 class="link_h3" @click='showUsers = !showUsers'>
+        Пользователи {{ file.users ? file.users.length : '' }} </h3>
       <div class="scroll-table table-fbp" v-if='showUsers'>
         <table>
           <tr class="td-row">
@@ -125,7 +141,7 @@
           >
             <td>{{ user.initial }}</td>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr class="td-row">
             <td>...</td>
           </tr>
         </table>
@@ -157,8 +173,7 @@ import DetalModal from '@/components/basedetal/detal-modal.vue';
 import EquipmentModal from "@/components/equipment/modal-information.vue"
 import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import { mapActions } from 'vuex';
-import { random } from 'lodash'
-
+import { random } from 'lodash';
 export default {
   props: ['file'],
   data() {
@@ -192,9 +207,7 @@ export default {
     ]),
     setDetals(detal, e) {
       this.selectedDetal = detal
-        
       this.setTr(e)
-
       this.getOneDetal(this.selectedDetal.id).then(() => {
         this.detalModalKey = random(1, 34e5)
         this.detalIsShow = true
@@ -214,11 +227,14 @@ export default {
     },
     setTr(e) {
       if(this.tr) 
-          this.tr.classList.remove('td-row-all')
+        this.tr.classList.remove('td-row-all')
       this.tr = e
       this.tr.classList.add('td-row-all')
     }
   },
+  async mounted() {
+    console.log(this.$props.file)
+  }
 }
 </script>
 

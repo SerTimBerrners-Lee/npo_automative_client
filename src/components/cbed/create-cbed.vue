@@ -313,6 +313,7 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
+      data_arr: [],
 
       select_model: 1,
 
@@ -336,9 +337,21 @@ export default {
   unmounted() {
     this.deleteStorageData()
   },
+  watch: {
+    'obj.articl': function (val, last_val) {
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
+					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
+			}
+    }
+  },
   methods: {
-    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd']),
+    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'getAllCbedArticl']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    unmount_articl(articl) {
+      this.obj.articl = articl
+    },
     unmount_filemodal(res) {
       if(res) 
         this.documentsData = res
@@ -517,10 +530,11 @@ export default {
     }
   },
   async mounted() {
-    this.getAllUsers()
+    await this.getAllUsers()
+    this.data_arr = await this.getAllCbedArticl()
   } 
 }
-</script>
+</script> 
 
 <style scoped>
 .sle {

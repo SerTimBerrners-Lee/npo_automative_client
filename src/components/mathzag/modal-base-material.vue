@@ -1,100 +1,96 @@
 <template>
   <div class="right-menu-modal">
-      <div :class='destroyModalLeft' @click="destroyModalF"></div>
-      <div :class='destroyModalRight'>
-        <div :style="hiddens">
-          <h3>Добавление материала</h3>
-          <div class="type-issue">
-            <span ref="all" class='active' @click='e => instansMaterial(0, e.target)'>Все</span>
-            <span @click='e => instansMaterial(1, e.target)'>Материалы для деталей</span>
-            <span @click='e => instansMaterial(2, e.target)'>Покупные детали</span>
-            <span @click='e => instansMaterial(3, e.target)'>Расходные материалы</span>
-          </div>
-          <div class="body_table_instr">
-            <TableMaterial 
-              :alltypeM='alltypeM' 
-              :title='instanMaterial != 0 && instanMaterial != 1 ? "Тип (Категория)" : "Тип (Тип профиля заготовки)"' 
-              :type='"type"' 
-              @clickMat='clickMat'
-              @search='searchTypeM' />
-            <TableMaterial 
-              :alltypeM='allPodTypeM' 
-              :title='instanMaterial != 0 && instanMaterial != 1 ? "Подтип (Материал)" : "Подтип (Материал заготовки)"' 
-              :type='"podM"' 
-              @search='searchPT'
-              @clickMat='clickMat' />
-            <TableMaterial 
-              :alltypeM='getOnePodMaterial' 
-              :title='"Наименование (Марка / типоразмер)"' 
-              :type='"podPM"' 
-              @search='searchM' 
-              @clickMat='clickMat' />
-          </div>
-            <div class="btn-control body_table_instr" v-if='!getOneMaterial'>
-              <button class="btn-small btn-add" @click='addMaterialToList'>Выбрать</button>
-          </div>
-          <div v-if='materialList.length > 0 && !getOneMaterial'>
-            <table>
-              <tr>
-                <th v-if='!matLightList'>Артикул</th>
-                <th>Выбранное</th>
-                <th v-if='!matLightList'>ЕИ</th>
-                <th v-if='!matLightList'>Количество</th>
-                <th>Действие</th>
-              </tr>
-              <tr v-for='mat of materialList' :key='mat.mat'>
-                <td class='td_kolvo' v-if='!matLightList'>
-                  <input 
-                    class='inputs-small' 
-                    @change='e => changeArt(e.target, mat)' 
-                    type='text' 
-                    :value='mat.art'>
-                </td>
-                <td>{{ mat.mat.name }}</td>
-                <td v-if='!matLightList'>
-                  <select class='select-small' @change='e => selecter(e.target, mat)' v-model='mat.ez'>
-                    <option value='1' v-if="mat.ez == 1"> шт</option> 
-                    <option value='2' v-if="mat.ez == 2"> л </option>
-                    <option value='3' v-if="mat.ez == 3"> кг</option> 
-                    <option value='4' v-if="mat.ez == 4"> м </option>
-                    <option value='5' v-if="mat.ez == 5"> м.куб</option> 
-                  </select>       
-                </td>
-                <td class='td_kolvo' v-if='!matLightList'>
-                  <input 
+    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalRight'>
+      <div :style="hiddens">
+        <h3>Добавление материала</h3>
+        <div class="type-issue">
+          <span ref="all" class='active' @click='e => instansMaterial(0, e.target)'>Все</span>
+          <span @click='e => instansMaterial(1, e.target)'>Материалы для деталей</span>
+          <span @click='e => instansMaterial(2, e.target)'>Покупные детали</span>
+          <span @click='e => instansMaterial(3, e.target)'>Расходные материалы</span>
+        </div>
+        <div class="body_table_instr">
+          <TableMaterial 
+            :alltypeM='alltypeM' 
+            :title='instanMaterial != 0 && instanMaterial != 1 ? "Тип (Категория)" : "Тип (Тип профиля заготовки)"' 
+            :type='"type"' 
+            @clickMat='clickMat'
+            @search='searchTypeM' />
+          <TableMaterial 
+            :alltypeM='allPodTypeM' 
+            :title='instanMaterial != 0 && instanMaterial != 1 ? "Подтип (Материал)" : "Подтип (Материал заготовки)"' 
+            :type='"podM"' 
+            @search='searchPT'
+            @clickMat='clickMat' />
+          <TableMaterial 
+            :alltypeM='getOnePodMaterial' 
+            :title='"Наименование (Марка / типоразмер)"' 
+            :type='"podPM"' 
+            @search='searchM' 
+            @clickMat='clickMat' />
+        </div>
+          <div class="btn-control body_table_instr" v-if='!getOneMaterial'>
+            <button class="btn-small btn-add" @click='addMaterialToList'>Выбрать</button>
+        </div>
+        <div v-if='materialList.length > 0 && !getOneMaterial'>
+          <table>
+            <tr>
+              <th v-if='!matLightList'>Артикул</th>
+              <th>Выбранное</th>
+              <th v-if='!matLightList'>ЕИ</th>
+              <th v-if='!matLightList'>Количество</th>
+              <th>Действие</th>
+            </tr>
+            <tr v-for='mat of materialList' :key='mat.mat'>
+              <td class='td_kolvo' v-if='!matLightList'>
+                <input 
                   class='inputs-small' 
-                    @change='e => changeKolvo(e.target, mat)' 
-                    type='text' 
-                    :value='mat.kol'>
-                </td>
-                <td class='delete_span' @click='delMat(mat.mat.id)'>удалить</td>
-              </tr>
-            </table>
-          </div>
-          <div class="btn-control out-btn-control">
-            <button class="btn-status" @click='destroyModalF' v-if='!getOneMaterial'>Отменить</button>
-            <button 
-              class="btn-status btn-black" 
-              style="height: 0px;" 
-              @click='addMaterials' v-if='!getOneMaterial'>Добавить выбранное</button>
-            <button class="btn-status" @click='exit' v-if='getOneMaterial'>Отменить</button>
-            <button 
-              class="btn-status btn-black" 
-              style="height: 0px;" 
-              @click='returnOneMaterial' v-if='getOneMaterial'>Добавить выбранное</button>
-          </div>
+                  @change='e => changeArt(e.target, mat)' 
+                  type='text' 
+                  :value='mat.art'>
+              </td>
+              <td>{{ mat.mat.name }}</td>
+              <td v-if='!matLightList'>
+                <select class='select-small' @change='e => selecter(e.target, mat)' v-model='mat.ez'>
+                  <option value='1' v-if="mat.ez == 1"> шт</option> 
+                  <option value='2' v-if="mat.ez == 2"> л </option>
+                  <option value='3' v-if="mat.ez == 3"> кг</option> 
+                  <option value='4' v-if="mat.ez == 4"> м </option>
+                  <option value='5' v-if="mat.ez == 5"> м.куб</option> 
+                </select>       
+              </td>
+              <td class='td_kolvo' v-if='!matLightList'>
+                <input 
+                class='inputs-small' 
+                  @change='e => changeKolvo(e.target, mat)' 
+                  type='text' 
+                  :value='mat.kol'>
+              </td>
+              <td class='delete_span' @click='delMat(mat.mat.id)'>удалить</td>
+            </tr>
+          </table>
+        </div>
+        <div class="btn-control out-btn-control">
+          <button class="btn-status" @click='destroyModalF' v-if='!getOneMaterial'>Отменить</button>
+          <button 
+            class="btn-status btn-black" 
+            style="height: 0px;" 
+            @click='addMaterials' v-if='!getOneMaterial'>Добавить выбранное</button>
+          <button class="btn-status" @click='exit' v-if='getOneMaterial'>Отменить</button>
+          <button 
+            class="btn-status btn-black" 
+            style="height: 0px;" 
+            @click='returnOneMaterial' v-if='getOneMaterial'>Добавить выбранное</button>
         </div>
       </div>
-
+    </div>
   </div> 
 </template>
-
 <script>
-
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import {random} from 'lodash'
-
 export default {
   props: [
     'allMaterial', 
@@ -120,34 +116,42 @@ export default {
   computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
   components: {TableMaterial},
   methods: {
-    ...mapActions(['getAllTypeMaterial', 'getOnePodType', 'bannedPPM', 'fetchGetOnePPM', 'getAllPodTypeMaterial']),
-    ...mapMutations(['filterMatByPodType', 'filterMatByPodType',
-        'addOnePPTyep', 
-        'getInstansMaterial', 
-        'throwInstans', 
-        'toEmptyPPT',
-        'searchTypeMutation', 
-        'searchPTypeMutation', 
-        'searchMaterialMutation']), 
+    ...mapActions([
+      'getAllTypeMaterial', 
+      'getOnePodType', 
+      'bannedPPM', 
+      'fetchGetOnePPM', 
+      'getAllPodTypeMaterial'
+    ]),
+    ...mapMutations([
+      'filterMatByPodType', 
+      'filterMatByPodType',
+      'addOnePPTyep', 
+      'getInstansMaterial', 
+      'throwInstans', 
+      'toEmptyPPT',
+      'searchTypeMutation', 
+      'searchPTypeMutation', 
+      'searchMaterialMutation']), 
     destroyModalF() {
-        this.destroyModalLeft = 'left-block-modal-hidden'
-        this.destroyModalRight = 'content-modal-right-menu-hidden'
-        this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden'
+      this.destroyModalRight = 'content-modal-right-menu-hidden'
+      this.hiddens = 'display: none;'
     },
     clickMat(mat, type) {
-        if(type == 'type') {
-            this.material = mat
-            if(this.$props.instanMaterial == 2 || this.$props.instanMaterial == 3)
-                this.filterMatByPodType(mat.podMaterials)
-        }
+      if(type == 'type') {
+        this.material = mat
+        if(this.$props.instanMaterial == 2 || this.$props.instanMaterial == 3)
+          this.filterMatByPodType(mat.podMaterials)
+      }
 
-        if(type == 'podM') this.getOnePodType(mat.id)
-        if(type == 'podPM') {
-            this.podPodMaterial = mat
-            this.fetchGetOnePPM(mat.id).then((material) => {
-                this.podPodMaterial = material
-            })
-        }
+      if(type == 'podM') this.getOnePodType(mat.id)
+      if(type == 'podPM') {
+        this.podPodMaterial = mat
+        this.fetchGetOnePPM(mat.id).then((material) => {
+          this.podPodMaterial = material
+        })
+      }
     },
     instansMaterial(instans, span) {
       if(!this.span)
@@ -163,69 +167,68 @@ export default {
 
     },
     addMaterialToList() {
-        if(!this.podPodMaterial)
-            return 0;
-        
-        let add = true
-        if(this.materialList.length > 0) {
-            for(let mat of this.materialList) {
-                if(mat.mat.id == this.podPodMaterial.id)
-                    add = false
-            }
+      if(!this.podPodMaterial)
+        return 0;
+      
+      let add = true
+      if(this.materialList.length > 0) {
+        for(let mat of this.materialList) {
+          if(mat.mat.id == this.podPodMaterial.id)
+            add = false
         }
-        if(add) {
-            this.materialListId.push(this.podPodMaterial.id)
-            this.materialList.push({ 
-                art: '',
-                mat: this.podPodMaterial,
-                kol: 1,
-                ez: null
-            });
-        }
+      }
+      if(add) {
+        this.materialListId.push(this.podPodMaterial.id)
+        this.materialList.push({ 
+          art: '',
+          mat: this.podPodMaterial,
+          kol: 1,
+          ez: null
+        });
+      }
     },
     delMat(id) {
-        this.materialList = this.materialList.filter(mat => mat.mat.id != id)
-        this.materialListId = this.materialListId.filter(mat => mat != id)
+      this.materialList = this.materialList.filter(mat => mat.mat.id != id)
+      this.materialListId = this.materialListId.filter(mat => mat != id)
     },
     addMaterials() {
-        this.destroyModalF()
-        this.$emit('unmount_material', {
-            materialListId: this.materialListId,
-            materialList: this.materialList
-        })
+      this.destroyModalF()
+      this.$emit('unmount_material', {
+        materialListId: this.materialListId,
+        materialList: this.materialList
+      })
     },
     returnOneMaterial() {
-        if(!this.podPodMaterial)
-            return 0
-        this.$emit('unmount_material', {
-            material: this.podPodMaterial
-        })
-        this.destroyModalF()
+      if(!this.podPodMaterial)
+        return 0
+      this.$emit('unmount_material', {
+        material: this.podPodMaterial
+      })
+      this.destroyModalF()
     },
     exit() {
-        this.$emit('unmount_material', {
-            material:  null
-        })
-        this.destroyModalF()
+      this.$emit('unmount_material', {
+        material:  null
+      })
+      this.destroyModalF()
     },
     changeKolvo(val, mat) {
-        mat.kol = val.value
+      mat.kol = val.value
     },
     changeArt(val, mat) {
-        mat.art = val.value
-        
+      mat.art = val.value
     },
     selecter(val, mat) {
-        mat.ez = val.value
+      mat.ez = val.value
     },
     searchTypeM(val) {
-        this.searchTypeMutation(val)
+      this.searchTypeMutation(val)
     },
     searchPT(val) {
-        this.searchPTypeMutation(val)
+      this.searchPTypeMutation(val)
     },
     searchM(val) {
-        this.searchMaterialMutation(val)
+      this.searchMaterialMutation(val)
     }
   },
   async mounted() {
@@ -241,7 +244,7 @@ export default {
     if(this.$props.allMaterial) {
       this.materialList = this.$props.allMaterial
       this.materialList.forEach((el) => {
-          this.materialListId.push(el.mat.id)
+        this.materialListId.push(el.mat.id)
       })
     }
   }

@@ -27,6 +27,11 @@ export default {
       ctx.commit('getBannedFiles');
     },
 
+    async fetchFilesNames() {
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/names`)
+      return await res.json()
+    },
+
     async pushDocuments(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/documents/add`, {
         method: 'post',

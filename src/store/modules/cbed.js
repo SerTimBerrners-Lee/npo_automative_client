@@ -39,6 +39,12 @@ export default {
       }
     },
 
+    async getAllCbedArticl() {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/articl`)
+      if(res.ok) 
+        return await res.json()
+    },
+
     async updateCbed(ctx, data) {
       if(!ctx.getters.getAuth)
         return 0
@@ -49,7 +55,7 @@ export default {
       })
       if(res.ok) {
         const result = await res.json()
-        console.log(result)
+        ctx.commit('updateCbedMutation', result)
         return result
       }
     },
@@ -87,6 +93,11 @@ export default {
   mutations: {
     addAllCbed(state, cbed) {
       state.cbed = cbed.filter(cb => !cb.ban)
+    },
+    updateCbedMutation(state, cbed) {
+      for(let inx in state.cbed) {
+        if(state.cbed[inx].id == cbed.id) state.cbed[inx] = cbed
+      }
     },
     setOneCbed(state, cbed) {
       state.select_cbed = cbed

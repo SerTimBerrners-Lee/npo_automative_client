@@ -309,22 +309,20 @@ import PATH_TO_SERVER from '@/js/path';
 import OpensFile from '@/components/filebase/openfile.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-
 export default {
   data() {
     return {
       obj: {
-          articl: '',
-          name: '',
-          responsible: '',
-          description: '',
-          parametrs: [
-              { name: 'Норма времени на сборку', ez: 'ч', znach: 0}
-          ],
-          haracteriatic: [
-          { name: 'Масса детали', ez: 'кг', znach: 0}
-          ],
-          
+        articl: '',
+        name: '',
+        responsible: '',
+        description: '',
+        parametrs: [
+            { name: 'Норма времени на сборку', ez: 'ч', znach: 0}
+        ],
+        haracteriatic: [
+        { name: 'Масса детали', ez: 'кг', znach: 0}
+        ],
       },
       docFiles: [],
       formData: null,
@@ -370,6 +368,16 @@ export default {
 
       showModalFile: false,
       fileModalKey: random(1, 999),
+      data_arr: []
+    }
+  },
+  watch: {
+    'obj.articl': function (val, last_val) {
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
+					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
+			}
     }
   },
   computed: mapGetters(['getUsers', 'getOneSelectCbEd', 'getRoleAssets']),
@@ -380,12 +388,13 @@ export default {
     BaseDetalModal, 
     MediaSlider,
     BaseCbedModal, 
-    BaseFileModal},
+    BaseFileModal,
+    },
   unmounted() {
     this.deleteStorageData()
   },
   methods: {
-    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'updateCbed']),
+    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'updateCbed', 'getAllCbedArticl']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_filemodal(res) {
       if(res) 
@@ -602,7 +611,7 @@ export default {
       return 
     }
     this.getAllUsers()
-
+    this.data_arr = await this.getAllCbedArticl()
     this.updateForEdit()
   }
 }

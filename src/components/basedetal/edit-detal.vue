@@ -337,16 +337,26 @@ export default {
       hAactionKey: random(1, 999),
 
       actions: [],
-
+ 
       titleMessage: '',
       message: '',
       type: '',
       keyInformTip: 0,
       density: 0,
+      data_arr: [],
     }
   },
   unmounted() {
     this.deleteStorageData()
+  },
+  watch: {
+    'obj.articl': function (val, last_val) {
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
+					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
+			}
+    }
   },
   computed: mapGetters(['getOneSelectDetal', 'getUsers', 'getRoleAssets']),
   components: {BaseFileModal, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions},
@@ -356,7 +366,8 @@ export default {
       'fetchUpdateDetal', 
       'getAllUsers', 
       'createNewDetal',
-      'fetchAddFilesForDetal']),
+      'fetchAddFilesForDetal',
+      'getAllDetalsArticl']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_filemodal(res) {
       if(res) 
@@ -647,6 +658,8 @@ export default {
       this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
     })
     this.randomDataMedia = random(10, 38100)
+
+    this.data_arr = await this.getAllDetalsArticl()
   }
 }
 </script>

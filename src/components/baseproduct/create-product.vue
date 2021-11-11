@@ -322,15 +322,25 @@ export default {
 
       showModalFile: false,
       fileModalKey: random(1, 999),
+      data_arr: [],
       }
   },
   unmounted() {
     this.deleteStorageData()
   },
+  watch: {
+    'obj.articl': function (val, last_val) {
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
+					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
+			}
+    }
+  },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
   components: {ModalBaseMaterial, TechProcess, BaseDetalModal, BaseCbedModal, BaseFileModal},
   methods: {
-    ...mapActions(['createNewProduct', 'getAllUsers']),
+    ...mapActions(['createNewProduct', 'getAllUsers', 'getAllArticlProduct']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_tech_process(tp) {
       if(tp.id) {
@@ -496,7 +506,7 @@ export default {
     },
 
     exit(){
-      this.$router.push("/cbed")
+      this.$router.push("/product")
       this.deleteStorageData()
       this.delitPathNavigate(this.$route.path)
     },
@@ -514,6 +524,8 @@ export default {
   },
   async mounted() {
     this.getAllUsers()
+    this.data_arr = await this.getAllArticlProduct()
+    console.log('this.data_arr', this.data_arr)
   }
 }
 </script>

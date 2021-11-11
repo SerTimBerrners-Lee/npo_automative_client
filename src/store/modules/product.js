@@ -38,6 +38,14 @@ export default {
       }
     },
 
+    async getAllArticlProduct() {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/articl`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
+
     async getAllProductByIdLight(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/light/${id}`)
       if(res.ok) {
@@ -56,6 +64,7 @@ export default {
       })
       if(res.ok) {
         const result = await res.json()
+        ctx.commit('updateProductMutation', result)
         return result
       }
     },
@@ -72,6 +81,11 @@ export default {
   mutations: {
     addAllProduct(state, products) {
       state.product = products.filter(prod => !prod.ban)
+    },
+    updateProductMutation(state, result) {
+      for(let inx in state.product) {
+        if(state.product[inx].id == result.id) state.product[inx] = result
+      }
     },
     setOneProduct(state, product) {
       state.select_product = product

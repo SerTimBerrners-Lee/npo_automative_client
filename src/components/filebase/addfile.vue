@@ -15,8 +15,18 @@
                 </div>
               </div>
               <div class="main-fb-modal-block">
-                <p>
-                  <span>Файл: </span><input type="text" :placeholder='file.name' >
+                <div>
+                  <span>Файл: </span>
+                  <div class='tooltip'>
+                    <input 
+                      type="text" 
+                      :placeholder='file.name' 
+                      :class='returnZnachName(file.name) ? "succsess_border" : "del_border"' >
+                    <span class='tooltiptext' v-if='returnNamesExist(file.name).length'>
+                      <strong>Список похожих файлов: </strong>
+                      <span v-for='(name, inx) of returnNamesExist(file.name)' :key='name'>{{ inx + 1 + ' . ' + name }}</span>  
+                    </span>  
+                  </div>
                   <span>Тип:</span>
                   <select class="select-small" @change='e=>fileRead(e.target.value, "TypeDocument", index)'>
                     <option value="Изменить тип">Изменить тип</option>
@@ -25,7 +35,7 @@
                     <option value="ЧЖ">Чертижи (тип ЧЖ)</option>
                     <option value="СД">Сопутствующие документы (тип СД)</option>
                   </select>
-                </p>
+                </div>
                 <p>
                   <span>Переименовать: </span>
                   <input 
@@ -57,7 +67,7 @@
 <script>
 
 import { photoPreloadUrl } from '@/js/';
-import { mapActions } from 'vuex'
+import { mapActions } from 'vuex';
 export default {
   props: ['parametrs', 'typeGetFile'],
   data() {
@@ -70,45 +80,13 @@ export default {
       imgShow: false,
       showDocType: false,
       docType: '',
-      arrItemsFile: []
+      arrItemsFile: [],
+
+      data_names: []
     }
-  },
-  async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-    if(this.parametrs.type == 'create') {
-      return 0;
-    } else  {
-      this.titleapp = 'Редактирование'
-      this.inputs = this.parametrs.description
-      this.inputs_short = this.parametrs.value
-    }
-    let arr = this.$props.parametrs
-    arr.forEach((doc, index) => {
-      photoPreloadUrl(doc, (res) => {
-        if (res.type == 'img') {
-          arr[index].TypeDocument = ''
-          arr[index].VersionDocument = ''
-          arr[index].DescriptionDocument = ''
-          arr[index].url = res.url 
-          arr[index].NameDocument = ''
-          arr[index].typefile = res.type
-          this.arrItemsFile.push(...[arr[index]])
-        } else { 
-          arr[index].TypeDocument = ''
-          arr[index].VersionDocument = ''
-          arr[index].DescriptionDocument = ''
-          arr[index].NameDocument = ''
-          arr[index].typename = res.typename
-          arr[index].typefile = res.type
-          this.arrItemsFile.push(...[arr[index]])
-        }
-      }) 
-    });
   },
   methods: {
-    ...mapActions(['pushDocuments']),
+    ...mapActions(['pushDocuments', 'fetchFilesNames']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -149,8 +127,56 @@ export default {
     },
     fileRead(val, folder, index) {
       this.arrItemsFile[index][folder] = val
+    },
+    returnZnachName(file_name) {
+      for(let name of this.data_names) {
+        if(name.name == file_name) return false
+      }
+      return  true 
+    },
+    returnNamesExist(file_name) {
+      const arr_names = []
+      for(let name of this.data_names) {
+        if(name.name == file_name) arr_names.push(name.name)
+      }
+      return arr_names
     }
-  }
+  },
+  async mounted() {
+    this.destroyModalLeft = 'left-block-modal'
+    this.destroyModalRight = 'content-modal-right-menu'
+    this.hiddens = 'opacity: 1;'
+    if(this.parametrs.type == 'create') {
+      return 0;
+    } else  {
+      this.titleapp = 'Редактирование'
+      this.inputs = this.parametrs.description
+      this.inputs_short = this.parametrs.value 
+    }
+    let arr = this.$props.parametrs
+    arr.forEach((doc, index) => {
+      photoPreloadUrl(doc, (res) => {
+        if (res.type == 'img') {
+          arr[index].TypeDocument = ''
+          arr[index].VersionDocument = ''
+          arr[index].DescriptionDocument = ''
+          arr[index].url = res.url 
+          arr[index].NameDocument = ''
+          arr[index].typefile = res.type
+          this.arrItemsFile.push(...[arr[index]])
+        } else { 
+          arr[index].TypeDocument = ''
+          arr[index].VersionDocument = ''
+          arr[index].DescriptionDocument = ''
+          arr[index].NameDocument = ''
+          arr[index].typename = res.typename
+          arr[index].typefile = res.type
+          this.arrItemsFile.push(...[arr[index]])
+        }
+      }) 
+    });
+    this.data_names = await this.fetchFilesNames()
+  },
 }
 </script>
 
@@ -159,10 +185,16 @@ export default {
   display: flex;
   align-items: center;
 }
+.tooltiptext {
+  margin-top: 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 .right-menu-p>input {
   width: 70%;
 }
-.main-fb-modal-block p {
+.main-fb-modal-block p, .main-fb-modal-block div {
   display: flex;
   flex-wrap: nowrap;
   align-items: center;
@@ -173,7 +205,7 @@ export default {
   width: 64%;
   justify-content: space-between;
 }
-.main-fb-modal-block>p * {
+.main-fb-modal-block>p *, .main-fb-modal-block>div * {
   margin-left: 10px;
 }
 .fb-img-block {

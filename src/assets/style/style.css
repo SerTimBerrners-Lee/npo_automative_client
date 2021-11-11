@@ -8,6 +8,15 @@
 .hover:hover {
   color: rgba(0, 0, 0, 0.397);
 }
+.del_background {
+  background: #f3bebe4d;
+}
+.del_border {
+  box-shadow: 0px 0px 3px 0px #ff9696;
+}
+.succsess_border {
+  box-shadow: 0px 0px 3px 0px #64eb64;
+}
 .type-operation {
   width: 210px;
   height: 70px;

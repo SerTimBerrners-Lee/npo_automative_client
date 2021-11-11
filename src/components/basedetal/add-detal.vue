@@ -290,15 +290,25 @@ export default {
       type: '',
       keyInformTip: 0,
       density: 0,
+      data_arr: [],
     }
   },
   unmounted() {
-    this.deleteStorageData()
+    this.deleteStorageData() 
+  },
+  watch: {
+    'obj.articl': function (val, last_val) {
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
+					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
+			}
+    }
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
   components: {ModalBaseMaterial, TechProcess, BaseFileModal},
   methods: {
-    ...mapActions(['createNewDetal', 'getAllUsers']),
+    ...mapActions(['createNewDetal', 'getAllUsers', 'getAllDetalsArticl']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_filemodal(res) {
       if(res) 
@@ -523,6 +533,7 @@ export default {
   },
   async mounted() {
     this.getAllUsers()
+    this.data_arr = await this.getAllDetalsArticl()
   }
 }
 </script>
