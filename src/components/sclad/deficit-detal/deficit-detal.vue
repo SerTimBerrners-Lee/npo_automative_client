@@ -15,20 +15,6 @@
       </div>
 
       <div class='table_block'> 
-        <div class="table-scroll">
-        <table style='width: 200px;'> 
-          <tr>
-            <th>Заказ покупателя из задач на отгрузку</th>
-          </tr>
-          <tr 
-            v-for='shipment of getShipmentsSclad' 
-            :key='shipment'
-            class='td-row'
-            @click='setShipment(shipment)'>
-            <td> {{ shipment.number_order }} </td>
-          </tr>
-        </table>
-      </div>
         <div class="scroll-table" style='width: 99%;'>
           <table>
             <tr>
@@ -45,10 +31,9 @@
               <th rowspan="2">Норма времени (общее на парт.), ч</th>
               <th rowspan="2">Уровень комплектации, %</th>
               <th rowspan="2">Статус</th>
-              <th rowspan="2">Дата запуска</th>
-              <th rowspan="2">№ Заказа</th>
+              <th rowspan="2">Дата последнего запуска</th>
+              <th rowspan="2">№ последнего Заказа</th>
               <th rowspan="2">Примечание</th>
-              <th rowspan="2">Планируемый срок изготовления</th>
             </tr>
             <tr>
               <th>
@@ -58,34 +43,32 @@
               <th>Наименование</th>
               <th>Принадлежность</th>
             </tr>
-            <tr v-for='shipments of selectShipment.detals' :key='shipments'>
+            <tr v-for='detal of allDetal' :key='detal'>
               <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-                <p class="checkbox_block" @click='e => toProduction(shipments, e.target)'></p>
+                <p class="checkbox_block" @click='e => toProduction(detal, e.target)'></p>
               </td>
-              <td class='center'>{{ shipments.articl }}</td>
-              <td class='center'>{{ shipments.name }}</td>
+              <td class='center'>{{ detal.articl }}</td>
+              <td class='center'>{{ detal.name }}</td>
               <td class='center'>
-                <img src="@/assets/img/link.jpg" @click='showParents(shipments, "det")' class='link_img' atl='Показать' />
+                <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
               </td>
-              <td class='center'>{{ getDeficitIzd('detal', shipments.id)  }}</td>
-              <td class='center'>{{ 0 }}</td>
-              <td class='center'>{{ 0 }}</td>
-              <td class='center'>{{ getDeficitIzd('detal', shipments.id)  }}</td>
-              <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ getDeficitIzd('detal', shipments.id)  }}</td>
+              <td class='center'>{{ detal.shipments_kolvo  }}</td>
+              <td class='center'>{{ detal.detal_kolvo }}</td>
+              <td class='center'>{{ detal.metalloworking_kolvo }}</td>
+              <td class='center'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
+              <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal.my_kolvo  }}</td>
               <td class='center'>да</td>
-
-              <td class='center'>{{ JSON.parse(shipments.parametrs).preTime.znach }}</td>
-              <td class='center'>{{ JSON.parse(shipments.parametrs).helperTime.znach }}</td>
-              <td class='center'>{{ JSON.parse(shipments.parametrs).mainTime.znach}}</td>
-              <td class='center'>{{ parseParametrsDetal(shipments.parametrs, getDeficitIzd('detal', shipments.id) ) }}</td>
+              <td class='center'>{{ JSON.parse(detal.parametrs).preTime.znach }}</td>
+              <td class='center'>{{ JSON.parse(detal.parametrs).helperTime.znach }}</td>
+              <td class='center'>{{ JSON.parse(detal.parametrs).mainTime.znach}}</td>
+              <td class='center'>{{ getTimming(detal.parametrs, detal.shipments_kolvo) }}</td>
               <td class='center'></td>
-              <td class='center'>Заказано</td>
-              <td class='center'>{{ selectShipment.date_order }}</td>
-              <td class='center'>{{ selectShipment.number_order }}</td>
+              <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? "Заказано" : 'Не заказано' }}</td>
+              <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].date_order : '' }}</td>
+              <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].number_order : '' }}</td>
               <td class='center'>
-                <img src="@/assets/img/link.jpg" @click='openDescription(selectShipment.description)' class='link_img' atl='Показать' />
+                <img src="@/assets/img/link.jpg" @click='openDescription(detal.description)' class='link_img' atl='Показать' />
               </td>
-              <td class='center'>{{ selectShipment.date_shipments }}</td>
           </tr>
           </table>
         </div>
@@ -169,40 +152,25 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['getShipmentsSclad']),
+  computed: mapGetters(['allDetal']),
   components: { DatePicterRange, StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal},
   methods: {
-    ...mapActions(['fetchAllShipmentsSclad', 'getOneDetal']),
+    ...mapActions(['setchDeficitDeficit', 'getOneDetal']),
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
     },
-    start() { 
-      if(!this.select_izd || !this.selectShipment)
+    start() {
+      if(!this.select_izd)
         return showMessage('', 'Для начала выберите Д и заказ', 'w', this)
-      let kolvo_order_byer = this.getDeficitIzd('detal', this.select_izd.id)
-      this.kolvo_all = this.kolvo_all || kolvo_order_byer
       this.parametrs = {
-        izd: this.select_izd, 
-        shipments: this.selectShipment,
-        type: 'det',
-        kolvo_order_byer,
-        kolvo_all: this.kolvo_all
+        izd: this.select_izd,
+        type: 'det'
       }
       this.startProductionModalKey = random(1, 999)
     },
     shipmentsAdd() {
       this.showShipment = true
       this.shipmentKey = random(1, 999)
-    },
-    setShipment(shipment) {
-      let list_izd = JSON.parse(shipment.list_cbed_detal)
-      this.selectShipment = {...shipment, list_cbed_detal: list_izd}
-    },
-    getDeficitIzd(type, id) {
-      for(let izd of this.selectShipment.list_cbed_detal) {
-        if(izd.type == type && izd.obj.id == id)
-          return izd.kol
-      }
     },
     toProduction(izd, e) {
       if(this.selected_checkbox) 
@@ -217,10 +185,12 @@ export default {
       this.selected_checkbox.classList.add('checkbox_block_select')
       this.select_izd = izd
     },
-    parseParametrsDetal(parametrs, kol = 1) {
+    getTimming(param, kol = 1) {
+      if(!param) return 0
       try {
-        let pars = JSON.parse(parametrs)
-        return Number(pars.preTime.znach)+ (Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol
+        let pars = JSON.parse(param)
+        if(pars) 
+          return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2)
       } catch(e) {
         console.log(e)
       }
@@ -239,7 +209,7 @@ export default {
     alt(e) {
       if(!this.select_izd)
         return showMessage('', 'Для начала выберите Деталь, иначе данные не сохранятся!', 'w', this)
-      this.kolvo_all = e.innerText
+      this.select_izd.my_kolvo = Number(e.innerText)
     },
     changeDatePicterRange(val) {
       console.log(val)
@@ -247,7 +217,8 @@ export default {
   },
   async mounted() {
     this.loader = true
-    await this.fetchAllShipmentsSclad(true)
+    await this.setchDeficitDeficit()
+    console.log(this.allDetal)
     this.loader = false
   }
 }

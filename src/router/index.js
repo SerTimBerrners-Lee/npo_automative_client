@@ -81,7 +81,7 @@ const routes = [
     props: true
   },
   {
-    path: '/assembly/operation-assemble/:operation',
+    path: '/assembly/operation-assemble/:operation/:name_operation',
     name: 'Операции сборки',
     component: OparationDetalAssembly,
     props: true

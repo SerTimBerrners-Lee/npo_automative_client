@@ -7,18 +7,16 @@
       <div class="block">
         <p class='tooltip'>
           <span>Дата заказа: </span>
-          <input type="text" v-model='date_order'>
+          <DatePicterCustom 
+            @unmount='change_date_order' 
+            :dateStart='date_order'
+          />
           <span class="tooltiptext">{{ date_order }}</span>
         </p>
         <p class='tooltip'>
           <span>№ Заказа: </span>
           <input type="text" v-model='number_order'>
           <span class="tooltiptext" style='margin-top: 200px;'>{{ number_order }}</span>
-        </p>
-        <p class='tooltip'>
-          <span>Дата выполнения: </span>
-          <input type="text" v-model='date_shipments'>
-          <span class="tooltiptext">{{ date_shipments }}</span>
         </p>
       </div>
       <div>
@@ -68,7 +66,8 @@
 <script>
 import { showMessage } from '@/js/';
 import {random} from 'lodash';
-import { mapActions} from 'vuex'
+import { mapActions} from 'vuex';
+import DatePicterCustom from '@/components/date-picter.vue';
 export default {
   props: ['parametrs'],
   data() {
@@ -81,16 +80,14 @@ export default {
       type: '',
       keyInformTip: random(1, 999),
       
-      date_order: '',
+      date_order: new Date().toLocaleDateString("ru-RU"),
       number_order: '',
-      date_shipments: '',
       description: '',
-      kolvo_order_buyer: 0,
-      kolvo_all: 0,
 
       komplect: []
     }
   },
+  components: {DatePicterCustom},
   methods: {
     ...mapActions(['fetchCreateAssemble', 'fetchCreateMetaloworking']),
     destroyModalF() {
@@ -98,16 +95,22 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
+    change_date_order(date) {
+      this.date_order = date
+    },
+    change_date_shipments(date) {
+      this.date_shipments = date
+    },
     start() {
-      if(!this.$props.parametrs || !this.$props.parametrs.shipments || !this.$props.parametrs.izd)
+      if(!this.$props.parametrs || !this.$props.parametrs.izd)
         return showMessage('', 'Сначала выберите изделие', 'w', this)
 
       const data = {
         date_order: this.date_order,
         number_order: this.number_order,
-        date_shipments: this.date_shipments,
         description: this.description,
-        kolvo_all: Number(this.$props.parametrs.kolvo_all)
+        my_kolvo: this.$props.parametrs.izd.my_kolvo,
+        shipments_kolvo: this.$props.parametrs.izd.shipments_kolvo
       }
 
       if(this.$props.parametrs.type == 'cb') {
@@ -128,7 +131,7 @@ export default {
         this.destroyModalF()
         return showMessage('', 'Изделие отправлено в производство', 's', this)
       } else return showMessage('', 'Произошла ошибка...', 'e', this)
-    }
+    },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -136,18 +139,11 @@ export default {
     this.hiddens = 'opacity: 1;' 
 
     if(this.$props.parametrs) {
-      if(!Number(this.$props.parametrs.kolvo_all)) {
+      if(!Number(this.$props.parametrs.izd.my_kolvo)) {
         setTimeout(() => this.destroyModalF(), 2000)
         return showMessage('', 'Выбраннове количество должно быть числом и больше 0', 'w', this)
       }
-
-      console.log(this.$props.parametrs.izd)
-        
       
-      // this.date_order = this.$props.parametrs.shipments.date_order
-      // this.number_order = this.$props.parametrs.shipments.number_order
-      // this.date_shipments = this.$props.parametrs.shipments.date_shipments
-      // this.description = this.$props.parametrs.shipments.description
     }
     if(this.$props.parametrs && this.$props.parametrs.izd) {
       let izd = this.$props.parametrs.izd

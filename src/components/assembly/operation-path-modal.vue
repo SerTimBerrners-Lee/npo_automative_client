@@ -16,45 +16,22 @@
 							<th>Готовность %</th>
 							<th>Готовность к сборке</th>
 						</tr>
-						<tr>
-							<td>{{ assemble.shipments.number_order }}</td>
-							<td>{{ assemble.shipments.date_shipments }}</td>
-							<td>{{ assemble.product ? assemble.product.name : '' }}</td>
+						<tr v-for='shipments of assemble.cbed.shipments' :key='shipments'>
+							<td>{{ assemble.number_order }}</td>
+							<td>{{ assemble.date_shipments }}</td>
+							<td>{{ shipments.product.name }}</td>
 							<td>{{ assemble.cbed.name}}</td>
-							<td>{{ assemble.product ? assemble.product.articl : '' }}</td>
-							<td>{{ assemble.kolvo_all }}</td>
-							<td>{{ 0 }}</td>
-							<td>{{ 0 }}</td>
+							<td>{{ shipments.product.articl }}</td>
+							<td class='center'>{{ shipments.kol }}</td>
+							<td class='center'>{{ 0 }}</td>
+							<td class='center'>{{ 0 }}</td>
 						</tr>
 					</table>
         </div> 
-				<div>
-					<h3>Комплектация</h3>
-					<table>
-						<tr>
-							<th>Артикул</th>
-							<th>Наименование</th>
-							<th>Ед.</th>
-							<th>Кол-во на 1 СБ</th>
-							<th>Кол-во всего, шт</th>
-							<th>Дефицит всего, шт.</th>
-						</tr>
-						<tr v-for='komp of komplect' :key='komp'>
-							<td>{{ komp.art }}</td>
-							<td>{{ komp.name }}</td>
-							<td class='center'>
-								<span v-if="komp.ez == 1"> шт</span> 
-								<span v-if="komp.ez == 2"> л </span>
-								<span v-if="komp.ez == 3"> кг</span> 
-								<span v-if="komp.ez == 4"> м </span>
-								<span v-if="komp.ez == 5"> м.куб</span>
-							</td>
-							<td class='center'>{{ komp.kol }}</td>
-							<td></td>
-							<td></td>
-						</tr>
-					</table>
-				</div>
+
+        <ComplectationCbed 
+          :izdel='assemble.cbed'
+        />
 
         <OperationTable 
           :marks='props_mars'
@@ -76,6 +53,7 @@
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import OperationTable from '@/components/sclad/operation-path-info.vue';
+import ComplectationCbed from './complectation-table.vue';
 export default { 
   props: ['assemble'],
   data() {
@@ -97,7 +75,7 @@ export default {
       typeOperation: null
     }
   },
-  components: {OperationTable},
+  components: {OperationTable, ComplectationCbed},
   computed: mapGetters(['']),
   methods: {
     ...mapActions(['fetchAllShipmentsById', 'getAllTypeOperations']),

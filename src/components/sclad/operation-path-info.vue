@@ -132,7 +132,7 @@ export default {
     },
     returnKolvoBefore(oper) {
       let create = this.returnKolvoCreate(oper)
-      return this.$props.izdeles.kolvo_all - create < 0 ? 0 : this.$props.izdeles.kolvo_all - create
+      return this.$props.izdeles.kolvo_shipments - create < 0 ? 0 : this.$props.izdeles.kolvo_shipments - create
     },
     returnKolvoCreate(oper) {
       if(!oper.marks || !oper.marks.length) return 0

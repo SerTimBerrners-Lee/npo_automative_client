@@ -37,7 +37,7 @@ export default {
         return result
       }
     },
-    async deleteDetelyId(ctx, id) {
+    async deleteDetelyId(ctx, id) { 
       if(!ctx.getters.getAuth)
         return 0
 
@@ -71,6 +71,17 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/detal`)
       const result = await res.json()
       ctx.commit('setDetalMutation', result)
+    },
+    async setchDeficitDeficit(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/deficit`)
+      const result = await res.json()
+      if(result.length) {
+        for(let inx in result) {
+          result[inx]['my_kolvo'] = result[inx]['shipments_kolvo']
+        }
+      }
+      ctx.commit('setDetalMutation', result)
+      return result
     },
     async getAllDetalsArticl() {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/articl`)

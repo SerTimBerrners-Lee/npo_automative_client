@@ -121,7 +121,6 @@ import ProductList from '@/components/baseproduct/all-product-modal.vue';
 import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
 import {showMessage} from '@/js/';
 import {mapActions, mapGetters} from 'vuex';
-
 import {random} from 'lodash';
 export default {
 	data() {

@@ -49,7 +49,7 @@
 					</p>
 					<p>
 						<span style='font-weight: bold;'>Количество выполненных {{ type_izd == "det" ? "деталей" :"сборочных едениц" }}:</span>
-						<input type="number" min='1' :max='obj_max_det' v-model='kol'>
+						<input type="number" :min='min_det' :max='obj_max_det' v-model='kol'>
 					</p>
 				</div>
 
@@ -66,13 +66,21 @@
       </div>
     </div>
 		<Loader v-if='loader' />
+		<InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='message'
+      :key='keyInformTip'
+    />
   </div>
 </template>
 
 <script>
 import { mapActions, mapGetters } from 'vuex';
 import DatePicterCustom from '@/components/date-picter.vue';
-import { afterAndBeforeOperation } from '@/js/operation.js';
+import { afterAndBeforeOperation, returnKolvoCreate } from '@/js/operation.js';
+import {showMessage} from '@/js';
 export default {
   props: ['parametrs', 'type_izd'],
   data() {
@@ -94,6 +102,7 @@ export default {
 			obj_after: '',
 			obj_kolvo_create_in_operation: 0,
 			obj_kolvo_all: 0, 
+			min_det: 1,
 
 			description: '',
 			user_id: 1,
@@ -121,6 +130,7 @@ export default {
 			this.date = date
 		},
 		save() {
+			if(!this.min_det) return showMessage('', 'Вы выполнили все', 'w', this)
 			let data = {
 				date_build: this.date,
 				kol: this.kol,
@@ -140,19 +150,16 @@ export default {
 			})
 		},
 		showOperationStep(obj) {
-			if(!obj.operation) return false;
-				this.obj_curent = `${obj.operation.id}. ${obj.operation.full_name}`
-				afterAndBeforeOperation(obj.tp_id, obj.operation_id)
-					.then(res => {
-						if(res) {
-							if(res.before)
-								if(res.before.id != obj.operation.id)
-									this.obj_before =  `${res.before.name}. ${res.before.full_name}`
-							if(res.after) 
-								if(res.after.id != obj.operation_id )
-									this.obj_after = `${res.after.name}. ${res.after.full_name}`
-						}
-				})
+			this.obj_curent = `${obj.name}. ${obj.full_name}`
+			const res = afterAndBeforeOperation(obj.tech_process, obj.name)
+			if(res) {
+				if(res.before)
+					if(res.before.id != obj.name)
+						this.obj_before =  `${res.before.name}. ${res.before.full_name}`
+				if(res.after) 
+					if(res.after.id != obj.operation_id )
+						this.obj_after = `${res.after.name}. ${res.after.full_name}`
+			}
 		}
   },
   async mounted() {
@@ -167,10 +174,10 @@ export default {
 			if(this.$props.type_izd == 'cb') {
 				let ass = this.$props.parametrs
 				this.obj_name = ass.cbed.name
-				this.obj_max_det = ass.kolvo_all - ass.kolvo_create
-				this.obj_kolvo_create_in_operation = ass.kolvo_create_in_operation
-				this.obj_kolvo_all = ass.kolvo_all
-				this.operation_id = ass.operation_id
+				this.obj_max_det = ass.kolvo_shipments - returnKolvoCreate(ass) 
+				this.obj_kolvo_create_in_operation = returnKolvoCreate(ass) 
+				this.obj_kolvo_all = ass.kolvo_shipments
+				this.operation_id = ass.name
 
 				this.showOperationStep(ass)
 			}
@@ -184,6 +191,8 @@ export default {
 
 				this.showOperationStep(metal)
 			}
+			if(this.obj_max_det <=0 )
+				this.min_det = 0
 		}
 		this.loader = false
 

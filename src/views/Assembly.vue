@@ -38,13 +38,15 @@
             <th>Документы</th>
             <th>Время на сборку, ч</th>
             <th>Примечание</th>
-          </tr>
-          <tr v-for='assemble of assembles' :key='assemble'>
+          </tr> 
+          <tr v-for='assemble of getAssembles' :key='assemble'>
             <td>{{ assemble.date_order }}</td>
-            <td>{{ assemble.date_shipments }}</td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='returnShipmentsKolvo(assemble.cbed.shipments)' class='link_img' atl='Показать' />
+            </td>
             <td>{{ assemble.cbed.name }}</td>
-            <td class='center'>{{ assemble.kolvo_all }}</td>
-            <td class='center'>{{ assemble.kolvo_order_byer }}</td>
+            <td class='center'>{{ assemble.kolvo_shipments }}</td>
+            <td class='center'>{{ assemble.cbed.shipments_kolvo }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>
@@ -54,7 +56,7 @@
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
             </td>
-            <td class='hover center' @click='e => showAllTimers(assemble, e.target)'>Посмотреть</td>
+            <td class='hover center'>{{ showAllTimers(assemble) }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDescription(assemble.description)' class='link_img' atl='Показать' />
             </td>
@@ -94,6 +96,11 @@
       :parametrs='operation_stack'
       :is_type='"cb"'
     />
+    <ShipmentsModal 
+      :shipments='shipments'
+      v-if='shipments.length'
+      :key='shipmentKey'
+    />
 
     <Loader v-if='loader' />
 	</div>
@@ -107,6 +114,7 @@ import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import OperationModal from '@/components/sclad/workings-operations.vue';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 export default {
 	data() {
 		return{
@@ -126,24 +134,27 @@ export default {
       showOperationPathModal: false,
       key_operation_m: random(1, 999),
       show_operaiton_m: false,
+      shipments: [],
+      shipmentKey: random(1, 999),
 
       assemble_props: null,
 
       loader: false
 		}
 	},
-  computed: mapGetters(['getShipments', 'getTypeOperations']),
+  computed: mapGetters(['getShipments', 'getTypeOperations', 'getAssembles']),
 	components: {
     OperationModal, 
     DescriptionModal, 
     OpensFile, 
-    OperationPathModal
+    OperationPathModal,
+    ShipmentsModal
   },
 	methods: {
     ...mapActions([
-      'fetchAllShipmentsAssemble', 
+      // 'fetchAllShipmentsAssemble', 
+      'fetchAssemble',
       'fetchAssembleById', 
-      'getOneCbEdById', 
       'fetchTechProcess',
       'getAllTypeOperations'
     ]),
@@ -177,51 +188,60 @@ export default {
     openOperation() {
       this.key_operation_m = random(1, 999)
       this.show_operaiton_m = true
+    }, 
+    returnShipmentsKolvo(shipments) {
+      if(!shipments || shipments.length == 0) return showMessage('', 'Нет прикрепленных заказов', 'w', this)
+      this.shipmentKey = random(1, 999)
+      this.shipments = shipments
     },
     filterOperation() {
-      for(let ship of this.getShipments) {
-        for(let ass of ship.assemble) {
-          this.getOneCbEdById(ass.cbed_id).then(cbed => {
-            if(cbed.techProcesses) {
-              this.fetchTechProcess(cbed.techProcesses.id).then(tp => {
-                for(let oper of tp.operations) {
-                  for(let ot of this.getTypeOperations) {
-                    if(oper.name == ot.id) {
-                      let check = true
-                      for(let os of this.operation_stack) {
-                        if(os.id == ot.id) check = false
-                      }
-                      if(check) {
-                        this.operation_stack.push(ot)
-                      } else check = true
-                    }
-                  }
-                }
-              })
+      for(let ass of this.getAssembles) {
+        for(let oper of ass.tech_process.operations) {
+          for(let ot of this.getTypeOperations) {
+            if(oper.name == ot.id) {
+              let check = true
+              for(let os of this.operation_stack) {
+                if(os.id == ot.id) check = false
+              }
+              if(check) {
+                this.operation_stack.push(ot)
+              } else check = true
             }
-
-          })
+          }
+        }
+      }
+      this.operationFilter()
+    },
+    operationFilter() {
+      if(!this.operation_stack.length) return false
+      for(let inx in this.operation_stack) {
+        for(let j in this.operation_stack) {
+          if(this.operation_stack[inx].id < this.operation_stack[j].id) {
+            let variabl = this.operation_stack[inx]
+            this.operation_stack[inx] = this.operation_stack[j]
+            this.operation_stack[j] = variabl
+          }
         }
       }
     },
-    showAllTimers(ass, e) {
+    showAllTimers(ass) {
       let count = 0
-      e.innerText = count
-      if(!ass.tp_id) return false
-      this.fetchTechProcess(ass.tp_id).then(res => {
-        if(!res.operations || res.operations.length <= 0) return 
-        for(let operation of res.operations) {
-          count = (Number(count) + Number(operation.preTime)) + (Number(operation.helperTime) * Number(operation.mainTime))
-        }
-        e.innerText = count
-      })
+      if(!ass.tech_process) return false
+      const operations = ass.tech_process.operations
+      if(!operations || operations.length == 0) return 
+
+      for(let operation of operations) {
+        count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * ass.kolvo_shipments) / 60
+      }
+      return count.toFixed(2)
     }
 	},
 	async mounted() {
     this.loader = true
-    await this.fetchAllShipmentsAssemble()
+    await this.fetchAssemble()
     await this.getAllTypeOperations()
     this.filterOperation()
+    console.log(this.getAssembles)
     this.loader = false
 	}
 }

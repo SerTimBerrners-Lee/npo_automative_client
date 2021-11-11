@@ -1,16 +1,11 @@
-import PATH_TO_SERVER from './path'
-
-export async function afterAndBeforeOperation(tp_id, operation_id, type = 'all') {
-	const result = await fetch(`${PATH_TO_SERVER}api/detal/techprocess/${tp_id}`)
-	if(!result.ok) return false
-	const res = await result.json()
-	if(!res.operations.length) return false
+export function afterAndBeforeOperation(tp, operation_id, type = 'all') {
+	if(!tp.operations.length) return false
 	
 	let beforeOperation = null
 	let afterOperation = null
 	let currentOperation = null
 	let last = true
-	for(let operation of res.operations) {
+	for(let operation of tp.operations) {
 		if(operation.id != operation_id && last)
 			beforeOperation = operation
 		if(operation.id == operation_id && last) {
@@ -39,10 +34,7 @@ export async function afterAndBeforeOperation(tp_id, operation_id, type = 'all')
 		}
 }
 
-export async function getStatus(tp_id, operation_id, curr_id=1, return_is='index') {
-	const result = await fetch(`${PATH_TO_SERVER}api/detal/techprocess/${tp_id}`)
-	if(!result.ok) return false
-	const tech_proc = await result.json()
+export async function getStatus(tech_proc, operation_id, curr_id=1, return_is='index') {
 	if(!tech_proc.operations.length) return false
 
 	let index = 0
@@ -91,4 +83,32 @@ export class OperationTime {
 	timeKolvo() {
 		return ((this.pt + ((this.mt + this.ht) * this.kol_create_izd)) / 60).toFixed(2)
 	}
+}
+
+export function workingForMarks(operation, marks) {
+	if(!marks || marks.length == 0) return 0
+	let count = 0;
+	let ot = new OperationTime(operation)
+	for(let mark of marks) {
+		count = count + this.worksHors(operation, mark.kol)
+	}
+	return count - ot.pt
+}
+
+export function returnKolvoBefore(oper) {
+	let create = this.returnKolvoCreate(oper)
+	return this.$props.izdeles.kolvo_shipments - create < 0 ? 0 : this.$props.izdeles.kolvo_shipments - create
+}
+/**
+ * 
+ * @param {*} oper 
+ * @returns number
+ */
+export function returnKolvoCreate(oper) {
+	if(!oper.marks || !oper.marks.length) return 0
+	let kol = 0
+	for(let mark of oper.marks) {
+		kol = kol + mark.kol
+	}
+	return kol
 }

@@ -42,7 +42,7 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/assemble/typeoperation/${op_id}`)
       if(res.ok) {
         const result = await res.json()
-        ctx.commit('allAssemble', result)
+        ctx.commit('allAssembleOperation', result)
         return result 
       }
     }
@@ -50,6 +50,12 @@ export default {
   mutations: {
     allAssemble(state, result) { 
       state.assembles = result
+    },
+    allAssembleOperation(state, result) { 
+      for(let r of result) {
+        let {description, ...operation} = r.operation
+        state.assembles.push({...operation, ...r.ass, description})
+      }
     },
   }
 }
