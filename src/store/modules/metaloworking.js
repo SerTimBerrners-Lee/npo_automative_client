@@ -15,6 +15,7 @@ export default {
 			if(res.ok) {
 				const result = await res.json()
         ctx.commit('allMetaloworking', result)
+        return result
 			}
     },
 		async fetchCreateMetaloworking(ctx, data) { 
@@ -35,7 +36,6 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`)
 			if(res.ok) {
 				const result = await res.json()
-        console.log(result)
 				return result
 			}
     },
@@ -44,7 +44,7 @@ export default {
       if(res.ok) {
         const result = await res.json()
         console.log(result)
-        ctx.commit('allMetaloworking', result)
+        ctx.commit('allMetaloworkingOperation', result)
         return result 
       }
     }
@@ -52,6 +52,13 @@ export default {
   mutations: {
     allMetaloworking(state, result) { 
       state.metaloworkings = result
+    },
+    allMetaloworkingOperation(state, result) {
+      state.metaloworkings = []
+      for(let r of result) {
+        let {description, id, ...operation} = r.operation
+        state.metaloworkings.push({...operation, ...r.metal, description, operation_id: id})
+      }
     },
   }
 }

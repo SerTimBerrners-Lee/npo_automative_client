@@ -48,7 +48,7 @@
 					<td class='center'>{{ manyIzdTime(ass, ass.kolvo_shipments) }}</td>
 					<td class='center'>{{ dateIncrementHors(undefined, manyIzdTime(ass, ass.kolvo_shipments)) }} </td>
 					<td class='center'>{{ responsible(ass.cbed) }}</td>
-					<td 	class='center hover success_operation'>{{ showOperation(ass,  "after") }}</td>
+					<td class='center hover success_operation'>{{ showOperation(ass,  "after") }}</td>
 					<td class='center'>
 						<img src="@/assets/img/link.jpg" @click='openDocuments(ass.name)' class='link_img' atl='Показать' />
 					</td>
@@ -105,7 +105,7 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import random from 'lodash';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
@@ -120,6 +120,7 @@ export default {
 		return {
 			loader: false,
 			name_operaiton: null,
+			route_path: '',
 
 			itemFiles: [],
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -142,6 +143,9 @@ export default {
 		'getAssembles', 
 		'getUsers'
 	]),
+	beforeUnmount() {
+		this.delitPathNavigate(this.route_path ? this.route_path : this.$route.path)
+	},
 	components: {DatePicterRange, OpensFile, DescriptionModal, CreateMark, ProductListModal},
 	methods: {
 		...mapActions([
@@ -149,6 +153,9 @@ export default {
 			'fetchOneOperationById',
 			'getAllUsers',
 			'getOneCbEdById'
+		]),
+		...mapMutations([
+			'delitPathNavigate', 
 		]),
 		unmount_date_picterRange(val) {
       console.log(val)
@@ -163,7 +170,7 @@ export default {
 		},
 		showOperation(ass, type) {
 			return afterAndBeforeOperation(
-				ass.tech_process, 	ass.operation_id, 	type).full_name
+				ass.tech_process, ass.operation_id, type).full_name
 		},
 		openDocuments(id) {
       this.fetchOneOperationById(id).then(res => {
@@ -184,7 +191,7 @@ export default {
       this.description = description
     },
 		oneIzdTime(operation) {
-			let ot = new OperationTime(operation)
+			let ot = new OperationTime(operation) 
 			return ot.count
 		},
 		returnFloor(number) {
@@ -217,6 +224,7 @@ export default {
 		}
 	},
 	async mounted() {
+		this.route_path = this.$route.path
 		this.type_operation_id = this.$route.params.operation
 		if(!this.type_operation_id)
 			this.$router.back()
@@ -224,9 +232,7 @@ export default {
 		this.loader = true
     await this.fetchAllAssembleTypeOperation(this.type_operation_id)
 		await this.getAllUsers(true)
-
 		this.name_operaiton = this.$route.params.name_operation
-
     this.loader = false
 	}
 }

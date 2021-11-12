@@ -52,10 +52,10 @@
               <td class='center'>
                 <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
               </td>
-              <td class='center'>{{ detal.shipments_kolvo  }}</td>
+              <td class='center'>{{ detal.kolvo_shipments  }}</td>
               <td class='center'>{{ detal.detal_kolvo }}</td>
               <td class='center'>{{ detal.metalloworking_kolvo }}</td>
-              <td class='center'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
+              <td class='center'>{{ detal.detal_kolvo - detal.kolvo_shipments }}</td>
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal.my_kolvo  }}</td>
               <td class='center'>да</td>
               <td class='center'>{{ JSON.parse(detal.parametrs).preTime.znach }}</td>
@@ -192,7 +192,7 @@ export default {
         if(pars) 
           return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2)
       } catch(e) {
-        console.log(e)
+        console.error(e)
       }
     },
     showParents(detal, type) {

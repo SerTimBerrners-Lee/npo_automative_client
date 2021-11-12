@@ -138,11 +138,6 @@ export default {
 				user_id: this.user_id,
 				oper_id: this.operation_id,
 			}
-			if(this.$props.type_izd == 'cb') {
-				data.ass_id = this.$props.parametrs.id
-			} else if(this.$props.type_izd == 'det') {
-				data.metal_id = this.$props.parametrs.id
-			}
 
 			this.fetchCreateMarks(data).then(res => {
 				this.destroyModalF()
@@ -151,7 +146,7 @@ export default {
 		},
 		showOperationStep(obj) {
 			this.obj_curent = `${obj.name}. ${obj.full_name}`
-			const res = afterAndBeforeOperation(obj.tech_process, obj.name)
+			const res = afterAndBeforeOperation(obj.tech_process, obj.operation_id)
 			if(res) {
 				if(res.before)
 					if(res.before.id != obj.name)
@@ -171,26 +166,16 @@ export default {
 		await this.getAllTypeOperations()
 
 		if(this.$props.parametrs) {
-			if(this.$props.type_izd == 'cb') {
-				let ass = this.$props.parametrs
-				this.obj_name = ass.cbed.name
-				this.obj_max_det = ass.kolvo_shipments - returnKolvoCreate(ass) 
-				this.obj_kolvo_create_in_operation = returnKolvoCreate(ass) 
-				this.obj_kolvo_all = ass.kolvo_shipments
-				this.operation_id = ass.name
+			const izd = this.$props.parametrs
+			if(this.$props.type_izd == 'cb') this.obj_name = izd.cbed.name
+			else  this.obj_name = izd.detal.name
 
-				this.showOperationStep(ass)
-			}
-			if(this.$props.type_izd == 'det') {
-				let metal = this.$props.parametrs
-				this.obj_name = metal.detal.name
-				this.obj_max_det = metal.kolvo_all - metal.kolvo_create
-				this.obj_kolvo_create_in_operation = metal.kolvo_create_in_operation
-				this.obj_kolvo_all = metal.kolvo_all
-				this.operation_id = metal.operation_id
-
-				this.showOperationStep(metal)
-			}
+			this.obj_max_det = izd.kolvo_shipments - returnKolvoCreate(izd) 
+			this.obj_kolvo_create_in_operation = returnKolvoCreate(izd) 
+			this.obj_kolvo_all = izd.kolvo_shipments
+			this.operation_id = izd.operation_id
+			this.showOperationStep(izd)
+			
 			if(this.obj_max_det <=0 )
 				this.min_det = 0
 		}

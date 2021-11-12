@@ -23,7 +23,7 @@ export default {
             state.nav.splice(inx, 1)
           }
         })
-      }
+      } 
 
       if(state.nav.length > 8)
         state.nav.pop()
