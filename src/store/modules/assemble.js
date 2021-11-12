@@ -52,9 +52,10 @@ export default {
       state.assembles = result
     },
     allAssembleOperation(state, result) { 
+      state.assembles = []
       for(let r of result) {
-        let {description, ...operation} = r.operation
-        state.assembles.push({...operation, ...r.ass, description})
+        let {description, id, ...operation} = r.operation
+        state.assembles.push({...operation, ...r.ass, description, operation_id: id})
       }
     },
   }

@@ -45,6 +45,14 @@ export default {
         return await res.json()
     },
 
+    async getOneCbEdField(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/field/${data.fields}/${data.id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
+
     async updateCbed(ctx, data) {
       if(!ctx.getters.getAuth)
         return 0

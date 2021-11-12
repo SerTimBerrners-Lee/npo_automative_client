@@ -34,6 +34,7 @@
                     <option value="КД">Конструкторская документация (тип КД)</option>
                     <option value="ЧЖ">Чертижи (тип ЧЖ)</option>
                     <option value="СД">Сопутствующие документы (тип СД)</option>
+                    <option value="DXF">Резка листа (тип DXF)</option>
                   </select>
                 </div>
                 <p>

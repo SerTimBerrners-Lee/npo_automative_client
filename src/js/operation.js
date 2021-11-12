@@ -18,9 +18,9 @@ export function afterAndBeforeOperation(tp, operation_id, type = 'all') {
 		}
 	}
 	if(!beforeOperation)
-		beforeOperation = {full_name: 'Нет'}
+		beforeOperation = {name: '', full_name: 'Нет'}
 	if(!afterOperation)
-		afterOperation = {full_name: 'Эта последняя'}
+		afterOperation = {name: '', full_name: 'Эта последняя'}
 
 	if(type == 'before')
 		return beforeOperation
@@ -70,9 +70,9 @@ export class OperationTime {
 
 		return {
 			count: this.timeKolvo(),
-			pt: this.pt,
-			mt: this.mt,
-			ht: this.ht
+			pt: (this.pt / 60).toFixed(2),
+			mt: (this.mt / 60).toFixed(2),
+			ht: (this.ht / 60).toFixed(2)
 		}
 	}
 	static pt
@@ -81,18 +81,25 @@ export class OperationTime {
 	static kol_create_izd 
 
 	timeKolvo() {
-		return ((this.pt + ((this.mt + this.ht) * this.kol_create_izd)) / 60).toFixed(2)
+		const num = ((this.pt + (this.mt + this.ht) * this.kol_create_izd) / 60)
+		return num.toFixed(2)
 	}
 }
 
+export function worksHors(operation, kolvo_all = 1) {
+	let ot = new OperationTime(operation, kolvo_all)
+	return ot.count
+}
+ 
 export function workingForMarks(operation, marks) {
 	if(!marks || marks.length == 0) return 0
 	let count = 0;
-	let ot = new OperationTime(operation)
+	// let ot = new OperationTime(operation)
 	for(let mark of marks) {
-		count = count + this.worksHors(operation, mark.kol)
+		count = count + worksHors(operation, mark.kol)
 	}
-	return count - ot.pt
+
+	return count //> worksHors(operation) ? count - ot.pt : count
 }
 
 export function returnKolvoBefore(oper) {

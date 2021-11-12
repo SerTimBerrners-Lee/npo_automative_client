@@ -619,7 +619,6 @@ export default {
     this.getAllUsers()
     this.updateForEdit()
     this.data_arr = await this.getAllArticlProduct()
-    console.log(this.data_arr)
   }
 }
 </script>

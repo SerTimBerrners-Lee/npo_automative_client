@@ -51,7 +51,7 @@
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>
             <td>{{  }}</td>
-            <td>{{  }}</td>
+            <td>{{ "нет" }}</td>
             <td :class='assemble.status == "Готово" ? "success_operation" : "work_operation" '>{{ assemble.status }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
@@ -154,9 +154,9 @@ export default {
     ...mapActions([
       // 'fetchAllShipmentsAssemble', 
       'fetchAssemble',
-      'fetchAssembleById', 
-      'fetchTechProcess',
-      'getAllTypeOperations'
+      'fetchAssembleById',
+      'getAllTypeOperations',
+      'getOneCbEdField'
     ]),
     toSetOrders(shipments, e) {
       if(e.classList.item(1)) {
@@ -173,7 +173,7 @@ export default {
       this.description = description
     },
     openDocuments(id) {
-      this.getOneCbEdById(id).then(cb => {
+      this.getOneCbEdField({fields: 'documents', id: id}).then(cb => {
         if(cb.documents && cb.documents.length) {
           this.keyWhenModalGenerateFileOpen = random(1, 999)
           this.itemFiles = cb.documents
@@ -181,6 +181,7 @@ export default {
       })
     },
     openOperationPath(assemble) {
+      console.log(assemble)
       this.assemble_props = assemble
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true
@@ -241,7 +242,6 @@ export default {
     await this.fetchAssemble()
     await this.getAllTypeOperations()
     this.filterOperation()
-    console.log(this.getAssembles)
     this.loader = false
 	}
 }

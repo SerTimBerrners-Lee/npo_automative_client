@@ -21,11 +21,11 @@
 					<td :rowspan='operation.marks ? operation.marks.length + 1 : 1'>{{ inx + 1 }}</td>
 					<td :rowspan='operation.marks ? operation.marks.length + 1 : 1'>{{ operation.full_name }}</td>
 					<td
-						:rowspan='operation.marks ? operation.marks.length + 1 : 1' 
+						:rowspan='operation.marks ? operation.marks.length + 1 : 1'
 						class='center'>{{ worksHors(operation) }}</td>
 					<td 
 						:rowspan='operation.marks ? operation.marks.length + 1 : 1'
-						class='center'>{{ worksHors(operation, izdeles.kolvo_all)  }}</td>
+						class='center'>{{ worksHors(operation, izdeles.shipments_kolvo)  }}</td>
 					<td :rowspan='operation.marks ? operation.marks.length + 1 : 1' class='center'>
 						{{ workingForMarks(operation, operation.marks) }}</td>
 					<td 
@@ -74,13 +74,12 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
-import  { OperationTime }  from '@/js/operation.js';
-import { random } from 'lodash';
 import DescriptionModal from '@/components/description-modal.vue';
-
+import  { worksHors, workingForMarks }  from '@/js/operation.js';
+import { mapActions, mapGetters } from 'vuex';
+import { random } from 'lodash';
 export default {
-	props: ['tp_id', 'marks', 'izdeles'],
+	props: ['tp', 'izdeles'],
 	data() {
 		return {
 			description: '',
@@ -93,19 +92,7 @@ export default {
 	components: {DescriptionModal},
 	computed: mapGetters(['getUsers']),
 	methods: {
-		...mapActions(['fetchTechProcess', 'getAllUsers']),
-		pushMarks(marks) {
-      for(let oper = 0; oper < this.operation_list.length; oper++) {
-        for(let mark of marks) {
-          if(this.operation_list[oper].id == mark.oper_id){
-            if(!this.operation_list[oper].marks) 
-              this.operation_list[oper].marks = [mark]
-            else 
-              this.operation_list[oper].marks.push(mark)
-          }
-        }
-      }
-    },
+		...mapActions(['getAllUsers']),
 		returnStatus(oper) {
       let creater = this.returnKolvoCreate(oper)
       if(creater)
@@ -118,17 +105,10 @@ export default {
       this.description = des
     },
     worksHors(operation, kolvo_all = 1) {
-      let ot = new OperationTime(operation, kolvo_all)
-      return ot.count
+      return worksHors(operation, kolvo_all)
     },
     workingForMarks(operation, marks) {
-      if(!marks || marks.length == 0) return 0
-      let count = 0;
-			let ot = new OperationTime(operation)
-      for(let mark of marks) {
-        count = count + this.worksHors(operation, mark.kol)
-      }
-      return count - ot.pt
+     return workingForMarks(operation, marks)
     },
     returnKolvoBefore(oper) {
       let create = this.returnKolvoCreate(oper)
@@ -150,13 +130,9 @@ export default {
     }
 	},
 	async mounted() {
-		if(!this.$props.tp_id) return 0
+		if(!this.$props.tp) return 0
 
-		let res = await this.fetchTechProcess(this.$props.tp_id)
-		if(!res || !res.operations) return false
- 
-    this.operation_list = res.operations
-		this.pushMarks(this.$props.marks)
+    this.operation_list = this.$props.tp.operations
 		await this.getAllUsers(true)
 	}
 }

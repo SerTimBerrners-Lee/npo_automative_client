@@ -34,10 +34,9 @@
         />
 
         <OperationTable 
-          :marks='props_mars'
-          :tp_id='props_tp_id'   
+          :tp='props_tp' 
           :izdeles='props_izdeles'
-          v-if='props_tp_id && props_izdeles'
+          v-if='props_tp'
         />
 				
 				<div class="btn-control out-btn-control" style='position:fixed; bottom: 10px; width: 58%;'>
@@ -64,12 +63,9 @@ export default {
 
 			shipments: null,
       tp: null,
-      operation_list: [],
-			komplect: [],
 
       loader: false,
-      props_mars: [],
-      props_tp_id: null, 
+      props_tp: null, 
       props_izdeles: null,
 
       typeOperation: null
@@ -91,67 +87,13 @@ export default {
     this.hiddens = 'opacity: 1;'
 
     this.loader = true 
-    if(this.$props.assemble && this.$props.assemble.tp_id && this.$props.assemble.marks) {
-
-      this.props_tp_id = this.$props.assemble.tp_id
-      this.props_mars = this.$props.assemble.marks
+    if(this.$props.assemble && this.$props.assemble.tech_process) {
       this.props_izdeles = this.$props.assemble
+      this.props_tp = this.$props.assemble.tech_process
     }
     
 		if(this.$props.assemble && this.$props.assemble.shipments) 
 			this.fetchAllShipmentsById(this.$props.assemble.shipments.id).then(response => this.shipments = response)
-
-		if(this.$props.assemble && this.$props.assemble.cbed) {
-				let izd = this.$props.assemble.cbed
-				if(izd.listCbed) {
-					let cb = JSON.parse(izd.listCbed)
-					for(let iz of cb) {
-						this.komplect.push({
-							type: 'СБ',
-							art: iz.art,
-							name: iz.cb.name,
-							kol: iz.kol,
-							ez: iz.ez,
-						})
-					}
-				}
-				if(izd.listDetal) {
-					let cb = JSON.parse(izd.listDetal)
-					for(let iz of cb) {
-						this.komplect.push({
-							type: 'Д',
-							art: iz.art,
-							name: iz.det.name,
-							kol: iz.kol,
-							ez: iz.ez,
-						})
-					}
-				}
-				if(izd.listPokDet) {
-					let cb = JSON.parse(izd.listPokDet)
-					for(let iz of cb) {
-						this.komplect.push({
-							type: 'ПД',
-							art: iz.art,
-							name: iz.mat.name,
-							kol: iz.kol,
-							ez: iz.ez,
-						})
-					}
-				}
-				if(izd.materialList) {
-					let cb = JSON.parse(izd.materialList)
-					for(let iz of cb) {
-						this.komplect.push({
-							type: 'РМ',
-							art: iz.art,
-							name: iz.mat.name,
-							kol: iz.kol,
-							ez: iz.ez,
-						})
-					}
-			}
-		}
 
     this.loader = false
   }
