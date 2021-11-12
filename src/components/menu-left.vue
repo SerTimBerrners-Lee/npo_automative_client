@@ -37,7 +37,7 @@
         <img src="@/assets/img/img9.png" alt="" class="icon-li">
         <span class="text-item">База оборудования</span>
       </li>
-      <li class="item-lu">
+      <li class="item-lu" @click="$router.push('/inventary')">
         <img src="@/assets/img/img10.png" alt="" class="icon-li">
         <span class="text-item">База техники и инвентаря</span>
       </li>

@@ -39,7 +39,7 @@
 
     <div class="right_info_block" v-if='getOneNameInstrument.name'>
       <div class="block">
-        <h3>Краткая Информация об инструменте или оснастки</h3>
+        <h3>Краткая Информация о инструменте или оснастки</h3>
         <p>
           <span class="title_span">Наименование: </span><span>{{ getOneNameInstrument.name }}</span>
         </p>

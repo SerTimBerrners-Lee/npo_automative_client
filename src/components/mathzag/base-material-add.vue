@@ -12,7 +12,7 @@
           <span v-if='getLinkId == 3'>Расходные материалы</span>
         </p>
       </div>
-      <h3>Выбор типа и подипа <span class='btn-change-type' v-if='$route.params.type == "edit"' @click='changeTypeForEdit'>Изменить тип и подтип</span></h3> 
+      <h3>Выбор типа и подипа <span v-if='$route.params.type == "edit"' @click='changeTypeForEdit'>Изменить тип и подтип</span></h3> 
       <div class='main-content-block'>
         <div class="left-block">
           <div>
@@ -593,10 +593,5 @@ table {
   margin: 0px;
   height: 34px;
   border: none;
-}
-.btn-change-type {
-  font-size: 14px;
-  cursor: pointer;
-  color: rgb(197, 82, 82);
 }
 </style>

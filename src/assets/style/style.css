@@ -2,6 +2,14 @@
   user-select: none;
   cursor: pointer;
 }
+.width-300 {
+  width: 300px;
+}
+.btn-change-type {
+  font-size: 14px;
+  cursor: pointer;
+  color: rgb(197, 82, 82);
+}
 .first_span {
   color: #c90000;
 }

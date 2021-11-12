@@ -13,18 +13,20 @@
        <div>
          <h3>Выбор типа и подтипа</h3>
           <div>
-          <TableMaterial :title='"Тип (инструмента или оснастки)"' 
-            :alltypeM="allTInstrument" 
-            :type='"T"' 
-            :width='"width-260"'
-            @search='serhType'
-            @clickMat="clickTInstrument"/>
-          <TableMaterial :title='"Подтип"' 
-            :alltypeM="allPTInstrument" 
-            :width='"width-260"'
-            :type="'PT'" 
-            @search='serhPType'
-            @clickMat="clickPTInstrument"/>
+            <TableMaterial 
+              :title='"Тип (инструмента или оснастки)"' 
+              :alltypeM="allTInstrument" 
+              :type='"T"' 
+              :width='"width-260"'
+              @search='serhType'
+              @clickMat="clickTInstrument"/>
+            <TableMaterial 
+              :title='"Подтип"' 
+              :alltypeM="allPTInstrument" 
+              :width='"width-260"'
+              :type="'PT'" 
+              @search='serhPType'
+              @clickMat="clickPTInstrument"/>
         </div>
        </div>
        <div>
@@ -38,14 +40,6 @@
         <div>
           <h3>Параметра</h3>
           <div class="block inputs_block">
-            <!-- <p>
-              <span>Единица измерения: </span>
-              <select class='select-small instr_select' v-model='obj.edzim'>
-                <option>Выберите тип ЕИ</option>
-                <option value="">мм</option>
-                <option value="">м</option>
-              </select>
-            </p> -->
             <p>
               <span>Срок поставки в днях: </span>
                <input type="text" v-model.trim="obj.deliveryTime">
@@ -130,7 +124,6 @@ export default {
       obj: {
         name: '',
         parentId: null,
-        // edzim: 'Выбериате тип еи',
         deliveryTime: '',
         mountUsed: '',
         minOstatok: '',

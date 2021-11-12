@@ -35,6 +35,7 @@ import Library from '@/views/Library.vue';
 import ResultWork from "@/views/ResultWork.vue";
 import Issues from '@/views/Issues.vue';
 import Layot from '@/views/Layt.vue';
+import BaseInventary from '@/views/BaseInventary.vue';
 
 import AddMaterialBase from '@/components/mathzag/base-material-add.vue';
 import AddEditBaseProvider from '@/components/baseprovider/add-edit.vue';
@@ -72,8 +73,25 @@ import ComingSclad from '@/components/sclad/comingtosclad/index.vue';
 import ScladTrash from '@/components/sclad/scladtrash/index.vue';
 import OparationDetalAssembly from '@/components/assembly/operation-assemble.vue';
 import OparationDetalMetalloworking from '@/components/metalloworking/operation-metall.vue';
+import BaseInventaryEdit from '@/components/inventary/add-edit.vue';
 
 const routes = [ 
+  {
+    path: '/inventary/:edit/',
+    name: 'Редактировать Технику|Инвентарь',
+    component: BaseInventaryEdit,
+    props: true
+  },
+  {
+    path: '/inventary/create/',
+    name: 'Создать Технику|Инвентарь',
+    component: BaseInventaryEdit,
+  },
+  {
+    path: '/inventary',
+    name: 'База Техники и Инвентаря',
+    component: BaseInventary
+  },
   {
     path: '/metalloworking/operation-metall/:operation',
     name: 'Операции Металлообработки',

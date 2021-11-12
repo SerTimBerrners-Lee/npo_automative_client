@@ -3,9 +3,11 @@
     <h3>9. База непроизводственной техники и инвентаря (типы и подтипы)</h3>
     <div class="cont">
       <div class="cont scroll-table scrolls-type-490">
-        <TableMaterial :title='"Тип"' 
+        <TableMaterial 
+          :title='"Тип"' 
           :alltypeM="getTInventary" 
           :type='"T"' 
+          @search='searchT'
           @clickMat="clickTInventary"/>
       </div>
       <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
@@ -16,9 +18,11 @@
     </div>
     <div class="cont">
       <div class="cont scroll-table scrolls-type-490">
-        <TableMaterial :title='"Подтип"' 
+        <TableMaterial 
+          :title='"Подтип"' 
           :alltypeM="getPTInventary" 
           :type="'PT'" 
+          @search='searchTP'
           @clickMat="clickPTInventary"/>
       </div>
       <div class="btn-control"  v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
@@ -35,10 +39,9 @@
     />
   </div>
 </template>
-
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
-import addEditInventary from '@/components/inventory/add-edit-modal.vue';
+import addEditInventary from '@/components/inventary/add-edit-modal.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import { random } from 'lodash';
 export default {
@@ -64,12 +67,17 @@ export default {
       'fetchAllPInventary',
       'removePTInventary'
     ]),
-    ...mapMutations(['']), 
+    ...mapMutations([
+      'filterPTByTInvetary', 
+      'resetFilterTInventary',
+      'searchTInventary',
+      'searchPTInventary'
+    ]), 
     unmount(res) {
       if(!res)
         return 0
       if(res.type == "TYPE") {
-        if(res.action == 'edit')
+        if(res.action == 'edit') 
           this.updateNewTInventary({
             id: this.inventaryT.id, 
             name: res.name
@@ -80,7 +88,6 @@ export default {
           })
       }
       if(res.type == "PODTYPE") {
-        console.log(res)
         if(res.action == 'create') {
           if(!this.inventaryT) return 0
           this.addNewPTInventary({name: res.name, inventary_type_id: this.inventaryT.id})
@@ -89,8 +96,17 @@ export default {
           this.updatePTInventary({id: this.inventaryPT.id, name: res.name})
       }
     },
+    searchT(val) {
+      this.searchTInventary(val)
+    },
+    searchTP(val) {
+      this.searchPTInventary(val)
+    },
     clickTInventary(inventary) {
+      if(this.inventaryT && this.inventaryT.id == inventary.id)
+        return this.resetFilterTInventary()
       this.inventaryT = inventary
+      this.filterPTByTInvetary(inventary)
     },
     clickPTInventary(inventary) {
       this.inventaryPT = inventary
