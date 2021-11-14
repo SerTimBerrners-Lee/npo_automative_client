@@ -2,12 +2,18 @@ import PATH_TO_SERVER from '@/js/path.js'
  
 export default {
   state: {
-    chapter: []
+    chapter: [],
+    links: [],
+
+    instansLinks: []
   },
   getters: {
     getChapter(state) {
       return state.chapter
     },
+    getLinks(state) {
+      return state.links
+    }
   },
   actions: { 
     async createChapter(ctx, data) {
@@ -49,6 +55,35 @@ export default {
       if(res.ok) 
         ctx.commit('mutationsRemoveChapter', id)
     },
+    async saveNewLink(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/library/links`, {
+        method :  'post', 
+        body: data
+      })
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('pushOneLinks', result)
+        return result
+      }
+    },
+    async getAllLinks(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/library/links`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('pushAllLinks', result)
+        return result
+      }
+    },
+    async fetchToBanLinks(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/library/links/${id}`, {
+        method: 'delete'
+      })
+      if(res.ok) {
+        ctx.commit('toBanLinks', id)
+        return true
+      }
+
+    }
   },
   mutations: {
     mutationsAddChapter(state, chapter) {
@@ -65,6 +100,24 @@ export default {
         if(state.chapter[inx].id == chapter.id)
           state.chapter[inx] = chapter
       }
+    },
+    pushOneLinks(state, links) {
+      state.links.push(links)
+    },
+    pushAllLinks(state, links) {
+      state.links = links.filter(lin => !lin.ban)
+    },
+    filterLinksToChapter(state, chapter) {
+      if(!chapter.links) return false
+      if(state.instansLinks.length == 0)
+        state.instansLinks = state.links
+      state.links = chapter.links
+    },
+    returnAllLinks(state) {
+      state.links = state.instansLinks.filter(lin => !lin.ban)
+    },
+    toBanLinks(state, id) {
+      state.links = state.links.filter(link => link.id != id)
     }
   }
 }

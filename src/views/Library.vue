@@ -13,8 +13,8 @@
          <tr class='td-row'
             v-for='chapt of getChapter' 
             :key='chapt'
-            @class='e => setChapter(chapt, e.target)'>
-            <th>{{ chapt.name }}</th>
+            @click='e => setChapter(chapt, e.target)'>
+            <th>{{ chapt.name  }}</th>
           </tr>
         </table>
       </div>
@@ -29,14 +29,39 @@
               <th>Загрузил</th>
               <th>Просмотреть или перейти</th>
             </tr>
+            <tr
+              v-for='link of getLinks' 
+              :key='link'
+              class='td-row'
+              @click='e => setLinks(link, e.target.parentElement)'>
+              <td>{{ link.name }}</td>  
+              <td class='center'>{{ link.is_link ? 'WWW' : getFormat(link) }}</td>  
+              <td>{{ link.description }}</td>  
+              <td>{{  }}</td>  
+              <td>{{ link.user ? link.user.login : '' }}</td> 
+              <td v-if='link.is_link'>
+                <a :href='link.link' class='active'>{{ link.link }}</a></td>
+              <td 
+                class='active'
+                style='cursor: pointer;'
+                @click='openDocuments(link.documents)'
+                v-else>{{ 'Посмотреть' }}</td>
+            </tr>
           </table>
         </div>
         <div class="btn-control">
-          <button class="btn-small">В архив</button>
+          <button class="btn-small"
+            v-if='select_link && select_link.responsible_id == getAuth.id'
+            @click='toBan'
+          >В архив</button>
           <button class="btn-small">Забрать себе</button>
           <button class="btn-small">Редактировать</button>
           <button class="btn-small" @click='addFileLink'>Добавить файл или ссылку</button>
-          <button class="btn-small btn-add">Скачать</button>
+          <button 
+            v-if='select_link && !select_link.is_link'
+            class="btn-small btn-add"
+            @click='saveDocunment'
+            >Скачать</button>
         </div>
       </div>
     </div>
@@ -44,49 +69,111 @@
     <AddFileLink 
       :key='keyLinlFile'
       v-if='showLinkFile'
+      :select_chapter='select_chapter'
     />
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='message'
+      :key='keyInformTip'
+    />
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="itemFiles"
+      :key='keyWhenModalGenerateFileOpen' />
 	</div>
 </template>
 
 <script>
 
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import AddFileLink from '@/components/library/add-file.vue';
 import { random } from 'lodash';
+import { showMessage } from '@/js/';
+import PATH_TO_SERVER from '@/js/path';
+import OpensFile from '@/components/filebase/openfile.vue';
 export default {
   data() {
     return {  
       loader: false,
       select_chapter: null,
+      select_link: null,
       span_chapter: null,
+      span_link: null,
       keyLinlFile: random(1, 999),
       showLinkFile: false,
+      itemFiles: null,
+      keyWhenModalGenerateFileOpen: random(10, 999),
+
+      titleMessage: '',
+      message: '',
+      type: '',
+      keyInformTip: 0,
     }
   },
   computed: {
     ...mapGetters([
-      'getChapter'
+      'getChapter',
+      'getLinks',
+      'getAuth'
     ]),
   },
-  components: {AddFileLink},
+  components: {AddFileLink, OpensFile},
   methods: {
     ...mapActions([
-      'getAllChapter'
+      'getAllChapter',
+      'getAllLinks', 
+      'fetchToBanLinks'
     ]),
+    ...mapMutations(['filterLinksToChapter', 'returnAllLinks']),
     setChapter(chapter, e) {
-      if(this.span_chapter) this.span_chapter.classList.add('td-row-all')
+      if(this.span_chapter) this.span_chapter.classList.remove('td-row-all')
+      if(this.select_chapter && chapter.id == this.select_chapter.id) return this.returnAllLinks()
       this.select_chapter = chapter
       this.span_chapter = e
       this.span_chapter.classList.add('td-row-all')
+      
+      this.filterLinksToChapter(chapter)
+    },
+    setLinks(link, e) {
+      if(this.span_link) this.span_link.classList.remove('td-row-all')
+       this.select_link = link
+      this.span_link = e
+      this.span_link.classList.add('td-row-all')
     },
     addFileLink() {
+      if(!this.select_chapter)
+        return showMessage('', 'Выберите раздел', 'w', this)
       this.keyLinlFile = random(1, 999)
       this.showLinkFile = true
+    },
+    openDocuments(documents) {
+      if(documents.length) 
+      this.itemFiles = documents[0]
+      this.keyWhenModalGenerateFileOpen = random(1, 999)
+    },
+    getFormat(link) {
+      if(link.documents && link.documents.length) {
+        const doc = link.documents[0].name
+        return doc.split('.')[doc.split('.').length - 1].toUpperCase()
+      }
+    }, 
+    toBan() {
+      if(!this.select_link) return false
+      this.fetchToBanLinks(this.select_link.id).then(() => 
+        showMessage('', 'Успешно перенесено в архив', 's', this))
+    },
+    saveDocunment() {
+      if(!this.select_link) return false
+      if(!this.select_link.documents || !this.select_link.documents.length) return false
+      window.open(`${PATH_TO_SERVER+this.select_link.documents[0].path}`, '_blank').focus()
     }
   },
   async mounted() { 
     this.loader = true
     await this.getAllChapter()
+    await this.getAllLinks()
     this.loader = false
   }
 }

@@ -8,27 +8,30 @@
         <div class="block">
           <div class="block">
             <p>
-              <span>Имя файла или ссылка:</span>
-              <input type="text">
+              <span>Имя {{ is_link ? 'ссылки' : 'файла' }}</span>
+              <input type="text" v-model='name'>
               <label for="link">Ссылка:</label>
-              <input type="checkbox" id="link">
+              <input type="checkbox" id="link" v-model='is_link'>
             </p>
-            <p>
+            <p v-if='is_link'>
               <span>Ссылка</span>
-              <input type="text">
+              <input type="text" v-model='link'>
             </p>
           </div>
-          <div style='height: 50px;'>
-            <FileLoader @unmount='unmount'/>
+          <div style='height: 50px;' v-if='!is_link'>
+            <FileLoader 
+              :typeGetFile='"getfile"' 
+              @unmount='file_unmount' 
+              :is_one="true"/>
           </div>
           <div style='margin-top: 50px;'>
             <h3>Описание</h3>
-            <textarea maxlength='250' rows="6" ></textarea>
+            <textarea maxlength='250' rows="6" v-model='description' ></textarea>
           </div>
         </div>
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
-          <button class="btn-status btn-black">Сохранить</button>
+          <button class="btn-status btn-black" @click='loadToServer'>Сохранить</button>
           <button class="btn-status btn-black">Обновить</button>
         </div>
     </div>
@@ -38,7 +41,7 @@
 <script>
 import { mapGetters, mapActions } from 'vuex';
 export default {
-  props: ['fileArrModal', 'search'],
+  props: ['select_chapter'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -46,17 +49,35 @@ export default {
       hiddens: 'opacity: 1;',
 
       formData: new FormData(),
+      is_link: false,
+      name: '',
+      link: '',
+      description: ''
     }
   },
   computed: {
-    ...mapGetters(['']),
+    ...mapGetters(['getAuth']),
   },
   components: {},
   methods: {
+    ...mapActions(['saveNewLink']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
+    },
+    loadToServer() {
+      if(!this.getAuth.id) return false
+      if(!this.name) return false
+      if(!this.link && this.is_link) return false
+      this.formData.append('is_link', this.is_link)
+      this.formData.append('name', this.name)
+      this.formData.append('link', this.link)
+      this.formData.append('user_id', this.getAuth.id)
+      this.formData.append('chapter_id', this.$props.select_chapter.id)
+      this.formData.append('description', this.description)
+
+      this.saveNewLink(this.formData).then(() => this.destroyModalF())
     },
     ...mapActions(['']),
     file_unmount(e) { 

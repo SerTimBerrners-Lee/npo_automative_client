@@ -6,7 +6,8 @@
       @change="e => addDock(e)" 
       type="file" 
       style="display:none;" 
-      required multiple
+      required 
+      :multiple='!is_one'
       ref='file'>
   </div>
   <AddFile 
@@ -23,7 +24,7 @@
 import AddFile from '@/components/filebase/addfile.vue';
 import { random }  from 'lodash';
 export default {
-  props: ['typeGetFile'],
+  props: ['typeGetFile', 'is_one'],
   data() {
     return {
       docFiles: [],

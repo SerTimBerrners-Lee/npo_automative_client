@@ -35,7 +35,7 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
 
-      name: ''
+      name: '',
 
     }
   },
