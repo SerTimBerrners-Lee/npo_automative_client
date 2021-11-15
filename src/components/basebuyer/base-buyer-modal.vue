@@ -3,12 +3,12 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3> Добавить поставщика </h3>
-        <h4>База поставщиков</h4>
-        <TableProvider :allProvider='allProvider' @unmount='setProvider'/>
+        <h3> Добавить покупателя </h3>
+        <h4>База покупателя</h4>
+        <TableBuyer :allBuyer='allBuyer' @unmount='setBuyer'/>
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click="destroyModalF">Отменить</button>
-          <button class="btn-status btn-black" @click="addProvider" >Добавить</button>
+          <button class="btn-status btn-black" @click="responseBuyer" >Добавить</button>
         </div>
       </div>
     </div>
@@ -16,7 +16,7 @@
 </template>
 <script>
 import { mapGetters, mapActions} from 'vuex';
-import TableProvider from './table-provider.vue';
+import TableBuyer from './table-buyer.vue';
 export default {
   props: ['parametrs'],
   data() {
@@ -24,24 +24,24 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
-      provider: null,
+      buyer: null,
     }
   },
-  computed: mapGetters(['allProvider']),
-  components: {TableProvider},
+  computed: mapGetters(['allBuyer']),
+  components: {TableBuyer},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['fetchGetProviders']),
-    setProvider(prov) {
-      this.provider = prov
+    ...mapActions(['fetchAllBuyers']),
+    setBuyer(buyer) {
+      this.buyer = buyer
     },
-    addProvider() {
-      this.$emit('unmount', this.provider)
-      this.destroyModalF()
+    responseBuyer() {
+      this.$emit('unmount', this.buyer)
+      return this.destroyModalF()
     }
   },
   async mounted() {
@@ -49,7 +49,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
     
-    this.fetchGetProviders()
+    this.fetchAllBuyers()
   },
 }
 </script>

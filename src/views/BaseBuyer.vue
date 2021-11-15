@@ -3,24 +3,7 @@
     <div class="flex-box-main">
       <div class="left-block-bprovider">
         <h3>База Покупателей</h3>
-        <div class="scroll-table">
-          <table class="provider_table"> 
-            <tr> 
-              <th>ИНН</th>
-              <th style="width: 440px;">Наименование покупателя</th>
-            </tr>
-            <tr v-for="buyer in allBuyer" 
-              :key="buyer" 
-              class="td-row"
-              @click="setBuyer(buyer)">
-              <td>{{ buyer.inn }}</td>
-              <td>{{ buyer.name }}</td>
-            </tr>
-            <tr v-for="i in 10" :key="i">
-              <td>...</td><td>...</td>
-            </tr>
-          </table>
-        </div>
+        <TableBuyer :allBuyer='allBuyer' @unmount='setBuyer' />
         <div class="btn-control">
           <button class="btn-small btn-add" @click="create">Создать</button>
           <button class="btn-small" @click="edit">Редактировать</button>
@@ -152,6 +135,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import random from 'lodash';
 import DescriptionModal from '@/components/description-modal.vue';
+import TableBuyer from '@/components/basebuyer/table-buyer.vue';
 export default {
   data() {
     return {
@@ -174,7 +158,7 @@ export default {
     }
   },
   computed: mapGetters(['allBuyer', 'allProduct']),
-  components: {OpensFile, DescriptionModal},
+  components: {OpensFile, DescriptionModal, TableBuyer},
   methods: {
     ...mapActions([
       'fetchAllBuyers', 

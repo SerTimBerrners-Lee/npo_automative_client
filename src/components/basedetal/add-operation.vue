@@ -368,20 +368,18 @@ export default {
       this.eqList = []
       eq.equipmentList.forEach(e => this.eqList.push({id: e.id, name: e.name}))
       this.eqIsShow = false
-      
     },
     changeGenTime(e){
       console.log(e)
     },
     setDocs(dc) {
-        this.itemFiles = dc
+      this.itemFiles = dc
     },
     openDock() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        console.log
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+      if(isEmpty(this.itemFiles))
+        return 0
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 38e9)
     },
   },
   async mounted() {
@@ -400,15 +398,15 @@ export default {
       this.helperTime = op.helperTime
       this.mainTime = op.mainTime
       this.generalCountTime =
-          (Number(this.preTime) + 
-          Number(this.helperTime) +
-          Number(this.mainTime))
+        (Number(this.preTime) + 
+        Number(this.helperTime) +
+        Number(this.mainTime))
       this.description = op.description
 
       if(op.instrumentList)
-          this.instrumentList = JSON.parse(op.instrumentList)
+        this.instrumentList = JSON.parse(op.instrumentList)
       if(op.instrumentMerList)
-          this.instrumentMerList = JSON.parse(op.instrumentMerList)
+        this.instrumentMerList = JSON.parse(op.instrumentMerList)
 
       if(op.instrumentOsnList)
           this.instrumentOsnList = JSON.parse(op.instrumentOsnList)

@@ -10,7 +10,7 @@ export default {
 
     searchTypeEq: [],
     searchPTypeEq: [],
-    searchEq: []
+    searchEq: [] 
   },
   getters: {
     allEquipmentType(state) {
@@ -170,6 +170,14 @@ export default {
       })
       ctx.commit('hideEquipment', id)
       ctx.dispatch('fetchAllEquipmentType')
+    },
+
+    async attachFileToEquipment(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/equipment/files/${data.eq_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
     },
   },
   mutations: {

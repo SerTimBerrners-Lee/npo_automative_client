@@ -153,13 +153,6 @@
                       style="width: 50px; text-align:center;"
                       class='inputs-small'
                       v-model='obj.DxL'>
-                      <!-- <div class='absolute_znach'>
-                        {{ obj.DxL.split('x')
-                            .length == 2 ? 
-                          `=${obj.DxL.split('x')[0] * obj.DxL.split('x')[1]}`
-                          : ''
-                        }}
-                      </div> -->
                   </td>
                 </tr>
                 <tr>
@@ -246,7 +239,6 @@ import { random, padStart, padEnd } from 'lodash';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-
 export default {
   data() {
     return {

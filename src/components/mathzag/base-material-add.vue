@@ -484,12 +484,12 @@ export default {
         this.obj.density_input = JSON.parse(this.getOnePPT.density).znach
       }
 
-      if(this.$route.params.type == 'edit') {
         this.providers = this.getOnePPT.providers
         if(this.providers ) 
           this.providers.forEach(provider => {
             this.providersId.push({id: provider.id})
           })
+      if(this.$route.params.type == 'edit') {
         if(this.getOnePPT.documents) 
           this.arrFileGet = this.getOnePPT.documents
       }      

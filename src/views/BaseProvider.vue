@@ -3,25 +3,7 @@
     <div class="flex-box-main">
       <div class="left-block-bprovider">
         <h3>База поставщиков</h3>
-        <div class="scroll-table">
-          <table class="provider_table"> 
-            <tr> 
-              <th>ИНН</th>
-              <th style="width: 440px;">Наименование поставщика</th>
-            </tr>
-            <tr 
-              v-for="provider in allProvider" 
-              :key="provider" 
-              class="td-row"
-              @click="setProvider(provider)">
-              <td>{{ provider.inn }}</td>
-              <td>{{ provider.name }}</td>
-            </tr>
-            <tr v-for="i in 10" :key="i">
-              <td>...</td><td>...</td>
-            </tr>
-          </table>
-        </div>
+        <TableProvider :allProvider='allProvider' @unmount='setProvider'/>
         <div class="btn-control">
           <button class="btn-small btn-add" @click="$router.push({path: '/baseprovider/addedit/add'})">Создать</button>
           <button class="btn-small" @click="editProvider">Редактировать</button>
@@ -188,6 +170,7 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import random from 'lodash';
 import TableMaterial from '@/components/baseprovider/table-materila.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
+import TableProvider from '@/components/baseprovider/table-provider.vue';
 export default {
   data() {
     return {
@@ -219,7 +202,7 @@ export default {
     'getMaterialTProvider',
     'getMaterialPTProvider'
   ]),
-  components: {OpensFile, TableMaterial, TableMaterialFilter},
+  components: {OpensFile, TableMaterial, TableMaterialFilter, TableProvider},
   methods: {
     ...mapActions([
       'fetchGetProviders', 
@@ -239,7 +222,6 @@ export default {
     setProvider(provider) { 
       if(!provider)
         return false
-      
       this.setProviderState(provider)
       this.materials = provider.materials;
       if(this.materials.length) {

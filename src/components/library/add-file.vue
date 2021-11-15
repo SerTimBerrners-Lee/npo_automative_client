@@ -3,7 +3,7 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3>Добавление файла</h3>
+        <h3> {{ type_open == 'create' ? "Добавление" : "Редактирование" }} файла</h3>
 
         <div class="block">
           <div class="block">
@@ -24,6 +24,17 @@
               @unmount='file_unmount' 
               :is_one="true"/>
           </div>
+          <div v-if='document' style='margin-top: 50px; display: flex; justify-content: center; flex-direction: column;'>
+            <h3>Прикрепленный файл: </h3>
+            <table style='width:96%;'>
+              <tr>
+                <th>Наименование файла</th>
+              </tr>
+              <tr @click='openDocuments' class='td-row'>
+                <td>{{ document.name }}</td>
+              </tr>
+            </table>
+          </div>
           <div style='margin-top: 50px;'>
             <h3>Описание</h3>
             <textarea maxlength='250' rows="6" v-model='description' ></textarea>
@@ -31,17 +42,23 @@
         </div>
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
-          <button class="btn-status btn-black" @click='loadToServer'>Сохранить</button>
-          <button class="btn-status btn-black">Обновить</button>
+          <button class="btn-status btn-black" @click='loadToServer' v-if='type_open == "create"'>Сохранить</button>
+          <button class="btn-status btn-black" @click='editFileLink' v-else>Обновить</button>
         </div>
     </div>
     </div>
+    <OpensFile 
+      :parametrs='document' 
+      v-if="isShowFileModal"
+      :key='keyWhenModalGenerateFileOpen' />
   </div> 
 </template>
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
+import {random} from 'lodash';
 export default {
-  props: ['select_chapter'],
+  props: ['select_chapter', 'type_open', 'links'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -52,34 +69,60 @@ export default {
       is_link: false,
       name: '',
       link: '',
-      description: ''
+      description: '',
+      id: '',
+      document: null,
+      isShowFileModal: false,
+      keyWhenModalGenerateFileOpen: random(10, 999),
     }
   },
   computed: {
     ...mapGetters(['getAuth']),
   },
-  components: {},
+  components: {OpensFile},
   methods: {
-    ...mapActions(['saveNewLink']),
+    ...mapActions(['saveNewLink', 'updateFileLink']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
     loadToServer() {
+      this.appendFormData()
+      this.formData.append('chapter_id', this.$props.select_chapter.id)
+      this.formData.append('user_id', this.getAuth.id)
+      this.saveNewLink(this.formData).then(() => this.destroyModalF())
+    },
+    openDocuments() {
+      this.isShowFileModal = true
+      this.keyWhenModalGenerateFileOpen = random(1, 999)
+    },
+    editFileLink() {
+      this.appendFormData()
+      if(!this.id) return false
+      this.formData.append('id', this.id)
+      this.updateFileLink(this.formData).then(() => this.destroyModalF())
+    },
+    appendFormData() {
       if(!this.getAuth.id) return false
       if(!this.name) return false
       if(!this.link && this.is_link) return false
       this.formData.append('is_link', this.is_link)
       this.formData.append('name', this.name)
       this.formData.append('link', this.link)
-      this.formData.append('user_id', this.getAuth.id)
-      this.formData.append('chapter_id', this.$props.select_chapter.id)
       this.formData.append('description', this.description)
-
-      this.saveNewLink(this.formData).then(() => this.destroyModalF())
     },
-    ...mapActions(['']),
+    updateVariable() {
+      if(!this.$props.links) return this.destroyModalF()
+      const lin = this.$props.links
+      this.is_link = lin.is_link
+      this.name = lin.name
+      this.id = lin.id
+      this.link = lin.link
+      this.description = lin.description
+      if(lin.documents && lin.documents.length)
+        this.document = lin.documents[0]
+    },
     file_unmount(e) { 
       if(!e) return 0
       this.formData = e.formData
@@ -89,6 +132,8 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
+
+    if(this.$props.type_open == "edit" && this.$props.links) this.updateVariable()
     
   }
 }

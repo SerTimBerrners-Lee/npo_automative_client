@@ -6,6 +6,8 @@ export default {
     onTimeProvider: [],
     oneProvider: {},
 
+    searchProvider: [],
+
     deliveries: [],
     waybills: [],
 
@@ -124,6 +126,13 @@ export default {
         return result
       }
     },
+    async attachFileToProvider(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/provider/files/${data.provider_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
   },
   mutations: {
     setAllWaybill(state, result) {
@@ -227,9 +236,19 @@ export default {
       state.materialT   = []
       state.materialPT  = []
 
-      state.sMaterial   = []
+      state.sMaterial   = [] 
       state.sMaterialT  = []
       state.sMaterialPT = []
-    }
+    },
+    searchProviderMutations(state, tm) {
+      if(!state.searchProvider.length) 
+        state.searchProvider = state.providers
+      state.providers = state.searchProvider
+      if(!tm) 
+        return
+          
+      state.providers = state.providers
+        .filter(t =>  ((t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()) || ((t.inn.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()))
+    },
   }
 }

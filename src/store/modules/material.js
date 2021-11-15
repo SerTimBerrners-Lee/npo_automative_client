@@ -224,7 +224,14 @@ export default {
         console.log(result)
         return result
       }
-    }
+    },
+    async attachFileToMaterial(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/files/${data.mat_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
   },
   mutations: { 
     sortPPMtoParent(state, result) {
@@ -387,7 +394,7 @@ export default {
       if(!state.searchPTypeM.length) 
         state.searchPTypeM = state.podTypeM
       state.podTypeM = state.searchPTypeM
-      if(!tm) 
+      if(!tm)  
         return
           
       state.podTypeM = state.podTypeM

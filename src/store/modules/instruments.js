@@ -11,7 +11,7 @@ export default {
     instansPTInstrument: [],
     linkId: 0,
 
-    searchTypeInst: [],
+    searchTypeInst: [], 
     searchPTypeInst: [],
     searchNameInst: []
   },
@@ -175,7 +175,14 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`)
       const result = await res.json()
       ctx.commit('pushAllNameInstrument', result)
-    }
+    },
+    async attachFileToInstrument(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/files/${data.instr_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
   },
   mutations: { 
     pushAllNameInstrument(state, data) {

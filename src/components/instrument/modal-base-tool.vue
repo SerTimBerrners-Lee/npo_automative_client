@@ -31,7 +31,8 @@
             @dbClickMat='dbClickPPTInstrument'/>
         </div>
           <div class="btn-control body_table_instr">
-            <button class="btn-small btn-add" @click='addInstrumentToList'>Выбрать</button>
+            <button class="btn-small btn-add" v-if='!get_one' @click='addInstrumentToList'>Выбрать</button>
+            <button class="btn-small btn-add" v-if='get_one' @click='returnOneInstrument'>Выбрать</button>
         </div>
         <div v-if='instrumentList.length > 0'>
           <table>
@@ -45,7 +46,7 @@
             </tr>
           </table>
         </div>
-        <div class="btn-control out-btn-control">
+        <div class="btn-control out-btn-control" v-if='!get_one'>
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status btn-black" style="height: 0px;" @click='addInstruement'>Добавить выбранное</button>
         </div>
@@ -60,7 +61,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import {random} from 'lodash';
 import ModalInformation from '@/components/instrument/modal-information.vue';
 export default {
-  props: ['allProvider', 'listInstrument', 'typeInstrument'],
+  props: ['listInstrument', 'typeInstrument', 'get_one'],
   data() {
     return {
       TInstrument: null,
@@ -129,6 +130,11 @@ export default {
         this.instrumentListId.push(this.PPTInstrument.id)
         this.instrumentList.push(this.PPTInstrument);
       }
+    },
+    returnOneInstrument() {
+      if(!this.PPTInstrument) return 0;
+      this.$emit('unmount_instrument', this.PPTInstrument)
+      return this.destroyModalF()
     },
     delInstr(id) {
       this.instrumentList = this.instrumentList.filter(inst => inst.id != id)

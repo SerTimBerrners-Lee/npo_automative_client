@@ -8,8 +8,8 @@
       <input type="text">
     </div>
     <div class='table_block'>
-      <div class="table-scroll">
-        <table>
+      <div class="table-scroll"> 
+        <table style='width: 300px;'>
          <tr class='td-row'
             v-for='chapt of getChapter' 
             :key='chapt'
@@ -37,7 +37,10 @@
               <td>{{ link.name }}</td>  
               <td class='center'>{{ link.is_link ? 'WWW' : getFormat(link) }}</td>  
               <td>{{ link.description }}</td>  
-              <td>{{  }}</td>  
+              <td class='center' @click='addToFavorites(link)'>
+                <unicon name="star" fill="khaki" v-if='isFavorites(link)'/>
+                <unicon name="star" fill="gray" v-else/>
+              </td>  
               <td>{{ link.user ? link.user.login : '' }}</td> 
               <td v-if='link.is_link'>
                 <a :href='link.link' class='active'>{{ link.link }}</a></td>
@@ -54,8 +57,8 @@
             v-if='select_link && select_link.responsible_id == getAuth.id'
             @click='toBan'
           >В архив</button>
-          <button class="btn-small">Забрать себе</button>
-          <button class="btn-small">Редактировать</button>
+          <!-- <button class="btn-small" v-if='select_link'>Забрать себе</button> -->
+          <button class="btn-small" @click='editFileLink' v-if='select_link'>Редактировать</button>
           <button class="btn-small" @click='addFileLink'>Добавить файл или ссылку</button>
           <button 
             v-if='select_link && !select_link.is_link'
@@ -70,6 +73,8 @@
       :key='keyLinlFile'
       v-if='showLinkFile'
       :select_chapter='select_chapter'
+      :type_open='type_open'
+      :links='select_link'
     />
     <InformFolder  
       :title='titleMessage'
@@ -110,6 +115,7 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+      type_open: 'create'
     }
   },
   computed: {
@@ -124,7 +130,8 @@ export default {
     ...mapActions([
       'getAllChapter',
       'getAllLinks', 
-      'fetchToBanLinks'
+      'fetchToBanLinks',
+      'addLinkToFavorite'
     ]),
     ...mapMutations(['filterLinksToChapter', 'returnAllLinks']),
     setChapter(chapter, e) {
@@ -147,6 +154,13 @@ export default {
         return showMessage('', 'Выберите раздел', 'w', this)
       this.keyLinlFile = random(1, 999)
       this.showLinkFile = true
+      this.type_open = 'create'
+    },
+    editFileLink() {
+      if(!this.select_link) return showMessage('', 'Сначала выберите что хотите отредактировать', 'w', this)
+      this.keyLinlFile = random(1, 999)
+      this.showLinkFile = true
+      this.type_open = 'edit'
     },
     openDocuments(documents) {
       if(documents.length) 
@@ -168,6 +182,17 @@ export default {
       if(!this.select_link) return false
       if(!this.select_link.documents || !this.select_link.documents.length) return false
       window.open(`${PATH_TO_SERVER+this.select_link.documents[0].path}`, '_blank').focus()
+    },
+    isFavorites(link) {
+      if(!link.users || !link.users.length) return false
+      for(let user of link.users) {
+        if(user.id == this.getAuth.id) return true
+      }
+      return false
+    },
+    addToFavorites(link) {
+      if(!this.getAuth.id) return false
+      this.addLinkToFavorite({user_id: this.getAuth.id, links_id: link.id}).then(() => showMessage('', 'Избранное изменено!', 's', this))
     }
   },
   async mounted() { 

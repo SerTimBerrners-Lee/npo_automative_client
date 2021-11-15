@@ -83,6 +83,40 @@
             </table>
           </div>
         </div>
+ 
+        <div>
+          <h3 class="link_h3" @click='addInstrument' style='margin-top: 30px;'>Поставляемый Инструмент</h3>
+          <div>
+            <table style='width: 100%;'>
+              <tr>
+                <th>Наименование</th>
+              </tr>
+              <tr 
+                v-for='tool of toolList' 
+                :key='tool'
+                class='td-row'>
+                <td>{{ tool.name }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h3 class="link_h3" @click='addEquipment' style='margin-top: 30px;'>Поставляемое оборудоание</h3>
+          <div>
+            <table style='width: 100%;'>
+              <tr>
+                <th>Наименование</th>
+              </tr>
+              <tr 
+                v-for='equipment of equipmentList' 
+                :key='equipment'
+                class='td-row'>
+                <td>{{ equipment.name }}</td>
+              </tr>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
       <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.providerAssets.writeSomeone">
@@ -108,6 +142,18 @@
         v-if="itemFiles"
         :key='keyWhenModalGenerateFileOpen'
       />
+      <BaseTools 
+        :key='instrumentKey'
+        v-if='instrumentMerIsShow'
+        @unmount_instrument='unmount_instrument'
+        :listInstrument='toolList'
+      />
+      <BaseEquipment 
+        :key='eqKey'
+        v-if='eqIsShow'
+        @unmount_eq='unmount_eq'
+        :listEquipment='equipmentList'
+      />
   </div>
 </template>
 <script scoped>
@@ -118,6 +164,8 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
+import BaseTools from '@/components/instrument/modal-base-tool.vue';
+import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
 export default {
   data() {
     return {
@@ -148,16 +196,31 @@ export default {
       modalMaterialKey: random(1, 999),
       modalMaterialIsShow: false,
       materialList: [],
+      toolList: [],
+      equipmentList: [],
+      toolListId: [],
+      equipmentListId: [],
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 1222)
+      keyWhenModalGenerateFileOpen: random(10, 1222),
+      instrumentKey: random(1, 999),
+      instrumentMerIsShow: false,
+      eqKey: random(1, 999),
+      eqIsShow: false
     }
   },
   computed: mapGetters([
     'getSetProvider',
     'getRoleAssets'
   ]),
-  components: {AddContact, ModalBaseMaterial, OpensFile, TableMaterialFilter},
+  components: {
+    BaseTools,
+    BaseEquipment,
+    AddContact,
+    ModalBaseMaterial,
+    OpensFile,
+    TableMaterialFilter
+  },
   methods: {
     ...mapActions(['addOneProvider']),
     ...mapMutations(['delitPathNavigate']),
@@ -173,6 +236,20 @@ export default {
           this.obj.materials.push(e.mat.id)
         }
         this.materialList = res.materialList
+      }
+    },
+    unmount_eq(eqs) {
+      this.eqs = []
+      if(eqs) {
+        this.equipmentList = eqs.equipmentList
+        this.equipmentListId = eqs.equipmentListId
+      }
+    },
+    unmount_instrument(instrs) {
+      this.toolList = []
+      if(instrs) {
+        this.toolList = instrs.instrumentList
+        this.toolListId = instrs.instrumentListId
       }
     },
     addContact() { 
@@ -211,6 +288,10 @@ export default {
       this.formData.append('id', this.obj.id)
       this.formData.append('materialList', 
         JSON.stringify(this.obj.materials))
+      this.formData.append('toolListId', 
+        JSON.stringify(this.toolListId))
+      this.formData.append('equipmentListId', 
+        JSON.stringify(this.equipmentListId))
 
       this.addOneProvider(this.formData)
       this.$router.push('/baseprovider')
@@ -233,7 +314,15 @@ export default {
     exit() {
       this.$router.push('/baseprovider')
       this.delitPathNavigate(this.$route.path)
-    }
+    },
+    addInstrument() {
+      this.instrumentKey = random(1, 999)
+      this.instrumentMerIsShow = true
+    },
+    addEquipment() {
+      this.eqIsShow = true
+      this.eqKey = random(10, 384e12)
+    },
   },
   async mounted() {
     if(this.$route.params.type == 'add') {
@@ -243,8 +332,16 @@ export default {
 
     if(this.$route.params.type == 'edit') {
       if(isEmpty(this.getSetProvider))
-          this.$router.push('/baseprovider')
+        this.$router.push('/baseprovider')
       let provider = this.getSetProvider  
+      if(provider.equipments && provider.equipments.length) {
+        this.equipmentList = provider.equipments
+        this.equipmentListId = provider.equipments.map(eq => eq.id)
+      }
+      if(provider.nameInstans && provider.nameInstans.length) {
+        this.toolList = provider.nameInstans
+        this.toolListId = provider.nameInstans.map(tool => tool.id)
+      }
       this.materials = provider.materials
       this.obj.id = provider.id
       this.obj.name = provider.name

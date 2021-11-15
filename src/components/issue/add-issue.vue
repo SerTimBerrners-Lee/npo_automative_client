@@ -151,7 +151,6 @@ import {random, isEmpty} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
 import DatePicterCustom from '@/components/date-picter.vue';
 import PATH_TO_SERVER from '@/js/path';
-
 export default {
   props: ['parametrs', 'editIssue', 'is_me'],
   data() {
@@ -176,20 +175,16 @@ export default {
       itemFiles: null,
       showFile: false,
       keyWhenModalGenerateFileOpen: random(10, 999),
-
       srokList: [
         'Срочно',
         'Нормально',
         'Отложено',
         'На контроль'
       ],
-
       docFilesPreload: [],
       docFiles: [],
       formData: new FormData(),
-
       showDatePicters: false,
-
       description: '',
       dateUse: '',
       normTime: '',
@@ -202,12 +197,9 @@ export default {
       executorList: [],
       izdList: [],
       shopNeeds: '',
-      
       id: null,
       name: '',
-
       secontDocuments: [],
-
     }
   },
   components: {ModalUsersList, BaseProductModal, BaseFileModal, OpensFile, DatePicterCustom},
@@ -323,8 +315,6 @@ export default {
       this.sourse = JSON.parse(issue.sourse)
       this.status = issue.status
       this.srok_control = issue.srok_control
-      console.log(issue)
-      
 
       if(issue.documents) {
         issue.documents.forEach(file => {

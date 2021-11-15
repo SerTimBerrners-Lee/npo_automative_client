@@ -28,7 +28,8 @@
 						</table> 
 					</div>
 					<div class="btn-control">
-						<button class="btn-add btn-small" @click='addUserToList'>Выбрать</button>
+						<button class="btn-add btn-small" v-if='!get_one' @click='addUserToList'>Выбрать</button>
+						<button class="btn-add btn-small" v-if='get_one' @click='returnOneUser'>Выбрать</button>					
 					</div>
 
 					<div v-if='userListArr.length'>
@@ -41,7 +42,10 @@
 						</table>
 					</div>
 
-					<div class="btn-control out-btn-control" style='margin-top: 100px;'>
+					<div 
+						class="btn-control out-btn-control" 
+						style='margin-top: 100px;'
+						v-if='!get_one'>
 					<button class="btn-status" 
 						@click='destroyModalF'>Отменить</button>
 							<button class="btn-status btn-black" @click='response'>Сохранить</button>
@@ -52,10 +56,9 @@
 </template>
 
 <script>
-import {  mapActions, mapGetters } from 'vuex'
-
+import {  mapActions, mapGetters } from 'vuex';
 export default {
-  props: ['usersList'],
+  props: ['usersList', 'get_one'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -107,6 +110,13 @@ export default {
 				})
 			}
 		
+		},
+		returnOneUser() {
+			if(!this.selectUser)
+				return 0
+
+			this.$emit('unmount', this.selectUser)
+			return this.destroyModalF()
 		},
 		deleteUser(user) {
 			this.userListArr = this.userListArr.filter(u => u.id != user.id)

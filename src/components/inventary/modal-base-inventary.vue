@@ -3,30 +3,31 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3>Добавление Оборудования</h3>
+        <h3>Добавление Техники или инвентаря</h3>
         <div class="body_table_instr">
-          <TableMaterial :title='"Тип"' 
-            :alltypeM="allEquipmentType" 
-            :type='"T"' 
-            @search='serhType'
-            @clickMat="clickEquipmentType"/>
-          <TableMaterial :title='"Подтип"' 
-            :alltypeM="allEquipmentPType" 
-            :type="'PT'" 
-            @search='serhPType'
-            @clickMat="clickEquipmentPType"/>
-          <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
-            :alltypeM="allEquipment" 
-            :type="'PPT'" 
-            @search='serhEq'
-            @clickMat="clickEquipment"
-            @dbClickMat='dbClickEquipment'/>
+					<TableMaterial 
+					:title='"Тип"' 
+					:alltypeM="getTInventary" 
+					:type='"T"' 
+					@search='searchT'
+					@clickMat="clickTInventary"/>
+				<TableMaterial 
+					:title='"Подтип"' 
+					:alltypeM="getPTInventary" 
+					:type="'PT'" 
+					@search='searchTP'
+					@clickMat="clickPTInventary"/>
+				<TableMaterial :title='" Наименование"' 
+					:alltypeM="getInventary" 
+					:type="'PPT'" 
+					@search='search'
+					@clickMat="clickInventary"/>
         </div>
         <div class="btn-control body_table_instr">
-          <button class="btn-small btn-add" v-if='!get_one' @click='addEuipmentToList'>Выбрать</button>
-          <button class="btn-small btn-add" v-if='get_one' @click='returnOneEquipment'>Выбрать</button>
+          <button class="btn-small btn-add" v-if='!get_one' @click='addInventaryToList'>Выбрать</button>
+          <button class="btn-small btn-add" v-if='get_one' @click='returnOneInventary'>Выбрать</button>
         </div>
-        <div v-if='equipmentList.length > 0'>
+        <!-- <div v-if='equipmentList.length > 0'>
           <table>
             <tr>
               <th>Выбранное</th>
@@ -37,15 +38,13 @@
               <td class='delete_span' @click='delEQ(eq.id)'>удалить</td>
             </tr>
           </table>
-        </div>
+        </div> -->
         <div class="btn-control out-btn-control" v-if='!get_one'>
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
-          <button class="btn-status btn-black" style="height: 0px;" @click='addEquipment'>Добавить выбранное</button>
+          <button class="btn-status btn-black" style="height: 0px;" @click='addInventary'>Добавить выбранное</button>
         </div>
       </div>
     </div>
-    <ModalInformation v-if='showModalInformationEq' :key='keyModalInformation' />
-
   </div> 
 </template>
 
@@ -54,14 +53,13 @@
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import {random} from 'lodash'
-import ModalInformation from './modal-information.vue'
-
 export default {
   props: ['listEquipment','get_one'],
   data() {
     return {
-      equipmentT: null,
-      equipmentPT: null,
+      inventaryT: null,
+      inventaryPT: null,
+      inventary: null,
 
       showModalInformationEq: false,
       keyModalInformation: random(1, 34e121),
@@ -70,104 +68,115 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
 
-      equipmentList: [],
-      equipmentListId: []
+      inventaryList: [],
+      inventaryListId: []
     }
   },
-  computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEquipment', 'equipment']),
-  components: {TableMaterial, ModalInformation},
+  computed: mapGetters([
+		'getTInventary', 
+    'getPTInventary',
+    'getInventary',
+    'getOneInventary'
+	]),
+  components: {TableMaterial},
   methods: {
     ...mapActions([
-      'fetchAllEquipmentType',
-      'getOneEquipmentPType',
-      'fetchOneEquipment',
-      'banEquipment',
-      'getAllEquipmentPType',
-      'fetchAllEquipment'
+      'fetchAllInventary',
+      'fetchAllPInventary',
+      'fetchOneInventary',
+      'fetchAllNameInventary',
       ]),
     ...mapMutations([
-      'filterAllPTEquipment',
-      'searchTypeEq',
-      'searchPTypeEq',
-      'searchEq',]),
-    clickEquipmentType(equipment) { 
-      this.equipmentT = equipment
-      this.filterAllPTEquipment(this.equipmentT)
-    },
-    clickEquipmentPType(equipmentPT) {
-      this.equipmentPT = equipmentPT
-      this.getOneEquipmentPType(equipmentPT.id)
-    },
-    clickEquipment(eq) {
-      this.fetchOneEquipment(eq.id)
-    },
-    dbClickEquipment(eq) {
-      this.fetchOneEquipment(eq.id).then(() => {
-        this.showModalInformationEq = true;
-        this.keyModalInformation = random(10, 34e121)
-      })
-    },
-    destroyModalF() {
+     'filterPTByTInvetary', 
+      'resetFilterTInventary',
+      'searchTInventary',
+      'searchPTInventary',
+      'searchInventary',
+      'filterNameMaterialByPT',
+      'resetFilterInventary'
+		]),
+		destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    // ---------------------------------------
-    addEuipmentToList() {
-      if(!this.equipment)
-        return 0;
-      
-      let add = true
-      if(this.equipmentList.length > 0) {
-        for(let eq of this.equipmentList) {
-          if(eq.id == this.equipment.id)
-            add=false
-        }
-      }
-      if(add) {
-        this.equipmentListId.push(this.equipment.id)
-        this.equipmentList.push(this.equipment);
-      }
+    search(val) {
+      this.searchInventary(val)
     },
-    returnOneEquipment() {
-      if(!this.equipment) return 0;
-      this.$emit('unmount_eq', this.equipment)
+    searchT(val) {
+      this.searchTInventary(val)
+    },
+    searchTP(val) {
+      this.searchPTInventary(val)
+    },
+    clickTInventary(inventary) {
+      if(this.inventaryT && this.inventaryT.id == inventary.id) {
+        this.resetFilterInventary()
+        return this.resetFilterTInventary()
+      }
+      this.inventaryT = inventary
+      this.filterPTByTInvetary(inventary)
+      if(inventary.inventary)
+        this.filterNameMaterialByPT(inventary.inventary)
+    },
+    clickPTInventary(inventary) {
+      if(this.inventaryPT && this.inventaryPT.id == inventary.id) 
+        return this.resetFilterInventary()
+      this.inventaryPT = inventary
+      if(inventary.inventary)
+        this.filterNameMaterialByPT(inventary.inventary)
+    },
+    clickInventary(inventary) {
+      this.inventary = inventary
+      this.fetchOneInventary(inventary.id)
+    },
+    // ---------------------------------------
+    // addEuipmentToList() {
+    //   let add = true
+    //   if(this.equipmentList.length > 0) {
+    //     for(let eq of this.equipmentList) {
+    //       if(eq.id == this.equipment.id)
+    //         add=false
+    //     }
+    //   }
+    //   if(add) {
+    //     this.equipmentListId.push(this.equipment.id)
+    //     this.equipmentList.push(this.equipment);
+    //   }
+    // },
+		addInventaryToList() {
+			if(!this.inventary) return false
+		},
+    returnOneInventary() {
+      if(!this.inventary) return 0;
+      this.$emit('unmount', this.inventary)
       return this.destroyModalF()
     },
-    delEQ(id) {
-      this.equipmentList = this.equipmentList.filter(eq => eq.id != id)
-      this.equipmentListId = this.equipmentListId.filter(eq => eq != id)
-    },
-    addEquipment() {
-      this.destroyModalF()
-      this.$emit('unmount_eq', {
-        equipmentListId: this.equipmentListId,
-        equipmentList: this.equipmentList,
-      })
-    },
-    serhType(eq) {
-      this.searchTypeEq(eq)
-    },
-    serhPType(eq) {
-      this.searchPTypeEq(eq)
-    },
-    serhEq(eq) {
-      this.searchEq(eq)
-    }
+    // delEQ(id) {
+    //   this.equipmentList = this.equipmentList.filter(eq => eq.id != id)
+    //   this.equipmentListId = this.equipmentListId.filter(eq => eq != id)
+    // },
+    // addInventary() {
+    //   this.destroyModalF()
+    //   this.$emit('unmount_eq', {
+    //     equipmentListId: this.equipmentListId,
+    //     equipmentList: this.equipmentList,
+    //   })
+    // },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-    this.fetchAllEquipmentType()
-    this.getAllEquipmentPType()
-    this.fetchAllEquipment()
-    if(this.$props.listEquipment) {
-      this.equipmentList = this.$props.listEquipment
-      this.$props.listEquipment.forEach((el) => {
-        this.equipmentListId.push(el.id)
-      })
-    }
+    this.fetchAllInventary()
+    this.fetchAllPInventary()
+    this.fetchAllNameInventary()
+    // if(this.$props.listEquipment) {
+    //   this.equipmentList = this.$props.listEquipment
+    //   this.$props.listEquipment.forEach((el) => {
+    //     this.equipmentListId.push(el.id)
+    //   })
+    // }
   }
 }
 </script>

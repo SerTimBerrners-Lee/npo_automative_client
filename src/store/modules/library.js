@@ -66,6 +66,17 @@ export default {
         return result
       }
     },
+    async updateFileLink(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/library/links`, {
+        method :  'put', 
+        body: data
+      })
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('updateLinks', result)
+        return result
+      }
+    },
     async getAllLinks(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/library/links`)
       if(res.ok) {
@@ -82,8 +93,15 @@ export default {
         ctx.commit('toBanLinks', id)
         return true
       }
-
-    }
+    },
+    async addLinkToFavorite(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/library/links/favorite/${data.user_id}/${data.links_id}`)
+      if(res.ok) {
+        ctx.commit('clearInstans')
+        ctx.dispatch('getAllChapter')
+        ctx.dispatch('getAllLinks')
+      }
+    },
   },
   mutations: {
     mutationsAddChapter(state, chapter) {
@@ -114,10 +132,24 @@ export default {
       state.links = chapter.links
     },
     returnAllLinks(state) {
-      state.links = state.instansLinks.filter(lin => !lin.ban)
+      state.links = []
+      for(let instans of state.instansLinks) {
+        if(!instans.ban) state.links.push(instans)
+      }
+    },
+    clearInstans(state) {
+      state.instansLinks = []
     },
     toBanLinks(state, id) {
       state.links = state.links.filter(link => link.id != id)
-    }
+    },
+    updateLinks(state, link) {
+      for(let lin in state.links) {
+        if(state.links[lin].id == link.id) state.links[lin] = link
+      }
+      for(let lin in state.instansLinks) {
+        if(state.instansLinks[lin].id == link.id) state.instansLinks[lin] = link
+      }
+    },
   }
 }

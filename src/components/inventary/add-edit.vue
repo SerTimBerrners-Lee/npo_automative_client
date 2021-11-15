@@ -305,7 +305,7 @@ export default {
     await this.fetchAllInventary()
     await this.fetchAllPInventary()
 
-    if(this.$route.params.edit != 'create') {
+    if(this.$route.params.edit && this.$route.params.edit == 'copy' && this.$route.params.edit == 'edit') {
       if(isEmpty(this.getOneInventary))
         return this.exit()
       this.updateVariable()

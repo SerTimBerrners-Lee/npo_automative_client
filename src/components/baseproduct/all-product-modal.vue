@@ -39,17 +39,12 @@
 					</tr>
 				</table>
 			</div>
-
-        
-    
      <div class="btn-control out-btn-control">
       <button class="btn-status" 
         @click='destroyModalF'>Отменить</button>
       <button class="btn-status btn-black" 
 				@click='responseProduct'>Выбрать</button>
     </div>
-
-   
     </div>
   </div>
 </div>
@@ -66,10 +61,9 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
-
+			
 			selecteProduct: null,
 			tr: null,
-
     }
   },
   components: {Search},

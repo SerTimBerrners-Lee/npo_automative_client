@@ -18,9 +18,7 @@
               <td>{{ product.name }}</td>
               <td>шт</td>
               <td>
-                {{
-                  parseIzd(product)
-                }}
+                {{ parseIzd(product) }}
               </td>
             </tr>
 					</table>
@@ -38,9 +36,7 @@
                 <td>{{ cbed.name }}</td>
                 <td>шт</td>
                 <td>
-                
-                   {{  parseIzd(cbed) }}
-                  
+                  {{  parseIzd(cbed) }}
                 </td>
               </tr>
             </table>
@@ -80,7 +76,6 @@ export default {
             return izd.kol
         }
         if(this.$props.parametrs.type == 'det') {
-          console.log('izd')
           if(izd.det.id == this.$props.parametrs.id) 
             return izd.kol
         }

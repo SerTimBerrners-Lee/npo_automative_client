@@ -12,7 +12,7 @@ export default {
 
     searchTypeInv: [],
     searchPTypeInv: [],
-    searchInventary: []
+    searchInventary: [] 
   },
   getters: {
     getTInventary(state) {
@@ -173,7 +173,14 @@ export default {
       })
       if(res.ok)
         ctx.commit('banInventaryMutation', id)
-    }
+    },
+    async attachFileToInventary(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/inventary/files/${data.inventary_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
   },
   mutations: { 
     pushAllTInventary(state, inventary) {

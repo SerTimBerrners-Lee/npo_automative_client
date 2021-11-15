@@ -172,7 +172,7 @@
             </div>
             </div>
 
-            <div class="btn-control out-btn-control">
+            <div class="btn-control out-btn-control"  v-if='!get_one'>
               <button 
                 class="btn-status btn-black" 
                 style="height: 0px;" 
@@ -183,7 +183,7 @@
             
         </div>
       </div>
-  </div> 
+  </div>  
 </template>
 
 <script>
@@ -194,7 +194,7 @@ import { random } from 'lodash';
 import Search from '@/components/search.vue'
 
 export default {
-  props: ['techProcessID', 'idFile', 'getListDetal', 'listDetal'],
+  props: ['getListDetal', 'listDetal', 'get_one'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',

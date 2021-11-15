@@ -12,7 +12,7 @@ export default {
     },
     getOneSelectProduct(state) {
       return state.select_product
-    }
+    } 
   },
   actions: { 
     async createNewProduct(ctx, data) {
@@ -74,6 +74,14 @@ export default {
       if(res.ok) {
         const result = await res.json()
         ctx.commit('deleteProductById', id)
+        return result
+      }
+    },
+
+    async attachFileToProduct(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/files/${data.product_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
         return result
       }
     },

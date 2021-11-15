@@ -47,9 +47,13 @@
               <option value="СД">Сопутствующие документы (тип СД)</option>
               <option value="DXF">Резка листа (тип DXF)</option>
             </select>
-            <button class="btn-small" @click='addingFileToDetal'>Присвоить к...</button>
-            <button class="btn-small">Редактировать</button>
+            <button class="btn-small " @click='this.showMiniModal = !this.showMiniModal'>
+              Присвоить к...
+            </button>
+            <button class="btn-small" @click='editFile'>Редактировать</button>
           </div>
+          
+          <Assign v-if='showMiniModal && itemFiles' :itemFiles='itemFiles'  @unmount='exitModalAttach' />
           <div class="btn-control">
             <button class="btn-small" v-if='nowType == "banned"' @click='changeBanned'>Вернуть из архива</button>
             <button class="btn-small" v-if='nowType != "banned"' @click='changeBanned'>В архив</button>
@@ -80,18 +84,10 @@
       v-if="showModalOpenFile" 
       @unmount='unmount'
       :key='keyWhenModalGenerateFileOpen' />
-    <BaseDetalModal 
-      v-if='showBFM'
-      :key='generateKeyBFM'
-      :idFile='itemFiles.id'
-      @responsDetal='responsDetal' />
-
     <Loader v-if='loader' />
   </div>
 </template> 
-
 <script>
-
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import { getReversDate, showMessage } from '@/js/';
 import Tables from '@/components/filebase/tables.vue';
@@ -99,7 +95,7 @@ import AddFile from '@/components/filebase/addfile.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { random }  from 'lodash';
 import NodeTable from '@/components/filebase/node-table.vue';
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
+import Assign from '@/components/filebase/assign.vue';
 export default {
   data() {
     return {
@@ -124,9 +120,8 @@ export default {
 
       nodeTableKey: random(10, 999),
 
-      showBFM: false,
-      generateKeyBFM: random (1, 999),
-      loader: false
+      loader: false,
+      showMiniModal: false
     }
   },
   computed: {
@@ -136,14 +131,13 @@ export default {
       'getRoleAssets'
     ]),
   },
-  components: {Tables, AddFile, OpensFile, NodeTable, BaseDetalModal},
+  components: {Tables, AddFile, OpensFile, NodeTable, Assign},
   methods: {
     ...mapActions([
       'fetchFiles', 
       'bannedFiles', 
       'checkedType', 
-      'fetchFileById', 
-      'setDetalForFile'
+      'fetchFileById'
     ]),
     ...mapMutations([
       'searchToFiles', 
@@ -173,11 +167,9 @@ export default {
         })
       }
     },
-    addingFileToDetal() {
-      if(this.itemFiles) {
-        this.generateKeyBFM = random(5, 999)
-        this.showBFM = true
-      }
+    editFile() {
+      if(!this.itemFiles) return showMessage('', 'Для начала выберите файл', 'w', this)
+      this.dbPushFile(this.itemFiles)
     },
     changeTypeF() {
       if(!this.itemFiles)
@@ -277,15 +269,9 @@ export default {
       showMessage('', res.message, res.type, this)
       this.getType('all')
     },
-    responsDetal(detal) {
-      if(!detal || !this.itemFiles.id) return 0 //
-      this.setDetalForFile({id_detal: detal.id, id_document: this.itemFiles.id})
-
-    },
     keySearch(str) {
-      if(this.nowType == 'all') {
+      if(this.nowType == 'all')
         this.searchToFiles(str)
-      }
       if(!this.searchToArr.length ) {
         this.searchToArr = this.arrFileGet
         this.searchFileType = this.nowFileType
@@ -298,6 +284,9 @@ export default {
     },
     keyBanSearch(str) {
       this.searchToBanFiles(str)
+    },
+    exitModalAttach() {
+      this.showMiniModal = false
     }
   },
   async mounted() { 
@@ -330,4 +319,5 @@ export default {
 .btn-control {
   margin-top: 30px;
 }
+
 </style>

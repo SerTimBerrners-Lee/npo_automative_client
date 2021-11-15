@@ -29,7 +29,7 @@
 
 
 <script>
-import Search from '@/components/search.vue'
+import Search from '@/components/search.vue';
 export default {
   props: ['alltypeM', 'type', 'title', 'width'],
   data() {

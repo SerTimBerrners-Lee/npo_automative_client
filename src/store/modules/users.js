@@ -13,7 +13,7 @@ export default {
     getUserBan(state) {
       return state.user_ban
     },
-    getSelectedUser(state) {
+    getSelectedUser(state) { 
       return state.select_user
     }
   }, 
@@ -81,7 +81,14 @@ export default {
         const respons = await res.json()
         return respons
       }
-    }
+    },
+    async attachFileToUser(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/users/files/${data.user_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
   },
   mutations: {
     updateUsers(state, users) { 

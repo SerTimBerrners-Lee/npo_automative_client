@@ -134,7 +134,7 @@
         </div>
         </div>
 
-        <div class="btn-control out-btn-control">
+        <div class="btn-control out-btn-control" v-if='!get_one'>
         <button 
           class="btn-status btn-black" 
           style="height: 0px;" 
@@ -142,7 +142,6 @@
           v-if='cbedList'>
           Добавить выбранное</button>
         </div>
-        
       </div>
     </div>
 </div> 
@@ -150,12 +149,12 @@
 
 <script>
 
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
 import Search from '@/components/search.vue'
 export default {
-  props: ['techProcessID', 'idFile', 'getListCbed', 'listCbed'],
+  props: ['getListCbed', 'listCbed', 'get_one'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -247,7 +246,7 @@ export default {
             kol: 1,
             ez: 1
           });
-        }
+        } 
         return 0
       }
       this.$emit("responsCbed", this.selectedCbed)

@@ -146,6 +146,48 @@
           </tr>
         </table>
       </div>
+
+      <h3 class="link_h3" @click='showInstrument = !showInstrument'>
+        Инструмент и оснатка {{ file.instrument ? file.instrument.length : '' }} </h3>
+      <div class="scroll-table table-fbp" v-if='showInstrument'>
+        <table>
+          <tr class="td-row">
+            <th>Инициалы</th>
+          </tr>
+          <tr v-for='instr in file.instrument' 
+            :key="instr"
+            class="td-row"
+            @click='e => setTr(e.target.parentElement)'
+          >
+            <td>{{ instr.name }}</td>
+          </tr>
+          <tr class="td-row">
+            <td>...</td>
+          </tr>
+        </table>
+      </div>
+
+      <h3 class="link_h3" @click='showInventary = !showInventary'>
+        Техника и Инвентарь  {{ file.inventary ? file.inventary.length : '' }} </h3>
+      <div class="scroll-table table-fbp" v-if='showInventary'>
+        <table>
+          <tr class="td-row">
+            <th>Инициалы</th>
+          </tr>
+          <tr v-for='inv in file.inventary' 
+            :key="inv"
+            class="td-row"
+            @click='e => setTr(e.target.parentElement)'
+          >
+            <td>{{ inv.name }}</td>
+          </tr>
+          <tr class="td-row">
+            <td>...</td>
+          </tr>
+        </table>
+      </div>
+
+
     </div>
     <div class="btn-control">
       <button class="btn-small">
@@ -185,6 +227,8 @@ export default {
       showEQ: false,
       showProvider: false,
       showUsers: false,
+      showInstrument: false,
+      showInventary: false,
 
       selectedDetal: null,
       tr: null,

@@ -4,12 +4,14 @@ export default {
   state: {
     buyer: [],
     buyerFilter: [],
-    onebuyer: {}
+    onebuyer: {},
+
+    searchBuyer: []
   },
   getters: { 
     allBuyer(state) {
       return state.buyer
-    },
+    }, 
     getSetBuyer(state) {
       return state.onebuyer
     }
@@ -46,7 +48,14 @@ export default {
       })
       if(res)
         ctx.dispatch('fetchAllBuyers')
-    }
+    },
+    async attachFileToBuyer(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/buyer/files/${data.buyer_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
   },
   mutations: {
     setAllBuyer(state, result) {
@@ -57,6 +66,16 @@ export default {
     },
     setBuyerState(state, buyer) {
       state.onebuyer = buyer
-    }
+    },
+    searchBuyerMutations(state, tm) {
+      if(!state.searchBuyer.length) 
+        state.searchBuyer = state.buyer
+      state.buyer = state.searchBuyer
+      if(!tm) 
+        return
+          
+      state.buyer = state.buyer
+        .filter(t =>  ((t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()) || ((t.inn.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()))
+    },
   }
 }

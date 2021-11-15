@@ -53,6 +53,14 @@ export default {
       }
     },
 
+    async attachFileToCbed(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/files/${data.cbed_id}/${data.file_id}`)
+      if(res.ok) {
+        const result = await res.json()
+        return result
+      }
+    },
+
     async updateCbed(ctx, data) {
       if(!ctx.getters.getAuth)
         return 0
