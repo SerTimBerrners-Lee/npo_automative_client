@@ -114,7 +114,7 @@ import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import OperationModal from '@/components/sclad/workings-operations.vue';
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
+import ShipmentsModal from '@/components/sclad/shipments-to-ized.vue';
 export default {
 	data() {
 		return{
@@ -181,7 +181,6 @@ export default {
       })
     },
     openOperationPath(assemble) {
-      console.log(assemble)
       this.assemble_props = assemble
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true

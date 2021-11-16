@@ -259,8 +259,8 @@ export default {
               check = true
               if(state.podMaterial[inx] && state.podMaterial[inx].podPodMaterials && state.podMaterial[inx].podPodMaterials.length) 
                 state.podMaterial[inx].podPodMaterials.push(mat)
-              else 
-                state.podMaterial[inx].podPodMaterials = [mat]
+              else if(state.podMaterial[inx])
+                state.podMaterial[inx]['podPodMaterials'] = [mat]
             }
           }
           if(!check) 

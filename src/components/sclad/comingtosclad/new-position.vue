@@ -3,9 +3,7 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3> Выбрать позиции для прихода</h3>
-  <!-- Все материалы -->
-
+        <h3> ДОбавить матриал</h3>
         <div class="scroll-table table_material">
           <table style="width: 200px;">
             <tr>
@@ -60,8 +58,6 @@
           </table>
         </div>
 
-  <!-- Выбранные материалы -->
-
       <div v-if='material_list.length'>
         <table style='width: 90%'>
           <tr>
@@ -79,12 +75,11 @@
             <td v-html='mat.ez'></td>
             <td>{{ mat.kol }}</td>
             <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-                  <p class="checkbox_block_del" @click='delProd(mat)'></p>
-                </td>
+              <p class="checkbox_block_del" @click='delProd(mat)'></p>
+            </td>
           </tr>
         </table>
       </div>
-
 
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
@@ -95,8 +90,7 @@
     <Loader v-if='loader' />
   </div>
 </template>
-
-<script>
+<script scoped>
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 export default {
   props: ['parametrs'],
@@ -114,7 +108,11 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
+  computed: mapGetters([
+    'getOnePodMaterial', 
+    'alltypeM', 
+    'allPodTypeM'
+  ]),
   components: {},
   methods: {
     destroyModalF() {
@@ -122,9 +120,16 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['getAllTypeMaterial', 'getAllPodTypeMaterial', 'fetchGetAllPPM']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial', 'clearCascheMaterial']),
-
+    ...mapActions([
+      'getAllTypeMaterial', 
+      'getAllPodTypeMaterial', 
+      'fetchGetAllPPM'
+    ]),
+		...mapMutations([
+      'getInstansMaterial', 
+      'filterByNameMaterial', 
+      'clearCascheMaterial'
+    ]),
     instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -136,7 +141,6 @@ export default {
 
       this.getInstansMaterial(instans)
       this.instansLet = instans
-
     },
 		clickMat(mat) {
 			this.filterByNameMaterial(mat) 

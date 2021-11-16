@@ -80,16 +80,15 @@
       :key='descriptionKey'
       :parametrs='description'
     />
-
 		<Loader v-if='loader' />
 	</div>
 </template> 
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
-import { dateIncrementHors } from '@/js/';
 import DescriptionModal from '@/components/description-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import {mapActions, mapGetters} from 'vuex';
+import { dateIncrementHors } from '@/js/';
 import {random} from 'lodash';
 export default {
 	data() {

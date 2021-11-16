@@ -8,12 +8,13 @@
         />
         <div>
           <span>Фильтры:</span>
-          <label for='z'>Не учитывать "На склад"</label><input id='z' type="checkbox">
+          <label for='z'>Не учитывать "На склад"</label>
+          <input id='z' type="checkbox">
         </div>
       </div>
     </div>
     <div>
-      <div class="scroll-table" style='width: 99%; height: 600px;'>
+      <div class="scroll-table" style='width: 99%; height: fit-content;'>
       <table>
         <tr>
           <th colspan="10"></th>
@@ -41,10 +42,9 @@
           <th>Статус</th>
           <th>Потребность к отгрузке</th>
           <th>На складе</th>
-          <th>На произв-ве или план. остаток</th>
+          <th>На произв-в или план. остаток</th>
           <th>Всего</th>
           <th>Заводской №</th>
-          <th>Дата отгрузки</th>
           <th>ФИО сборщика</th>
           <th>ФИО контроль</th>
           <th>Документы</th>
@@ -54,7 +54,9 @@
           v-for='ship of getShipments' 
           :key='ship'
         >
-          <td></td>
+          <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+            <p class="checkbox_block" @click='e => setShipments(ship, e.target)'></p>
+          </td>
           <td class='center'> {{ ship.number_order }}</td>
           <td class='center'> {{ ship.date_order }} </td>
           <td class='center'> {{ ship.product.name }} </td>
@@ -64,7 +66,32 @@
               <span class='kol'>{{prod.kol}}</span>
             </p> 
           </td>
-
+          <td class='center'> {{ ship.kol }} </td>
+          <td>{{ ship.date_order }}</td>
+          <td class='center'> {{ incrementDay(undefined, ship.day_when_shipments) }} </td>
+          <td class='center'>{{ ship.base }}</td>
+          <td>{{ ship.buyer.name }}</td>
+          <td class='center'>{{ 0 }}</td>
+          <td class='center'>{{ 0 }}</td>
+          <td class='center'>{{ 0 }}</td>
+          <td>{{ ship.status }}</td>
+          <td class='center'>{{ 0 }}</td>
+          <td class='center'>{{ 0 }}</td>
+          <td class='center'>{{ 0 }}</td>
+          <td class='center'>{{ 0 }}</td>
+          <td class='center'>{{ ship.product.fabricNumber }}</td>
+          <td class='center'>{{  }}</td>
+          <td class='center'>{{  }}</td>
+          <td class='center'>
+            <img src="@/assets/img/link.jpg" @click='openDocuments(ship.documents)' class='link_img' atl='Показать' />
+          </td>
+          <td class='center'>
+            <img 
+              src="@/assets/img/link.jpg" 
+              @click='openDescription(ship.description)' 
+              class='link_img' 
+              atl='Показать' />
+          </td>
         </tr>
       </table>
       </div>
@@ -81,17 +108,29 @@
       v-if='showShipmentModal'
       :key='shipmentKey'
     />
+    <DescriptionModal 
+      v-if='showDescriptionModal'
+      :key='descriptionKey'
+      :parametrs='description'
+    />
+    <OpensFile 
+      :parametrs='itemFiles' 
+      v-if="itemFiles.length" 
+      :key='keyWhenModalGenerateFileOpen'
+      />
     <Loader v-if='loader' />
   </div>
 </template>
 
 <script>
-
 import DescriptionModal from '@/components/description-modal.vue';
 import Shipment from './shippment.vue';
 import {random} from 'lodash';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 import {mapGetters, mapActions} from 'vuex';
+import { dateIncrementHors } from '@/js/';
+import { showMessage } from '@/js/';
 export default {
   data() {
     return {
@@ -100,19 +139,23 @@ export default {
 
       showShipmentModal: false,
       shipmentKey: random(1, 999),
-
+      select_shipments: null,
+      span: null,
       description: '',
-      loader: false
+      loader: false,
+
+      keyWhenModalGenerateFileOpen: random(1, 999),
+      itemFiles: []
     }
   },
-  components: {DatePicterRange, DescriptionModal, Shipment},
+  components: {DatePicterRange, DescriptionModal, Shipment, OpensFile},
   computed: mapGetters(['getShipments']),
   methods: {
     ...mapActions(['fetchAllShipments']),
-    openDescription() {
+    openDescription(description) {
       this.showDescriptionModal = true
       this.descriptionKey = random(1, 999)
-      this.description = 'ghghj'
+      this.description = description
     },
     openShipment() {
       this.showShipmentModal = true;
@@ -126,10 +169,26 @@ export default {
       try {
         const pars = JSON.parse(list_komplect)
         if(!pars) return []
-        console.log(pars)
         return pars
       } catch(e) {console.error(e)}
-    }
+    },
+    incrementDay(date = new Date().toLocaleString('ru-RU').split(',')[0], day) {
+      const dat = dateIncrementHors(date, day*24)
+      return `${dat.iterationHors}`
+    },
+    openDocuments(documents) {
+      if(documents && documents.length) {
+        this.keyWhenModalGenerateFileOpen = random(1, 999)
+        this.itemFiles = documents
+      } else showMessage('', 'Документов нет', 'w', this)
+    },
+    setShipments(shipments, e) {
+      if(this.span) e.classList.remove('checkbox_block_select')
+      this.span = e
+      this.span.classList.add('checkbox_block_select')
+      this.select_shipments = shipments
+      console.log(shipments)
+    },
   },
   async mounted() {
     this.loader = true

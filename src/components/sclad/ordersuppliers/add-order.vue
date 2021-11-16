@@ -51,7 +51,7 @@
                 @click='e => selectDeficitMaterial(material, e.target.parentElement)'
                 :key="material">
                 <td>{{ material.name }}</td>
-                <td v-html='getKolvoMaterial(material.kolvo)'></td>
+                <td class='center' v-html='getKolvoMaterial(material.kolvo)'></td>
                 <td class='center'>{{ material.shipments_kolvo }}</td>
               </tr>
             </table>
@@ -68,7 +68,9 @@
         </div>
 
         <div>
-          <h3>Выбранные позиции</h3>
+          <h3 
+            class='link_h3'
+            @click='newPosition'>Выбранные позиции</h3>
           <div class="table-scroll">
             <table>
               <tr>
@@ -80,7 +82,7 @@
                 <th>Примечание</th>
               </tr>
               <tr 
-                v-for='(material, inx) of material_list'
+                v-for='(material, inx) of material_lists'
                 :key='material'
                 class='td-row'
                 @click='setSelected(material)'>
@@ -88,7 +90,7 @@
                   @keyup="e => editArt(inx, e.target.innerText)"
                   contenteditable="true">{{ material.art }}</td>
                 <td >{{ material.name }}</td>
-                <td v-html='material.ez'></td>
+                <td class='center' v-html='material.ez'></td>
                 <td
                   @keyup="e => editKol(inx, e.target.innerText)"
                   contenteditable="true">{{ material.kol }}</td>
@@ -132,15 +134,20 @@
       :getProvider='true'
       @unmount='unmount_provider'
     />
+    <AddPosition 
+      :key='key_position'
+      v-if='show_position'
+      @unmount='unmount_position'
+    />
   </div>
 </template>
-
 <script>
 import DatePicterCustom from '@/components/date-picter.vue';
 import AddFile from '@/components/filebase/addfile.vue';
 import { random, toNumber } from 'lodash';
 import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
 import { mapActions, mapGetters } from 'vuex';
+import AddPosition from '@/components/sclad/comingtosclad/new-position.vue';
 export default {
   props: ['parametrs', 'order_parametr'],
   data() {
@@ -162,23 +169,36 @@ export default {
       number_check:  '',
       nds: '',
       count: 0,
-      material_list: [],
+      material_lists: [],
       description: '',
 
       selected_material: null,
       span_deff: null,
 
-      select_m: null
+      select_m: null,
+      key_position: random(1, 999),
+      show_position: false
     }
   },
   computed: mapGetters(['getOnePodMaterial']),
-  components: {DatePicterCustom, AddFile, ProviderList},
+  components: {
+    DatePicterCustom, 
+    AddFile, 
+    ProviderList,
+    AddPosition
+  },
   methods: {
     ...mapActions(['fetchGetProviders', 'fetchGetAllDeficitPPM', 'fetchNewDeliveries', 'updateDeliveries']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
+    },
+    unmount_position(material_lists) {
+      console.log(material_lists)
+      // if(material_list && material_list.length) {
+      //   material_list.forEach(e => this.product.push(e))
+      // }
     },
     unmount(e) {
       if(!e) 
@@ -233,10 +253,10 @@ export default {
       if(!this.selected_material)
         return 0
       let material = this.selected_material
-      for(let mat of this.material_list) {
+      for(let mat of this.material_lists) {
         if(material.id == mat.id) return 0
       }
-      this.material_list.push({
+      this.material_lists.push({
         art: '',
         name: material.name,
         ez: this.getKolvoMaterial(material.kolvo),
@@ -247,49 +267,53 @@ export default {
       })
     },
     editArt(inx, val) {
-      this.material_list[inx].art = val
+      this.material_lists[inx].art = val
     },
     editKol(inx, val) {
       let check = toNumber(val)
-      if(!check) return this.material_list[inx].kol = 0
+      if(!check) return this.material_lists[inx].kol = 0
 
-      this.material_list[inx].kol = toNumber(val)
+      this.material_lists[inx].kol = toNumber(val)
     },
     editSum(inx, val) {
-      this.material_list[inx].sum = val
+      this.material_lists[inx].sum = val
       this.changeMainSum()
     },
     editDescription(inx, val) {
-      this.material_list[inx].description = val
+      this.material_lists[inx].description = val
     },
     changeMainSum() {
       this.count = 0
-      if(this.material_list.length) {
-        this.material_list.forEach(s => 
+      if(this.material_lists.length) {
+        this.material_lists.forEach(s => 
           this.count = Number(this.count) + (Number(s.sum) * Number(s.kol))
         )
       }
     },
+    newPosition() {
+      this.key_position = random(1, 999)
+      this.show_position = true
+    },
     clear() {
-      this.material_list = []
+      this.material_lists = []
       this.count = 0
     },
     clearToSelect() {
       if(!this.select_m) return 0
-      this.material_list = this.material_list.filter(e => e.id != this.select_m.id)
+      this.material_lists = this.material_lists.filter(e => e.id != this.select_m.id)
     },
     setSelected(material) {
       this.select_m = material
     },
     save() {
-      if(!this.provider || !this.material_list.length)
+      if(!this.provider || !this.material_lists.length)
         return 
 
       this.formData.append('provider_id', this.provider.id)
       this.formData.append('number_check', this.number_check)
       this.formData.append('nds', this.nds)
       this.formData.append('count', this.count)
-      this.formData.append('material_list', JSON.stringify(this.material_list))
+      this.formData.append('material_lists', JSON.stringify(this.material_lists))
       this.formData.append('date_shipments', this.date_shipments)
       this.formData.append('description', this.description)
 
@@ -319,7 +343,7 @@ export default {
       this.description = order.description
       if(order.product) {
         try {
-          this.material_list = JSON.parse(order.product)
+          this.material_lists = JSON.parse(order.product)
         } catch (e) {
           console.log(e)
         }
