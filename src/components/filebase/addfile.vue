@@ -5,7 +5,9 @@
       <div :style="hiddens">
         <h3>Добавление документов всего: {{ parametrs.length }} шт</h3>
         <div class="block scroll-table">
-          <div v-for="(file, index) of arrItemsFile" :key="file">
+          <div 
+            v-for="(file, index) of arrItemsFile" 
+            :key="file">
             <h4>Файл {{index + 1}}</h4>
             <div class='main_info'>
               <div class="fb-img-block">
@@ -21,7 +23,7 @@
                     <input 
                       type="text" 
                       :placeholder='file.name' 
-                      :class='returnZnachName(file.name) ? "succsess_border" : "del_border"' >
+                      :class='returnZnachName(file.name) && !file.newVersion ? "succsess_border" : "del_border"' >
                     <span class='tooltiptext' v-if='returnNamesExist(file.name).length'>
                       <strong>Список похожих файлов: </strong>
                       <span v-for='(name, inx) of returnNamesExist(file.name)' :key='name'>{{ inx + 1 + ' . ' + name }}</span>  
@@ -29,7 +31,7 @@
                   </div>
                   <span>Тип:</span>
                   <select class="select-small" @change='e=>fileRead(e.target.value, "TypeDocument", index)'>
-                    <option value="Изменить тип">Изменить тип</option>
+                    <option value="Изменить тип" disabled>Изменить тип</option>
                     <option value="МД">Медиа (тип МД)</option>
                     <option value="КД">Конструкторская документация (тип КД)</option>
                     <option value="ЧЖ">Чертижи (тип ЧЖ)</option>
@@ -37,16 +39,23 @@
                     <option value="DXF">Резка листа (тип DXF)</option>
                   </select>
                 </div>
-                <p>
+                <div>
                   <span>Переименовать: </span>
                   <input 
                     type="text" 
                     :value='file.name.slice(0, file.name.length - 1 - file.name.split(".")[file.name.split(".").length - 1].length)' 
-
                     @change='e=>fileRead(e.target.value, "NameDocument" , index)'>
-                </p>
+                    <p v-if='!returnZnachName(file.name)'>
+                      <label for='newVersion' class='newVersion_label'>Новая версия</label>
+                      <input 
+                        type="checkbox" 
+                        id='newVersion' 
+                        :value='file.newVersion'
+                        @click='e=>fileRead(!file.newVersion, "newVersion", index)'>
+                    </p>
+                </div>
                 <p>
-                  <span>Версия: </span><input type="text" placeholder="000001" @change='e=>fileRead(e.target.value, "VersionDocument", index)'>
+                  <span>Версия: </span><input type="text" disabled placeholder="1" @change='e=>fileRead(e.target.value, "VersionDocument", index)'>
                 </p>
                 <p class="right-menu-p">
                   <span>Примечание: </span><input type="text" placeholder="Описание файла" @change='e=>fileRead(e.target.value, "DescriptionDocument", index)'>
@@ -104,7 +113,8 @@ export default {
           version: doc.VersionDocument,
           description: doc.DescriptionDocument,
           name: doc.NameDocument,
-          nameInstans: ''
+          nameInstans: '',
+          newVersion: doc.newVersion
         })
       }
       formData.append('docs', JSON.stringify(dataArr))
@@ -141,7 +151,7 @@ export default {
         if(name.name == file_name) arr_names.push(name.name)
       }
       return arr_names
-    }
+    },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -159,18 +169,20 @@ export default {
       photoPreloadUrl(doc, (res) => {
         if (res.type == 'img') {
           arr[index].TypeDocument = ''
-          arr[index].VersionDocument = ''
+          arr[index].VersionDocument = 1
           arr[index].DescriptionDocument = ''
           arr[index].url = res.url 
           arr[index].NameDocument = ''
+          arr[index].newVersion = false
           arr[index].typefile = res.type
           this.arrItemsFile.push(...[arr[index]])
         } else { 
           arr[index].TypeDocument = ''
-          arr[index].VersionDocument = ''
+          arr[index].VersionDocument = 1
           arr[index].DescriptionDocument = ''
           arr[index].NameDocument = ''
           arr[index].typename = res.typename
+          arr[index].newVersion = false
           arr[index].typefile = res.type
           this.arrItemsFile.push(...[arr[index]])
         }
@@ -182,6 +194,13 @@ export default {
 </script>
 
 <style scoped>
+.newVersion_label {
+  color: rgb(49, 201, 36);
+  margin: 0px;
+  font-size: 12px;
+  user-select: none;
+  cursor: pointer;
+}
 .main_info {
   display: flex;
   align-items: center;

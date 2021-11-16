@@ -25,6 +25,7 @@ import AddFile from '@/components/filebase/addfile.vue';
 import { random }  from 'lodash';
 export default {
   props: ['typeGetFile', 'is_one'],
+  emits: ["unmount"],
   data() {
     return {
       docFiles: [],
