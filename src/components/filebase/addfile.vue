@@ -31,7 +31,7 @@
                   </div>
                   <span>Тип:</span>
                   <select class="select-small" @change='e=>fileRead(e.target.value, "TypeDocument", index)'>
-                    <option value="Изменить тип" disabled>Изменить тип</option>
+                    <option value="" >Изменить тип</option>
                     <option value="МД">Медиа (тип МД)</option>
                     <option value="КД">Конструкторская документация (тип КД)</option>
                     <option value="ЧЖ">Чертижи (тип ЧЖ)</option>

@@ -10,21 +10,21 @@
 		</div>
 
 		<div>
-			<div class="scroll-table table_material">
+			<div class="scroll-table table_material" style='height: 500px;'>
 				<table style="width: 200px;">
 					<tr>
 						<th>Категория</th>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(0, e.target.parentElement)'>
+					<tr class='td-row' @click='e => getAllDeficit(e.target.parentElement)'>
 						<td>Все</td>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(1, e.target.parentElement)'>
+					<tr class='td-row' @click='e => getOnlyMaterialDeficit(e.target.parentElement)'>
 						<td>Материалы </td>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
+					<tr class='td-row' @click='e => getOnlyInstrumentDeficit(e.target.parentElement)'>
 						<td>Инструмент</td>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
+					<tr class='td-row'>
 						<td>Склад Отходов</td>
 					</tr>
 				</table>
@@ -52,7 +52,7 @@
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
-				<table>
+				<table style='margin-left: 20px;'>
 					<tr>
 						<th>Наименование</th>
 						<th>ЕИ</th>
@@ -73,8 +73,8 @@
 					</tr>
 					<tr v-for='material of getOnePodMaterial' :key='material'>
 						<td 
-							@click='e => setMaterial(material, e.target)'
-							class='td-row'> {{ material.name }}</td>
+								@click='e => setMaterial(material, e.target)'
+								class='td-row'> {{ material.name }}</td>
 							<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
 							</td>
 							<td class='center'>
@@ -108,7 +108,7 @@
 								{{ 0 }}
 							</td>
 							<td class='center tooltip'>
-								{{ material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
+								{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
 								<div class="tooltiptext" v-if='material.deliveries.length'>
 									<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
 								</div>
@@ -121,6 +121,61 @@
 							</td>
 							<td class='center'>
 								{{ material.deliveries.length ? "Заказано" : 'Не заказано'}}
+							</td>
+					</tr>
+					<tr 
+						v-for='instrument of allPPTInstrument'
+						:key='instrument'
+					>
+							<td 
+								class='td-row'> {{ instrument.name }}</td>
+							<td class='span_td' >
+								шт
+							</td>
+							<td class='center'>
+								{{ instrument.instrument_kolvo }}
+							</td>
+							<td class='center'>
+								{{ instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ instrument.shipments_kolvo }}
+							</td>	
+							<td class='center'>
+								{{ instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ -instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ 0 }}
+							</td>
+							<td class='center'>
+								{{ instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ 0 }}
+							</td>
+							<td class='center tooltip'>
+								{{ instrument.deliveries && instrument.deliveries.length ? instrument.deliveries[0].date_shipments : '' }}
+								<div class="tooltiptext" v-if='instrument.deliveries && instrument.deliveries.length'>
+									<span v-for='dev of instrument.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+								</div>
+							</td>
+							<td class='center'>
+								{{ returnOstatokWays(instrument) - instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ instrument.shipments_kolvo }}
+							</td>
+							<td class='center'>
+								{{ instrument.deliveries && instrument.deliveries.length ? "Заказано" : 'Не заказано'}}
 							</td>
 					</tr>
 				</table>
@@ -145,13 +200,20 @@ export default {
 		}
 	},
 	components: {DatePicterRange},
-	computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
+	computed: mapGetters([
+		'alltypeM', 
+		'allPodTypeM', 
+		'getOnePodMaterial', 
+		'allPPTInstrument'
+	]),
 	methods: {
 		...mapActions(['getAllTypeMaterial',
       'bannedPPM', 
       'fetchGetOnePPM', 
       'getAllPodTypeMaterial',
-      'fetchPPMNoLight'
+      'fetchPPMNoLight',
+			'fetchGetAllDeficitInsrument',
+			'getAllNameInstrument'
 		]),
     ...mapMutations(['filterByNameMaterialById', 'filterMatByPodType',
       'addOnePPTyep', 
@@ -160,7 +222,8 @@ export default {
       'searchTypeMutation', 
       'searchPTypeMutation', 
       'searchMaterialMutation', 
-      'clearCascheMaterial'
+      'clearCascheMaterial',
+			'clearCascheInstrument'
 		]),
 		instansMaterial(instans, span) {
       if(this.span) 
@@ -178,13 +241,14 @@ export default {
 				this.material = null;
 				return this.span_material = null
 			}
+
+			console.log(material)
 			if(this.span_material)
 				this.span_material.classList.remove('td-row-all')
 			this.span_material = span
 			this.span_material.classList.add('td-row-all')
 
 			this.material = material
-			console.log(material)
 		},
 		returnOstatokWays(material) {
 			if(!material.deliveries) return '-'
@@ -198,9 +262,7 @@ export default {
 						if(product.id == material.id)
 							count = count + Number(product.kol)
 					}
-				} catch(e) {
-					console.log(e)
-				}
+				} catch(e) {	console.error(e) 	}
 			}
 			return count
 		},
@@ -218,6 +280,7 @@ export default {
         this.filterByNameMaterialById(mat) 
     },
 		getKolvoMaterial(kol) {
+			if(!kol) return '<span style="height: 100%;">-</span>'
 			try {
 				let pars_json = JSON.parse(kol)
 				let str = ''
@@ -226,14 +289,34 @@ export default {
 				if(pars_json.c3) str = str + '<span> кг </span>'
 				if(pars_json.c4) str = str + '<span> м </span>'
 				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str
-			} catch (e) {
-				console.log(e)
-			}
+				return str ? str : '<span class="center"> - </span>'
+			} catch (e) { console.error(e) }
 		},
 		changeDatePicterRange(val) {
       console.log(val)
-    }
+    },
+		getAllDeficit() {
+			this.clearAllState()
+
+			this.getOnlyMaterialDeficit()
+			this.getAllNameInstrument()
+		},
+		getOnlyMaterialDeficit() {
+			this.clearAllState()
+
+			this.getAllTypeMaterial()
+			this.getAllPodTypeMaterial()
+			this.fetchPPMNoLight()
+		},
+		getOnlyInstrumentDeficit() {
+			this.clearAllState()
+
+			this.getAllNameInstrument()
+		},
+		clearAllState() {
+			this.clearCascheMaterial()
+			this.clearCascheInstrument()
+		}
 	},
 	async mounted() { 
 		this.loader = true
@@ -242,7 +325,8 @@ export default {
     await this.getAllTypeMaterial()
     await this.getAllPodTypeMaterial()
     await this.fetchPPMNoLight()
-		console.log(this.getOnePodMaterial)
+		// await this.fetchGetAllDeficitInsrument()
+		await this.getAllNameInstrument()
     this.loader = false
 	}
 }
@@ -258,6 +342,9 @@ table {
 .span_td {
 	display:  flex;
 	flex-direction: column;
+}
+.span_td>span {
+	text-align: center;
 }
 .tooltiptext {
 	display: flex;

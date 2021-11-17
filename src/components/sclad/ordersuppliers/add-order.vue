@@ -51,7 +51,12 @@
                 @click='e => selectDeficitMaterial(material, e.target.parentElement)'
                 :key="material">
                 <td>{{ material.name }}</td>
-                <td class='center' v-html='getKolvoMaterial(material.kolvo)'></td>
+                <td class='center tooltip'>
+                  <div class="tooltiptext" style='display:flex; flex-direction: column;'>
+                    <span v-for='kol of getKolvoMaterialForeach(material.kolvo, material.ez_kolvo)' :key='kol'>Дефицит в {{kol[0]+':'+kol[1]}}</span>
+                  </div>
+                  <span v-html='getKolvoMaterial(material.kolvo)' style='margin: 20px;'></span>
+                </td>
                 <td class='center'>{{ material.shipments_kolvo }}</td>
               </tr>
             </table>
@@ -90,7 +95,25 @@
                   @keyup="e => editArt(inx, e.target.innerText)"
                   contenteditable="true">{{ material.art }}</td>
                 <td >{{ material.name }}</td>
-                <td class='center' v-html='material.ez'></td>
+                <td class='center'>
+                  <select 
+                    class='select-small' 
+                    v-if='!Number(material.ez)'
+                    @change='e => changeValuesEz(inx, e.target)'>
+                    <option :value='1' v-if='Object.values(material.ez)[0]'>шт</option>
+                    <option :value='2' v-if='Object.values(material.ez)[1]'>л</option>
+                    <option :value='3' v-if='Object.values(material.ez)[2]'>кг</option>
+                    <option :value='4' v-if='Object.values(material.ez)[3]'>м</option>
+                    <option :value='5' v-if='Object.values(material.ez)[4]'>м.куб</option>
+                  </select>
+                  <p v-else>
+                    <span :value='1' v-if='material.ez == 1'>шт</span>
+                    <span :value='2' v-if='material.ez == 2'>л</span>
+                    <span :value='3' v-if='material.ez == 3'>кг</span>
+                    <span :value='4' v-if='material.ez == 4'>м</span>
+                    <span :value='5' v-if='material.ez == 5'>м.куб</span>
+                  </p>
+                </td>
                 <td
                   @keyup="e => editKol(inx, e.target.innerText)"
                   contenteditable="true">{{ material.kol }}</td>
@@ -188,7 +211,12 @@ export default {
     AddPosition
   },
   methods: {
-    ...mapActions(['fetchGetProviders', 'fetchGetAllDeficitPPM', 'fetchNewDeliveries', 'updateDeliveries']),
+    ...mapActions([
+      'fetchGetProviders', 
+      'fetchGetAllDeficitPPM', 
+      'fetchNewDeliveries', 
+      'updateDeliveries'
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -228,6 +256,7 @@ export default {
       })
     },
     selectDeficitMaterial(mat, span) {
+      console.log(mat)
       this.selected_material = mat
       if(this.span_deff)
         this.span_deff.classList.remove('td-row-all')
@@ -237,7 +266,8 @@ export default {
     },
     getKolvoMaterial(kol) {
 			try {
-				let pars_json = JSON.parse(kol)
+				const pars_json = JSON.parse(kol)
+        if(!pars_json) return ''
 				let str = ''
 				if(pars_json.c1) str = '<span> шт </span>'
 				if(pars_json.c2) str = str + '<span> л </span>'
@@ -245,10 +275,22 @@ export default {
 				if(pars_json.c4) str = str + '<span> м </span>'
 				if(pars_json.c5) str = str + '<span> м.куб </span>'
 				return str
-			} catch (e) {
-				console.log(e)
-			}
+			} catch (e) {console.error(e)}
 		},
+    getKolvoMaterialForeach(kol, ez_kolvo) {
+      try {
+				const pars_json = JSON.parse(kol)
+        const ez_kol = JSON.parse(ez_kolvo)
+        if(!pars_json || !ez_kol) return []
+				let arr = []
+				if(pars_json.c1 && ez_kol.c1_kolvo) arr.push(['шт', ez_kol.c1_kolvo.material_kolvo - ez_kol.c1_kolvo.shipments_kolvo])
+				if(pars_json.c2 && ez_kol.c2_kolvo) arr.push(['л', ez_kol.c2_kolvo.material_kolvo -  ez_kol.c2_kolvo.shipments_kolvo]) 
+				if(pars_json.c3 && ez_kol.c3_kolvo) arr.push(['кг', ez_kol.c3_kolvo.material_kolvo -  ez_kol.c3_kolvo.shipments_kolvo]) 
+				if(pars_json.c4 && ez_kol.c4_kolvo) arr.push(['м', ez_kol.c4_kolvo.material_kolvo -  ez_kol.c4_kolvo.shipments_kolvo]) 
+				if(pars_json.c5 && ez_kol.c5_kolvo) arr.push(['м.куб', ez_kol.c5_kolvo.material_kolvo -  ez_kol.c5_kolvo.shipments_kolvo]) 
+				return arr
+			} catch (e) { console.error(e) }
+    },
     pushMaterial() {
       if(!this.selected_material)
         return 0
@@ -256,15 +298,17 @@ export default {
       for(let mat of this.material_lists) {
         if(material.id == mat.id) return 0
       }
-      this.material_lists.push({
-        art: '',
-        name: material.name,
-        ez: this.getKolvoMaterial(material.kolvo),
-        kol: material.shipments_kolvo,
-        sum: 0,
-        description: '',
-        id: material.id
-      })
+      try {
+        this.material_lists.push({
+          art: '',
+          name: material.name,
+          ez: material.kolvo ? JSON.parse(material.kolvo) : 1,
+          kol: material.shipments_kolvo,
+          sum: 0,
+          description: '',
+          id: material.id
+        })
+      } catch(e) {console.error(e)}
     },
     editArt(inx, val) {
       this.material_lists[inx].art = val
@@ -309,6 +353,28 @@ export default {
       if(!this.provider || !this.material_lists.length)
         return 
 
+      for(let mat in this.material_lists) {
+        if(!Number(this.material_lists[mat].ez)) {
+          //Возвращать первое удачное значение 
+          const material = this.getOneMaterialById(this.material_lists[mat].id)
+          if(!material) continue
+          try {
+            if(!material.ez_kolvo) continue;
+            const pars_kolvo = JSON.parse(material.kolvo)
+            if(!pars_kolvo) continue;
+            let counter = 1
+            for(let ezz in pars_kolvo) {
+              if(pars_kolvo[ezz]) {
+                this.material_lists[mat].ez = counter
+                break;
+              }
+              counter++
+            }
+          } catch(e) {console.error(e)}
+        }
+      }
+      if(this.material_lists) return false
+
       this.formData.append('provider_id', this.provider.id)
       this.formData.append('number_check', this.number_check)
       this.formData.append('nds', this.nds)
@@ -341,18 +407,30 @@ export default {
       this.nds = order.nds
       this.count = order.count
       this.description = order.description
-      if(order.product) {
-        try {
-          this.material_lists = JSON.parse(order.product)
-        } catch (e) {
-          console.log(e)
-        }
-      }
+      if(order.product)
+        try { this.material_lists = JSON.parse(order.product) } catch (e) { console.error(e) }
 
       if(order.documents && order.documents.length) 
         this.name_check = order.documents[0].name
       
       this.date_shipments = order.date_shipments
+    },
+    changeValuesEz(inx, e) {
+      let ez_position =  Number(e.value)
+      this.material_lists[inx].ez = ez_position
+
+      const material = this.getOneMaterialById(this.material_lists[inx].id)
+      if(!material)return false
+      try {
+        const pars = JSON.parse(material.ez_kolvo)
+        if(!pars) return 
+        this.material_lists[inx].def = Object.values(pars)[ez_position--].shipments_kolvo
+      }catch(e) {console.error(e)}
+    },
+    getOneMaterialById(id) {
+      let find_material = this.getOnePodMaterial.filter(met => met.id == id)
+      if(!find_material && !find_material.length) return false
+      return find_material[0]
     }
   },
   async mounted() {

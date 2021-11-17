@@ -183,8 +183,55 @@ export default {
         return result
       }
     },
+    async fetchGetAllDeficitInsrument(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/instrumentdeficit`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('sortInstrumentToParent', result)
+        return result
+      }
+    },
   },
   mutations: { 
+    sortInstrumentToParent(state, result) {
+      console.log(result)
+      // state.podMaterial = result
+      // for(let mat of result) {
+      //   let check = false
+      //   if(mat.material) {
+      //     for(let inx in state.typeM) {
+      //       if(state.typeM[inx].id == mat.material.id) {
+      //         check = true
+      //         state.typeM[inx].podPodMaterials.push(mat)
+      //       }
+      //     }
+      //     if(!check) 
+      //       state.typeM.push({ ...mat.material, podPodMaterials: [mat]})        
+      //       else check = false 
+      //     if(!state.typeM.length)
+      //       state.typeM.push({ ...mat.material, podPodMaterials: [mat]})
+      //   }
+
+      //   check = false
+      //   if(mat.podMaterial) {
+      //     for(let inx in state.podTypeM) {
+      //       if(state.podTypeM[inx].id == mat.podMaterial.id) {
+      //         check = true
+      //         if(state.podMaterial[inx] && state.podMaterial[inx].podPodMaterials && state.podMaterial[inx].podPodMaterials.length) 
+      //           state.podMaterial[inx].podPodMaterials.push(mat)
+      //         else if(state.podMaterial[inx])
+      //           state.podMaterial[inx]['podPodMaterials'] = [mat]
+      //       }
+      //     }
+      //     if(!check) 
+      //       state.podTypeM.push({ ...mat.podMaterial, podPodMaterials: [mat]})        
+      //       else check = false 
+      //     if(!state.podTypeM.length)
+      //       state.podTypeM.push({ ...mat.podMaterial, podPodMaterials: [mat]})
+      //   } 
+      // }
+
+    },
     pushAllNameInstrument(state, data) {
       state.PPTInstrument = data.filter(el => !el.ban)
     },
@@ -324,7 +371,10 @@ export default {
 
       state.PPTInstrument = state.PPTInstrument
         .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
-
     },
+    clearCascheInstrument(state) {
+      state.PPTInstrument = [] 
+      console.log('sdfdsf')
+    }
   }
 }

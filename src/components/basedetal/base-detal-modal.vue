@@ -152,14 +152,14 @@
                       class='select-small' 
                       @change='e => selecter(e.target, det)' 
                       v-model='det.ez'>
-                      <option value='1' v-if="det.ez == 1 || det.ez"> шт</option> 
-                      <option value='2' v-if="det.ez == 2 || det.ez"> л </option>
-                      <option value='3' v-if="det.ez == 3 || det.ez"> кг</option> 
-                      <option value='4' v-if="det.ez == 4 || det.ez"> м </option>
-                      <option value='5' v-if="det.ez == 5 || det.ez"> м.куб</option> 
+                        <option value='1' v-if="det.ez == 1 || det.ez"> шт</option> 
+                        <option value='2' v-if="det.ez == 2 || det.ez"> л </option>
+                        <option value='3' v-if="det.ez == 3 || det.ez"> кг</option> 
+                        <option value='4' v-if="det.ez == 4 || det.ez"> м </option>
+                        <option value='5' v-if="det.ez == 5 || det.ez"> м.куб</option> 
                     </select>   
                   </td>
-                  <td class='td_kolvo' >
+                  <td class='td_kolvo'>
                     <input class='inputs-small' 
                       type='text' 
                       :value='det.kol'

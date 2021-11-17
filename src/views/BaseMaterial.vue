@@ -106,6 +106,7 @@ export default {
       this.instansLet = instans
     },
     clickMat(mat, type) {
+      console.log(mat)
       if(type == 'type') {
         this.material = mat
         this.filterByNameMaterial(mat) 

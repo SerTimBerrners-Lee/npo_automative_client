@@ -366,7 +366,7 @@ export default {
       state.podMaterial = mat.podPodMaterials
     },
     filterByNameMaterialById(state, mat) {
-      if(!mat.podPodMaterials.length) return []
+      if(!mat.podPodMaterials && !mat.podPodMaterials.length) return []
       if(!state.searchMaterial.length)
         state.searchMaterial = state.podMaterial
       let new_arr = state.searchMaterial.map(e => {

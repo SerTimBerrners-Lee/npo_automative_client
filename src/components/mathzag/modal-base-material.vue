@@ -51,14 +51,24 @@
                   :value='mat.art'>
               </td>
               <td>{{ mat.mat.name }}</td>
-              <td v-if='!matLightList'>
-                <select class='select-small' @change='e => selecter(e.target, mat)' v-model='mat.ez'>
-                  <option value='1' v-if="mat.ez == 1"> шт</option> 
-                  <option value='2' v-if="mat.ez == 2"> л </option>
-                  <option value='3' v-if="mat.ez == 3"> кг</option> 
-                  <option value='4' v-if="mat.ez == 4"> м </option>
-                  <option value='5' v-if="mat.ez == 5"> м.куб</option> 
-                </select>       
+              <td v-if='!matLightList' class='center'>
+                <select 
+                  class='select-small'
+                  @change='e => selecter(e.target, mat)'
+                  v-if='mat.ez && !Number(mat.ez)'>
+                  <option :value='1' v-if='mat.ez.c1'>шт</option>
+                  <option :value='2' v-if='mat.ez.c2'>л</option>
+                  <option :value='3' v-if='mat.ez.c3'>кг</option>
+                  <option :value='4' v-if='mat.ez.c4'>м</option>
+                  <option :value='5' v-if='mat.ez.c5'>м.куб</option>
+                </select>   
+                <p v-else>
+                  <span :value='1' v-if='mat.ez == 1'>шт</span>
+                  <span :value='2' v-if='mat.ez == 2'>л</span>
+                  <span :value='3' v-if='mat.ez == 3'>кг</span>
+                  <span :value='4' v-if='mat.ez == 4'>м</span>
+                  <span :value='5' v-if='mat.ez == 5'>м.куб</span>
+                </p>
               </td>
               <td class='td_kolvo' v-if='!matLightList'>
                 <input 
@@ -177,13 +187,36 @@ export default {
             add = false
         }
       }
+      let kolvo = []
+      let check = 0 // если ЕИ только одна
+      let inx_end_ez;
+      if(this.podPodMaterial.kolvo) {
+        try {
+          let pars = JSON.parse(this.podPodMaterial.kolvo)
+          if(kolvo) {
+            kolvo = {
+              c1: pars.c1,
+              c2: pars.c2,
+              c3: pars.c3,
+              c4: pars.c4,
+              c5: pars.c5
+            }
+            for(let kol in Object.values(kolvo)) {
+              if(Object.values(kolvo)[kol]) {
+                inx_end_ez = kol
+                check++
+              }
+            }
+          }
+        } catch(e) {console.error(e)}
+      }
       if(add) {
         this.materialListId.push(this.podPodMaterial.id)
         this.materialList.push({ 
           art: '',
           mat: this.podPodMaterial,
           kol: 1,
-          ez: null
+          ez: check <=1 ? inx_end_ez : kolvo
         });
       }
     },
@@ -192,6 +225,18 @@ export default {
       this.materialListId = this.materialListId.filter(mat => mat != id)
     },
     addMaterials() {
+      for(let mat in this.materialList) {
+        if(!Number(this.materialList[mat].ez)) {
+          let count = 1
+          for(let obj in this.materialList[mat].ez) {
+            if(this.materialList[mat].ez[obj]) {
+              this.materialList[mat].ez = count
+              break
+            }
+            count++
+          } 
+        }
+      } 
       this.destroyModalF()
       this.$emit('unmount_material', {
         materialListId: this.materialListId,
