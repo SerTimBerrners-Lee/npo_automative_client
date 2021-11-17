@@ -2,7 +2,6 @@
   <div>
     <h3>Перемещение склад / производство / офис</h3>
     <div> 
-      <h1>Перемещение склад</h1>
       <div class="block header_block">
         <DatePicterRange 
           @unmount='changeDatePicterRange'  
@@ -14,14 +13,13 @@
       <div class="scroll-table" style='width: 99%;'>
         <table>
           <tr>
-            <th>№ Заказа</th>
-            <th>Дата создания</th>
-            <th>Наименование поставщика</th>
-            <th>№ счета и Дата</th>
-            <th>Сумма, руб.</th>
-            <th>Дата прихода</th>
-            <th>Статус</th>
-            <th>Подробнее</th>
+            <th><unicon name="check" fill="royalblue" /></th>
+            <th>№ Перемещения</th>
+            <th>Дата перемещения</th>
+            <th>отправитель</th>
+            <th>Получатель</th>
+            <th>Примечание</th>
+            <th>Подробности</th>
           </tr>
           <tr 
             class='td-row' 
@@ -71,70 +69,46 @@
         <button 
           class="btn-small" 
           @click='editOrder'
-          > Редактировать заказ </button>
-        <button class="btn-small btn-add" @click='addOrder'> Создать заказ </button>
+          > Печать</button>
+        <button class="btn-small btn-add" @click='newMoving'> Создать перемещение </button>
       </div>
     </div>
+    <AddMovind
+      v-if='showAddMoving'
+      :key='keyAddMovind'
+    />
   </div>
 </template>
-
 <script>
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import AddMovind from './add-moving-modal.vue';
 export default {
 	data() {
 		return {
-      showAddOrder: false,
-      AddOrderKey: random(1, 999),
-
       detals_order: [],
       span: null,
       order: null,
-      order_parametr: null
+      order_parametr: null,
+
+      showAddMoving: false,
+      keyAddMovind: random(1, 999)
 		}
 	},
   computed: mapGetters(['getAllDeliveries']),
-	components: {DatePicterRange},
+	components: {DatePicterRange, AddMovind},
 	methods: {
-    ...mapActions(['fetchGetDeliveries']),
-    unmount_order() {
-      this.fetchGetDeliveries()
-      this.order_parametr = null
-    },
-    addOrder() {
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
-    },
-    getDetals(order) {
-      if(order.product) {
-        try {
-          let prod = JSON.parse(order.product)
-          this.detals_order = prod
-        } catch (e) {
-          console.log(e)
-        }
-      }
-    },
-    selectOrder(order, span) {
-      this.order = order
-      if(this.span)
-        this.span.classList.remove('td-row-all')
-      this.span = span
-      this.span.classList.add('td-row-all')
-    },
-    editOrder() {
-      if(!this.order) return 0
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
-      this.order_parametr = this.order
+    ...mapActions(['']),
+    newMoving() {
+      this.showAddMoving = true
+      this.keyAddMovind = random(1, 999)
     },
     changeDatePicterRange(val) {
       console.log(val)
     }
 	},
 	async mounted() {
-    this.fetchGetDeliveries()
 	}
 }
 </script>

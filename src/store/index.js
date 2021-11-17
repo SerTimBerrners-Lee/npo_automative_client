@@ -22,7 +22,8 @@ import assemble from './modules/assemble';
 import metaloworking from './modules/metaloworking';
 import settings from './modules/settings';
 import library from './modules/library';
-import inventary from './modules/inventary'
+import inventary from './modules/inventary';
+import moving from './modules/moving';
 
 export default createStore({
   modules: {
@@ -49,7 +50,8 @@ export default createStore({
     metaloworking,
     settings,
     library,
-    inventary
+    inventary,
+    moving
   }
 })
   
