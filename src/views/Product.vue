@@ -6,7 +6,12 @@
         <div class="scroll-table" >
           <table class="table-base-detal">
             <tr>
-              <th colspan="3" scope="col">Изделие</th>
+              <th colspan="3" scope="col">Изделие
+                <span class='exclamation tooltip' @click='sortToAttention'>
+                  <unicon name="exclamation" fill="red" />
+                  <span class='tooltiptext'>Соритировать по отметке</span>
+                </span> 
+              </th>
             </tr>
             <tr>
               <th>Заводской номер</th>
@@ -28,7 +33,7 @@
               >
               <td>{{ product.fabricNumber }}</td>
               <td>{{ product.articl }}</td>
-              <td>{{ product.name }}</td>
+              <td>{{ product.name }}<span class='exclamation_item' v-if='product.attention'>!</span></td>
             </tr>
             <tr>
               <td></td>
@@ -134,7 +139,11 @@ export default {
   components: {Search, OpensFile, MediaSlider},
   methods: {
     ...mapActions(['getAllProduct', 'fetchDeleteProduct']),
-    ...mapMutations(['setOneProduct', 'searchProduct']),
+    ...mapMutations([
+      'setOneProduct', 
+      'searchProduct', 
+      'filterToAttentionProduct'
+    ]),
     setProduct(product, e) {
       this.selecteProduct = product
       if(this.tr) 
@@ -143,6 +152,9 @@ export default {
 
       this.tr = e
       this.tr.classList.add('td-row-all')
+    },
+    sortToAttention() {
+      this.filterToAttentionProduct()
     },
     editProduct() {
       if(!this.selecteProduct)
@@ -156,7 +168,6 @@ export default {
     createCopy() {
       if(!this.selecteProduct)
         return 0
-
       this.$router.push({path: '/product/edit/true'})
     },
     keySearch(v) {
@@ -165,7 +176,6 @@ export default {
     deleteProduct() {
       if(!this.selecteProduct)
         return 0
-
       this.fetchDeleteProduct(this.selecteProduct.id)
     },
     setDocs(dc) {

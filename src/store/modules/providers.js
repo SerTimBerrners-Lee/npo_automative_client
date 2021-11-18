@@ -6,6 +6,8 @@ export default {
     onTimeProvider: [],
     oneProvider: {},
 
+    tmp_attention: [],
+
     searchProvider: [],
 
     deliveries: [],
@@ -250,5 +252,14 @@ export default {
       state.providers = state.providers
         .filter(t =>  ((t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()) || ((t.inn.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()))
     },
+    filterToAttentionProvider(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.providers
+      else {
+        state.providers = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.providers = state.providers.filter(detal => detal.attention)
+    }
   }
 }

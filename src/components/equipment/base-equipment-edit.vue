@@ -201,6 +201,18 @@ export default {
     'getRoleAssets']),
   components: {TableMaterial, AddFile, OpensFile, ListProvider, BaseTools},
   methods: {
+    ...mapActions([
+      'fetchAllEquipmentType', 
+      'getAllEdizm', 
+      'updateEquipment', 
+      'removeFileEquipment',
+      'getAllUsers', 
+      'creqteEquipment']),
+    ...mapMutations([
+      'filterAllPTEquipment', 
+      'filterAllEquipmentById', 
+      'delitPathNavigate'
+    ]),
     saveEquipment() {
       if(this.$route.params.copy == 'false' && !this.obj.id)
         return 0
@@ -258,16 +270,16 @@ export default {
       this.keyWhenModalListProvider = random(10, 38e9)
     },
     setDocs(dc) {
-        this.itemFiles = dc
+      this.itemFiles = dc
     },
     openDock() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+      if(isEmpty(this.itemFiles))
+          return 0
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 38e9)
     },
     openFile(res) {
-        console.log(res)
+      console.log(res)
     },
     checkedUpdate() {
       if(isEmpty(this.equipment)) 
@@ -288,6 +300,7 @@ export default {
       this.obj.description = this.equipment.description
       this.documents = this.equipment.documents
       this.providers = this.equipment.providers
+      this.attention = this.equipment.attention
       this.providers.forEach(provider => {
         this.providersId.push({id: provider.id})
       })
@@ -296,14 +309,6 @@ export default {
         this.obj.responsible = this.equipment.user.id
       }
     },
-    ...mapActions([
-      'fetchAllEquipmentType', 
-      'getAllEdizm', 
-      'updateEquipment', 
-      'removeFileEquipment',
-      'getAllUsers', 
-      'creqteEquipment']),
-    ...mapMutations(['filterAllPTEquipment', 'filterAllEquipmentById', 'delitPathNavigate']),
     clickEquipment(eq) {
       this.equipmentT = eq
       this.filterAllPTEquipment(eq)

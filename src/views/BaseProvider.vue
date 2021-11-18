@@ -3,7 +3,11 @@
     <div class="flex-box-main">
       <div class="left-block-bprovider">
         <h3>База поставщиков</h3>
-        <TableProvider :allProvider='allProvider' @unmount='setProvider'/>
+        <TableProvider 
+          :allProvider='allProvider' 
+          @unmount='setProvider'
+          :attention='true'
+          @unmount_attention='unmount_attention'/>
         <div class="btn-control">
           <button class="btn-small btn-add" @click="$router.push({path: '/baseprovider/addedit/add'})">Создать</button>
           <button class="btn-small" @click="editProvider">Редактировать</button>
@@ -14,6 +18,7 @@
           <TableMaterial 
             :return='"true"'
             @unmount='unmount_table_material'
+            
           />
         </div>
         <div class="btn-control">
@@ -215,9 +220,13 @@ export default {
       'clearFilterProviders',
       'setProviderState',
       'clearCascheMaterial',
+      'filterToAttentionProvider'
     ]),
     unmount_table_material(providers) {
       this.filterByMaterial(providers)
+    },
+    unmount_attention() {
+      this.filterToAttentionProvider()
     },
     setProvider(provider) { 
       if(!provider)

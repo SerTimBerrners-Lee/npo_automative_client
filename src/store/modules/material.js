@@ -6,6 +6,8 @@ export default {
     instansTypeM: [],
     podTypeM: [],
     instansPodTypeM: [],
+
+    tmp_attention: [],
     
     podMaterial: [],
     onePPT: {},
@@ -417,6 +419,15 @@ export default {
       state.instansPodTypeM = []
       state.podMaterial = []
       state.onePPT = {}
+    },
+    filterToAttentionMat(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.podMaterial
+      else {
+        state.podMaterial = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.podMaterial = state.podMaterial.filter(detal => detal.attention)
     }
   }
 }

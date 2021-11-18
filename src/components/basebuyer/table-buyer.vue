@@ -3,7 +3,14 @@
 		<table class="provider_table"> 
 			<tr> 
 				<th>ИНН</th>
-				<th style="width: 440px;">Наименование покупателя</th>
+				<th style="width: 440px;">Наименование покупателя
+					<span 
+            class='exclamation tooltip' v-if='attention' 
+            @click='$emit("unmount_attention")'>
+            <unicon name="exclamation" fill="red" />
+            <span class='tooltiptext'>Соритировать по отметке</span>
+          </span> 
+				</th>
 			</tr>
 			<tr>
 				<td colspan='2'>
@@ -11,14 +18,14 @@
 						:placeholder='`Поиск по ${allBuyer.length} наименованиям`'
 						@unmount='keySearch' 
 					/>
-				</td>
+				</td> 
 			</tr>
 			<tr v-for="buyer in allBuyer" 
 				:key="buyer" 
 				class="td-row"
 				@click="e => setBuyer(buyer, e.target.parentElement)">
 				<td>{{ buyer.inn }}</td>
-				<td>{{ buyer.name }}</td>
+				<td>{{ buyer.name }}<span class='exclamation_item' v-if='buyer.attention'>!</span></td>
 			</tr>
 			<tr>
 				<td>...</td><td>...</td>
@@ -31,7 +38,7 @@
 import Search from '@/components/search.vue';
 import {mapMutations} from 'vuex';
 export default {
-	props: ['allBuyer'],
+	props: ['allBuyer', 'attention'],
 	data() {
 		return {
 			span_buyer: null

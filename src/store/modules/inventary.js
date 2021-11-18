@@ -7,6 +7,8 @@ export default {
     inventary: [],
     nameInventary: {},
 
+    tmp_attention: [],
+
     instansInventaryPT: [],
     instansInventary: [],
 
@@ -283,6 +285,15 @@ export default {
       if(state.instansInventary.length == 0)
         state.instansInventary = state.inventary
       state.inventary = inventary.filter(inv => !inv.ban)
+    },
+    filterToAttentionInventary(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.inventary
+      else {
+        state.inventary = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.inventary = state.inventary.filter(detal => detal.attention)
     }
   }
 }

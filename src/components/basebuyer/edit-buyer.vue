@@ -211,6 +211,7 @@ export default {
       this.obj.inn = buyer.inn
       this.obj.cpp = buyer.cpp
       this.obj.description = buyer.description
+      this.attention = buyer.attention
       this.id = buyer.id
       if(buyer.contacts) 
         this.obj.contact = JSON.parse(buyer.contacts)

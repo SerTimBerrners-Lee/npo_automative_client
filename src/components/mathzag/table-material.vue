@@ -2,7 +2,15 @@
   <div class="cont scroll-table scrolls-type-490">
     <table class="type-table">
       <tr>
-        <th :class="width ? width : 'width-350'">{{ title }}</th>
+        <th :class="width ? width : 'width-350'">
+          {{ title }}
+          <span 
+            class='exclamation tooltip' v-if='attention' 
+            @click='$emit("unmount_attention")'>
+            <unicon name="exclamation" fill="red" />
+            <span class='tooltiptext'>Соритировать по отметке</span>
+          </span> 
+          </th>
       </tr>
       <tr>
         <td> 
@@ -18,7 +26,7 @@
         :key='mat' 
         @click='e =>  {active(e.target); $emit("clickMat", mat, type);}'
         @dblclick='e =>  {active(e.target); $emit("dbClickMat", mat, type);}'>
-        <td>{{ mat.name }}</td>
+        <td>{{ mat.name }}<span class='exclamation_item' v-if='mat.attention'>!</span></td>
       </tr>
       <tr class="td-row">
         <td>...</td>
@@ -31,7 +39,7 @@
 <script>
 import Search from '@/components/search.vue';
 export default {
-  props: ['alltypeM', 'type', 'title', 'width'],
+  props: ['alltypeM', 'type', 'title', 'width', 'attention'],
   data() {
     return {
       element: null

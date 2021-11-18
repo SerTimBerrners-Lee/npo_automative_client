@@ -22,6 +22,8 @@
         <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
           :alltypeM="allPPTInstrument" 
           :type="'PPT'" 
+          :attention='true'
+          @unmount_attention='unmount_attention'
           @search='serhName'
           @clickMat="clickPPTInstrument"/>
     </div>
@@ -87,7 +89,6 @@ import OpensFile from '@/components/filebase/openfile.vue'
 import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash'
 import MediaSlider from '@/components/filebase/media-slider.vue';
-
 export default {
   data() {
     return {
@@ -109,12 +110,17 @@ export default {
       'fetchOneNameInstrument', 'banNameInstrument',
       'getPTInstrumentList', 'getAllNameInstrument']),
     ...mapMutations([
-        'filterAllpInstrument', 
-        'getInstansTools', 
-        'throwInstansInstruments',
-        'searchTypeInst',
-        'searchPTInst',
-        'searchNameInst']),
+      'filterAllpInstrument', 
+      'getInstansTools', 
+      'throwInstansInstruments',
+      'searchTypeInst',
+      'searchPTInst',
+      'searchNameInst', 
+      'filterToAttentionTools'
+    ]),
+    unmount_attention() {
+      this.filterToAttentionTools()
+    },
     clickTInstrument(instrument) {
       this.TInstrument = instrument
       this.filterAllpInstrument(instrument)

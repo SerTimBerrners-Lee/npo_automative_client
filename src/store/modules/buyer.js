@@ -6,7 +6,8 @@ export default {
     buyerFilter: [],
     onebuyer: {},
 
-    searchBuyer: []
+    searchBuyer: [],
+    tmp_attention: [],
   },
   getters: { 
     allBuyer(state) {
@@ -77,5 +78,14 @@ export default {
       state.buyer = state.buyer
         .filter(t =>  ((t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()) || ((t.inn.slice(0, tm.length).toLowerCase()) == tm.toLowerCase()))
     },
+    filterToAttentionBuyer(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.buyer
+      else {
+        state.buyer = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.buyer = state.buyer.filter(detal => detal.attention)
+    }
   }
 }

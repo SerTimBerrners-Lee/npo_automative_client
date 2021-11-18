@@ -3,7 +3,14 @@
 		<table class="provider_table"> 
 			<tr> 
 				<th>ИНН</th>
-				<th style="width: 440px;">Наименование поставщика</th>
+				<th style="width: 440px;">Наименование поставщика
+					<span 
+            class='exclamation tooltip' v-if='attention' 
+            @click='$emit("unmount_attention")'>
+            <unicon name="exclamation" fill="red" />
+            <span class='tooltiptext'>Соритировать по отметке</span>
+          </span> 
+				</th>
 			</tr>
 			<tr>
 				<td colspan='2'>
@@ -19,7 +26,7 @@
 				class="td-row"
 				@click="e=> setProvider(provider, e.target.parentElement)">
 				<td>{{ provider.inn }}</td>
-				<td>{{ provider.name }}</td>
+				<td>{{ provider.name }}<span class='exclamation_item' v-if='provider.attention'>!</span></td>
 			</tr>
 			<tr>
 				<td>...</td><td>...</td>
@@ -32,7 +39,7 @@
 import Search from '@/components/search.vue';
 import {mapMutations} from 'vuex';
 export default {
-	props: ['allProvider'],
+	props: ['allProvider', 'attention'],
 	data() {
 		return {
 			span_provider: null

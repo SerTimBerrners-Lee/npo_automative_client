@@ -4,7 +4,7 @@
       <h3>{{ $route.params.type == 'create' ? 'Создать': 'Редактировать' || 'Создать с копированием'}} материал</h3>
       <div class="block">
         <div>
-          <span class='span-title'>Наименование: </span><input type="text" class='btn-change-type' v-model.trim='obj.name'>
+          <span class='span-title'>Наименование: </span><input type="text" v-model.trim='obj.name'>
           <span class='span-title'>Материал: </span>
           <span v-if='getLinkId == 0'>Все типы</span>
           <span v-if='getLinkId == 1'>Материалы для деталей</span>
@@ -19,7 +19,7 @@
           </p>
         </div>
       </div>
-      <h3>Выбор типа и подипа <span v-if='$route.params.type == "edit"' @click='changeTypeForEdit'>Изменить тип и подтип</span></h3> 
+      <h3>Выбор типа и подипа <span v-if='$route.params.type == "edit"' class='btn-change-type'  @click='changeTypeForEdit'>Изменить тип и подтип</span></h3> 
       <div class='main-content-block'>
         <div class="left-block">
           <div>
@@ -478,6 +478,7 @@ export default {
       this.filterPodMaterialById(this.getOnePPT.podMaterialId)
       this.podMaterial = this.getOnePPT.podMaterial
       this.material = this.getOnePPT.material
+      this.attention = this.getOnePPT.attention
 
       this.obj.description = this.getOnePPT.description
       this.obj.name = this.getOnePPT.name

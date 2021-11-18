@@ -8,6 +8,7 @@ export default {
     select_detal: {},
     operationNewList: localStorage.getItem('newOperationItem') ?
       JSON.parse(localStorage.getItem('newOperationItem')) : [],
+    tmp_attention: []
   },
   getters: {
     allDetal(state) {
@@ -276,6 +277,15 @@ export default {
           e.kolvo_for_detal = 0 
         return e 
       })
+    },
+    filterToAttention(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.detal
+      else {
+        state.detal = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.detal = state.detal.filter(detal => detal.attention)
     }
   }
 }

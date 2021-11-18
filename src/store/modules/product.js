@@ -5,6 +5,8 @@ export default {
     product: [],
     filterProduct: [],
     select_product: {},
+
+    tmp_attention: []
   },
   getters: {
     allProduct(state) {
@@ -110,5 +112,14 @@ export default {
         prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase()
       )
     },
+    filterToAttentionProduct(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.product
+      else {
+        state.product = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.product = state.product.filter(detal => detal.attention)
+    }
   }
 }

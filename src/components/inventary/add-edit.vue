@@ -229,6 +229,7 @@ export default {
       this.inventaryT = inv.parent_type
       this.inventaryPT = inv.parent_pt
       this.obj.id = inv.id
+      this.attention = inv.attention
 
       this.filterByTypeInventary(this.inventaryT.id)
       this.filterByPTypeInventary(this.inventaryPT.id)
@@ -314,7 +315,9 @@ export default {
     await this.fetchAllInventary()
     await this.fetchAllPInventary()
 
-    if(this.$route.params.edit && this.$route.params.edit == 'copy' && this.$route.params.edit == 'edit') {
+    if(this.$route.params.edit 
+        && (this.$route.params.edit == 'copy' 
+        || this.$route.params.edit == 'edit')) {
       if(isEmpty(this.getOneInventary))
         return this.exit()
       this.updateVariable()

@@ -80,7 +80,12 @@
         <div class="scroll-table" >
           <table class="table-base-detal">
             <tr>
-              <th colspan="3" scope="col">Деталь (Тип Д)</th>
+              <th colspan="3" scope="col">Деталь (Тип Д) 
+                <span class='exclamation tooltip' @click='sortToAttention'>
+                  <unicon name="exclamation" fill="red" />
+                  <span class='tooltiptext'>Соритировать по отметке</span>
+                </span> 
+              </th>
             </tr>
             <tr>
               <th>Артикул</th>
@@ -103,7 +108,8 @@
               @dblclick="infoDetal"
               >
               <td>{{ detal.articl }}</td>
-              <td>{{ detal.name }}</td>
+              <td>{{ detal.name }}
+                <span class='exclamation_item' v-if='detal.attention'>!</span></td>
               <td class='center'>{{ detal.kolvo_for_detal ? detal.kolvo_for_detal : '' }}</td>
             </tr>
             <tr>
@@ -170,7 +176,8 @@ export default {
       'searchCbed',
       'searchProduct',
       'getAllDetalByProduct',
-      'clearFilterDetalByProduct']),
+      'clearFilterDetalByProduct', 
+      'filterToAttention']),
     setDetals(detal, e) {
       this.selectedDetal = detal
         if(this.tr) 
@@ -179,6 +186,9 @@ export default {
       this.tr = e
       this.tr.classList.add('td-row-all')
       this.addOneSelectDetal(this.selectedDetal)
+    },
+    sortToAttention() {
+      this.filterToAttention()
     },
     infoDetal() {
       if(!this.selectedDetal) return false

@@ -9,7 +9,7 @@
               <tr>
                 <th colspan="3" scope="col">Изделие</th>
               </tr>
-              <tr>
+              <tr> 
                 <th>Заводской номер</th>
                 <th>Артикул</th>
                 <th>Наименование</th>
@@ -41,7 +41,12 @@
           <div class="scroll-table" >
             <table class="table-base-detal">
               <tr>
-                <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
+                <th colspan="3" scope="col">Сборочная единица (Тип СБ)
+                  <span class='exclamation tooltip' @click='sortToAttention'>
+                    <unicon name="exclamation" fill="red" />
+                    <span class='tooltiptext'>Соритировать по отметке</span>
+                  </span> 
+                </th>
               </tr>
               <tr>
                 <th>Артикул</th>
@@ -61,7 +66,7 @@
                   class='td-row'
                   @click='e => setCbed(cb, e.target.parentElement)'>
                   <td>{{ cb.articl }}</td>
-                  <td>{{ cb.name }}</td>
+                  <td>{{ cb.name }} <span class='exclamation_item' v-if='cb.attention'>!</span></td>
                   <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
               </tr>
               <tr>
@@ -173,7 +178,9 @@ export default {
       'searchProduct', 
       'setOneProduct', 
       'getAllCbEdByProduct',
-      'clearFilterCbedByProduct']),
+      'clearFilterCbedByProduct', 
+      'filterToAttentionCbed'
+    ]),
     setCbed(cbEd, e) {
       this.selectedCbEd = cbEd
         if(this.tr_cb) 
@@ -182,6 +189,9 @@ export default {
       this.tr_cb = e
       this.tr_cb.classList.add('td-row-all')
       this.setOneCbed(this.selectedCbEd)
+    },
+    sortToAttention() {
+      this.filterToAttentionCbed()
     },
     setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
@@ -203,7 +213,6 @@ export default {
     editCbEd() {
       if(!this.selectedCbEd)
         return 0
-
       this.$router.push({path: '/cbed/edit/false'})
     },
     create() {

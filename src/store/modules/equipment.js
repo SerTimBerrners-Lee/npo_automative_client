@@ -7,6 +7,7 @@ export default {
     equipments: [],   
     equipment: {},
 
+    tmp_attention: [],
 
     searchTypeEq: [],
     searchPTypeEq: [],
@@ -260,6 +261,15 @@ export default {
 
       state.equipments = state.equipments
         .filter(t =>  (t.name.slice(0, eq.length).toLowerCase()) == eq.toLowerCase())
+    },
+    filterToAttentionEq(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.equipments
+      else {
+        state.equipments = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.equipments = state.equipments.filter(detal => detal.attention)
     }
   }
 }

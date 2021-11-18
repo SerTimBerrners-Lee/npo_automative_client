@@ -355,6 +355,7 @@ export default {
       this.obj.name = provider.name
       this.obj.inn = provider.inn
       this.obj.cpp = provider.cpp
+      this.attention = provider.attention
       this.obj.description = provider.description
       if(provider.contacts) 
         this.obj.contact = JSON.parse(provider.contacts)

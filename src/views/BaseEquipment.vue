@@ -16,6 +16,8 @@
       <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
         :alltypeM="allEquipment" 
         :type="'PPT'" 
+        :attention='true'
+        @unmount_attention='unmount_attention'
         @search='serhEq'
         @clickMat="clickEquipment"/>
     </div>
@@ -81,42 +83,51 @@ import OpensFile from '@/components/filebase/openfile.vue'
 import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-
 export default { 
   data() {
     return {
-        equipmentT: null,
-        equipmentPT: null,
-        itemFiles: null,
-        showFile: false,
-        showProviders: false,
-        keyProvidersModal: random(1, 34342),
-        keyWhenModalGenerateFileOpen: random(1, 23123)
+      equipmentT: null,
+      equipmentPT: null,
+      itemFiles: null,
+      showFile: false,
+      showProviders: false,
+      keyProvidersModal: random(1, 999),
+      keyWhenModalGenerateFileOpen: random(1, 999)
     }
   },
-  computed: mapGetters(['allEquipmentType', 'allEquipmentPType', 'allEquipment', 'equipment']),
+  computed: mapGetters([
+    'allEquipmentType', 
+    'allEquipmentPType', 
+    'allEquipment', 
+    'equipment'
+  ]),
   components: {TableMaterial, OpensFile, ShowProvider, MediaSlider},
   methods: {
     ...mapActions([
-        'fetchAllEquipmentType',
-        'getOneEquipmentPType',
-        'fetchOneEquipment',
-        'banEquipment',
-        'getAllEquipmentPType',
-        'fetchAllEquipment'
-           ]),
+      'fetchAllEquipmentType',
+      'getOneEquipmentPType',
+      'fetchOneEquipment',
+      'banEquipment',
+      'getAllEquipmentPType',
+      'fetchAllEquipment'
+    ]),
     ...mapMutations([
-        'filterAllPTEquipment',
-        'searchTypeEq',
-        'searchPTypeEq',
-        'searchEq',]),
+      'filterAllPTEquipment',
+      'searchTypeEq',
+      'searchPTypeEq',
+      'searchEq',
+      'filterToAttentionEq'
+    ]),
+    unmount_attention() {
+      this.filterToAttentionEq()
+    },
     clickEquipmentType(equipment) {
-        this.equipmentT = equipment
-        this.filterAllPTEquipment(this.equipmentT)
+      this.equipmentT = equipment
+      this.filterAllPTEquipment(this.equipmentT)
     },
     clickEquipmentPType(equipmentPT) {
-        this.equipmentPT = equipmentPT
-        this.getOneEquipmentPType(equipmentPT.id)
+      this.equipmentPT = equipmentPT
+      this.getOneEquipmentPType(equipmentPT.id)
     },
     clickEquipment(eq) {
       this.fetchOneEquipment(eq.id)
@@ -138,13 +149,13 @@ export default {
       this.banEquipment(this.equipment.id)
     }, 
     setDocs(dc) {
-        this.itemFiles = dc
+      this.itemFiles = dc
     },
     openDock() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 384e4)
+      if(isEmpty(this.itemFiles))
+        return 0
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 384e4)
     },
     openFile(res) {
       console.log(res)
@@ -179,20 +190,20 @@ export default {
   font-size: 13px;
   color: #009fff;
 }
-  .main_content {
-    width: 1600px;
-    display: flex;
-    flex-direction: row;
-  }
-  .body_table {
-    width: 1150px;
-    display: flex;
-    flex-direction: column;
-  }
-  .right_info_block {
-    width: 450px;
-  }
-  .btn-control-eq-w {
-    width: 1100px;
-  }
+.main_content {
+  width: 1600px;
+  display: flex;
+  flex-direction: row;
+}
+.body_table {
+  width: 1150px;
+  display: flex;
+  flex-direction: column;
+}
+.right_info_block {
+  width: 450px;
+}
+.btn-control-eq-w {
+  width: 1100px;
+}
 </style>

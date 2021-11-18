@@ -6,7 +6,9 @@ export default {
     middleware_state: [],
     filterCbed: [],
     select_cbed: {},
-  },
+
+    tmp_attention: []
+  }, 
   getters: {
     allCbed(state) {
       return state.cbed
@@ -173,6 +175,15 @@ export default {
           e.kolvo_for_product = 0 
         return e 
       })
+    },
+    filterToAttentionCbed(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.cbed
+      else {
+        state.cbed = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.cbed = state.cbed.filter(detal => detal.attention)
     }
   }
 }

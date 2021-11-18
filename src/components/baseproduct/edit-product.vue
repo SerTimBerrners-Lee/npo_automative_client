@@ -586,6 +586,7 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     updateForEdit() {
+      this.attention = this.getOneSelectProduct.attention
       this.obj.name = this.getOneSelectProduct.name
       this.obj.articl = this.getOneSelectProduct.articl
       this.obj.responsible = this.getOneSelectProduct.user ? this.getOneSelectProduct.user.id :  null

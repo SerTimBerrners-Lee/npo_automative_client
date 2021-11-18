@@ -7,6 +7,8 @@ export default {
     PPTInstrument: [],
     nameInstrument: {},
 
+    tmp_attention: [],
+
     instansTInstrument: [], 
     instansPTInstrument: [],
     linkId: 0,
@@ -375,6 +377,15 @@ export default {
     clearCascheInstrument(state) {
       state.PPTInstrument = [] 
       console.log('sdfdsf')
+    },
+    filterToAttentionTools(state) {
+      if(state.tmp_attention.length == 0)
+        state.tmp_attention = state.PPTInstrument
+      else {
+        state.PPTInstrument = state.tmp_attention 
+        return state.tmp_attention  = []
+      }
+      state.PPTInstrument = state.PPTInstrument.filter(detal => detal.attention)
     }
   }
 }

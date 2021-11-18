@@ -641,6 +641,7 @@ export default {
     this.obj.DxL = this.getOneSelectDetal.DxL
     this.obj.massZag = this.getOneSelectDetal.massZag
     this.obj.trash = this.getOneSelectDetal.trash
+    this.attention = this.getOneSelectDetal.attention
     this.obj.haracteriatic = JSON.parse(this.getOneSelectDetal.haracteriatic)
     this.obj.responsible = this.getOneSelectDetal.user ? 
       this.getOneSelectDetal.user.id : null

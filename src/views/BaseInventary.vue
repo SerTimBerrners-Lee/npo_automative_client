@@ -18,6 +18,8 @@
         <TableMaterial :title='" Наименование"' 
           :alltypeM="getInventary" 
           :type="'PPT'" 
+          :attention='true'
+          @unmount_attention='unmount_attention'
           @search='search'
           @clickMat="clickInventary"/>
     </div>
@@ -126,8 +128,12 @@ export default {
       'searchPTInventary',
       'searchInventary',
       'filterNameMaterialByPT',
-      'resetFilterInventary'
+      'resetFilterInventary',
+      'filterToAttentionInventary'
     ]), 
+    unmount_attention() {
+      this.filterToAttentionInventary()
+    },
     search(val) {
       this.searchInventary(val)
     },

@@ -280,6 +280,7 @@ export default {
       this.obj.description = this.getOneNameInstrument.description
       this.documents = this.getOneNameInstrument.documents
       this.providers = this.getOneNameInstrument.providers
+      this.attention = this.getOneNameInstrument.attention
       this.providers.forEach(provider => {
         this.providersId.push({id: provider.id})
       })

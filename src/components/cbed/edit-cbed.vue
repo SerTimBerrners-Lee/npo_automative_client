@@ -581,6 +581,7 @@ export default {
       this.delitPathNavigate(this.$route.path)
     },
     updateForEdit() {
+      this.attention = this.getOneSelectCbEd.attention
       this.obj.name = this.getOneSelectCbEd.name
       this.obj.articl = this.getOneSelectCbEd.articl
       this.obj.responsible = this.getOneSelectCbEd.user ? this.getOneSelectCbEd.user.id :  null

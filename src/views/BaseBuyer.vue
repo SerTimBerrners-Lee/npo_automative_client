@@ -3,7 +3,12 @@
     <div class="flex-box-main">
       <div class="left-block-bprovider">
         <h3>База Покупателей</h3>
-        <TableBuyer :allBuyer='allBuyer' @unmount='setBuyer' />
+        <TableBuyer 
+          :allBuyer='allBuyer' 
+          @unmount='setBuyer'
+          :attention='true'
+          @unmount_attention='unmount_attention'
+         />
         <div class="btn-control">
           <button class="btn-small btn-add" @click="create">Создать</button>
           <button class="btn-small" @click="edit">Редактировать</button>
@@ -165,7 +170,10 @@ export default {
       'fetchBuyerBan', 
       'getAllProduct'
     ]),
-    ...mapMutations(['setBuyerState']),
+    ...mapMutations([
+      'setBuyerState', 
+      'filterToAttentionBuyer'
+    ]),
     setBuyer(buyer) {
       this.setBuyerState(buyer)
       this.buyer = buyer
@@ -181,6 +189,9 @@ export default {
       
       if(buyer.documents) 
         this.obj.documents = buyer.documents
+    },
+    unmount_attention() {
+      this.filterToAttentionBuyer()
     },
     clickDoc(files) {
       if(files) { 

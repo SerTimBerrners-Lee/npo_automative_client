@@ -27,6 +27,8 @@
               :alltypeM='getOnePodMaterial' 
               :title='"Наименование (Марка / типоразмер)"' 
               :type='"podPM"' 
+              :attention='true'
+              @unmount_attention='unmount_attention'
               @search='searchM' 
               @clickMat='clickMat' />
           </div>
@@ -92,7 +94,9 @@ export default {
       'searchTypeMutation', 
       'searchPTypeMutation', 
       'searchMaterialMutation', 
-      'clearCascheMaterial']),
+      'clearCascheMaterial', 
+      'filterToAttentionMat', 
+    ]),
     instansMaterial(instans, span) {
       if(!this.span)
         this.span = (this.$refs.all)
@@ -104,6 +108,9 @@ export default {
 
       this.getInstansMaterial(instans)
       this.instansLet = instans
+    },
+    unmount_attention() {
+      this.filterToAttentionMat()
     },
     clickMat(mat, type) {
       console.log(mat)
