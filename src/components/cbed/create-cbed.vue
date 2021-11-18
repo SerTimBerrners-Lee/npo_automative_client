@@ -13,6 +13,12 @@
                 :key='user' 
                 :value='user.id'>{{ user.login }}</option>
             </select> 
+          <label class='label' for='attention'>Выделить</label>
+          <input 
+            type="checkbox" 
+            id='attention' 
+            v-model='attention'
+          >
         </p>
       </div>
 
@@ -287,6 +293,7 @@ export default {
         ],
           
       },
+      attention: false,
       docFiles: [],
       formData: null,
       modalMaterialKey: random(10, 999),
@@ -397,6 +404,7 @@ export default {
       this.formData.append('description', this.obj.description)
       this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      this.formData.append('attention', this.attention)
 
       if(this.listDetal.length)
         this.formData.append('listDetal', JSON.stringify(this.listDetal))
@@ -569,13 +577,13 @@ export default {
 .title_block p * {
   margin-left: 5px;
 }
-.title_block input{
+.title_block input[type='text']{
   width: 190px;
 }
 .title_block  {
-    height: 47px;
-    display: flex;
-    align-items: center;
+  height: 47px;
+  display: flex;
+  align-items: center;
 }
 .content_left_block {
   width: 100%;

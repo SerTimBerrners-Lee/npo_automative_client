@@ -5,6 +5,12 @@
       <div class="block block_name">
         <p class="name_p">
           <span> Наименование: </span><input type="text" v-model.trim="obj.name">
+          <label class='label' style='margin:3px;' for='attention'>Выделить</label>
+          <input 
+            style='width: 10px;'
+            type="checkbox" 
+            id='attention' 
+            v-model='attention'>
         </p>
         <p class="name_p">
           <span> Ответственный: </span>
@@ -179,6 +185,7 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+      attention: false
     }
   },
   updated() {
@@ -217,6 +224,7 @@ export default {
       this.formData.append('description', this.obj.description)
       this.formData.append('providers', this.providersId)
       this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
+      this.formData.append('attention', this.attention)
       if(this.$route.params.copy == 'false') {
         this.formData.append('id', this.obj.id)
         this.updateEquipment(this.formData) 

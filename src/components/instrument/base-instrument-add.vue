@@ -4,7 +4,14 @@
       <h3> Создать инструмент или оснастку </h3>
       <div class="block block_name">
         <p class="name_p">
-          <span> Наименование (Марка/типоразмер): </span><input type="text" v-model.trim="obj.name">
+          <span> Наименование (Марка/типоразмер): </span>
+          <input type="text" v-model.trim="obj.name">
+          <label class='label' style='margin:3px;' for='attention'>Выделить</label>
+          <input 
+            style='width: 10px;'
+            type="checkbox" 
+            id='attention' 
+            v-model='attention'>
         </p>
       </div>
     </div>
@@ -135,6 +142,7 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+      attention: false
     }
   },
   computed: mapGetters([
@@ -156,7 +164,7 @@ export default {
       'searchTypeInst',
       'searchPTInst',
       'delitPathNavigate',
-    ]),
+    ]), 
     addProvider() {
       this.showProvider = true
       this.keyWhenModalListProvider = random(10, 384^5)
@@ -190,6 +198,7 @@ export default {
       this.formData.append('description', this.obj.description)
       this.formData.append('parentId', this.PTInstrument.id)
       this.formData.append('providers', this.providersId)
+      this.formData.append('attention', this.attention)
       this.addNameInstrument(this.formData)
       
       this.exit()
@@ -255,7 +264,7 @@ export default {
 .name_p * {
   margin-left: 5px;
 }
-.name_p input {
+.name_p input[type='text']{
   width: 370px;
 }
 .block_name {

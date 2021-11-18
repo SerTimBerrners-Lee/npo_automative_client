@@ -3,14 +3,21 @@
     <div class="content-left">
       <h3>{{ $route.params.type == 'create' ? 'Создать': 'Редактировать' || 'Создать с копированием'}} материал</h3>
       <div class="block">
-        <p>
-          <span class='span-title'>Наименование: </span><input type="text" v-model.trim='obj.name'>
+        <div>
+          <span class='span-title'>Наименование: </span><input type="text" class='btn-change-type' v-model.trim='obj.name'>
           <span class='span-title'>Материал: </span>
           <span v-if='getLinkId == 0'>Все типы</span>
           <span v-if='getLinkId == 1'>Материалы для деталей</span>
           <span v-if='getLinkId == 2'>Покупные детали </span>
           <span v-if='getLinkId == 3'>Расходные материалы</span>
-        </p>
+          <p>
+            <label class='label' for='attention'>Выделить</label>
+            <input 
+              type="checkbox" 
+              id='attention' 
+              v-model='attention'>
+          </p>
+        </div>
       </div>
       <h3>Выбор типа и подипа <span v-if='$route.params.type == "edit"' @click='changeTypeForEdit'>Изменить тип и подтип</span></h3> 
       <div class='main-content-block'>
@@ -243,6 +250,7 @@ export default {
         density_select: 10,
         density_input: '',
         rootParentId: null,
+        attention: false,
         kolvo_select: {
           c1: false,
           c2: false,
@@ -384,6 +392,7 @@ export default {
       this.formData.append('kolvo', kolvo)
       this.formData.append('providers', this.providersId) 
       this.formData.append('description', dat.description)
+      this.formData.append('attention', this.attention)
       if(this.arrFileGet.length) {
         let new_array = []
         for(let inx in this.arrFileGet) {
@@ -538,10 +547,14 @@ export default {
 .block {
   width: 1100px;
 }
-.block>p * {
+.block>div * {
   margin-left: 10px;
 }
-.block input {
+.block>div {
+  display: flex;
+  align-items: center;
+}
+.block input[type='text'] {
   width: 400px;
 }
 .left-block, .right-block {
@@ -567,7 +580,7 @@ table {
   display: flex;
   justify-content: center;
 }
-.btn-block  button {
+.btn-block button {
   margin: 5px;
 }
 .span-title {

@@ -8,6 +8,12 @@
       <input type="text" v-model="obj.inn">
       <span>КПП:</span>
       <input type="text" v-model="obj.cpp">
+      <label class='label' style='margin:3px;' for='attention'>Выделить</label>
+      <input 
+        style='width: 10px;'
+        type="checkbox" 
+        id='attention' 
+        v-model='attention'>
     </div> 
     <div class="main_content">
       <div class="left_content">
@@ -127,6 +133,7 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
+      attention: false,
 
       id: null
       }
@@ -176,6 +183,7 @@ export default {
       this.formData.append('inn', this.obj.inn)
       this.formData.append('cpp', this.obj.cpp)
       this.formData.append('description', this.obj.description)
+      this.formData.append('attention', this.attention)
 
       this.formData.append('id', this.id)
 

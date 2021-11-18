@@ -4,7 +4,14 @@
       <h3> Создать оборудование </h3>
       <div class="block block_name">
         <p class="name_p">
-          <span> Наименование: </span><input type="text" v-model.trim="obj.name">
+          <span> Наименование: </span>
+          <input type="text" v-model.trim="obj.name">
+          <label class='label' style='margin:3px;' for='attention'>Выделить</label>
+          <input 
+            style='width: 10px;'
+            type="checkbox" 
+            id='attention' 
+            v-model='attention'>
         </p>
          <p class="name_p">
           <span> Ответственный: </span>
@@ -140,7 +147,7 @@ export default {
         parentId: null,
         deliveryTime: '',
         invNymber: '',
-        description: '',
+        description: '', 
         responsible: '',
         instrumentIdList: []
       },
@@ -151,6 +158,7 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+      attention: false
     }
   },
   computed: mapGetters([
@@ -212,6 +220,7 @@ export default {
       this.formData.append('responsible', this.obj.responsible)
       this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
       this.formData.append('rootParentId', this.equipmentT.id)
+      this.formData.append('attention', this.attention)
       this.creqteEquipment(this.formData)
       this.exit()
     },

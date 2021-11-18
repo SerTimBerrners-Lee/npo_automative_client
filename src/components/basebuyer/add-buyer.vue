@@ -8,6 +8,12 @@
       <input type="text" v-model="obj.inn">
       <span>КПП:</span>
       <input type="text" v-model="obj.cpp">
+      <label class='label' style='margin:3px;' for='attention'>Выделить</label>
+      <input 
+        style='width: 10px;'
+        type="checkbox" 
+        id='attention' 
+        v-model='attention'>
     </div> 
     <div class="main_content">
       <div class="left_content">
@@ -126,6 +132,7 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+      attention: false
     }
   },
   computed: mapGetters(['getRoleAssets']),
@@ -173,6 +180,7 @@ export default {
       this.formData.append('inn', this.obj.inn)
       this.formData.append('cpp', this.obj.cpp)
       this.formData.append('description', this.obj.description)
+      this.formData.append('attention', this.attention)
 
       this.addOneBuyer(this.formData).then(() => 
         showMessage('', 'Покупатель успешно создан. Перенаправление на главную страницу...', 's', this)

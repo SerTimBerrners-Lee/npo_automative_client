@@ -2,6 +2,10 @@
   user-select: none;
   cursor: pointer;
 }
+.label {
+  cursor: pointer;
+  color: black;
+}
 .width-300 {
   width: 300px;
 }

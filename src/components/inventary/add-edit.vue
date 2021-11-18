@@ -4,7 +4,14 @@
       <h3> Добавить технику/инвентарь </h3>
       <div class="block block_name">
         <p class="name_p">
-          <span> Наименование: </span><input type="text" v-model.trim="obj.name">
+          <span> Наименование: </span>
+          <input type="text" v-model.trim="obj.name">
+          <label class='label' style='margin:3px;' for='attention'>Выделить</label>
+          <input 
+            style='width: 10px;'
+            type="checkbox" 
+            id='attention' 
+            v-model='attention'>
         </p>
       </div>
     </div>
@@ -149,7 +156,8 @@ export default {
       keyInformTip: 0,
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(1, 999)
+      keyWhenModalGenerateFileOpen: random(1, 999),
+      attention: false
     }
   },
   computed: mapGetters([
@@ -194,6 +202,7 @@ export default {
       fd.append('min_ostatok', this.obj.minOstatok)
       fd.append('description', this.obj.description)
       fd.append('providers', JSON.stringify(this.providersId))
+      fd.append('attention', this.attention)
 
       if(this.$route.params.edit == 'edit') {
         fd.append('id', this.obj.id)

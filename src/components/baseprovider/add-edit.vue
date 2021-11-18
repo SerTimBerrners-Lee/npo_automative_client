@@ -8,6 +8,12 @@
       <input type="text" v-model="obj.inn">
       <span>КПП:</span>
       <input type="text" v-model="obj.cpp">
+      <label class='label' style='margin:3px;' for='attention'>Выделить</label>
+      <input 
+        style='width: 10px;'
+        type="checkbox" 
+        id='attention' 
+        v-model='attention'>
     </div> 
     <div class="main_content">
       <div class="left_content">
@@ -206,7 +212,8 @@ export default {
       instrumentKey: random(1, 999),
       instrumentMerIsShow: false,
       eqKey: random(1, 999),
-      eqIsShow: false
+      eqIsShow: false,
+      attention: false
     }
   },
   computed: mapGetters([
@@ -286,6 +293,7 @@ export default {
       this.formData.append('cpp', this.obj.cpp)
       this.formData.append('description', this.obj.description)
       this.formData.append('id', this.obj.id)
+      this.formData.append('attention', this.attention)
       this.formData.append('materialList', 
         JSON.stringify(this.obj.materials))
       this.formData.append('toolListId', 

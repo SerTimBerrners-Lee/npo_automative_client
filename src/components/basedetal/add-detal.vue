@@ -2,7 +2,7 @@
   <div class='main_block_content'>
     <div class="left_content">
       <h3>Создать деталь</h3>
-      <div class="block title_block">
+      <div class="block title_block"> 
         <p>
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
           <span>Наименование: </span><input type="text" v-model.trim='obj.name'>
@@ -13,6 +13,11 @@
                 :key='user' 
                 :value='user.id'>{{ user.login }}</option>
             </select> 
+          <label class='label' for='attention'>Выделить</label>
+          <input 
+            type="checkbox" 
+            id='attention' 
+            v-model='attention'>
         </p>
       </div>
 
@@ -276,6 +281,7 @@ export default {
       inputMassZag: 0,
       variableDensity: 0,
       techProcessID: localStorage.getItem('tpID') || null,
+      attention: false,
 
       titleMessage: '',
       message: '',
@@ -362,6 +368,7 @@ export default {
       this.formData.append('DxL', this.obj.DxL)
       this.formData.append('massZag', this.obj.massZag)
       this.formData.append('trash', this.obj.trash)
+      this.formData.append('attention', this.attention)
 
       if(this.documentsData.length) {
         let new_array = []

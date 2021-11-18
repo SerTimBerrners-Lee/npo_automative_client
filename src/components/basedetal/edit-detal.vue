@@ -14,6 +14,11 @@
               :key='user' 
               :value='user.id'>{{ user.login }}</option>
           </select> 
+          <label class='label' for='attention'>Выделить</label>
+            <input 
+              type="checkbox" 
+              id='attention' 
+              v-model='attention'>
         </p>
       </div>
 
@@ -329,6 +334,7 @@ export default {
       documentsData: [],
       dataMedia: [],
       randomDataMedia: random(10, 999),
+      attention: false,
 
       itemFiles: null,
       keyWhenModalGenerateFileOpen: random(10, 999),
@@ -429,6 +435,7 @@ export default {
       this.formData.append('DxL', this.obj.DxL)
       this.formData.append('massZag', this.obj.massZag)
       this.formData.append('trash', this.obj.trash)
+      this.formData.append('attention', this.attention)
       this.formData.append('id', this.id)
 
       if(this.documentsData.length) {
@@ -672,7 +679,7 @@ select {
   width: 100px;
 }
 .right_content>div {
-    margin-top: 100px;
+  margin-top: 100px;
 }
 .absolute_znach {
   position: absolute;
@@ -703,7 +710,7 @@ select {
 .title_block p * {
   margin-left: 5px;
 }
-.title_block input{
+.title_block input[type='text']{
   width: 190px;
 }
 .content_left_block {
