@@ -204,7 +204,7 @@
             @click='exit'
             >Отменить</button>
           <button class="btn-status btn-black" 
-            style="height: 0px;" @click='saveDetal'>Сохранить</button>
+            style="height: 0px;" @click='saveProduct'>Сохранить</button>
           </div>
       </div>
 
@@ -427,9 +427,9 @@ export default {
         this.materialList = mat.materialList
       }
     },
-    saveDetal() {
+    saveProduct() {
       if(this.obj.name.length < 3) 
-        return 0
+        return showMessage('', 'Наименование должно быть длинее или равно 2-м символам', 'w', this)
 
       if(!this.formData)
         this.formData = new FormData()

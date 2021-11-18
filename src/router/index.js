@@ -210,9 +210,10 @@ const routes = [
     component: Assembly
   },
   {
-    path: '/addorder',
+    path: '/addorder/:edit',
     name: 'Добавить Заказ',
-    component: AddOrder
+    component: AddOrder,
+    props: true
   },
   {
     path: '/issueshipment',

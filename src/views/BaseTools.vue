@@ -34,8 +34,6 @@
         <button class="btn-small" @click="banned">В архив</button>
       </div>
     </div>
-    
-
 
     <div class="right_info_block" v-if='getOneNameInstrument.name'>
       <div class="block">
@@ -51,29 +49,29 @@
          <div v-if='getOneNameInstrument.documents.length > 0'>
             <h3>Документы</h3>
             <table style="width: 100%;">
-                <tr>
-                    <th>Файл</th>
-                </tr>
-                <tr class="td-row" v-for='doc in getOneNameInstrument.documents' :key='doc' @click='setDocs(doc)'>
-                    <td>{{ doc.name }}</td>
-                </tr>
+              <tr>
+                <th>Файл</th>
+              </tr>
+              <tr class="td-row" v-for='doc in getOneNameInstrument.documents' :key='doc' @click='setDocs(doc)'>
+                <td>{{ doc.name }}</td>
+              </tr>
             </table>
             <div class="btn-control">
               <button class="btn-small" @click='openDock'>Открыть</button>
             </div>
             <OpensFile 
-                :parametrs='itemFiles'  
-                v-if="showFile" 
-                @unmount='openFile'
-                :key='keyWhenModalGenerateFileOpen'
+              :parametrs='itemFiles'  
+              v-if="showFile" 
+              @unmount='openFile'
+              :key='keyWhenModalGenerateFileOpen'
             />
         </div>
         <h3 @click="providershow" style='cursor:pointer;'>Поставищики {{ getOneNameInstrument.providers.length }}</h3>
-            <ShowProvider
-              :allProvider='getOneNameInstrument.providers' 
-              :key='keyProvidersModal'
-              v-if='showProviders'
-            />
+          <ShowProvider
+            :allProvider='getOneNameInstrument.providers' 
+            :key='keyProvidersModal'
+            v-if='showProviders'
+          />
       </div>
     </div>
     

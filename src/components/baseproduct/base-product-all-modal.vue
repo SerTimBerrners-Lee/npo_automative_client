@@ -37,7 +37,7 @@
 								<td>{{ product.articl }}</td>
 								<td>{{ product.name }}</td>
 							</tr>
-							<tr v-for="item in 40" :key="item">
+							<tr>
 								<td></td>
 								<td></td>
 								<td></td>
@@ -81,7 +81,7 @@
 									<td>{{ cb.name }}</td>
 									<td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
 								</tr>
-								<tr v-for="item in 42" :key="item">
+								<tr>
 									<td></td>
 									<td></td>
 									<td></td>
@@ -98,36 +98,36 @@
 					<div>
 						<div class="scroll-table" >
 							<table class="table-base-detal">
-									<tr>
-										<th colspan="3" scope="col">Деталь (Тип Д)</th>
-									</tr>
-									<tr>
-										<th>Артикул</th>
-										<th>Наименование</th>
-										<th style='width: 50px;'> Кол-во Д на СБ</th>
-									</tr>   
-									<tr>
-										<td colspan="3">
-												<Search 
-														@unmount='keySearch' 
-												/>
-										</td>
-									</tr>
-									<tr 
-											v-for='detal in allDetal' 
-											:key='detal'
-											class='td-row'
-											@click='e => setDetals(detal, e.target.parentElement)'
-											>
-											<td>{{ detal.articl }}</td>
-											<td>{{ detal.name }}</td>
-											<td class='center'>{{ detal.kolvo_for_detal ? detal.kolvo_for_detal : '' }}</td>
-									</tr>
-									<tr v-for="item in 42" :key="item">
-										<td></td>
-										<td></td>
-										<td></td>
-									</tr>
+								<tr>
+									<th colspan="3" scope="col">Деталь (Тип Д)</th>
+								</tr>
+								<tr>
+									<th>Артикул</th>
+									<th>Наименование</th>
+									<th style='width: 50px;'> Кол-во Д на СБ</th>
+								</tr>   
+								<tr>
+									<td colspan="3">
+										<Search 
+												@unmount='keySearch' 
+										/>
+									</td>
+								</tr>
+								<tr 
+									v-for='detal in allDetal' 
+									:key='detal'
+									class='td-row'
+									@click='e => setDetals(detal, e.target.parentElement)'
+									>
+									<td>{{ detal.articl }}</td>
+									<td>{{ detal.name }}</td>
+									<td class='center'>{{ detal.kolvo_for_detal ? detal.kolvo_for_detal : '' }}</td>
+								</tr>
+								<tr>
+									<td></td>
+									<td></td>
+									<td></td>
+								</tr>
 							</table>
 						</div>
 						<p class='btn_align_p'>
@@ -190,15 +190,13 @@
 	</div>
 </div> 
 </template>
-
 <script>
-
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
 import Search from '@/components/search.vue';
 export default {
-  props: ['techProcessID', 'idFile', 'getListDetal', 'listDetal', 'enum'],
+  props: ['getListDetal', 'listDetal', 'enum'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -216,7 +214,6 @@ export default {
 			detalIsShow: false,
 
 			detalList: [],
-
     }
   },
   computed: mapGetters(['allDetal',  'allCbed', 'allProduct']),
@@ -375,6 +372,9 @@ export default {
 </script>
 
 <style scoped>
+.main_table_control>div {
+	width: 32%;
+}
 .btn_align_p {
 	display: flex;
 	align-items: center;
@@ -388,13 +388,14 @@ export default {
 }
 .table-base-detal {
 	float: left;
-	width: 470px;
+	width: 100%;
 }
 td{
 	height: 10px;
 }
 .scroll-table {
 	height: 600px;
+	width: 100%;
 }
 .tb-title {
 	height: 50px;

@@ -29,7 +29,7 @@
         : '...' }}</td>
       <td class="width-350">{{ file.description }}</td>
     </tr>
-    <tr v-for="h in 20" :key="h" class="td-row">
+    <tr class="td-row">
       <td>...</td>
       <td width="400px">...</td>
       <td>...</td>

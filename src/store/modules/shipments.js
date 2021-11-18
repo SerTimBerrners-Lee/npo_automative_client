@@ -3,7 +3,9 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
 	state: {
 		shipments: [],
-		shipments_sclad: []
+		shipments_sclad: [],
+
+		one_shipments: {}
 	},
 	getters: { 
 		getShipments(state) {
@@ -12,22 +14,28 @@ export default {
 		getShipmentsSclad(state) {
 			return state.shipments_sclad
 		},
+		getOneShipments(state) {
+			return state.one_shipments
+		}
 	}, 
 	actions: {
 		async fetchCreateShipments(ctx, data) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {
-				headers: {
-					'Accept': 'application/json',
-					'Content-Type': 'application/json'
-				},
 				method: "post",
-				body: JSON.stringify(data)
+				body: data
 			})
 			if(res.ok) 
 				return true
-			
 			return false
-				
+		},
+		async fetchUpdateShipments(ctx, data) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {
+				method: "put",
+				body: data
+			})
+			if(res.ok) 
+				return true
+			return false
 		},
 		async fetchAllShipments(ctx) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments`)
@@ -36,6 +44,13 @@ export default {
 				ctx.commit('allShipments', result)
 				return result
 			}
+		},
+		async fetchDeleteShipments(ctx, id) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`, {
+				method: 'delete'
+			})
+			if(res.ok)
+				ctx.commit('deleteShipmentMutation', id)
 		},
 		async fetchAllShipmentsById(ctx, id) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`)
@@ -80,6 +95,12 @@ export default {
 		},
 		deletToListShipments(state, id) {
 			state.shipments_sclad = state.shipments_sclad.filter(sh => sh.id != id)
+		},
+		setOneShipment(state, shipments) {
+			state.one_shipments = shipments
+		},
+		deleteShipmentMutation(state, id) {
+			state.shipments = state.shipments.filter(ship => ship.id != id)
 		}
 	}
 }

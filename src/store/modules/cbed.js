@@ -15,7 +15,7 @@ export default {
       return state.select_cbed
     }
   },
-  actions: { 
+  actions: {  
     async createNewCbEd(ctx, data) {
       if(!ctx.getters.getAuth)
         return 0

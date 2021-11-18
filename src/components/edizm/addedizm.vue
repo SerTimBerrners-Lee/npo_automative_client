@@ -3,21 +3,21 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-          <h3>{{ titleapp }} единицы измерения</h3>
-          <select class="select-small" v-model='selecter' v-if='parametrs.type == "create"'>
-            <option>Выберите тип ЕИ</option>
-            <option v-for='typeE of parametrs.typeE' :key='typeE' :value='typeE.id'>{{ typeE.name }}</option>
-          </select>
-          <p class="right-menu-p">
-            <span>Ктаркая запись: </span><input type="text" v-model.trim='inputs_short'>
-          </p>
-          <p class="right-menu-p">
-            <span>Полная запись : </span><input type="text" v-model.trim='inputs'>
-          </p>
-          <div class="btn-control out-btn-control">
-            <button class="btn-status btn-black" @click='addEditEdizm'>Сохранить</button>
-            <button class="btn-status" @click='destroyModalF'>Отменить</button>
-          </div>
+        <h3>{{ titleapp }} единицы измерения</h3>
+        <select class="select-small" v-model='selecter' v-if='parametrs.type == "create"'>
+          <option>Выберите тип ЕИ</option>
+          <option v-for='typeE of parametrs.typeE' :key='typeE' :value='typeE.id'>{{ typeE.name }}</option>
+        </select>
+        <p class="right-menu-p">
+          <span>Ктаркая запись: </span><input type="text" v-model.trim='inputs_short'>
+        </p>
+        <p class="right-menu-p">
+          <span>Полная запись : </span><input type="text" v-model.trim='inputs'>
+        </p>
+        <div class="btn-control out-btn-control">
+          <button class="btn-status btn-black" @click='addEditEdizm'>Сохранить</button>
+          <button class="btn-status" @click='destroyModalF'>Отменить</button>
+        </div>
       </div>
     </div>
   </div>

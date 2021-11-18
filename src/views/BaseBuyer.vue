@@ -9,7 +9,7 @@
           <button class="btn-small" @click="edit">Редактировать</button>
           <button class="btn-small" @click="ban">В архив</button>
         </div>
-        <h3>Фильтр по изделию</h3>
+        <h3>Фильтр по изделию</h3> 
         <button class="btn-small">Выбрать изделие</button>
         <button class="btn-small" style='margin-left: 10px;'>Сбросить фильтр</button>
       </div>

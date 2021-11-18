@@ -7,7 +7,7 @@
           <table class="table-base-detal">
             <tr>
               <th colspan="3" scope="col">Изделие</th>
-            </tr>
+            </tr> 
             <tr>
               <th>Заводской номер</th>
               <th>Артикул</th>
@@ -34,7 +34,7 @@
               <td>{{ product.articl }}</td>
               <td>{{ product.name }}</td>
             </tr>
-            <tr v-for="item in 40" :key="item">
+            <tr>
               <td></td>
               <td></td>
               <td></td>
@@ -70,7 +70,7 @@
               <td>{{ cb.name }}</td>
               <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
             </tr>
-            <tr v-for="item in 42" :key="item">
+            <tr>
               <td></td>
               <td></td>
               <td></td>
@@ -106,7 +106,7 @@
               <td>{{ detal.name }}</td>
               <td class='center'>{{ detal.kolvo_for_detal ? detal.kolvo_for_detal : '' }}</td>
             </tr>
-            <tr v-for="item in 42" :key="item">
+            <tr>
               <td></td>
               <td></td>
               <td></td>

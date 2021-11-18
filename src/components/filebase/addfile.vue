@@ -73,9 +73,7 @@
     </div>
   </div>
 </template>
-
 <script>
-
 import { photoPreloadUrl } from '@/js/';
 import { mapActions } from 'vuex';
 export default {

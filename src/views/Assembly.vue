@@ -181,6 +181,7 @@ export default {
       })
     },
     openOperationPath(assemble) {
+      if(!assemble.tech_process || !assemble.tech_process.operations) return showMessage('', 'Нет Сборочной единицы ', 'w', this);
       this.assemble_props = assemble
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true
@@ -196,6 +197,7 @@ export default {
     },
     filterOperation() {
       for(let ass of this.getAssembles) {
+        if(!ass.tech_process || !ass.tech_process.operations) continue;
         for(let oper of ass.tech_process.operations) {
           for(let ot of this.getTypeOperations) {
             if(oper.name == ot.id) {

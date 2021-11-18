@@ -17,8 +17,6 @@
 				<input type="number" min='1' v-model='kol'>
 			</p>
 			<p class='p_flex'>
-				<span>Рабочих дней до отгрузки:</span>
-				<input type="number" min='0' v-model='day_when_shipments'>
 				<span>Дата отгрузки:</span>
 				<DatePicterCustom 
 					@unmount='changeDatePicterShipments' 
@@ -26,10 +24,14 @@
 				/>
 				<label for='bran'>Бронь:</label>
 				<input id='bran' type="checkbox" v-model='bron'>
-				<span>Основание:</span>
-				<input type="text" v-model='base'>
+				<label for='file_folder' class='hover'>Основание:</label>
+				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)">
+				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
 				<span>Покупатель:</span>
-				<select class="select-small" v-model='buyer'>
+				<select 
+					class="select-small" 
+					v-model='buyer' 
+					:disabled='to_sklad'>
 					<option v-for='buyer in allBuyer' 
 						:key='buyer'
 						:value="buyer.id">{{ buyer.name }}</option>
@@ -73,6 +75,24 @@
 				<h3>Примечание</h3>
 				<textarea maxlength='250' v-model='description'></textarea>
 			</div>
+			<div class='file_content'>
+				<h3>Документы</h3>
+				<div v-if='documents.length'>
+					<table>
+						<tr>
+							<th>Файл</th>
+						</tr>
+						<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
+							<td>{{ fil.name }}</td>
+						</tr>
+					</table>
+				</div>
+				<div style='height: 50px;'>
+					<FileLoader 
+						:typeGetFile='"getfile"'
+						@unmount='file_unmount'/>
+				</div>
+			</div>
 		</div>
 		<div class="btn-control out-btn-control">
 			<button 
@@ -112,16 +132,29 @@
 		v-if='message'
 		:key='keyInformTip'
     />
+	<AddFile 
+		:parametrs='docFiles' 
+		v-if="isChangeFolderFile" 
+		@unmount='unmount_base'
+		:typeGetFile='"getfile"'
+		:key='keyWhenModalGenerate' />
+	<OpensFile 
+		:parametrs='itemFiles' 
+		v-if="itemFiles" 
+		:key='keyWhenModalGenerateFileOpen'
+	/>
 	</div>
 </template>
 
 <script>
 import DatePicterCustom from '@/components/date-picter.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 import ProductList from '@/components/baseproduct/all-product-modal.vue';
 import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
+import AddFile from '@/components/filebase/addfile.vue';
 import {showMessage} from '@/js/';
 import {mapActions, mapGetters} from 'vuex';
-import {random} from 'lodash';
+import {random, isEmpty} from 'lodash';
 export default {
 	data() {
 		return{
@@ -130,6 +163,9 @@ export default {
 
 			showModalDetalCb: false,
       keyModalDetalCb: random(1, 999),
+			isChangeFolderFile: false, 
+			keyWhenModalGenerate: random(1, 999),
+			keyWhenModalGenerateFileOpen: random(1, 999),
 
 			titleMessage: '',
       message: '',
@@ -138,14 +174,18 @@ export default {
 
 			select_tr_inx: null,
 			tr: null,
+			formData: new FormData,
+			baseFormData: new FormData,
+			docFiles: [],
+			documents: [],
+			itemFiles: null,
 			
 			date_order: new Date().toLocaleDateString("ru-RU"),
 			date_shipments: new Date().toLocaleDateString("ru-RU"),
 			kol: 1,
-			day_when_shipments: 0,
 			bron: false,
 			base: '',
-			buyer: 1,
+			buyer: 0,
 			to_sklad: false,
 			select_product: null,
 			description: '',
@@ -161,10 +201,55 @@ export default {
 			}
 		},	
 	},
-	computed: mapGetters(['allBuyer']),
-	components: {DatePicterCustom, ProductList, BaseProductModal},
+	computed: mapGetters(['allBuyer', 'getOneShipments']),
+	components: {
+			DatePicterCustom, 
+			ProductList, 
+			BaseProductModal, 
+			AddFile,
+			OpensFile,
+	},
 	methods: {
-		...mapActions(['fetchCreateShipments', 'fetchAllBuyers', 'getOneCbEdById', 'getOneDetal']),
+		...mapActions([
+			'fetchCreateShipments', 
+			'fetchAllBuyers', 
+			'getOneCbEdById', 
+			'getOneDetal',
+			'getAllProductByIdLight',
+			'fetchUpdateShipments'
+		]),
+		unmount_base(e) {
+			if(!e) return false
+			const document = e.formData.getAll('document')[0]
+			this.baseFormData = new FormData
+			this.baseFormData.append('document', document)
+			this.base = document.name
+			try {	
+				const docs = JSON.parse(e.formData.get('docs'))
+				this.baseFormData.append('docs', JSON.stringify(docs[0]))
+			} catch(e) {console.error(e)}
+		},
+		file_unmount(e) {
+			if(!e) return 0
+			this.formData = e.formData
+			for(let doc of e.formData.getAll('document')) {
+				this.docFiles.push(doc)
+				this.documents.push(doc)
+			}
+		},
+		addDock(val, base = false) {
+			if(base && this.base) {
+				this.docFiles = this.docFiles.filter(doc => doc.name != this.base.name)
+				this.documents = this.documents.filter(doc => doc.name != this.base.name)
+			}
+
+      val.files.forEach(f => {
+        this.docFiles.push(f)
+				this.documents.push(f)
+      })
+      this.keyWhenModalGenerate = random(10, 999)
+      this.isChangeFolderFile = true
+    },
 		addCbEdDetal() {
 			this.showModalDetalCb = true;
 			this.keyModalDetalCb = random(1, 999)
@@ -186,6 +271,10 @@ export default {
 			this.select_product = product
 			this.checkedJsonList(product)
 		},
+		setDocs(dc) {
+      this.itemFiles = dc
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
+    },
 		checkedJsonList(izd) {
 			if(izd.cbeds && izd.cbeds.length && izd.listCbed) {
 				let list_cbed = JSON.parse(izd.listCbed)
@@ -239,7 +328,6 @@ export default {
 		pushElement(elements, list_pars, type) {
 			for(let element of elements) {
 				let kol = 1;
-				// let material = false;
 				for(let item of list_pars) {
 					let id;
 					switch(type) {
@@ -302,20 +390,16 @@ export default {
 
 			this.select_tr_inx = inx
 		},
-		
 		save_order() {
-			if(
-				!this.date_order || !this.date_shipments 
+			if(!this.date_order || !this.date_shipments 
 				|| !this.kol || !this.base 
-				|| !this.select_product || !this.buyer
-				) 
+				|| !this.select_product	) 
 				return showMessage('', 'Все поля должны быть заполнены', 'w', this)
-
+			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w', this)
 			const data = {
 				date_order: this.date_order,
 				date_shipments: this.date_shipments,
 				kol: this.kol,
-				day_when_shipments: this.day_when_shipments,
 				bron: this.bron,
 				base: this.base,
 				buyer: this.buyer,
@@ -327,20 +411,68 @@ export default {
 				description: this.description,
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
 			} 
-
-			this.fetchCreateShipments(data).then(res => {
-				setTimeout(() => this.$router.push('/issueshipment'), 3000)
-				if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's', this)
-				else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)
-			})
+			if(this.baseFormData.get('document') && this.baseFormData.get('docs') ) {
+				this.formData.append('document', this.baseFormData.get('document'))
+				try {
+					let pars = this.baseFormData.get('docs')
+					if(pars) this.formData.append('docs', pars)
+				} catch(e) {console.error(e)}
+			}
+			
+			if(this.$route.params.edit && this.$route.params.edit == 'true') {
+				data['id'] = this.getOneShipments.id
+				this.formData.append('data', JSON.stringify(data))
+				this.fetchUpdateShipments(this.formData).then( res => {
+					setTimeout(() => this.$router.push('/issueshipment'), 3000)
+					if(res) return showMessage('', 'Заказ успешно обновлен!, Перенаправление на страницу заказов.', 's', this)
+					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)
+				})
+			} else {
+				this.formData.append('data', JSON.stringify(data))
+				this.fetchCreateShipments(this.formData).then(res => {
+					setTimeout(() => this.$router.push('/issueshipment'), 3000)
+					if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's', this)
+					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)
+				})
+			}
+		},
+		editVariable() {
+			this.date_order = this.getOneShipments.date_order
+			this.date_shipments = this.getOneShipments.date_shipments
+			this.kol = this.getOneShipments.kol
+			this.bron = this.getOneShipments.bron
+			this.base = this.getOneShipments.base
+			this.buyer = this.getOneShipments.id
+			this.to_sklad = this.getOneShipments.to_sklad
+			if(this.getOneShipments.product) {
+				this.getAllProductByIdLight(this.getOneShipments.product.id)
+				.then(res => this.select_product = res)
+			}
+			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents
+			try {
+				if(this.getOneShipments.list_cbed_detal)
+					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal)
+			} catch(e) {console.error(e)}
+			this.description = this.getOneShipments.description
 		}
 	},
 	async mounted() {
 		this.fetchAllBuyers()
+
+		if(this.$route.params.edit && this.$route.params.edit == 'true') {
+			if(isEmpty(this.getOneShipments)) return this.$router.push('/issueshipment')
+			this.editVariable()
+		}
+		
+
 	}
 }
 </script>
 <style scoped>
+.file_content {
+	width: 500px;
+	padding: 40px;
+}
 table {
 	width: 100%;
 }

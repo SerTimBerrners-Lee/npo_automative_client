@@ -20,7 +20,7 @@
         @dblclick='e =>  {active(e.target); $emit("dbClickMat", mat, type);}'>
         <td>{{ mat.name }}</td>
       </tr>
-      <tr class="td-row" v-for="i in 20" :key="i">
+      <tr class="td-row">
         <td>...</td>
       </tr>
     </table>

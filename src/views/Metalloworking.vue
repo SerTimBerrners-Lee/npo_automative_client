@@ -44,24 +44,24 @@
           <tr v-for='metalowork of getMetaloworkings' :key='metalowork'>
             <td>{{ metalowork.date_order }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='returnShipmentsKolvo(metalowork.detal.shipments)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='returnShipmentsKolvo(metalowork.detal.shipments)' class='link_img' atl='Показать' />
             </td>
-            <td>{{ metalowork.detal.name }}</td>
+            <td>{{ metalowork.detal ? metalowork.detal.name: "Нет детали" }}</td>
             <td class='center'>{{ metalowork.kolvo_shipments }}</td>
-            <td class='center'>{{ metalowork.detal.kolvo_shipments }}</td>
-            <td class='center'>{{ metalowork.detal.DxL }}</td>
-            <td class='center'>{{ metalowork.detal.mat_za_obj.material.name }}</td>
-            <td>{{ metalowork.detal.mat_za_obj.name }}</td>
+            <td class='center'>{{ metalowork.detal ? metalowork.detal.kolvo_shipments : 'Нет детали' }}</td>
+            <td class='center'>{{ metalowork.detal ? metalowork.detal.DxL : 'Нет детали' }}</td>
+            <td class='center'>{{ metalowork.detal ? metalowork.detal.mat_za_obj.material.name : 'Нет детали' }}</td>
+            <td>{{metalowork.detal ?  metalowork.detal.mat_za_obj.name : 'Нет детали' }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
             <td>{{  }}</td>
             <td>{{ metalowork.status }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
             </td>
             <td class='hover center'>{{ showAllTimers(metalowork) }}</td>
-            <td class='center'>{{ metalowork.detal.trash }}</td>
+            <td class='center'>{{metalowork.detal ? metalowork.detal.trash : 'Нет детали'}}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDescription(metalowork.description)' class='link_img' atl='Показать' />
             </td>
@@ -177,6 +177,7 @@ export default {
       })
     },
     openOperationPath(metalowork) {
+      if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет детали', 'w', this);
       this.metaloworking_props = metalowork
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true
@@ -202,6 +203,7 @@ export default {
     },
     filterOperation() {
       for(let metal of this.getMetaloworkings) {
+        if(!metal.tech_process || !metal.tech_process.operations) continue;
         for(let oper of metal.tech_process.operations) {
           for(let ot of this.getTypeOperations) {
             if(oper.name == ot.id) {
@@ -230,14 +232,14 @@ export default {
         }
       }
     },
-    showAllTimers(ass) {
+    showAllTimers(metal) {
       let count = 0
-      if(!ass.tech_process) return false
-      const operations = ass.tech_process.operations
+      if(!metal.tech_process) return false
+      const operations = metal.tech_process.operations
       if(!operations || operations.length == 0) return 
 
       for(let operation of operations) {
-        count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * ass.kolvo_shipments) / 60
+        count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * metal.kolvo_shipments) / 60
       }
       return count.toFixed(2)
     }

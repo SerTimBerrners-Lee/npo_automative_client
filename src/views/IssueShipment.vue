@@ -42,13 +42,16 @@
 							</div>
 						</td>
 						<td class='center'>{{ shipments.kol }}</td>
-						<td>{{ dateIncrementHors(shipments.date_order, shipments.day_when_shipments) }}</td>
-						<td class='center'>{{ incrementDay(shipments.date_order, shipments.day_when_shipments)  }}</td>
-						<td>{{ shipments.base }}</td>
-						<td>{{ shipments.buyer.name }}</td>
+						<td>{{ shipments.date_shipments }}</td>
+						<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments)   }}</td>
+						<td class='center active'  
+							@click='openDocuments(shipments)' >
+							{{ shipments.base }}
+            </td>
+						<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td>
 						<td></td>
 						<td>{{ shipments.status }}</td>
-						<td>{{ dateIncrementHors(shipments.date_order, shipments.day_when_shipments) }}</td>
+						<td>{{ shipments.date_shipments }}</td>
 						<td></td>
 						<td></td>
 						<td></td>
@@ -64,10 +67,10 @@
 					class="btn-small">
           Сбросить все фильтры
         </button>
-        <button class="btn-small">
-            Удалить
+        <button class="btn-small" @click='deleteF'>
+          Удалить
         </button>
-				<button class="btn-small">
+				<button class="btn-small" @click='edit'>
 					Изменить
         </button>
 				<button class="btn-small btn-add" @click='$router.push("/addorder")'>
@@ -80,6 +83,18 @@
       :key='descriptionKey'
       :parametrs='description'
     />
+		<OpensFile 
+      :parametrs='itemFiles' 
+      v-if="itemFiles.length" 
+      :key='keyWhenModalGenerateFileOpen'
+      />
+		<InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='message'
+      :key='keyInformTip'
+    />
 		<Loader v-if='loader' />
 	</div>
 </template> 
@@ -87,26 +102,41 @@
 <script>
 import DescriptionModal from '@/components/description-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
-import {mapActions, mapGetters} from 'vuex';
-import { dateIncrementHors } from '@/js/';
+import OpensFile from '@/components/filebase/openfile.vue';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
+import { dateIncrementHors, dateDifference } from '@/js/';
+import { showMessage } from '@/js/';
 import {random} from 'lodash';
 export default {
 	data() {
 		return {
 			selectShipments: null,
 			tr: null,
+			message: '',
+      type: '',
+      keyInformTip: random(1, 999),
 
 			showDescriptionModal: false,
       descriptionKey: random(1, 999),
       description: '',
 
+			itemFiles: [],
+      keyWhenModalGenerateFileOpen: random(1, 999),
+
 			loader: false
 		}	
 	},
 	computed: mapGetters(['getShipments']),
-	components: {DescriptionModal, DatePicterRange},
+	components: {
+		DescriptionModal, 
+		DatePicterRange, 
+		OpensFile
+	},
 	methods: {
-		...mapActions(['fetchAllShipments']),
+		...mapActions([ 'fetchDeleteShipments','fetchAllShipments']),
+		...mapMutations([
+      'setOneShipment'
+    ]),
 		setShipments(shipments, e) {
 			if(this.tr && this.selectShipments.id == shipments.id) {
 				this.tr.classList.remove('td-row-all')
@@ -116,6 +146,7 @@ export default {
 			this.tr = e 
 			this.tr.classList.add('td-row-all')
 			console.log(shipments)
+			this.setOneShipment(shipments)
 			this.selectShipments = shipments;
 		},
 		openDescription(description) {
@@ -127,13 +158,32 @@ export default {
       let dat = dateIncrementHors(date, day*24)
       return `${dat.day}.${dat.mount}.${dat.year}`
     },
-    incrementDay(date, day) {
-      let dat = dateIncrementHors(date, day*24)
-      return `${dat.iterationHors}`
-    },
 		changeDatePicterRange(val) {
       console.log(val)
-    }
+    },
+		dateDifference(date_one, date_two) {
+			return dateDifference(date_one, date_two)
+		},
+		openDocuments(shipments) {	
+			if(shipments.documents && shipments.documents.length) {
+				for(let doc of shipments.documents) {
+					if(doc.name == shipments.base) {
+						this.keyWhenModalGenerateFileOpen = random(1, 999)
+						this.itemFiles = [doc]
+					}
+				}
+
+			} else showMessage('', 'Документов нет', 'w', this)
+    },
+		edit() {
+			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this)
+
+			this.$router.push({ path: "/addorder/true" })
+		},
+		deleteF() {
+			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this)
+			this.fetchDeleteShipments(this.selectShipments.id)
+		}
 	},
 	async mounted() {
 		this.loader = true

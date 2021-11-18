@@ -14,7 +14,7 @@
             <td>{{ product.articl }}</td>
             <td>{{ product.name }}</td>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr class="td-row">
             <td>...</td>
             <td>...</td>
           </tr>
@@ -32,7 +32,7 @@
             <td>{{ cbed.articl }}</td>
             <td>{{ cbed.name }}</td>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr class="td-row">
             <td>...</td>
             <td>...</td>
           </tr>
@@ -54,7 +54,7 @@
             <td>{{ detal.articl }}</td>
             <td>{{ detal.name }}</td>
           </tr>
-          <tr v-for="u in 10" :key="u" class="td-row">
+          <tr class="td-row">
             <td>...</td>
             <td>...</td>
           </tr>

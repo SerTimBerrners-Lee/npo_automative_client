@@ -33,11 +33,11 @@
 					v-for='(ass, inx) of getAssembles'
 					:key='ass'>
 					<td>{{ inx = 1 }}</td>
-					<td>{{ ass.cbed.articl }}</td>
-					<td>{{ ass.cbed.name }}</td>
+					<td>{{ass.cbed ? ass.cbed.articl : 'Нет СБ'}}</td>
+					<td>{{ ass.cbed ? ass.cbed.name : 'Нет СБ'}}</td>
 					<td class='center'>{{ ass.kolvo_shipments }}</td>
 					<td class='center'>
-						<img src="@/assets/img/link.jpg" @click='showParents(ass.cbed)' class='link_img' atl='Показать' />
+						<img src="@/assets/img/link.jpg" v-if='ass.cbed' @click='showParents(ass.cbed)' class='link_img' atl='Показать' />
 					</td>
 					<td class='center hover work_operation'>{{ showOperation(ass,  "before") }}</td>
 					<td :class='ass.kolvo_shipments - returnKolvoCreate(ass) <= 0  ? "success_operation" : "work_operation" ' class='center'>{{ 
@@ -47,7 +47,7 @@
 					<td class='center'>{{ oneIzdTime(ass) }}</td>
 					<td class='center'>{{ manyIzdTime(ass, ass.kolvo_shipments) }}</td>
 					<td class='center'>{{ dateIncrementHors(undefined, manyIzdTime(ass, ass.kolvo_shipments)) }} </td>
-					<td class='center'>{{ responsible(ass.cbed) }}</td>
+					<td class='center'>{{ ass.cbed ? responsible(ass.cbed) : 'Нет СБ' }}</td>
 					<td class='center hover success_operation'>{{ showOperation(ass,  "after") }}</td>
 					<td class='center'>
 						<img src="@/assets/img/link.jpg" @click='openDocuments(ass.name)' class='link_img' atl='Показать' />
@@ -169,10 +169,12 @@ export default {
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
 		},
 		showOperation(ass, type) {
+			if(!ass.tech_process || !ass.operation_id) return showMessage('', 'Нет операций', 'w', this)
 			return afterAndBeforeOperation(
 				ass.tech_process, ass.operation_id, type).full_name
 		},
 		openDocuments(id) {
+			if(!id) return false
       this.fetchOneOperationById(id).then(res => {
         if(res.documents && res.documents.length) {
           this.keyWhenModalGenerateFileOpen = random(1, 999)
@@ -184,6 +186,7 @@ export default {
 			return kol - create <= 0 ? "Готово" : "В работе"
 		},
 		returnKolvoCreate(operation) {
+			if(!operation) return showMessage('', 'Нет операций', 'w', this)
 			return returnKolvoCreate(operation)
 		},
 		openDescription(description) {
@@ -191,6 +194,7 @@ export default {
       this.description = description
     },
 		oneIzdTime(operation) {
+			if(!operation) return showMessage('', 'Нет операций', 'w', this)
 			let ot = new OperationTime(operation) 
 			return ot.count
 		},
@@ -198,6 +202,7 @@ export default {
 			return number < 0 ? 0 : number
 		},
 		manyIzdTime(operation, kol_create_detal) {
+			if(!operation) return showMessage('', 'Нет операций', 'w', this)
 			let ot = new OperationTime(operation, kol_create_detal)
 			return ot.count
 		},

@@ -27,18 +27,6 @@
           <button class="btn-small btn-add" v-if='!get_one' @click='addInventaryToList'>Выбрать</button>
           <button class="btn-small btn-add" v-if='get_one' @click='returnOneInventary'>Выбрать</button>
         </div>
-        <!-- <div v-if='equipmentList.length > 0'>
-          <table>
-            <tr>
-              <th>Выбранное</th>
-              <th>Действие</th>
-            </tr>
-            <tr v-for='eq of equipmentList' :key='eq'>
-              <td>{{ eq.name }}</td>
-              <td class='delete_span' @click='delEQ(eq.id)'>удалить</td>
-            </tr>
-          </table>
-        </div> -->
         <div class="btn-control out-btn-control" v-if='!get_one'>
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status btn-black" style="height: 0px;" @click='addInventary'>Добавить выбранное</button>

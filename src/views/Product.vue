@@ -30,7 +30,7 @@
               <td>{{ product.articl }}</td>
               <td>{{ product.name }}</td>
             </tr>
-            <tr v-for="item in 40" :key="item">
+            <tr>
               <td></td>
               <td></td>
               <td></td>

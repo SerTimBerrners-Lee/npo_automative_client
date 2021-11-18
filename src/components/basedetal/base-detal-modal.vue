@@ -364,6 +364,9 @@ export default {
 </script>
 
 <style scoped>
+.main_table_control>div {
+	width: 32%;
+}
 .delete_span {
   padding-top: 2px;
 }
@@ -372,10 +375,10 @@ export default {
 }
 .table-base-detal {
   float: left;
-  width: 460px;
+  width: 100%;
 }
 .scroll-table {
-  height: 600px;   
+  height: 600px;  
 }
 td {
   height: 10px;

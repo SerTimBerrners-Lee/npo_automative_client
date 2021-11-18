@@ -36,7 +36,7 @@
             <td>{{ product.articl }}</td>
             <td>{{ product.name }}</td>
           </tr>
-          <tr v-for="item in 40" :key="item">
+          <tr>
             <td></td>
             <td></td>
             <td></td>
@@ -69,7 +69,7 @@
                   <td>{{ cb.name }}</td>
                   <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
                 </tr>
-                <tr v-for="item in 42" :key="item">
+                <tr>
                   <td></td>
                   <td></td>
                   <td></td>

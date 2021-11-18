@@ -37,7 +37,7 @@
               <tr v-for='(eq, inx) in eqList' :key='eq'>
                 <td>{{ inx + 1 }}. {{ eq.name }}</td>
               </tr>
-              <tr v-for='r in 8' :key='r'>
+              <tr >
                 <td>...</td>
               </tr>
             </table>
@@ -57,7 +57,7 @@
               <tr v-for='(ins, inx) in instrumentOsnList' :key='ins'>
                 <td>{{inx+1 }}. {{ ins.name }}</td>
               </tr>
-              <tr v-for='r in 8' :key='r'>
+              <tr>
                 <td>...</td>
               </tr>
             </table>
@@ -80,7 +80,7 @@
                  :key='ins'>
                 <td>{{inx+1 }}. {{ ins.name }}</td>
               </tr>
-              <tr v-for='r in 8' :key='r'>
+              <tr>
                 <td>...</td>
               </tr>
             </table>
@@ -101,7 +101,7 @@
                  :key='ins'>
                 <td>{{inx+1 }}. {{ ins.name }}</td>
               </tr>
-              <tr v-for='r in 8' :key='r'>
+              <tr>
                 <td>...</td>
               </tr>
             </table>

@@ -180,7 +180,6 @@ export default {
     unmount(e) {
       if(!e) 
         return 0
-
       this.formData = e.formData
     },
     addDock(val) {

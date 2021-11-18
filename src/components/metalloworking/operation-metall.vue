@@ -37,19 +37,20 @@
 				</tr>
 				<tr 
 					v-for='(meatl, inx) of getMetaloworkings'
-					:key='meatl'>
+					:key='meatl'
+					>
 					<td>{{ inx = 1 }}</td>
-					<td>{{ meatl.detal.articl }}</td>
-					<td>{{ meatl.detal.name }}</td>
+					<td>{{ meatl.detal ? meatl.detal.articl : 'Нет детали'}}</td>
+					<td>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
 					<td class='center'>{{ meatl.kolvo_shipments }}</td>
 					<td class='center'>
-              <img src="@/assets/img/link.jpg" @click='returnShipmentsKolvo(meatl.detal.shipments)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal.shipments)' class='link_img' atl='Показать' />
             </td>
 					<td class='center'>
-						<img src="@/assets/img/link.jpg" @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
+						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
 					</td>
-					<td class='center'>{{ meatl.detal.DxL }}</td>
-					<td class='center'>{{ meatl.detal.mat_za_obj.material.name }}</td>
+					<td class='center'>{{ meatl.detal ? meatl.detal.DxL : 'Нет детали' }}</td>
+					<td class='center'>{{ meatl.detal ? meatl.detal.mat_za_obj.material.name : 'Нет детали' }}</td>
 					<td class='center hover work_operation'>{{ showOperation(meatl,  "before") }}</td>
 					<td :class='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0  ? "success_operation" : "work_operation" ' class='center'>{{ 
 						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
@@ -65,7 +66,7 @@
 							manyIzdTime(meatl, meatl.kolvo_shipments))
 						}} 
 					</td> 
-					<td class='center'>{{ responsible(meatl.detal) }}</td>
+					<td class='center'>{{ meatl.deta ? responsible(meatl.detal) : "Нет детали" }}</td>
 					<td class='center'> {{ workingForMarks(meatl, meatl.marks) }} </td>
 					<td class='center hover success_operation'>{{ showOperation(meatl,  "after") }}</td>
 					<td class='center'>
@@ -196,10 +197,12 @@ export default {
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
 		},
 		showOperation(metal, type) {
+			if(!metal.tech_process || !metal.operation_id) return showMessage('', 'Нет операций', 'w', this)
 			return afterAndBeforeOperation(
 				metal.tech_process, metal.operation_id, type).full_name
 		},
 		openDocuments(id) {
+			if(!id) return false
       this.fetchOneOperationById(id).then(res => {
         if(res.documents && res.documents.length) {
           this.keyWhenModalGenerateFileOpen = random(1, 999)
@@ -212,10 +215,12 @@ export default {
       this.description = description
     },
 		getTime(operation) {
+			if(!operation) return showMessage('', 'Нет операций', 'w', this)
 			let ot = new OperationTime(operation)
 			return ot
 		},
 		manyIzdTime(operation, kol_create_detal) {
+			if(!operation) return showMessage('', 'Нет операций', 'w', this)
 			let ot = new OperationTime(operation, kol_create_detal)
 			return ot.count
 		},
@@ -227,6 +232,7 @@ export default {
 			return kol - create <= 0 ? "Готово" : "В работе"
 		},
 		workingForMarks(operation, marks) {
+			if(!operation) return showMessage('', 'Нет операций', 'w', this)
 			return workingForMarks(operation, marks)
 		},
 		showParents(izd, type) {
@@ -236,6 +242,7 @@ export default {
 			})
     },
 		returnKolvoCreate(operation) {
+			if(!operation) return showMessage('', 'Нет операций', 'w', this)
 			return returnKolvoCreate(operation)
 		},
 		returnFloor(number) {

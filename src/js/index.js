@@ -117,11 +117,59 @@ const dateIncrementHors = (date, hors) =>  {
   return {day, mount, year, iterationHors}
 }
 
+const comparison = (one_date = new Date().toLocaleDateString('ru-RU'), two_date = new Date().toLocaleDateString('ru-RU'), operation = '==') => {
+  let d1 = utfDate(one_date)
+  let d2 = utfDate(two_date)
+
+  function utfDate(d) {
+    const ds = d.split('.').reverse().join('-') + 'T10:10:10Z'
+    return ds
+  }
+
+  let result
+  switch(operation) {
+    case '==':
+      result = Date.parse(d1) == Date.parse(d2)
+      break
+    case '<':
+      result = Date.parse(d1) < Date.parse(d2)
+      break
+    case '>':
+      result = Date.parse(d1) > Date.parse(d2)
+      break
+    case '<=':
+      result = Date.parse(d1) <= Date.parse(d2)
+      break
+    case '>=':
+      result = Date.parse(d1) >= Date.parse(d2)
+      break
+    case '!=':
+      result = Date.parse(d1) != Date.parse(d2)
+      break
+  }
+
+  return result
+}
+
+const dateDifference = (date_one, date_two) => {
+  const toFormatString = (date) => {
+    const spl = date.split('.')
+    return `${spl[1]}-${spl[0]}-${spl[2]}`
+  }
+
+  let date1 = new Date(toFormatString(date_one));
+  let date2 = new Date(toFormatString(date_two));
+  const mat =  Math.ceil(Math.abs(date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+  return mat
+}
+
 export  {
   getReversDate,
   showMessage,
   photoPreloadUrl,
   dataFormat,
   timeFormat,
-  dateIncrementHors
+  dateIncrementHors,
+  comparison,
+  dateDifference
 }

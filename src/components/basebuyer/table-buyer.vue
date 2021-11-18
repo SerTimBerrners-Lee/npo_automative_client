@@ -20,7 +20,7 @@
 				<td>{{ buyer.inn }}</td>
 				<td>{{ buyer.name }}</td>
 			</tr>
-			<tr v-for="i in 10" :key="i">
+			<tr>
 				<td>...</td><td>...</td>
 			</tr>
 		</table>

@@ -2,22 +2,22 @@
   <h3>База Оборудования</h3>
   <div class="main_content">
     <div class="body_table">
-          <div>
-        <TableMaterial :title='"Тип"' 
-                :alltypeM="allEquipmentType" 
-                :type='"T"' 
-                @search='serhType'
-                @clickMat="clickEquipmentType"/>
-        <TableMaterial :title='"Подтип"' 
-                :alltypeM="allEquipmentPType" 
-                :type="'PT'" 
-                @search='serhPType'
-                @clickMat="clickEquipmentPType"/>
-        <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
-          :alltypeM="allEquipment" 
-          :type="'PPT'" 
-          @search='serhEq'
-          @clickMat="clickEquipment"/>
+        <div>
+      <TableMaterial :title='"Тип"' 
+        :alltypeM="allEquipmentType" 
+        :type='"T"' 
+        @search='serhType'
+        @clickMat="clickEquipmentType"/>
+      <TableMaterial :title='"Подтип"' 
+        :alltypeM="allEquipmentPType" 
+        :type="'PT'"  
+        @search='serhPType'
+        @clickMat="clickEquipmentPType"/>
+      <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
+        :alltypeM="allEquipment" 
+        :type="'PPT'" 
+        @search='serhEq'
+        @clickMat="clickEquipment"/>
     </div>
     <div class="btn-control btn-control-eq-w" style="margin-top: 10px;">
         <button class="btn-small btn-add" @click="$router.push({path: '/equipment/add'})">Создать</button>
@@ -44,21 +44,21 @@
          <div v-if='equipment.documents.length > 0'>
             <h3>Документы</h3>
             <table style="width: 100%;">
-                <tr>
-                    <th>Файл</th>
-                </tr> 
-                <tr class="td-row" v-for='doc in equipment.documents' :key='doc' @click='setDocs(doc)'>
-                    <td>{{ doc.name }}</td>
-                </tr>
+              <tr>
+                <th>Файл</th>
+              </tr> 
+              <tr class="td-row" v-for='doc in equipment.documents' :key='doc' @click='setDocs(doc)'>
+                <td>{{ doc.name }}</td>
+              </tr>
             </table>
             <div class="btn-control">
               <button class="btn-small" @click='openDock'>Открыть</button>
             </div>
             <OpensFile 
-                :parametrs='itemFiles' 
-                v-if="showFile" 
-                @unmount='openFile'
-                :key='keyWhenModalGenerateFileOpen'
+              :parametrs='itemFiles' 
+              v-if="showFile" 
+              @unmount='openFile'
+              :key='keyWhenModalGenerateFileOpen'
             />
         </div> 
          <h3 @click="providershow" style='cursor:pointer;'>Поставищики {{ equipment.providers.length }}</h3>
