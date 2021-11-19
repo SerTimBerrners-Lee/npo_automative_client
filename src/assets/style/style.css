@@ -5,6 +5,9 @@
   cursor: pointer;
   position: absolute;
 }
+.min_width {
+  width: 10px;
+}
 .exclamation_item {
   color: red;
   font-size:22px;

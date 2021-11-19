@@ -333,6 +333,7 @@ export default {
 
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
+      console.log(this.obj.kolvo_select)
 
       if(this.material)
         this.formData.append('rootParentId', this.material.id)
@@ -388,8 +389,9 @@ export default {
       })
       this.formData.append('deliveryTime', deliveryTime)
 
-      let kolvo = JSON.stringify({ kolvo: dat.kolvo_select})
+      let kolvo = JSON.stringify(dat.kolvo_select)
       this.formData.append('kolvo', kolvo)
+      console.log(this.formData.get('kolvo'))
       this.formData.append('providers', this.providersId) 
       this.formData.append('description', dat.description)
       this.formData.append('attention', this.attention)
@@ -486,9 +488,10 @@ export default {
         this.obj.deliveryTime_select = 9
         this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach
       }
-      if(this.getOnePPT.kolvo) {
+      
+      if(this.getOnePPT.kolvo) 
           this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo)
-      }
+      
       if(this.getOnePPT.density) {
         this.obj.density_select = 10
         this.obj.density_input = JSON.parse(this.getOnePPT.density).znach

@@ -294,6 +294,9 @@ export default {
         return state.tmp_attention  = []
       }
       state.inventary = state.inventary.filter(detal => detal.attention)
-    }
+    },
+    clearCascheInventary(state) {
+      state.inventary = []
+    },
   }
 }

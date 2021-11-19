@@ -16,7 +16,6 @@
 						<th>Наименование изделия</th>
 						<th>Комплектация/особенности заказа</th>
 						<th>Кол-во, шт.</th>
-						<th>Срок отгрузки</th>
 						<th>Осталось дней</th>
 						<th>Основание</th>
 						<th>Покупатель</th> 
@@ -42,7 +41,6 @@
 							</div>
 						</td>
 						<td class='center'>{{ shipments.kol }}</td>
-						<td>{{ shipments.date_shipments }}</td>
 						<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments)   }}</td>
 						<td class='center active'  
 							@click='openDocuments(shipments)' >

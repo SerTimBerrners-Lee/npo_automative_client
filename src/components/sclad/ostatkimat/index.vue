@@ -10,7 +10,7 @@
 		</div>
 
 		<div>
-			<div class="scroll-table table_material" style='height: 500px;'>
+			<div class="scroll-table table_material" style='height: 100%;'>
 				<table style="width: 200px;">
 					<tr>
 						<th>Категория</th>
@@ -24,6 +24,12 @@
 					<tr class='td-row' @click='e => getOnlyInstrumentDeficit(e.target.parentElement)'>
 						<td>Инструмент</td>
 					</tr>
+					<tr class='td-row' @click='e => getOnlyEquipmentDeficit(e.target.parentElement)'>
+						<td>Обдование</td>
+					</tr>
+					<tr class='td-row' @click='e => getOnlyInventarytDeficit(e.target.parentElement)'>
+						<td>Техника и Инвенарь</td>
+					</tr>
 					<tr class='td-row'>
 						<td>Склад Отходов</td>
 					</tr>
@@ -36,7 +42,7 @@
 						class='td-row' 
 						v-for='typ of alltypeM' 
 						:key='typ'
-						@click='clickMat(typ, "type")'>
+						@click='clickMat(typ, "type")'> 
 						<td>{{ typ.name }}</td>
 					</tr>
 				</table>
@@ -61,122 +67,237 @@
 						<th>План остаток</th>
 						<th>Среднестат. расход</th>
 						<th>Мин. остаток</th>
-						<th>Рекомендованный остаток</th>
+						<th>Рек остаток</th>
 						<th>Дефицит</th>
 						<th>Дефицит в рублях</th>
-						<th>Рекомендованный заказ</th>
+						<th>Рек. заказ</th>
 						<th>План приход (данные по счету)</th>
 						<th>Дата прихода</th>
 						<th>План остаток после план прихода</th>
 						<th>План дефицит/Профицит</th>
 						<th>Статус</th>
 					</tr>
+					<!-- MATERIAL -->
 					<tr v-for='material of getOnePodMaterial' :key='material'>
 						<td 
-								@click='e => setMaterial(material, e.target)'
-								class='td-row'> {{ material.name }}</td>
-							<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
-							</td>
-							<td class='center'>
-								{{ material.material_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>	
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ -material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center tooltip'>
-								{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
-								<div class="tooltiptext" v-if='material.deliveries.length'>
-									<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
-								</div>
-							</td>
-							<td class='center'>
-								{{ returnOstatokWays(material) - material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ material.deliveries.length ? "Заказано" : 'Не заказано'}}
-							</td>
+							style='width: 100px;'
+							@click='e => setMaterial(material, e.target)'
+							class='td-row'> {{ material.name }}</td>
+						<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
+						</td>
+						<td class='center min_width'>
+							{{ material.material_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ material.shipments_kolvo }}
+						</td>	
+						<td class='center min_width'>
+							{{ material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ -material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center min_width'>
+							{{ material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center tooltip min_width'>
+							{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
+							<div class="tooltiptext" v-if='material.deliveries.length'>
+								<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+							</div>
+						</td>
+						<td class='center min_width'>
+							{{ returnOstatokWays(material) - material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ material.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ material.deliveries.length ? "Заказано" : 'Не заказано'}}
+						</td>
 					</tr>
+					<!-- INSTRUMENT -->
 					<tr 
 						v-for='instrument of allPPTInstrument'
 						:key='instrument'
 					>
-							<td 
-								class='td-row'> {{ instrument.name }}</td>
-							<td class='span_td' >
-								шт
-							</td>
-							<td class='center'>
-								{{ instrument.instrument_kolvo }}
-							</td>
-							<td class='center'>
-								{{ instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ instrument.shipments_kolvo }}
-							</td>	
-							<td class='center'>
-								{{ instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ -instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center'>
-								{{ instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ 0 }}
-							</td>
-							<td class='center tooltip'>
-								{{ instrument.deliveries && instrument.deliveries.length ? instrument.deliveries[0].date_shipments : '' }}
-								<div class="tooltiptext" v-if='instrument.deliveries && instrument.deliveries.length'>
-									<span v-for='dev of instrument.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
-								</div>
-							</td>
-							<td class='center'>
-								{{ returnOstatokWays(instrument) - instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ instrument.shipments_kolvo }}
-							</td>
-							<td class='center'>
-								{{ instrument.deliveries && instrument.deliveries.length ? "Заказано" : 'Не заказано'}}
-							</td>
+						<td 
+							class='td-row'> {{ instrument.name }}</td>
+						<td class='span_td' >
+							шт
+						</td>
+						<td class='center min_width'>
+							{{ instrument.instrument_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ instrument.shipments_kolvo }}
+						</td>	
+						<td class='center min_width'>
+							{{ instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ -instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center min_width'>
+							{{ instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center tooltip min_width'>
+							{{ instrument.deliveries && instrument.deliveries.length ? instrument.deliveries[0].date_shipments : '' }}
+							<div class="tooltiptext" v-if='instrument.deliveries && instrument.deliveries.length'>
+								<span v-for='dev of instrument.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+							</div>
+						</td>
+						<td class='center min_width'>
+							{{ returnOstatokWays(instrument) - instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ instrument.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ instrument.deliveries && instrument.deliveries.length ? "Заказано" : 'Не заказано'}}
+						</td>
+					</tr>
+					<!-- EQUIPMENT -->
+					<tr 
+						v-for='equipment of allEquipment'
+						:key='equipment'
+					>
+						<td 
+							class='td-row'> {{ equipment.name }}</td>
+						<td class='span_td' >
+							шт
+						</td>
+						<td class='center min_width'>
+							{{ equipment.equipment_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ equipment.shipments_kolvo }}
+						</td>	
+						<td class='center min_width'>
+							{{ equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ -equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center min_width'>
+							{{ equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center tooltip min_width'>
+							{{ equipment.deliveries && equipment.deliveries.length ? equipment.deliveries[0].date_shipments : '' }}
+							<div class="tooltiptext" v-if='equipment.deliveries && equipment.deliveries.length'>
+								<span v-for='dev of equipment.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+							</div>
+						</td>
+						<td class='center min_width'>
+							{{ returnOstatokWays(equipment) - equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ equipment.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ equipment.deliveries && equipment.deliveries.length ? "Заказано" : 'Не заказано'}}
+						</td>
+					</tr>
+					<!-- INVENTARY -->
+					<tr 
+						v-for='inventary of getInventary'
+						:key='inventary'
+					>
+						<td 
+							class='td-row'> {{ inventary.name }}</td>
+						<td class='span_td' >
+							шт
+						</td>
+						<td class='center min_width'>
+							{{ inventary.inventary_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ inventary.shipments_kolvo }}
+						</td>	
+						<td class='center min_width'>
+							{{ inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ -inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center min_width'>
+							{{ inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ 0 }}
+						</td>
+						<td class='center tooltip min_width'>
+							{{ inventary.deliveries && inventary.deliveries.length ? inventary.deliveries[0].date_shipments : '' }}
+							<div class="tooltiptext" v-if='inventary.deliveries && inventary.deliveries.length'>
+								<span v-for='dev of inventary.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+							</div>
+						</td>
+						<td class='center min_width'>
+							{{ returnOstatokWays(inventary) - inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ inventary.shipments_kolvo }}
+						</td>
+						<td class='center min_width'>
+							{{ inventary.deliveries && inventary.deliveries.length ? "Заказано" : 'Не заказано'}}
+						</td>
 					</tr>
 				</table>
 			</div>
@@ -204,8 +325,10 @@ export default {
 		'alltypeM', 
 		'allPodTypeM', 
 		'getOnePodMaterial', 
-		'allPPTInstrument'
-	]),
+		'allPPTInstrument',
+		'allEquipment',
+		'getInventary'
+	]), 
 	methods: {
 		...mapActions(['getAllTypeMaterial',
       'bannedPPM', 
@@ -213,7 +336,9 @@ export default {
       'getAllPodTypeMaterial',
       'fetchPPMNoLight',
 			'fetchGetAllDeficitInsrument',
-			'getAllNameInstrument'
+			'getAllNameInstrument',
+			'fetchAllEquipment',
+			'fetchAllNameInventary'
 		]),
     ...mapMutations(['filterByNameMaterialById', 'filterMatByPodType',
       'addOnePPTyep', 
@@ -223,7 +348,9 @@ export default {
       'searchPTypeMutation', 
       'searchMaterialMutation', 
       'clearCascheMaterial',
-			'clearCascheInstrument'
+			'clearCascheInstrument',
+			'clearCascheEquipment',
+			'clearCascheInventary'
 		]),
 		instansMaterial(instans, span) {
       if(this.span) 
@@ -251,7 +378,7 @@ export default {
 			this.material = material
 		},
 		returnOstatokWays(material) {
-			if(!material.deliveries) return '-'
+			if(!material.deliveries) return 0
 
 			let count = 0
 			for(let dev of material.deliveries) {
@@ -310,12 +437,21 @@ export default {
 		},
 		getOnlyInstrumentDeficit() {
 			this.clearAllState()
-
 			this.getAllNameInstrument()
+		},
+		getOnlyEquipmentDeficit() {
+			this.clearAllState()
+			this.fetchAllEquipment()
+		},
+			getOnlyInventarytDeficit() {
+			this.clearAllState()
+			this.fetchAllNameInventary()
 		},
 		clearAllState() {
 			this.clearCascheMaterial()
 			this.clearCascheInstrument()
+			this.clearCascheEquipment()
+			this.clearCascheInventary()
 		}
 	},
 	async mounted() { 
@@ -327,6 +463,9 @@ export default {
     await this.fetchPPMNoLight()
 		// await this.fetchGetAllDeficitInsrument()
 		await this.getAllNameInstrument()
+		await this.fetchAllEquipment()
+		await this.fetchAllNameInventary()
+		console.log(this.getInventary)
     this.loader = false
 	}
 }

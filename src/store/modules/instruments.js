@@ -375,8 +375,7 @@ export default {
         .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
     },
     clearCascheInstrument(state) {
-      state.PPTInstrument = [] 
-      console.log('sdfdsf')
+      state.PPTInstrument = []
     },
     filterToAttentionTools(state) {
       if(state.tmp_attention.length == 0)

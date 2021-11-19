@@ -129,7 +129,7 @@ export default {
     async creqteEquipment(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq`, {
         method: 'post',
-        body: data
+        body: data 
       })
 
       if(res.ok) {
@@ -270,6 +270,9 @@ export default {
         return state.tmp_attention  = []
       }
       state.equipments = state.equipments.filter(detal => detal.attention)
-    }
+    },
+    clearCascheEquipment(state) {
+      state.equipments = []
+    },
   }
 }

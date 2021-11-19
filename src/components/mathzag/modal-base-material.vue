@@ -100,7 +100,7 @@
 <script>
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import {random} from 'lodash'
+import {random} from 'lodash';
 export default {
   props: [
     'allMaterial', 
@@ -192,7 +192,7 @@ export default {
       let inx_end_ez;
       if(this.podPodMaterial.kolvo) {
         try {
-          let pars = JSON.parse(this.podPodMaterial.kolvo)
+          let pars = this.podPodMaterial.kolvo
           if(kolvo) {
             kolvo = {
               c1: pars.c1,
