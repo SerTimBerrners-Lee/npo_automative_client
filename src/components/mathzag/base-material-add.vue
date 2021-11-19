@@ -228,6 +228,7 @@ export default {
       providersId: [],
       keyWhenModalListProvider: random(10, 999),
       keyWhenModalGenerateFileOpen: random(1, 999),
+      attention: false,
       obj: {
         name: '',
         deliveryTime_select: 'Выберите тип ЕИ',
@@ -250,7 +251,6 @@ export default {
         density_select: 10,
         density_input: '',
         rootParentId: null,
-        attention: false,
         kolvo_select: {
           c1: false,
           c2: false,
