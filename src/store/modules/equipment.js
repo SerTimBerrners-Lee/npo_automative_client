@@ -273,6 +273,8 @@ export default {
     },
     clearCascheEquipment(state) {
       state.equipments = []
+      state.equipmentType = []
+      state.equipmentPType = []
     },
   }
 }

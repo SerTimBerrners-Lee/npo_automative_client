@@ -61,7 +61,7 @@
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
-				<table>
+				<table style='margin-left: 10px;'>
 					<tr>
 						<th>Наименование</th>
 						<th>ЕИ</th>
@@ -70,10 +70,10 @@
 						<th>План остаток</th>
 						<th>Среднестат. расход</th>
 						<th>Мин. остаток</th>
-						<th>Рекомендованный остаток</th>
+						<th>Рек. остаток</th>
 						<th>Дефицит</th>
 						<th>Дефицит в рублях</th>
-						<th>Рекомендованный заказ</th>
+						<th>Рек. заказ</th>
 						<th>План приход (данные по счету)</th>
 						<th>Дата прихода</th>
 						<th>План остаток после план прихода</th>
@@ -86,60 +86,56 @@
 							class='td-row'> {{ material.name }}</td>
 							<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.material_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.shipments_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.shipments_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.shipments_kolvo }}
 							</td>	
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.shipments_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.shipments_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ -material.shipments_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ 0 }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.shipments_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ 0 }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{  }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{  }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								{{ material.shipments_kolvo }}
 							</td>
-							<td class='center'>
+							<td class='center min_width'>
 								Не заказано
 							</td>
 					</tr>
 				</table>
 			</div>
-			<div class='btn-control'>
-				<button class="btn-small"> Выгрузка в Excel </button>
-				<button class="btn-small"> Печать отчета </button>
-			</div>
 		</div>
-		<Start
-			v-if='showStart'
-			:key='startKey'
-		/>
+		<div class='btn-control'>
+			<button class="btn-small"> Выгрузка в Excel </button>
+			<button class="btn-small"> Печать отчета </button>
+		</div>
 	</div>
 </template>
 

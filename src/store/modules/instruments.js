@@ -376,6 +376,8 @@ export default {
     },
     clearCascheInstrument(state) {
       state.PPTInstrument = []
+      state.TInstrument = []
+      state.PTInstrument = []
     },
     filterToAttentionTools(state) {
       if(state.tmp_attention.length == 0)

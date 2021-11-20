@@ -52,7 +52,13 @@
                     class='td-row'>
                     <td >{{ material.art }}</td>
                     <td >{{ material.name }}</td>
-                    <td v-html='material.ez'></td>
+                    <td>
+                      <span :value='1' v-if='material.ez == 1'>шт</span>
+                      <span :value='2' v-if='material.ez == 2'>л</span>
+                      <span :value='3' v-if='material.ez == 3'>кг</span>
+                      <span :value='4' v-if='material.ez == 4'>м</span>
+                      <span :value='5' v-if='material.ez == 5'>м.куб</span>
+                    </td>
                     <td>{{ material.kol }}</td>
                     <td
                       class='tooltip'> {{ material.sum }}

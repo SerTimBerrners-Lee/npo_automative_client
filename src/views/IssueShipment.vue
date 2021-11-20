@@ -71,7 +71,7 @@
 				<button class="btn-small" @click='edit'>
 					Изменить
         </button>
-				<button class="btn-small btn-add" @click='$router.push("/addorder")'>
+				<button class="btn-small btn-add" @click='$router.push("/addorder/false")'>
           Создать заказ
         </button>
       </div>

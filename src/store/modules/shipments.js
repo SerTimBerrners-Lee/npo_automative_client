@@ -88,6 +88,7 @@ export default {
 	},
 	mutations: {
 		allShipments(state, result) {
+			state.shipments = []
 			state.shipments = result
 		},
 		shipmentsSclad(state, result) {
@@ -101,6 +102,6 @@ export default {
 		},
 		deleteShipmentMutation(state, id) {
 			state.shipments = state.shipments.filter(ship => ship.id != id)
-		}
+		},
 	}
 }

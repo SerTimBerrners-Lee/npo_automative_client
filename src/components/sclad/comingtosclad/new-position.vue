@@ -3,23 +3,26 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
-        <h3> ДОбавить матриал</h3>
+        <h3> Добавить поставку</h3>
         <div class="scroll-table table_material">
           <table style="width: 200px;">
             <tr>
               <th>Категория</th>
             </tr>
-            <tr class='td-row' @click='e => instansMaterial(0, e.target.parentElement)'>
+            <tr class='td-row' @click='e => getAllDeficit(e.target.parentElement)'>
               <td>Все</td>
             </tr>
-            <tr class='td-row' @click='e => instansMaterial(1, e.target.parentElement)'>
+            <tr class='td-row' @click='e => getOnlyMaterialDeficit(e.target.parentElement)'>
               <td>Материалы </td>
             </tr>
-            <tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
-              <td>Покупные детали</td>
+            <tr class='td-row' @click='e => getOnlyInstrumentDeficit(e.target.parentElement)'>
+              <td>Инструмент</td>
             </tr>
-            <tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
-              <td>Расходные материалы</td>
+            <tr class='td-row' @click='e => getOnlyEquipmentDeficit(e.target.parentElement)'>
+              <td>Обдование</td>
+            </tr>
+            <tr class='td-row' @click='e => getOnlyInventarytDeficit(e.target.parentElement)'>
+              <td>Техника и Инвенарь</td>
             </tr>
           </table>
           <table style="width: 150px;">
@@ -30,7 +33,28 @@
               class='td-row' 
               v-for='typ of alltypeM' 
               :key='typ'
-              @click='clickMat(typ)'>
+              @click='clickMat(typ, "type")'> 
+              <td>{{ typ.name }}</td>
+            </tr>
+            <tr 
+              class='td-row' 
+              v-for='typ of allEquipmentType' 
+              :key='typ'
+              @click='clickEq(typ, "type")'> 
+              <td>{{ typ.name }}</td>
+            </tr>
+            <tr 
+              class='td-row' 
+              v-for='typ of allTInstrument' 
+              :key='typ'
+              @click='clickTools(typ, "type")'> 
+              <td>{{ typ.name }}</td>
+            </tr>
+            <tr 
+              class='td-row' 
+              v-for='typ of getTInventary' 
+              :key='typ'
+              @click='clickInventary(typ, "type")'> 
               <td>{{ typ.name }}</td>
             </tr>
           </table>
@@ -42,7 +66,28 @@
               class='td-row' 
               v-for='p_type of allPodTypeM' 
               :key='p_type'
-              @click='clickMat(p_type)'>
+              @click='clickMat(p_type, "podM")'>
+              <td>{{ p_type.name }}</td>
+            </tr>
+            <tr 
+              class='td-row' 
+              v-for='p_type of allEquipmentPType' 
+              :key='p_type'
+              @click='clickEq(p_type, "podT")'>
+              <td>{{ p_type.name }}</td>
+            </tr>
+            <tr 
+              class='td-row' 
+              v-for='p_type of allPTInstrument' 
+              :key='p_type'
+              @click='clickTools(p_type, "podT")'>
+              <td>{{ p_type.name }}</td>
+            </tr>
+            <tr 
+              class='td-row' 
+              v-for='p_type of getPTInventary' 
+              :key='p_type'
+              @click='clickInventary(p_type, "podT")'>
               <td>{{ p_type.name }}</td>
             </tr>
           </table>
@@ -52,34 +97,49 @@
             </tr>
             <tr v-for='material of getOnePodMaterial' :key='material'>
               <td 
-                @click='e => setMaterial(material, e.target)'
+                @click='e => setProd(material, e.target, "mat")'
                 class='td-row'> {{ material.name }}</td>
+            </tr>
+            <tr v-for='instrument of allPPTInstrument' :key='instrument'>
+              <td 
+                @click='e => setProd(instrument, e.target, "tools")'
+                class='td-row'> {{ instrument.name }}</td>
+            </tr>
+            <tr v-for='equipment of allEquipment' :key='equipment'>
+              <td 
+                @click='e => setProd(equipment, e.target, "eq")'
+                class='td-row'> {{ equipment.name }}</td>
+            </tr>
+            <tr v-for='inventary of getInventary' :key='inventary'>
+              <td 
+                @click='e => setProd(inventary, e.target, "inventary")'
+                class='td-row'> {{ inventary.name }}</td>
             </tr>
           </table>
         </div>
 
-      <div v-if='material_list.length'>
-        <table style='width: 90%'>
-          <tr>
-            <th>Выбранное</th>
-            <th>ЕИ</th>
-            <th>Кол-во, м</th>
-            <th 
-              style='cursor: pointer;'
-              @click="allItemsDel">
-              <unicon name="glass-tea" fill="#ee0942d0" width='20' />
-            </th> 
-          </tr>
-          <tr v-for='mat of material_list' :key='mat'>
-            <td>{{ mat.name }}</td>
-            <td v-html='mat.ez'></td>
-            <td>{{ mat.kol }}</td>
-            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-              <p class="checkbox_block_del" @click='delProd(mat)'></p>
-            </td>
-          </tr>
-        </table>
-      </div>
+        <div v-if='material_list.length'>
+          <table style='width: 90%'>
+            <tr>
+              <th>Выбранное</th>
+              <th>ЕИ</th>
+              <th>Кол-во, м</th>
+              <th 
+                style='cursor: pointer;'
+                @click="allItemsDel">
+                <unicon name="glass-tea" fill="#ee0942d0" width='20' />
+              </th> 
+            </tr>
+            <tr v-for='mat of material_list' :key='mat'>
+              <td>{{ mat.name }}</td>
+              <td v-html='mat.ez'></td>
+              <td>{{ mat.kol }}</td>
+              <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                <p class="checkbox_block_del" @click='delProd(mat)'></p>
+              </td>
+            </tr>
+          </table>
+        </div>
 
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
@@ -109,9 +169,18 @@ export default {
     }
   },
   computed: mapGetters([
-    'getOnePodMaterial', 
     'alltypeM', 
-    'allPodTypeM'
+		'allPodTypeM', 
+		'getOnePodMaterial', 
+		'allTInstrument',
+		'allPTInstrument',
+		'allPPTInstrument',
+		'allEquipmentType',
+		'allEquipmentPType',
+		'allEquipment',
+		'getTInventary',
+		'getPTInventary',
+		'getInventary'
   ]),
   components: {},
   methods: {
@@ -121,35 +190,45 @@ export default {
       this.hiddens = 'display: none;'
     },
     ...mapActions([
-      'getAllTypeMaterial', 
-      'getAllPodTypeMaterial', 
-      'fetchGetAllPPM'
+      'getAllTypeMaterial',
+      'bannedPPM', 
+      'fetchGetOnePPM', 
+      'getAllPodTypeMaterial',
+      'fetchPPMNoLight',
+			'fetchGetAllDeficitInsrument',
+			'getAllNameInstrument',
+			'fetchAllEquipment',
+			'fetchAllNameInventary',
+			'getAllEquipmentPType',
+			'fetchAllEquipmentType',
+			'getOneEquipmentPType',
+			'fetchAllInstruments',
+			'getPTInstrumentList',
+			'getAllPTInstances',
+			'fetchAllInventary',
+			'fetchAllPInventary'
     ]),
 		...mapMutations([
-      'getInstansMaterial', 
-      'filterByNameMaterial', 
-      'clearCascheMaterial'
+      'filterByNameMaterialById', 
+			'filterMatByPodType',
+      'filterByNameMaterial',
+      'addOnePPTyep', 
+      'throwInstans',
+      'searchTypeMutation', 
+      'searchPTypeMutation', 
+      'searchMaterialMutation', 
+      'clearCascheMaterial',
+			'clearCascheInstrument',
+			'clearCascheEquipment',
+			'clearCascheInventary',
+			'filterAllPTEquipment',
+			'filterAllpInstrument',
+			'filterNameInventaryByPT'
     ]),
-    instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
-
-      this.span = span
-			this.span.classList.add('td-row-all')
-
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
-    },
 		clickMat(mat) {
 			this.filterByNameMaterial(mat) 
     },
-		setMaterial(material, span) {
-			if(this.material && this.material.id == material.id && this.span_material) {
-				this.material = null;
-				return this.span_material = null
-			}
+    setProd(obj, span, type) {
 			if(this.span_material)
 				this.span_material.classList.remove('td-row-all')
 			this.span_material = span
@@ -157,23 +236,22 @@ export default {
 
       let check = true
 			for(let mat of this.material_list) {
-        if(mat.id == material.id)
+        if(mat.obj.id == obj.id && mat.type == type)
           check = false
       }
-      if(check)
+      if(check) 
         this.material_list.push({
-          art: '',
           kol: 1,
-          ez: this.getKolvoMaterial(material.kolvo),
-          name: material.name,
-          id: material.id,
-          sum: 0,
-          description: ''
+          ez: this.getKolvoMaterial(obj.kolvo),
+          name: obj.name,
+          obj: obj,
+          type: type
         })
-      else 
+      else
         check = true
-		},
+    },
     getKolvoMaterial(kol) {
+      if(!kol) return 'шт'
 			try {
 				let pars_json = JSON.parse(kol)
 				let str = ''
@@ -187,8 +265,68 @@ export default {
 				console.log(e)
 			}
 		},
+    clickEq(eq, type) {
+			if(type == 'type') 
+				this.filterAllPTEquipment(eq)
+      if(type == 'podT') 
+				this.getOneEquipmentPType(eq.id)
+		},
+		clickTools(tools, type) {
+			if(type == 'type') 
+				this.filterAllpInstrument(tools)
+      if(type == 'podT') 
+				this.getAllPTInstances(tools.id)
+		},
+		clickInventary(inventary, type) {
+			if(type == 'type') 
+				this.filterNameInventaryByPT(inventary.inventary)
+      if(type == 'podT') 
+				this.filterNameInventaryByPT(inventary.inventary)
+		},
+    getAllDeficit() {
+			this.clearAllState()
+
+			this.getOnlyMaterialDeficit()
+			this.getAllNameInstrument()
+		},
+		getOnlyMaterialDeficit() {
+			this.clearAllState()
+
+			this.getAllTypeMaterial()
+			this.getAllPodTypeMaterial()
+			this.fetchPPMNoLight()
+		},
+		getOnlyInstrumentDeficit() {
+			this.clearAllState()
+			this.getAllNameInstrument()
+			this.fetchAllInstruments()
+			this.getPTInstrumentList()
+		},
+		getOnlyEquipmentDeficit() {
+			this.clearAllState()
+			this.fetchAllEquipment()
+			this.getAllEquipmentPType()
+			this.fetchAllEquipmentType()
+		},
+		getOnlyInventarytDeficit() {
+			this.clearAllState()
+			this.fetchAllInventary()
+			this.fetchAllPInventary()
+			this.fetchAllNameInventary()
+		},
+		clearAllState() {
+			this.clearCascheMaterial()
+			this.clearCascheInstrument()
+			this.clearCascheEquipment()
+			this.clearCascheInventary()
+		},
     delProd(mat) {
-      this.material_list = this.material_list.filter(m => m.id != mat.id)
+      let arr = []
+      for(let item of this.material_list) {
+        if((item.obj.id == mat.obj.id) && (item.obj.type == mat.obj.type)) continue
+        arr.push(item)
+      }
+      this.material_list = arr
     },
     allItemsDel() {
       this.material_list = []
@@ -205,9 +343,13 @@ export default {
 
     this.loader = true
 
+    this.clearCascheMaterial()
     await this.getAllTypeMaterial()
     await this.getAllPodTypeMaterial()
-    await this.fetchGetAllPPM()
+    await this.fetchPPMNoLight()
+    await this.getAllNameInstrument()
+		await this.fetchAllEquipment()
+		await this.fetchAllNameInventary()
 
     this.loader = false
   },
@@ -222,6 +364,7 @@ export default {
 }
 .table_material {
   display: flex;
+  height: 500px;
 }
 .checkbox_parent {
   height: 15px;

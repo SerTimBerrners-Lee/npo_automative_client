@@ -127,7 +127,7 @@ export default {
       'searchTInventary',
       'searchPTInventary',
       'searchInventary',
-      'filterNameMaterialByPT',
+      'filterNameInventaryByPT',
       'resetFilterInventary',
       'filterToAttentionInventary'
     ]), 
@@ -151,14 +151,14 @@ export default {
       this.inventaryT = inventary
       this.filterPTByTInvetary(inventary)
       if(inventary.inventary)
-        this.filterNameMaterialByPT(inventary.inventary)
+        this.filterNameInventaryByPT(inventary.inventary)
     },
     clickPTInventary(inventary) {
       if(this.inventaryPT && this.inventaryPT.id == inventary.id) 
         return this.resetFilterInventary()
       this.inventaryPT = inventary
       if(inventary.inventary)
-        this.filterNameMaterialByPT(inventary.inventary)
+        this.filterNameInventaryByPT(inventary.inventary)
     },
     clickInventary(inventary) {
       this.inventary = inventary

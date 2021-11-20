@@ -42,7 +42,13 @@
                   {{ prod.art }}
                 </td>
                 <td>{{ prod.name }}</td>
-                <td v-html='prod.ez'></td>
+                <td>
+                  <span :value='1' v-if='prod.ez == 1'>шт</span>
+                  <span :value='2' v-if='prod.ez == 2'>л</span>
+                  <span :value='3' v-if='prod.ez == 3'>кг</span>
+                  <span :value='4' v-if='prod.ez == 4'>м</span>
+                  <span :value='5' v-if='prod.ez == 5'>м.куб</span>
+                </td>
                 <td>
                   <input type="number" 
                     @change="e => editKol(inx, e.target.value)"
@@ -90,7 +96,13 @@
                 </td>
                 <td>{{ prod.art }}</td>
                 <td>{{ prod.name }}</td>
-                <td v-html='prod.ez'></td>
+                <td>
+                  <span :value='1' v-if='prod.ez == 1'>шт</span>
+                  <span :value='2' v-if='prod.ez == 2'>л</span>
+                  <span :value='3' v-if='prod.ez == 3'>кг</span>
+                  <span :value='4' v-if='prod.ez == 4'>м</span>
+                  <span :value='5' v-if='prod.ez == 5'>м.куб</span>
+                </td>
                 <td class='center'>{{ prod.kol }}</td>
                 <td class='center'>{{ prod.sum }}</td>
                 <td class='center'>{{ prod.kol * prod.sum }}</td>
@@ -212,8 +224,8 @@ export default {
       if(provider && provider.product) {
         this.provider = provider
         this.product = provider.product
+        console.log(provider.product)
       }
-        
     },
     unmount_position(material_list) {
       if(material_list && material_list.length) {
@@ -258,7 +270,7 @@ export default {
     pushToServer() {
       if(!this.provider)
         return showMessage('', 'Выберите поставщика!', 'w', this) 
-      if(!this.formData.get('docs') && !this.formData('document'))
+      if(!this.formData.get('docs') && !this.formData.get('document'))
         return showMessage('', 'Обязательно прикрепите документ!', 'w', this) 
 
       this.formData.append('provider_id', this.provider.id)

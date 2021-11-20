@@ -50,8 +50,8 @@
             <td class='center'>{{ metalowork.kolvo_shipments }}</td>
             <td class='center'>{{ metalowork.detal ? metalowork.detal.kolvo_shipments : 'Нет детали' }}</td>
             <td class='center'>{{ metalowork.detal ? metalowork.detal.DxL : 'Нет детали' }}</td>
-            <td class='center'>{{ metalowork.detal ? metalowork.detal.mat_za_obj.material.name : 'Нет детали' }}</td>
-            <td>{{metalowork.detal ?  metalowork.detal.mat_za_obj.name : 'Нет детали' }}</td>
+            <td class='center'>{{ metalowork.detal && metalowork.detal.mat_za_obj ? metalowork.detal.mat_za_obj.material.name : 'Нет заготовки' }}</td>
+            <td>{{metalowork.detal && metalowork.detal.mat_za_obj ?  metalowork.detal.mat_za_obj.name : 'Нет заготовки' }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
@@ -71,7 +71,7 @@
     </div>
      <div class="btn-control">
         <button class="btn-small">Печать</button>
-        <button class="btn-small">Сбросить все фильтры</button>
+        <button class="btn-small" @click="clearFilter">Сбросить все фильтры</button>
       </div>
       <DescriptionModal 
         v-if='description'
@@ -113,7 +113,7 @@
 
 <script>
 
-import {mapActions, mapGetters} from 'vuex';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
 import DescriptionModal from '@/components/description-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking.vue';
@@ -145,7 +145,8 @@ export default {
 
       metaloworking_props: null,
 
-      loader: false
+      loader: false, 
+      span_ship: null
 		}
 	},
 	computed: mapGetters([
@@ -166,15 +167,23 @@ export default {
       'fetchMetaloworking',
       'getAllTypeOperations'
       ]),
+    ...mapMutations(['filterMetaloworkingByShipments', 'breackFIlterMetal']),
     toSetOrders(shipments, e) {
-      if(e.classList.item(1)) {
-        shipments.metaloworking.forEach(or => { this.metaloworking = this.metaloworking.filter(el => el.id != or.id)})
-        return e.classList.remove('checkbox_block_select')
+      if(this.span_ship) {
+        this.breackFIlterMetal()
+        this.span_ship.classList.remove('checkbox_block_select')
       }
-      e.classList.add('checkbox_block_select')
-      shipments.metaloworking.forEach(or => { 
-        this.fetchMetaloworkingById(or.id).then(result => this.metaloworking.push(result))
-      })
+      this.span_ship = e
+      this.span_ship.classList.add('checkbox_block_select')
+      if(shipments.detals && shipments.detals.length)
+        this.filterMetaloworkingByShipments(shipments.detals)
+    },
+    clearFilter() {
+      this.breackFIlterMetal()
+      if(this.span_ship) {
+        this.span_ship.classList.remove('checkbox_block_select')
+        this.span_ship = null
+      }
     },
     openOperationPath(metalowork) {
       if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет детали', 'w', this);
@@ -246,11 +255,11 @@ export default {
   },
 	async mounted() {
     this.loader = true
-    // await this.fetchAllShipmentsMetaloworking() 
+    await this.fetchAllShipmentsMetaloworking() 
     await this.getAllTypeOperations()
     await this.fetchMetaloworking()
     this.filterOperation()
-    console.log(this.getMetaloworkings)
+    console.log(this.getShipments)
     this.loader = false
 	}
 }

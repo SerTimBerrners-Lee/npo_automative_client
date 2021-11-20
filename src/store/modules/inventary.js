@@ -281,7 +281,7 @@ export default {
     banInventaryMutation(state, id) {
       state.inventary = state.inventary.filter(inv => inv.id != id)
     },
-    filterNameMaterialByPT(state, inventary) {
+    filterNameInventaryByPT(state, inventary) {
       if(state.instansInventary.length == 0)
         state.instansInventary = state.inventary
       state.inventary = inventary.filter(inv => !inv.ban)
@@ -297,6 +297,8 @@ export default {
     },
     clearCascheInventary(state) {
       state.inventary = []
+      state.inventaryT = []
+      state.inventaryPT = []
     },
   }
 }

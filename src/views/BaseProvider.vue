@@ -18,7 +18,6 @@
           <TableMaterial 
             :return='"true"'
             @unmount='unmount_table_material'
-            
           />
         </div>
         <div class="btn-control">

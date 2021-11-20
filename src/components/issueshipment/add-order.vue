@@ -143,6 +143,7 @@
 		v-if="itemFiles" 
 		:key='keyWhenModalGenerateFileOpen'
 	/>
+	<Loader v-if='loader' />
 	</div>
 </template>
 
@@ -171,6 +172,7 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+			loader: false,
 
 			select_tr_inx: null,
 			tr: null,
@@ -242,7 +244,6 @@ export default {
 				this.docFiles = this.docFiles.filter(doc => doc.name != this.base.name)
 				this.documents = this.documents.filter(doc => doc.name != this.base.name)
 			}
-
       val.files.forEach(f => {
         this.docFiles.push(f)
 				this.documents.push(f)
@@ -396,6 +397,7 @@ export default {
 				|| !this.select_product	) 
 				return showMessage('', 'Все поля должны быть заполнены', 'w', this)
 			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w', this)
+			this.loader = true
 			const data = {
 				date_order: this.date_order,
 				date_shipments: this.date_shipments,
@@ -423,6 +425,7 @@ export default {
 				data['id'] = this.getOneShipments.id
 				this.formData.append('data', JSON.stringify(data))
 				this.fetchUpdateShipments(this.formData).then( res => {
+					this.loader = false
 					setTimeout(() => this.$router.push('/issueshipment'), 3000)
 					if(res) return showMessage('', 'Заказ успешно обновлен!, Перенаправление на страницу заказов.', 's', this)
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)
@@ -430,6 +433,7 @@ export default {
 			} else {
 				this.formData.append('data', JSON.stringify(data))
 				this.fetchCreateShipments(this.formData).then(res => {
+					this.loader = false
 					setTimeout(() => this.$router.push('/issueshipment'), 3000)
 					if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's', this)
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)

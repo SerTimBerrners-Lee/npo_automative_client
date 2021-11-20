@@ -3,6 +3,7 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
   state: {
     metaloworkings: [],
+    filter_metal: []
   },
   getters: { 
     getMetaloworkings(state) {
@@ -60,5 +61,19 @@ export default {
         state.metaloworkings.push({...operation, ...r.metal, description, operation_id: id})
       }
     },
+    filterMetaloworkingByShipments(state, detals) {
+      let new_arr = []
+      for(let met of state.metaloworkings) {
+        for(let detal of detals) {
+          if(detal.id == met.detal.id) new_arr.push(met)
+        }
+      }
+      if(state.filter_metal.length == 0)
+        state.filter_metal = state.metaloworkings 
+      state.metaloworkings = new_arr
+    },
+    breackFIlterMetal(state) {
+      state.metaloworkings = state.filter_metal
+    }
   }
 }

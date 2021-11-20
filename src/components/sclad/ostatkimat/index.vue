@@ -45,6 +45,27 @@
 						@click='clickMat(typ, "type")'> 
 						<td>{{ typ.name }}</td>
 					</tr>
+					<tr 
+						class='td-row' 
+						v-for='typ of allEquipmentType' 
+						:key='typ'
+						@click='clickEq(typ, "type")'> 
+						<td>{{ typ.name }}</td>
+					</tr>
+					<tr 
+						class='td-row' 
+						v-for='typ of allTInstrument' 
+						:key='typ'
+						@click='clickTools(typ, "type")'> 
+						<td>{{ typ.name }}</td>
+					</tr>
+					<tr 
+						class='td-row' 
+						v-for='typ of getTInventary' 
+						:key='typ'
+						@click='clickInventary(typ, "type")'> 
+						<td>{{ typ.name }}</td>
+					</tr>
 				</table>
 				<table style="width: 150px;">
 					<tr>
@@ -55,6 +76,27 @@
 						v-for='p_type of allPodTypeM' 
 						:key='p_type'
 						@click='clickMat(p_type, "podM")'>
+						<td>{{ p_type.name }}</td>
+					</tr>
+					<tr 
+						class='td-row' 
+						v-for='p_type of allEquipmentPType' 
+						:key='p_type'
+						@click='clickEq(p_type, "podT")'>
+						<td>{{ p_type.name }}</td>
+					</tr>
+					<tr 
+						class='td-row' 
+						v-for='p_type of allPTInstrument' 
+						:key='p_type'
+						@click='clickTools(p_type, "podT")'>
+						<td>{{ p_type.name }}</td>
+					</tr>
+					<tr 
+						class='td-row' 
+						v-for='p_type of getPTInventary' 
+						:key='p_type'
+						@click='clickInventary(p_type, "podT")'>
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
@@ -325,12 +367,19 @@ export default {
 		'alltypeM', 
 		'allPodTypeM', 
 		'getOnePodMaterial', 
+		'allTInstrument',
+		'allPTInstrument',
 		'allPPTInstrument',
+		'allEquipmentType',
+		'allEquipmentPType',
 		'allEquipment',
+		'getTInventary',
+		'getPTInventary',
 		'getInventary'
 	]), 
 	methods: {
-		...mapActions(['getAllTypeMaterial',
+		...mapActions([
+			'getAllTypeMaterial',
       'bannedPPM', 
       'fetchGetOnePPM', 
       'getAllPodTypeMaterial',
@@ -338,11 +387,20 @@ export default {
 			'fetchGetAllDeficitInsrument',
 			'getAllNameInstrument',
 			'fetchAllEquipment',
-			'fetchAllNameInventary'
+			'fetchAllNameInventary',
+			'getAllEquipmentPType',
+			'fetchAllEquipmentType',
+			'getOneEquipmentPType',
+			'fetchAllInstruments',
+			'getPTInstrumentList',
+			'getAllPTInstances',
+			'fetchAllInventary',
+			'fetchAllPInventary'
 		]),
-    ...mapMutations(['filterByNameMaterialById', 'filterMatByPodType',
-      'addOnePPTyep', 
-      'getInstansMaterial', 
+    ...mapMutations([
+			'filterByNameMaterialById', 
+			'filterMatByPodType',
+      'addOnePPTyep',
       'throwInstans',
       'searchTypeMutation', 
       'searchPTypeMutation', 
@@ -350,26 +408,17 @@ export default {
       'clearCascheMaterial',
 			'clearCascheInstrument',
 			'clearCascheEquipment',
-			'clearCascheInventary'
+			'clearCascheInventary',
+			'filterAllPTEquipment',
+			'filterAllpInstrument',
+			'filterNameInventaryByPT'
 		]),
-		instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
-
-      this.span = span
-			this.span.classList.add('td-row-all')
-      this.instansLet = instans
-
-    },
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null
 			}
 
-			console.log(material)
 			if(this.span_material)
 				this.span_material.classList.remove('td-row-all')
 			this.span_material = span
@@ -406,6 +455,24 @@ export default {
       if(type == 'podM') 
         this.filterByNameMaterialById(mat) 
     },
+		clickEq(eq, type) {
+			if(type == 'type') 
+				this.filterAllPTEquipment(eq)
+      if(type == 'podT') 
+				this.getOneEquipmentPType(eq.id)
+		},
+		clickTools(tools, type) {
+			if(type == 'type') 
+				this.filterAllpInstrument(tools)
+      if(type == 'podT') 
+				this.getAllPTInstances(tools.id)
+		},
+		clickInventary(inventary, type) {
+			if(type == 'type') 
+				this.filterNameInventaryByPT(inventary.inventary)
+      if(type == 'podT') 
+				this.filterNameInventaryByPT(inventary.inventary)
+		},
 		getKolvoMaterial(kol) {
 			if(!kol) return '<span style="height: 100%;">-</span>'
 			try {
@@ -438,13 +505,19 @@ export default {
 		getOnlyInstrumentDeficit() {
 			this.clearAllState()
 			this.getAllNameInstrument()
+			this.fetchAllInstruments()
+			this.getPTInstrumentList()
 		},
 		getOnlyEquipmentDeficit() {
 			this.clearAllState()
 			this.fetchAllEquipment()
+			this.getAllEquipmentPType()
+			this.fetchAllEquipmentType()
 		},
-			getOnlyInventarytDeficit() {
+		getOnlyInventarytDeficit() {
 			this.clearAllState()
+			this.fetchAllInventary()
+			this.fetchAllPInventary()
 			this.fetchAllNameInventary()
 		},
 		clearAllState() {
@@ -465,7 +538,6 @@ export default {
 		await this.getAllNameInstrument()
 		await this.fetchAllEquipment()
 		await this.fetchAllNameInventary()
-		console.log(this.getInventary)
     this.loader = false
 	}
 }

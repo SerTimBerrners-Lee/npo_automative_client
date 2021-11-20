@@ -3,7 +3,8 @@ import PATH_TO_SERVER from '@/js/path.js'
 export default {
   state: {
     assembles: [],
-  },
+    filter_assembl: []
+  }, 
   getters: { 
     getAssembles(state) {
       return state.assembles
@@ -58,5 +59,19 @@ export default {
         state.assembles.push({...operation, ...r.ass, description, operation_id: id})
       }
     },
+    filterAssemblByShipments(state, cbeds) {
+      let new_arr = []
+      for(let ass of state.assembles) {
+        for(let cbed of cbeds) {
+          if(cbed.id == ass.cbed.id) new_arr.push(ass)
+        }
+      }
+      if(state.filter_assembl.length == 0)
+        state.filter_assembl = state.assembles 
+      state.assembles = new_arr
+    },
+    breackFIlterAssembl(state) {
+      state.assembles = state.filter_assembl
+    }
   }
 }

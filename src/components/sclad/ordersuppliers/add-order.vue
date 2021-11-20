@@ -70,6 +70,11 @@
 
         <div>
           <h3>Список поставляемого поставщиком</h3>
+          <TableMaterialFilter 
+            :id_product='id_product'
+            :key='table_key'
+            :is_empty='is_empty'
+          />
         </div>
 
         <div>
@@ -100,6 +105,7 @@
                     class='select-small' 
                     v-if='!Number(material.ez)'
                     @change='e => changeValuesEz(inx, e.target)'>
+                    <option value=""></option>
                     <option :value='1' v-if='Object.values(material.ez)[0]'>шт</option>
                     <option :value='2' v-if='Object.values(material.ez)[1]'>л</option>
                     <option :value='3' v-if='Object.values(material.ez)[2]'>кг</option>
@@ -162,6 +168,13 @@
       v-if='show_position'
       @unmount='unmount_position'
     />
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='message'
+      :key='keyInformTip'
+    />
   </div>
 </template>
 <script>
@@ -169,8 +182,10 @@ import DatePicterCustom from '@/components/date-picter.vue';
 import AddFile from '@/components/filebase/addfile.vue';
 import { random, toNumber } from 'lodash';
 import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
-import { mapActions, mapGetters } from 'vuex';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import AddPosition from '@/components/sclad/comingtosclad/new-position.vue';
+import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
+import { showMessage } from '@/js/';
 export default {
   props: ['parametrs', 'order_parametr'],
   data() {
@@ -195,12 +210,20 @@ export default {
       material_lists: [],
       description: '',
 
+      titleMessage: '',
+      message: '',
+      type: '',
+      keyInformTip: 0,
+
       selected_material: null,
       span_deff: null,
 
       select_m: null,
       key_position: random(1, 999),
-      show_position: false
+      show_position: false,
+      id_product: null,
+      table_key: random(1, 999),
+      is_empty: false
     }
   },
   computed: mapGetters(['getOnePodMaterial']),
@@ -208,7 +231,8 @@ export default {
     DatePicterCustom, 
     AddFile, 
     ProviderList,
-    AddPosition
+    AddPosition,
+    TableMaterialFilter
   },
   methods: {
     ...mapActions([
@@ -217,16 +241,25 @@ export default {
       'fetchNewDeliveries', 
       'updateDeliveries'
     ]),
+    ...mapMutations([
+      'clearCascheMaterial'
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    unmount_position(material_lists) {
-      console.log(material_lists)
-      // if(material_list && material_list.length) {
-      //   material_list.forEach(e => this.product.push(e))
-      // }
+    unmount_position(mat_l) {
+      this.clearCascheMaterial()
+      this.fetchGetAllDeficitPPM()
+      if(mat_l && mat_l.length) {
+        for(let mat of mat_l) {
+          console.log(mat)
+          this.selected_material = mat.obj
+          this.selected_material.type = mat.type
+          this.pushMaterial()
+        }
+      }
     },
     unmount(e) {
       if(!e) 
@@ -238,6 +271,10 @@ export default {
     unmount_provider(provider) {
       if(provider)
         this.provider = provider
+
+      this.id_product = provider.id
+      this.table_key = random(1, 999)
+
     },
     unmount_date_picters(val) {
       this.date_shipments = val
@@ -246,7 +283,7 @@ export default {
       val.target.files.forEach(f => {
         this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 1111)
+      this.keyWhenModalGenerate = random(10, 999)
       this.isChangeFolderFile = true
     },
     addProvider() {
@@ -256,7 +293,6 @@ export default {
       })
     },
     selectDeficitMaterial(mat, span) {
-      console.log(mat)
       this.selected_material = mat
       if(this.span_deff)
         this.span_deff.classList.remove('td-row-all')
@@ -295,17 +331,19 @@ export default {
       if(!this.selected_material)
         return 0
       let material = this.selected_material
+      console.log(material, 'material')
       for(let mat of this.material_lists) {
-        if(material.id == mat.id) return 0
+        if(material.id == mat.id && material.type == mat.type) return 0
       }
       try {
         this.material_lists.push({
           art: '',
           name: material.name,
           ez: material.kolvo ? JSON.parse(material.kolvo) : 1,
-          kol: material.shipments_kolvo,
+          kol: material.shipments_kolvo ? material.shipments_kolvo : 1,
           sum: 0,
           description: '',
+          type: material.type ? material.type : 'mat',
           id: material.id
         })
       } catch(e) {console.error(e)}
@@ -351,29 +389,7 @@ export default {
     },
     save() {
       if(!this.provider || !this.material_lists.length)
-        return 
-
-      for(let mat in this.material_lists) {
-        if(!Number(this.material_lists[mat].ez)) {
-          //Возвращать первое удачное значение 
-          const material = this.getOneMaterialById(this.material_lists[mat].id)
-          if(!material) continue
-          try {
-            if(!material.ez_kolvo) continue;
-            const pars_kolvo = JSON.parse(material.kolvo)
-            if(!pars_kolvo) continue;
-            let counter = 1
-            for(let ezz in pars_kolvo) {
-              if(pars_kolvo[ezz]) {
-                this.material_lists[mat].ez = counter
-                break;
-              }
-              counter++
-            }
-          } catch(e) {console.error(e)}
-        }
-      }
-      if(this.material_lists) return false
+        return showMessage('', 'Выберите поставщика', 'w', this)
 
       this.formData.append('provider_id', this.provider.id)
       this.formData.append('number_check', this.number_check)
@@ -382,7 +398,6 @@ export default {
       this.formData.append('material_lists', JSON.stringify(this.material_lists))
       this.formData.append('date_shipments', this.date_shipments)
       this.formData.append('description', this.description)
-
 
       if(this.$props.order_parametr) {
         this.formData.append('id', this.$props.order_parametr.id)

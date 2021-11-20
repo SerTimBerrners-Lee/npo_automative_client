@@ -391,7 +391,6 @@ export default {
 
       let kolvo = JSON.stringify(dat.kolvo_select)
       this.formData.append('kolvo', kolvo)
-      console.log(this.formData.get('kolvo'))
       this.formData.append('providers', this.providersId) 
       this.formData.append('description', dat.description)
       this.formData.append('attention', this.attention)

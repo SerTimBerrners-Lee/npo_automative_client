@@ -192,7 +192,7 @@ export default {
       let inx_end_ez;
       if(this.podPodMaterial.kolvo) {
         try {
-          let pars = this.podPodMaterial.kolvo
+          let pars = JSON.parse(this.podPodMaterial.kolvo)
           if(kolvo) {
             kolvo = {
               c1: pars.c1,

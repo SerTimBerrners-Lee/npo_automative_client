@@ -66,7 +66,7 @@
     </div> 
     <div class="btn-control">
       <button class="btn-small">Печать</button>
-      <button class="btn-small">Сбросить все фильтры</button>
+      <button class="btn-small" @click='clearFilter'>Сбросить все фильтры</button>
     </div>
     <DescriptionModal 
       v-if='description'
@@ -107,7 +107,7 @@
 </template>
 
 <script>
-import {mapActions, mapGetters} from 'vuex';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
 import DescriptionModal from '@/components/description-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
@@ -139,10 +139,15 @@ export default {
 
       assemble_props: null,
 
-      loader: false
+      loader: false,
+      span_ship: null
 		}
 	},
-  computed: mapGetters(['getShipments', 'getTypeOperations', 'getAssembles']),
+  computed: mapGetters([
+    'getShipments', 
+    'getTypeOperations', 
+    'getAssembles'
+  ]),
 	components: {
     OperationModal, 
     DescriptionModal, 
@@ -152,21 +157,32 @@ export default {
   },
 	methods: {
     ...mapActions([
-      // 'fetchAllShipmentsAssemble', 
+      'fetchAllShipmentsAssemble', 
       'fetchAssemble',
       'fetchAssembleById',
       'getAllTypeOperations',
       'getOneCbEdField'
     ]),
+    ...mapMutations([
+      'filterAssemblByShipments', 
+      'breackFIlterAssembl'
+    ]),
     toSetOrders(shipments, e) {
-      if(e.classList.item(1)) {
-        shipments.assemble.forEach(or => { this.assembles = this.assembles.filter(el => el.id != or.id)})
-        return e.classList.remove('checkbox_block_select')
+      if(this.span_ship) {
+        this.breackFIlterAssembl()
+        this.span_ship.classList.remove('checkbox_block_select')
       }
-      e.classList.add('checkbox_block_select')
-      shipments.assemble.forEach(or => { 
-        this.fetchAssembleById(or.id).then(result => this.assembles.push(result))
-      })
+      this.span_ship = e
+      this.span_ship.classList.add('checkbox_block_select')
+      if(shipments.cbeds && shipments.cbeds.length)
+        this.filterAssemblByShipments(shipments.cbeds)
+    },
+    clearFilter() {
+      this.breackFIlterAssembl()
+      if(this.span_ship) {
+        this.span_ship.classList.remove('checkbox_block_select')
+        this.span_ship = null
+      }
     },
     openDescription(description) {
       this.descriptionKey = random(1, 999)
@@ -240,9 +256,11 @@ export default {
 	},
 	async mounted() {
     this.loader = true
+    await this.fetchAllShipmentsAssemble()
     await this.fetchAssemble()
     await this.getAllTypeOperations()
     this.filterOperation()
+    console.log(this.getShipments)
     this.loader = false
 	}
 }

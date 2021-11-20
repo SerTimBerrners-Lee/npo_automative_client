@@ -127,7 +127,6 @@ export default {
     },
     clickPTInstrument(PTInstrument) {
       this.PTInstrument = PTInstrument
-      console.log(PTInstrument)
       this.getAllPTInstances(PTInstrument.id)
     },
     clickPPTInstrument(PPTInstrument) {
