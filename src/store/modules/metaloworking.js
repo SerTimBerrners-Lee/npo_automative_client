@@ -52,11 +52,22 @@ export default {
   },
   mutations: {
     allMetaloworking(state, result) { 
-      state.metaloworkings = result
+      state.metaloworkings = []
+      for(let met of result) {
+        met.tech_process = []
+        if(met.detal && met.detal.techProcesses) {
+          met.tech_process = met.detal.techProcesses
+        }
+        state.metaloworkings.push(met)
+      }
     },
     allMetaloworkingOperation(state, result) {
       state.metaloworkings = []
       for(let r of result) {
+        r.metal.tech_process = []
+        if(r.metal.detal && r.metal.detal.techProcesses) 
+          r.metal.tech_process = r.metal.detal.techProcesses
+
         let {description, id, ...operation} = r.operation
         state.metaloworkings.push({...operation, ...r.metal, description, operation_id: id})
       }

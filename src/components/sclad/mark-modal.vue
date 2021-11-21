@@ -103,6 +103,8 @@ export default {
 			obj_kolvo_create_in_operation: 0,
 			obj_kolvo_all: 0, 
 			min_det: 1,
+			assemble_id: null,
+			metaloworking_id: null,
 
 			description: '',
 			user_id: 1,
@@ -137,6 +139,8 @@ export default {
 				description: this.description,
 				user_id: this.user_id,
 				oper_id: this.operation_id,
+				assemble_id: this.assemble_id,
+				metaloworking_id: this.metaloworking_id
 			}
 
 			this.fetchCreateMarks(data).then(res => {
@@ -167,8 +171,13 @@ export default {
 
 		if(this.$props.parametrs) {
 			const izd = this.$props.parametrs
-			if(this.$props.type_izd == 'cb') this.obj_name = izd.cbed.name
-			else  this.obj_name = izd.detal.name
+			if(this.$props.type_izd == 'cb') {
+				this.obj_name = izd.cbed.name
+				this.assemble_id = izd.id
+			} else  {
+				this.obj_name = izd.detal.name
+				this.metaloworking_id = izd.id
+			}
 
 			this.obj_max_det = izd.kolvo_shipments - returnKolvoCreate(izd) 
 			this.obj_kolvo_create_in_operation = returnKolvoCreate(izd) 

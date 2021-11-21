@@ -50,14 +50,26 @@ export default {
   },
   mutations: {
     allAssemble(state, result) { 
-      state.assembles = result
+      state.assembles = []
+      for(let ass of result) {
+        ass.tech_process = []
+        if(ass.cbed && ass.cbed.techProcesses) {
+          ass.tech_process = ass.cbed.techProcesses
+        }
+        state.assembles.push(ass)
+      }
     },
     allAssembleOperation(state, result) { 
       state.assembles = []
       for(let r of result) {
+        r.ass.tech_process = []
+        if(r.ass.cbed && r.ass.cbed.techProcesses) {
+          r.ass.tech_process = r.ass.cbed.techProcesses
+        }
         let {description, id, ...operation} = r.operation
         state.assembles.push({...operation, ...r.ass, description, operation_id: id})
       }
+      console.log(state.assembles)
     },
     filterAssemblByShipments(state, cbeds) {
       let new_arr = []

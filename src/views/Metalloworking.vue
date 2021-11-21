@@ -28,6 +28,7 @@
             <th>Заказ склада</th>
             <th>Дата готовности</th> 
             <th>Деталь</th>
+            <th>Артикул Детали</th>
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
             <th>Габариты заготовки</th>
@@ -47,6 +48,7 @@
               <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='returnShipmentsKolvo(metalowork.detal.shipments)' class='link_img' atl='Показать' />
             </td>
             <td>{{ metalowork.detal ? metalowork.detal.name: "Нет детали" }}</td>
+            <td>{{ metalowork.detal ? metalowork.detal.articl: "Нет детали" }}</td>
             <td class='center'>{{ metalowork.kolvo_shipments }}</td>
             <td class='center'>{{ metalowork.detal ? metalowork.detal.kolvo_shipments : 'Нет детали' }}</td>
             <td class='center'>{{ metalowork.detal ? metalowork.detal.DxL : 'Нет детали' }}</td>
@@ -56,7 +58,7 @@
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
             <td>{{  }}</td>
-            <td>{{ metalowork.status }}</td>
+            <td :class='metalowork.status == "Готово" ? "success_operation" : "work_operation"'>{{ metalowork.status }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
             </td>
@@ -67,7 +69,7 @@
             </td>
           </tr>
         </table>
-      </div>
+      </div> 
     </div>
      <div class="btn-control">
         <button class="btn-small">Печать</button>

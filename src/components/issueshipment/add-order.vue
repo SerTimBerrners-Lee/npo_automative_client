@@ -280,18 +280,25 @@ export default {
 			if(izd.cbeds && izd.cbeds.length && izd.listCbed) {
 				let list_cbed = JSON.parse(izd.listCbed)
 				this.pushElement(izd.cbeds, list_cbed, 'cbed')
-				for(let cb of list_cbed ) {
+				for(let cb of list_cbed) {
 					this.getOneCbEdById(cb.cb.id).then(res => {
-						let cbeds =  res.listCbed ? JSON.parse(res.listCbed) : []
+						let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
+						let detals = res.listDetal ? JSON.parse(res.listDetal) : []
 						if(cbeds.length) {
 							for(let inx in cbeds) {
 								cbeds[inx] = cbeds[inx].cb
 							}
 						}
+						if(detals.length) {
+							for(let inx in detals) {
+								detals[inx] = detals[inx].det
+							}
+						}
 						for(let i = 0; i < cb.kol; i++) {
 							this.checkedJsonList({...res, cbeds})
+							this.checkedJsonList({...res, detals})
 						}
-					}) 
+					})
 				}
 			}
 

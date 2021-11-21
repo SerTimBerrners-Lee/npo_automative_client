@@ -45,6 +45,7 @@
               <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='returnShipmentsKolvo(assemble.cbed.shipments)' class='link_img' atl='Показать' />
             </td>
             <td>{{ assemble.cbed ? assemble.cbed.name : 'Нет СБ' }}</td>
+            <td>{{ assemble.cbed ? assemble.cbed.articl : 'Нет СБ' }}</td>
             <td class='center'>{{ assemble.kolvo_shipments }}</td>
             <td class='center'>{{ assemble.cbed ? assemble.cbed.shipments_kolvo : 'Нет СБ' }}</td>
             <td class='center'>
@@ -61,7 +62,7 @@
               <img src="@/assets/img/link.jpg" @click='openDescription(assemble.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
-        </table>
+        </table> 
       </div>
     </div> 
     <div class="btn-control">
@@ -260,7 +261,6 @@ export default {
     await this.fetchAssemble()
     await this.getAllTypeOperations()
     this.filterOperation()
-    console.log(this.getShipments)
     this.loader = false
 	}
 }
@@ -268,7 +268,7 @@ export default {
 <style scoped>
 .table_block{
   display: flex;
-}
+} 
 .block {
   padding: 5px;
 }
