@@ -44,9 +44,9 @@
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='returnShipmentsKolvo(assemble.cbed.shipments)' class='link_img' atl='Показать' />
             </td>
-            <td>{{ assemble.cbed.name }}</td>
+            <td>{{ assemble.cbed ? assemble.cbed.name : 'Нет СБ' }}</td>
             <td class='center'>{{ assemble.kolvo_shipments }}</td>
-            <td class='center'>{{ assemble.cbed.shipments_kolvo }}</td>
+            <td class='center'>{{ assemble.cbed ? assemble.cbed.shipments_kolvo : 'Нет СБ' }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>
@@ -54,7 +54,7 @@
             <td>{{ "нет" }}</td>
             <td :class='assemble.status == "Готово" ? "success_operation" : "work_operation" '>{{ assemble.status }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
             </td>
             <td class='hover center'>{{ showAllTimers(assemble) }}</td>
             <td class='center'>
