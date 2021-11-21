@@ -10,11 +10,16 @@
 					/>
 				<span>Выбрать изделие: </span>
 				<span 
-					v-if='select_product' 
+					v-if='select_product && !is_not_product' 
 					class='select_span_href'>{{ select_product.name }}</span>
-				<button class="btn-small btn-add" @click='selectProduct'>Выбрать</button>
+				<button 
+					class="btn-small btn-add" 
+					@click='selectProduct' 
+					:disabled='is_not_product'>Выбрать</button>
+				<label for='is_not_product'>Заказ без изделия:</label>
+				<input id='is_not_product' type="checkbox" v-model='is_not_product'>
 				<span>Количество:</span>
-				<input type="number" min='1' v-model='kol'>
+				<input type="number" min='1' v-model='kol' :disabled='is_not_product'>
 			</p>
 			<p class='p_flex'>
 				<span>Дата отгрузки:</span>
@@ -192,6 +197,7 @@ export default {
 			select_product: null,
 			description: '',
 			list_cbed_detal: [],
+			is_not_product: false
 		}
 	},
 	watch: {
@@ -281,24 +287,7 @@ export default {
 				let list_cbed = JSON.parse(izd.listCbed)
 				this.pushElement(izd.cbeds, list_cbed, 'cbed')
 				for(let cb of list_cbed) {
-					this.getOneCbEdById(cb.cb.id).then(res => {
-						let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
-						let detals = res.listDetal ? JSON.parse(res.listDetal) : []
-						if(cbeds.length) {
-							for(let inx in cbeds) {
-								cbeds[inx] = cbeds[inx].cb
-							}
-						}
-						if(detals.length) {
-							for(let inx in detals) {
-								detals[inx] = detals[inx].det
-							}
-						}
-						for(let i = 0; i < cb.kol; i++) {
-							this.checkedJsonList({...res, cbeds})
-							this.checkedJsonList({...res, detals})
-						}
-					})
+					this.getOneCbEdById(cb.cb.id).then(res => this.parserListIzd(res, cb.kol))
 				}
 			}
 
@@ -368,7 +357,28 @@ export default {
 						
 			}
 		},
+		parserListIzd(res, kol) {
+				let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
+				let detals = res.listDetal ? JSON.parse(res.listDetal) : []
+				if(cbeds.length) {
+					for(let inx in cbeds) {
+						cbeds[inx] = cbeds[inx].cb
+					}
+				}
+				if(detals.length) {
+					for(let inx in detals) {
+						detals[inx] = detals[inx].det
+					}
+				}
+				for(let i = 0; i < kol; i++) {
+					this.checkedJsonList({...res, cbeds})
+					this.checkedJsonList({...res, detals})
+				}
+		},
 		responseDetalCb(res) {
+			if(res && res.type == 'cbed') 
+				this.parserListIzd(res.obj, 1)
+
 			this.list_cbed_detal.push({
 				...res, 
 				obj: {id: res.obj.id, name: res.obj.name},
@@ -401,7 +411,7 @@ export default {
 		save_order() {
 			if(!this.date_order || !this.date_shipments 
 				|| !this.kol || !this.base 
-				|| !this.select_product	) 
+				|| (!this.select_product && !this.is_not_product)) 
 				return showMessage('', 'Все поля должны быть заполнены', 'w', this)
 			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w', this)
 			this.loader = true
@@ -413,13 +423,16 @@ export default {
 				base: this.base,
 				buyer: this.buyer,
 				to_sklad: this.to_sklad,
-				product: {
-					id: this.select_product.id,
-					name: this.select_product.name
-				},
+				is_not_product: this.is_not_product,
 				description: this.description,
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
 			} 
+			if(this.select_product) {
+				data['product'] = {
+					id: this.select_product.id,
+					name: this.select_product.name
+				}
+			}
 			if(this.baseFormData.get('document') && this.baseFormData.get('docs') ) {
 				this.formData.append('document', this.baseFormData.get('document'))
 				try {
@@ -455,6 +468,7 @@ export default {
 			this.base = this.getOneShipments.base
 			this.buyer = this.getOneShipments.id
 			this.to_sklad = this.getOneShipments.to_sklad
+			this.is_not_product = this.getOneShipments.is_not_product
 			if(this.getOneShipments.product) {
 				this.getAllProductByIdLight(this.getOneShipments.product.id)
 				.then(res => this.select_product = res)
@@ -497,6 +511,8 @@ label {
 	font-weight: bold;
 	margin-left: 5px;
 	font-size: 15px;
+	cursor: pointer;
+	user-select: none;
 }
 .input_kol {
 	width: 20px;

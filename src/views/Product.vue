@@ -85,6 +85,7 @@
             <span style='font-weight:bold;'>{{ par.znach }} </span>
           </p>
         </div>
+        <h3 class="link_h3" @click='showTechProcess' v-if='selecteProduct.techProcesses'>Технологический процес</h3>
         <div>
         <span>Описание / Примечание</span>
         <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
@@ -112,16 +113,22 @@
       </div>
     </div>
     <Loader v-if='loader' />
+    <TechProcess 
+      v-if='techProcessIsShow'
+      :key='techProcessKey'
+      @unmount='unmount_tech_process'
+      :techProcessID='techProcessID'
+    />
   </div>
 </template>
  
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import Search from '@/components/search.vue'
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import Search from '@/components/search.vue';
 import OpensFile from '@/components/filebase/openfile.vue'
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import { random } from 'lodash'
-
+import { random, isEmpty } from 'lodash';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 export default {
   data() {
     return {
@@ -130,13 +137,16 @@ export default {
 
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(1, 23123),
+      keyWhenModalGenerateFileOpen: random(1, 999),
+      techProcessID: null,
+      techProcessIsShow: false,
+      techProcessKey: random(1, 999),
 
       loader: false
     }
   },
   computed: mapGetters(['allProduct']),
-  components: {Search, OpensFile, MediaSlider},
+  components: {Search, OpensFile, MediaSlider, TechProcess},
   methods: {
     ...mapActions(['getAllProduct', 'fetchDeleteProduct']),
     ...mapMutations([
@@ -181,7 +191,14 @@ export default {
     setDocs(dc) {
       this.itemFiles = dc
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(1, 23123)
+      this.keyWhenModalGenerateFileOpen = random(1, 999)
+    },
+    showTechProcess() {
+      if(isEmpty(this.selecteProduct)) return false
+      if(!this.selecteProduct.techProcesses) return false
+      this.techProcessID = this.selecteProduct.techProcesses.id
+      this.techProcessIsShow = true
+      this.techProcessKey = random(1, 999)
     },
   },
   async mounted() {

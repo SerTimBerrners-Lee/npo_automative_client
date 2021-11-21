@@ -8,7 +8,7 @@
             <table class="table-base-detal">
               <tr>
                 <th colspan="3" scope="col">Изделие</th>
-              </tr>
+              </tr> 
               <tr> 
                 <th>Заводской номер</th>
                 <th>Артикул</th>
@@ -92,57 +92,64 @@
     
     <div class="right_info_block" v-if='selectedCbEd'>
       <h3>Краткая Информация о сборочной единице</h3>
-    <div class="block">
-      <p>
-        <span class="title_span">Наименование: </span><span style='font-weight:bold;'>{{ selectedCbEd.name }}</span>
-      </p>
-      <p>
-        <span class="title_span">Артикул: </span><span style='font-weight:bold;'>{{ selectedCbEd.articl }}</span>
-      </p>
-      <MediaSlider v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
-      <div v-if='selectedCbEd.haracteriatic'>
-        <h3>Характеристики</h3>
-        <p v-for='har in JSON.parse(selectedCbEd.haracteriatic)' :key='har'>
-          <span>{{ har.name }}({{har.ez}}): </span>
-          <span style='font-weight:bold;'>{{ har.znach }} </span>
+      <div class="block">
+        <p>
+          <span class="title_span">Наименование: </span><span style='font-weight:bold;'>{{ selectedCbEd.name }}</span>
         </p>
-      </div>
-      <div v-if='selectedCbEd.parametrs'>
-        <h3>Параметры</h3>
-        <p v-for='par in JSON.parse(selectedCbEd.parametrs)' :key='par'>
-          <span>{{ par.name }}({{par.ez}}): </span>
-          <span style='font-weight:bold;'>{{ par.znach }} </span>
+        <p>
+          <span class="title_span">Артикул: </span><span style='font-weight:bold;'>{{ selectedCbEd.articl }}</span>
         </p>
-      </div>
-      <div>
-      <h3>Описание / Примечание</h3>
-      <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selectedCbEd.description'> </textarea>
-      </div>
-      <div v-if='selectedCbEd.documents.length > 0'>
-        <h3>Документы</h3>
-        <table style="width: 100%;">
-          <tr>
-            <th>Файл</th>
-          </tr> 
-          <tr class="td-row" v-for='doc in selectedCbEd.documents' 
-            :key='doc'
-              @click='setDocs(doc)'>
-            <td>{{ doc.name }}</td>
-          </tr>
-        </table>
-        <div class="btn-control" style='width: 100%'>
-        <button class="btn-small" @click='openDock'>Открыть</button>
+        <MediaSlider v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
+        <div v-if='selectedCbEd.haracteriatic'>
+          <h3>Характеристики</h3>
+          <p v-for='har in JSON.parse(selectedCbEd.haracteriatic)' :key='har'>
+            <span>{{ har.name }}({{har.ez}}): </span>
+            <span style='font-weight:bold;'>{{ har.znach }} </span>
+          </p>
         </div>
-        <OpensFile 
-          :parametrs='itemFiles' 
-          v-if="showFile" 
-          @unmount='openFile'
-          :key='keyWhenModalGenerateFileOpen'
-        />
-      </div> 
-    </div>
+        <div v-if='selectedCbEd.parametrs'>
+          <h3>Параметры</h3>
+          <p v-for='par in JSON.parse(selectedCbEd.parametrs)' :key='par'>
+            <span>{{ par.name }}({{par.ez}}): </span>
+            <span style='font-weight:bold;'>{{ par.znach }} </span>
+          </p>
+        </div>
+        <div>
+        <h3>Описание / Примечание</h3>
+          <textarea maxlength='250' style="width: 90%; height: 120px;" :value='selectedCbEd.description'> </textarea>
+        </div>
+        <h3 class="link_h3" @click='showTechProcess' v-if='selectedCbEd.techProcesses'>Технологический процес</h3>
+        <div v-if='selectedCbEd.documents.length > 0'>
+          <h3>Документы</h3>
+          <table style="width: 100%;">
+            <tr>
+              <th>Файл</th>
+            </tr> 
+            <tr class="td-row" v-for='doc in selectedCbEd.documents' 
+              :key='doc'
+                @click='setDocs(doc)'>
+              <td>{{ doc.name }}</td>
+            </tr>
+          </table>
+          <div class="btn-control" style='width: 100%'>
+          <button class="btn-small" @click='openDock'>Открыть</button>
+          </div>
+          <OpensFile 
+            :parametrs='itemFiles' 
+            v-if="showFile" 
+            @unmount='openFile'
+            :key='keyWhenModalGenerateFileOpen'
+          />
+        </div> 
+      </div>
     </div>
     <Loader v-if='loader' />
+    <TechProcess 
+      v-if='techProcessIsShow'
+      :key='techProcessKey'
+      @unmount='unmount_tech_process'
+      :techProcessID='techProcessID'
+    />
   </div>
 </template>
  
@@ -150,9 +157,9 @@
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import Search from '@/components/search.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import { random } from 'lodash';
+import { random, isEmpty } from 'lodash';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 export default {
   data() {
     return {
@@ -163,15 +170,22 @@ export default {
 
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(1, 23123),
+      keyWhenModalGenerateFileOpen: random(1, 999),
+      techProcessIsShow: false, 
+      techProcessKey: random(1, 999),
+      techProcessID: null,
 
       loader: false
     }
   },
   computed: mapGetters(['allCbed', 'allProduct']),
-  components: {Search, OpensFile, MediaSlider},
+  components: {Search, OpensFile, MediaSlider, TechProcess},
   methods: {
-    ...mapActions(['getAllCbed', 'deleteCbedById', 'getAllProduct']),
+    ...mapActions([
+      'getAllCbed', 
+      'deleteCbedById', 
+      'getAllProduct'
+    ]),
     ...mapMutations([
       'setOneCbed', 
       'searchCbed', 
@@ -240,6 +254,13 @@ export default {
       this.itemFiles = dc
       this.showFile = true
       this.keyWhenModalGenerateFileOpen = random(1, 999)
+    },
+    showTechProcess() {
+      if(isEmpty(this.selectedCbEd)) return false
+      if(!this.selectedCbEd.techProcesses) return false
+      this.techProcessID = this.selectedCbEd.techProcesses.id
+      this.techProcessIsShow = true
+      this.techProcessKey = random(1, 999)
     },
   },
   async mounted() {

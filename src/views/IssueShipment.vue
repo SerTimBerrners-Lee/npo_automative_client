@@ -32,8 +32,8 @@
 						class='td-row'
 						@click='e => setShipments(shipments, e.target.parentElement)'>
 						<td>{{ shipments.number_order }}</td>
-						<td>{{ shipments.product.articl }}</td>
-						<td>{{ shipments.product.name }}</td>
+						<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
+						<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
 						<td>
 							<div class='osob' v-if='shipments.list_cbed_detal'>
 								<p v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'

@@ -65,9 +65,7 @@
         <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
       </div>
       </div>
-
     </div>
-    
   </div>
 </div>
  <TechProcess 
@@ -75,7 +73,7 @@
     :key='techProcessKey'
     @unmount='unmount_tech_process'
     :techProcessID='techProcessID'
-/>
+  />
 </template>
 
 <script>
@@ -84,7 +82,6 @@ import {isEmpty, random} from 'lodash';
 import {mapGetters, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import TechProcess from './tech-process-modal.vue';
-
 export default {
   props: ['parametrs'],
   data() {
@@ -96,13 +93,13 @@ export default {
       itemFiles: null,
       showFile: false,
       showProviders: false,
-      keyProvidersModal: random(1, 34342),
-      keyWhenModalGenerateFileOpen: random(1, 23123),
+      keyProvidersModal: random(1, 999),
+      keyWhenModalGenerateFileOpen: random(1, 999),
       mat_zag: null,
       generateTime: null,
 
       techProcessIsShow: false,
-      techProcessKey: random(10, 33e6),
+      techProcessKey: random(10, 999),
       techProcessID: null,
     }
   },
@@ -124,7 +121,7 @@ export default {
       if(isEmpty(this.itemFiles))
         return 0
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 384e5)
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     openFile(res) {
       console.log(res)
@@ -140,7 +137,7 @@ export default {
     },
     showTechProcess() {
       this.techProcessIsShow = true
-      this.techProcessKey = random(1, 12e8)
+      this.techProcessKey = random(1, 999)
     },
   },
   async mounted() {
