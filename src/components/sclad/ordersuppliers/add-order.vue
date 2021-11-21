@@ -331,7 +331,7 @@ export default {
       if(!this.selected_material)
         return 0
       let material = this.selected_material
-      console.log(material, 'material')
+
       for(let mat of this.material_lists) {
         if(material.id == mat.id && material.type == mat.type) return 0
       }
@@ -388,8 +388,10 @@ export default {
       this.select_m = material
     },
     save() {
-      if(!this.provider || !this.material_lists.length)
+      if(!this.provider)
         return showMessage('', 'Выберите поставщика', 'w', this)
+      if(!this.material_lists.length) 
+        return showMessage('', 'Выберите позиции для прихода', 'w', this)
 
       this.formData.append('provider_id', this.provider.id)
       this.formData.append('number_check', this.number_check)

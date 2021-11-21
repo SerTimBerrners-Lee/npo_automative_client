@@ -29,7 +29,7 @@
             :key="order">
             <td>{{ order.name }}</td>
             <td>{{ order.date_create }}</td>
-            <td>{{ order.provider.name }}</td>
+            <td>{{ order.provider ? order.provider.name : 'Нет поставщика' }}</td>
             <td>{{ order.number_check }}</td>
             <td>{{ order.count }}</td>
             <td>{{ order.date_shipments }}</td>
