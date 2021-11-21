@@ -38,6 +38,7 @@
           </table>
           <div class="btn-control">
             <button class="btn-small" @click="delContact" v-if="contact">Удалить</button>
+            <button class="btn-small" @click="editContact" v-if="contact">Редактировать</button>
             <button class="btn-small btn-add" @click="addContact">Добавить</button>
           </div>
         </div>
@@ -132,6 +133,7 @@
       <AddContact 
         :key='keyModal'
         @unmount='unmount'
+        :parametrs='contact'
         v-if="isShow"
       />
       <ModalBaseMaterial 
@@ -208,7 +210,7 @@ export default {
       equipmentListId: [],
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 1222),
+      keyWhenModalGenerateFileOpen: random(10, 999),
       instrumentKey: random(1, 999),
       instrumentMerIsShow: false,
       eqKey: random(1, 999),
@@ -234,6 +236,7 @@ export default {
     unmount(data) {
       if(!data)
         return 0;
+      if(this.contact) return this.obj.contact[this.contact.index] = {...data}
       this.obj.contact.push({...data})
     },
     unmount_material(res) {
@@ -260,7 +263,8 @@ export default {
       }
     },
     addContact() { 
-      this.keyModal = random(1, 22312)
+      this.contact = null
+      this.keyModal = random(1, 999)
       this.isShow = true
     },
     getContact(cont, index) {
@@ -269,6 +273,11 @@ export default {
     delContact() {
       if(!this.contact) return 0;
       this.obj.contact = this.obj.contact.filter((a, index) => index != this.contact.index)
+    },
+    editContact() {
+      if(!this.contact) return 0;
+      this.keyModal = random(1, 999)
+      this.isShow = true
     },
     changeRek(e, inx) {
       this.obj.rekvisit.forEach((rek, index) => {

@@ -57,6 +57,11 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
+    
+    if(this.$props.parametrs) {
+      this.initial = this.$props.parametrs.cont.initial
+      this.description = this.$props.parametrs.cont.description
+    }
   },
 }
 </script>
