@@ -405,16 +405,20 @@ export default {
         this.formData.append('id', this.$props.order_parametr.id)
           this.updateDeliveries(this.formData).then(res => {
             if(res) {
+              showMessage('', 'Успешно!', 's', this)
               this.$emit('unmount', res)
-              return this.destroyModalF()
             }
+            else showMessage('', 'Произошла ошибка при создании поставки', 'e', this)
+            setTimeout(() => this.destroyModalF(), 1000)
           })
       } else {
         this.fetchNewDeliveries(this.formData).then(res => {
           if(res) {
+            showMessage('', 'Успешно!', 's', this)
             this.$emit('unmount', res)
-            return this.destroyModalF()
           }
+          else showMessage('', 'Произошла ошибка при создании поставки', 'e', this)
+          setTimeout(() => this.destroyModalF(), 1000)
         })
       }
     },
