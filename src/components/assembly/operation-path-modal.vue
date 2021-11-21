@@ -32,7 +32,7 @@
         <ComplectationCbed 
           :izdel='assemble.cbed'
         />
-
+ 
         <OperationTable 
           :tp='props_tp' 
           :izdeles='props_izdeles'

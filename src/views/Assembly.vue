@@ -83,7 +83,7 @@
       v-if="showOperationPathModal" 
       :key='keyOperationPathModal'
     />
-    <InformFolder  
+    <InformFolder   
       :title='titleMessage'
       :message = 'message'
       :type = 'type'

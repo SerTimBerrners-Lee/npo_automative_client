@@ -96,11 +96,10 @@ export default {
     this.hiddens = 'opacity: 1;'
 
     let metal = this.$props.metaloworking
-    console.log(metal)
 
     if(metal) {
       this.props_tp = metal.tech_process
-      this.props_izdeles = metal.detal
+      this.props_izdeles = metal
 
       try {
         if(metal.detal) 
