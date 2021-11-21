@@ -63,6 +63,7 @@ export default {
       let new_arr = []
       for(let ass of state.assembles) {
         for(let cbed of cbeds) {
+          if(!ass.cbed) continue
           if(cbed.id == ass.cbed.id) new_arr.push(ass)
         }
       }

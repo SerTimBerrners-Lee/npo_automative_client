@@ -65,6 +65,7 @@ export default {
       let new_arr = []
       for(let met of state.metaloworkings) {
         for(let detal of detals) {
+          if(!met.detal) continue
           if(detal.id == met.detal.id) new_arr.push(met)
         }
       }

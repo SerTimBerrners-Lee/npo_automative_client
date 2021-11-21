@@ -42,7 +42,7 @@
           <tr v-for='assemble of getAssembles' :key='assemble'>
             <td>{{ assemble.date_order }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='returnShipmentsKolvo(assemble.cbed.shipments)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='returnShipmentsKolvo(assemble.cbed.shipments)' class='link_img' atl='Показать' />
             </td>
             <td>{{ assemble.cbed ? assemble.cbed.name : 'Нет СБ' }}</td>
             <td class='center'>{{ assemble.kolvo_shipments }}</td>
