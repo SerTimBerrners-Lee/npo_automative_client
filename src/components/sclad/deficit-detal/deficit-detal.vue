@@ -15,7 +15,7 @@
       </div>
 
       <div class='table_block'> 
-        <div class="scroll-table" style='width: 99%;'>
+        <div style='width: 99%;'> 
           <table>
             <tr>
               <th colspan="4">Детали для сборок из комплектации</th>

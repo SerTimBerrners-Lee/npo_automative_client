@@ -16,7 +16,7 @@
     </div>
     
     <div class='table_block'>
-      <div class="table-scroll" style='margin-left: 5px;'>
+      <div style='margin-left: 5px;'>
         <table>
           <tr>
             <th colspan="6">Комплектация сборки, детали</th>
@@ -86,14 +86,14 @@
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
-            <td class='center'>{{ detal.detal_kolvo - detal.kolvo_shipments }}</td>
+            <td class='center'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ 0 }}</td>
-            <td class='center'>{{ detal.detal_kolvo + detal.kolvo_shipments }}</td>
+            <td class='center'>{{ detal.detal_kolvo + detal.shipments_kolvo }}</td>
             <td class='center'>{{ getTimming(detal.parametrs) }}</td>
-            <td class='center'>{{ detal.detal_kolvo + detal.kolvo_shipments }}</td> 
+            <td class='center'>{{ detal.detal_kolvo + detal.shipments_kolvo }}</td> 
             <td class='center'>{{ detal.parametrs ? 
-              getTimming(detal.parametrs, detal.kolvo_shipments)
+              getTimming(detal.parametrs, detal.shipments_kolvo)
               : '' }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{  }}</td>
