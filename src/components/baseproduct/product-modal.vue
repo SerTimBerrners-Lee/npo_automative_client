@@ -15,7 +15,7 @@
 					</p>
 					<MediaSlider :width='"width: 93%;"' v-if='selecteProduct.documents.length' :data='selecteProduct.documents' :key='selecteProduct.documents' />
 					<div>
-						<h3>Спетификация Сборочной единицы</h3>
+						<h3>Спетификация Изделия</h3>
 						<TableSpetification
 							:listCbed='listCbed'
 							:listDetal='listDetal'
