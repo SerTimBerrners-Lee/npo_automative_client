@@ -2,7 +2,6 @@
   <div class='main_block_content'>
     <h3>Редактировать изделие</h3>
     <div class="block title_block">
-      <div>
         <p><span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'></p>
         <p><span>Артикул: </span><input type="text" v-model.trim='obj.articl'></p>
         <p><span>Наименование: </span><input type="text" v-model.trim='obj.name'></p>
@@ -21,7 +20,6 @@
             id='attention' 
             v-model='attention'>
         </p>
-      </div>
     </div>
     <div class="content_block">
       <div class="left_content">
@@ -29,71 +27,12 @@
           <div class="content_left_block_left">
             <div>
               <h3>Комплектация </h3>
-              <table class="tables_bf" >
-                <tr>
-                  <th>Артикул</th>
-                  <th>Наименование</th>
-                  <th>Ед.</th>
-                  <th>Кол-вл</th>
-                </tr>
-                 <tr>
-                  <th colspan="4">Сборочные Единицы (Тип СБ)</th>
-                </tr>
-                <tr v-for='cb in listCbed' :key='cb.cb'>
-                  <td>{{ cb.art }} </td>
-                  <td>{{ cb.cb.name }}</td>
-                  <td> <span v-if="cb.ez == 1"> шт</span> 
-                    <span v-if="cb.ez == 2"> л </span>
-                    <span v-if="cb.ez == 3"> кг</span> 
-                    <span v-if="cb.ez == 4"> м </span>
-                    <span v-if="cb.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ cb.kol }}</td>
-                </tr>
-                <tr>
-                  <th colspan="4">Детали (Тип Д)</th>
-                </tr>
-                <tr v-for='detal in listDetal' :key='detal.det'>
-                  <td>{{ detal.art }} </td>
-                  <td>{{ detal.det.name }}</td>
-                  <td> <span v-if="detal.ez == 1"> шт</span> 
-                    <span v-if="detal.ez == 2"> л </span>
-                    <span v-if="detal.ez == 3"> кг</span> 
-                    <span v-if="detal.ez == 4"> м </span>
-                    <span v-if="detal.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ detal.kol }}</td>
-                </tr>
-                <tr>
-                  <th colspan="4">Стандартные или покупные детали (Тип ПД)</th>
-                </tr>
-                <tr v-for='material in listPokDet' :key='material.mat'>
-                  <td>{{ material.art }} </td>
-                  <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                    <span v-if="material.ez == 2"> л </span>
-                    <span v-if="material.ez == 3"> кг</span> 
-                    <span v-if="material.ez == 4"> м </span>
-                    <span v-if="material.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ material.kol }}</td>
-                </tr>
-                <tr>
-                  <th colspan="4">Расходные материалы (Тип РМ)</th>
-                </tr>
-                <tr v-for='material in materialList' :key='material.mat'>
-                  <td>{{ material.art }} </td>
-                  <td>{{ material.mat.name }}</td>
-                  <td> 
-                    <span v-if="material.ez == 1"> шт</span> 
-                    <span v-if="material.ez == 2"> л </span>
-                    <span v-if="material.ez == 3"> кг</span> 
-                    <span v-if="material.ez == 4"> м </span>
-                    <span v-if="material.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ material.kol }}</td>
-                </tr>
-              </table>
+              <TableSpetification
+                :listCbed='listCbed'
+                :listDetal='listDetal'
+                :listPokDet='listPokDet'
+                :materialList='materialList'
+              />
               <!-- Покупные Детали -->
               <ModalBaseMaterial 
                 :key='modalMaterialKey'
@@ -311,6 +250,7 @@ import PATH_TO_SERVER from '@/js/path';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import TableSpetification from '@/components/cbed/table-sptification.vue';
 export default {
   data() {
     return {
@@ -395,7 +335,8 @@ export default {
     BaseCbedModal,
     MediaSlider,
     OpensFile,
-    BaseFileModal},
+    BaseFileModal,
+    TableSpetification},
   methods: {
     ...mapActions([
       'createNewProduct', 
@@ -573,7 +514,7 @@ export default {
     },
 
     exit(){
-      this.$router.push("/product")
+      this.$router.back()
       this.deleteStorageData()
       this.delitPathNavigate(this.$route.path)
     },
@@ -622,7 +563,7 @@ export default {
   },
   async mounted() {
     if(isEmpty(this.getOneSelectProduct)) {
-      this.$router.push('/product')
+      this.$router.back()
       return 
     } 
 
@@ -664,7 +605,7 @@ export default {
 .title_block{
   display: flex;
 }
-.title_block>div * {
+.title_block * {
   margin-left: 5px;
 }
 .title_block>div {

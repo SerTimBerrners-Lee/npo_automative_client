@@ -4,39 +4,49 @@
       <h3>База сборочных единиц</h3>
       <div class="main">
         <div class="main_table_control">
-          <div class="scroll-table" >
-            <table class="table-base-detal">
-              <tr>
-                <th colspan="3" scope="col">Изделие</th>
-              </tr> 
-              <tr> 
-                <th>Заводской номер</th>
-                <th>Артикул</th>
-                <th>Наименование</th>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <Search 
-                    :placeholder="'Поиск по Артиклу'"
-                    @unmount='keySearchProduct' 
-                  />
-                </td>
-              </tr>
-              <tr v-for='product in allProduct' 
+          <div>
+            <div class="scroll-table" >
+              <table class="table-base-detal">
+                <tr>
+                  <th colspan="3" scope="col">Изделие</th>
+                </tr> 
+                <tr> 
+                  <th>Заводской номер</th>
+                  <th>Артикул</th> 
+                  <th>Наименование</th> 
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <Search 
+                      :placeholder="'Поиск по Артиклу'"
+                      @unmount='keySearchProduct' 
+                    />
+                  </td>
+                </tr>
+                <tr v-for='product in allProduct' 
                   :key='product'
                   class='td-row'
                   @click='e => setProduct(product, e.target.parentElement)'
+                  @dblclick="infoModalProduct(product)"
                   >
                   <td>{{ product.fabricNumber }}</td>
                   <td>{{ product.articl }}</td>
                   <td>{{ product.name }}</td>
-              </tr>
-              <tr>
+                </tr>
+                <tr>
                   <td></td>
                   <td></td>
                   <td></td>
-              </tr>
-            </table>
+                </tr>
+              </table>
+            </div>
+            <div class="btn-control">
+              <p>
+                <button class="btn-small btn-add" @click='createProduct'>Создать</button>
+                <button class="btn-small btn-add" @click='createCopyProduct'>Создать копированием</button>
+                <button class="btn-small" @click='editProduct'>Редактировать</button>
+              </p>
+            </div>
           </div>
           <div class="scroll-table" >
             <table class="table-base-detal">
@@ -70,9 +80,9 @@
                   <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
               </tr>
               <tr>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
               </tr>
             </table>
           </div>
@@ -100,6 +110,15 @@
           <span class="title_span">Артикул: </span><span style='font-weight:bold;'>{{ selectedCbEd.articl }}</span>
         </p>
         <MediaSlider v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
+        <div>
+          <h3>Спетификация Сборочной единицы</h3>
+          <TableSpetification
+            :listCbed='listCbed'
+            :listDetal='listDetal'
+            :listPokDet='listPokDet'
+            :materialList='materialList'
+          />
+        </div>
         <div v-if='selectedCbEd.haracteriatic'>
           <h3>Характеристики</h3>
           <p v-for='har in JSON.parse(selectedCbEd.haracteriatic)' :key='har'>
@@ -150,6 +169,11 @@
       @unmount='unmount_tech_process'
       :techProcessID='techProcessID'
     />
+    <ProductModalInfo
+      :parametrs='parametrs_product'
+      :key='productModalKey'
+      v-if='parametrs_product'
+    />
   </div>
 </template>
  
@@ -160,6 +184,8 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import { random, isEmpty } from 'lodash';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import TableSpetification from '@/components/cbed/table-sptification.vue';
+import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
 export default {
   data() {
     return {
@@ -174,12 +200,24 @@ export default {
       techProcessIsShow: false, 
       techProcessKey: random(1, 999),
       techProcessID: null,
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
+      productModalKey: random(1, 999),
+      parametrs_product: null,
 
       loader: false
     }
   },
   computed: mapGetters(['allCbed', 'allProduct']),
-  components: {Search, OpensFile, MediaSlider, TechProcess},
+  components: {
+    Search, 
+    OpensFile, 
+    MediaSlider, 
+    TechProcess, 
+    TableSpetification,
+    ProductModalInfo},
   methods: {
     ...mapActions([
       'getAllCbed', 
@@ -201,17 +239,40 @@ export default {
           this.tr_cb.classList.remove('td-row-all')
   
       this.tr_cb = e
+      this.parseSpetification(cbEd)
       this.tr_cb.classList.add('td-row-all')
       this.setOneCbed(this.selectedCbEd)
     },
     sortToAttention() {
       this.filterToAttentionCbed()
     },
+    parseSpetification(obj) {
+      this.materialList = []
+      this.listPokDet = []
+      this.listDetal = []
+      this.listCbed = []
+      try {
+        if(obj.materialList)
+          this.materialList = JSON.parse(obj.materialList)
+        if(obj.listPokDet)
+          this.listPokDet = JSON.parse(obj.listPokDet)
+        if(obj.listDetal)
+          this.listDetal = JSON.parse(obj.listDetal)
+        if(obj.listCbed)
+          this.listCbed = JSON.parse(obj.listCbed)
+      } catch(e) {console.log(e)}
+    },
+    infoModalProduct(product) {
+      if(!product) return false 
+      this.parametrs_product = product
+      this.productModalKey = random(1, 999)
+    },
     setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
         this.clearFilterCbedByProduct()
         e.classList.remove('td-row-all')
         this.selecteProduct = null
+        this.parametrs_product= product
         return
       }
       this.selecteProduct = product
@@ -238,6 +299,20 @@ export default {
 
       this.$router.push({path: '/cbed/edit/true'})
     },
+    createProduct() {
+      this.$router.push('/createproduct')
+    },
+    createCopyProduct() {
+      if(!this.selecteProduct)
+        return 0
+      this.$router.push({path: '/product/edit/true'})
+    },
+    editProduct() {
+      if(!this.selecteProduct)
+        return 0
+
+      this.$router.push({path: '/product/edit/false'})
+    }, 
     keySearch(v) {
       this.searchCbed(v)
     },
