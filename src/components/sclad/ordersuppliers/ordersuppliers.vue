@@ -10,7 +10,7 @@
     </div>
 
     <div style='width: fit-content;'>
-      <div class="scroll-table" style='width: 99%;'>
+      <div class="scroll-table" style='width: 99%; height: 550px;'>
         <table>
           <tr>
             <th>№ Заказа</th>
@@ -51,7 +51,13 @@
                     class='td-row'>
                     <td >{{ material.art }}</td>
                     <td >{{ material.name }}</td>
-                    <td v-html='material.ez'></td>
+                    <td >
+                      <span v-if='material.ez == 1'>шт</span>
+                      <span v-if='material.ez == 2'>л</span>
+                      <span v-if='material.ez == 3'>кг</span>
+                      <span v-if='material.ez == 4'>м</span>
+                      <span v-if='material.ez == 5'>м.куб</span>
+                    </td>
                     <td>{{ material.kol }}</td>
                     <td
                       class='tooltip'> {{ material.sum }}

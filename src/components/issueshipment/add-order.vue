@@ -61,7 +61,7 @@
 						:key='obj'
 						class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
 						<td>{{ inx + 1 }}</td>
-						<td>{{ obj.obj.name }}</td>
+						<td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
 						<td class='center'>
 							<input 
 								type="text" 
@@ -148,6 +148,15 @@
 		v-if="itemFiles" 
 		:key='keyWhenModalGenerateFileOpen'
 	/>
+	<DetalModal
+		:key='detalModalKey'
+		v-if='detalIsShow'
+	/>
+	<CbedModalInfo
+		:parametrs='parametrs_cbed'
+		:key='cbedModalKey'
+		v-if='parametrs_cbed'
+	/>
 	<Loader v-if='loader' />
 	</div>
 </template>
@@ -159,8 +168,10 @@ import ProductList from '@/components/baseproduct/all-product-modal.vue';
 import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
 import AddFile from '@/components/filebase/addfile.vue';
 import {showMessage} from '@/js/';
-import {mapActions, mapGetters} from 'vuex';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
 import {random, isEmpty} from 'lodash';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
+import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
 export default {
 	data() {
 		return{
@@ -186,6 +197,11 @@ export default {
 			docFiles: [],
 			documents: [],
 			itemFiles: null,
+
+			detalModalKey: random(1, 999),
+			detalIsShow: false,
+			parametrs_cbed: null,
+			cbedModalKey: random(1, 999),
 			
 			date_order: new Date().toLocaleDateString("ru-RU"),
 			date_shipments: new Date().toLocaleDateString("ru-RU"),
@@ -216,6 +232,8 @@ export default {
 			BaseProductModal, 
 			AddFile,
 			OpensFile,
+			DetalModal,
+			CbedModalInfo
 	},
 	methods: {
 		...mapActions([
@@ -224,7 +242,12 @@ export default {
 			'getOneCbEdById', 
 			'getOneDetal',
 			'getAllProductByIdLight',
-			'fetchUpdateShipments'
+			'fetchUpdateShipments',
+			'getOneCbEdById'
+		]),
+		...mapMutations([
+			'addOneSelectDetal',
+			'setOneCbed'
 		]),
 		unmount_base(e) {
 			if(!e) return false
@@ -354,7 +377,6 @@ export default {
 						})
 					} else check = true
 				}
-						
 			}
 		},
 		parserListIzd(res, kol) {
@@ -479,6 +501,27 @@ export default {
 					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal)
 			} catch(e) {console.error(e)}
 			this.description = this.getOneShipments.description
+		},
+		showInformIzdel(id, type) {
+			if(type == 'cbed') {
+				this.getOneCbEdById(id).then(res => {
+					if(res) {
+						this.setOneCbed(res)
+						this.parametrs_cbed = res
+						this.cbedModalKey = random(1, 999)
+					}
+				})
+			}
+			if(type == 'detal') {
+				this.getOneDetal(id).then(res => {
+					if(res) {
+						this.addOneSelectDetal(res)
+						this.detalModalKey = random(1, 999)
+						this.detalIsShow = true
+					}
+				})
+				
+			}
 		}
 	},
 	async mounted() {

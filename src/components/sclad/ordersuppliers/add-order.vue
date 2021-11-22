@@ -336,10 +336,11 @@ export default {
         if(material.id == mat.id && material.type == mat.type) return 0
       }
       try {
+        let ez = this.getKolvoMaterial(material.kolvo) ? JSON.parse(material.kolvo) : 1
         this.material_lists.push({
           art: '',
           name: material.name,
-          ez: material.kolvo ? JSON.parse(material.kolvo) : 1,
+          ez: ez,
           kol: material.shipments_kolvo ? material.shipments_kolvo : 1,
           sum: 0,
           description: '',
@@ -387,11 +388,19 @@ export default {
     setSelected(material) {
       this.select_m = material
     },
+    checkMaterialList() {
+      if(!this.material_lists.length) return false
+      for(let mat of this.material_lists) {
+        if(!Number(mat.ez)) mat.ez = 1
+      }
+    },
     save() {
       if(!this.provider)
         return showMessage('', 'Выберите поставщика', 'w', this)
       if(!this.material_lists.length) 
         return showMessage('', 'Выберите позиции для прихода', 'w', this)
+
+      this.checkMaterialList()
 
       this.formData.append('provider_id', this.provider.id)
       this.formData.append('number_check', this.number_check)
