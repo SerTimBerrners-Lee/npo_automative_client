@@ -119,60 +119,63 @@
 						<th>План дефицит/Профицит</th>
 						<th>Статус</th>
 					</tr>
-					<!-- MATERIAL -->
-					<tr v-for='material of getOnePodMaterial' :key='material'>
-						<td 
-							style='width: 100px;'
-							@click='e => setMaterial(material, e.target)'
-							class='td-row'> {{ material.name }}</td>
-						<td class='span_td' v-html="getKolvoMaterial(material.kolvo)">
-						</td>
-						<td class='center min_width'>
-							{{ material.material_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ material.shipments_kolvo }}
-						</td>	
-						<td class='center min_width'>
-							{{ material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ -material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ 0 }}
-						</td>
-						<td class='center min_width'>
-							{{ material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ 0 }}
-						</td>
-						<td class='center tooltip min_width'>
-							{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
-							<div class="tooltiptext" v-if='material.deliveries.length'>
-								<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
-							</div>
-						</td>
-						<td class='center min_width'>
-							{{ returnOstatokWays(material) - material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ material.shipments_kolvo }}
-						</td>
-						<td class='center min_width'>
-							{{ material.deliveries.length ? "Заказано" : 'Не заказано'}}
-						</td>
-					</tr>
+					<tbody v-for='material of getOnePodMaterial' :key='material'>
+						<tr>
+							<td 
+								style='width: 100px;'
+								:rowspan="getKolvoMaterialTow(material).length + 1"
+								@click='e => setMaterial(material, e.target)'
+								class='td-row'> {{ material.name }}</td>
+						</tr>
+						<tr v-for='ez of getKolvoMaterialTow(material)' :key='ez'>
+							<td>{{ez.ez}}</td>
+							<td class='center min_width'>
+								{{ material.material_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ material.shipments_kolvo }}
+							</td>	
+							<td class='center min_width'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ -material.shipments_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ 0 }}
+							</td>
+							<td class='center min_width'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ 0 }}
+							</td>
+							<td class='center tooltip min_width'>
+								{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
+								<div class="tooltiptext" v-if='material.deliveries.length'>
+									<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+								</div>
+							</td>
+							<td class='center min_width'>
+								{{ returnOstatokWays(material) }}
+							</td>
+							<td class='center min_width'>
+								{{ material.shipments_kolvo }}
+							</td>
+							<td class='center min_width'>
+								{{ material.deliveries.length ? "Заказано" : 'Не заказано'}}
+							</td>
+						</tr>
+					</tbody>
 					<!-- INSTRUMENT -->
 					<tr 
 						v-for='instrument of allPPTInstrument'
@@ -180,7 +183,7 @@
 					>
 						<td 
 							class='td-row'> {{ instrument.name }}</td>
-						<td class='span_td' >
+						<td>
 							шт
 						</td>
 						<td class='center min_width'>
@@ -220,7 +223,7 @@
 							</div>
 						</td>
 						<td class='center min_width'>
-							{{ returnOstatokWays(instrument) - instrument.shipments_kolvo }}
+							{{ returnOstatokWays(instrument) }}
 						</td>
 						<td class='center min_width'>
 							{{ instrument.shipments_kolvo }}
@@ -236,7 +239,7 @@
 					>
 						<td 
 							class='td-row'> {{ equipment.name }}</td>
-						<td class='span_td' >
+						<td>
 							шт
 						</td>
 						<td class='center min_width'>
@@ -276,7 +279,7 @@
 							</div>
 						</td>
 						<td class='center min_width'>
-							{{ returnOstatokWays(equipment) - equipment.shipments_kolvo }}
+							{{ returnOstatokWays(equipment) }}
 						</td>
 						<td class='center min_width'>
 							{{ equipment.shipments_kolvo }}
@@ -292,7 +295,7 @@
 					>
 						<td 
 							class='td-row'> {{ inventary.name }}</td>
-						<td class='span_td' >
+						<td>
 							шт
 						</td>
 						<td class='center min_width'>
@@ -332,7 +335,7 @@
 							</div>
 						</td>
 						<td class='center min_width'>
-							{{ returnOstatokWays(inventary) - inventary.shipments_kolvo }}
+							{{ returnOstatokWays(inventary) }}
 						</td>
 						<td class='center min_width'>
 							{{ inventary.shipments_kolvo }}
@@ -351,6 +354,7 @@
 <script> 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import {getKolvoMaterial} from '@/js/edizm.js';
 export default {
 	data() {
 		return {
@@ -440,7 +444,8 @@ export default {
 					}
 				} catch(e) {	console.error(e) 	}
 			}
-			return count
+			if(count - material.shipments_kolvo < 0 ) return +count 
+			return count - material.shipments_kolvo
 		},
 		clickMat(mat, type) {
       if(type == 'type') {
@@ -473,18 +478,8 @@ export default {
       if(type == 'podT') 
 				this.filterNameInventaryByPT(inventary.inventary)
 		},
-		getKolvoMaterial(kol) {
-			if(!kol) return '<span style="height: 100%;">-</span>'
-			try {
-				let pars_json = JSON.parse(kol)
-				let str = ''
-				if(pars_json.c1) str = '<span> шт </span>'
-				if(pars_json.c2) str = str + '<span> л </span>'
-				if(pars_json.c3) str = str + '<span> кг </span>'
-				if(pars_json.c4) str = str + '<span> м </span>'
-				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str ? str : '<span class="center"> - </span>'
-			} catch (e) { console.error(e) }
+		getKolvoMaterialTow(mat) {
+			return getKolvoMaterial(mat)
 		},
 		changeDatePicterRange(val) {
       console.log(val)
