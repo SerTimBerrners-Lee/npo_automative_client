@@ -238,7 +238,7 @@ export default {
       attention: false,
       docFiles: [],
       formData: null,
-      modalMaterialKey: random(10, 12e8),
+      modalMaterialKey: random(10, 999),
       modalMaterialIsShow: false,
       materialList: [],
       listPokDet: [],
@@ -251,7 +251,7 @@ export default {
       selectParametrs: null,
 
       techProcessIsShow: false,
-      techProcessKey: random(10, 33e6),
+      techProcessKey: random(10, 999),
       inputMassZag: 0,
       variableDensity: 0,
       techProcessID: localStorage.getItem('tpID') || null,
@@ -388,7 +388,7 @@ export default {
 
       this.deleteStorageData()
       setTimeout(() =>  {
-        this.$router.push('/product')
+        this.$router.back()
         this.delitPathNavigate(this.$route.path)
       }, 3000)
     },

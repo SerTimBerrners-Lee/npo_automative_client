@@ -161,7 +161,7 @@
 							</td>
 							<td class='center tooltip min_width'>
 								{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
-								<div class="tooltiptext" v-if='material.deliveries.length'>
+								<div class="tooltiptext" v-if='material.deliveries && material.deliveries.length'>
 									<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
 								</div>
 							</td>
@@ -525,11 +525,10 @@ export default {
 	async mounted() { 
 		this.loader = true
     
-    this.clearCascheMaterial()
+    this.clearAllState()
     await this.getAllTypeMaterial()
     await this.getAllPodTypeMaterial()
     await this.fetchPPMNoLight()
-		// await this.fetchGetAllDeficitInsrument()
 		await this.getAllNameInstrument()
 		await this.fetchAllEquipment()
 		await this.fetchAllNameInventary()

@@ -53,6 +53,7 @@
 				<table>
 					<tr>
 						<th>№</th>
+						<th>Артикул</th>
 						<th>Наименование СБ или детали</th>
 						<th>Кол-во</th>
 					</tr>
@@ -61,6 +62,7 @@
 						:key='obj'
 						class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
 						<td>{{ inx + 1 }}</td>
+						<td>{{ obj.obj.articl }}</td>
 						<td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
 						<td class='center'>
 							<input 
@@ -335,7 +337,7 @@ export default {
 									parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
 									parse_str = JSON.stringify(parse_str)
 								} else
-										parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1}])
+									parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1}])
 								this.checkedJsonList({...res, materialList: parse_str})
 								mat_true = false
 							}
@@ -372,7 +374,7 @@ export default {
 					if(check) {
 						this.list_cbed_detal.push({
 							type,
-							obj: {id: element.id, name: element.name},
+							obj: {id: element.id, name: element.name,  articl: element.articl},
 							kol
 						})
 					} else check = true
@@ -385,17 +387,18 @@ export default {
 				if(cbeds.length) {
 					for(let inx in cbeds) {
 						cbeds[inx] = cbeds[inx].cb
+						if(res.articl) cbeds[inx].articl = res.articl
 					}
 				}
 				if(detals.length) {
 					for(let inx in detals) {
 						detals[inx] = detals[inx].det
+						if(res.articl) detals[inx].articl = res.articl
 					}
 				}
-				for(let i = 0; i < kol; i++) {
-					this.checkedJsonList({...res, cbeds})
-					this.checkedJsonList({...res, detals})
-				}
+				for(let i = 0; i < kol; i++) 
+					this.checkedJsonList({...res, cbeds, detals})
+				
 		},
 		responseDetalCb(res) {
 			if(res && res.type == 'cbed') 
@@ -403,7 +406,7 @@ export default {
 
 			this.list_cbed_detal.push({
 				...res, 
-				obj: {id: res.obj.id, name: res.obj.name},
+				obj: {id: res.obj.id, name: res.obj.name, articl: res.obj.articl},
 				kol: 1
 			})
 		},

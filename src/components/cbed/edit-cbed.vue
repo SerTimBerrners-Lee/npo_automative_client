@@ -435,7 +435,7 @@ export default {
       }
 
       setTimeout(() =>  {
-        this.$router.push('/cbed')
+        this.$router.back()
         this.delitPathNavigate(this.$route.path)
       }, 3000)
     },
@@ -513,7 +513,7 @@ export default {
     },
     showTechProcess() {
       this.techProcessIsShow = true
-      this.techProcessKey = random(1, 12e8)
+      this.techProcessKey = random(1, 999)
     },
     exit(){
       this.$router.back()
@@ -538,7 +538,7 @@ export default {
         this.getOneSelectCbEd.documents.forEach((d) => {
             this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
         })
-        this.randomDataMedia = random(10, 38100)
+        this.randomDataMedia = random(10, 999)
         this.id = this.getOneSelectCbEd.id
 
         this.techProcessID =  !isEmpty(this.getOneSelectCbEd.techProcesses) ? this.getOneSelectCbEd.techProcesses.id : null

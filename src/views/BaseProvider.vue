@@ -194,7 +194,7 @@ export default {
       is_empty: false,
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 1222),
+      keyWhenModalGenerateFileOpen: random(10, 999),
 
       loader: false,
       detals_order: []
@@ -206,13 +206,19 @@ export default {
     'getMaterialTProvider',
     'getMaterialPTProvider'
   ]),
-  components: {OpensFile, TableMaterial, TableMaterialFilter, TableProvider},
+  components: {
+    OpensFile, 
+    TableMaterial, 
+    TableMaterialFilter, 
+    TableProvider
+  },
   methods: {
     ...mapActions([
       'fetchGetProviders', 
       'fetchProviderBan',
       'fetchGetAllPPM',
-      'materialForProvider'
+      'materialForProvider',
+      'fetchAllProviderMaterial'
     ]),
     ...mapMutations([
       'filterByMaterial',
@@ -276,6 +282,7 @@ export default {
     },
     clearFilterByNode() {
       this.clearFilterProviders()
+      this.fetchAllProviderMaterial()
     },
     getDetals(order) {
       if(order.product) {

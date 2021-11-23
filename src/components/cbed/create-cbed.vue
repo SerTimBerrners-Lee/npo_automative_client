@@ -388,7 +388,7 @@ export default {
       this.createNewCbEd(this.formData)
       this.deleteStorageData()
       setTimeout(() =>  {
-        this.$router.push('/cbed')
+        this.$router.back()
         this.delitPathNavigate(this.$route.path)
       }, 3000)
     },
@@ -404,18 +404,18 @@ export default {
           break;
         case '3':
           this.showBFM = true
-          this.generateKeyBFM = random(1, 11999)
+          this.generateKeyBFM = random(1, 999)
           break;
         case '4':
           this.instanMaterial = 2
           this.listMaterials = this.listPokDet
-          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
         case '5':
           this.instanMaterial = 3
           this.listMaterials = this.materialList
-          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
       }
@@ -466,7 +466,7 @@ export default {
     },
     showTechProcess() {
       this.techProcessIsShow = true
-      this.techProcessKey = random(1, 12e8)
+      this.techProcessKey = random(1, 999)
     },
     exit(){
       this.$router.back()

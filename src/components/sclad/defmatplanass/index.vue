@@ -4,7 +4,7 @@
 
     <div class='table_block'>
       <div class="table-scroll">
-        <table>
+        <table> 
           <tr>
             <th><unicon name="check" fill="royalblue" /></th>
             <th>Заказ покупателя из задач на отгрузку</th>
@@ -151,10 +151,19 @@ export default {
 			span_material: null,
 		}
 	},
-	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM', 'getShipments']),
+	computed: mapGetters([
+		'getOnePodMaterial', 
+		'alltypeM', 
+		'allPodTypeM', 
+		'getShipments'
+	]),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM', 'fetchAllShipments']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
+		...mapMutations([
+			'getInstansMaterial', 
+			'filterByNameMaterial', 
+			'clearCascheMaterial'
+		]),
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -206,6 +215,8 @@ export default {
     }
 	},
 	async mounted() {
+		this.clearCascheMaterial()
+
 		this.fetchGetAllDeficitPPM()
 		this.fetchAllShipments()
 	}

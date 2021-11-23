@@ -6,7 +6,7 @@
 				@unmount='changeDatePicterRange'  
 			/>
 		</div> 
-
+ 
 		<div style='width: max-content;'>
 			<div class="scroll-table table_material" style='height: 100%;'>
 				<table style="width: 200px;">
@@ -50,7 +50,7 @@
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
-				<table style='margin-left: 20px;'>
+				<table style='margin-left: 20px;' v-if='getOnePodMaterial.length'>
 					<tr>
 						<th style='width: 100px;'>Наименование</th>
 						<th>ЕИ</th>
@@ -107,9 +107,9 @@
 							<td class='center min_width'>
 								{{ 0 }}
 							</td>
-							<td class='center tooltip min_width'>
+							<td class='center tooltip min_width'> 
 								{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
-								<div class="tooltiptext" v-if='material.deliveries.length'>
+								<div class="tooltiptext" v-if='material.deliveries && material.deliveries.length'>
 									<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
 								</div>
 							</td>
@@ -125,6 +125,7 @@
 						</tr>
 					</tbody>
 				</table>
+				<h3 v-else>Нет Дефицита</h3>
 			</div>
 				<div class='btn-control'>
 					<button class="btn-small"> Выгрузка в Excel </button>
@@ -155,7 +156,12 @@ export default {
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial', 'clearCascheMaterial']),
+		...mapMutations([
+			'getInstansMaterial', 
+			'filterByNameMaterial', 
+			'clearCascheMaterial', 
+			'clearCascheMaterial'
+		]),
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -211,6 +217,8 @@ export default {
 	},
 	async mounted() {
 		this.loader = true
+		this.clearCascheMaterial()
+
 		this.clearCascheMaterial()
 		await this.fetchGetAllDeficitPPM()
 		this.loader = false
