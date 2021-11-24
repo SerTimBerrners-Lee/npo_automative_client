@@ -8,58 +8,10 @@
 		</div>
 		<div>
 			<h3>Комлектация</h3>
-			<div class="table-scroll">
-				<table> 
-					<tr>
-						<th>Заказ</th>
-						<th>Артикул изделия</th>
-						<th>Наименование изделия</th>
-						<th>Комплектация/особенности заказа</th>
-						<th>Кол-во, шт.</th>
-						<th>Осталось дней</th>
-						<th>Основание</th>
-						<th>Покупатель</th> 
-						<th>Готовность к отгрузки в %</th>
-						<th>Статус</th>
-						<th>Дата отгрузки</th>
-						<th>Н/Ч требуется</th>
-						<th>Н/Ч выполнено</th>
-						<th>Н/Ч осталось</th>
-						<th>Примечание</th>
-					</tr>
-					<tr v-for='shipments of getShipments'
-						:key='shipments'
-						class='td-row'
-						@click='e => setShipments(shipments, e.target.parentElement)'>
-						<td>{{ shipments.number_order }}</td>
-						<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
-						<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
-						<td>
-							<div class='osob' v-if='shipments.list_cbed_detal'>
-								<p v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'
-									:key='izd'><b>{{ inx + '. ' }}</b> {{ izd.obj.name }}</p>
-							</div>
-						</td>
-						<td class='center'>{{ shipments.kol }}</td>
-						<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments)   }}</td>
-						<td class='center active'  
-							@click='openDocuments(shipments)' >
-							{{ shipments.base }}
-            </td>
-						<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td>
-						<td></td>
-						<td>{{ shipments.status }}</td>
-						<td>{{ shipments.date_shipments }}</td>
-						<td></td>
-						<td></td>
-						<td></td>
-						<td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
-            </td>
-					</tr>
-				</table>
-			</div>
-
+			<TableShipments  
+				v-if='getShipments.length'
+				:shipmentsArr='getShipments'
+				@unmount='unmount_table_shipments'/>
 			<div class="btn-control">
         <button 
 					class="btn-small">
@@ -71,21 +23,11 @@
 				<button class="btn-small" @click='edit'>
 					Изменить
         </button>
-				<button class="btn-small btn-add" @click='$router.push("/addorder/false")'>
+				<button class="btn-small btn-add" @click='$router.push("/addorder/false/false")'>
           Создать заказ
         </button>
       </div>
 		</div>
-		<DescriptionModal 
-      v-if='showDescriptionModal'
-      :key='descriptionKey'
-      :parametrs='description'
-    />
-		<OpensFile 
-      :parametrs='itemFiles' 
-      v-if="itemFiles.length" 
-      :key='keyWhenModalGenerateFileOpen'
-      />
 		<InformFolder  
       :title='titleMessage'
       :message = 'message'
@@ -98,13 +40,11 @@
 </template> 
 
 <script>
-import DescriptionModal from '@/components/description-modal.vue';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import { dateIncrementHors, dateDifference } from '@/js/';
-import { showMessage } from '@/js/';
 import {random} from 'lodash';
+import { showMessage } from '@/js/';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
+import DatePicterRange from '@/components/date-picter-range.vue';
+import TableShipments from '@/components/issueshipment/table-komplect.vue';
 export default {
 	data() {
 		return {
@@ -114,69 +54,34 @@ export default {
       type: '',
       keyInformTip: random(1, 999),
 
-			showDescriptionModal: false,
-      descriptionKey: random(1, 999),
-      description: '',
-
-			itemFiles: [],
-      keyWhenModalGenerateFileOpen: random(1, 999),
-
 			loader: false
 		}	
 	},
 	computed: mapGetters(['getShipments']),
 	components: {
-		DescriptionModal, 
-		DatePicterRange, 
-		OpensFile
+		DatePicterRange,
+		TableShipments
 	},
 	methods: {
-		...mapActions([ 'fetchDeleteShipments','fetchAllShipments']),
+		...mapActions([ 
+			'fetchDeleteShipments',
+			'fetchAllShipments'
+		]),
 		...mapMutations([
       'setOneShipment'
     ]),
-		setShipments(shipments, e) {
-			if(this.tr && this.selectShipments.id == shipments.id) {
-				this.tr.classList.remove('td-row-all')
-				this.selectShipments = null 
-			}
-			if(this.tr) this.tr.classList.remove('td-row-all')
-			this.tr = e 
-			this.tr.classList.add('td-row-all')
-			console.log(shipments)
-			this.setOneShipment(shipments)
-			this.selectShipments = shipments;
+		unmount_table_shipments(select_shipemnts) {
+			if(!select_shipemnts) return false
+			this.selectShipments = select_shipemnts
+			console.log(select_shipemnts)
 		},
-		openDescription(description) {
-      this.showDescriptionModal = true
-      this.descriptionKey = random(1, 999)
-      this.description = description
-    },
-		dateIncrementHors(date, day) {
-      let dat = dateIncrementHors(date, day*24)
-      return `${dat.day}.${dat.mount}.${dat.year}`
-    },
 		changeDatePicterRange(val) {
       console.log(val)
-    },
-		dateDifference(date_one, date_two) {
-			return dateDifference(date_one, date_two)
-		},
-		openDocuments(shipments) {	
-			if(shipments.documents && shipments.documents.length) {
-				for(let doc of shipments.documents) {
-					if(doc.name == shipments.base) {
-						this.keyWhenModalGenerateFileOpen = random(1, 999)
-						this.itemFiles = [doc]
-					}
-				}
-
-			} else showMessage('', 'Документов нет', 'w', this)
     },
 		edit() {
 			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this)
 
-			this.$router.push({ path: "/addorder/true" })
+			this.$router.push({ path: "/addorder/true/false" })
 		},
 		deleteF() {
 			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this)

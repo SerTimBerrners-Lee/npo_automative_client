@@ -103,5 +103,8 @@ export default {
 		deleteShipmentMutation(state, id) {
 			state.shipments = state.shipments.filter(ship => ship.id != id)
 		},
+		filterToParentShipments(state, id) {
+			state.shipments = state.shipments.filter(ship => ship.id == id)
+		}
 	}
 }

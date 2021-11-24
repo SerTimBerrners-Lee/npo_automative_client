@@ -1,10 +1,25 @@
 <template>
 	<div>
 		<h3>Дефицит материалов</h3>
-		<div>
+		<div class='header_block'>
 			<DatePicterRange 
 				@unmount='changeDatePicterRange'  
 			/>
+			<p>
+				<span>Фильтрация по статусу</span>
+				<label for="order">Заказано: </label>
+				<input 
+					type="checkbox" 
+					id="order" 
+					v-model='filter_order'
+					@click='e => filterOrder(e.target.checked)'>
+				<label for="no_order">Все: </label>
+				<input 
+					type="checkbox" 
+					id="no_order" 
+					v-model='all_type_order'
+					@click='e => filterAll(e.target.checked)'>
+			</p>
 		</div> 
  
 		<div style='width: max-content;'>
@@ -120,12 +135,12 @@
 								{{ material.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
-								{{ ge ? "Заказано" : 'Не заказано'}}
+								{{ material.deliveries && material.deliveries.length ? "Заказано" : 'Не заказано'}}
 							</td>
 						</tr>
 					</tbody>
 				</table>
-				<h3 v-else>Нет Дефицита</h3>
+				<h3 v-else style='margin-left: 20px;'>Нет Дефицита</h3>
 			</div>
 				<div class='btn-control'>
 					<button class="btn-small"> Выгрузка в Excel </button>
@@ -149,7 +164,9 @@ export default {
 			material: null,
 			span_material: null,
 
-			loader: false
+			loader: false,
+			filter_order: false,
+			all_type_order: true
 		}
 	},
 	components: {DatePicterRange},
@@ -160,8 +177,17 @@ export default {
 			'getInstansMaterial', 
 			'filterByNameMaterial', 
 			'clearCascheMaterial', 
-			'clearCascheMaterial'
+			'clearCascheMaterial',
+			'filterMaterialStatus'
 		]),
+		filterOrder(val) {
+			this.all_type_order = false
+			this.filterMaterialStatus({status: 'order', val})
+		},
+		filterAll(val) {
+			this.filter_order = false
+			this.filterMaterialStatus({status: 'all', val})
+		},
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -236,5 +262,12 @@ table {
 .span_td {
 	display:  flex;
 	flex-direction: column;
+}
+.header_block {
+	display: flex;
+}
+label {
+	cursor: pointer;
+	user-select: none;
 }
 </style>

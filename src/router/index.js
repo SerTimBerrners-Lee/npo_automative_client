@@ -210,7 +210,7 @@ const routes = [
     component: Assembly
   },
   {
-    path: '/addorder/:edit',
+    path: '/addorder/:edit/:parent',
     name: 'Добавить Заказ',
     component: AddOrder,
     props: true

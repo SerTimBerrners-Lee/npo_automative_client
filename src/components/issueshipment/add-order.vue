@@ -1,5 +1,9 @@
 <template>
 	<div>
+		<TableShipments  
+			v-if='getShipments.length && Number(this.$route.params.parent)'
+			:shipmentsArr='getShipments'
+			@unmount='unmount_table_shipments'/>
 		<h3>Создать заказ</h3>
 		<div class="block">
 			<p class='p_flex'>
@@ -111,7 +115,7 @@
 				<button 
 				class="btn-status" 
 				style="height: 0px;"
-				@click="$router.push('/issueshipment')">
+				@click="addNewPositionProduct">
 				Добавить новое изделие к заказу
 			</button>
 			<button 
@@ -164,16 +168,17 @@
 </template>
 
 <script>
-import DatePicterCustom from '@/components/date-picter.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
-import ProductList from '@/components/baseproduct/all-product-modal.vue';
-import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
-import AddFile from '@/components/filebase/addfile.vue';
 import {showMessage} from '@/js/';
-import {mapActions, mapGetters, mapMutations} from 'vuex';
 import {random, isEmpty} from 'lodash';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
+import AddFile from '@/components/filebase/addfile.vue';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
+import DatePicterCustom from '@/components/date-picter.vue';
 import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
+import ProductList from '@/components/baseproduct/all-product-modal.vue';
+import TableShipments from '@/components/issueshipment/table-komplect.vue';
+import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
 export default {
 	data() {
 		return{
@@ -227,7 +232,7 @@ export default {
 			}
 		},	
 	},
-	computed: mapGetters(['allBuyer', 'getOneShipments']),
+	computed: mapGetters(['allBuyer', 'getOneShipments', 'getShipments']),
 	components: {
 			DatePicterCustom, 
 			ProductList, 
@@ -235,7 +240,8 @@ export default {
 			AddFile,
 			OpensFile,
 			DetalModal,
-			CbedModalInfo
+			CbedModalInfo,
+			TableShipments
 	},
 	methods: {
 		...mapActions([
@@ -245,11 +251,13 @@ export default {
 			'getOneDetal',
 			'getAllProductByIdLight',
 			'fetchUpdateShipments',
-			'getOneCbEdById'
+			'getOneCbEdById',
+			'fetchAllShipments'
 		]),
 		...mapMutations([
 			'addOneSelectDetal',
-			'setOneCbed'
+			'setOneCbed',
+			'filterToParentShipments'
 		]),
 		unmount_base(e) {
 			if(!e) return false
@@ -269,6 +277,14 @@ export default {
 				this.docFiles.push(doc)
 				this.documents.push(doc)
 			}
+		},
+		addNewPositionProduct() {
+			if(this.$route.params.edit != 'true') return showMessage('', 'Сначала сохраните заказ', 'w', this)
+			if(this.getOneShipments && this.getOneShipments.id) {
+				this.$router.push(`/addorder/false/${this.getOneShipments.id}`)
+				this.filterToParentShipments(this.getOneShipments.id)
+			}
+			else return showMessage('', 'Выберите заказ к которому хотите присвоить изделие', 'w', this)
 		},
 		addDock(val, base = false) {
 			if(base && this.base) {
@@ -382,22 +398,22 @@ export default {
 			}
 		},
 		parserListIzd(res, kol) {
-				let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
-				let detals = res.listDetal ? JSON.parse(res.listDetal) : []
-				if(cbeds.length) {
-					for(let inx in cbeds) {
-						cbeds[inx] = cbeds[inx].cb
-						if(res.articl) cbeds[inx].articl = res.articl
-					}
+			let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
+			let detals = res.listDetal ? JSON.parse(res.listDetal) : []
+			if(cbeds.length) {
+				for(let inx in cbeds) {
+					cbeds[inx] = cbeds[inx].cb
+					if(res.articl) cbeds[inx].articl = res.articl
 				}
-				if(detals.length) {
-					for(let inx in detals) {
-						detals[inx] = detals[inx].det
-						if(res.articl) detals[inx].articl = res.articl
-					}
+			}
+			if(detals.length) {
+				for(let inx in detals) {
+					detals[inx] = detals[inx].det
+					if(res.articl) detals[inx].articl = res.articl
 				}
-				for(let i = 0; i < kol; i++) 
-					this.checkedJsonList({...res, cbeds, detals})
+			}
+			for(let i = 0; i < kol; i++) 
+				this.checkedJsonList({...res, cbeds, detals})
 				
 		},
 		responseDetalCb(res) {
@@ -476,6 +492,7 @@ export default {
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)
 				})
 			} else {
+				if(Number(this.$route.params.parent)) data['parent_id'] = Number(this.$route.params.parent)
 				this.formData.append('data', JSON.stringify(data))
 				this.fetchCreateShipments(this.formData).then(res => {
 					this.loader = false
@@ -493,11 +510,10 @@ export default {
 			this.base = this.getOneShipments.base
 			this.buyer = this.getOneShipments.id
 			this.to_sklad = this.getOneShipments.to_sklad
-			this.is_not_product = this.getOneShipments.is_not_product
 			if(this.getOneShipments.product) {
 				this.getAllProductByIdLight(this.getOneShipments.product.id)
 				.then(res => this.select_product = res)
-			}
+			} else this.is_not_product = true
 			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents
 			try {
 				if(this.getOneShipments.list_cbed_detal)
@@ -529,11 +545,13 @@ export default {
 	},
 	async mounted() {
 		this.fetchAllBuyers()
+		await this.fetchAllShipments()
 
 		if(this.$route.params.edit && this.$route.params.edit == 'true') {
 			if(isEmpty(this.getOneShipments)) return this.$router.push('/issueshipment')
 			this.editVariable()
-		}
+		} else 
+			if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent))
 		
 
 	}

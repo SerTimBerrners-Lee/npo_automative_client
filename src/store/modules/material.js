@@ -461,6 +461,18 @@ export default {
         return state.tmp_attention  = []
       }
       state.podMaterial = state.podMaterial.filter(detal => detal.attention)
+    },
+    /**
+     * 
+     * @param {*} state 
+     * @param {{status: 'order', val}} params 
+     */
+    filterMaterialStatus(state, params) {
+      if(state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial
+      state.podMaterial = state.stateMaterialTime
+      if(params.status == 'order') 
+        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries.length == params.val)
+      if(params.status == 'all') return null
     }
   }
 }

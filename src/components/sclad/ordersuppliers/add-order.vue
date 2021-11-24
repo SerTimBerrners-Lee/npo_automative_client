@@ -23,7 +23,7 @@
               @unmount='unmount_date_picters'  
               :dateStart='date_shipments'
             />
-            <span>НДС: </span>
+            <span>НДС %: </span>
             <input type="text" v-model='nds'>
           </p>
         </div>
@@ -122,11 +122,13 @@
                 </td>
                 <td
                   @keyup="e => editKol(inx, e.target.innerText)"
+                  @click='editKol(inx, null)'
                   contenteditable="true">{{ material.kol }}</td>
                 <td
                   class='tooltip'>
                   <input type="number" 
                     @change="e => editSum(inx, e.target.value)"
+                    @click='editSum(inx, null)'
                     min='0' :value='material.sum'>
                   <span class="tooltiptext" contenteditable="false">{{ Number(material.kol) * Number(material.sum)  }}</span>
                 </td>
@@ -205,7 +207,7 @@ export default {
       allProvider: [],
       provider: null,
       number_check:  '',
-      nds: '',
+      nds: 20,
       count: 0,
       material_lists: [],
       description: '',
