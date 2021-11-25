@@ -65,7 +65,7 @@
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
-				<table style='margin-left: 20px;' v-if='getOnePodMaterial.length'>
+				<table style='margin-left: 20px;' v-if='getOnePodMaterial.length' id='tablebody'>
 					<tr>
 						<th style='width: 100px;'>Наименование</th>
 						<th>ЕИ</th>
@@ -144,7 +144,7 @@
 			</div>
 				<div class='btn-control'>
 					<button class="btn-small"> Выгрузка в Excel </button>
-					<button class="btn-small"> Печать отчета </button>
+					<button class="btn-small" @click='printPage'> Печать отчета </button>
 				</div>
 		</div>
 		<Loader v-if='loader' />
@@ -152,9 +152,10 @@
 </template>
 
 <script> 
+import print from 'print-js';
+import {getKolvoMaterial} from '@/js/edizm.js';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
-import {getKolvoMaterial} from '@/js/edizm.js';
 export default {
 	data() {
 		return {
@@ -180,6 +181,16 @@ export default {
 			'clearCascheMaterial',
 			'filterMaterialStatus'
 		]),
+		printPage() {
+      print({
+        printable: 'tablebody',
+        type: 'html',
+        targetStyles: ['*'],
+        documentTitle: 'Дефицит материалов',
+        ignoreElements: ['operation', 'doc', 'discription'],
+        font_size: '10pt'
+      })
+    },
 		filterOrder(val) {
 			this.all_type_order = false
 			this.filterMaterialStatus({status: 'order', val})
@@ -270,4 +281,5 @@ label {
 	cursor: pointer;
 	user-select: none;
 }
+
 </style>

@@ -7,7 +7,7 @@
         <div class="block header_block">
           <span>Выбор поставщика:</span>
           <input type="text" :value='provider ? provider.name : ""' >
-          <button class="btn-small" @click='addProvider'>Выбрать</button>
+          <button class="btn-small" @click='addProvider' v-if='!only_view'>Выбрать</button>
         </div>
         
         <div class="block two_header">
@@ -28,7 +28,7 @@
           </p>
         </div>
 
-        <div class="block" style='padding: 5px;'>
+        <div class="block" style='padding: 5px;' v-if='!only_view'>
           <p style='margin: 5px;'>
             <label for="docsFileSelected" class='btn-small btn-file'>Загрузить счет</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
@@ -61,7 +61,7 @@
               </tr>
             </table>
           </div>
-          <div class="btn-control">
+          <div class="btn-control" v-if='!only_view'>
             <button 
               class="btn-small btn-add"
               @click='pushMaterial'>Добавить к поставщику </button>
@@ -138,7 +138,7 @@
               </tr>
             </table>
           </div>
-          <div class="btn-control">
+          <div class="btn-control" v-if='!only_view'>
             <button class="btn-small" @click='clear'>Очистить</button>
             <button class="btn-small" @click='clearToSelect'>Удалить выбранное</button>
           </div>
@@ -146,7 +146,7 @@
           <textarea maxlength='250' class='textarea'  v-model='description'></textarea>
         </div>
 
-        <div class="btn-control out-btn-control">
+        <div class="btn-control out-btn-control" v-if='!only_view'>
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status btn-black" @click='save'>Сохранить</button>
         </div>
@@ -180,16 +180,16 @@
   </div>
 </template>
 <script>
-import DatePicterCustom from '@/components/date-picter.vue';
-import AddFile from '@/components/filebase/addfile.vue';
+import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
-import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
+import AddFile from '@/components/filebase/addfile.vue';
+import DatePicterCustom from '@/components/date-picter.vue';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import AddPosition from '@/components/sclad/comingtosclad/new-position.vue';
+import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
-import { showMessage } from '@/js/';
 export default {
-  props: ['parametrs', 'order_parametr'],
+  props: ['parametrs', 'order_parametr', 'only_view'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -256,7 +256,6 @@ export default {
       this.fetchGetAllDeficitPPM()
       if(mat_l && mat_l.length) {
         for(let mat of mat_l) {
-          console.log(mat)
           this.selected_material = mat.obj
           this.selected_material.type = mat.type
           this.pushMaterial()

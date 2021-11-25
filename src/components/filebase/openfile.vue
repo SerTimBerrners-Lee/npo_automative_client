@@ -58,7 +58,10 @@
                   class="btn-small" 
                   v-if='parametrs.type_open_modal == "edit" && getRoleAssets && getRoleAssets.assets.basefileAssets.writeSomeone' 
                   @click='e => edit(e.target)'>Редактировать</button>
-                <button class="btn-small" @click="openfile(urlImg)">На печать</button>
+                <button 
+                  class="btn-small" 
+                  v-if='docType.type == "img" || docType.typename == "pdf"'
+                  @click="printDocument(urlImg, docType.typename)">На печать</button>
                 <button class="btn-small" @click="openfile(urlImg)">Открыть / Скачать</button>
               </div>
               <div class="main-fb-modal-block" v-if='!is_edit'>
@@ -120,6 +123,7 @@
   </div>
 </template>
 <script>
+import print from 'print-js';
 import { photoPreloadUrl } from '@/js/';
 import { mapActions, mapGetters } from 'vuex';
 import {isArray} from 'lodash';
@@ -151,7 +155,11 @@ export default {
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
   methods: {
-    ...mapActions(['pushDocuments', 'getAllUsers', 'updateDataFile']),
+    ...mapActions([
+      'pushDocuments', 
+      'getAllUsers', 
+      'updateDataFile'
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -189,6 +197,13 @@ export default {
         this.is_edit = true
         e.innerText = 'Сохранить'
       }
+    },
+    printDocument(image, tp) {
+      console.log(tp)
+      print({
+        printable: image, 
+        type: tp == 'pdf' ? 'pdf' : 'image',
+      })
     },
     update() {
       const data = {

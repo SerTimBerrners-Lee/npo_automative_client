@@ -220,6 +220,7 @@ export default {
 			select_product: null,
 			description: '',
 			list_cbed_detal: [],
+			list_hidden_cbed_detal: [],
 			is_not_product: false
 		}
 	},
@@ -232,7 +233,11 @@ export default {
 			}
 		},	
 	},
-	computed: mapGetters(['allBuyer', 'getOneShipments', 'getShipments']),
+	computed: mapGetters([	
+		'allBuyer', 	
+		'getOneShipments', 	
+		'getShipments'	
+	]),
 	components: {
 			DatePicterCustom, 
 			ProductList, 
@@ -323,10 +328,10 @@ export default {
       this.itemFiles = dc
       this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
-		checkedJsonList(izd) {
+		checkedJsonList(izd, recursive = false) {
 			if(izd.cbeds && izd.cbeds.length && izd.listCbed) {
 				let list_cbed = JSON.parse(izd.listCbed)
-				this.pushElement(izd.cbeds, list_cbed, 'cbed')
+				this.pushElement(izd.cbeds, list_cbed, 'cbed', recursive)
 				for(let cb of list_cbed) {
 					this.getOneCbEdById(cb.cb.id).then(res => this.parserListIzd(res, cb.kol))
 				}
@@ -334,7 +339,7 @@ export default {
 
 			if(izd.detals && izd.detals.length && izd.listDetal) {
 				let list_detals = JSON.parse(izd.listDetal)
-				this.pushElement(izd.detals, list_detals, 'detal')
+				this.pushElement(izd.detals, list_detals, 'detal', recursive)
 				for(let det of list_detals ) {
 					this.getOneDetal(det.det.id).then(res => {
 						for(let i = 0; i < det.kol; i++) {
@@ -363,7 +368,7 @@ export default {
 				}
 			}
 		},
-		pushElement(elements, list_pars, type) {
+		pushElement(elements, list_pars, type, recursive = false) {
 			for(let element of elements) {
 				let kol = 1;
 				for(let item of list_pars) {
@@ -388,11 +393,18 @@ export default {
 						}	
 					}
 					if(check) {
-						this.list_cbed_detal.push({
-							type,
-							obj: {id: element.id, name: element.name,  articl: element.articl},
-							kol
-						})
+						if(!recursive)
+							this.list_cbed_detal.push({
+								type,
+								obj: {id: element.id, name: element.name,  articl: element.articl},
+								kol
+							})
+						else 
+							this.list_hidden_cbed_detal.push({
+								type,
+								obj: {id: element.id, name: element.name,  articl: element.articl},
+								kol
+							})
 					} else check = true
 				}
 			}
@@ -413,7 +425,7 @@ export default {
 				}
 			}
 			for(let i = 0; i < kol; i++) 
-				this.checkedJsonList({...res, cbeds, detals})
+				this.checkedJsonList({...res, cbeds, detals}, true)
 				
 		},
 		responseDetalCb(res) {
@@ -467,6 +479,7 @@ export default {
 				is_not_product: this.is_not_product,
 				description: this.description,
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
+				list_hidden_cbed_detal: JSON.stringify(this.list_hidden_cbed_detal)
 			} 
 			if(this.select_product) {
 				data['product'] = {
@@ -477,8 +490,9 @@ export default {
 			if(this.baseFormData.get('document') && this.baseFormData.get('docs') ) {
 				this.formData.append('document', this.baseFormData.get('document'))
 				try {
-					let pars = this.baseFormData.get('docs')
-					if(pars) this.formData.append('docs', pars)
+					let pars = JSON.parse(this.baseFormData.get('docs')) 
+					this.formData.append('docs', JSON.stringify([pars]))
+					
 				} catch(e) {console.error(e)}
 			}
 			
@@ -518,6 +532,8 @@ export default {
 			try {
 				if(this.getOneShipments.list_cbed_detal)
 					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal)
+				if(this.getOneShipments.list_hidden_cbed_detal)
+					this.list_hidden_cbed_detal = JSON.parse(this.getOneShipments.list_hidden_cbed_detal)
 			} catch(e) {console.error(e)}
 			this.description = this.getOneShipments.description
 		},

@@ -89,10 +89,9 @@
     <Loader v-if='loader' />
   </div>
 </template>
-
 <script>
-import AddOrder from './add-order.vue';
 import {random} from 'lodash';
+import AddOrder from './add-order.vue';
 import {mapGetters, mapActions} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
@@ -126,9 +125,7 @@ export default {
         try {
           let prod = JSON.parse(order.product)
           this.detals_order = prod
-        } catch (e) {
-          console.log(e)
-        }
+        } catch (e) {console.error(e)}
       }
     },
     selectOrder(order, span) {

@@ -83,7 +83,6 @@ export default {
 				ctx.commit('deletToListShipments', id)
 				return true
 			}
-				
 		}
 	},
 	mutations: {

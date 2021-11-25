@@ -6,7 +6,7 @@
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
     </div>
     <div class='table_block'>
-      <div class="table-scroll">
+      <div class="table-scroll" >
         <table>
           <tr>
             <th><unicon name="check" fill="royalblue" /></th>
@@ -23,7 +23,7 @@
         </table>
       </div>
       <div class="table-scroll" style='margin-left: 5px;'>
-        <table>
+        <table id='tablebody'>
           <tr>
             <th>Заказ склада</th>
             <th>Дата готовности</th> 
@@ -34,13 +34,13 @@
             <th>Габариты заготовки</th>
             <th>Тип заготовки</th>
             <th>Материал</th>
-            <th>Операции</th>
+            <th id='operation'>Операции</th>
             <th>Готовность</th>
             <th>Статус</th>
-            <th>Документы</th>
+            <th id='doc'>Документы</th>
             <th>Время на изг-е, ч</th>
             <th>Отходы (стружка), кг</th>
-            <th>Примечание</th>
+            <th id='discription'>Примечание</th>
           </tr>
           <tr v-for='metalowork of getMetaloworkings' :key='metalowork'>
             <td>{{ metalowork.date_order }}</td>
@@ -54,17 +54,17 @@
             <td class='center'>{{ metalowork.detal ? metalowork.detal.DxL : 'Нет детали' }}</td>
             <td class='center'>{{ metalowork.detal && metalowork.detal.mat_za_obj ? metalowork.detal.mat_za_obj.material.name : 'Нет заготовки' }}</td>
             <td>{{metalowork.detal && metalowork.detal.mat_za_obj ?  metalowork.detal.mat_za_obj.name : 'Нет заготовки' }}</td>
-            <td class='center'>
+            <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
             <td>{{  }}</td>
             <td :class='metalowork.status == "Готово" ? "success_operation" : "work_operation"'>{{ metalowork.status }}</td>
-            <td class='center'>
+            <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
             </td>
             <td class='hover center'>{{ showAllTimers(metalowork) }}</td>
             <td class='center'>{{metalowork.detal ? metalowork.detal.trash : 'Нет детали'}}</td>
-            <td class='center'>
+            <td class='center' id='discription'>
               <img src="@/assets/img/link.jpg" @click='openDescription(metalowork.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
@@ -72,7 +72,7 @@
       </div> 
     </div>
      <div class="btn-control">
-        <button class="btn-small">Печать</button>
+        <button class="btn-small" @click='printPage'>Печать</button>
         <button class="btn-small" @click="clearFilter">Сбросить все фильтры</button>
       </div>
       <DescriptionModal 
@@ -114,15 +114,15 @@
 </template>
 
 <script>
-
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import DescriptionModal from '@/components/description-modal.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
-import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking.vue';
-import { showMessage } from '@/js/';
+import print from 'print-js';
 import {random} from 'lodash';
-import OperationModal from '@/components/sclad/workings-operations.vue';
+import { showMessage } from '@/js/';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
+import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
+import OperationModal from '@/components/sclad/workings-operations.vue';
+import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking.vue';
 export default {
 	data() {
 		return{
@@ -168,8 +168,21 @@ export default {
       'fetchAllShipmentsMetaloworking', 
       'fetchMetaloworking',
       'getAllTypeOperations'
-      ]),
-    ...mapMutations(['filterMetaloworkingByShipments', 'breackFIlterMetal']),
+    ]),
+    ...mapMutations([
+      'filterMetaloworkingByShipments', 
+      'breackFIlterMetal'
+    ]),
+    printPage() {
+      print({
+        printable: 'tablebody', 
+        type: 'html',
+        targetStyles: ['*'],
+        documentTitle: 'Металлообработка',
+        ignoreElements: ['operation', 'doc', 'discription'],
+        font_size: '10pt'
+      })
+    },   
     toSetOrders(shipments, e) {
       if(this.span_ship) {
         this.breackFIlterMetal()
@@ -275,5 +288,9 @@ export default {
 }
 .block .btn {
   margin: 0px;
+}
+td {
+  width: 100px;
+  word-break: break-all;
 }
 </style>
