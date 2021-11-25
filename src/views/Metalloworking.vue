@@ -274,7 +274,6 @@ export default {
     await this.getAllTypeOperations()
     await this.fetchMetaloworking()
     this.filterOperation()
-    console.log(this.getShipments)
     this.loader = false
 	}
 }

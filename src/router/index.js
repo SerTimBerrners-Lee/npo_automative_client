@@ -93,7 +93,7 @@ const routes = [
     component: BaseInventary
   },
   {
-    path: '/metalloworking/operation-metall/:operation',
+    path: '/metalloworking/operation-metall/:operation/:name_operation',
     name: 'Операции Металлообработки',
     component: OparationDetalMetalloworking,
     props: true

@@ -9,13 +9,13 @@
 		</div>
 
 		<div v-if='getAssembles.length'>
-			<table>
+			<table id='tablebody'>
 				<tr>
 					<th>№</th>
 					<th>Артикул СБ</th>
 					<th>Наименование СБ</th>
 					<th>Кол-во, шт</th>
-					<th>Принадлежность </th>
+					<th id='parent'>Принадлежность </th>
 					<th class='work_operation'>Предыдущая операция </th>
 					<th>Статус</th>
 					<th>Сделано, шт</th>
@@ -25,9 +25,9 @@
 					<th>Дата исполнения</th>
 					<th>Исполнитель</th>
 					<th class='success_operation'>Следующая операция</th>
-					<th>Документы</th>
-					<th>Примечание</th>
-					<th>Отметка</th>
+					<th id='doc'>Документы</th>
+					<th id='discription'>Примечание</th>
+					<th id='mark'>Отметка</th>
 				</tr>
 				<tr 
 					v-for='(ass, inx) of getAssembles'
@@ -36,7 +36,7 @@
 					<td>{{ass.cbed ? ass.cbed.articl : 'Нет СБ'}}</td>
 					<td>{{ ass.cbed ? ass.cbed.name : 'Нет СБ'}}</td>
 					<td class='center'>{{ ass.kolvo_shipments }}</td>
-					<td class='center'>
+					<td class='center' id='parent'>
 						<img src="@/assets/img/link.jpg" v-if='ass.cbed' @click='showParents(ass.cbed)' class='link_img' atl='Показать' />
 					</td>
 					<td class='center hover work_operation'>{{ showOperation(ass,  "before") }}</td>
@@ -49,13 +49,13 @@
 					<td class='center'>{{ dateIncrementHors(undefined, manyIzdTime(ass, ass.kolvo_shipments)) }} </td>
 					<td class='center'>{{ ass.cbed ? responsible(ass.cbed) : 'Нет СБ' }}</td>
 					<td class='center hover success_operation'>{{ showOperation(ass,  "after") }}</td>
-					<td class='center'>
+					<td class='center' id='doc'>
 						<img src="@/assets/img/link.jpg" @click='openDocuments(ass.name)' class='link_img' atl='Показать' />
 					</td>
-					<td class='center'>
+					<td class='center' id='discription'>
 						<img src="@/assets/img/link.jpg" @click='openDescription(ass.description)' class='link_img' atl='Показать' />
 					</td>
-					<td class='center hover' @click='addMark(ass)' >
+					<td class='center hover' @click='addMark(ass)' id='mark'>
 						<unicon name="pen" fill="black" width='20' />
 					</td>
 				</tr>
@@ -63,7 +63,7 @@
 			</table>
 
 			<div class="btn-control">
-				<button class="btn-small">Печать</button>
+				<button class="btn-small" @click='printPage'>Печать</button>
 				<button class="btn-small">Сбросить все фильтры</button>
 			</div>
 		</div>
@@ -105,16 +105,17 @@
 </template>
 
 <script>
-import {mapGetters, mapActions, mapMutations} from 'vuex';
 import random from 'lodash';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
+import print from 'print-js';
 import { showMessage } from '@/js/';
-import DescriptionModal from '@/components/description-modal.vue';
 import { dateIncrementHors } from '@/js/';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
 import CreateMark from '@/components/sclad/mark-modal.vue'; 
-import { afterAndBeforeOperation, OperationTime, returnKolvoCreate } from '@/js/operation.js';
+import DatePicterRange from '@/components/date-picter-range.vue';
+import DescriptionModal from '@/components/description-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
+import { afterAndBeforeOperation, OperationTime, returnKolvoCreate } from '@/js/operation.js';
 export default {
 	data() {
 		return {
@@ -159,7 +160,7 @@ export default {
 		]),
 		unmount_date_picterRange(val) {
       console.log(val)
-    },
+    }, 
 		unmount_marks(res) {
 			if(res == 'closed') return false
 			if(res) {
@@ -168,8 +169,18 @@ export default {
 			} else 
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
 		},
+		printPage() {
+      print({
+        printable: 'tablebody', 
+        type: 'html',
+        targetStyles: ['*'],
+        documentTitle: "Операция: " + this.name_operaiton,
+        ignoreElements: ['parent', 'doc', 'discription', 'mark'],
+        font_size: '10pt'
+      })
+    },   
 		showOperation(ass, type) {
-			if(!ass.tech_process || !ass.operation_id) return showMessage('', 'Нет операций', 'w', this)
+			if(!ass.tech_process || !ass.operation_id) return 'Нет операций'
 			return afterAndBeforeOperation(
 				ass.tech_process, ass.operation_id, type).full_name
 		},
@@ -232,7 +243,7 @@ export default {
 		this.route_path = this.$route.path
 		this.type_operation_id = this.$route.params.operation
 		if(!this.type_operation_id)
-			this.$router.back()
+			return this.$router.back()
 
 		this.loader = true
     await this.fetchAllAssembleTypeOperation(this.type_operation_id)
@@ -242,7 +253,8 @@ export default {
 	}
 }
 </script>
-
 <style scoped>
-
+th {
+  word-break: break-all;
+}
 </style>

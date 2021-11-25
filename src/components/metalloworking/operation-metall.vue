@@ -9,14 +9,14 @@
 		</div>
 
 		<div v-if='getMetaloworkings.length'>
-			<table>
+			<table id='tablebody'>
 				<tr>
 					<th>№</th>
 					<th>Артикул Детали</th>
 					<th>Наименование Детали</th>
 					<th>Кол-во, шт</th>
 					<th>Срок отгрузки изд.</th>
-					<th>Принадлежность</th>
+					<th id='parent'>Принадлежность</th>
 					<th>Габариты заготовки, мм</th>
 					<th>Тип заготовки</th>
 					<th class='work_operation'>Предыдущая операция </th>
@@ -31,22 +31,22 @@
 					<th>Исполнитель</th>
 					<th>Отработано, н. ч.</th>
 					<th class='success_operation'>Следующая операция</th>
-					<th>Документы</th>
-					<th>Примечание</th>
-					<th>Отметка</th>
+					<th id='doc'>Документы</th>
+					<th id='discription'>Примечание</th>
+					<th id='mark'>Отметка</th>
 				</tr>
 				<tr 
 					v-for='(meatl, inx) of getMetaloworkings'
 					:key='meatl'
 					>
-					<td>{{ inx = 1 }}</td>
+					<td>{{ inx + 1 }}</td>
 					<td>{{ meatl.detal ? meatl.detal.articl : 'Нет детали'}}</td>
 					<td>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
 					<td class='center'>{{ meatl.kolvo_shipments }}</td>
 					<td class='center'>
               <img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal.shipments)' class='link_img' atl='Показать' />
             </td>
-					<td class='center'>
+					<td class='center' id='parent'>
 						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
 					</td>
 					<td class='center'>{{ meatl.detal ? meatl.detal.DxL : 'Нет детали' }}</td>
@@ -66,23 +66,23 @@
 							manyIzdTime(meatl, meatl.kolvo_shipments))
 						}} 
 					</td> 
-					<td class='center'>{{ meatl.deta ? responsible(meatl.detal) : "Нет детали" }}</td>
+					<td class='center'>{{ meatl.detal ? responsible(meatl.detal) : "Нет детали" }}</td>
 					<td class='center'> {{ workingForMarks(meatl, meatl.marks) }} </td>
 					<td class='center hover success_operation'>{{ showOperation(meatl,  "after") }}</td>
-					<td class='center'>
+					<td class='center' id='doc'>
 						<img src="@/assets/img/link.jpg" @click='openDocuments(meatl.operation_id)' class='link_img' atl='Показать' />
 					</td>
-					<td class='center'>
+					<td class='center' id='discription'>
 						<img src="@/assets/img/link.jpg" @click='openDescription(meatl.description)' class='link_img' atl='Показать' />
 					</td>
-					<td class='center hover' @click='addMark(meatl)' >
+					<td class='center hover' @click='addMark(meatl)' id='mark'>
 						<unicon name="pen" fill="black" width='20' />
 					</td>
 				</tr>
 			</table>
 
 			<div class="btn-control">
-				<button class="btn-small">Печать</button>
+				<button class="btn-small" @click='printPage'>Печать</button>
 				<button class="btn-small">Сбросить все фильтры</button>
 			</div>
 		</div>
@@ -130,6 +130,7 @@
 </template>
 
 <script>
+import print from 'print-js'																									;
 import {mapGetters, mapActions} from 'vuex'																		;
 import random from 'lodash'																										;
 import DatePicterRange from '@/components/date-picter-range.vue'							;
@@ -192,12 +193,21 @@ export default {
 			if(res) {
 				this.fetchAllMetalloworkingTypeOperation(this.type_operation_id)
 				showMessage('', 'Отметка о выполнении успешно создана', 's', this)
-			}
-				else 
+			}	else 
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
 		},
+		printPage() {
+      print({
+        printable: 'tablebody', 
+        type: 'html',
+        targetStyles: ['*'],
+        documentTitle: "Операция: " + this.name_operaiton,
+        ignoreElements: ['parent', 'doc', 'discription', 'mark'],
+        font_size: '10pt'
+      })
+    },   
 		showOperation(metal, type) {
-			if(!metal.tech_process || !metal.operation_id) return showMessage('', 'Нет операций', 'w', this)
+			if(!metal.tech_process || !metal.operation_id) return 'Нет операций'
 			return afterAndBeforeOperation(
 				metal.tech_process, metal.operation_id, type).full_name
 		},
@@ -270,12 +280,11 @@ export default {
 		this.route_path = this.$route.path
 		this.type_operation_id = this.$route.params.operation
 		if(!this.type_operation_id)
-			this.$router.back()
+			return this.$router.back()
 
 		this.loader = true
     await this.fetchAllMetalloworkingTypeOperation(this.type_operation_id)
 		await this.getAllUsers(true)
-		// console.log(this.getMetaloworkings)
 		this.name_operaiton = this.$route.params.name_operation
     this.loader = false
 	}
@@ -283,5 +292,7 @@ export default {
 </script>
 
 <style scoped>
-
+th {
+  word-break: break-all;
+}
 </style>
