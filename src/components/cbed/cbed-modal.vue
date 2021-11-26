@@ -17,7 +17,7 @@
 					<div>
 						<h3>Спетификация Сборочной единицы</h3>
 						<TableSpetification
-              :key='selectedCbEd.id + selectedCbEd.articl'
+              :key='selectedCbEd.id + selectedCbEd'
 							:listCbed='listCbed'
 							:listDetal='listDetal'
 							:listPokDet='listPokDet'

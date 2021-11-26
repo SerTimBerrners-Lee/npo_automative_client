@@ -76,7 +76,7 @@
 			<td>{{ material.kol }}</td>
 		</tr>
 	</table>
-	<ComponentCbedModal
+	<ModalCbed
 		:id='parametrs_cbed'
 		:key='cbedModalKey'
 		v-if='parametrs_cbed'
@@ -90,7 +90,7 @@
 </template>
 <script>
 import {random} from 'lodash';
-import ComponentCbedModal from '@/components/cbed/cbed-modal.vue';
+import ModalCbed from '@/components/cbed/cbed-modal.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 export default {
 	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList'],
@@ -102,13 +102,13 @@ export default {
       parametrs_cbed: null,
 		}
 	},
-	components: {ComponentCbedModal, DetalModal},
+	components: {ModalCbed, DetalModal},
 	methods: {
 		openCbed(id) {
 			if(!id) return false
       this.cbedModalKey = random(1, 999)
 			this.parametrs_cbed = id
-		},
+		}, 
 		openDetal(id) {
 			if(!id) return false
 			this.parametrs_detal = id,

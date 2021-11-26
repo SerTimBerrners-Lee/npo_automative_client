@@ -76,6 +76,12 @@ export default {
       techProcessIsShow: false,
       techProcessKey: random(10, 999),
       techProcessID: null,
+
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
+
     }
   },
   computed: mapGetters(['getOneSelectDetal']),
