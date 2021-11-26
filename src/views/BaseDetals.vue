@@ -155,28 +155,28 @@
     </div>
     <DetalModal
       :key='detalModalKey'
-      v-if='detalIsShow'
+      v-if='parametrs_detal'
+      :id='parametrs_detal'
     />
     <CbedModalInfo
-      :parametrs='parametrs_cbed'
+      :id='parametrs_cbed'
       :key='cbedModalKey'
       v-if='parametrs_cbed'
     />
     <ProductModalInfo
-      :parametrs='parametrs_product'
+      :id='parametrs_product'
       :key='productModalKey'
       v-if='parametrs_product'
     />
     <Loader v-if='loader' />
   </div>
 </template>
-
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
 import Search from '@/components/search.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
 import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
 export default {
   data() {
@@ -188,10 +188,10 @@ export default {
 
       selectedDetal: null,
       tr: null,
-      detalModalKey: random(1, 123e2),
-      detalIsShow: false,
+      detalModalKey: random(1, 999),
       cbedModalKey: random(1, 999),
       parametrs_cbed: null,
+      parametrs_detal: null,
       parametrs_product: null,
       productModalKey: random(1, 999),
 
@@ -208,7 +208,6 @@ export default {
       'getAllCbed'
     ]),
     ...mapMutations([
-      'addOneSelectDetal', 
       'filterDetalToArticle',
       'clearFilterCbedByProduct',
       'getAllCbEdByProduct',
@@ -222,12 +221,12 @@ export default {
     ]),
     infoModalCbed(cb) {
       if(!cb) return false
-      this.parametrs_cbed = cb
+      this.parametrs_cbed = cb.id
       this.cbedModalKey = random(1, 999)
     },
     infoModalProduct(product) {
       if(!product) return false 
-      this.parametrs_product = product
+      this.parametrs_product = product.id
       this.productModalKey = random(1, 999)
     },
     setDetals(detal, e) {
@@ -237,7 +236,6 @@ export default {
       
       this.tr = e
       this.tr.classList.add('td-row-all')
-      this.addOneSelectDetal(this.selectedDetal)
     },
     sortToAttention() {
       this.filterToAttention()
@@ -246,7 +244,7 @@ export default {
       if(!this.selectedDetal) return false
 
       this.detalModalKey = random(1, 34e5)
-      this.detalIsShow = true
+      this.parametrs_detal = this.selectedDetal.id
     },
     setCbed(cbEd, e) {
       if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {

@@ -17,6 +17,7 @@
 					<div>
 						<h3>Спетификация Сборочной единицы</h3>
 						<TableSpetification
+              :key='selectedCbEd.id + selectedCbEd.articl'
 							:listCbed='listCbed'
 							:listDetal='listDetal'
 							:listPokDet='listPokDet'
@@ -43,30 +44,7 @@
 						<h3>Описание / Примечание</h3>
 						<textarea maxlength='250' style="width: 90%; height: 120px;" :value='selectedCbEd.description'> </textarea>
 					</div>
-					<div 
-						class='scroll-table' 
-						style='width:100%' 
-						v-if='selectedCbEd.documents.length > 0'>
-						<h3>Документы</h3>
-						<table style="width: 100%;">
-							<tr>
-								<th>Файл</th>
-							</tr>
-							<tr class="td-row" 
-								v-for='doc in selectedCbEd.documents' 
-								:key='doc' @click='setDocs(doc)'>
-								<td>{{ doc.name }}</td>
-							</tr>
-						</table>
-						<div class="btn-control">
-						<button class="btn-small" @click='openDock'>Открыть</button>
-						</div>
-						<OpensFile 
-							:parametrs='itemFiles' 
-							v-if="showFile" 
-							:key='keyWhenModalGenerateFileOpen'
-						/>
-					</div>
+          <TableDocument :documents='selectedCbEd.documents'/>
 					<h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
 				</div>
       </div>
@@ -79,27 +57,23 @@
     :techProcessID='techProcessID'
   />
 </template>
-
 <script>
-import OpensFile from '@/components/filebase/openfile.vue';
 import {isEmpty, random} from 'lodash';
-import {mapGetters, mapMutations } from 'vuex';
-import MediaSlider from '@/components/filebase/media-slider.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from './table-sptification.vue';
+import {mapGetters, mapMutations, mapActions } from 'vuex';
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 export default {
-  props: ['parametrs'],
+  props: ['id'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
       inputs: '',
-      itemFiles: null,
-      showFile: false,
       showProviders: false,
       keyProvidersModal: random(1, 999),
-      keyWhenModalGenerateFileOpen: random(1, 999),
 			selectedCbEd: null,
 
 			materialList: [],
@@ -113,24 +87,23 @@ export default {
     }
   },
   computed: mapGetters([ 
-      'getOneSelectDetal']),
-  components: {OpensFile, MediaSlider, TechProcess, TableSpetification},
+    'getOneSelectDetal']),
+  components: {
+    MediaSlider, 
+    TechProcess, 
+    TableSpetification, 
+    TableDocument
+  },
   methods: {
+    ...mapActions([
+      'getOneCbEdById'
+    ]),
     ...mapMutations(['removeOperationStorage']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
       this.removeOperationStorage()
-    },
-    setDocs(dc) {
-        this.itemFiles = dc
-      },
-    openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     showTechProcess() {
       this.techProcessIsShow = true
@@ -141,10 +114,10 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-    if(isEmpty(this.$props.parametrs)) 
+    if(!this.$props.id) 
       return this.destroyModalF()
-		console.log('this.$props.parametrs', this.$props.parametrs)
-    this.selectedCbEd = this.$props.parametrs
+    this.selectedCbEd = await this.getOneCbEdById(this.$props.id)
+    if(isEmpty(this.selectedCbEd)) return this.destroyModalF()
     
     if(this.selectedCbEd.techProcesses)
       this.techProcessID = this.selectedCbEd.techProcesses.id
@@ -216,8 +189,5 @@ export default {
 }
 .p-types span:first-child {
   font-weight: bold;
-}
-table {
-  user-select: none;
 }
 </style>

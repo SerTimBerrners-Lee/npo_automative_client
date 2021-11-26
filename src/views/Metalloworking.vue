@@ -177,7 +177,7 @@ export default {
       print({
         printable: 'tablebody', 
         type: 'html',
-        targetStyles: ['*'],
+        targetStyles: ['*'], 
         documentTitle: 'Металлообработка',
         ignoreElements: ['operation', 'doc', 'discription'],
         font_size: '10pt'

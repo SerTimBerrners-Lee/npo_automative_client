@@ -4,7 +4,7 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 
-      <div class="right_info_block" >
+      <div class="right_info_block" v-if='selecteProduct'>
 				<h3>Краткая Информация о Изделии</h3>
 				<div class="block" v-if='selecteProduct'>
 					<p class='name_parg'>
@@ -17,6 +17,7 @@
 					<div>
 						<h3>Спетификация Изделия</h3>
 						<TableSpetification
+              :key='selecteProduct.id'
 							:listCbed='listCbed'
 							:listDetal='listDetal'
 							:listPokDet='listPokDet'
@@ -46,30 +47,7 @@
 							style="width: 90%; height: 120px;" 
 							:value='selecteProduct.description'> </textarea>
 					</div>
-					<div 
-						class='scroll-table' 
-						style='width:100%' 
-						v-if='selecteProduct.documents.length > 0'>
-						<h3>Документы</h3>
-						<table style="width: 100%;">
-							<tr>
-								<th>Файл</th>
-							</tr>
-							<tr class="td-row" 
-								v-for='doc in selecteProduct.documents' 
-								:key='doc' @click='setDocs(doc)'>
-								<td>{{ doc.name }}</td>
-							</tr>
-						</table>
-						<div class="btn-control">
-						<button class="btn-small" @click='openDock'>Открыть</button>
-						</div>
-						<OpensFile 
-							:parametrs='itemFiles' 
-							v-if="showFile" 
-							:key='keyWhenModalGenerateFileOpen'
-						/>
-					</div>
+					<TableDocument :documents='selecteProduct.documents'/>
 					<h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
 				</div>
       </div>
@@ -84,25 +62,22 @@
 </template>
 
 <script>
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import {random, isEmpty} from 'lodash';
+import {mapGetters, mapMutations, mapActions } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
-import {mapGetters, mapMutations } from 'vuex';
-import {isEmpty, random} from 'lodash';
 export default {
-  props: ['parametrs'],
+  props: ['id'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
       inputs: '',
-      itemFiles: null,
-      showFile: false,
       showProviders: false,
       keyProvidersModal: random(1, 999),
-      keyWhenModalGenerateFileOpen: random(1, 999),
 			selecteProduct: null,
 
 			materialList: [],
@@ -116,9 +91,16 @@ export default {
     }
   },
   computed: mapGetters([ 
-      'getOneSelectDetal']),
-  components: {OpensFile, MediaSlider, TechProcess, TableSpetification},
+    'getOneSelectDetal'
+  ]),
+  components: {
+    MediaSlider, 
+    TechProcess, 
+    TableSpetification, 
+    TableDocument
+  },
   methods: {
+    ...mapActions(['getAllProductById']),
     ...mapMutations(['removeOperationStorage']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
@@ -127,13 +109,11 @@ export default {
       this.removeOperationStorage()
     },
     setDocs(dc) {
-        this.itemFiles = dc
-      },
-    openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
+      this.itemFiles = dc
       this.keyWhenModalGenerateFileOpen = random(10, 999)
+    },
+    isEmptyF(obj) {
+      return isEmpty(obj)
     },
     showTechProcess() {
       this.techProcessIsShow = true
@@ -144,10 +124,11 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-    if(isEmpty(this.$props.parametrs)) 
-      return this.destroyModalF()
-		console.log('this.$props.parametrs', this.$props.parametrs)
-    this.selecteProduct = this.$props.parametrs
+
+    if(!this.$props.id) return this.destroyModalF()
+    this.selecteProduct = await this.getAllProductById(this.$props.id)
+    console.log(this.selecteProduct)
+    if(isEmpty(this.selecteProduct)) return this.destroyModalF()
     
     if(this.selecteProduct.techProcesses)
       this.techProcessID = this.selecteProduct.techProcesses.id
@@ -219,8 +200,5 @@ export default {
 }
 .p-types span:first-child {
   font-weight: bold;
-}
-table {
-  user-select: none;
 }
 </style>

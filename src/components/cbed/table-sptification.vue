@@ -1,15 +1,20 @@
 <template>
-	<table class="tables_bf" >
+	<div>
+		<table class="tables_bf" >
 		<tr>
 			<th>Артикул</th>
 			<th>Наименование</th>
-			<th>Ед.</th>
+			<th>Ед.</th> 
 			<th>Кол-вл</th>
 		</tr>
 		<tr>
 			<th colspan="4">Сборочные Единицы (Тип СБ)</th>
 		</tr>
-		<tr v-for='cb in listCbed' :key='cb.cb'>
+		<tr 
+			v-for='cb in listCbed' 
+			class='td-row'
+			:key='cb.cb' 
+			@click='openCbed(cb.cb.id)'>
 			<td>{{ cb.art }} </td>
 			<td>{{ cb.cb.name }}</td>
 			<td> 
@@ -24,7 +29,11 @@
 		<tr>
 			<th colspan="4">Детали (Тип Д)</th>
 		</tr>
-		<tr v-for='detal in listDetal' :key='detal.det'>
+		<tr 
+			v-for='detal in listDetal' 
+			:key='detal.det' 
+			@click='openDetal(detal.det.id)'
+			class='td-row'>
 			<td>{{ detal.art }} </td>
 			<td>{{ detal.det.name }}</td>
 			<td> 
@@ -67,16 +76,45 @@
 			<td>{{ material.kol }}</td>
 		</tr>
 	</table>
+	<ComponentCbedModal
+		:id='parametrs_cbed'
+		:key='cbedModalKey'
+		v-if='parametrs_cbed'
+	/>
+	<DetalModal
+		:key='detalModalKey'
+		v-if='parametrs_detal'
+		:id='parametrs_detal'
+	/>
+	</div>
 </template>
-
 <script>
+import {random} from 'lodash';
+import ComponentCbedModal from '@/components/cbed/cbed-modal.vue';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
 export default {
 	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList'],
 	data() {
 		return {
-
+			parametrs_detal: null,
+			detalModalKey: random(1, 999),
+      cbedModalKey: random(1, 999),
+      parametrs_cbed: null,
 		}
-	}
+	},
+	components: {ComponentCbedModal, DetalModal},
+	methods: {
+		openCbed(id) {
+			if(!id) return false
+      this.cbedModalKey = random(1, 999)
+			this.parametrs_cbed = id
+		},
+		openDetal(id) {
+			if(!id) return false
+			this.parametrs_detal = id,
+      this.detalModalKey = random(1, 999)
+		}
+	},
 }
 </script>
 

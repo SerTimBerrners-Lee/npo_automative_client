@@ -138,28 +138,8 @@
           <textarea maxlength='250' style="width: 90%; height: 120px;" :value='selectedCbEd.description'> </textarea>
         </div>
         <h3 class="link_h3" @click='showTechProcess' v-if='selectedCbEd.techProcesses'>Технологический процес</h3>
-        <div v-if='selectedCbEd.documents.length > 0'>
-          <h3>Документы</h3>
-          <table style="width: 100%;">
-            <tr>
-              <th>Файл</th>
-            </tr> 
-            <tr class="td-row" v-for='doc in selectedCbEd.documents' 
-              :key='doc'
-                @click='setDocs(doc)'>
-              <td>{{ doc.name }}</td>
-            </tr>
-          </table>
-          <div class="btn-control" style='width: 100%'>
-          <button class="btn-small" @click='openDock'>Открыть</button>
-          </div>
-          <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="showFile" 
-            @unmount='openFile'
-            :key='keyWhenModalGenerateFileOpen'
-          />
-        </div> 
+        <TableDocument v-if='selectedCbEd.documents.length'
+          :documents='selectedCbEd.documents'/>
       </div>
     </div>
     <Loader v-if='loader' />
@@ -170,7 +150,7 @@
       :techProcessID='techProcessID'
     />
     <ProductModalInfo
-      :parametrs='parametrs_product'
+      :id='parametrs_product'
       :key='productModalKey'
       v-if='parametrs_product'
     />
@@ -178,11 +158,11 @@
 </template>
  
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import Search from '@/components/search.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
 import { random, isEmpty } from 'lodash';
+import Search from '@/components/search.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
 import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
@@ -213,11 +193,11 @@ export default {
   computed: mapGetters(['allCbed', 'allProduct']),
   components: {
     Search, 
-    OpensFile, 
     MediaSlider, 
     TechProcess, 
     TableSpetification,
-    ProductModalInfo},
+    ProductModalInfo,
+    TableDocument},
   methods: {
     ...mapActions([
       'getAllCbed', 
@@ -228,7 +208,6 @@ export default {
       'setOneCbed', 
       'searchCbed', 
       'searchProduct', 
-      'setOneProduct', 
       'getAllCbEdByProduct',
       'clearFilterCbedByProduct', 
       'filterToAttentionCbed'
@@ -260,11 +239,11 @@ export default {
           this.listDetal = JSON.parse(obj.listDetal)
         if(obj.listCbed)
           this.listCbed = JSON.parse(obj.listCbed)
-      } catch(e) {console.log(e)}
+      } catch(e) {console.error(e)}
     },
     infoModalProduct(product) {
       if(!product) return false 
-      this.parametrs_product = product
+      this.parametrs_product = product.id
       this.productModalKey = random(1, 999)
     },
     setProduct(product, e) {
@@ -272,14 +251,13 @@ export default {
         this.clearFilterCbedByProduct()
         e.classList.remove('td-row-all')
         this.selecteProduct = null
-        this.parametrs_product= product
+        this.parametrs_product= null
         return
       }
       this.selecteProduct = product
       if(this.tr_product) 
         this.tr_product.classList.remove('td-row-all')
-  
-      this.setOneProduct(product)
+
       this.getAllCbEdByProduct(product)
 
       this.tr_product = e

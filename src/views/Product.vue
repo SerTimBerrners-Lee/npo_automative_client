@@ -99,26 +99,8 @@
         <span>Описание / Примечание</span>
         <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
         </div>
-        <div v-if='selecteProduct.documents.length > 0'>
-          <h3>Документы</h3>
-          <table style="width: 100%;">
-            <tr>
-              <th>Файл</th>
-            </tr> 
-            <tr class="td-row" v-for='doc in selecteProduct.documents' :key='doc' @click='setDocs(doc)'>
-              <td>{{ doc.name }}</td>
-            </tr>
-          </table>
-          <div class="btn-control">
-          <button class="btn-small" @click='openDock'>Открыть</button>
-          </div>
-          <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="showFile" 
-            @unmount='openFile'
-            :key='keyWhenModalGenerateFileOpen'
-            />
-        </div> 
+        <TableDocument v-if='selecteProduct.documents.length'
+          :documents='selecteProduct.documents'/>
       </div>
     </div>
     <Loader v-if='loader' />
@@ -130,13 +112,12 @@
     />
   </div>
 </template>
- 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import Search from '@/components/search.vue';
-import OpensFile from '@/components/filebase/openfile.vue'
-import MediaSlider from '@/components/filebase/media-slider.vue';
 import { random, isEmpty } from 'lodash';
+import Search from '@/components/search.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
 export default {
@@ -161,9 +142,18 @@ export default {
     }
   },
   computed: mapGetters(['allProduct']),
-  components: {Search, OpensFile, MediaSlider, TechProcess, TableSpetification},
+  components: {
+    Search, 
+    TableDocument, 
+    MediaSlider, 
+    TechProcess, 
+    TableSpetification
+  },
   methods: {
-    ...mapActions(['getAllProduct', 'fetchDeleteProduct']),
+    ...mapActions([
+      'getAllProduct', 
+      'fetchDeleteProduct'
+    ]),
     ...mapMutations([
       'setOneProduct', 
       'searchProduct', 

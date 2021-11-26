@@ -156,10 +156,11 @@
 	/>
 	<DetalModal
 		:key='detalModalKey'
-		v-if='detalIsShow'
+		v-if='parametrs_detal'
+		:id='parametrs_detal'
 	/>
 	<CbedModalInfo
-		:parametrs='parametrs_cbed'
+		:id='parametrs_cbed'
 		:key='cbedModalKey'
 		v-if='parametrs_cbed'
 	/>
@@ -206,7 +207,7 @@ export default {
 			itemFiles: null,
 
 			detalModalKey: random(1, 999),
-			detalIsShow: false,
+			parametrs_detal: false,
 			parametrs_cbed: null,
 			cbedModalKey: random(1, 999),
 			
@@ -261,7 +262,6 @@ export default {
 		]),
 		...mapMutations([
 			'addOneSelectDetal',
-			'setOneCbed',
 			'filterToParentShipments'
 		]),
 		unmount_base(e) {
@@ -539,23 +539,16 @@ export default {
 		},
 		showInformIzdel(id, type) {
 			if(type == 'cbed') {
-				this.getOneCbEdById(id).then(res => {
-					if(res) {
-						this.setOneCbed(res)
-						this.parametrs_cbed = res
-						this.cbedModalKey = random(1, 999)
-					}
-				})
+				if(id) {
+					this.parametrs_cbed = id
+					this.cbedModalKey = random(1, 999)
+				}
 			}
 			if(type == 'detal') {
-				this.getOneDetal(id).then(res => {
-					if(res) {
-						this.addOneSelectDetal(res)
-						this.detalModalKey = random(1, 999)
-						this.detalIsShow = true
-					}
-				})
-				
+				if(id) {
+					this.parametrs_detal = id
+					this.detalModalKey = random(1, 999)
+				}
 			}
 		}
 	},
