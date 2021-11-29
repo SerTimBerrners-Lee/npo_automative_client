@@ -237,7 +237,7 @@ export default {
       
       this.tr = e
       this.tr.classList.add('td-row-all')
-      this.addOneSelectDetal(this.selectedDetal)
+      this.addOneSelectDetal(detal)
     },
     sortToAttention() {
       this.filterToAttention()
