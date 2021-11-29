@@ -9,7 +9,7 @@
 				<th>Кол-во, шт.</th>
 				<th>Кол-во, дней</th>
 				<th>Осталось дней</th>
-				<th>Основание</th>
+				<th style='width:50px;'>Основание</th>
 				<th>Покупатель</th> 
 				<th>Готовность к отгрузки в %</th>
 				<th>Статус</th>
@@ -35,7 +35,7 @@
 				<td class='center'>{{ shipments.kol }}</td>
 				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td>
 				<td class='center'>{{ shipments.difference }}</td>
-				<td class='center active'  
+				<td style='width:50px;' class='center active'  
 					@click='openDocuments(shipments)' >
 					{{ shipments.base }}
 				</td>
