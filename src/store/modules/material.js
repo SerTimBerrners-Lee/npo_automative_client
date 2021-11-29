@@ -18,6 +18,7 @@ export default {
     sProviderPM: [],
 
     stateMaterialTime: [],
+    statePodMaterialTime: [],
 
     searchTypeM: [],
     searchPTypeM: [],
@@ -238,6 +239,8 @@ export default {
   mutations: { 
     sortPPMtoParent(state, result) {
       state.podMaterial = result
+      state.typeM = []
+      state.podTypeM = []
       for(let mat of result) {
         let check = false
         if(mat.material) {
@@ -367,6 +370,35 @@ export default {
     filterByNameMaterial(state, mat) {
       state.podMaterial = mat.podPodMaterials
     },
+
+    /**
+     * Фильтрует тип и подтипы в находящиеся 
+     * обьекте подпод материала
+     * @param {*} state 
+     * @param {*} mat 
+     */
+    filterByNameMaterialPodMat(state, mat) {
+      if(state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial
+      if(state.statePodMaterialTime.length == 0) state.statePodMaterialTime = state.podTypeM
+
+      state.podMaterial = mat.podPodMaterials
+      state.podTypeM = []
+      for(let name_m of mat.podPodMaterials) {
+        if(!name_m.podMaterial) continue
+        for(let pm of state.statePodMaterialTime) {
+          if(pm.id == name_m.podMaterial.id) {
+            let check = true
+            for(let pm_two of state.podTypeM) {
+              if(pm_two.id == pm.id) check = false
+            }
+            if(check) {
+              state.podTypeM.push(pm)
+              continue
+            } else check = false
+          }
+        }
+      }
+    },
     filterByNameMaterialById(state, mat) {
       if(!mat.podPodMaterials && !mat.podPodMaterials.length) return []
       if(!state.searchMaterial.length)
@@ -418,6 +450,7 @@ export default {
       state.podTypeM = []
       state.instansPodTypeM = []
       state.podMaterial = []
+      state.stateMaterialTime = []
       state.onePPT = {}
     },
     filterToAttentionMat(state) {
@@ -428,6 +461,18 @@ export default {
         return state.tmp_attention  = []
       }
       state.podMaterial = state.podMaterial.filter(detal => detal.attention)
+    },
+    /**
+     * 
+     * @param {*} state 
+     * @param {{status: 'order', val}} params 
+     */
+    filterMaterialStatus(state, params) {
+      if(state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial
+      state.podMaterial = state.stateMaterialTime
+      if(params.status == 'order') 
+        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries.length == params.val)
+      if(params.status == 'all') return null
     }
   }
 }

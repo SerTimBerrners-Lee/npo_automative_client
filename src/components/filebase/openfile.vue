@@ -58,7 +58,16 @@
                   class="btn-small" 
                   v-if='parametrs.type_open_modal == "edit" && getRoleAssets && getRoleAssets.assets.basefileAssets.writeSomeone' 
                   @click='e => edit(e.target)'>Редактировать</button>
-                <button class="btn-small" @click="openfile(urlImg)">На печать</button>
+                <button 
+                  class="btn-small" 
+                  v-if='docType.type == "img" || docType.typename == "pdf"'
+                  @click="printDocument(urlImg, docType.typename)">На печать</button>
+                <button 
+                  class="btn-small"
+                  v-if='file && file.length > 1'
+                  @click='printAllDoc'>
+                  Печать всего
+                </button>
                 <button class="btn-small" @click="openfile(urlImg)">Открыть / Скачать</button>
               </div>
               <div class="main-fb-modal-block" v-if='!is_edit'>
@@ -117,13 +126,21 @@
           </div> 
       </div>
     </div>
+    <InformFolder  
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='message'
+      :key='keyInformTip'
+    />
   </div>
 </template>
 <script>
-import { photoPreloadUrl } from '@/js/';
-import { mapActions, mapGetters } from 'vuex';
-import {isArray} from 'lodash';
+import print from 'print-js';
+import {isArray, random} from 'lodash';
 import PATH_TO_SERVER from '@/js/path.js';
+import { mapActions, mapGetters } from 'vuex';
+import { photoPreloadUrl, showMessage } from '@/js/';
 export default { 
   props: ['parametrs'],
   data() {
@@ -131,6 +148,10 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
+      message: '',
+      type: '',
+      keyInformTip: random(1, 999),
+
       typeDocs: ['МД', 'КД', 'ЧЖ', 'СД', 'DXF'],
       urlImg: '',
       imgShow: false,
@@ -151,7 +172,11 @@ export default {
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
   methods: {
-    ...mapActions(['pushDocuments', 'getAllUsers', 'updateDataFile']),
+    ...mapActions([
+      'pushDocuments', 
+      'getAllUsers', 
+      'updateDataFile'
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -190,6 +215,29 @@ export default {
         e.innerText = 'Сохранить'
       }
     },
+    printDocument(image, tp) {
+      print({
+        printable: image, 
+        type: tp == 'pdf' ? 'pdf' : 'image',
+        imageStyle: 'max-height: 95vh; margin-bottom: 10px;'
+      })
+    },
+    printAllDoc() {
+			if(!this.file.length) return showMessage('', 'Нет документов', 'w', this)
+			let array_img = []
+			for(let doc of this.file) {
+				photoPreloadUrl({name: doc.path}, res => {
+					if(res.type == 'img') array_img.push(`${PATH_TO_SERVER}${doc.path}`)
+				}, true)
+			}
+
+			if(!array_img.length) return showMessage('', 'Нет объектов для печати', 'w', this)
+			print({
+				printable: array_img, 
+				type: 'image',
+				imageStyle: 'max-height: 95vh; margin-bottom: 10px;'
+			})
+		},
     update() {
       const data = {
         name: this.name,
@@ -199,7 +247,6 @@ export default {
         id: this.id,
         description: this.description
       }
-
       this.updateDataFile(data).then(res => {
         if(res) {
           setTimeout(() => {

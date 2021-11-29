@@ -71,6 +71,15 @@
           <span style='font-weight:bold;'>{{ selecteProduct.user ? selecteProduct.user.login : ''  }}</span>
         </p>
         <MediaSlider  v-if='selecteProduct.documents.length' :data='selecteProduct.documents' :key='selecteProduct.documents' />
+        <div>
+          <h3>Спетификация Изделия</h3>
+          <TableSpetification
+            :listCbed='listCbed'
+            :listDetal='listDetal'
+            :listPokDet='listPokDet'
+            :materialList='materialList'
+          />
+        </div>
         <div v-if='selecteProduct.haracteriatic'>
           <h3>Характеристики</h3>
           <p v-for='har in JSON.parse(selecteProduct.haracteriatic)' :key='har'>
@@ -90,26 +99,8 @@
         <span>Описание / Примечание</span>
         <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
         </div>
-        <div v-if='selecteProduct.documents.length > 0'>
-          <h3>Документы</h3>
-          <table style="width: 100%;">
-            <tr>
-              <th>Файл</th>
-            </tr> 
-            <tr class="td-row" v-for='doc in selecteProduct.documents' :key='doc' @click='setDocs(doc)'>
-              <td>{{ doc.name }}</td>
-            </tr>
-          </table>
-          <div class="btn-control">
-          <button class="btn-small" @click='openDock'>Открыть</button>
-          </div>
-          <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="showFile" 
-            @unmount='openFile'
-            :key='keyWhenModalGenerateFileOpen'
-            />
-        </div> 
+        <TableDocument v-if='selecteProduct.documents.length'
+          :documents='selecteProduct.documents'/>
       </div>
     </div>
     <Loader v-if='loader' />
@@ -121,14 +112,14 @@
     />
   </div>
 </template>
- 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import Search from '@/components/search.vue';
-import OpensFile from '@/components/filebase/openfile.vue'
-import MediaSlider from '@/components/filebase/media-slider.vue';
 import { random, isEmpty } from 'lodash';
+import Search from '@/components/search.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import TableSpetification from '@/components/cbed/table-sptification.vue';
 export default {
   data() {
     return {
@@ -142,13 +133,27 @@ export default {
       techProcessIsShow: false,
       techProcessKey: random(1, 999),
 
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
+
       loader: false
     }
   },
   computed: mapGetters(['allProduct']),
-  components: {Search, OpensFile, MediaSlider, TechProcess},
+  components: {
+    Search, 
+    TableDocument, 
+    MediaSlider, 
+    TechProcess, 
+    TableSpetification
+  },
   methods: {
-    ...mapActions(['getAllProduct', 'fetchDeleteProduct']),
+    ...mapActions([
+      'getAllProduct', 
+      'fetchDeleteProduct'
+    ]),
     ...mapMutations([
       'setOneProduct', 
       'searchProduct', 
@@ -162,6 +167,23 @@ export default {
 
       this.tr = e
       this.tr.classList.add('td-row-all')
+      this.parseSpetification(product)
+    },
+    parseSpetification(obj) {
+      this.materialList = []
+      this.listPokDet = []
+      this.listDetal = []
+      this.listCbed = []
+      try {
+        if(obj.materialList)
+          this.materialList = JSON.parse(obj.materialList)
+        if(obj.listPokDet)
+          this.listPokDet = JSON.parse(obj.listPokDet)
+        if(obj.listDetal)
+          this.listDetal = JSON.parse(obj.listDetal)
+        if(obj.listCbed)
+          this.listCbed = JSON.parse(obj.listCbed)
+      } catch(e) {console.log(e)}
     },
     sortToAttention() {
       this.filterToAttentionProduct()
@@ -172,7 +194,7 @@ export default {
 
       this.$router.push({path: '/product/edit/false'})
     }, 
-    create() {
+    createProduct() {
       this.$router.push('/createproduct')
     },
     createCopy() {

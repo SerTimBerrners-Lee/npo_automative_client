@@ -123,10 +123,6 @@
                 </button>
               </p>
             </div>
-            <DetalModal
-              :key='detalModalKey'
-              v-if='detalIsShow'
-            />
             <!-- Detal List -->
             <div v-if='detalList.length > 0'>
               <table>
@@ -180,19 +176,20 @@
                 v-if='detalList'>
                 Добавить выбранное</button>
             </div>
-            
         </div>
       </div>
+      <DetalModal
+        :key='detalModalKey'
+        v-if='parametrs_detal'
+        :id='parametrs_detal'
+      />
   </div>  
 </template>
-
 <script>
-
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
-import Search from '@/components/search.vue'
-
+import Search from '@/components/search.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
 export default {
   props: ['getListDetal', 'listDetal', 'get_one'],
   data() {
@@ -209,7 +206,7 @@ export default {
       selectedDetal: null,
       tr: null,
       detalModalKey: random(1, 123e2), 
-      detalIsShow: false,
+      parametrs_detal: false,
 
       detalList: []
     }
@@ -227,7 +224,6 @@ export default {
       'getAllProduct', 
       'getAllCbed']),
     ...mapMutations([
-      'addOneSelectDetal', 
       'filterDetalToArticle',
       'searchCbed',
       'searchProduct',
@@ -243,10 +239,9 @@ export default {
       
       this.tr = e
       this.tr.classList.add('td-row-all')
-      this.addOneSelectDetal(this.selectedDetal)
 
       this.detalModalKey = random(1, 999)
-      this.detalIsShow = true
+      this.parametrs_detal = this.selectedDetal.id
     },
      setCbed(cbEd, e) {
       if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {

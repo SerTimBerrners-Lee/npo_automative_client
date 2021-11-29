@@ -152,6 +152,7 @@ const comparison = (one_date = new Date().toLocaleDateString('ru-RU'), two_date 
 }
 
 const dateDifference = (date_one, date_two) => {
+  if(!date_one || !date_two) return ''
   const toFormatString = (date) => {
     const spl = date.split('.')
     return `${spl[1]}-${spl[0]}-${spl[2]}`

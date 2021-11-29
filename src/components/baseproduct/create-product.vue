@@ -2,7 +2,6 @@
   <div class='main_block_content'>
     <h3>Создать изделие</h3>
     <div class="block title_block">
-      <div>
         <p><span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'></p>
         <p><span>Артикул: </span><input type="text" v-model.trim='obj.articl'></p>
         <p><span>Наименование: </span><input type="text" v-model.trim='obj.name'></p>
@@ -22,7 +21,6 @@
             id='attention' 
             v-model='attention'>
         </p>
-      </div>
     </div> 
     <div class="content_block">
       <div class="left_content">
@@ -30,71 +28,12 @@
           <div class="content_left_block_left">
             <div>
               <h3>Комплектация </h3>
-              <table class="tables_bf" >
-                <tr>
-                  <th>Артикул</th>
-                  <th>Наименование</th>
-                  <th>Ед.</th>
-                  <th>Кол-вл</th>
-                </tr>
-                 <tr>
-                  <th colspan="4">Сборочные Единицы (Тип СБ)</th>
-                </tr>
-                <tr v-for='cb in listCbed' :key='cb.cb'>
-                  <td>{{ cb.art }} </td>
-                  <td>{{ cb.cb.name }}</td>
-                  <td> <span v-if="cb.ez == 1"> шт</span> 
-                    <span v-if="cb.ez == 2"> л </span>
-                    <span v-if="cb.ez == 3"> кг</span> 
-                    <span v-if="cb.ez == 4"> м </span>
-                    <span v-if="cb.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ cb.kol }}</td>
-                </tr>
-                <tr>
-                  <th colspan="4">Детали (Тип Д)</th>
-                </tr>
-                <tr v-for='detal in listDetal' :key='detal.det'>
-                  <td>{{ detal.art }} </td>
-                  <td>{{ detal.det.name }}</td>
-                  <td> <span v-if="detal.ez == 1"> шт</span> 
-                    <span v-if="detal.ez == 2"> л </span>
-                    <span v-if="detal.ez == 3"> кг</span> 
-                    <span v-if="detal.ez == 4"> м </span>
-                    <span v-if="detal.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ detal.kol }}</td>
-                </tr>
-                <tr>
-                  <th colspan="4">Стандартные или покупные детали (Тип ПД)</th>
-                </tr>
-                <tr v-for='material in listPokDet' :key='material.mat'>
-                  <td>{{ material.art }} </td>
-                  <td>{{ material.mat.name }}</td>
-                  <td> <span v-if="material.ez == 1"> шт</span> 
-                    <span v-if="material.ez == 2"> л </span>
-                    <span v-if="material.ez == 3"> кг</span> 
-                    <span v-if="material.ez == 4"> м </span>
-                    <span v-if="material.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ material.kol }}</td>
-                </tr>
-                <tr>
-                  <th colspan="4">Расходные материалы (Тип РМ)</th>
-                </tr>
-                <tr v-for='material in materialList' :key='material.mat'>
-                  <td>{{ material.art }} </td>
-                  <td>{{ material.mat.name }}</td>
-                  <td> 
-                    <span v-if="material.ez == 1"> шт</span> 
-                    <span v-if="material.ez == 2"> л </span>
-                    <span v-if="material.ez == 3"> кг</span> 
-                    <span v-if="material.ez == 4"> м </span>
-                    <span v-if="material.ez == 5"> м.куб</span>
-                  </td>
-                  <td>{{ material.kol }}</td>
-                </tr>
-              </table>
+              <TableSpetification
+                :listCbed='listCbed'
+                :listDetal='listDetal'
+                :listPokDet='listPokDet'
+                :materialList='materialList'
+              />
               <!-- Покупные Детали -->
               <ModalBaseMaterial 
                 :key='modalMaterialKey'
@@ -278,6 +217,7 @@ import { showMessage } from '@/js/';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import TableSpetification from '@/components/cbed/table-sptification.vue';
 export default {
   data() {
     return {
@@ -298,7 +238,7 @@ export default {
       attention: false,
       docFiles: [],
       formData: null,
-      modalMaterialKey: random(10, 12e8),
+      modalMaterialKey: random(10, 999),
       modalMaterialIsShow: false,
       materialList: [],
       listPokDet: [],
@@ -311,7 +251,7 @@ export default {
       selectParametrs: null,
 
       techProcessIsShow: false,
-      techProcessKey: random(10, 33e6),
+      techProcessKey: random(10, 999),
       inputMassZag: 0,
       variableDensity: 0,
       techProcessID: localStorage.getItem('tpID') || null,
@@ -348,7 +288,14 @@ export default {
     }
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
-  components: {ModalBaseMaterial, TechProcess, BaseDetalModal, BaseCbedModal, BaseFileModal},
+  components: {
+    ModalBaseMaterial, 
+    TechProcess, 
+    BaseDetalModal, 
+    BaseCbedModal, 
+    BaseFileModal,
+    TableSpetification
+  },
   methods: {
     ...mapActions(['createNewProduct', 'getAllUsers', 'getAllArticlProduct']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
@@ -441,7 +388,7 @@ export default {
 
       this.deleteStorageData()
       setTimeout(() =>  {
-        this.$router.push('/product')
+        this.$router.back()
         this.delitPathNavigate(this.$route.path)
       }, 3000)
     },
@@ -458,13 +405,13 @@ export default {
         case '4':
           this.instanMaterial = 2
           this.listMaterials = this.listPokDet
-          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
         case '5':
           this.instanMaterial = 3
           this.listMaterials = this.materialList
-          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
       }
@@ -511,11 +458,11 @@ export default {
     },
     showTechProcess() {
       this.techProcessIsShow = true
-      this.techProcessKey = random(1, 12e8)
+      this.techProcessKey = random(1, 999)
     },
 
     exit(){
-      this.$router.push("/product")
+      this.$router.back()
       this.deleteStorageData()
       this.delitPathNavigate(this.$route.path)
     },
@@ -571,7 +518,7 @@ export default {
   display: flex;
   align-items: center;
 }
-.title_block div * {
+.title_block * {
   margin-left: 5px;
 }
 .title_block input[type='text']{

@@ -4,7 +4,7 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 
-      <div class="right_info_block" >
+      <div class="right_info_block" v-if='!isEmptyF(getOneSelectDetal)'>
       <h3>Краткая Информация о детали</h3>
       <div class="block">
         <p class='name_parg'>
@@ -13,7 +13,7 @@
         <p class='name_parg'>
         <span class="title_span">Артикул: </span><span>{{ getOneSelectDetal.articl }}</span>
         </p>
-        <MediaSlider :width='"width: 93%;"' v-if='getOneSelectDetal.documents.length' :data='getOneSelectDetal.documents' :key='getOneSelectDetal.documents' />
+        <MediaSlider :width='"width: 93%;"' v-if='getOneSelectDetal.documents && getOneSelectDetal.documents.length' :data='getOneSelectDetal.documents' :key='getOneSelectDetal.documents' />
         <div>
           <h3>Характеристики</h3>
           <p>
@@ -37,31 +37,7 @@
             <span style='font-weight: bold;'>{{ generateTime }}</span>
           </p>
         </div>
-        <div 
-          class='scroll-table' 
-          style='width:100%' 
-          v-if='getOneSelectDetal.documents.length > 0'>
-          <h3>Документы</h3>
-          <table style="width: 100%;">
-            <tr>
-              <th>Файл</th>
-            </tr>
-            <tr class="td-row" 
-              v-for='doc in getOneSelectDetal.documents' 
-              :key='doc' @click='setDocs(doc)'>
-              <td>{{ doc.name }}</td>
-            </tr>
-          </table>
-          <div class="btn-control">
-          <button class="btn-small" @click='openDock'>Открыть</button>
-          </div>
-          <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="showFile" 
-            @unmount='openFile'
-            :key='keyWhenModalGenerateFileOpen'
-          />
-        </div>
+        <TableDocument :documents='getOneSelectDetal.documents'/>
         <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
       </div>
       </div>
@@ -77,13 +53,13 @@
 </template>
 
 <script>
-import OpensFile from '@/components/filebase/openfile.vue';
 import {isEmpty, random} from 'lodash';
-import {mapGetters, mapMutations } from 'vuex';
-import MediaSlider from '@/components/filebase/media-slider.vue';
 import TechProcess from './tech-process-modal.vue';
+import {mapGetters, mapMutations, mapActions } from 'vuex';
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
 export default {
-  props: ['parametrs'],
+  props: ['id'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -91,7 +67,6 @@ export default {
       hiddens: 'display: none;',
       inputs: '',
       itemFiles: null,
-      showFile: false,
       showProviders: false,
       keyProvidersModal: random(1, 999),
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -101,13 +76,23 @@ export default {
       techProcessIsShow: false,
       techProcessKey: random(10, 999),
       techProcessID: null,
+
+      materialList: [],
+      listPokDet: [],
+      listDetal: [],
+      listCbed: [],
+
     }
   },
-  computed: mapGetters([ 
-      'getOneSelectDetal']),
-  components: {OpensFile, MediaSlider, TechProcess},
+  computed: mapGetters(['getOneSelectDetal']),
+  components: {
+    TableDocument, 
+    MediaSlider, 
+    TechProcess
+  },
   methods: {
-    ...mapMutations(['removeOperationStorage']),
+    ...mapActions(['getOneDetal']),
+    ...mapMutations(['removeOperationStorage', 'addOneSelectDetal']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -115,16 +100,14 @@ export default {
       this.removeOperationStorage()
     },
     setDocs(dc) {
-        this.itemFiles = dc
-      },
-      openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
+      this.itemFiles = dc
       this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     openFile(res) {
       console.log(res)
+    },
+    isEmptyF(obj) {
+      return isEmpty(obj)
     },
     unmount_tech_process(tp) {
       if(tp.id) {
@@ -144,8 +127,11 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-    if(isEmpty(this.getOneSelectDetal)) 
-      return this.destroyModalF()
+    if(!this.$props.id) return this.destroyModalF()
+
+    const getDetal = await this.getOneDetal(this.$props.id)
+    if(isEmpty(getDetal)) return this.destroyModalF()
+    this.addOneSelectDetal(getDetal)
     
     this.getOneSelectDetal.materials.forEach(element => {
       if(element.id == this.getOneSelectDetal.mat_zag)

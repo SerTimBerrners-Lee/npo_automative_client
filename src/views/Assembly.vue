@@ -5,7 +5,7 @@
       <button class="btn" @click='openOperation'>Сборочные единицы по операциям</button>
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
     </div>
-    <div class='table_block'>
+    <div class='table_block'> 
       <div class="table-scroll">
         <table>
           <tr> 
@@ -24,20 +24,21 @@
         </table>
       </div>
       <div class="table-scroll" style='margin-left: 5px;'>
-        <table>
+        <table id='tablebody'>
           <tr>
             <th>Заказ склада</th>
             <th>Дата готовности</th>
             <th>Сборочная единица</th>
+            <th>Артикул СБ</th>
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
-            <th>Операции</th>
+            <th id='operation'>Операции</th>
             <th>Готовность</th>
             <th>Готовность к сборке</th>
             <th>Статус</th>
-            <th>Документы</th>
+            <th id='doc'>Документы</th>
             <th>Время на сборку, ч</th>
-            <th>Примечание</th>
+            <th id='discription'>Примечание</th>
           </tr> 
           <tr v-for='assemble of getAssembles' :key='assemble'>
             <td>{{ assemble.date_order }}</td>
@@ -48,17 +49,17 @@
             <td>{{ assemble.cbed ? assemble.cbed.articl : 'Нет СБ' }}</td>
             <td class='center'>{{ assemble.kolvo_shipments }}</td>
             <td class='center'>{{ assemble.cbed ? assemble.cbed.shipments_kolvo : 'Нет СБ' }}</td>
-            <td class='center'>
+            <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>
             <td>{{  }}</td>
             <td>{{ "нет" }}</td>
             <td :class='assemble.status == "Готово" ? "success_operation" : "work_operation" '>{{ assemble.status }}</td>
-            <td class='center'>
+            <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
             </td>
             <td class='hover center'>{{ showAllTimers(assemble) }}</td>
-            <td class='center'>
+            <td class='center' id='discription'>
               <img src="@/assets/img/link.jpg" @click='openDescription(assemble.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
@@ -66,7 +67,7 @@
       </div>
     </div> 
     <div class="btn-control">
-      <button class="btn-small">Печать</button>
+      <button class="btn-small" @click='printPage'>Печать</button>
       <button class="btn-small" @click='clearFilter'>Сбросить все фильтры</button>
     </div>
     <DescriptionModal 
@@ -108,14 +109,15 @@
 </template>
 
 <script>
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import DescriptionModal from '@/components/description-modal.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
-import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
+import print from 'print-js';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
-import OperationModal from '@/components/sclad/workings-operations.vue';
+import {mapActions, mapGetters, mapMutations} from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
+import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from '@/components/sclad/shipments-to-ized.vue';
+import OperationModal from '@/components/sclad/workings-operations.vue';
+import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
 export default {
 	data() {
 		return{
@@ -145,29 +147,39 @@ export default {
 		}
 	},
   computed: mapGetters([
-    'getShipments', 
-    'getTypeOperations', 
+    'getShipments',
+    'getTypeOperations',
     'getAssembles'
   ]),
 	components: {
-    OperationModal, 
-    DescriptionModal, 
-    OpensFile, 
+    OperationModal,
+    DescriptionModal,
+    OpensFile,
     OperationPathModal,
     ShipmentsModal
   },
 	methods: {
     ...mapActions([
-      'fetchAllShipmentsAssemble', 
+      'fetchAllShipmentsAssemble',
       'fetchAssemble',
       'fetchAssembleById',
       'getAllTypeOperations',
       'getOneCbEdField'
     ]),
     ...mapMutations([
-      'filterAssemblByShipments', 
+      'filterAssemblByShipments',
       'breackFIlterAssembl'
     ]),
+    printPage() {
+      print({
+        printable: 'tablebody',
+        type: 'html',
+        targetStyles: ['*'],
+        documentTitle: 'Сборка',
+        ignoreElements: ['operation', 'doc', 'discription'],
+        font_size: '10pt'
+      })
+    },
     toSetOrders(shipments, e) {
       if(this.span_ship) {
         this.breackFIlterAssembl()
@@ -274,5 +286,9 @@ export default {
 }
 .block .btn {
   margin: 0px;
+}
+td {
+  width: 100px;
+  word-break: break-all;
 }
 </style>

@@ -188,6 +188,7 @@ export default {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
+      this.$emit('unmount', null)
     },
     ...mapActions([
       'getAllTypeMaterial',

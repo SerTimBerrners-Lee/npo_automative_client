@@ -14,7 +14,7 @@
           <button class="btn-small" @click="banProvider">В архив</button>
         </div>
         <h3>Фильтр по материалу</h3>
-        <div>
+        <div> 
           <TableMaterial 
             :return='"true"'
             @unmount='unmount_table_material'
@@ -108,6 +108,7 @@
                 <tr 
                   v-for="deliv in provider.deliveries" 
                   :key="deliv" 
+                  @click='openDeliveries(deliv)'
                   class="td-row">
                   <td>{{ deliv.id }}</td>
                   <td>{{ deliv.date_create }}</td>
@@ -164,17 +165,23 @@
       v-if="itemFiles"
       :key='keyWhenModalGenerateFileOpen'
     />
+    <AddOrder 
+      :key='keyDelivModal'
+      v-if='param_deliv'
+      :only_view='true'
+      :order_parametr='param_deliv'/>
     <Loader v-if='loader' />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
 import random from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import AddOrder from '@/components/sclad/ordersuppliers/add-order.vue';
+import TableProvider from '@/components/baseprovider/table-provider.vue';
 import TableMaterial from '@/components/baseprovider/table-materila.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
-import TableProvider from '@/components/baseprovider/table-provider.vue';
 export default {
   data() {
     return {
@@ -194,7 +201,9 @@ export default {
       is_empty: false,
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 1222),
+      keyWhenModalGenerateFileOpen: random(10, 999),
+      keyDelivModal: random(10, 999),
+      param_deliv: null,
 
       loader: false,
       detals_order: []
@@ -206,13 +215,20 @@ export default {
     'getMaterialTProvider',
     'getMaterialPTProvider'
   ]),
-  components: {OpensFile, TableMaterial, TableMaterialFilter, TableProvider},
+  components: {
+    OpensFile, 
+    TableMaterial, 
+    TableMaterialFilter, 
+    TableProvider,
+    AddOrder
+  },
   methods: {
     ...mapActions([
       'fetchGetProviders', 
       'fetchProviderBan',
       'fetchGetAllPPM',
-      'materialForProvider'
+      'materialForProvider',
+      'fetchAllProviderMaterial'
     ]),
     ...mapMutations([
       'filterByMaterial',
@@ -226,6 +242,10 @@ export default {
     },
     unmount_attention() {
       this.filterToAttentionProvider()
+    },
+    openDeliveries(deliv) {
+      this.param_deliv = deliv
+      this.keyDelivModal = random(1, 999)
     },
     setProvider(provider) { 
       if(!provider)
@@ -276,15 +296,14 @@ export default {
     },
     clearFilterByNode() {
       this.clearFilterProviders()
+      this.fetchAllProviderMaterial()
     },
     getDetals(order) {
       if(order.product) {
         try {
           let prod = JSON.parse(order.product)
           this.detals_order = prod
-        } catch (e) {
-          console.log(e)
-        }
+        } catch (e) {console.error(e)}
       }
     },
   },

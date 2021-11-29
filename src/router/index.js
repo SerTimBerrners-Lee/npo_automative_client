@@ -93,7 +93,7 @@ const routes = [
     component: BaseInventary
   },
   {
-    path: '/metalloworking/operation-metall/:operation',
+    path: '/metalloworking/operation-metall/:operation/:name_operation',
     name: 'Операции Металлообработки',
     component: OparationDetalMetalloworking,
     props: true
@@ -210,7 +210,7 @@ const routes = [
     component: Assembly
   },
   {
-    path: '/addorder/:edit',
+    path: '/addorder/:edit/:parent',
     name: 'Добавить Заказ',
     component: AddOrder,
     props: true

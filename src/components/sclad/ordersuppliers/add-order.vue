@@ -7,7 +7,7 @@
         <div class="block header_block">
           <span>Выбор поставщика:</span>
           <input type="text" :value='provider ? provider.name : ""' >
-          <button class="btn-small" @click='addProvider'>Выбрать</button>
+          <button class="btn-small" @click='addProvider' v-if='!only_view'>Выбрать</button>
         </div>
         
         <div class="block two_header">
@@ -23,12 +23,12 @@
               @unmount='unmount_date_picters'  
               :dateStart='date_shipments'
             />
-            <span>НДС: </span>
+            <span>НДС %: </span>
             <input type="text" v-model='nds'>
           </p>
         </div>
 
-        <div class="block" style='padding: 5px;'>
+        <div class="block" style='padding: 5px;' v-if='!only_view'>
           <p style='margin: 5px;'>
             <label for="docsFileSelected" class='btn-small btn-file'>Загрузить счет</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
@@ -61,7 +61,7 @@
               </tr>
             </table>
           </div>
-          <div class="btn-control">
+          <div class="btn-control" v-if='!only_view'>
             <button 
               class="btn-small btn-add"
               @click='pushMaterial'>Добавить к поставщику </button>
@@ -122,11 +122,13 @@
                 </td>
                 <td
                   @keyup="e => editKol(inx, e.target.innerText)"
+                  @click='editKol(inx, null)'
                   contenteditable="true">{{ material.kol }}</td>
                 <td
                   class='tooltip'>
                   <input type="number" 
                     @change="e => editSum(inx, e.target.value)"
+                    @click='editSum(inx, null)'
                     min='0' :value='material.sum'>
                   <span class="tooltiptext" contenteditable="false">{{ Number(material.kol) * Number(material.sum)  }}</span>
                 </td>
@@ -136,7 +138,7 @@
               </tr>
             </table>
           </div>
-          <div class="btn-control">
+          <div class="btn-control" v-if='!only_view'>
             <button class="btn-small" @click='clear'>Очистить</button>
             <button class="btn-small" @click='clearToSelect'>Удалить выбранное</button>
           </div>
@@ -144,7 +146,7 @@
           <textarea maxlength='250' class='textarea'  v-model='description'></textarea>
         </div>
 
-        <div class="btn-control out-btn-control">
+        <div class="btn-control out-btn-control" v-if='!only_view'>
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status btn-black" @click='save'>Сохранить</button>
         </div>
@@ -178,16 +180,16 @@
   </div>
 </template>
 <script>
-import DatePicterCustom from '@/components/date-picter.vue';
-import AddFile from '@/components/filebase/addfile.vue';
+import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
-import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
+import AddFile from '@/components/filebase/addfile.vue';
+import DatePicterCustom from '@/components/date-picter.vue';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import AddPosition from '@/components/sclad/comingtosclad/new-position.vue';
+import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
-import { showMessage } from '@/js/';
 export default {
-  props: ['parametrs', 'order_parametr'],
+  props: ['parametrs', 'order_parametr', 'only_view'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -205,7 +207,7 @@ export default {
       allProvider: [],
       provider: null,
       number_check:  '',
-      nds: '',
+      nds: 20,
       count: 0,
       material_lists: [],
       description: '',
@@ -254,7 +256,6 @@ export default {
       this.fetchGetAllDeficitPPM()
       if(mat_l && mat_l.length) {
         for(let mat of mat_l) {
-          console.log(mat)
           this.selected_material = mat.obj
           this.selected_material.type = mat.type
           this.pushMaterial()
@@ -336,10 +337,11 @@ export default {
         if(material.id == mat.id && material.type == mat.type) return 0
       }
       try {
+        let ez = this.getKolvoMaterial(material.kolvo) ? JSON.parse(material.kolvo) : 1
         this.material_lists.push({
           art: '',
           name: material.name,
-          ez: material.kolvo ? JSON.parse(material.kolvo) : 1,
+          ez: ez,
           kol: material.shipments_kolvo ? material.shipments_kolvo : 1,
           sum: 0,
           description: '',
@@ -387,11 +389,19 @@ export default {
     setSelected(material) {
       this.select_m = material
     },
+    checkMaterialList() {
+      if(!this.material_lists.length) return false
+      for(let mat of this.material_lists) {
+        if(!Number(mat.ez)) mat.ez = 1
+      }
+    },
     save() {
       if(!this.provider)
         return showMessage('', 'Выберите поставщика', 'w', this)
       if(!this.material_lists.length) 
         return showMessage('', 'Выберите позиции для прихода', 'w', this)
+
+      this.checkMaterialList()
 
       this.formData.append('provider_id', this.provider.id)
       this.formData.append('number_check', this.number_check)

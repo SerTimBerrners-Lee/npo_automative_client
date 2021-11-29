@@ -7,7 +7,7 @@
           @unmount='changeDatePicterRange'  
         />
 			</div>
-		</div>
+		</div> 
 
     <div class='table_block'>
       <div class="table-scroll" >
@@ -163,7 +163,7 @@ export default {
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM', 'getShipments']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM', 'fetchAllShipments']),
-		...mapMutations(['getInstansMaterial', 'filterByNameMaterial']),
+		...mapMutations(['getInstansMaterial', 'filterByNameMaterial', 'clearCascheMaterial']),
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -218,6 +218,8 @@ export default {
     }
 	},
 	async mounted() {
+		this.clearCascheMaterial()
+
 		this.fetchGetAllDeficitPPM()
 		this.fetchAllShipments()
 	}
