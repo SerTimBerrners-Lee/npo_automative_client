@@ -151,8 +151,8 @@ const comparison = (one_date = new Date().toLocaleDateString('ru-RU'), two_date 
   return result
 }
 
-const dateDifference = (date_one, date_two) => {
-  if(!date_one || !date_two) return ''
+const dateDifference = (date_one = new Date().toLocaleString('ru-RU').split(',')[0], date_two) => {
+  if(!date_two) return ''
   const toFormatString = (date) => {
     const spl = date.split('.')
     return `${spl[1]}-${spl[0]}-${spl[2]}`
@@ -160,8 +160,8 @@ const dateDifference = (date_one, date_two) => {
 
   let date1 = new Date(toFormatString(date_one));
   let date2 = new Date(toFormatString(date_two));
-  const mat =  Math.ceil(Math.abs(date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
-  return mat
+  const mat = Math.ceil(Math.abs(date2.getTime() - date1.getTime()) / (1000 * 3600 * 24));
+  return date2.getTime() < date1.getTime() ? -mat: mat
 }
 
 export  {

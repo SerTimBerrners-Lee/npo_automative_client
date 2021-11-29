@@ -3,7 +3,7 @@
   <div :class='destroyModalLeft' @click="destroyModalF"></div>
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
-
+ 
       <div class="right_info_block" v-if='selecteProduct'>
 				<h3>Краткая Информация о Изделии</h3>
 				<div class="block" v-if='selecteProduct'>
@@ -14,7 +14,12 @@
 						<span class="title_span">Артикул: </span><span>{{ selecteProduct.articl }}</span>
 					</p>
 					<MediaSlider :width='"width: 93%;"' v-if='selecteProduct.documents.length' :data='selecteProduct.documents' :key='selecteProduct.documents' />
-					<div>
+          <button 
+            style='width: 98%;'
+            v-if='selecteProduct' 
+            @click='$router.push({path: "/product/edit/false"})'
+            class="btn">Полная информация</button>
+          <div>
 						<h3>Спетификация Изделия</h3>
 						<TableSpetification
               :key='selecteProduct.id'

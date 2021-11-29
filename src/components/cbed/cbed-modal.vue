@@ -14,7 +14,12 @@
 						<span class="title_span">Артикул: </span><span>{{ selectedCbEd.articl }}</span>
 					</p>
 					<MediaSlider :width='"width: 93%;"' v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
-					<div>
+          <button 
+            style='width: 98%;'
+            class="btn" 
+            v-if='selectedCbEd' 
+            @click='$router.push({path: "/cbed/edit/false"})'>Полная информация</button>
+          <div>
 						<h3>Спетификация Сборочной единицы</h3>
 						<TableSpetification
               :key='selectedCbEd.id + selectedCbEd'

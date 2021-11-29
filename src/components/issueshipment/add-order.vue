@@ -36,10 +36,12 @@
 				<label for='file_folder' class='hover'>Основание:</label>
 				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)">
 				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
-				<span>Покупатель:</span>
+				<span
+					class='hover'
+					@click='selectBuyer'>Покупатель:</span>
 				<select 
 					class="select-small" 
-					v-model='buyer' 
+					v-model='buyer'
 					:disabled='to_sklad'>
 					<option v-for='buyer in allBuyer' 
 						:key='buyer'
@@ -164,6 +166,10 @@
 		:key='cbedModalKey'
 		v-if='parametrs_cbed'
 	/>
+	<BaseBuyer 
+		:key='keyGenerateBuyer'
+		v-if='showBuyer'
+		@unmount='unmount_buyer'/>
 	<Loader v-if='loader' />
 	</div>
 </template>
@@ -176,6 +182,7 @@ import {mapActions, mapGetters, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DatePicterCustom from '@/components/date-picter.vue';
 import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
+import BaseBuyer from '@/components/basebuyer/list-buyer.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import ProductList from '@/components/baseproduct/all-product-modal.vue';
 import TableShipments from '@/components/issueshipment/table-komplect.vue';
@@ -210,6 +217,8 @@ export default {
 			parametrs_detal: false,
 			parametrs_cbed: null,
 			cbedModalKey: random(1, 999),
+			showBuyer: false, 
+			keyGenerateBuyer: random(1, 999),
 			
 			date_order: new Date().toLocaleDateString("ru-RU"),
 			date_shipments: new Date().toLocaleDateString("ru-RU"),
@@ -247,7 +256,8 @@ export default {
 			OpensFile,
 			DetalModal,
 			CbedModalInfo,
-			TableShipments
+			TableShipments,
+			BaseBuyer
 	},
 	methods: {
 		...mapActions([
@@ -264,6 +274,10 @@ export default {
 			'addOneSelectDetal',
 			'filterToParentShipments'
 		]),
+		unmount_buyer(buyer) {
+			if(buyer) this.buyer = buyer.id
+			console.log(buyer)
+		},
 		unmount_base(e) {
 			if(!e) return false
 			const document = e.formData.getAll('document')[0]
@@ -282,6 +296,10 @@ export default {
 				this.docFiles.push(doc)
 				this.documents.push(doc)
 			}
+		},
+		selectBuyer() {
+			this.showBuyer = true;
+			this.keyGenerateBuyer = random(1, 999)
 		},
 		addNewPositionProduct() {
 			if(this.$route.params.edit != 'true') return showMessage('', 'Сначала сохраните заказ', 'w', this)
@@ -320,6 +338,7 @@ export default {
 		unmount_product(product) {
 			if(!product) return 0
 			this.list_cbed_detal = []
+			this.list_hidden_cbed_detal = []
 			
 			this.select_product = product
 			this.checkedJsonList(product)
@@ -336,7 +355,6 @@ export default {
 					this.getOneCbEdById(cb.cb.id).then(res => this.parserListIzd(res, cb.kol))
 				}
 			}
-
 			if(izd.detals && izd.detals.length && izd.listDetal) {
 				let list_detals = JSON.parse(izd.listDetal)
 				this.pushElement(izd.detals, list_detals, 'detal', recursive)
@@ -399,45 +417,72 @@ export default {
 								obj: {id: element.id, name: element.name,  articl: element.articl},
 								kol
 							})
-						else 
-							this.list_hidden_cbed_detal.push({
-								type,
-								obj: {id: element.id, name: element.name,  articl: element.articl},
-								kol
-							})
+						else {
+							element.obj = {id: element.id}
+							element.type = type
+							const check_dublecate = this.checkDublecate(this.list_hidden_cbed_detal, element)
+							if(check_dublecate != null) 
+								this.list_hidden_cbed_detal[check_dublecate].kol = this.list_hidden_cbed_detal[check_dublecate].kol + kol
+							else 
+								this.list_hidden_cbed_detal.push({
+									type,
+									obj: {id: element.id, name: element.name,  articl: element.articl},
+									kol
+								})
+						}
 					} else check = true
 				}
 			}
 		},
+		/**
+		 * Парсит комплектацию СБ или Д
+		 */
 		parserListIzd(res, kol) {
-			let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
-			let detals = res.listDetal ? JSON.parse(res.listDetal) : []
-			if(cbeds.length) {
-				for(let inx in cbeds) {
-					cbeds[inx] = cbeds[inx].cb
-					if(res.articl) cbeds[inx].articl = res.articl
+			try {
+				let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
+				let detals = res.listDetal ? JSON.parse(res.listDetal) : []
+				if(cbeds.length) {
+					for(let inx in cbeds) {
+						cbeds[inx] = cbeds[inx].cb
+						if(res.articl) cbeds[inx].articl = res.articl
+					}
 				}
-			}
-			if(detals.length) {
-				for(let inx in detals) {
-					detals[inx] = detals[inx].det
-					if(res.articl) detals[inx].articl = res.articl
+				if(detals.length) {
+					for(let inx in detals) {
+						detals[inx] = detals[inx].det
+						if(res.articl) detals[inx].articl = res.articl
+					}
 				}
-			}
-			for(let i = 0; i < kol; i++) 
-				this.checkedJsonList({...res, cbeds, detals}, true)
+				for(let i = 0; i < kol; i++) 
+					this.checkedJsonList({...res, cbeds, detals}, true)
+			} catch(e) {console.error(e)}
 				
 		},
+		/**
+		 * Добавляем СБ или Д
+		 */
 		responseDetalCb(res) {
 			if(res && res.type == 'cbed') 
 				this.parserListIzd(res.obj, 1)
 
+			const check_dublecate = this.checkDublecate(this.list_cbed_detal, res)
+			if(check_dublecate != null) 
+				return this.list_cbed_detal[check_dublecate].kol++
 			this.list_cbed_detal.push({
 				...res, 
 				obj: {id: res.obj.id, name: res.obj.name, articl: res.obj.articl},
 				kol: 1
 			})
 		},
+		/**
+		 * Осуществляем проверку на дублирование
+		 */
+		checkDublecate(arr, res) {
+			for(let inx in arr) {
+				if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) return inx
+			}
+			return null
+		},	
 		editKolVo(inx, val) {
 			this.list_cbed_detal[inx].kol = val
 		},
@@ -555,6 +600,9 @@ export default {
 	async mounted() {
 		this.fetchAllBuyers()
 		await this.fetchAllShipments()
+
+		this.list_cbed_detal = []
+		this.list_hidden_cbed_detal = []
 
 		if(this.$route.params.edit && this.$route.params.edit == 'true') {
 			if(isEmpty(this.getOneShipments)) return this.$router.push('/issueshipment')

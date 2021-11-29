@@ -142,7 +142,7 @@
           :documents='selectedCbEd.documents'/>
       </div>
     </div>
-    <Loader v-if='loader' />
+    <Loader v-if='loader' /> 
     <TechProcess 
       v-if='techProcessIsShow'
       :key='techProcessKey'

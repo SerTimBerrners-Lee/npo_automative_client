@@ -74,8 +74,8 @@
   </div>
 </template>
 <script>
-import { photoPreloadUrl } from '@/js/';
 import { mapActions } from 'vuex';
+import { photoPreloadUrl } from '@/js/';
 export default {
   props: ['parametrs', 'typeGetFile'],
   data() {

@@ -13,15 +13,13 @@
     </div>
   </div>
 </template>
-
 <script>
-
+import '@/assets/style/style.css';
 import MenuItem from '@/components/menu-left';
 import HeadersNav from '@/components/header-nav';
-import NavigationPanel from '@/components/navigation-panel';
 import Authorization from '@/views/Authorization.vue';
-import '@/assets/style/style.css'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import NavigationPanel from '@/components/navigation-panel';
 export default {
   name: 'App',
   components: {
@@ -33,7 +31,7 @@ export default {
   data() {
     return {
       avtorization: this.getAuth,
-      inaction: null,
+      inaction: 1,
 
       id_inaction_interval: null
     }
@@ -44,7 +42,11 @@ export default {
       'getUserById', 
       'fetchInactionHors', 
     ]),
-    ...mapMutations(['updateAuth', 'setRoleAssets', 'unAuth']),
+    ...mapMutations([
+      'updateAuth', 
+      'setRoleAssets', 
+      'unAuth'
+    ]),
     exit() {
       this.unAuth()
       this.$router.push('/')

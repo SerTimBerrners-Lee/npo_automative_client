@@ -165,15 +165,14 @@
   </div>
 </template>
 <script scoped>
-
-import AddContact from './add-contact.vue';
 import { random, isEmpty } from 'lodash';
-import { mapActions, mapGetters, mapMutations } from 'vuex';
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import AddContact from './add-contact.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
 export default {
   data() {
     return {
@@ -193,7 +192,7 @@ export default {
         materials: [],
         documents: []
       },
-      keyModal: random(1, 2213),
+      keyModal: random(1, 999),
       isShow: false,
       contact: null,
       formData: null,
@@ -316,16 +315,21 @@ export default {
     },
     file_unmount(e) { 
       if(!e) return 0
+      if(e.formData.getAll('document') && e.formData.getAll('document').length) {
+        for(let doc of e.formData.getAll('document')) {
+          this.obj.documents.push(doc)
+        }
+      }
       this.formData = e.formData
     },
     openMaterial() {
-      this.modalMaterialKey = random(10, 2e3)
+      this.modalMaterialKey = random(10, 999)
       this.modalMaterialIsShow = true
     },
     clickDoc(files) {
       if(files) { 
         this.itemFiles = files
-        this.keyWhenModalGenerateFileOpen = random(10, 1222)
+        this.keyWhenModalGenerateFileOpen = random(10, 999)
       }
     },
     exit() {
@@ -338,15 +342,10 @@ export default {
     },
     addEquipment() {
       this.eqIsShow = true
-      this.eqKey = random(10, 384e12)
+      this.eqKey = random(10, 999)
     },
   },
   async mounted() {
-    if(this.$route.params.type == 'add') {
-        //  Очищаем прикрепленных поставщиков 
-
-    }
-
     if(this.$route.params.type == 'edit') {
       if(isEmpty(this.getSetProvider))
         this.$router.push('/baseprovider')

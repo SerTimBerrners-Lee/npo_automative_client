@@ -8,7 +8,7 @@
         <span>Ответственный: </span>
           <select class="select-small sle"  
             v-model='obj.responsible'>
-            <option 
+            <option  
             v-for='user in getUsers' 
             :key='user' 
             :value='user.id'>{{ user.login }}</option>

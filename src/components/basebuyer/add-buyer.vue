@@ -201,12 +201,17 @@ export default {
     },
     file_unmount(e) { 
       if(!e) return 0
+      if(e.formData.getAll('document') && e.formData.getAll('document').length) {
+        for(let doc of e.formData.getAll('document')) {
+          this.obj.documents.push(doc)
+        }
+      }
       this.formData = e.formData
     },
     clickDoc(files) {
       if(files) { 
         this.itemFiles = files
-        this.keyWhenModalGenerateFileOpen = random(10, 1222)
+        this.keyWhenModalGenerateFileOpen = random(10, 999)
       }
     },
     exit() {

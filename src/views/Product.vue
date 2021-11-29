@@ -74,7 +74,7 @@
         <div>
           <h3>Спетификация Изделия</h3>
           <TableSpetification
-            :listCbed='listCbed'
+            :listCbed='listCbed' 
             :listDetal='listDetal'
             :listPokDet='listPokDet'
             :materialList='materialList'

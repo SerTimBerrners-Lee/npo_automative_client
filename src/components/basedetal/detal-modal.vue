@@ -14,6 +14,11 @@
         <span class="title_span">Артикул: </span><span>{{ getOneSelectDetal.articl }}</span>
         </p>
         <MediaSlider :width='"width: 93%;"' v-if='getOneSelectDetal.documents && getOneSelectDetal.documents.length' :data='getOneSelectDetal.documents' :key='getOneSelectDetal.documents' />
+        <button 
+          style='width: 98%;'
+          v-if='getOneSelectDetal'
+          @click='$router.push({path: "/detal/edit/false"})' 
+          class="btn">Полная информация</button>
         <div>
           <h3>Характеристики</h3>
           <p>
@@ -81,7 +86,7 @@ export default {
       listPokDet: [],
       listDetal: [],
       listCbed: [],
-
+ 
     }
   },
   computed: mapGetters(['getOneSelectDetal']),
