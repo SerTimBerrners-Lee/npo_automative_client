@@ -217,7 +217,8 @@ export default {
       'clearFilterDetalByProduct', 
       'filterToAttention',
       'setOneProduct',
-      'setOneCbed'
+      'setOneCbed',
+      'addOneSelectDetal'
     ]),
     infoModalCbed(cb) {
       if(!cb) return false
@@ -236,6 +237,7 @@ export default {
       
       this.tr = e
       this.tr.classList.add('td-row-all')
+      this.addOneSelectDetal(this.selectedDetal)
     },
     sortToAttention() {
       this.filterToAttention()
