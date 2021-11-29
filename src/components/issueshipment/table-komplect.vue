@@ -7,6 +7,7 @@
 				<th>Наименование изделия</th>
 				<th>Комплектация/особенности заказа</th>
 				<th>Кол-во, шт.</th>
+				<th>Кол-во, дней</th>
 				<th>Осталось дней</th>
 				<th>Основание</th>
 				<th>Покупатель</th> 
@@ -32,6 +33,7 @@
 					</div>
 				</td>
 				<td class='center'>{{ shipments.kol }}</td>
+				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td>
 				<td class='center'>{{ shipments.difference }}</td>
 				<td class='center active'  
 					@click='openDocuments(shipments)' >
@@ -72,6 +74,7 @@
 import {random} from 'lodash';
 import { mapMutations } from 'vuex';
 import { showMessage } from '@/js/';
+import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DescriptionModal from '@/components/description-modal.vue';
@@ -122,6 +125,9 @@ export default {
       let dat = dateIncrementHors(date, day*24)
       return `${dat.day}.${dat.mount}.${dat.year}`
     },
+		dateDifference(date1, date2) {
+			return dateDifference(date1, date2)
+		},
 		openDocuments(shipments) {	
 			if(shipments.documents && shipments.documents.length) {
 				for(let doc of shipments.documents) {
