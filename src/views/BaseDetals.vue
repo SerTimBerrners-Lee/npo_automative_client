@@ -230,7 +230,7 @@ export default {
 
       this.tr_product = e
       this.tr_product.classList.add('td-row-all')
-    },
+    }, 
     editDetal() {
       if(!this.selectedDetal)
         return 0
