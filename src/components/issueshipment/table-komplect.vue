@@ -30,8 +30,10 @@
 					<div class='osob' v-if='shipments.list_cbed_detal'>
 						<tbody v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'
 							:key='izd'>
-							<td style='width: 99%;'><b>{{ inx + 1 + '. ' }}</b> {{ izd.obj.name }}</td>
-							<td>{{izd.kol}}</td>
+							<tr v-if='izd && izd.obj' @click="openModal(izd.obj.id, izd.type)">
+								<td style='width: 99%;'><b>{{ inx + 1 + '. ' }}</b> {{ izd.obj.name }}</td>
+								<td>{{izd.kol}}</td>
+							</tr>
 						</tbody>
 					</div>
 				</td>
@@ -71,6 +73,16 @@
       v-if='message'
       :key='keyInformTip'
     />
+		<DetalModal
+		:key='detalModalKey'
+		v-if='parametrs_detal'
+		:id='parametrs_detal'
+		/>
+		<CbedModalInfo
+			:id='parametrs_cbed'
+			:key='cbedModalKey'
+			v-if='parametrs_cbed'
+		/>
 	</div>
 </template>
 <script>
@@ -80,6 +92,8 @@ import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
 import OpensFile from '@/components/filebase/openfile.vue';
+import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 export default {
 	props: ['shipmentsArr'],
@@ -90,6 +104,11 @@ export default {
 			message: '',
       type: '',
       keyInformTip: random(1, 999),
+
+			parametrs_cbed: null,
+			cbedModalKey: random(1, 999),
+			parametrs_detal: null,
+			detalModalKey: random(1, 999),
 
 			showDescriptionModal: false,
       descriptionKey: random(1, 999),
@@ -103,7 +122,9 @@ export default {
 	},
 	components: {
 		DescriptionModal, 
-		OpensFile
+		OpensFile,
+		CbedModalInfo,
+		DetalModal
 	},
 	methods: {
 		...mapMutations(['setOneShipment']),
@@ -131,6 +152,20 @@ export default {
 		dateDifference(date1, date2) {
 			return dateDifference(date1, date2)
 		},
+		openModal(id, type) {
+			if(type == 'cbed') {
+				if(id) {
+					this.parametrs_cbed = id
+					this.cbedModalKey = random(1, 999)
+				}
+			}
+			if(type == 'detal') {
+				if(id) {
+					this.parametrs_detal = id
+					this.detalModalKey = random(1, 999)
+				}
+			}
+		},
 		openDocuments(shipments) {	
 			if(shipments.documents && shipments.documents.length) {
 				for(let doc of shipments.documents) {
@@ -142,8 +177,6 @@ export default {
 			} else showMessage('', 'Документов нет', 'w', this)
     },
 	},
-	async mounted() {
-	}
 }
 </script>
 
