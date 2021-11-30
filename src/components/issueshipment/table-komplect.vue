@@ -26,16 +26,14 @@
 				<td>{{ shipments.number_order }}</td>
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
-				<td>
-					<div class='osob' v-if='shipments.list_cbed_detal'>
-						<tbody v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'
-							:key='izd'>
-							<tr v-if='izd && izd.obj' @click="openModal(izd.obj.id, izd.type)">
-								<td style='width: 99%;'><b>{{ inx + 1 + '. ' }}</b> {{ izd.obj.name }}</td>
-								<td>{{izd.kol}}</td>
-							</tr>
-						</tbody>
-					</div>
+				<td class='center'>
+					<img 
+						src="@/assets/img/link.jpg" 
+						@click='openComplectation(shipments.list_cbed_detal)' 
+						class='link_img' 
+						atl='Показать'
+						v-if='shipments.list_cbed_detal' />
+					<p v-else>Нет комплектации</p>
 				</td>
 				<td class='center'>{{ shipments.kol }}</td>
 				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td>
@@ -73,15 +71,10 @@
       v-if='message'
       :key='keyInformTip'
     />
-		<DetalModal
-		:key='detalModalKey'
-		v-if='parametrs_detal'
-		:id='parametrs_detal'
-		/>
-		<CbedModalInfo
-			:id='parametrs_cbed'
-			:key='cbedModalKey'
-			v-if='parametrs_cbed'
+		<KomplectModal
+			v-if='parametrs_komplect'
+			:key='komplect_generate_key'
+			:parametrs='parametrs_komplect'
 		/>
 	</div>
 </template>
@@ -91,9 +84,8 @@ import { mapMutations } from 'vuex';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
+import KomplectModal from './komplect-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 export default {
 	props: ['shipmentsArr'],
@@ -105,10 +97,8 @@ export default {
       type: '',
       keyInformTip: random(1, 999),
 
-			parametrs_cbed: null,
-			cbedModalKey: random(1, 999),
-			parametrs_detal: null,
-			detalModalKey: random(1, 999),
+			parametrs_komplect: null,
+			komplect_generate_key: random(1, 999),
 
 			showDescriptionModal: false,
       descriptionKey: random(1, 999),
@@ -123,8 +113,7 @@ export default {
 	components: {
 		DescriptionModal, 
 		OpensFile,
-		CbedModalInfo,
-		DetalModal
+		KomplectModal
 	},
 	methods: {
 		...mapMutations(['setOneShipment']),
@@ -152,20 +141,10 @@ export default {
 		dateDifference(date1, date2) {
 			return dateDifference(date1, date2)
 		},
-		openModal(id, type) {
-			if(type == 'cbed') {
-				if(id) {
-					this.parametrs_cbed = id
-					this.cbedModalKey = random(1, 999)
-				}
-			}
-			if(type == 'detal') {
-				if(id) {
-					this.parametrs_detal = id
-					this.detalModalKey = random(1, 999)
-				}
-			}
-		},
+		openComplectation(komplect) {
+			this.komplect_generate_key = random(1, 999)
+			this.parametrs_komplect = komplect
+		},	
 		openDocuments(shipments) {	
 			if(shipments.documents && shipments.documents.length) {
 				for(let doc of shipments.documents) {

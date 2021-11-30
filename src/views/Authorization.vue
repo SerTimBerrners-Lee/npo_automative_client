@@ -72,12 +72,9 @@
     />
   </div>
 </template>
-
-
 <script>
-
-import { mapGetters, mapActions, mapMutations }from 'vuex';
 import { showMessage } from '@/js/';
+import { mapGetters, mapActions, mapMutations }from 'vuex';
 export default {
   name: 'Authorization',
   props: {
@@ -137,8 +134,6 @@ export default {
         this.$refs.input_password.value = ''
         this.strTabels = ''
       }
-          
-      
       this.getUsers.forEach((user) => {   
         if(user.tabel == this.strTabels) {
           this.selectTabel = user.tabel
@@ -189,7 +184,7 @@ export default {
     }
   },
   async mounted() {
-    await this.getAllUsers()
+    await this.getAllUsers(true)
 
     if(this.getUsers.length) {
       this.selectLogin = this.getUsers[0].login

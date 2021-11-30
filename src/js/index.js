@@ -155,7 +155,7 @@ const dateDifference = (date_one = new Date().toLocaleString('ru-RU').split(',')
   if(!date_two) return 0
   const toFormatString = (date) => {
     const spl = date.split('.')
-    return `${spl[1]}-${spl[0]}-${spl[2]}`
+    return `${spl[2]}-${spl[1]}-${spl[0]}T10:20:30Z`
   }
 
   let date1 = new Date(toFormatString(date_one));
