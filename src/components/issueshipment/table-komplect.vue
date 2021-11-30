@@ -5,7 +5,7 @@
 				<th>Заказ</th>
 				<th>Артикул изделия</th>
 				<th>Наименование изделия</th>
-				<th>Комплектация/особенности заказа</th>
+				<th style='width:100px; word-break: break-all;'>Комплектация/особенности заказа</th>
 				<th>Кол-во, шт.</th>
 				<th>Кол-во, дней</th>
 				<th>Осталось дней</th>
@@ -26,10 +26,9 @@
 				<td>{{ shipments.number_order }}</td>
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
-				<td class='center'>
+				<td class='center' @click='openComplectation(shipments.list_cbed_detal)' >
 					<img 
 						src="@/assets/img/link.jpg" 
-						@click='openComplectation(shipments.list_cbed_detal)' 
 						class='link_img' 
 						atl='Показать'
 						v-if='shipments.list_cbed_detal' />
