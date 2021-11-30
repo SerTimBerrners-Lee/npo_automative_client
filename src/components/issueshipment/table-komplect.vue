@@ -28,14 +28,17 @@
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
 				<td>
 					<div class='osob' v-if='shipments.list_cbed_detal'>
-						<p v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'
-							:key='izd'><b>{{ inx + '. ' }}</b> {{ izd.obj.name }}</p>
+						<tbody v-for='(izd, inx) of JSON.parse(shipments.list_cbed_detal)'
+							:key='izd'>
+							<td style='width: 99%;'><b>{{ inx + 1 + '. ' }}</b> {{ izd.obj.name }}</td>
+							<td>{{izd.kol}}</td>
+						</tbody>
 					</div>
 				</td>
 				<td class='center'>{{ shipments.kol }}</td>
 				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td>
 				<td class='center'>{{ shipments.difference }}</td>
-				<td style='width:50px;' class='center active'  
+				<td style='width:50px; word-break: break-all;' class='center active'  
 					@click='openDocuments(shipments)' >
 					{{ shipments.base }}
 				</td>
