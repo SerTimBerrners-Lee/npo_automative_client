@@ -7,5 +7,7 @@ stop:
 rmi:
 	docker rmi npo-client
 copy:
+	git reset --hard HEAD 
+	git pull
 	npm run build
 	cp -r dist/* /var/www/html
