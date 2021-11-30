@@ -33,7 +33,7 @@
 				/>
 				<label for='bran'>Бронь:</label>
 				<input id='bran' type="checkbox" v-model='bron'>
-				<label for='file_folder' class='hover'>Основание:</label>
+				<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
 				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)">
 				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
 				<span
@@ -508,7 +508,7 @@ export default {
 		},
 		save_order() {
 			if(!this.date_order || !this.date_shipments 
-				|| !this.kol || !this.base 
+				|| !this.kol || (!this.base && !this.is_not_product)
 				|| (!this.select_product && !this.is_not_product)) 
 				return showMessage('', 'Все поля должны быть заполнены', 'w', this)
 			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w', this)
