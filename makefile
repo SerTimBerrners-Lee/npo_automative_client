@@ -9,5 +9,6 @@ rmi:
 copy:
 	git reset --hard HEAD 
 	git pull
+	git status
 	npm run build
 	cp -r dist/* /var/www/html
