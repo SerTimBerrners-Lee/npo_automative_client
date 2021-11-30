@@ -73,7 +73,7 @@
 				<span v-if="material.ez == 4"> м </span>
 				<span v-if="material.ez == 5"> м.куб</span>
 			</td>
-			<td>{{ material.kol }}</td>
+			<td class='center'>{{ material.kol }}</td>
 		</tr>
 	</table>
 	<ModalCbed

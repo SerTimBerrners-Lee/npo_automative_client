@@ -238,6 +238,7 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
   />
+  <Loader v-if='loader' /> 
   </div>
 </template>
 
@@ -314,7 +315,8 @@ export default {
 
       showModalFile: false,
       fileModalKey: random(1, 999),
-      data_arr: []
+      data_arr: [],
+      loader: false
     }
   },
   watch: {
@@ -559,8 +561,11 @@ export default {
       this.$router.back()
       return 
     }
-    this.getAllUsers()
+    this.loader = true
+    await this.getAllUsers(true)
     this.data_arr = await this.getAllCbedArticl()
+    this.loader = false
+    
     this.updateForEdit()
   }
 }

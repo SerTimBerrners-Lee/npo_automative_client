@@ -16,7 +16,7 @@
           </tr>
           <tr class="td-row" 
             v-for="user in knowGet ? getUsers : getUserBan" 
-            :key="user" @click="e => userShow(user, e.target.parentElement)"
+            :key="user" @click="e => getUsersAllFolder(user, e.target.parentElement)"
             >
             <td class="tabel-td">{{ user.tabel }}</td>
             <td>{{ user.role ? user.role.description : '' }}</td>
@@ -51,47 +51,47 @@
       <div class="inform-block">
         <div class="contact-inform">
           <div class="data-user-form">
-              <div class="prim">
-                  <div class="p-1">
-                    <p>
-                      <span>Должность: </span>
-                      <input type="text" :value='roles'>
-                    </p>
-                    <p> 
-                      <span>Табельный номер: </span>
-                      <input type="text" :value='tabel'>
-                    </p>
-                  </div>
-                  <p class="p-2">
-                      <span>Дата приема на работу: </span>
-                      <input type="text" :value='dateWork'>
-                  </p>
-                  <div class="p-3">
-                    <p>
-                      <span>Логин: </span>
-                      <input type="text" :value='login'>
-                    </p>
-                    <p>
-                      <span>День рождения: </span>
-                      <input type="text" :value='birthday'>
-                    </p>
-                  </div>
-                  <h3>Контактные данные</h3>
-                  <p class="p-4">
-                      <span>Моб. телефон: </span>
-                      <input type="text" :value='phone'>
-                  </p> 
-                  <p class="p-5">
-                      <span>Постоянный адрес проживания: </span>
-                      <input type="text" :value='adress'>
-                  </p>
-                  <p class="p-6">
-                      <span>Адрес по прописке: </span>
-                      <input type="text" :value='adressProps'>
-                  </p>
+            <div class="prim">
+              <div class="p-1">
+                <p>
+                  <span>Должность: </span>
+                  <input type="text" :value='roles'>
+                </p>
+                <p> 
+                  <span>Табельный номер: </span>
+                  <input type="text" :value='tabel'>
+                </p>
               </div>
-              <h3>Примечание</h3>
-              <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
+              <p class="p-2">
+                  <span>Дата приема на работу: </span>
+                  <input type="text" :value='dateWork'>
+              </p>
+              <div class="p-3">
+                <p>
+                  <span>Логин: </span>
+                  <input type="text" :value='login'>
+                </p>
+                <p>
+                  <span>День рождения: </span>
+                  <input type="text" :value='birthday'>
+                </p>
+              </div>
+              <h3>Контактные данные</h3>
+              <p class="p-4">
+                <span>Моб. телефон: </span>
+                <input type="text" :value='phone'>
+              </p> 
+              <p class="p-5">
+                <span>Постоянный адрес проживания: </span>
+                <input type="text" :value='adress'>
+              </p>
+              <p class="p-6">
+                <span>Адрес по прописке: </span>
+                <input type="text" :value='adressProps'>
+              </p>
+            </div>
+            <h3>Примечание</h3>
+            <textarea maxlength='250' class="textarea-har" cols="30" rows="10" v-text='primetch'></textarea>
           </div>
         </div>
         <div class="har-inform">
@@ -157,13 +157,11 @@
     <InformFolder v-if='message' :title='titleMessage' :message='message' :type='type'  :key='keyInformTip' />
   </div>
 </template>
-
 <script>
-import {  mapActions, mapGetters, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
-
+import {  mapActions, mapGetters, mapMutations } from 'vuex';
+import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
   data() {
     return {
@@ -194,50 +192,53 @@ export default {
       loader: false
     }
   }, 
-  computed: mapGetters(['getUsers', 'getUserBan', 'getSelectedUser', 'getRoleAssets', 'getAuth']),
+  computed: mapGetters([
+    'getUsers', 
+    'getUserBan', 
+    'getSelectedUser', 
+    'getRoleAssets', 
+    'getAuth'
+  ]),
   components: {
     DatePicterRange
   },
   methods: {
-    ...mapActions(['getAllUsers', 'banUserById']),
+    ...mapActions(['getAllUsers', 'banUserById', 'getUserById']),
     ...mapMutations(['selectedUser']),
-    userShow(user, e = null) {
-      if(user) {
-        console.log(user)
-        this.roles = user.role ? user.role.description : '' 
-        this.initial = user.initial
-        this.tabel = user.tabel
-        this.adress = user.adress
-        this.adressProps = user.adressProps
-        this.dateUnWork = user.dateUnWork
-        this.dateWork = user.dateWork
-        this.email = user.email
-        this.haracteristic = user.haracteristic
-        this.image = PATH_TO_SERVER + user.image
-        this.login = user.login
-        this.password = user.password
-        this.phone = user.phone
-        this.primetch = user.primetch
-        this.birthday = user.birthday
-        this.id = user.id
-        this.documents = user.documents 
-      }
-
-      this.selectedUser(user)
-      
-      if(!e)
-        return 
-      
-      if(this.span)
-        this.span.classList.remove('td-row-all')
+    getUsersAllFolder(user, e = null) {
+      if(!e) return 
+      if(this.span) this.span.classList.remove('td-row-all')
       this.span = e
       this.span.classList.add('td-row-all')
+
+      this.getUserById(user.id).then(res => {
+        if(res) this.userShow(res)
+      })
+    },
+    userShow(user) {
+      if(!user) return false
+      this.roles = user.role ? user.role.description : '' 
+      this.initial = user.initial
+      this.tabel = user.tabel
+      this.adress = user.adress
+      this.adressProps = user.adressProps
+      this.dateUnWork = user.dateUnWork
+      this.dateWork = user.dateWork
+      this.email = user.email
+      this.haracteristic = user.haracteristic
+      this.image = PATH_TO_SERVER + user.image
+      this.login = user.login
+      this.password = user.password
+      this.phone = user.phone
+      this.primetch = user.primetch
+      this.birthday = user.birthday
+      this.id = user.id
+      this.documents = user.documents 
+      this.selectedUser(user)
     },
     userBan() {
       if(!this.id)
         return showMessage('Ошибка', 'Пользователь не выбран', 'w', this)
-
-      
       if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone) 
         return showMessage('', 'Недостаточно прав', 'w', this)
       this.banUserById(this.id).then(mes => {
@@ -268,9 +269,11 @@ export default {
   },
   async mounted() {
     this.loader = true
-    await this.getAllUsers();
-    if(this.getUsers.length)
-      this.userShow(this.getUsers[0])
+    await this.getAllUsers(true);
+    if(this.getUsers.length) {
+      const user = await this.getUserById(this.getUsers[0].id)
+      this.userShow(user)
+    }
 
     this.loader = false
   }

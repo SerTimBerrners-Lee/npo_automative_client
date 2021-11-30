@@ -32,8 +32,8 @@ export default {
       }
     },
 
-    async getAllCbed(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed`)
+    async getAllCbed(ctx, light=false) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/${light}`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('addAllCbed', result)
@@ -91,7 +91,7 @@ export default {
     },
 
     async getOneCbEdById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/${id}`)
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/one/${id}`)
       if(res.ok) {
         const result = await res.json()
         return result
@@ -152,9 +152,7 @@ export default {
           try {
             if(product.listCbed) 
               pars = JSON.parse(product.listCbed)
-          } catch (e) {
-            console.log(e)
-          }
+          } catch (e) {console.error(e)}
           if(prod.id == cb.id) {
             let cbed_new = cb
             if(pars) {

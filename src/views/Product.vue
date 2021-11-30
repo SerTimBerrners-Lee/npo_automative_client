@@ -152,6 +152,7 @@ export default {
   methods: {
     ...mapActions([
       'getAllProduct', 
+      'getAllProductById',
       'fetchDeleteProduct'
     ]),
     ...mapMutations([
@@ -160,14 +161,17 @@ export default {
       'filterToAttentionProduct'
     ]),
     setProduct(product, e) {
-      this.selecteProduct = product
+      if(!product) return false
+      this.getAllProductById(product.id).then(res => {
+        if(!res) return false
+        this.selecteProduct = res
+        this.setOneProduct(res)
+        this.parseSpetification(res)
+      })
       if(this.tr) 
         this.tr.classList.remove('td-row-all')
-      this.setOneProduct(product)
-
       this.tr = e
       this.tr.classList.add('td-row-all')
-      this.parseSpetification(product)
     },
     parseSpetification(obj) {
       this.materialList = []
@@ -209,7 +213,7 @@ export default {
       if(!this.selecteProduct)
         return 0
       this.fetchDeleteProduct(this.selecteProduct.id)
-    },
+    }, 
     setDocs(dc) {
       this.itemFiles = dc
       this.showFile = true
@@ -225,7 +229,7 @@ export default {
   },
   async mounted() {
     this.loader = true
-    await this.getAllProduct()
+    await this.getAllProduct(true)
     this.loader = false
   }
 }

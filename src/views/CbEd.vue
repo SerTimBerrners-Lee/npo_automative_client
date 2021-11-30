@@ -15,7 +15,7 @@
                   <th>Артикул</th> 
                   <th>Наименование</th> 
                 </tr>
-                <tr>
+                <tr> 
                   <td colspan="3">
                     <Search 
                       :placeholder="'Поиск по Артиклу'"
@@ -202,7 +202,9 @@ export default {
     ...mapActions([
       'getAllCbed', 
       'deleteCbedById', 
-      'getAllProduct'
+      'getAllProduct',
+      'getAllProductById',
+      'getOneCbEdById'
     ]),
     ...mapMutations([
       'setOneCbed', 
@@ -210,17 +212,21 @@ export default {
       'searchProduct', 
       'getAllCbEdByProduct',
       'clearFilterCbedByProduct', 
-      'filterToAttentionCbed'
+      'filterToAttentionCbed',
+      'setOneProduct'
     ]),
-    setCbed(cbEd, e) {
-      this.selectedCbEd = cbEd
-        if(this.tr_cb) 
-          this.tr_cb.classList.remove('td-row-all')
+    setCbed(cbed, e) {
+      this.getOneCbEdById(cbed.id).then(res => {
+        if(!res) return false
+        this.selectedCbEd = res
+        this.parseSpetification(res)
+        this.setOneCbed(res)
+      })
+      if(this.tr_cb) 
+        this.tr_cb.classList.remove('td-row-all')
   
       this.tr_cb = e
-      this.parseSpetification(cbEd)
       this.tr_cb.classList.add('td-row-all')
-      this.setOneCbed(this.selectedCbEd)
     },
     sortToAttention() {
       this.filterToAttentionCbed()
@@ -254,11 +260,16 @@ export default {
         this.parametrs_product= null
         return
       }
-      this.selecteProduct = product
+
+      this.getAllProductById(product.id).then(res => {
+        if(!res) return false
+        this.selecteProduct = res
+        this.setOneProduct(res)
+        this.parseSpetification(res)
+        this.getAllCbEdByProduct(res)
+      })
       if(this.tr_product) 
         this.tr_product.classList.remove('td-row-all')
-
-      this.getAllCbEdByProduct(product)
 
       this.tr_product = e
       this.tr_product.classList.add('td-row-all')
@@ -318,10 +329,8 @@ export default {
   },
   async mounted() {
     this.loader = true
-
-    await this.getAllProduct()
-    await this.getAllCbed()
-    
+    await this.getAllProduct(true)
+    await this.getAllCbed(true)
     this.loader = false
   }
 }

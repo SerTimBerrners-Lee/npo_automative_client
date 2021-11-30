@@ -8,25 +8,27 @@
 		</div>
 		<div>
 			<h3>Комлектация</h3>
-			<TableShipments  
-				v-if='getShipments.length'
-				:shipmentsArr='getShipments'
-				@unmount='unmount_table_shipments'/>
-			<div class="btn-control">
-        <button 
-					class="btn-small">
-          Сбросить все фильтры
-        </button>
-        <button class="btn-small" @click='deleteF'>
-          Удалить
-        </button>
-				<button class="btn-small" @click='edit'>
-					Изменить
-        </button>
-				<button class="btn-small btn-add" @click='$router.push("/addorder/false/false")'>
-          Создать заказ
-        </button>
-      </div>
+			<div style='width: fit-content;'>
+				<TableShipments  
+					v-if='getShipments.length'
+					:shipmentsArr='getShipments'
+					@unmount='unmount_table_shipments'/>
+				<div class="btn-control">
+					<button 
+						class="btn-small">
+						Сбросить все фильтры
+					</button>
+					<button class="btn-small" @click='deleteF'>
+						Удалить
+					</button>
+					<button class="btn-small" @click='edit'>
+						Изменить
+					</button>
+					<button class="btn-small btn-add" @click='$router.push("/addorder/false/false")'>
+						Создать заказ
+					</button>
+				</div>
+			</div>
 		</div>
 		<InformFolder  
       :title='titleMessage'

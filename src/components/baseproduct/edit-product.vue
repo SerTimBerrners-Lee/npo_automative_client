@@ -235,22 +235,23 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
   />
+  <Loader v-if='loader' /> 
   </div>
 </template>
 
 <script>
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
-import { random, isEmpty } from 'lodash';
-import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
-import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import PATH_TO_SERVER from '@/js/path';
-import MediaSlider from '@/components/filebase/media-slider.vue';
+import { random, isEmpty } from 'lodash';
 import OpensFile from '@/components/filebase/openfile.vue';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
+import MediaSlider from '@/components/filebase/media-slider.vue';
+import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 export default {
   data() {
     return {
@@ -313,6 +314,7 @@ export default {
       showModalFile: false,
       fileModalKey: random(1, 999),
       data_arr: [],
+      loader: false
     }
   },
   unmounted() {
@@ -452,18 +454,18 @@ export default {
           break;
         case '3':
           this.showBFM = true
-          this.generateKeyBFM = random(1, 11999)
+          this.generateKeyBFM = random(1, 999)
           break;
         case '4':
           this.instanMaterial = 2
           this.listMaterials = this.listPokDet
-          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
         case '5':
           this.instanMaterial = 3
           this.listMaterials = this.materialList
-          this.modalMaterialKey = random(10, 2e6)
+          this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;
       }
@@ -545,7 +547,7 @@ export default {
         this.getOneSelectProduct.documents.forEach((d) => {
             this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
         })
-        this.randomDataMedia = random(10, 38100) 
+        this.randomDataMedia = random(10, 999) 
 
         this.techProcessID = !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses.id : null
 
@@ -567,9 +569,12 @@ export default {
       return 
     } 
 
-    this.getAllUsers()
-    this.updateForEdit()
+    this.loader = true
+    await this.getAllUsers(true)
     this.data_arr = await this.getAllArticlProduct()
+    this.loader = false
+
+    this.updateForEdit()
   }
 }
 </script>
