@@ -144,7 +144,7 @@
     </div>
     <Loader v-if='loader' /> 
     <TechProcess 
-      v-if='techProcessIsShow'
+      v-if='techProcessIsShow' 
       :key='techProcessKey'
       @unmount='unmount_tech_process'
       :techProcessID='techProcessID'
@@ -265,7 +265,6 @@ export default {
         if(!res) return false
         this.selecteProduct = res
         this.setOneProduct(res)
-        this.parseSpetification(res)
         this.getAllCbEdByProduct(res)
       })
       if(this.tr_product) 

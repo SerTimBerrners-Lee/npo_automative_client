@@ -205,19 +205,19 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
   />
+  <Loader v-if='loader' /> 
   </div>
-</template>
-
+</template> 
 <script>
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random } from 'lodash';
-import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 export default {
   data() {
     return {
@@ -273,7 +273,8 @@ export default {
       showModalFile: false,
       fileModalKey: random(1, 999),
       data_arr: [],
-      }
+      loader: false
+    }
   },
   unmounted() {
     this.deleteStorageData()
@@ -479,9 +480,10 @@ export default {
     }
   },
   async mounted() {
-    this.getAllUsers()
+    this.loader = true
+    await this.getAllUsers(true)
     this.data_arr = await this.getAllArticlProduct()
-    console.log('this.data_arr', this.data_arr)
+    this.loader = false
   }
 }
 </script>

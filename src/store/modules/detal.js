@@ -68,8 +68,8 @@ export default {
         return result
       }
     },
-    async getAllDetals(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal`)
+    async getAllDetals(ctx, light=false) {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/${light}`)
       const result = await res.json()
       ctx.commit('setDetalMutation', result)
     },
@@ -90,7 +90,7 @@ export default {
       return result
     },
     async getOneDetal(ctx, id)  {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`)
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/one/${id}`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('addOneSelectDetal', result)

@@ -238,7 +238,6 @@
   <Loader v-if='loader' /> 
   </div>
 </template>
-
 <script>
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';

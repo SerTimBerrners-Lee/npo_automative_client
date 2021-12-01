@@ -234,16 +234,17 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
   />
+  <Loader v-if='loader' /> 
   </div>
 </template>
 
 <script>
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
-import TechProcess from './tech-process-modal.vue';
-import { random, padStart, padEnd } from 'lodash';
-import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
+import { random, padStart, padEnd } from 'lodash';
+import TechProcess from './tech-process-modal.vue';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 export default {
   data() {
     return {
@@ -289,6 +290,7 @@ export default {
       keyInformTip: 0,
       density: 0,
       data_arr: [],
+      loader: false
     }
   },
   unmounted() {
@@ -531,8 +533,10 @@ export default {
     }
   },
   async mounted() {
-    this.getAllUsers()
+    this.loader = true
+    await this.getAllUsers(true)
     this.data_arr = await this.getAllDetalsArticl()
+    this.loader = false
   }
 }
 </script>

@@ -205,7 +205,10 @@ export default {
       'getAllDetals', 
       'deleteDetelyId', 
       'getAllProduct', 
-      'getAllCbed'
+      'getAllCbed',
+      'getAllProductById',
+      'getOneCbEdById',
+      'getOneDetal'
     ]),
     ...mapMutations([
       'filterDetalToArticle',
@@ -231,35 +234,42 @@ export default {
       this.productModalKey = random(1, 999)
     },
     setDetals(detal, e) {
-      this.selectedDetal = detal
-        if(this.tr) 
-          this.tr.classList.remove('td-row-all')
+      this.getOneDetal(detal.id).then(res => {
+        this.selectedDetal = res
+        this.addOneSelectDetal(res)
+      })
+      if(this.tr) 
+        this.tr.classList.remove('td-row-all')
       
       this.tr = e
       this.tr.classList.add('td-row-all')
-      this.addOneSelectDetal(detal)
     },
     sortToAttention() {
       this.filterToAttention()
     },
     infoDetal() {
+      console.log(this.selectedDetal)
       if(!this.selectedDetal) return false
 
-      this.detalModalKey = random(1, 34e5)
+      this.detalModalKey = random(1, 999)
       this.parametrs_detal = this.selectedDetal.id
     },
-    setCbed(cbEd, e) {
-      if(this.selectedCbEd && this.selectedCbEd.id == cbEd.id) {
+    setCbed(cbed, e) {
+      if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
         this.clearFilterDetalByProduct()
         e.classList.remove('td-row-all')
         return this.selectedCbEd = null
       }
-      this.selectedCbEd = cbEd
+      this.selectedCbEd = cbed
       if(this.tr_cb) 
         this.tr_cb.classList.remove('td-row-all')
 
-      this.getAllDetalByProduct(cbEd)
-      this.setOneCbed(cbEd)
+      this.getOneCbEdById(cbed.id).then(res => {
+        if(!res) return false
+        this.selectedCbEd = res
+        this.getAllDetalByProduct(res)
+        this.setOneCbed(res)
+      })
 
       this.tr_cb = e
       this.tr_cb.classList.add('td-row-all')
@@ -273,13 +283,15 @@ export default {
         return
       }
 
-      this.selecteProduct = product
-      this.setOneProduct(product)
+      this.getAllProductById(product.id).then(res => {
+        if(!res) return false
+        this.selecteProduct = res
+        this.setOneProduct(res)
+        this.getAllCbEdByProduct(res)
+        this.getAllDetalByProduct(res)
+      })
       if(this.tr_product) 
         this.tr_product.classList.remove('td-row-all')
-  
-      this.getAllCbEdByProduct(product)
-      this.getAllDetalByProduct(product)
 
       this.tr_product = e
       this.tr_product.classList.add('td-row-all')
@@ -339,9 +351,9 @@ export default {
   async mounted() {
     this.loader = true
 
-    this.getAllProduct()
-    this.getAllCbed()
-    await this.getAllDetals()
+    await this.getAllProduct(true)
+    await this.getAllCbed(true)
+    await this.getAllDetals(true)
 
     this.loader = false
   }

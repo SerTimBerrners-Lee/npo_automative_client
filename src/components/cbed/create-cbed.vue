@@ -203,19 +203,20 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
   />
+  <Loader v-if='loader' /> 
   </div>
 </template>
 
 <script>
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import { random } from 'lodash';
-import { mapActions, mapMutations, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
+import TableSpetification from './table-sptification.vue';
+import { mapActions, mapMutations, mapGetters } from 'vuex';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-import TableSpetification from './table-sptification.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 export default {
   data() {
     return {
@@ -271,6 +272,7 @@ export default {
 
       showModalFile: false,
       fileModalKey: random(1, 999),
+      loader: false
     }
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
@@ -479,8 +481,10 @@ export default {
     }
   },
   async mounted() {
-    await this.getAllUsers()
+    this.loader = true
+    await this.getAllUsers(true)
     this.data_arr = await this.getAllCbedArticl()
+    this.loader = false
   } 
 }
 </script> 
