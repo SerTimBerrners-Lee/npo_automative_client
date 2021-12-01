@@ -61,9 +61,7 @@
     </div>
   </div>
 </template>
-
 <script>
-
 import { mapActions } from 'vuex';
 import OperationTable from '@/components/sclad/operation-path-info.vue';
 export default { 

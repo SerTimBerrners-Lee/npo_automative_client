@@ -120,13 +120,13 @@
   </div>
 </template>
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { random }  from 'lodash';
 import { showMessage } from '@/js/';
 import AddFile from '@/components/filebase/addfile.vue';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
-import { random }  from 'lodash';
+import ListProvider from '@/components/baseprovider/list-provider.vue';
 export default {
   data() {
     return {

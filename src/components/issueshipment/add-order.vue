@@ -507,10 +507,9 @@ export default {
 			this.select_tr_inx = inx
 		},
 		save_order() {
-			if(!this.date_order || !this.date_shipments 
-				|| !this.kol || (!this.base && !this.is_not_product)
-				|| (!this.select_product && !this.is_not_product)) 
-				return showMessage('', 'Все поля должны быть заполнены', 'w', this)
+			if(!this.is_not_product)
+				if(!this.base || !this.select_product) 
+					return showMessage('', 'Все поля должны быть заполнены', 'w', this)
 			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w', this)
 			this.loader = true
 			const data = {

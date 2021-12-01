@@ -108,18 +108,18 @@
               <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
-                <table style='width: 100%;'>
-                  <tr>
-                    <th >Файл</th>
-                  </tr>
-                  <tr 
-                    v-for='doc in  documentsData' 
-                    :key='doc'
-                    class='td-row'
-                    @click='setDocs(doc)'
-                    >
-                    <td>{{ doc.name }}</td>
-                  </tr>
+              <table style='width: 100%;'>
+                <tr>
+                  <th >Файл</th>
+                </tr>
+                <tr 
+                  v-for='doc in  documentsData' 
+                  :key='doc'
+                  class='td-row'
+                  @click='setDocs(doc)'
+                  >
+                  <td>{{ doc.name }}</td>
+                </tr>
               </table>
             </div>
             <div>
@@ -133,7 +133,11 @@
                 <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
               </div>
             </div>
-            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес</h3>
+            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес
+              <span style='font-size:12px;'>
+              ({{ getOneSelectProduct && getOneSelectProduct.techProcesses && getOneSelectProduct.techProcesses.operations ? 
+                getOneSelectProduct.techProcesses.operations.length : '0' }} операции)</span>
+            </h3>
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'

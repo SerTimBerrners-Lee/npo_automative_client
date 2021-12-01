@@ -77,11 +77,11 @@
 	</div>
 </template>
 <script>
+import {random} from 'lodash';
+import { showMessage } from '@/js/';
 import AddWaybill from './add-waybill.vue';
 import {mapGetters, mapActions} from 'vuex';
-import {random} from 'lodash';
 import OpensFile from '@/components/filebase/openfile.vue';
-import { showMessage } from '@/js/';
 export default {
 	data() {
 		return{

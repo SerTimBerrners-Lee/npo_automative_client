@@ -13,7 +13,6 @@
           <label for='end'>Выполнено</label><input id='end' type='checkbox'>
         </div>
       </div>
-
       <div class='table_block'> 
         <div style='width: 99%;'> 
           <table>
@@ -36,14 +35,17 @@
               <th rowspan="2">Примечание</th>
             </tr>
             <tr>
-              <th>
+              <th @click='selectAllItem' style='cursor: pointer;'>
                 <unicon name="check" fill="royalblue" />
               </th> 
               <th>Артикул</th>
               <th>Наименование</th>
               <th>Принадлежность</th>
             </tr>
-            <tr v-for='detal of allDetal' :key='detal'>
+            <tr v-for='detal of allDetal' :key='detal'
+              class='td-row'
+              @click='setIzdels(detal)'
+              @dblclick="showInformIzdel(detal.id)">
               <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
                 <p class="checkbox_block" @click='e => toProduction(detal, e.target)'></p>
               </td>
@@ -105,26 +107,31 @@
       v-if='message'
       :key='keyInformTip'
     />
+    <DetalModal
+      :key='detalModalKey'
+      v-if='parametrs_detal'
+      :id='parametrs_detal'
+    />
 
     <Loader v-if='loader' />
   </div>
 </template>
 
 <script>
-
-import StartPraduction from '@/components/sclad/start-production-modal.vue';
-import DescriptionModal from '@/components/description-modal.vue';
 import {random} from 'lodash';
-import {mapGetters, mapActions} from 'vuex';
-import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
-import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import { showMessage } from '@/js/';
+import {mapGetters, mapActions} from 'vuex';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import DescriptionModal from '@/components/description-modal.vue';
+import StartPraduction from '@/components/sclad/start-production-modal.vue';
+import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
+import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 export default {
   data() {
     return {
       showProductionModal: false,
-      startProductionModalKey: random(1, 888),
+      startProductionModalKey: random(1, 999),
 
       showDescriptionModal: false,
       descriptionKey: random(1, 999),
@@ -141,29 +148,38 @@ export default {
       productListForIzd: null,
 
       selectShipment: [],
+      toProductionArr: [],
 
-      selected_checkbox: null,
       select_izd: null,
  
       showShipment: false,
       shipmentKey: random(1, 999),
+      detalModalKey: random(1, 999),
+			parametrs_detal: false,
 
       kolvo_all: 0,
       loader: false
     }
   },
   computed: mapGetters(['allDetal']),
-  components: { DatePicterRange, StartPraduction, DescriptionModal, ShipmentsMiniList, ProductListModal},
+  components: { 
+    DatePicterRange, 
+    StartPraduction, 
+    DescriptionModal, 
+    ShipmentsMiniList, 
+    ProductListModal,
+    DetalModal
+  },
   methods: {
     ...mapActions(['setchDeficitDeficit', 'getOneDetal']),
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
     },
     start() {
-      if(!this.select_izd)
+      if(!this.toProductionArr.length)
         return showMessage('', 'Для начала выберите Д и заказ', 'w', this)
       this.parametrs = {
-        izd: this.select_izd,
+        izd: this.toProductionArr,
         type: 'det'
       }
       this.startProductionModalKey = random(1, 999)
@@ -173,17 +189,27 @@ export default {
       this.shipmentKey = random(1, 999)
     },
     toProduction(izd, e) {
-      if(this.selected_checkbox) 
-        this.selected_checkbox.classList.remove('checkbox_block_select')
-      
-      if(this.selected_checkbox && this.select_izd && this.select_izd.id == izd.id) {
-        this.selected_checkbox = null
-        return this.select_izd = null
-      } 
-      
-      this.selected_checkbox = e;
-      this.selected_checkbox.classList.add('checkbox_block_select')
+      e.classList.toggle('checkbox_block_select')
+      let check = true
+      for(let izdd of this.toProductionArr) {
+        if(izdd.id == izd.id) {
+          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id)
+          check = false
+        }
+      }
+      if(check) this.toProductionArr.push(izd)
+    },
+    setIzdels(izd) {
       this.select_izd = izd
+    },
+    selectAllItem() {
+      if(this.toProductionArr.length < this.allDetal.length) {
+        this.toProductionArr = this.allDetal
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'))
+      } else {
+        this.toProductionArr = []
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.remove('checkbox_block_select'))
+      }
     },
     getTimming(param, kol = 1) {
       if(!param) return 0
@@ -211,6 +237,11 @@ export default {
         return showMessage('', 'Для начала выберите Деталь, иначе данные не сохранятся!', 'w', this)
       this.select_izd.my_kolvo = Number(e.innerText)
     },
+    showInformIzdel(id) {
+      if(!id) return false 
+      this.parametrs_detal = id
+      this.detalModalKey = random(1, 999)
+		},
     changeDatePicterRange(val) {
       console.log(val)
     }
@@ -218,7 +249,6 @@ export default {
   async mounted() {
     this.loader = true
     await this.setchDeficitDeficit()
-    console.log(this.allDetal)
     this.loader = false
   }
 }

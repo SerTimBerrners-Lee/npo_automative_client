@@ -15,10 +15,10 @@
               :value='user.id'>{{ user.login }}</option>
           </select> 
           <label class='label' for='attention'>Выделить</label>
-            <input 
-              type="checkbox" 
-              id='attention' 
-              v-model='attention'>
+          <input 
+            type="checkbox" 
+            id='attention' 
+            v-model='attention'>
         </p>
       </div>
 
@@ -160,12 +160,12 @@
                       class='inputs-small'
                       v-model='obj.DxL'>
                     <div class='absolute_znach'>
-                        {{ obj.DxL.split('x')
-                            .length == 2 ? 
-                        `=${obj.DxL.split('x')[0] * obj.DxL.split('x')[1]}`
-                        : ''
-                        }}
-                      </div>
+                      {{ obj.DxL.split('x')
+                          .length == 2 ? 
+                      `=${obj.DxL.split('x')[0] * obj.DxL.split('x')[1]}`
+                      : ''
+                      }}
+                    </div>
                   </td>
                 </tr>
                 <tr>
@@ -193,7 +193,9 @@
               </table>
             </div>
 
-            <h3 class="link_h3" @click='showTechProcess'>Технологический процес</h3>
+            <h3 class="link_h3" @click='showTechProcess'>Технологический процес <span style='font-size:12px;'>
+              ({{ getOneSelectDetal && getOneSelectDetal.techProcesses && getOneSelectDetal.techProcesses.operations ? 
+                getOneSelectDetal.techProcesses.operations.length : '0' }} операции)</span></h3>
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'
@@ -243,7 +245,6 @@
             </tr>
           </table>
           <div class="btn-control" style='width: 100%;' v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
-            <!-- <button class="btn-small">Удалить</button> -->
             <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
           </div>
         <div style='height: 50px;'>

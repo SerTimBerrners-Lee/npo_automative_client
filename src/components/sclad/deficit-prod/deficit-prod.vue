@@ -34,7 +34,7 @@
             <th rowspan="2">Примечание</th>
           </tr>
           <tr>
-            <th>
+            <th @click='selectAllItem' style='cursor: pointer;'>
               <unicon name="check" fill="royalblue" />
             </th> 
             <th>Тип</th>
@@ -43,7 +43,10 @@
             <th>Наименование</th>
             <th>Принадлежность</th>
           </tr>
-          <tr v-for='cbed of allCbed' :key='cbed'>
+          <tr v-for='cbed of allCbed' :key='cbed' 
+            class='td-row'
+            @click='setIzdels(cbed)'
+            @dblclick="showInformIzdel(cbed.id, 'cbed')">
             <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
               <p class="checkbox_block" @click='e => toProduction(cbed, e.target)'></p>
             </td>
@@ -73,9 +76,10 @@
               <img src="@/assets/img/link.jpg" @click='openDescription(cbed.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
-          <tr v-for='detal of allDetal' :key='detal'>
+          <tr v-for='detal of allDetal' :key='detal' 
+            class='td-row'
+            @dblclick="showInformIzdel(detal.id, 'detal')">
             <td class='center checkbox_parent' >
-              
             </td>
             <td class='center'> Д </td>
             <td class='center'>
@@ -112,7 +116,7 @@
       <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
       <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
     </div>
-    <StartPraduction 
+    <StartProduction 
       v-if='parametrs'
       :key='startProductionModalKey'
       :parametrs='parametrs'
@@ -145,26 +149,37 @@
       v-if='message'
       :key='keyInformTip'
     />
+    <DetalModal
+      :key='detalModalKey'
+      v-if='parametrs_detal'
+      :id='parametrs_detal'
+    />
+    <CbedModalInfo
+      :id='parametrs_cbed'
+      :key='cbedModalKey'
+      v-if='parametrs_cbed'
+    />
     <ShipmentsModal 
       :shipments='shipments'
       v-if='shipments.length'
       :key='shipmentKey'
     />
-
     <Loader v-if='loader' />
   </div>
 </template>
 <script>
-import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
-import StartPraduction from '@/components/sclad/start-production-modal.vue';
-import DescriptionModal from '@/components/description-modal.vue';
-import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
-import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
-import { showMessage } from '@/js/';
 import {random} from 'lodash';
+import { showMessage } from '@/js/';
 import {mapGetters, mapActions} from 'vuex';
+import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
+import StartProduction from '@/components/sclad/start-production-modal.vue';
+import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
+import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
+import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 export default {
   data() {
     return {
@@ -176,6 +191,7 @@ export default {
       description: '',
 
       shipments: [],
+      toProductionArr: [],
       shipmentKey: random(1, 999),
 
       message: '',
@@ -183,12 +199,15 @@ export default {
       keyInformTip: random(1, 999),
       
       showNormTimeOperation: false,
-      normTimeOperationKey: random(1, 888),
+      normTimeOperationKey: random(1, 999),
 
       keyParentsModal: random(1, 999),
       productListForIzd: null,
+      detalModalKey: random(1, 999),
+			parametrs_detal: false,
+			parametrs_cbed: null,
+			cbedModalKey: random(1, 999),
 
-      selected_checkbox: null,
       select_izd: null,
 
       loader: false,
@@ -198,20 +217,27 @@ export default {
   computed: mapGetters(['allCbed', 'allDetal']),
   components: {
     DatePicterRange, 
-    StartPraduction, 
+    StartProduction, 
     DescriptionModal, 
     NormTimeOperation, 
     ShipmentsMiniList, 
     ProductListModal,
-    ShipmentsModal
+    ShipmentsModal,
+    DetalModal,
+    CbedModalInfo
   },
   methods: {
-    ...mapActions(['getOneCbEdById', 'getOneDetal', 'setchDeficitCbed', 'setchDeficitDeficit']),
+    ...mapActions([
+      'getOneCbEdById', 
+      'getOneDetal', 
+      'setchDeficitCbed', 
+      'setchDeficitDeficit'
+    ]),
     start() {
-      if(!this.select_izd)
+      if(!this.toProductionArr.length)
         return showMessage('', 'Для начала выберите СБ и заказ', 'w', this)
       this.parametrs = {
-        izd: this.select_izd,
+        izd: this.toProductionArr,
         type: 'cb'
       }
       this.startProductionModalKey = random(1, 999)
@@ -242,16 +268,17 @@ export default {
       }
     },
     toProduction(izd, e) {
-      if(this.selected_checkbox) 
-        this.selected_checkbox.classList.remove('checkbox_block_select')
-      
-      if(this.selected_checkbox && this.select_izd && this.select_izd.id == izd.id) {
-        this.selected_checkbox = null
-        return this.select_izd = null
+      e.classList.toggle('checkbox_block_select')
+      let check = true
+      for(let izdd of this.toProductionArr) {
+        if(izdd.id == izd.id) {
+          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id)
+          check = false
+        }
       }
-      
-      this.selected_checkbox = e;
-      this.selected_checkbox.classList.add('checkbox_block_select')
+      if(check) this.toProductionArr.push(izd)
+    },
+    setIzdels(izd) {
       this.select_izd = izd
     },
     showParents(izd, type) {
@@ -282,7 +309,30 @@ export default {
     },
     changeDatePicterRange(val) {
       console.log(val)
-    }
+    },
+    selectAllItem() {
+      if(this.toProductionArr.length < this.allCbed.length) {
+        this.toProductionArr = this.allCbed
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'))
+      } else {
+        this.toProductionArr = []
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.remove('checkbox_block_select'))
+      }
+    },
+    showInformIzdel(id, type) {
+			if(type == 'cbed') {
+				if(id) {
+					this.parametrs_cbed = id
+					this.cbedModalKey = random(1, 999)
+				}
+			}
+			if(type == 'detal') {
+				if(id) {
+					this.parametrs_detal = id
+					this.detalModalKey = random(1, 999)
+				}
+			}
+		}
   },
   async mounted() {
     this.loader = true

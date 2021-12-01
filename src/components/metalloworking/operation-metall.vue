@@ -130,20 +130,20 @@
 </template>
 
 <script>
-import print from 'print-js'																									;
-import {mapGetters, mapActions} from 'vuex'																		;
-import random from 'lodash'																										;
-import DatePicterRange from '@/components/date-picter-range.vue'							;
-import OpensFile from '@/components/filebase/openfile.vue'										;
-import { showMessage } from '@/js/'																						;
-import DescriptionModal from '@/components/description-modal.vue'							;
-import { dateIncrementHors } from '@/js/'																			;
-import CreateMark from '@/components/sclad/mark-modal.vue'										; 
+import random from 'lodash';
+import print from 'print-js';
+import { showMessage } from '@/js/';
+import { dateIncrementHors } from '@/js/';
+import {mapGetters, mapActions} from 'vuex';
 import { 	afterAndBeforeOperation, 
 					OperationTime, 
 					returnKolvoCreate, 
-					workingForMarks } from '@/js/operation.js'													;
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue'				;
+					workingForMarks } from '@/js/operation.js';
+import CreateMark from '@/components/sclad/mark-modal.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import DatePicterRange from '@/components/date-picter-range.vue';
+import DescriptionModal from '@/components/description-modal.vue';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 export default {
 	data() {

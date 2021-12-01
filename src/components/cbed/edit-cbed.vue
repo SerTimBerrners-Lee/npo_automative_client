@@ -94,7 +94,11 @@
               <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
             </div>
             </div>
-            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес</h3>
+            <h3 class="link_h3" @click='showTechProcess' style='margin-top: 50px;'>Технологический процес
+              <span style='font-size:12px;'>
+              ({{ getOneSelectCbEd && getOneSelectCbEd.techProcesses && getOneSelectCbEd.techProcesses.operations ? 
+                getOneSelectCbEd.techProcesses.operations.length : '0' }} операции)</span>
+            </h3>
             <TechProcess 
               v-if='techProcessIsShow'
               :key='techProcessKey'
@@ -178,11 +182,12 @@
                 <th>ЕИ</th>
                 <th>Значение</th>
               </tr>
-              <tr class='tr_haracteristic td-row' 
-                  v-for='(har, inx) in obj.haracteriatic' 
-                  :key='har'
-                  @click='selectHaracteristic = {har, inx}'
-                  >
+              <tr 
+                class='tr_haracteristic td-row' 
+                v-for='(har, inx) in obj.haracteriatic' 
+                :key='har'
+                @click='selectHaracteristic = {har, inx}'
+                >
                 <td>
                   <input 
                     type="text" 
@@ -220,9 +225,9 @@
       :key='keyInformTip'
     />
     <OpensFile 
-        :parametrs='itemFiles' 
-        v-if="showFile" 
-        :key='keyWhenModalGenerateFileOpen'
+      :parametrs='itemFiles' 
+      v-if="showFile" 
+      :key='keyWhenModalGenerateFileOpen'
     />
     <BaseCbedModal 
       v-if='showCbed'

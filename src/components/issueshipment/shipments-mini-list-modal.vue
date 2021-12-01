@@ -35,8 +35,8 @@
 </template>
 
 <script>
-import {mapGetters, mapActions} from 'vuex';
 import {showMessage} from '@/js/';
+import {mapGetters, mapActions} from 'vuex';
 export default {
   props: ['parametrs'],
   data() {

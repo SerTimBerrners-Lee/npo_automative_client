@@ -70,7 +70,6 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='message'
       :key='keyInformTip'
     />
     <AddFile 
@@ -296,6 +295,10 @@ export default {
     await this.fetchFiles()
     this.getType('all')
     this.loader = false
+
+    for(let r in [1, 2, 3, 4, 5, 6]) {
+      showMessage('', 'Message' + r, 'w', this)
+    }
   }
 }
 </script>

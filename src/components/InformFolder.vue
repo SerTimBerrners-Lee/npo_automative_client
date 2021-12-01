@@ -1,30 +1,41 @@
 <template>
-  <div class="message-folder-block" v-if="destrouCommponent" :class="typeMessage">
-    <div>
-      <span class="message-block-title">{{ title }}</span>
-      <div @click="destrouCommponent = false">
-        <unicon name="times" fill="black" width="25px" />
+  <div class='main' v-if='messages.length'>
+    <div v-for='(message, inx) of messages' :key='message' >
+      <div class="message-folder-block" :class="message.typeMessage">
+        <div>
+          <span class="message-block-title">{{ message.title }}</span>
+          <div @click="destroyInformFolder(inx)">
+            <unicon name="times" fill="black" width="25px" />
+          </div>
+        </div>
+        <p v-html='message.message'></p>
       </div>
     </div>
-    <p v-html='message'></p>
   </div>
 </template>
-
 <script>
-
 export default {
   props: ['title', 'message', 'type'],
   data() {
     return {
-      typeMessage: String,
-      destrouCommponent: true
+      typeMessage: 'inform-message',
+      messages: []
     }    
   },
   updated() {
-    setTimeout(() => this.destrouCommponent = false, 7000)
+    setTimeout(() => this.messages.pop(), 7000)
+  },
+  methods: {
+    destroyInformFolder(inx) {
+    let new_arr = []
+    for(let index in this.messages) 
+      if(index != inx) new_arr.push(this.messages[index])
+    this.messages = new_arr
+    },
   },
   mounted() {
-    this.destrouCommponent = true
+    console.log('initializate')
+    if(!this.typeMessage || !this.message) return false
     this.$props.type == 'w' ?
       this.typeMessage = 'warning-message' :
       this.$props.type == 'e' ?
@@ -32,24 +43,33 @@ export default {
         this.$props.type == 's' ?
           this.typeMessage = 'success-message' :
             this.typeMessage = 'inform-message'
+    
+    this.messages.push({
+      typeMessage: this.typeMessage,
+      title: this.$props.title,
+      message: this.$props.message
+    })
   }
 }
 </script>
 
 <style scoped>
-.message-folder-block {
-  position: fixed;
+.main{
   z-index: 1111111;
+  position: fixed;
+  top: 20px;
+  right: 20px;
+}
+.message-folder-block {
+  
   border-radius: 6px 6px 0px 0px;
   padding-left: 10px;
-  padding-bottom: 10px;
+  margin-top: 10px;
   opacity: 0.8;
   display: flex;
   flex-direction: column;
   width: max-content;
   max-width: 610px;
-  top: 20px;
-  right: 20px;
   word-wrap: break-word;
 }
 .message-folder-block>div {

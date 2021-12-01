@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import { dataFormat } from '@/js/'
+import { dataFormat } from '@/js/';
 export default { 
   props: ['parametrs'],
   data() {

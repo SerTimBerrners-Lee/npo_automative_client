@@ -158,12 +158,12 @@
 </template>
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue';
-import { random, toNumber } from 'lodash';
-import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
-import { mapActions, mapGetters } from 'vuex';
-import AddPosition from './new-position.vue';
 import { showMessage } from '@/js/';
+import { random, toNumber } from 'lodash';
+import AddPosition from './new-position.vue';
+import { mapActions, mapGetters } from 'vuex';
+import AddFile from '@/components/filebase/addfile.vue';
+import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
 export default {
   props: ['parametrs'],
   data() {

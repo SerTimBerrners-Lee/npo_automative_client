@@ -33,10 +33,10 @@
             <th>Кол-во</th>
           </tr>
           <tr v-for='izd of komplect' :key='izd'>
-            <td>{{ izd.type }}</td>
-            <td>{{ izd.art }}</td>
+            <td class='center'>{{ parametrs && parametrs.type == 'cb' ? "СБ" : "Д" }}</td>
+            <td>{{ izd.articl }}</td>
             <td>{{ izd.name }}</td>
-            <td>{{ izd.kol }}</td>
+            <td class='center'>{{ izd.my_kolvo }}</td>
           </tr>
         </table>
       </div>
@@ -64,9 +64,9 @@
 </template>
 
 <script>
-import { showMessage } from '@/js/';
 import {random} from 'lodash';
 import { mapActions} from 'vuex';
+import { showMessage } from '@/js/';
 import DatePicterCustom from '@/components/date-picter.vue';
 export default {
   props: ['parametrs'],
@@ -108,28 +108,31 @@ export default {
       const data = {
         date_order: this.date_order,
         number_order: this.number_order,
-        description: this.description,
-        my_kolvo: this.$props.parametrs.izd.my_kolvo,
-        shipments_kolvo: this.$props.parametrs.izd.shipments_kolvo
+        description: this.description
       }
 
-      if(this.$props.parametrs.type == 'cb') {
-        this.fetchCreateAssemble({
-          ...data,
-          cbed_id: this.$props.parametrs.izd.id
-        }).then(res => this.endResult(res))
-      }
-      if(this.$props.parametrs.type == 'det') {
-        this.fetchCreateMetaloworking({
-          ...data,
-          detal_id: this.$props.parametrs.izd.id
-        }).then(res => this.endResult(res))
+      for(let komplect of this.komplect) {
+        if(komplect.my_kolvo == 0) continue;
+        data['my_kolvo'] = komplect.my_kolvo
+        data['shipments_kolvo'] = komplect.shipments_kolvo
+        if(this.$props.parametrs.type == 'cb') {
+          this.fetchCreateAssemble({
+            ...data,
+            cbed_id: komplect.id
+          }).then(res => this.endResult(res, komplect.name))
+        }
+        if(this.$props.parametrs.type == 'det') {
+          this.fetchCreateMetaloworking({
+            ...data,
+            detal_id: komplect.id
+          }).then(res => this.endResult(res, komplect.name))
+        }
       }
     },
-    endResult(res) {
+    endResult(res, name) {
       if(res) {
         this.destroyModalF()
-        return showMessage('', 'Изделие отправлено в производство', 's', this)
+        return showMessage('', `${name } отправлено в производство`, 's', this)
       } else return showMessage('', 'Произошла ошибка...', 'e', this)
     },
   },
@@ -139,59 +142,55 @@ export default {
     this.hiddens = 'opacity: 1;' 
 
     if(this.$props.parametrs) {
-      if(!Number(this.$props.parametrs.izd.my_kolvo)) {
-        setTimeout(() => this.destroyModalF(), 2000)
-        return showMessage('', 'Выбраннове количество должно быть числом и больше 0', 'w', this)
-      }
-      
+      this.komplect = this.$props.parametrs.izd
     }
-    if(this.$props.parametrs && this.$props.parametrs.izd) {
-      let izd = this.$props.parametrs.izd
-      if(izd.listCbed) {
-        let cb = JSON.parse(izd.listCbed)
-        for(let iz of cb) {
-          this.komplect.push({
-            type: 'СБ',
-            art: iz.art,
-            name: iz.cb.name,
-            kol: iz.kol
-          })
-        }
-      }
-      if(izd.listDetal) {
-        let cb = JSON.parse(izd.listDetal)
-        for(let iz of cb) {
-          this.komplect.push({
-            type: 'Д',
-            art: iz.art,
-            name: iz.det.name,
-            kol: iz.kol
-          })
-        }
-      }
-      if(izd.listPokDet) {
-        let cb = JSON.parse(izd.listPokDet)
-        for(let iz of cb) {
-          this.komplect.push({
-            type: 'ПД',
-            art: iz.art,
-            name: iz.mat.name,
-            kol: iz.kol
-          })
-        }
-      }
-      if(izd.materialList) {
-        let cb = JSON.parse(izd.materialList)
-        for(let iz of cb) {
-          this.komplect.push({
-            type: 'РМ',
-            art: iz.art,
-            name: iz.mat.name,
-            kol: iz.kol
-          })
-        }
-      }
-    }
+    // if(this.$props.parametrs && this.$props.parametrs.izd) {
+    //   let izd = this.$props.parametrs.izd
+    //   if(izd.listCbed) {
+    //     let cb = JSON.parse(izd.listCbed)
+    //     for(let iz of cb) {
+    //       this.komplect.push({
+    //         type: 'СБ',
+    //         art: iz.art,
+    //         name: iz.cb.name,
+    //         kol: iz.kol
+    //       })
+    //     }
+    //   }
+    //   if(izd.listDetal) {
+    //     let cb = JSON.parse(izd.listDetal)
+    //     for(let iz of cb) {
+    //       this.komplect.push({
+    //         type: 'Д',
+    //         art: iz.art,
+    //         name: iz.det.name,
+    //         kol: iz.kol
+    //       })
+    //     }
+    //   }
+    //   if(izd.listPokDet) {
+    //     let cb = JSON.parse(izd.listPokDet)
+    //     for(let iz of cb) {
+    //       this.komplect.push({
+    //         type: 'ПД',
+    //         art: iz.art,
+    //         name: iz.mat.name,
+    //         kol: iz.kol
+    //       })
+    //     }
+    //   }
+    //   if(izd.materialList) {
+    //     let cb = JSON.parse(izd.materialList)
+    //     for(let iz of cb) {
+    //       this.komplect.push({
+    //         type: 'РМ',
+    //         art: iz.art,
+    //         name: iz.mat.name,
+    //         kol: iz.kol
+    //       })
+    //     }
+    //   }
+    // }
   },
 }
 </script>

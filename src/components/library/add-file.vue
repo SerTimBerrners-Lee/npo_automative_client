@@ -54,9 +54,9 @@
   </div> 
 </template>
 <script>
+import {random} from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
-import {random} from 'lodash';
 export default {
   props: ['select_chapter', 'type_open', 'links'],
   data() {

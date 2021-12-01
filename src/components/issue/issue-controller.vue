@@ -65,10 +65,10 @@
 	</div>
 </template>
 <script>
-import {random} from 'lodash'                                     ;
-import { mapGetters, mapMutations } from 'vuex'       						; 
-import AddIssue from '@/components/issue/add-issue.vue'           ;
-import { dateIncrementHors } from '@/js/'                         ;
+import {random} from 'lodash';
+import { dateIncrementHors } from '@/js/';
+import { mapGetters, mapMutations } from 'vuex'; 
+import AddIssue from '@/components/issue/add-issue.vue';
 export default {
 	data() {
 		return {
