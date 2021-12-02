@@ -2,24 +2,24 @@
   <div class='main_block_content'>
     <h3>Редактировать изделие</h3>
     <div class="block title_block">
-        <p><span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'></p>
-        <p><span>Артикул: </span><input type="text" v-model.trim='obj.articl'></p>
-        <p><span>Наименование: </span><input type="text" v-model.trim='obj.name'></p>
-        <span>Ответственный: </span>
-          <select class="select-small sle"  
-            v-model='obj.responsible'>
-            <option  
-            v-for='user in getUsers' 
-            :key='user' 
-            :value='user.id'>{{ user.login }}</option>
-          </select>  
-        <p>
-          <label class='label' for='attention'>Выделить</label>
-          <input 
-            type="checkbox" 
-            id='attention' 
-            v-model='attention'>
-        </p>
+      <p><span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'></p>
+      <p><span>Артикул: </span><input type="text" v-model.trim='obj.articl'></p>
+      <p><span>Наименование: </span><input type="text" v-model.trim='obj.name'></p>
+      <span>Ответственный: </span>
+        <select class="select-small sle"  
+          v-model='obj.responsible'>
+          <option  
+          v-for='user in getUsers' 
+          :key='user' 
+          :value='user.id'>{{ user.login }}</option>
+        </select>  
+      <p>
+        <label class='label' for='attention'>Выделить</label>
+        <input 
+          type="checkbox" 
+          id='attention' 
+          v-model='attention'>
+      </p>
     </div>
     <div class="content_block">
       <div class="left_content">
@@ -33,7 +33,6 @@
                 :listPokDet='listPokDet'
                 :materialList='materialList'
               />
-              <!-- Покупные Детали -->
               <ModalBaseMaterial 
                 :key='modalMaterialKey'
                 v-if='modalMaterialIsShow'
@@ -48,7 +47,7 @@
                 @responsDetal='responsDetal'
                 :getListDetal='true'
                 :listDetal='listDetal'
-                />
+              />
               <div class="btn-control">
                 <select class="btn-add select-small" 
                   v-model='select_model'

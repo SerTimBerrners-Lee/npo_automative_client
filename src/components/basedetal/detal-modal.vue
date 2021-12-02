@@ -8,10 +8,10 @@
       <h3>Краткая Информация о детали</h3>
       <div class="block">
         <p class='name_parg'>
-        <span class="title_span">Наименование: </span><span>{{ getOneSelectDetal.name }}</span>
+          <span class="title_span">Наименование: </span><span>{{ getOneSelectDetal.name }}</span>
         </p>
         <p class='name_parg'>
-        <span class="title_span">Артикул: </span><span>{{ getOneSelectDetal.articl }}</span>
+          <span class="title_span">Артикул: </span><span>{{ getOneSelectDetal.articl }}</span>
         </p>
         <MediaSlider :width='"width: 93%;"' v-if='getOneSelectDetal.documents && getOneSelectDetal.documents.length' :data='getOneSelectDetal.documents' :key='getOneSelectDetal.documents' />
         <button 
@@ -41,9 +41,13 @@
             <span>Норма времени изготовления общая(н.ч.):</span>
             <span style='font-weight: bold;'>{{ generateTime }}</span>
           </p>
-        </div>
+        </div> 
         <TableDocument :documents='getOneSelectDetal.documents'/>
-        <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
+        <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес 
+          <span style='font-size:12px;'>
+            ({{ getOneSelectDetal && getOneSelectDetal.techProcesses && getOneSelectDetal.techProcesses.operations ? 
+              getOneSelectDetal.techProcesses.operations.length : '0' }} операции)</span></h3>
+        <h3 v-else>Нет технологического процесса</h3>
       </div>
       </div>
     </div>
@@ -56,7 +60,6 @@
     :techProcessID='techProcessID'
   />
 </template>
-
 <script>
 import {isEmpty, random} from 'lodash';
 import TechProcess from './tech-process-modal.vue';

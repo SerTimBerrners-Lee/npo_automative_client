@@ -19,19 +19,19 @@
       <div style='margin-left: 5px;'>
         <table>
           <tr>
-            <th colspan="6">Комплектация сборки, детали</th>
-            <th rowspan="2">Дефицит</th>
-            <th rowspan="2">Реальный остаток с учетом планируемых отгрузок</th>
-            <th rowspan="2">Минимальный остаток</th>
-            <th rowspan="2">Рекомендуемый остаток</th>
-            <th rowspan="2">Норма времени на одну единицу (сборка+изготовл.)</th>
-            <th rowspan="2">СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
-            <th rowspan="2">Общая норма времени (сборка+изготовл.)</th>
-            <th rowspan="2">Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
-            <th rowspan="2">Уровень комплектации, %</th>
-            <th rowspan="2">Статус</th>
-            <th rowspan="2">Дата последнего запуска</th>
-            <th rowspan="2">Примечание</th>
+            <th colspan="6" class='min_width-100'>Комплектация сборки, детали</th>
+            <th rowspan="2" class='min_width-100'>Дефицит</th>
+            <th rowspan="2" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок</th>
+            <th rowspan="2" class='min_width-100'>Минимальный остаток</th>
+            <th rowspan="2" class='min_width-100'>Рекомендуемый остаток</th>
+            <th rowspan="2" class='min_width-100'>Норма времени на одну единицу (сборка+изготовл.)</th>
+            <th rowspan="2" class='min_width-100'>СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
+            <th rowspan="2" class='min_width-100'>Общая норма времени (сборка+изготовл.)</th>
+            <th rowspan="2" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
+            <th rowspan="2" class='min_width-100'>Уровень комплектации, %</th>
+            <th rowspan="2" class='min_width-100'>Статус</th>
+            <th rowspan="2" class='min_width-100'>Дата последнего запуска</th>
+            <th rowspan="2" class='min_width-100'>Примечание</th>
           </tr>
           <tr>
             <th @click='selectAllItem' style='cursor: pointer;'>
@@ -45,8 +45,7 @@
           </tr>
           <tr v-for='cbed of allCbed' :key='cbed' 
             class='td-row'
-            @click='setIzdels(cbed)'
-            @dblclick="showInformIzdel(cbed.id, 'cbed')">
+            @click='setIzdels(cbed)'>
             <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
               <p class="checkbox_block" @click='e => toProduction(cbed, e.target)'></p>
             </td>
@@ -55,30 +54,29 @@
               <img src="@/assets/img/link.jpg" @click='shipmentsShow(cbed.shipments)' class='link_img' atl='Показать' />
             </td>
             <td class='center'>{{ cbed.articl }}</td>
-            <td class='center'>{{ cbed.name }}</td>
+            <td class='center' @dblclick="showInformIzdel(cbed.id, 'cbed')">{{ cbed.name }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='showParents(cbed, "cb")' class='link_img' atl='Показать' />
             </td>
-            <td class='center'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
-            <td class='center'>{{ 0 }}</td>
-            <td class='center'>{{ 0 }}</td>
-            <td class='center'>{{ cbed.cbed_kolvo + cbed.shipments_kolvo }}</td>
-            <td class='center'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
-            <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed.my_kolvo }}</td> 
-            <td class='center'>{{ cbed.parametrs ? 
+            <td class='center min_width-100'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
+            <td class='center min_width-100'>{{ 0 }}</td>
+            <td class='center min_width-100'>{{ 0 }}</td>
+            <td class='center min_width-100'>{{ cbed.cbed_kolvo + cbed.shipments_kolvo }}</td>
+            <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
+            <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed.my_kolvo }}</td> 
+            <td class='center min_width-100'>{{ cbed.parametrs ? 
               Number(JSON.parse(cbed.parametrs)[0].znach) * cbed.shipments_kolvo
               : '' }}</td>
-            <td class='center'>{{ cbed.cbed_kolvo +  returnProductionColvo(cbed) }}</td>
-            <td class='center'>{{  }}</td>
-            <td class='center'>{{ cbed.assemble && cbed.assemble.length ? "Заказано" : 'Не заказано' }}</td>
-            <td class='center'>{{ cbed.assemble && cbed.assemble.length ? cbed.assemble[cbed.assemble.length - 1].date_order : '' }}</td>
-            <td class='center'>
+            <td class='center min_width-100'>{{ cbed.cbed_kolvo +  returnProductionColvo(cbed) }}</td>
+            <td class='center min_width-100'>{{  }}</td>
+            <td class='center min_width-100'>{{ cbed.assemble && cbed.assemble.length ? "Заказано" : 'Не заказано' }}</td>
+            <td class='center min_width-100'>{{ cbed.assemble && cbed.assemble.length ? cbed.assemble[cbed.assemble.length - 1].date_order : '' }}</td>
+            <td class='center min_width-100'>
               <img src="@/assets/img/link.jpg" @click='openDescription(cbed.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
           <tr v-for='detal of allDetal' :key='detal' 
-            class='td-row'
-            @dblclick="showInformIzdel(detal.id, 'detal')">
+            class='td-row'>
             <td class='center checkbox_parent' >
             </td>
             <td class='center'> Д </td>
@@ -86,7 +84,7 @@
               <img src="@/assets/img/link.jpg" @click='shipmentsShow(detal.shipments)' class='link_img' atl='Показать' />
             </td>
             <td class='center'>{{ detal.articl }}</td>
-            <td class='center'>{{ detal.name }}</td>
+            <td class='center' @dblclick="showInformIzdel(detal.id, 'detal')">{{ detal.name }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
@@ -295,7 +293,7 @@ export default {
       }
     },
     returnProductionColvo(cbed) {
-      if(cbed.assemble.length == 0) return 0
+      if(!cbed && cbed.assemble.length == 0) return 0
       let count = 0
       for(let ass of cbed.assemble) {
         count = count + ass.kolvo_shipments
@@ -338,12 +336,11 @@ export default {
     this.loader = true
     await this.setchDeficitCbed()
     await this.setchDeficitDeficit()
+    console.log(this.allCbed)
     this.loader = false
   }
 }
 </script>
-
-
 <style scoped>
 .table_block{
   display: flex;
@@ -357,5 +354,8 @@ export default {
 .header_block {
   display: flex;
   align-items: center;
+}
+th {
+  font-size: 13px;
 }
 </style>

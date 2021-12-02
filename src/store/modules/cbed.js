@@ -7,7 +7,8 @@ export default {
     filterCbed: [],
     select_cbed: {},
 
-    tmp_attention: []
+    tmp_attention: [],
+    tmp_operation: []
   }, 
   getters: {
     allCbed(state) {
@@ -99,7 +100,7 @@ export default {
     },
 
     async setchDeficitCbed(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/deficit`)
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/cbed/deficit`)
       if(res.ok) {
         const result = await res.json()
         if(result.length) {
@@ -110,6 +111,12 @@ export default {
         ctx.commit('addAllCbed', result)
         return result 
       }
+    },
+
+    async fetchAllCbedOperation() {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/operation`)
+      if(res.ok) return await res.json()
+      return []
     }
 
   },
@@ -135,7 +142,8 @@ export default {
       state.cbed = state.filterCbed
 
       state.cbed = state.cbed.filter(prod => 
-        prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase()
+        prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+        ((prod.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
       )
     },
     getAllCbEdByProduct(state, product) {
@@ -147,7 +155,6 @@ export default {
       let newCB = []
       for(let cb of state.cbed){
         for(let prod of product.cbeds) {
-          // pars kol 
           let pars = null;
           try {
             if(product.listCbed) 
@@ -182,6 +189,20 @@ export default {
         return state.tmp_attention  = []
       }
       state.cbed = state.cbed.filter(detal => detal.attention)
+    },
+    sortByNonOperationCbed(state, arr_operation) {
+      if(state.tmp_operation.length == 0)
+        state.tmp_operation = state.cbed
+
+      if(arr_operation.length == state.cbed.length) 
+        return state.cbed = state.tmp_operation
+
+      state.cbed = []
+      for(let id of arr_operation) {
+        for(let item of state.tmp_operation) {
+          if(item.id == id) state.cbed.push(item)
+        }
+      }
     }
   }
 }

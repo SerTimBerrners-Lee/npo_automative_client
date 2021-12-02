@@ -7,6 +7,11 @@
 }
 .min_width {
   width: 10px;
+  word-break: break-all;
+}
+.min_width-100 {
+  width: 100px;
+  word-break: break-all;
 }
 .exclamation_item {
   color: red;

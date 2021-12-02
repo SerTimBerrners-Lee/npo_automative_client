@@ -180,14 +180,14 @@
 
 <script>
 
-import {random, isEmpty} from 'lodash'
-import AddFile from '@/components/filebase/addfile.vue'
-import AddOperation from '@/components/basedetal/add-operation.vue'
+import {random, isEmpty} from 'lodash';
+import { photoPreloadUrl } from '@/js/';
+import PATH_TO_SERVER from '@/js/path.js';
+import AddFile from '@/components/filebase/addfile.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import PATH_TO_SERVER from '@/js/path.js'
-import OpensFile from '@/components/filebase/openfile.vue'
-
+import AddOperation from '@/components/basedetal/add-operation.vue';
 export default {
   props: ['techProcessID'],
   data() {
@@ -331,20 +331,27 @@ export default {
 
     if(this.$props.techProcessID) {
       this.fetchTechProcess(this.$props.techProcessID).then((res) => {
-        if(!res)
-          return 0
+        if(!res) return 0
         if(res.operations) 
           this.allOperationMutations(res.operations)
         this.description = res.description
-        if(!res.documents)
-          return 0
+
+        let document_izd = []
+        if(res.detal && res.detal.documents) document_izd = res.detal.documents
+        if(res.product && res.product.documents) document_izd = res.product.documents
+        if(res.cbed && res.cbed.documents) document_izd = res.cbed.documents
         this.documentsData = res.documents
 
-        res.documents.forEach(d => {
+        for(let doc of document_izd) {
+          photoPreloadUrl({name: doc.path}, respons => {
+            if(respons.type == 'img') this.documentsData.push(doc)
+          }, true)
+        }
+
+        this.documentsData.forEach(d => {
           this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
         })
-        this.randomDataMedia = random(10, 38100)
-
+        this.randomDataMedia = random(10, 999)
       }).catch(() => {
         this.removeOperationStorage()
       })

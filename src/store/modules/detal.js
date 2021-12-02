@@ -1,6 +1,6 @@
 import PATH_TO_SERVER from '@/js/path.js'
  
-export default {
+export default { 
   state: {
     detal: [],
     filterDetal: [],
@@ -8,7 +8,8 @@ export default {
     select_detal: {},
     operationNewList: localStorage.getItem('newOperationItem') ?
       JSON.parse(localStorage.getItem('newOperationItem')) : [],
-    tmp_attention: []
+    tmp_attention: [],
+    tmp_operation: []
   },
   getters: {
     allDetal(state) {
@@ -180,6 +181,12 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/get/${id}`) 
       const result = await res.json()
       return result 
+    },
+
+    async fetchAllDetalOperation() {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/include`)
+      if(res.ok) return await res.json()
+      return []
     }
   },
   mutations: {
@@ -221,8 +228,8 @@ export default {
     setDetalMutation(state, data) {
       state.detal = data.filter(detal => !detal.ban)
     },
-    filterDetalToArticle(state, art) {
-      if(!art) 
+    filterDetalToArticle(state, str) {
+      if(!str) 
         state.detal = state.filterDetal
       if(state.filterDetal.length == 0)
         state.filterDetal = state.detal
@@ -231,7 +238,8 @@ export default {
       .filterDetal
       .filter(detal => 
         String(detal.articl)
-        .slice(0, String(art).length) == String(art) 
+        .slice(0, String(str).length) == String(str) || 
+        ((detal.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
       ) 
     },
     deleteDetalById(state, id) {
@@ -253,9 +261,7 @@ export default {
           try {
             if(product.listDetal) 
               pars = JSON.parse(product.listDetal)
-          } catch (e) {
-            console.log(e)
-          }
+          } catch (e) {console.error(e)}
           if(prod.id == det.id) {
             let detal_new = det
             if(pars && !product.fabricNumber) {
@@ -286,6 +292,20 @@ export default {
         return state.tmp_attention  = []
       }
       state.detal = state.detal.filter(detal => detal.attention)
+    },
+    sortByNonOperationDetal(state, arr_operation) {
+      if(state.tmp_operation.length == 0)
+        state.tmp_operation = state.detal
+
+      if(arr_operation.length == state.detal.length) 
+        return state.detal = state.tmp_operation
+
+      state.detal = []
+      for(let id of arr_operation) {
+        for(let item of state.tmp_operation) {
+          if(item.id == id) state.detal.push(item)
+        }
+      }
     }
   }
 }

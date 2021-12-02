@@ -7,6 +7,12 @@
           <div class="scroll-table" >
             <table class="table-base-detal">
               <tr>
+                <th style='font-size: 12px'>Кол-во: {{allProduct.length}}</th>
+                <th style='font-size: 12px'>Без операций: {{ сolNotOperation(allProduct, productOperation) }}</th>
+                <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
+                  <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
+              </tr>
+              <tr>
                 <th colspan="3" scope="col">Изделие</th>
               </tr> 
               <tr>
@@ -20,7 +26,7 @@
               <tr>
                 <td colspan="3">
                   <Search 
-                    :placeholder="'Поиск по Артиклу'"
+                    :placeholder="'Поиск по Артиклу, Наименованию и Номеру'"
                     @unmount='keySearchProduct' 
                   />
                 </td>
@@ -55,6 +61,12 @@
           <div class="scroll-table" >
             <table class="table-base-detal">
               <tr>
+                <th style='font-size: 12px'>Кол-во: {{allCbed.length}}</th>
+                <th style='font-size: 12px'>Без операций: {{сolNotOperation(allCbed, cbedOperation)}}</th>
+                <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationCbed'>Сортировать 
+                  <span class='tooltiptext'>Показать {{  allCbed.length == cbedOperation.length ? "все" : 'без операций' }}</span></span></th>
+              </tr>
+              <tr>
                 <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
               </tr>
               <tr>
@@ -68,7 +80,7 @@
               <tr>
                 <td colspan="3">
                   <Search 
-                    :placeholder="'Поиск по Артиклу'"
+                    :placeholder="'Поиск по Артиклу и Наименованию'"
                     @unmount='keySearchCb' 
                   />
                 </td>
@@ -101,6 +113,12 @@
           <div class="scroll-table" >
             <table class="table-base-detal">
               <tr>
+                <th style='font-size: 12px'>Кол-во: {{allDetal.length}}</th>
+                <th style='font-size: 12px'>Без операций: {{сolNotOperation(allDetal, detalOperation)}}</th>
+                <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationDetal'>Сортировать 
+                  <span class='tooltiptext'>Показать {{  allDetal.length == detalOperation.length ? "все" : 'без операций' }}</span></span></th>
+              </tr>
+              <tr>
                 <th colspan="3" scope="col">Деталь (Тип Д) 
                   <span class='exclamation tooltip' @click='sortToAttention'>
                     <unicon name="exclamation" fill="red" />
@@ -116,7 +134,7 @@
               <tr>
                 <td colspan="3">
                   <Search 
-                    :placeholder="'Поиск по Артиклу'"
+                    :placeholder="'Поиск по Артиклу и Наименованию'"
                     @unmount='keySearch' 
                   />
                 </td>
@@ -195,6 +213,10 @@ export default {
       parametrs_product: null,
       productModalKey: random(1, 999),
 
+      productOperation: [],
+      cbedOperation: [],
+      detalOperation: [],
+
       loader: false
     }
   },
@@ -208,7 +230,10 @@ export default {
       'getAllCbed',
       'getAllProductById',
       'getOneCbEdById',
-      'getOneDetal'
+      'getOneDetal',
+      'fetchAllProductOperation',
+      'fetchAllCbedOperation',
+      'fetchAllDetalOperation'
     ]),
     ...mapMutations([
       'filterDetalToArticle',
@@ -221,7 +246,10 @@ export default {
       'filterToAttention',
       'setOneProduct',
       'setOneCbed',
-      'addOneSelectDetal'
+      'addOneSelectDetal',
+      'sortByNonOperationProduct',
+      'sortByNonOperationCbed',
+      'sortByNonOperationDetal'
     ]),
     infoModalCbed(cb) {
       if(!cb) return false
@@ -248,7 +276,6 @@ export default {
       this.filterToAttention()
     },
     infoDetal() {
-      console.log(this.selectedDetal)
       if(!this.selectedDetal) return false
 
       this.detalModalKey = random(1, 999)
@@ -268,7 +295,7 @@ export default {
         if(!res) return false
         this.selectedCbEd = res
         this.getAllDetalByProduct(res)
-        this.setOneCbed(res)
+        this.setOneCbed(res)  
       })
 
       this.tr_cb = e
@@ -345,8 +372,25 @@ export default {
       if(!this.selectedDetal)
         return 0
       this.deleteDetelyId(this.selectedDetal.id)
+    },
+    сolNotOperation(arr_one, arr_two) {
+      let counter = 0
+      for(let item of arr_one) {
+        for(let id of arr_two) {
+          if(item.id == id) counter++
+        } 
+      }
+      return counter
+    },
+    sortOperationProduct() {
+      this.sortByNonOperationProduct(this.productOperation)
+    },
+    sortOperationCbed() {
+      this.sortByNonOperationCbed(this.cbedOperation)
+    },
+    sortOperationDetal() {
+      this.sortByNonOperationDetal(this.detalOperation)
     }
-
   },
   async mounted() {
     this.loader = true
@@ -354,6 +398,9 @@ export default {
     await this.getAllProduct(true)
     await this.getAllCbed(true)
     await this.getAllDetals(true)
+    this.productOperation = await this.fetchAllProductOperation()
+    this.cbedOperation = await this.fetchAllCbedOperation()
+    this.detalOperation = await this.fetchAllDetalOperation()
 
     this.loader = false
   }

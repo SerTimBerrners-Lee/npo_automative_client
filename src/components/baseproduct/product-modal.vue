@@ -53,7 +53,12 @@
 							:value='selecteProduct.description'> </textarea>
 					</div>
 					<TableDocument :documents='selecteProduct.documents'/>
-					<h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес</h3>
+					<h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес
+            <span style='font-size:12px;'>
+              ({{ selecteProduct && selecteProduct.techProcesses && selecteProduct.techProcesses.operations ? 
+                selecteProduct.techProcesses.operations.length : '0' }} операции)</span>
+          </h3>
+          <h3 v-else>Нет технологического процесса</h3>
 				</div>
       </div>
     </div>

@@ -1,9 +1,8 @@
 <template>
-	<div>
+	<div v-if='documents && documents.length'>
 		<div 
 			class='scroll-table' 
-			style='width:100%' 
-			v-if='documents && documents.length'>
+			style='width:100%'>
 			<h3>Документы</h3>
 			<table style="width: 100%;">
 				<tr>

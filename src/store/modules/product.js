@@ -6,7 +6,8 @@ export default {
     filterProduct: [],
     select_product: {},
 
-    tmp_attention: []
+    tmp_attention: [],
+    tmp_operation: []
   },
   getters: {
     allProduct(state) {
@@ -95,6 +96,12 @@ export default {
         return result
       }
     },
+    
+    async fetchAllProductOperation() {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/operation`)
+      if(res.ok) return await res.json()
+      return []
+    }
   },
   mutations: {
     addAllProduct(state, products) {
@@ -116,8 +123,11 @@ export default {
         state.filterProduct = state.product
 
       state.product = state.filterProduct
+      console.log(state.product)
       state.product = state.product.filter(prod => 
-        prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase()
+        prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase() || 
+        ((prod.name.slice(0, str.length).toLowerCase()) == str.toLowerCase()) ||
+        ((prod.fabricNumber.slice(0, str.length).toLowerCase()) == str.toLowerCase())
       )
     },
     filterToAttentionProduct(state) {
@@ -128,6 +138,20 @@ export default {
         return state.tmp_attention  = []
       }
       state.product = state.product.filter(detal => detal.attention)
+    },
+    sortByNonOperationProduct(state, arr_operation) {
+      if(state.tmp_operation.length == 0)
+        state.tmp_operation = state.product
+
+      if(arr_operation.length == state.product.length) 
+        return state.product = state.tmp_operation
+
+      state.product = []
+      for(let id of arr_operation) {
+        for(let item of state.tmp_operation) {
+          if(item.id == id) state.product.push(item)
+        }
+      }
     }
   }
 }

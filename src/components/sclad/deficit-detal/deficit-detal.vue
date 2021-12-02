@@ -17,22 +17,22 @@
         <div style='width: 99%;'> 
           <table>
             <tr>
-              <th colspan="4">Детали для сборок из комплектации</th>
-              <th rowspan="2">Необх. кол-во на дефицит по комплектациям</th>
-              <th rowspan="2">Остаток на складе</th>
-              <th rowspan="2">Кол-во на производстве</th>
-              <th rowspan="2">Дефицит деталей</th>
-              <th rowspan="2">СВОЕ кол-во в производство</th>
-              <th rowspan="2">ЧПУ</th>
-              <th rowspan="2">Норма времени (подготовительное), ч</th>
-              <th rowspan="2">Норма времени (вспомогательное), ч</th>
-              <th rowspan="2">Норма времени (основное), ч</th>
-              <th rowspan="2">Норма времени (общее на парт.), ч</th>
-              <th rowspan="2">Уровень комплектации, %</th>
-              <th rowspan="2">Статус</th>
-              <th rowspan="2">Дата последнего запуска</th>
-              <th rowspan="2">№ последнего Заказа</th>
-              <th rowspan="2">Примечание</th>
+              <th colspan="4" class='min_width-100'>Детали для сборок из комплектации</th>
+              <th rowspan="2" class='min_width-100'>Необх. кол-во на дефицит по комплектациям</th>
+              <th rowspan="2" class='min_width-100'>Остаток на складе</th>
+              <th rowspan="2" class='min_width-100'>Кол-во на производстве</th>
+              <th rowspan="2" class='min_width-100'>Дефицит деталей</th>
+              <th rowspan="2" class='min_width-100'>СВОЕ кол-во в производство</th>
+              <th rowspan="2" class='min_width-100'>ЧПУ</th>
+              <th rowspan="2" class='min_width-100'>Норма времени (подготовительное), ч</th>
+              <th rowspan="2" class='min_width-100'>Норма времени (вспомогательное), ч</th>
+              <th rowspan="2" class='min_width-100'>Норма времени (основное), ч</th>
+              <th rowspan="2" class='min_width-100'>Норма времени (общее на парт.), ч</th>
+              <th rowspan="2" class='min_width-100'>Уровень комплектации, %</th>
+              <th rowspan="2" class='min_width-100'>Статус</th>
+              <th rowspan="2" class='min_width-100'>Дата последнего запуска</th>
+              <th rowspan="2" class='min_width-100'>№ последнего Заказа</th>
+              <th rowspan="2" class='min_width-100'>Примечание</th>
             </tr>
             <tr>
               <th @click='selectAllItem' style='cursor: pointer;'>
@@ -44,13 +44,12 @@
             </tr>
             <tr v-for='detal of allDetal' :key='detal'
               class='td-row'
-              @click='setIzdels(detal)'
-              @dblclick="showInformIzdel(detal.id)">
+              @click='setIzdels(detal)'>
               <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
                 <p class="checkbox_block" @click='e => toProduction(detal, e.target)'></p>
               </td>
               <td class='center'>{{ detal.articl }}</td>
-              <td class='center'>{{ detal.name }}</td>
+              <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>
               <td class='center'>
                 <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
               </td>
@@ -269,5 +268,8 @@ export default {
 }
 .block .btn {
   margin: 0px;
+}
+th {
+  font-size: 13px;
 }
 </style>

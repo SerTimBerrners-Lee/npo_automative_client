@@ -6,6 +6,12 @@
         <div class="scroll-table" >
           <table class="table-base-detal">
             <tr>
+              <th style='font-size: 12px'>Кол-во: {{allProduct.length}}</th>
+              <th style='font-size: 12px'>Без операций: {{ сolNotOperation(allProduct, productOperation) }}</th>
+              <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
+                <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
+            </tr>
+            <tr>
               <th colspan="3" scope="col">Изделие
                 <span class='exclamation tooltip' @click='sortToAttention'>
                   <unicon name="exclamation" fill="red" />
@@ -21,7 +27,7 @@
             <tr>
               <td colspan="3">
                 <Search 
-                  :placeholder="'Поиск по Артиклу'"
+                  :placeholder="'Поиск по Артиклу, Наименованию и Номеру'"
                   @unmount='keySearch' 
                 />
               </td>
@@ -138,6 +144,8 @@ export default {
       listDetal: [],
       listCbed: [],
 
+      productOperation: [],
+
       loader: false
     }
   },
@@ -153,12 +161,14 @@ export default {
     ...mapActions([
       'getAllProduct', 
       'getAllProductById',
-      'fetchDeleteProduct'
+      'fetchDeleteProduct',
+      'fetchAllProductOperation',
     ]),
     ...mapMutations([
       'setOneProduct', 
       'searchProduct', 
-      'filterToAttentionProduct'
+      'filterToAttentionProduct',
+      'sortByNonOperationProduct',
     ]),
     setProduct(product, e) {
       if(!product) return false
@@ -214,6 +224,18 @@ export default {
         return 0
       this.fetchDeleteProduct(this.selecteProduct.id)
     }, 
+    сolNotOperation(arr_one, arr_two) {
+      let counter = 0
+      for(let item of arr_one) {
+        for(let id of arr_two) {
+          if(item.id == id) counter++
+        } 
+      }
+      return counter
+    },
+    sortOperationProduct() {
+      this.sortByNonOperationProduct(this.productOperation)
+    },
     setDocs(dc) {
       this.itemFiles = dc
       this.showFile = true
@@ -230,6 +252,7 @@ export default {
   async mounted() {
     this.loader = true
     await this.getAllProduct(true)
+    this.productOperation = await this.fetchAllProductOperation()
     this.loader = false
   }
 }
