@@ -19,6 +19,9 @@
           <tr v-for='(operation, inx) in allOperationNewList' 
             :key='operation'
             class='td-row'
+            draggable="true"
+            @dragstart="e => dragstartOperation(e)"
+            @dragleave="e => dragleaveOperation(e, inx)"
             @click="e => selectTr(e.target, operation)"
             >
             <td>{{ inx + 1 }}</td>
@@ -177,9 +180,7 @@
     />
   </div> 
 </template>
-
 <script>
-
 import {random, isEmpty} from 'lodash';
 import { photoPreloadUrl } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
@@ -196,13 +197,13 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
       docFiles: [],
-      keyWhenModalGenerate: random(10, 2319),
+      keyWhenModalGenerate: random(10, 999),
       isChangeFolderFile: false,
       formData: null,
       dataMedia: [],
-      randomDataMedia: random(10, 2499),
+      randomDataMedia: random(10, 999),
       operationPanelShow: false,
-      operationKey: random(10, 3840),
+      operationKey: random(10, 999),
       tr: null,
       operationSelect: null,
       description: '',
@@ -211,6 +212,7 @@ export default {
       itemFiles: null,
       showFile: false,
       keyWhenModalGenerateFileOpen: random(10, 999),
+      screenY: 0
     }
   },
   computed: mapGetters(['allOperationNewList', 'getTypeOperations']),
@@ -226,7 +228,11 @@ export default {
         'createTechProcess', 
         'fetchTechProcess', 
         'getAllTypeOperations']),
-    ...mapMutations(['allOperationMutations', 'removeOperationStorage']),
+    ...mapMutations([
+      'allOperationMutations', 
+      'removeOperationStorage', 
+      'movingOperation'
+    ]),
     unmount_operation() {
       
     },
@@ -283,7 +289,6 @@ export default {
       this.updateOperationTech({
         eqID, instrumentID,  instrumentMerID, instrumentOsnID, id: operation.id
       })
-            
     },
     bannedOperation() {
       if(!this.operationSelect)
@@ -321,6 +326,18 @@ export default {
       this.showFile = true
       this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
+    dragstartOperation(position) {
+      if(position.screenY) this.screenY = position.screenY
+    },
+    dragleaveOperation(position, inx) {
+      if(this.screenY && position.screenY) {
+        if(this.screenY > position.screenY) 
+          this.movingOperation({inx, positionTo: 'top'})
+        if(this.screenY < position.screenY) 
+          this.movingOperation({inx, positionTo: 'bottom'})
+      }
+      this.screenY = 0
+    }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'

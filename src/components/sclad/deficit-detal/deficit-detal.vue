@@ -18,21 +18,21 @@
           <table>
             <tr>
               <th colspan="4" class='min_width-100'>Детали для сборок из комплектации</th>
-              <th rowspan="2" class='min_width-100'>Необх. кол-во на дефицит по комплектациям</th>
-              <th rowspan="2" class='min_width-100'>Остаток на складе</th>
-              <th rowspan="2" class='min_width-100'>Кол-во на производстве</th>
-              <th rowspan="2" class='min_width-100'>Дефицит деталей</th>
-              <th rowspan="2" class='min_width-100'>СВОЕ кол-во в производство</th>
-              <th rowspan="2" class='min_width-100'>ЧПУ</th>
-              <th rowspan="2" class='min_width-100'>Норма времени (подготовительное), ч</th>
-              <th rowspan="2" class='min_width-100'>Норма времени (вспомогательное), ч</th>
-              <th rowspan="2" class='min_width-100'>Норма времени (основное), ч</th>
-              <th rowspan="2" class='min_width-100'>Норма времени (общее на парт.), ч</th>
-              <th rowspan="2" class='min_width-100'>Уровень комплектации, %</th>
-              <th rowspan="2" class='min_width-100'>Статус</th>
-              <th rowspan="2" class='min_width-100'>Дата последнего запуска</th>
-              <th rowspan="2" class='min_width-100'>№ последнего Заказа</th>
-              <th rowspan="2" class='min_width-100'>Примечание</th>
+              <th rowspan="3" class='min_width-100'>Необх. кол-во на дефицит по комплектациям</th>
+              <th rowspan="3" class='min_width-100'>Остаток на складе</th>
+              <th rowspan="3" class='min_width-100'>Кол-во на производстве</th>
+              <th rowspan="3" class='min_width-100'>Дефицит деталей</th>
+              <th rowspan="3" class='min_width-100'>СВОЕ кол-во в производство</th>
+              <th rowspan="3" class='min_width-100'>ЧПУ</th>
+              <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th>
+              <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th>
+              <th rowspan="3" class='min_width-100'>Норма времени (основное), ч</th>
+              <th rowspan="3" class='min_width-100'>Норма времени (общее на парт.), ч</th>
+              <th rowspan="3" class='min_width-100'>Уровень комплектации, %</th>
+              <th rowspan="3" class='min_width-100'>Статус</th>
+              <th rowspan="3" class='min_width-100'>Дата последнего запуска</th>
+              <th rowspan="3" class='min_width-100'>№ последнего Заказа</th>
+              <th rowspan="3" class='min_width-100'>Примечание</th>
             </tr>
             <tr>
               <th @click='selectAllItem' style='cursor: pointer;'>
@@ -42,6 +42,15 @@
               <th>Наименование</th>
               <th>Принадлежность</th>
             </tr>
+            <tr>
+            <td colspan='1'>Поиск: </td>
+            <td colspan="3">
+              <Search 
+                :placeholder="'Поиск по Артиклу и Наименованию'"
+                @unmount='keySearch' 
+              />
+            </td>
+          </tr>
             <tr v-for='detal of allDetal' :key='detal'
               class='td-row'
               @click='setIzdels(detal)'>
@@ -119,7 +128,8 @@
 <script>
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
-import {mapGetters, mapActions} from 'vuex';
+import Search from '@/components/search.vue';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
@@ -167,10 +177,15 @@ export default {
     DescriptionModal, 
     ShipmentsMiniList, 
     ProductListModal,
-    DetalModal
+    DetalModal,
+    Search
   },
   methods: {
     ...mapActions(['setchDeficitDeficit', 'getOneDetal']),
+    ...mapMutations(['filterDetalToArticle']),
+    keySearch(v) {
+      this.filterDetalToArticle(v)
+    },
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
     },

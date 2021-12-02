@@ -85,7 +85,8 @@ export default {
       state.metaloworkings = new_arr
     },
     breackFIlterMetal(state) {
-      state.metaloworkings = state.filter_metal
+      if(state.filter_metal.length)
+        state.metaloworkings = state.filter_metal
     }
   }
 }

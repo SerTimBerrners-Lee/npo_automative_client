@@ -6,23 +6,9 @@
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
     </div>
     <div class='table_block'> 
-      <div class="table-scroll">
-        <table>
-          <tr> 
-            <th><unicon name="check" fill="royalblue" /></th> 
-            <th>Заказ покупателя из задач на отгрузку</th>
-            <th>Дата отгрузки покупателю</th>
-          </tr>
-          <tr v-for='order of getShipments' :key='order'>
-            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-              <p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
-            </td>
-            <td>{{ order.number_order }}</td>
-            <td>{{ order.date_shipments }}</td>
-          </tr>
-            
-        </table>
-      </div>
+      <ShipmentList
+        @unmount_set='toSetOrders' 
+        :getShipments='getShipments'/>
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tr>
@@ -68,7 +54,6 @@
     </div> 
     <div class="btn-control">
       <button class="btn-small" @click='printPage'>Печать</button>
-      <button class="btn-small" @click='clearFilter'>Сбросить все фильтры</button>
     </div>
     <DescriptionModal 
       v-if='description'
@@ -117,6 +102,7 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from '@/components/sclad/shipments-to-ized.vue';
 import OperationModal from '@/components/sclad/workings-operations.vue';
+import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import OperationPathModal from '@/components/assembly/operation-path-modal.vue';
 export default {
 	data() {
@@ -142,8 +128,7 @@ export default {
 
       assemble_props: null,
 
-      loader: false,
-      span_ship: null
+      loader: false
 		}
 	},
   computed: mapGetters([
@@ -156,7 +141,8 @@ export default {
     DescriptionModal,
     OpensFile,
     OperationPathModal,
-    ShipmentsModal
+    ShipmentsModal,
+    ShipmentList
   },
 	methods: {
     ...mapActions([
@@ -180,22 +166,9 @@ export default {
         font_size: '10pt'
       })
     },
-    toSetOrders(shipments, e) {
-      if(this.span_ship) {
-        this.breackFIlterAssembl()
-        this.span_ship.classList.remove('checkbox_block_select')
-      }
-      this.span_ship = e
-      this.span_ship.classList.add('checkbox_block_select')
+    toSetOrders(shipments) {
       if(shipments.cbeds && shipments.cbeds.length)
         this.filterAssemblByShipments(shipments.cbeds)
-    },
-    clearFilter() {
-      this.breackFIlterAssembl()
-      if(this.span_ship) {
-        this.span_ship.classList.remove('checkbox_block_select')
-        this.span_ship = null
-      }
     },
     openDescription(description) {
       this.descriptionKey = random(1, 999)

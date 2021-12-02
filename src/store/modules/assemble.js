@@ -84,7 +84,8 @@ export default {
       state.assembles = new_arr
     },
     breackFIlterAssembl(state) {
-      state.assembles = state.filter_assembl
+      if(state.filter_assembl.length)
+        state.assembles = state.filter_assembl
     }
   }
 }

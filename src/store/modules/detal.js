@@ -209,6 +209,23 @@ export default {
       state.operationNewList.push(operation)
       localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
     },
+    /**
+     * parametrs.inx: number;
+     * parametrs.positionTo: "top" || "bottom"
+     */
+    movingOperation(state, parametrs) {
+      let variable = state.operationNewList[parametrs.inx]
+      if(!variable) return false
+      if(parametrs.positionTo == 'top' && state.operationNewList[parametrs.inx - 1]) {
+        state.operationNewList[parametrs.inx] = state.operationNewList[parametrs.inx - 1]
+        state.operationNewList[parametrs.inx - 1] = variable
+      }
+      if(parametrs.positionTo == 'bottom' && state.operationNewList[parametrs.inx + 1]){
+        state.operationNewList[parametrs.inx] = state.operationNewList[parametrs.inx + 1]
+        state.operationNewList[parametrs.inx + 1] = variable
+      }
+      localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
+    },
     updateOperationToList(state, operation) {
       for(let inx = 0; inx < state.operationNewList.length; inx++) {
         if(state.operationNewList[inx].id == operation.id) {

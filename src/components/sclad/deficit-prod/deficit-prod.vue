@@ -14,24 +14,27 @@
         </div>
       </div>
     </div>
-    
     <div class='table_block'>
+      <ShipmentList
+        v-if='false'
+        @unmount_set='toSetOrders'
+        :getShipments='[]'/>
       <div style='margin-left: 5px;'>
         <table>
           <tr>
             <th colspan="6" class='min_width-100'>Комплектация сборки, детали</th>
-            <th rowspan="2" class='min_width-100'>Дефицит</th>
-            <th rowspan="2" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок</th>
-            <th rowspan="2" class='min_width-100'>Минимальный остаток</th>
-            <th rowspan="2" class='min_width-100'>Рекомендуемый остаток</th>
-            <th rowspan="2" class='min_width-100'>Норма времени на одну единицу (сборка+изготовл.)</th>
-            <th rowspan="2" class='min_width-100'>СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
-            <th rowspan="2" class='min_width-100'>Общая норма времени (сборка+изготовл.)</th>
-            <th rowspan="2" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
-            <th rowspan="2" class='min_width-100'>Уровень комплектации, %</th>
-            <th rowspan="2" class='min_width-100'>Статус</th>
-            <th rowspan="2" class='min_width-100'>Дата последнего запуска</th>
-            <th rowspan="2" class='min_width-100'>Примечание</th>
+            <th rowspan="3" class='min_width-100'>Дефицит</th>
+            <th rowspan="3" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок</th>
+            <th rowspan="3" class='min_width-100'>Минимальный остаток</th>
+            <th rowspan="3" class='min_width-100'>Рекомендуемый остаток</th>
+            <th rowspan="3" class='min_width-100'>Норма времени на одну единицу (сборка+изготовл.)</th>
+            <th rowspan="3" class='min_width-100'>СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
+            <th rowspan="3" class='min_width-100'>Общая норма времени (сборка+изготовл.)</th>
+            <th rowspan="3" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
+            <th rowspan="3" class='min_width-100'>Уровень комплектации, %</th>
+            <th rowspan="3" class='min_width-100'>Статус</th>
+            <th rowspan="3" class='min_width-100'>Дата последнего запуска</th>
+            <th rowspan="3" class='min_width-100'>Примечание</th>
           </tr>
           <tr>
             <th @click='selectAllItem' style='cursor: pointer;'>
@@ -42,6 +45,15 @@
             <th>Артикул</th>
             <th>Наименование</th>
             <th>Принадлежность</th>
+          </tr>
+          <tr>
+            <td colspan='2'>Поиск: </td>
+            <td colspan="4">
+              <Search 
+                :placeholder="'Поиск СБ по Артиклу и Наименованию'"
+                @unmount='keySearchCb' 
+              />
+            </td>
           </tr>
           <tr v-for='cbed of allCbed' :key='cbed' 
             class='td-row'
@@ -168,7 +180,8 @@
 <script>
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
-import {mapGetters, mapActions} from 'vuex';
+import Search from '@/components/search.vue';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
@@ -176,6 +189,7 @@ import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import StartProduction from '@/components/sclad/start-production-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
+import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 export default {
@@ -222,7 +236,9 @@ export default {
     ProductListModal,
     ShipmentsModal,
     DetalModal,
-    CbedModalInfo
+    CbedModalInfo,
+    Search,
+    ShipmentList
   },
   methods: {
     ...mapActions([
@@ -231,6 +247,13 @@ export default {
       'setchDeficitCbed', 
       'setchDeficitDeficit'
     ]),
+    ...mapMutations(['searchCbed']),
+    keySearchCb(v) {
+      this.searchCbed(v)
+    },
+    toSetOrders(shipments) {
+      console.log(shipments)
+    },
     start() {
       if(!this.toProductionArr.length)
         return showMessage('', 'Для начала выберите СБ и заказ', 'w', this)
@@ -293,7 +316,7 @@ export default {
       }
     },
     returnProductionColvo(cbed) {
-      if(!cbed && cbed.assemble.length == 0) return 0
+      if(!cbed && cbed.assemble && cbed.assemble.length == 0) return 0
       let count = 0
       for(let ass of cbed.assemble) {
         count = count + ass.kolvo_shipments
