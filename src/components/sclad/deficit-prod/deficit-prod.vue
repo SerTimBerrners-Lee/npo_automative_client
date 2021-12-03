@@ -320,7 +320,7 @@ export default {
       }
     },
     returnProductionColvo(cbed) {
-      if(!cbed && cbed.assemble && cbed.assemble.length == 0) return 0
+      if(!cbed || !cbed.assemble || cbed.assemble.length == 0) return 0
       let count = 0
       for(let ass of cbed.assemble) {
         count = count + ass.kolvo_shipments
