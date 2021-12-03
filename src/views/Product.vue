@@ -11,27 +11,29 @@
               <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
                 <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
             </tr>
-            <tr>
-              <th colspan="3" scope="col">Изделие
-                <span class='exclamation tooltip' @click='sortToAttention'>
-                  <unicon name="exclamation" fill="red" />
-                  <span class='tooltiptext'>Соритировать по отметке</span>
-                </span> 
-              </th>
-            </tr>
-            <tr>
-              <th>Заводской номер</th>
-              <th>Артикул</th>
-              <th>Наименование</th>
-            </tr>
-            <tr>
-              <td colspan="3">
-                <Search 
-                  :placeholder="'Поиск по Артиклу, Наименованию и Номеру'"
-                  @unmount='keySearch' 
-                />
-              </td>
-            </tr>
+            <tbody class='fixed_table'>
+              <tr>
+                <th colspan="3" scope="col">Изделие
+                  <span class='exclamation tooltip' @click='sortToAttention'>
+                    <unicon name="exclamation" fill="red" />
+                    <span class='tooltiptext'>Соритировать по отметке</span>
+                  </span> 
+                </th>
+              </tr>
+              <tr>
+                <th>Заводской номер</th>
+                <th>Артикул</th>
+                <th>Наименование</th>
+              </tr>
+              <tr>
+                <td colspan="3">
+                  <Search 
+                    :placeholder="'Поиск по Артиклу, Наименованию и Номеру'"
+                    @unmount='keySearch' 
+                  />
+                </td>
+              </tr>
+            </tbody>
             <tr v-for='product in allProduct' 
               :key='product'
               class='td-row'

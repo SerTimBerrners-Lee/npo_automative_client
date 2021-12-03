@@ -16,41 +16,43 @@
       <div class='table_block'> 
         <div style='width: 99%;'> 
           <table>
-            <tr>
-              <th colspan="4" class='min_width-100'>Детали для сборок из комплектации</th>
-              <th rowspan="3" class='min_width-100'>Необх. кол-во на дефицит по комплектациям</th>
-              <th rowspan="3" class='min_width-100'>Остаток на складе</th>
-              <th rowspan="3" class='min_width-100'>Кол-во на производстве</th>
-              <th rowspan="3" class='min_width-100'>Дефицит деталей</th>
-              <th rowspan="3" class='min_width-100'>СВОЕ кол-во в производство</th>
-              <th rowspan="3" class='min_width-100'>ЧПУ</th>
-              <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th>
-              <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th>
-              <th rowspan="3" class='min_width-100'>Норма времени (основное), ч</th>
-              <th rowspan="3" class='min_width-100'>Норма времени (общее на парт.), ч</th>
-              <th rowspan="3" class='min_width-100'>Уровень комплектации, %</th>
-              <th rowspan="3" class='min_width-100'>Статус</th>
-              <th rowspan="3" class='min_width-100'>Дата последнего запуска</th>
-              <th rowspan="3" class='min_width-100'>№ последнего Заказа</th>
-              <th rowspan="3" class='min_width-100'>Примечание</th>
-            </tr>
-            <tr>
-              <th @click='selectAllItem' style='cursor: pointer;'>
-                <unicon name="check" fill="royalblue" />
-              </th> 
-              <th>Артикул</th>
-              <th>Наименование</th>
-              <th>Принадлежность</th>
-            </tr>
-            <tr>
-            <td colspan='1'>Поиск: </td>
-            <td colspan="3">
-              <Search 
-                :placeholder="'Поиск по Артиклу и Наименованию'"
-                @unmount='keySearch' 
-              />
-            </td>
-          </tr>
+            <tbody class='fixed_table'>
+              <tr>
+                <th colspan="4" class='min_width-100'>Детали для сборок из комплектации</th>
+                <th rowspan="3" class='min_width-100'>Необх. кол-во на дефицит по комплектациям</th>
+                <th rowspan="3" class='min_width-100'>Остаток на складе</th>
+                <th rowspan="3" class='min_width-100'>Кол-во на производстве</th>
+                <th rowspan="3" class='min_width-100'>Дефицит деталей</th>
+                <th rowspan="3" class='min_width-100'>СВОЕ кол-во в производство</th>
+                <th rowspan="3" class='min_width-100'>ЧПУ</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (основное), ч</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (общее на парт.), ч</th>
+                <th rowspan="3" class='min_width-100'>Уровень комплектации, %</th>
+                <th rowspan="3" class='min_width-100'>Статус</th>
+                <th rowspan="3" class='min_width-100'>Дата последнего запуска</th>
+                <th rowspan="3" class='min_width-100'>№ последнего Заказа</th>
+                <th rowspan="3" class='min_width-100'>Примечание</th>
+              </tr>
+              <tr>
+                <th @click='selectAllItem' style='cursor: pointer;'>
+                  <unicon name="check" fill="royalblue" />
+                </th> 
+                <th>Артикул</th>
+                <th>Наименование</th>
+                <th>Принадлежность</th>
+              </tr>
+              <tr>
+                <td colspan='1'>Поиск: </td>
+                <td colspan="3">
+                  <Search 
+                    :placeholder="'Поиск по Артиклу и Наименованию'"
+                    @unmount='keySearch' 
+                  />
+                </td>
+              </tr>
+            </tbody>
             <tr v-for='detal of allDetal' :key='detal'
               class='td-row'
               @click='setIzdels(detal)'>
@@ -65,7 +67,7 @@
               <td class='center'>{{ detal.shipments_kolvo  }}</td>
               <td class='center'>{{ detal.detal_kolvo }}</td>
               <td class='center'>{{ detal.metalloworking_kolvo }}</td>
-              <td class='center'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
+              <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal.my_kolvo  }}</td>
               <td class='center'>да</td>
               <td class='center'>{{ JSON.parse(detal.parametrs).preTime.znach }}</td>

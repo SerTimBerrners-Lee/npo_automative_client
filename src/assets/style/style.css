@@ -457,6 +457,12 @@ textarea {
   border: 1px solid #d3d3d3;
 }
 
+.fixed_table {
+  position: sticky;
+  top: 10px;
+  background: #b6b6b6;
+}
+
 .btn-black {
   background-color: #2e2e2e;
   color:#ffffff;

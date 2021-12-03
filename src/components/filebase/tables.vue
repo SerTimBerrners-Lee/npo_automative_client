@@ -1,20 +1,22 @@
 <template>
   <table>
-    <tr >
-      <th>Тип</th>
-      <th>Наименование</th>
-      <th>Дата</th>
-      <th>Примечание</th>
-    </tr>
-    <tr>
-      <td colspan="4">
-        <Search 
-          :placeholder="'Поиск по Артиклу'"
-          @unmount='keySearch' 
-          :search_data='search_data'
-        />
-      </td>
-    </tr>
+    <tbody class='fixed_table'>
+      <tr>
+        <th>Тип</th>
+        <th>Наименование</th>
+        <th>Дата</th>
+        <th>Примечание</th>
+      </tr>
+      <tr>
+        <td colspan="4">
+          <Search 
+            :placeholder="'Поиск по Артиклу'"
+            @unmount='keySearch' 
+            :search_data='search_data'
+          />
+        </td>
+      </tr>
+    </tbody>
     <tr v-for="file in documents" 
       :key="file" 
       class="td-row" 

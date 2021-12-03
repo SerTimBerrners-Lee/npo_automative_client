@@ -13,22 +13,24 @@
                   <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
                     <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
                 </tr>
-                <tr>
-                  <th colspan="3" scope="col">Изделие</th>
-                </tr> 
-                <tr> 
-                  <th>Заводской номер</th>
-                  <th>Артикул</th> 
-                  <th>Наименование</th> 
-                </tr>
-                <tr> 
-                  <td colspan="3">
-                    <Search 
-                      :placeholder="'Поиск по Артиклу, Наименованию и Номеру'"
-                      @unmount='keySearchProduct' 
-                    />
-                  </td>
-                </tr>
+                <tbody class='fixed_table'>
+                  <tr>
+                    <th colspan="3" scope="col">Изделие</th>
+                  </tr> 
+                  <tr> 
+                    <th>Заводской номер</th>
+                    <th>Артикул</th> 
+                    <th>Наименование</th> 
+                  </tr>
+                  <tr> 
+                    <td colspan="3">
+                      <Search 
+                        :placeholder="'Поиск по Артиклу, Наименованию и Номеру'"
+                        @unmount='keySearchProduct' 
+                      />
+                    </td>
+                  </tr>
+                </tbody>
                 <tr v-for='product in allProduct' 
                   :key='product'
                   class='td-row'
@@ -62,34 +64,36 @@
                 <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationCbed'>Сортировать 
                   <span class='tooltiptext'>Показать {{  allCbed.length == cbedOperation.length ? "все" : 'без операций' }}</span></span></th>
               </tr>
-              <tr>
-                <th colspan="3" scope="col">Сборочная единица (Тип СБ)
-                  <span class='exclamation tooltip' @click='sortToAttention'>
-                    <unicon name="exclamation" fill="red" />
-                    <span class='tooltiptext'>Соритировать по отметке</span>
-                  </span> 
-                </th>
-              </tr>
-              <tr>
-                <th>Артикул</th>
-                <th>Наименование</th>
-                <th style='width: 50px;'>Кол-во СБ на Изделие</th>
-              </tr>
-              <tr>
-                <td colspan="3">
-                  <Search 
-                    :placeholder="'Поиск по Артиклу Артиклу и Наименованию'"
-                    @unmount='keySearch' 
-                  />
-                </td>
-              </tr>
-                <tr v-for='cb in allCbed' 
-                  :key='cb'
-                  class='td-row'
-                  @click='e => setCbed(cb, e.target.parentElement)'>
-                  <td>{{ cb.articl }}</td>
-                  <td>{{ cb.name }} <span class='exclamation_item' v-if='cb.attention'>!</span></td>
-                  <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
+              <tbody class='fixed_table'>
+                <tr>
+                  <th colspan="3" scope="col">Сборочная единица (Тип СБ)
+                    <span class='exclamation tooltip' @click='sortToAttention'>
+                      <unicon name="exclamation" fill="red" />
+                      <span class='tooltiptext'>Соритировать по отметке</span>
+                    </span> 
+                  </th>
+                </tr>
+                <tr>
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                  <th style='width: 50px;'>Кол-во СБ на Изделие</th>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <Search 
+                      :placeholder="'Поиск по Артиклу Артиклу и Наименованию'"
+                      @unmount='keySearch' 
+                    />
+                  </td>
+                </tr>
+              </tbody>>
+              <tr v-for='cb in allCbed' 
+                :key='cb'
+                class='td-row'
+                @click='e => setCbed(cb, e.target.parentElement)'>
+                <td>{{ cb.articl }}</td>
+                <td>{{ cb.name }} <span class='exclamation_item' v-if='cb.attention'>!</span></td>
+                <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
               </tr>
               <tr>
                 <td></td>

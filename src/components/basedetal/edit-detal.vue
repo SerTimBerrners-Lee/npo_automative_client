@@ -53,8 +53,8 @@
                 :key='modalMaterialKey'
                 v-if='modalMaterialIsShow'
                 @unmount_material='unmount_material'
-                :instanMaterial='instanMaterial'
-                :getOneMaterial='getOneMaterial'
+                :instanMaterial='3'
+                :getOneMaterial='true'
                 :allMaterial='materialList'
               />
               <div class="btn-control">
@@ -93,104 +93,7 @@
               </table>
             </div>
             <div>
-              <h3>Характеристики детали</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th>
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr>
-                <tr class='tr_haracteristic td-row' 
-                    v-for='(har, inx) in obj.haracteriatic' 
-                    :key='har'
-                    @click='selectHaracteristicFunction(har, inx)'
-                    >
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.name' 
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.ez'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small small'
-                      @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
-                  <td>
-                    <input 
-                      type="text" 
-                      :value='har.znach'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
-                </tr>
-              </table>
-              <div class="btn-control">
-                <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
-                <button class="btn-sma" @click='removeHaracteristic'>Удалить</button>
-              </div>
-            </div>
-            <div>
-              <h3>Характеристики заготовки</h3>
-              <table class="tables_bf">
-                <tr>
-                  <th>Наименование</th>
-                  <th>ЕИ</th>
-                  <th>Значение</th>
-                </tr>
-                <tr>
-                  <td>Материал заготовки</td>
-                  <td>шт</td>
-                  <td class='td_link' @click='getMaterialForDetal' v-text='mat_zag.name || mat_zag' ></td>
-                </tr>
-                <tr>
-                  <td>Материал заготовки(Заменитель)</td>
-                  <td>шт</td>
-                  <td class='td_link' @click='getMaterialForDetal("zam")' v-text='mat_zag_zam.name || mat_zag_zam' ></td>
-                </tr>
-                <tr>
-                  <td>Размер заготовки DxL</td>
-                  <td class='td_center'>мм</td>
-                  <td class='td_center'>
-                    <input type="text"
-                      @change='e=>editHarZag(e.target.value, "DxL")'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      v-model='obj.DxL'>
-                    <div class='absolute_znach'>
-                      {{ obj.DxL.split('x')
-                          .length == 2 ? 
-                      `=${obj.DxL.split('x')[0] * obj.DxL.split('x')[1]}`
-                      : ''
-                      }}
-                    </div>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Расчетная масса заготовки</td>
-                  <td class='td_center'>кг</td>
-                  <td class='td_center'>
-                    <input type="text"
-                      @change='e=>editHarZag(e.target.value, "mass")'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      v-model='obj.massZag'>
-                  </td>
-                </tr>
-                <tr>
-                  <td>Отходы</td>
-                  <td class='td_center'>кг</td>
-                  <td class='td_center'>
-                    <input type="text"
-                      @change='e=>editHarZag(e.target.value, "trash")'
-                      style="width: 50px; text-align:center;"
-                      class='inputs-small'
-                      v-model='obj.trash'>
-                  </td>
-                </tr>
-              </table>
+              <HaracteristicZag @unmount_har_zam='unmount_har_zam' :parametrs='{obj, mat_zag, mat_zag_zam}' v-if='show_harater_zag'/>
             </div>
 
             <h3 class="link_h3" @click='showTechProcess'>Технологический процес <span style='font-size:12px;'>
@@ -284,11 +187,11 @@
   </div>
 </template>
 <script>
-import { isEmpty } from 'lodash';
 import { showMessage } from '@/js/';
+import { random, isEmpty } from 'lodash';
 import PATH_TO_SERVER from '@/js/path.js';
 import TechProcess from './tech-process-modal.vue';
-import { random, padStart, padEnd, isNaN } from 'lodash';
+import HaracteristicZag from './haracteristic-zag.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import HistoryActions from '@/components/history-action.vue';
@@ -312,6 +215,7 @@ export default {
         haracteriatic: [
           { name: 'Масса детали', ez: 'кг', znach: 0}
         ],
+        variables_znach: [],
         DxL: 'x',
         massZag: '',
         trash: ''
@@ -321,14 +225,12 @@ export default {
       formData: null,
       modalMaterialKey: random(10, 999),
       modalMaterialIsShow: false,
-      instanMaterial: 3,
       mat_zag: 'Задать', 
       mat_zag_zam: 'Задать', 
-      getOneMaterial: false,
       materialList: [],
       selectHaracteristic: null,
       techProcessIsShow: false,
-      techProcessKey: random(10, 33e6),
+      techProcessKey: random(10, 999),
       inputMassZag: 0,
       techProcessID: localStorage.getItem('tpID') || null,
       id: null,
@@ -349,9 +251,9 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
-      density: 0,
       data_arr: [],
-      loader: false
+      loader: false,
+      show_harater_zag: false
     }
   },
   unmounted() {
@@ -367,7 +269,14 @@ export default {
     }
   },
   computed: mapGetters(['getOneSelectDetal', 'getUsers', 'getRoleAssets']),
-  components: {BaseFileModal, ModalBaseMaterial, TechProcess, MediaSlider, OpensFile, HistoryActions},
+  components: {
+    BaseFileModal, 
+    ModalBaseMaterial, 
+    TechProcess, 
+    MediaSlider, 
+    OpensFile, 
+    HaracteristicZag,
+    HistoryActions},
   methods: {
     ...mapActions([
       'createNewDetal', 
@@ -381,23 +290,23 @@ export default {
       if(res) 
         this.documentsData = res
     },
+    unmount_har_zam(obj) {
+      this.obj.DxL = obj.DxL
+      this.obj.massZag = obj.massZag
+      this.obj.trash = obj.trash
+      this.obj.haracteriatic = obj.haracteriatic
+      this.obj.variables_znach = obj.variables_znach
+      this.mat_zag = obj.mat_zag
+      this.mat_zag_zam = obj.mat_zag_zam
+
+      console.log("obj", obj)
+    },
     file_unmount(e) { 
       if(!e) 
         return 0
       this.formData = e.formData
     },
     unmount_material(mat) {
-      if(this.getOneMaterial) {
-        if(!this.mat_zag) {
-          this.mat_zag = mat.material || 'Задать'
-          if(mat.material) 
-            this.calcParametr(mat.material)
-        }
-        if(!this.mat_zag_zam)
-          this.mat_zag_zam = mat.material || 'Задать'
-        return 0
-      } 
-
       if(mat)
         this.materialList = mat.materialList
     },
@@ -434,6 +343,7 @@ export default {
       this.formData.append('description', this.obj.description)
       this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      this.formData.append('variables_znach', JSON.stringify(this.obj.variables_znach))
       this.formData.append('DxL', this.obj.DxL)
       this.formData.append('massZag', this.obj.massZag)
       this.formData.append('trash', this.obj.trash)
@@ -498,109 +408,12 @@ export default {
       this.delitPathNavigate(this.$route.path)
     },
     addPokMat() {
-      this.instanMaterial = 3
       this.modalMaterialKey = random(10, 999)
       this.modalMaterialIsShow = true
-      this.getOneMaterial = false
-    },
-    getMaterialForDetal(t = '') {
-      this.instanMaterial = 1
-      this.modalMaterialKey = random(10, 999)
-      this.modalMaterialIsShow = true
-      this.getOneMaterial = true
-      t == 'zam' ? this.mat_zag_zam = '' : this.mat_zag = ''
-    },
-    addHaracteristic() {
-      this.obj.haracteriatic.push({name: '', ez: '', znach: ''})
-    },
-    removeHaracteristic() {
-      if(this.selectHaracteristic) {
-        this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1)
-        this.selectHaracteristic = null
-      }
-    },
-    selectHaracteristicFunction(har, inx) {
-      this.selectHaracteristic = { har, inx}
-    },
-    changeHaracteristic(val, inst, inx) {
-      if(inst == 'name')  
-        this.obj.haracteriatic[inx].name = val
-      if(inst == 'ez')  
-        this.obj.haracteriatic[inx].ez = val
-      if(inst == 'znach')  {
-        this.obj.haracteriatic[inx].znach = val
-      if(inx == 0) 
-        this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-      }
-    },
-    editHarZag(val, inx) {
-      if(inx == 'DxL') {
-        if(val.indexOf('x') < 0) {
-          this.obj.DxL = 'x'
-          return 0
-        }
-        let dxl = val.split('x')
-        if(dxl.length == 2) {
-          if(this.inputMassZag * dxl[1])
-            this.obj.massZag = this.density * (this.inputMassZag * (Number(dxl[1])/1000))
-          if(this.obj.massZag)
-            this.obj.trash = this.obj.massZag - this.obj.haracteriatic[0].znach 
-        }
-      }
     },
     showTechProcess() {
       this.techProcessIsShow = true
-      this.techProcessKey = random(1, 12e8)
-    },
-    calcParametr(m) {
-      let oD = m.outsideDiametr // Наружный диаметр
-      let leng = m.length // Длина
-      let aCS = m.areaCrossSectional //  Площадь сечения
-      let density = m.density
-      if(oD) {
-        oD = JSON.parse(oD)
-        if(m.material.outsideDiametr) 
-          this.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
-      }
-      if(leng) {
-        leng = JSON.parse(leng)
-        if(m.material.length) 
-          this.obj.DxL = padEnd(this.obj.DxL, this.obj.DxL.length + leng.znach.length, leng.znach)
-      }
-      //  Чтобы узнать Массу нужно ПЛОТНОСТЬ * (ПЛОЩАДЬ СЕЧЕНИЯ * ДЛИНУ)
-      if(aCS) {
-        aCS = JSON.parse(aCS)
-        if(m.material.areaCrossSectional) {
-          let dxl = this.obj.DxL.split('x')
-          if(dxl.length == 2 && Number(dxl[1])) {
-            if(isNaN(Number(aCS.znach))) 
-              this.obj.massZag = this.floatParse(aCS.znach) 
-              else this.obj.massZag = aCS.znach 
-            this.inputMassZag = this.obj.massZag
-            if(Number(dxl[1]) * Number(this.obj.massZag))
-              this.obj.massZag = Number(dxl[1]) * Number(this.obj.massZag)
-              else this.obj.massZag = 0
-          } else {
-            if(isNaN(Number(aCS.znach))) 
-              this.obj.massZag = this.floatParse(aCS.znach) 
-            else
-              this.obj.massZag = aCS.znach 
-            this.inputMassZag = this.obj.massZag
-          }
-          this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
-        }
-      }
-      if(density) {
-        try {
-          density = JSON.parse(density)
-          this.density = density.znach
-        } catch(e) {
-          console.log(e)
-        }
-      }
-    },
-    floatParse(n) {
-      return parseFloat(n.replace(",", "."));
+      this.techProcessKey = random(1, 999)
     },
     exit(){
       this.$router.push("/basedetals")
@@ -645,6 +458,8 @@ export default {
     this.obj.massZag = this.getOneSelectDetal.massZag
     this.obj.trash = this.getOneSelectDetal.trash
     this.attention = this.getOneSelectDetal.attention
+    this.obj.variables_znach = this.getOneSelectDetal.variables_znach ? 
+      JSON.parse(this.getOneSelectDetal.variables_znach) : []
     this.obj.haracteriatic = JSON.parse(this.getOneSelectDetal.haracteriatic)
     this.obj.responsible = this.getOneSelectDetal.user ? 
       this.getOneSelectDetal.user.id : null
@@ -668,7 +483,8 @@ export default {
     this.getOneSelectDetal.documents.forEach(d => {
       this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
     })
-    this.randomDataMedia = random(10, 38100)
+    this.randomDataMedia = random(10, 999)
+    this.show_harater_zag = true
 
     this.data_arr = await this.getAllDetalsArticl()
     this.loader = false

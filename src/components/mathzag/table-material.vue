@@ -1,25 +1,27 @@
 <template>
   <div class="cont scroll-table scrolls-type-490">
     <table class="type-table">
-      <tr>
-        <th :class="width ? width : 'width-350'">
-          {{ title }}
-          <span 
-            class='exclamation tooltip' v-if='attention' 
-            @click='$emit("unmount_attention")'>
-            <unicon name="exclamation" fill="red" />
-            <span class='tooltiptext'>Соритировать по отметке</span>
-          </span> 
-          </th>
-      </tr>
-      <tr>
-        <td> 
-          <Search 
-            :placeholder='`Поиск по ${alltypeM.length} наименованиям`'
-            @unmount='keySearch' 
-          />
-        </td> 
-      </tr>
+      <tbody class='fixed_table'>
+        <tr>
+          <th :class="width ? width : 'width-350'">
+            {{ title }}
+            <span 
+              class='exclamation tooltip' v-if='attention' 
+              @click='$emit("unmount_attention")'>
+              <unicon name="exclamation" fill="red" />
+              <span class='tooltiptext'>Соритировать по отметке</span>
+            </span> 
+            </th>
+        </tr>
+        <tr>
+          <td> 
+            <Search 
+              :placeholder='`Поиск по ${alltypeM.length} наименованиям`'
+              @unmount='keySearch' 
+            />
+          </td> 
+        </tr>
+      </tbody>
       <tr 
         class="td-row" 
         v-for='mat in alltypeM' 

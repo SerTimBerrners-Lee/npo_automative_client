@@ -21,40 +21,42 @@
         :getShipments='[]'/>
       <div style='margin-left: 5px;'>
         <table>
-          <tr>
-            <th colspan="6" class='min_width-100'>Комплектация сборки, детали</th>
-            <th rowspan="3" class='min_width-100'>Дефицит</th>
-            <th rowspan="3" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок</th>
-            <th rowspan="3" class='min_width-100'>Минимальный остаток</th>
-            <th rowspan="3" class='min_width-100'>Рекомендуемый остаток</th>
-            <th rowspan="3" class='min_width-100'>Норма времени на одну единицу (сборка+изготовл.)</th>
-            <th rowspan="3" class='min_width-100'>СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
-            <th rowspan="3" class='min_width-100'>Общая норма времени (сборка+изготовл.)</th>
-            <th rowspan="3" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
-            <th rowspan="3" class='min_width-100'>Уровень комплектации, %</th>
-            <th rowspan="3" class='min_width-100'>Статус</th>
-            <th rowspan="3" class='min_width-100'>Дата последнего запуска</th>
-            <th rowspan="3" class='min_width-100'>Примечание</th>
-          </tr>
-          <tr>
-            <th @click='selectAllItem' style='cursor: pointer;'>
-              <unicon name="check" fill="royalblue" />
-            </th> 
-            <th>Тип</th>
-            <th>№ Заказа</th>
-            <th>Артикул</th>
-            <th>Наименование</th>
-            <th>Принадлежность</th>
-          </tr>
-          <tr>
-            <td colspan='2'>Поиск: </td>
-            <td colspan="4">
-              <Search 
-                :placeholder="'Поиск СБ по Артиклу и Наименованию'"
-                @unmount='keySearchCb' 
-              />
-            </td>
-          </tr>
+          <tbody class='fixed_table'>
+            <tr>
+              <th colspan="6" class='min_width-100'>Комплектация сборки, детали</th>
+              <th rowspan="3" class='min_width-100'>Дефицит</th>
+              <th rowspan="3" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок</th>
+              <th rowspan="3" class='min_width-100'>Минимальный остаток</th>
+              <th rowspan="3" class='min_width-100'>Рекомендуемый остаток</th>
+              <th rowspan="3" class='min_width-100'>Норма времени на одну единицу (сборка+изготовл.)</th>
+              <th rowspan="3" class='min_width-100'>СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
+              <th rowspan="3" class='min_width-100'>Общая норма времени (сборка+изготовл.)</th>
+              <th rowspan="3" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
+              <th rowspan="3" class='min_width-100'>Уровень комплектации, %</th>
+              <th rowspan="3" class='min_width-100'>Статус</th>
+              <th rowspan="3" class='min_width-100'>Дата последнего запуска</th>
+              <th rowspan="3" class='min_width-100'>Примечание</th>
+            </tr>
+            <tr>
+              <th @click='selectAllItem' style='cursor: pointer;'>
+                <unicon name="check" fill="royalblue" />
+              </th> 
+              <th>Тип</th>
+              <th>№ Заказа</th>
+              <th>Артикул</th>
+              <th>Наименование</th>
+              <th>Принадлежность</th>
+            </tr>
+            <tr>
+              <td colspan='2'>Поиск: </td>
+              <td colspan="4">
+                <Search 
+                  :placeholder="'Поиск СБ по Артиклу и Наименованию'"
+                  @unmount='keySearchCb' 
+                />
+              </td>
+            </tr>
+          </tbody>
           <tr v-for='cbed of allCbed' :key='cbed' 
             class='td-row'
             @click='setIzdels(cbed)'>
@@ -70,7 +72,7 @@
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='showParents(cbed, "cb")' class='link_img' atl='Показать' />
             </td>
-            <td class='center min_width-100'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
+            <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
             <td class='center min_width-100'>{{ 0 }}</td>
             <td class='center min_width-100'>{{ 0 }}</td>
             <td class='center min_width-100'>{{ cbed.cbed_kolvo + cbed.shipments_kolvo }}</td>
@@ -87,6 +89,8 @@
               <img src="@/assets/img/link.jpg" @click='openDescription(cbed.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
+
+          
           <tr v-for='detal of allDetal' :key='detal' 
             class='td-row'>
             <td class='center checkbox_parent' >
@@ -100,7 +104,7 @@
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
-            <td class='center'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
+            <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ detal.detal_kolvo + detal.shipments_kolvo }}</td>
@@ -381,4 +385,5 @@ export default {
 th {
   font-size: 13px;
 }
+
 </style>

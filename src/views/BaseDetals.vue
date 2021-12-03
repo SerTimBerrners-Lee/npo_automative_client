@@ -12,17 +12,15 @@
                 <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
                   <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
               </tr>
-              <tr>
-                <th colspan="3" scope="col">Изделие</th>
-              </tr> 
-              <tr>
-                <th>Заводской номер</th>
-                <th>Артикул</th>
-                <th>Наименование</th>
-              </tr>
-              <tr >
-                <td class="tb-title" colspan="3" scope="col"> Без назначенного изделия </td>
-              </tr> 
+              <tbody class='fixed_table'>
+                <tr>
+                  <th colspan="3" scope="col">Изделие</th>
+                </tr> 
+                <tr>
+                  <th>Заводской номер</th>
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                </tr> 
               <tr>
                 <td colspan="3">
                   <Search 
@@ -31,6 +29,7 @@
                   />
                 </td>
               </tr>
+              </tbody> 
               <tr 
                 v-for='product in allProduct' 
                 :key='product'
@@ -66,25 +65,24 @@
                 <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationCbed'>Сортировать 
                   <span class='tooltiptext'>Показать {{  allCbed.length == cbedOperation.length ? "все" : 'без операций' }}</span></span></th>
               </tr>
-              <tr>
-                <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
-              </tr>
-              <tr>
-                <th>Артикул</th>
-                <th>Наименование</th>
-                <th style='width: 50px;'>Кол-во СБ на Изделие</th>
-              </tr>
+              <tbody class='fixed_table'>
                 <tr>
-                  <td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
+                  <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
                 </tr>
-              <tr>
-                <td colspan="3">
-                  <Search 
-                    :placeholder="'Поиск по Артиклу и Наименованию'"
-                    @unmount='keySearchCb' 
-                  />
-                </td>
-              </tr>
+                <tr>
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                  <th style='width: 50px;'>Кол-во СБ на Изделие</th>
+                </tr>
+                <tr>
+                  <td colspan="3">
+                    <Search 
+                      :placeholder="'Поиск по Артиклу и Наименованию'"
+                      @unmount='keySearchCb' 
+                    />
+                  </td>
+                </tr>
+              </tbody>
               <tr v-for='cb in allCbed' 
                 :key='cb'
                 class='td-row'
@@ -118,27 +116,29 @@
                 <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationDetal'>Сортировать 
                   <span class='tooltiptext'>Показать {{  allDetal.length == detalOperation.length ? "все" : 'без операций' }}</span></span></th>
               </tr>
-              <tr>
-                <th colspan="3" scope="col">Деталь (Тип Д) 
-                  <span class='exclamation tooltip' @click='sortToAttention'>
-                    <unicon name="exclamation" fill="red" />
-                    <span class='tooltiptext'>Соритировать по отметке</span>
-                  </span> 
-                </th>
-              </tr>
-              <tr>
-                <th>Артикул</th>
-                <th>Наименование</th>
-                <th style='width: 50px;'>Кол-во Д на СБ</th>
-              </tr>   
-              <tr>
-                <td colspan="3">
-                  <Search 
-                    :placeholder="'Поиск по Артиклу и Наименованию'"
-                    @unmount='keySearch' 
-                  />
-                </td>
-              </tr>
+              <tbody class='fixed_table'>
+                <tr>
+                  <th colspan="3" scope="col">Деталь (Тип Д) 
+                    <span class='exclamation tooltip' @click='sortToAttention'>
+                      <unicon name="exclamation" fill="red" />
+                      <span class='tooltiptext'>Соритировать по отметке</span>
+                    </span> 
+                  </th>
+                </tr>
+                <tr>
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                  <th style='width: 50px;'>Кол-во Д на СБ</th>
+                </tr>   
+                <tr>
+                  <td colspan="3">
+                    <Search 
+                      :placeholder="'Поиск по Артиклу и Наименованию'"
+                      @unmount='keySearch' 
+                    />
+                  </td>
+                </tr>
+              </tbody>
               <tr 
                 v-for='detal in allDetal' 
                 :key='detal'
