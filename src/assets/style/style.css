@@ -459,12 +459,12 @@ textarea {
 
 .fixed_table_10 {
   position: sticky;
-  top: 50px;
+  top: 10px;
   background: #b6b6b6;
 }
 .fixed_table_85 {
   position: sticky;
-  top: 50px;
+  top: 85px;
   background: #b6b6b6;
 }
 
