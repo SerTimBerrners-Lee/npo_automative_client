@@ -1,7 +1,7 @@
 <template>
   <div class="cont scroll-table scrolls-type-490">
     <table class="type-table">
-      <tbody class='fixed_table'>
+      <tbody class='fixed_table_10'>
         <tr>
           <th :class="width ? width : 'width-350'">
             {{ title }}

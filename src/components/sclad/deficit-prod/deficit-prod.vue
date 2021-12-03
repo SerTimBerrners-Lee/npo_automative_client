@@ -21,7 +21,7 @@
         :getShipments='[]'/>
       <div style='margin-left: 5px;'>
         <table>
-          <tbody class='fixed_table'>
+          <tbody class='fixed_table_85'>
             <tr>
               <th colspan="6" class='min_width-100'>Комплектация сборки, детали</th>
               <th rowspan="3" class='min_width-100'>Дефицит</th>

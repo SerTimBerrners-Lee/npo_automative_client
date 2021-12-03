@@ -16,7 +16,7 @@
       <div class='table_block'> 
         <div style='width: 99%;'> 
           <table>
-            <tbody class='fixed_table'>
+            <tbody class='fixed_table_85'>
               <tr>
                 <th colspan="4" class='min_width-100'>Детали для сборок из комплектации</th>
                 <th rowspan="3" class='min_width-100'>Необх. кол-во на дефицит по комплектациям</th>

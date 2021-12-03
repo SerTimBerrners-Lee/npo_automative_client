@@ -11,7 +11,7 @@
               <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
                 <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
             </tr>
-            <tbody class='fixed_table'>
+            <tbody class='fixed_table_10'>
               <tr>
                 <th colspan="3" scope="col">Изделие
                   <span class='exclamation tooltip' @click='sortToAttention'>

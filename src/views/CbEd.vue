@@ -13,7 +13,7 @@
                   <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
                     <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
                 </tr>
-                <tbody class='fixed_table'>
+                <tbody class='fixed_table_10'>
                   <tr>
                     <th colspan="3" scope="col">Изделие</th>
                   </tr> 
@@ -64,7 +64,7 @@
                 <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationCbed'>Сортировать 
                   <span class='tooltiptext'>Показать {{  allCbed.length == cbedOperation.length ? "все" : 'без операций' }}</span></span></th>
               </tr>
-              <tbody class='fixed_table'>
+              <tbody class='fixed_table_10'>
                 <tr>
                   <th colspan="3" scope="col">Сборочная единица (Тип СБ)
                     <span class='exclamation tooltip' @click='sortToAttention'>

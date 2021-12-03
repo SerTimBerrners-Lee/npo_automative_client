@@ -1,6 +1,6 @@
 <template>
   <table>
-    <tbody class='fixed_table'>
+    <tbody class='fixed_table_10'>
       <tr>
         <th>Тип</th>
         <th>Наименование</th>
