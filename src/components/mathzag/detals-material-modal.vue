@@ -64,10 +64,8 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
 
-    if(this.$props.parametrs) {
+    if(this.$props.parametrs) 
       this.material = this.$props.parametrs
-      console.log(this.$props.parametrs)
-    }
 
   },
 }

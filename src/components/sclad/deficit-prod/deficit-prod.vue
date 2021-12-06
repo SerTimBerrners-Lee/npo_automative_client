@@ -289,7 +289,7 @@ export default {
         if(pars) 
           return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2)
       } catch(e) {
-        console.log(e)
+        console.error(e)
       }
     },
     toProduction(izd, e) {
@@ -363,7 +363,6 @@ export default {
     this.loader = true
     await this.setchDeficitCbed()
     await this.setchDeficitDeficit()
-    console.log(this.allCbed)
     this.loader = false
   }
 }

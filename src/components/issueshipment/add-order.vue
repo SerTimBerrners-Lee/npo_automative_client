@@ -276,7 +276,6 @@ export default {
 		]),
 		unmount_buyer(buyer) {
 			if(buyer) this.buyer = buyer.id
-			console.log(buyer)
 		},
 		unmount_base(e) {
 			if(!e) return false

@@ -59,7 +59,6 @@
             <OpensFile 
               :parametrs='itemFiles' 
               v-if="showFile" 
-              @unmount='openFile'
               :key='keyWhenModalGenerateFileOpen'
             />
         </div> 
@@ -77,12 +76,12 @@
 
 
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue'
-import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {isEmpty, random} from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 export default { 
   data() {
     return {
@@ -135,7 +134,6 @@ export default {
     edit() {
       if(isEmpty(this.equipment))
         return 0 
-      console.log(this.equipment)
       this.$router.push({path: '/equipment/edit/false'})
     },
     copyEquipment() {
@@ -155,14 +153,11 @@ export default {
       if(isEmpty(this.itemFiles))
         return 0
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 384e4)
-    },
-    openFile(res) {
-      console.log(res)
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     providershow() {
       if(this.equipment.providers.length > 0) {
-        this.keyProvidersModal = random(1, 2222)
+        this.keyProvidersModal = random(1, 999)
         this.showProviders = true
       }
     },

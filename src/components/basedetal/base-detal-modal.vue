@@ -311,7 +311,6 @@ export default {
           }
         }
         if(add) {
-          console.log(this.selectedDetal)
           this.detalList.push({ 
             art: this.selectedDetal.articl,
             det: {

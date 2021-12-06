@@ -263,7 +263,7 @@ export default {
 				if(pars_json.c5) str = str + '<span> м.куб </span>'
 				return str
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 			}
 		},
     clickEq(eq, type) {

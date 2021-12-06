@@ -224,7 +224,6 @@ export default {
       if(provider && provider.product) {
         this.provider = provider
         this.product = provider.product
-        console.log(provider.product)
       }
     },
     unmount_position(material_list) {
@@ -253,7 +252,7 @@ export default {
               for(let d of pars) {
                 this.allProvider[prov].product.push(d)
               }
-            } catch (e) {console.log(e)}
+            } catch (e) {console.error(e)}
             check = false
           }
         }
@@ -263,7 +262,7 @@ export default {
             let prod = JSON.parse(dev.product)
             if(prod && prod.length)
               this.allProvider.push({ ...dev.provider, product: prod})
-          } catch(e) {console.log(e)}
+          } catch(e) {console.error(e)}
         } else check = false
     }
     },
@@ -312,7 +311,6 @@ export default {
       this.show_position = true
     },
     editArt(inx, val) {
-      console.log(val)
       this.product[inx].art = val
     },
     editKol(inx, val) {

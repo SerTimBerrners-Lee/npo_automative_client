@@ -174,8 +174,6 @@ table th {
   padding: 5px 5px;
   margin: 10px;
   border-left: 3px solid rgba(61, 150, 34, 0.788);
-
-  /* Position the tooltip */
   position: absolute;
   z-index: 999;
 }

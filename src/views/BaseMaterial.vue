@@ -49,7 +49,6 @@
       <OpensFile 
         :parametrs='itemFiles' 
         v-if="itemFiles != null" 
-        @unmount='openFile'
         :key='keyWhenModalGenerateFileOpen'
       />
       <Loader v-if='loader' />
@@ -113,7 +112,6 @@ export default {
       this.filterToAttentionMat()
     },
     clickMat(mat, type) {
-      console.log(mat)
       if(type == 'type') {
         this.material = mat
         this.filterByNameMaterial(mat) 
@@ -149,9 +147,6 @@ export default {
     banPPM() {
       if(!this.podPodMaterial) return 0
       this.bannedPPM(this.podPodMaterial.id)
-    },
-    openFile(res) { 
-      console.log(res)
     },
     searchTypeM(val) {
       this.searchTypeMutation(val)

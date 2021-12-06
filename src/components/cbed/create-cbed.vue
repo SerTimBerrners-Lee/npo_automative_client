@@ -452,10 +452,8 @@ export default {
         this.obj.haracteriatic[inx].name = val
       if(inst == 'ez')  
         this.obj.haracteriatic[inx].ez = val
-      if(inst == 'znach')  {
+      if(inst == 'znach')  
         this.obj.haracteriatic[inx].znach = val
-      }
-      console.log(this.obj.haracteriatic)
     },
     changeParametrs(val, inst, inx) {
       if(inst == 'name')  

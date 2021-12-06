@@ -333,7 +333,6 @@ export default {
 
       if(this.providersId)
         this.providersId = JSON.stringify(this.providersId)
-      console.log(this.obj.kolvo_select)
 
       if(this.material)
         this.formData.append('rootParentId', this.material.id)

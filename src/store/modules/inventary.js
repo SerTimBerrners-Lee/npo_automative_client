@@ -77,7 +77,6 @@ export default {
       })
       if(res.ok) {
         const result = await res.json()
-        console.log('result', result)
         ctx.commit('updateTInventary', result)
         return result
       }
@@ -128,7 +127,6 @@ export default {
       })
       if(res.ok) {
         const result = await res.json()
-        console.log('result', result)
         ctx.commit('updatePTInventary', result)
         return result
       }

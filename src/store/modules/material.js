@@ -224,7 +224,6 @@ export default {
           new_result.push({...obj.mat, dev: obj.dev})
         }
         ctx.commit('sortPPMtoParent', new_result)
-        console.log(result)
         return result
       }
     },

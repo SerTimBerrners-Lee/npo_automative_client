@@ -79,6 +79,11 @@
           <span style='font-weight:bold;'>{{ selecteProduct.user ? selecteProduct.user.login : ''  }}</span>
         </p>
         <MediaSlider  v-if='selecteProduct.documents.length' :data='selecteProduct.documents' :key='selecteProduct.documents' />
+        <button 
+          style='width: 98%;'
+          class="btn" 
+          v-if='selectedCbEd' 
+          @click='editProduct'>Полная информация</button>
         <div>
           <h3>Спетификация Изделия</h3>
           <TableSpetification
@@ -199,7 +204,7 @@ export default {
           this.listDetal = JSON.parse(obj.listDetal)
         if(obj.listCbed)
           this.listCbed = JSON.parse(obj.listCbed)
-      } catch(e) {console.log(e)}
+      } catch(e) {console.error(e)}
     },
     sortToAttention() {
       this.filterToAttentionProduct()

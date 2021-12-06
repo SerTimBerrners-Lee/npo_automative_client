@@ -123,7 +123,6 @@ export default {
         state.filterProduct = state.product
 
       state.product = state.filterProduct
-      console.log(state.product)
       state.product = state.product.filter(prod => 
         prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase() || 
         ((prod.name.slice(0, str.length).toLowerCase()) == str.toLowerCase()) ||

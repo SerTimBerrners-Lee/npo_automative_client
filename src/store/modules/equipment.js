@@ -162,7 +162,7 @@ export default {
 
       if(res.ok) {
         const result = await res.json()
-        console.log(result)
+        return result
       }
     },
     async banEquipment(ctx, id) {

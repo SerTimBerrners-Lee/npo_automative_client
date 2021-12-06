@@ -191,7 +191,6 @@ export default {
 			this.span_material.classList.add('td-row-all')
 
 			this.material = material
-			console.log(material)
 		},
 		getKolvoMaterial(kol) {
 			try {
@@ -204,7 +203,7 @@ export default {
 				if(pars_json.c5) str = str + '<span> м.куб </span>'
 				return str
 			} catch (e) {
-				console.log(e)
+				console.error(e)
 			}
 		},
 		toSetOrders(shipments, e) {

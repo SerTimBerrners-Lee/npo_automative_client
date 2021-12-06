@@ -1,6 +1,6 @@
 <template>
   <div class='main_block_content'>
-    <h3>Редактировать изделие</h3>
+    <h3>{{ $route.name }}</h3>
     <div class="block title_block">
       <p><span>Заводской номер: </span><input type="text" v-model.trim='obj.fabricNumber'></p>
       <p><span>Артикул: </span><input type="text" v-model.trim='obj.articl'></p>
@@ -107,19 +107,7 @@
               <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
-              <table style='width: 100%;'>
-                <tr>
-                  <th >Файл</th>
-                </tr>
-                <tr 
-                  v-for='doc in  documentsData' 
-                  :key='doc'
-                  class='td-row'
-                  @click='setDocs(doc)'
-                  >
-                  <td>{{ doc.name }}</td>
-                </tr>
-              </table>
+              <TableDocument v-if='documentsData.length' :title='""' :documents='documentsData' @unmount='setDocs' />
             </div>
             <div>
               <h3>Документы</h3>
@@ -168,7 +156,7 @@
           :width='"width: 30%;"'
           :width_main='"width: 97%;"'
           />
-       </div>
+      </div>
           <div>
             <h3>Характеристики</h3>
             <table class="tables_bf">
@@ -249,6 +237,7 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
@@ -340,7 +329,9 @@ export default {
     MediaSlider,
     OpensFile,
     BaseFileModal,
-    TableSpetification},
+    TableDocument,
+    TableSpetification
+  },
   methods: {
     ...mapActions([
       'createNewProduct', 

@@ -152,7 +152,7 @@ export default {
           let prod = JSON.parse(order.product)
           this.detals_order = prod
         } catch (e) {
-          console.log(e)
+          console.error(e)
         }
       }
     },
@@ -168,7 +168,7 @@ export default {
         }
         return count
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     },
     selectOrder(order, span) {
@@ -206,7 +206,6 @@ export default {
 	async mounted() {
     this.loader = true
     await this.fetchWaybill()
-    console.log(this.getAllWaybills )
     this.loader = false
 	}
 }

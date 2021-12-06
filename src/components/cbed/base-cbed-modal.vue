@@ -236,7 +236,6 @@ export default {
           }
         }
         if(add) {
-          console.log(this.selectedCbed)
           this.cbedList.push({ 
             art: this.selectedCbed.articl,
             cb: {

@@ -44,7 +44,6 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/typeoperation/${op_id}`)
       if(res.ok) {
         const result = await res.json()
-        console.log(result)
         ctx.commit('allMetaloworkingOperation', result)
         return result 
       }

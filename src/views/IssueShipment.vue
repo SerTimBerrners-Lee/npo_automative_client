@@ -74,7 +74,6 @@ export default {
 		unmount_table_shipments(select_shipemnts) {
 			if(!select_shipemnts) return false
 			this.selectShipments = select_shipemnts
-			console.log(select_shipemnts)
 		},
 		changeDatePicterRange(val) {
       console.log(val)

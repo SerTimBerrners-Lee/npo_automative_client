@@ -275,9 +275,6 @@ export default {
       this.tr = e
       this.tr.classList.add('td-row-all')
     }
-  },
-  async mounted() {
-    console.log(this.$props.file)
   }
 }
 </script>

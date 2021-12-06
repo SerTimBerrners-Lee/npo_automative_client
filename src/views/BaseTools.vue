@@ -64,7 +64,6 @@
             <OpensFile 
               :parametrs='itemFiles'  
               v-if="showFile" 
-              @unmount='openFile'
               :key='keyWhenModalGenerateFileOpen'
             />
         </div>
@@ -76,19 +75,15 @@
           />
       </div>
     </div>
-    
   </div>
-
 </template>
-
-
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
+import {isEmpty, random} from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue'
-import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
-import {isEmpty, random} from 'lodash'
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 export default {
   data() {
     return {
@@ -98,8 +93,8 @@ export default {
       itemFiles: null,
       showFile: false,
       showProviders: false,
-      keyProvidersModal: random(1, 34342),
-      keyWhenModalGenerateFileOpen: random(1, 23123),
+      keyProvidersModal: random(1, 999),
+      keyWhenModalGenerateFileOpen: random(1, 999),
       span: null
     }
   },
@@ -149,28 +144,25 @@ export default {
       this.banNameInstrument(this.getOneNameInstrument.id)
     },
     setDocs(dc) {
-        this.itemFiles = dc
+      this.itemFiles = dc
     },
     openDock() {
-        if(isEmpty(this.itemFiles))
-            return 0
-        this.showFile = true
-        this.keyWhenModalGenerateFileOpen = random(10, 38e7)
-    },
-    openFile(res) {
-      console.log(res)
+      if(isEmpty(this.itemFiles))
+        return 0
+      this.showFile = true
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     providershow() {
       if(this.getOneNameInstrument.providers.length > 0) {
-        this.keyProvidersModal = random(1, 1111)
+        this.keyProvidersModal = random(1, 999)
         this.showProviders = true
       }
     },
     instansTools(tools, span) {
       if(!this.span)
-          this.span = (this.$refs.all)
-      if(span.classList.contains('active')) 
-                return 0  
+        this.span = (this.$refs.all)
+      if(span.classList.contains('active'))
+        return 0  
       this.span.classList.remove('active')
       span.classList.add('active')
       this.span = span

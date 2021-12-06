@@ -131,7 +131,6 @@
     v-if='showModalFile'
     :key='fileModalKey'
     :fileArrModal='fileArrModal'
-    @unmount='unmount_filemodal'
     />
     <OpensFile 
       :parametrs='itemFiles' 
@@ -278,9 +277,6 @@ export default {
     },
     deleteIzd(izd) {
       this.izdList = this.izdList.filter(z => z.name != izd.name)
-    },
-    unmount_filemodal(res) {
-      console.log(res)
     },
     setDocs(dc) {
       this.itemFiles = dc

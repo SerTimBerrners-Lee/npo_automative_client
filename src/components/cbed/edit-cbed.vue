@@ -69,19 +69,7 @@
               <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
-                <table style='width: 100%;'>
-                <tr>
-                  <th >Файл</th>
-                </tr>
-                <tr 
-                  v-for='doc in  documentsData' 
-                  :key='doc'
-                  class='td-row'
-                  @click='setDocs(doc)'
-                  >
-                  <td>{{ doc.name }}</td>
-                </tr>
-            </table>
+              <TableDocument v-if='documentsData.length' :title='""' :documents='documentsData' @unmount='setDocs' />
             </div>
             <div>
             <h3>Документы</h3>
@@ -256,6 +244,7 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
@@ -342,7 +331,8 @@ export default {
     MediaSlider,
     BaseCbedModal, 
     BaseFileModal,
-    TableSpetification
+    TableSpetification,
+    TableDocument
     },
   unmounted() {
     this.deleteStorageData()
@@ -469,7 +459,6 @@ export default {
         case '5':
           this.instanMaterial = 3
           this.listMaterials = this.materialList
-          console.log(this.materialList)
           this.modalMaterialKey = random(10, 999)
           this.modalMaterialIsShow = true
           break;

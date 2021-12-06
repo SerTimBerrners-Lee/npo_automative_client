@@ -30,14 +30,15 @@ const showMessage = (title, message, type, ctx) =>  {
 
   ctx.$data.message = message;
   ctx.$data.type = type;
-  ctx.$data.keyInformTip = random(21212)
+  ctx.$data.keyInformTip = random(999)
 }
  
 const photoPreloadUrl = (input, cb, checkTypes = false) => {
-  if(!input) 
-    return 0;
+  if(!input || !input.name) return 0;
 
   let typeFile = input.name.split('.')[input.name.split('.').length - 1].toLowerCase();
+  if(typeFile.indexOf('_archive_v', 1) != -1) typeFile = typeFile.split('_archive_v')[0]
+
   let type;
   for(let imgType of imgArr) {
     if(typeFile == imgType)

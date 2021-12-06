@@ -31,7 +31,6 @@
             <OpensFile 
               :parametrs='itemFiles' 
               v-if="showFile" 
-              @unmount='openFile'
               :key='keyWhenModalGenerateFileOpen'
             />
           </div>
@@ -89,9 +88,6 @@ export default {
         return 0
       this.showFile = true
       this.keyWhenModalGenerateFileOpen = random(10, 38e7)
-    },
-    openFile(res) {
-      console.log(res)
     },
     providershow() {
       if(this.getOneNameInstrument.providers.length > 0) {

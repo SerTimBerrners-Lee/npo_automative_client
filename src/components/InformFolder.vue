@@ -34,7 +34,6 @@ export default {
     },
   },
   mounted() {
-    console.log('initializate')
     if(!this.typeMessage || !this.message) return false
     this.$props.type == 'w' ?
       this.typeMessage = 'warning-message' :

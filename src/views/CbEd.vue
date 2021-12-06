@@ -56,7 +56,7 @@
               </p>
             </div>
           </div>
-          <div class="scroll-table" >
+          <div>
             <table class="table-base-detal">
               <tr>
                 <th style='font-size: 12px'>Кол-во: {{allCbed.length}}</th>
@@ -86,7 +86,7 @@
                     />
                   </td>
                 </tr>
-              </tbody>>
+              </tbody>
               <tr v-for='cb in allCbed' 
                 :key='cb'
                 class='td-row'
@@ -126,6 +126,11 @@
           <span class="title_span">Артикул: </span><span style='font-weight:bold;'>{{ selectedCbEd.articl }}</span>
         </p>
         <MediaSlider v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
+        <button 
+          style='width: 98%;'
+          class="btn" 
+          v-if='selectedCbEd' 
+          @click='editCbEd'>Полная информация</button>
         <div>
           <h3>Спетификация Сборочной единицы</h3>
           <TableSpetification

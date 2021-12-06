@@ -1,7 +1,7 @@
 <template>
   <div class='main_block_content'>
     <div class="left_content">
-      <h3>Создать деталь</h3>
+      <h3>{{ $route.name }}</h3>
       <div class="block title_block">
         <p>
           <span>Артикул: </span><input type="text" v-model.trim='obj.articl'>
@@ -54,7 +54,7 @@
                 v-if='modalMaterialIsShow'
                 @unmount_material='unmount_material'
                 :instanMaterial='3'
-                :getOneMaterial='true'
+                :getOneMaterial='false'
                 :allMaterial='materialList'
               />
               <div class="btn-control">
@@ -134,22 +134,10 @@
             :width_main='"width: 97%;"'
             />
         </div>
-          <table style='width: 100%;'>
-            <tr>
-              <th >Файл</th>
-            </tr>
-            <tr 
-              v-for='doc in  documentsData' 
-              :key='doc'
-              class='td-row'
-              @click='setDocs(doc)'
-              >
-              <td>{{ doc.name }}</td>
-            </tr>
-          </table>
-          <div class="btn-control" style='width: 100%;' v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
-            <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
-          </div>
+        <TableDocument v-if='documentsData.length' :title='""' :documents='documentsData' @unmount='setDocs' />
+        <div class="btn-control" style='width: 100%;' v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
+          <button class="btn-small" @click='addFileModal'>Добавить из базы</button>
+        </div>
         <div style='height: 50px;'>
           <FileLoader 
             :typeGetFile='"getfile"'
@@ -196,6 +184,7 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import HistoryActions from '@/components/history-action.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableDocument from '@/components/filebase/table-document.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 export default {
@@ -276,6 +265,7 @@ export default {
     MediaSlider, 
     OpensFile, 
     HaracteristicZag,
+    TableDocument,
     HistoryActions},
   methods: {
     ...mapActions([
@@ -298,8 +288,6 @@ export default {
       this.obj.variables_znach = obj.variables_znach
       this.mat_zag = obj.mat_zag
       this.mat_zag_zam = obj.mat_zag_zam
-
-      console.log("obj", obj)
     },
     file_unmount(e) { 
       if(!e) 

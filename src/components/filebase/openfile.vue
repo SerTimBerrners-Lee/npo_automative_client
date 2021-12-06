@@ -25,20 +25,20 @@
                 docType.typename != 'pdf' &&
                 docType.typename != 'docx'">
                 <span class="span-type-files">
-                    .{{ docType.typename }}
+                  .{{ docType.typename }}
                 </span>
               </div>
               <div class="fb-img-block" v-if='docType.type == "img"'>
                 <div class="imgShow-modal-div">
-                    <img class="imgShow-modal" :src='urlImg' alt="">
+                  <img class="imgShow-modal" :src='urlImg' alt="">
                 </div>
               </div>
               <div class="fb-img-block" v-if='docType.type == "movi"'>
                 <div class="imgShow-modal-div">
-                    <video
-                      controls="controls">
+                  <video
+                    controls="controls">
                   <source :src='urlImg' >
-                </video>
+                  </video>
                 </div>
               </div>
               <div class="slider" v-if='file.length > 1'>

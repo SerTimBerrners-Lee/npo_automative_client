@@ -60,7 +60,6 @@
           <OpensFile 
             :parametrs='itemFiles'  
             v-if="showFile" 
-            @unmount='openFile'
             :key='keyWhenModalGenerateFileOpen'
           />
         </div>
@@ -186,14 +185,11 @@ export default {
       if(isEmpty(this.itemFiles))
         return 0
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 38e7)
-    },
-    openFile(res) {
-      console.log(res)
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     providershow() {
       if(this.getOneInventary.providers.length > 0) {
-        this.keyProvidersModal = random(1, 1111)
+        this.keyProvidersModal = random(1, 999)
         this.showProviders = true
       }
     },

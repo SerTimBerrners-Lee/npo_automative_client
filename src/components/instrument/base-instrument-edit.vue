@@ -112,7 +112,6 @@
     <OpensFile 
       :parametrs='itemFiles' 
       v-if="showFile" 
-      @unmount='openFile'
       :key='keyWhenModalGenerateFileOpen'
     />
     <InformFolder  
@@ -197,7 +196,6 @@ export default {
     addInstrument() {
       if(this.$route.params.copy == 'false' && !this.obj.id)
         return 0
-      console.log(this.$route.params.copy )
       if(this.$route.params.copy != 'false' && !this.PTInstrument)
         return showMessage('', 'Выберите Подтип', 'w', this)
       if(this.$route.params.copy != 'false' && !this.TInstrument)
@@ -255,9 +253,6 @@ export default {
         return 0
       this.showFile = true
       this.keyWhenModalGenerateFileOpen = random(10, 3843)
-    },
-    openFile(res) { 
-      console.log(res)
     },
     checkedUpdate() {
       if(isEmpty(this.getOneNameInstrument)) 

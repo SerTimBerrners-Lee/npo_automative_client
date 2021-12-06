@@ -27,7 +27,7 @@ const getKolvoMaterial = (mat) => {
 		if(arr_ez.length == 0) arr_ez.push({ez: 'шт',...mat})
 		return arr_ez
 	} catch (e) {
-		console.log(e)
+		console.error(e)
 	}
 }
 

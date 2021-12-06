@@ -62,7 +62,6 @@ export default {
 
     if(izd.techProcesses && izd.techProcesses.id) {
       const tp = await this.fetchTechProcess(izd.techProcesses.id)
-      console.log(tp)
       if(tp) this.operations = tp.operations
     } 
   },

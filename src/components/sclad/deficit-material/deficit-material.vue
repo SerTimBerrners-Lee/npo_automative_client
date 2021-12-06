@@ -226,7 +226,6 @@ export default {
 			this.span_material.classList.add('td-row-all')
 
 			this.material = material
-			console.log(material)
 		},
 		returnOstatokWays(material) {
 			if(!material.deliveries) return 0

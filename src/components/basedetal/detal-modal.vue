@@ -42,7 +42,7 @@
             <span style='font-weight: bold;'>{{ generateTime }}</span>
           </p>
         </div> 
-        <TableDocument :documents='getOneSelectDetal.documents'/>
+        <TableDocument :title='"Документы"' :documents='getOneSelectDetal.documents'/>
         <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес 
           <span style='font-size:12px;'>
             ({{ getOneSelectDetal && getOneSelectDetal.techProcesses && getOneSelectDetal.techProcesses.operations ? 
@@ -110,9 +110,6 @@ export default {
     setDocs(dc) {
       this.itemFiles = dc
       this.keyWhenModalGenerateFileOpen = random(10, 999)
-    },
-    openFile(res) {
-      console.log(res)
     },
     isEmptyF(obj) {
       return isEmpty(obj)

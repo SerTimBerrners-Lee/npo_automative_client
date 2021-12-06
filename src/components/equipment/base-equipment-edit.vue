@@ -119,7 +119,6 @@
     <OpensFile 
       :parametrs='itemFiles' 
       v-if="showFile" 
-      @unmount='openFile'
       :key='keyWhenModalGenerateFileOpen'
     />
     <BaseTools 
@@ -277,9 +276,6 @@ export default {
           return 0
       this.showFile = true
       this.keyWhenModalGenerateFileOpen = random(10, 38e9)
-    },
-    openFile(res) {
-      console.log(res)
     },
     checkedUpdate() {
       if(isEmpty(this.equipment)) 

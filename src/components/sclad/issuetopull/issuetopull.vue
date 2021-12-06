@@ -187,13 +187,11 @@ export default {
       this.span = e
       this.span.classList.add('checkbox_block_select')
       this.select_shipments = shipments
-      console.log(shipments)
     },
   },
   async mounted() {
     this.loader = true
     await this.fetchAllShipments()
-    console.log(this.getShipments)
     this.loader = false
   }
 }

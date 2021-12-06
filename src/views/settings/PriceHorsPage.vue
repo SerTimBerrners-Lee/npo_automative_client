@@ -32,8 +32,8 @@
 
 <script>
 import {mapGetters} from 'vuex';
-import PATH_TO_SERVER from '@/js/path';
 import { showMessage } from '@/js/';
+import PATH_TO_SERVER from '@/js/path';
 export default {
   data() {
     return{
@@ -71,7 +71,7 @@ export default {
         const result = await res.json()
         this.norm_hors = result[0]
       } catch (e) {
-        console.log(e)
+        console.error(e)
       }
     }
   }

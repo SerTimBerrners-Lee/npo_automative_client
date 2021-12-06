@@ -291,9 +291,6 @@ export default {
         return 0;
       this.$router.push({path: '/baseprovider/addedit/edit'})
     },
-    keySearch(key) {
-      console.log(key)
-    },
     clearFilterByNode() {
       this.clearFilterProviders()
       this.fetchAllProviderMaterial()

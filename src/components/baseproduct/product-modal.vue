@@ -52,7 +52,7 @@
 							style="width: 90%; height: 120px;" 
 							:value='selecteProduct.description'> </textarea>
 					</div>
-					<TableDocument :documents='selecteProduct.documents'/>
+					<TableDocument :title='"Документы"'  :documents='selecteProduct.documents'/>
 					<h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес
             <span style='font-size:12px;'>
               ({{ selecteProduct && selecteProduct.techProcesses && selecteProduct.techProcesses.operations ? 
@@ -137,7 +137,6 @@ export default {
 
     if(!this.$props.id) return this.destroyModalF()
     this.selecteProduct = await this.getAllProductById(this.$props.id)
-    console.log(this.selecteProduct)
     if(isEmpty(this.selecteProduct)) return this.destroyModalF()
     
     if(this.selecteProduct.techProcesses)

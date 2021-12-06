@@ -282,7 +282,6 @@ export default {
           if(prod.id == det.id) {
             let detal_new = det
             if(pars && !product.fabricNumber) {
-              console.log(pars)
               for(let uu of pars) {
                 if(uu.det.id == det.id)
                   detal_new['kolvo_for_detal'] = uu.kol

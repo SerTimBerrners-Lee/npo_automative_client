@@ -107,10 +107,6 @@ export default {
       }
     }
 
-		if(metal && metal.detal.shipments) 
-      console.log(metal.detal.shipments)
-		// 	this.fetchAllShipmentsById(this.$props.metaloworking.shipments.id).then(response => this.shipments = response)
-
 		if(metal && metal.detal) {
 				let izd = metal.detal
 				if(izd.materialList) {
