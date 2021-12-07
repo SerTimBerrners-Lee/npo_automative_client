@@ -14,6 +14,12 @@
         </div>
       </div>
       <div class='table_block'> 
+        <div style='width: 400px;'>
+          <ShipmentList
+            @unmount_set='toSetOrders'
+            @unmount_clear='unmount_clear'
+            :getShipments='getShipments'/>
+        </div>
         <div style='width: 99%;'> 
           <table>
             <tbody class='fixed_table_85'>
@@ -83,12 +89,12 @@
               </td>
           </tr>
           </table>
+           <div class='btn-control'>
+              <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
+              <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
+            </div>
         </div>
       </div>
-       <div class='btn-control'>
-          <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
-          <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
-        </div>
     </div>
     <StartPraduction 
       v-if='parametrs'
@@ -137,6 +143,7 @@ import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import StartPraduction from '@/components/sclad/start-production-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
+import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 export default {
   data() {
@@ -172,7 +179,7 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['allDetal']),
+  computed: mapGetters(['allDetal', 'getShipments']),
   components: { 
     DatePicterRange, 
     StartPraduction, 
@@ -180,11 +187,27 @@ export default {
     ShipmentsMiniList, 
     ProductListModal,
     DetalModal,
-    Search
+    Search,
+    ShipmentList
   },
   methods: {
-    ...mapActions(['setchDeficitDeficit', 'getOneDetal']),
-    ...mapMutations(['filterDetalToArticle']),
+    ...mapActions(['setchDeficitDeficit', 'getOneDetal', 'fetchAllShipments']),
+    ...mapMutations([
+      'filterDetalToArticle',
+      'cbedToShipmentsSort',
+      'detalToShipmentsSort',
+      'reverseMidlevareCbed',
+      'reverseMidlevareDetal',
+    ]),
+    unmount_clear() {
+      this.reverseMidlevareCbed()
+      this.reverseMidlevareDetal()
+    },
+    toSetOrders(shipments) {
+      this.unmount_clear()
+      this.cbedToShipmentsSort(shipments.cbeds)
+      this.detalToShipmentsSort(shipments.detals)
+    },
     keySearch(v) {
       this.filterDetalToArticle(v)
     },
@@ -265,6 +288,7 @@ export default {
   async mounted() {
     this.loader = true
     await this.setchDeficitDeficit()
+    this.fetchAllShipments()
     this.loader = false
   }
 }

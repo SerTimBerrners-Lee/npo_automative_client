@@ -4,24 +4,24 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 
-      <div class="right_info_block" v-if='equipment && equipment.name'>
+      <div class="right_info_block" v-if='getOnePPT && getOnePPT.name'>
         <div class="block">
-          <h3>Краткая Информация об оборудовании</h3>
+          <h3>Краткая Информация об Материале</h3>
           <p class='name_parg'>
-            <span class="title_span">Наименование: </span><span>{{ equipment.name }}</span>
+            <span class="title_span">Наименование: </span><span>{{ getOnePPT.name }}</span>
           </p>
-          <MediaSlider :width='"width: 93%;"' v-if='equipment.documents.length' :data='equipment.documents' :key='equipment.documents' />
+          <MediaSlider :width='"width: 93%;"' v-if='getOnePPT.documents.length' :data='getOnePPT.documents' :key='getOnePPT.documents' />
           <div>
           <span>Описание / Примечание</span>
-          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='equipment.description'> </textarea>
+          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOnePPT.description'> </textarea>
           </div>
-          <div v-if='equipment.documents.length > 0'>
+          <div v-if='getOnePPT.documents.length > 0'>
             <h3>Документы</h3>
             <table style="width: 100%;">
               <tr>
                 <th>Файл</th>
               </tr>
-              <tr class="td-row" v-for='doc in equipment.documents' :key='doc' @click='setDocs(doc)'>
+              <tr class="td-row" v-for='doc in getOnePPT.documents' :key='doc' @click='setDocs(doc)'>
                 <td>{{ doc.name }}</td>
               </tr>
             </table>
@@ -34,9 +34,9 @@
               :key='keyWhenModalGenerateFileOpen'
             />
           </div>
-          <h3 @click="providershow" v-if='!equipment.providers.length' style='cursor:pointer;'>Поставищики {{ equipment.providers.length }}</h3>
+          <h3 @click="providershow" v-if='!getOnePPT.providers.length' style='cursor:pointer;'>Поставищики {{ getOnePPT.providers.length }}</h3>
             <ShowProvider
-              :allProvider='equipment.providers' 
+              :allProvider='getOnePPT.providers' 
               :key='keyProvidersModalEq'
               v-if='showProvidersEq'
             />
@@ -68,10 +68,10 @@ export default {
       keyWhenModalGenerateFileOpen: random(1, 999),
     }
   },
-  computed: mapGetters(['equipment']),
+  computed: mapGetters(['getOnePPT']),
   components: {OpensFile, ShowProvider, MediaSlider},
   methods: {
-    ...mapActions(['fetchOneEquipment']),
+    ...mapActions(['fetchGetOnePPM']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -100,7 +100,7 @@ export default {
 
     if(!this.$props.id) return this.destroyModalF()
 
-    await this.fetchOneEquipment(this.$props.id)
+    await this.fetchGetOnePPM(this.$props.id)
 
   },
 }

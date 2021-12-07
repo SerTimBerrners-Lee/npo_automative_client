@@ -246,6 +246,7 @@ export default {
     await this.fetchAssemble()
     await this.getAllTypeOperations()
     this.filterOperation()
+    
     this.loader = false
 	}
 }

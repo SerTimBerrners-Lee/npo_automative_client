@@ -44,7 +44,7 @@
       </div>
       <TableNode  
         v-if='this.podPodMaterial' 
-        :material='podPodMaterial'
+        :izd='podPodMaterial'
       />
       <OpensFile 
         :parametrs='itemFiles' 
@@ -57,12 +57,11 @@
 </template> 
 
 <script>
-
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
 import random from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
 import TableNode from '@/components/mathzag/table-node.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 export default {
   data() {
     return {
@@ -70,7 +69,7 @@ export default {
       podMaterial: null,
       podPodMaterial: null,
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 4e4),
+      keyWhenModalGenerateFileOpen: random(10, 999),
       span: null,
       instansLet: 0,
 
@@ -129,7 +128,7 @@ export default {
           this.podPodMaterial = material
           if(this.podPodMaterial.documents && this.podPodMaterial.documents.length > 0) { 
             this.itemFiles = this.podPodMaterial.documents
-            this.keyWhenModalGenerateFileOpen = random(10, 384e4)
+            this.keyWhenModalGenerateFileOpen = random(10, 999)
           }
         })
       }

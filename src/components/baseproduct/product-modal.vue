@@ -59,6 +59,7 @@
                 selecteProduct.techProcesses.operations.length : '0' }} операции)</span>
           </h3>
           <h3 v-else>Нет технологического процесса</h3>
+          <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
 				</div>
       </div>
     </div>
@@ -69,12 +70,18 @@
     :key='techProcessKey'
     :techProcessID='techProcessID'
   />
+  <NodeModal
+      v-if='selecteProduct && show_node_modal'
+      :izd='selecteProduct'
+      :key='key_node_modal'
+    />
 </template>
 
 <script>
 import {random, isEmpty} from 'lodash';
 import {mapGetters, mapMutations, mapActions } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import NodeModal from '@/components/basedetal/parents-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
@@ -89,6 +96,8 @@ export default {
       showProviders: false,
       keyProvidersModal: random(1, 999),
 			selecteProduct: null,
+      show_node_modal: false,
+      key_node_modal: random(1, 999),
 
 			materialList: [],
       listPokDet: [],
@@ -107,7 +116,8 @@ export default {
     MediaSlider, 
     TechProcess, 
     TableSpetification, 
-    TableDocument
+    TableDocument,
+    NodeModal
   },
   methods: {
     ...mapActions(['getAllProductById']),
@@ -117,6 +127,10 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
       this.removeOperationStorage()
+    },
+    showModalNode() {
+      this.show_node_modal = true
+      this.key_node_modal = random(1, 999)
     },
     setDocs(dc) {
       this.itemFiles = dc

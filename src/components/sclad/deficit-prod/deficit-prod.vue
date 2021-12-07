@@ -15,10 +15,12 @@
       </div>
     </div>
     <div class='table_block'>
-      <ShipmentList
-        v-if='false'
-        @unmount_set='toSetOrders'
-        :getShipments='[]'/>
+      <div style='width: 400px;'>
+        <ShipmentList
+          @unmount_set='toSetOrders'
+          @unmount_clear='unmount_clear'
+          :getShipments='getShipments'/>
+      </div>
       <div style='margin-left: 5px;'>
         <table>
           <tbody class='fixed_table_85'>
@@ -122,13 +124,12 @@
             </td>
           </tr>
         </table>
+        <div class='btn-control'>
+          <button class="btn-small" @click='normTimeOperation'>Норма времени по операциям</button>
+          <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
+          <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
+        </div>
       </div>
-    </div>
-
-    <div class='btn-control'>
-      <button class="btn-small" @click='normTimeOperation'>Норма времени по операциям</button>
-      <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
-      <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
     </div>
     <StartProduction 
       v-if='parametrs'
@@ -230,7 +231,7 @@ export default {
       type_norm_time: 'cb'
     }
   },
-  computed: mapGetters(['allCbed', 'allDetal']),
+  computed: mapGetters(['allCbed', 'allDetal', 'getShipments']),
   components: {
     DatePicterRange, 
     StartProduction, 
@@ -249,14 +250,27 @@ export default {
       'getOneCbEdById', 
       'getOneDetal', 
       'setchDeficitCbed', 
-      'setchDeficitDeficit'
+      'setchDeficitDeficit',
+      'fetchAllShipments'
     ]),
-    ...mapMutations(['searchCbed']),
+    ...mapMutations([
+      'searchCbed',
+      'cbedToShipmentsSort',
+      'detalToShipmentsSort',
+      'reverseMidlevareCbed',
+      'reverseMidlevareDetal'
+    ]),
     keySearchCb(v) {
       this.searchCbed(v)
     },
+    unmount_clear() {
+      this.reverseMidlevareCbed()
+      this.reverseMidlevareDetal()
+    },
     toSetOrders(shipments) {
-      console.log(shipments)
+      this.unmount_clear()
+      this.cbedToShipmentsSort(shipments.cbeds)
+      this.detalToShipmentsSort(shipments.detals)
     },
     start() {
       if(!this.toProductionArr.length)
@@ -279,6 +293,7 @@ export default {
       this.normTimeOperationKey = random(1, 999)
     },
     shipmentsShow(shipments) {
+      if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
       this.shipments = shipments
       this.shipmentKey = random(1, 999)
     },
@@ -363,6 +378,7 @@ export default {
     this.loader = true
     await this.setchDeficitCbed()
     await this.setchDeficitDeficit()
+    this.fetchAllShipments()
     this.loader = false
   }
 }

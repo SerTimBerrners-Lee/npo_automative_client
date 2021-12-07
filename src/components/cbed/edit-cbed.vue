@@ -203,7 +203,7 @@
               <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
             </div>
           </div>
-        <h3 class="link_h3">Принадлежность</h3>
+        <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
     </div>
     <InformFolder  
       :title='titleMessage'
@@ -230,8 +230,13 @@
       :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
-  />
-  <Loader v-if='loader' /> 
+    />
+    <NodeModal
+      v-if='getOneSelectCbEd && show_node_modal'
+      :izd='getOneSelectCbEd'
+      :key='key_node_modal'
+    />
+    <Loader v-if='loader' /> 
   </div>
 </template>
 
@@ -242,6 +247,7 @@ import { random, isEmpty } from 'lodash';
 import TableSpetification from './table-sptification.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
+import NodeModal from '@/components/basedetal/parents-modal.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
@@ -295,6 +301,8 @@ export default {
 
       showBFM: false,
       generateKeyBFM: random (1, 999),
+      show_node_modal: false, 
+      key_node_modal: random(1, 999),
 
       id: null,
       documentsData: [],
@@ -322,7 +330,11 @@ export default {
 			}
     }
   },
-  computed: mapGetters(['getUsers', 'getOneSelectCbEd', 'getRoleAssets']),
+  computed: mapGetters([
+    'getUsers', 
+    'getOneSelectCbEd', 
+    'getRoleAssets'
+  ]),
   components: {
     OpensFile,  
     ModalBaseMaterial, 
@@ -332,7 +344,8 @@ export default {
     BaseCbedModal, 
     BaseFileModal,
     TableSpetification,
-    TableDocument
+    TableDocument,
+    NodeModal
     },
   unmounted() {
     this.deleteStorageData()
@@ -548,6 +561,10 @@ export default {
     addFileModal() {
       this.fileModalKey = random(1, 999)
       this.showModalFile = true
+    },
+    showModalNode() {
+      this.show_node_modal = true
+      this.key_node_modal = random(1, 999)
     }
   },
   async mounted() {

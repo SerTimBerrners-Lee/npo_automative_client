@@ -1,5 +1,5 @@
 <template>
-    <div class="right-div-bfp">
+  <div class="right-div-bfp">
     <h3>Принадлежность</h3>
     <div class="block scroll-table node_item">
       <h3 class="link_h3" @click='showIzd = !showIzd'>Изделие
@@ -186,8 +186,6 @@
           </tr>
         </table>
       </div>
-
-
     </div>
     <div class="btn-control">
       <button class="btn-small">
@@ -196,11 +194,13 @@
     </div>
     <DetalModal
       :key='detalModalKey'
-      v-if='detalIsShow'
+      :id='parametrs_detal'
+      v-if='parametrs_detal'
     />
     <EquipmentModal
       :key='eqModalKey'
-      v-if='eqIsShow'
+      v-if='eq_modal_id'
+      :id='eq_modal_id'
     />
     <ShowProvider
       :allProvider='provider' 
@@ -209,13 +209,11 @@
     /> 
 </div>
 </template>
-
 <script>
+import { random } from 'lodash';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import EquipmentModal from "@/components/equipment/modal-information.vue"
 import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
-import { mapActions } from 'vuex';
-import { random } from 'lodash';
 export default {
   props: ['file'],
   data() {
@@ -230,44 +228,34 @@ export default {
       showInstrument: false,
       showInventary: false,
 
-      selectedDetal: null,
       tr: null,
 
-      detalModalKey: random(1, 123e2),
-      detalIsShow: false,
+      detalModalKey: random(1, 999),
+      parametrs_detal: null,
 
-      eqModalKey: random(1, 123e2),
-      eqIsShow: false,
+      eqModalKey: random(1, 999),
+      eq_modal_id: null,
 
-      keyProvidersModal: random(10, 384e4),
+      keyProvidersModal: random(10, 999),
       provider: null
     }
   },
   components: {DetalModal, EquipmentModal, ShowProvider},
   methods: {
-    ...mapActions([ 
-      'getOneDetal', 
-      'fetchOneEquipment'
-    ]),
     setDetals(detal, e) {
-      this.selectedDetal = detal
       this.setTr(e)
-      this.getOneDetal(this.selectedDetal.id).then(() => {
-        this.detalModalKey = random(1, 34e5)
-        this.detalIsShow = true
-      })
+      this.parametrs_detal = detal.id
+			this.detalModalKey = random(1, 999)
     },
-    setEq(eq, e) {
+    setEq(eq, e) { 
       this.setTr(e)
-      this.fetchOneEquipment(eq.id).then(() => {
-        this.eqModalKey = random(1, 123e2)
-        this.eqIsShow = true
-      })
+      this.eq_modal_id = eq.id;
+      this.eqModalKey = random(1, 999)
     },
     setProvider(provider, e) {
       this.setTr(e)
       this.provider = [provider]
-      this.keyProvidersModal = random(1, 34e5)
+      this.keyProvidersModal = random(1, 999)
     },
     setTr(e) {
       if(this.tr) 
@@ -278,8 +266,6 @@ export default {
   }
 }
 </script>
-
-
 <style scoped>
 .right-div-bfp {
   width: 414px;

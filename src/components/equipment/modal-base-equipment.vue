@@ -44,18 +44,14 @@
         </div>
       </div>
     </div>
-    <ModalInformation v-if='showModalInformationEq' :key='keyModalInformation' />
-
+    <ModalInformation v-if='eq_modal_id' :id='eq_modal_id' :key='keyModalInformation' />
   </div> 
 </template>
-
 <script>
-
-import TableMaterial from '@/components/mathzag/table-material.vue';
+import {random} from 'lodash';
+import ModalInformation from './modal-information.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import {random} from 'lodash'
-import ModalInformation from './modal-information.vue'
-
+import TableMaterial from '@/components/mathzag/table-material.vue';
 export default {
   props: ['listEquipment','get_one'],
   data() {
@@ -63,8 +59,8 @@ export default {
       equipmentT: null,
       equipmentPT: null,
 
-      showModalInformationEq: false,
-      keyModalInformation: random(1, 34e121),
+      eq_modal_id: null,
+      keyModalInformation: random(1, 999),
 
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
@@ -102,10 +98,8 @@ export default {
       this.fetchOneEquipment(eq.id)
     },
     dbClickEquipment(eq) {
-      this.fetchOneEquipment(eq.id).then(() => {
-        this.showModalInformationEq = true;
-        this.keyModalInformation = random(10, 34e121)
-      })
+      this.eq_modal_id = eq.id;
+      this.keyModalInformation = random(10, 999)
     },
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'

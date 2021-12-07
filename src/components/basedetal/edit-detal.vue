@@ -107,7 +107,7 @@
             />
             <h3 class="link_h3">Себестоимость</h3>
             <h3 class="link_h3" @click='historyAction'>История изменений</h3>
-            <h3 class="link_h3">Принадлежность</h3>
+            <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
           </div>
         </div>
         <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
@@ -143,11 +143,11 @@
             :typeGetFile='"getfile"'
             @unmount='file_unmount'/>
         </div>
-          <OpensFile 
-            :parametrs='itemFiles' 
-            v-if="itemFiles" 
-            :key='keyWhenModalGenerateFileOpen'
-          />
+        <OpensFile 
+          :parametrs='itemFiles' 
+          v-if="itemFiles" 
+          :key='keyWhenModalGenerateFileOpen'
+        />
       </div>
     </div>
     <HistoryActions 
@@ -170,14 +170,20 @@
       :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
-  />
-  <Loader v-if='loader' /> 
+    />
+    <NodeModal
+      v-if='getOneSelectDetal && show_node_modal'
+      :izd='getOneSelectDetal'
+      :key='key_node_modal'
+    />
+    <Loader v-if='loader' /> 
   </div>
 </template>
 <script>
 import { showMessage } from '@/js/';
 import { random, isEmpty } from 'lodash';
 import PATH_TO_SERVER from '@/js/path.js';
+import NodeModal from './parents-modal.vue';
 import TechProcess from './tech-process-modal.vue';
 import HaracteristicZag from './haracteristic-zag.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
@@ -211,6 +217,8 @@ export default {
       },
       showModalFile: false,
       fileModalKey: random(1, 999),
+      show_node_modal: false, 
+      key_node_modal: random(1, 999),
       formData: null,
       modalMaterialKey: random(10, 999),
       modalMaterialIsShow: false,
@@ -266,7 +274,9 @@ export default {
     OpensFile, 
     HaracteristicZag,
     TableDocument,
-    HistoryActions},
+    HistoryActions,
+    NodeModal,
+  },
   methods: {
     ...mapActions([
       'createNewDetal', 
@@ -425,6 +435,10 @@ export default {
     addFileModal() {
       this.fileModalKey = random(1, 999)
       this.showModalFile = true
+    },
+    showModalNode() {
+      this.show_node_modal = true
+      this.key_node_modal = random(1, 999)
     }
   },
   async mounted() {

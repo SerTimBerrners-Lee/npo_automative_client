@@ -114,6 +114,7 @@
         </div>
         <TableDocument v-if='selecteProduct.documents.length'
           :documents='selecteProduct.documents'/>
+        <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
       </div>
     </div>
     <Loader v-if='loader' />
@@ -123,6 +124,11 @@
       @unmount='unmount_tech_process'
       :techProcessID='techProcessID'
     />
+    <NodeModal
+      v-if='selecteProduct && show_node_modal'
+      :izd='selecteProduct'
+      :key='key_node_modal'
+    />
   </div>
 </template>
 <script>
@@ -130,6 +136,7 @@ import { random, isEmpty } from 'lodash';
 import Search from '@/components/search.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import NodeModal from '@/components/basedetal/parents-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
@@ -145,6 +152,8 @@ export default {
       techProcessID: null,
       techProcessIsShow: false,
       techProcessKey: random(1, 999),
+      show_node_modal: false,
+      key_node_modal: random(1, 999),
 
       materialList: [],
       listPokDet: [],
@@ -162,7 +171,8 @@ export default {
     TableDocument, 
     MediaSlider, 
     TechProcess, 
-    TableSpetification
+    TableSpetification,
+    NodeModal
   },
   methods: {
     ...mapActions([
@@ -189,6 +199,10 @@ export default {
         this.tr.classList.remove('td-row-all')
       this.tr = e
       this.tr.classList.add('td-row-all')
+    },
+    showModalNode() {
+      this.show_node_modal = true
+      this.key_node_modal = random(1, 999)
     },
     parseSpetification(obj) {
       this.materialList = []

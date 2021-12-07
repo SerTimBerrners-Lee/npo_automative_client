@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js'
+import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
   state: {
@@ -10,7 +10,7 @@ export default {
     tmp_attention: [],
     tmp_operation: []
   }, 
-  getters: {
+  getters: { 
     allCbed(state) {
       return state.cbed
     },
@@ -121,6 +121,29 @@ export default {
 
   },
   mutations: {
+    reverseMidlevareCbed(state) {
+      if(!state.middleware_state.length) return false
+      state.cbed = state.middleware_state
+      state.middleware_state = []
+    },
+    cbedToShipmentsSort(state, cbed) {
+      if(state.middleware_state.length == 0) {
+        state.middleware_state = state.cbed
+        state.cbed = []
+      }
+
+      for(let cb of cbed) {
+        let check = true
+        for(let cb_two of state.cbed) {
+          if(cb_two.id == cb.id) check = false
+        }
+        if(check) state.cbed.push(cb)
+        else check = false
+      }
+    },
+    addOneCbed(state, cbed) {
+      state.cbed.push(cbed)
+    },
     addAllCbed(state, cbed) {
       state.cbed = cbed.filter(cb => !cb.ban)
     },

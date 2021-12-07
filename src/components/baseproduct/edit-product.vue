@@ -197,7 +197,7 @@
               <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
             </div>
           </div>
-        <h3 class="link_h3">Принадлежность</h3>
+        <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
     </div>
     </div>
     <InformFolder  
@@ -225,8 +225,13 @@
       :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
-  />
-  <Loader v-if='loader' /> 
+    />
+    <NodeModal
+      v-if='getOneSelectProduct && show_node_modal'
+      :izd='getOneSelectProduct'
+      :key='key_node_modal'
+    />
+    <Loader v-if='loader' /> 
   </div>
 </template>
 <script>
@@ -235,6 +240,7 @@ import PATH_TO_SERVER from '@/js/path';
 import { random, isEmpty } from 'lodash';
 import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
+import NodeModal from '@/components/basedetal/parents-modal.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
@@ -290,6 +296,8 @@ export default {
 
       showBFM: false,
       generateKeyBFM: random (1, 999),
+      show_node_modal: false, 
+      key_node_modal: random(1, 999),
 
       showCbed: false,
       generateKeyCbed: random(1, 999),
@@ -330,7 +338,8 @@ export default {
     OpensFile,
     BaseFileModal,
     TableDocument,
-    TableSpetification
+    TableSpetification,
+    NodeModal
   },
   methods: {
     ...mapActions([
@@ -554,6 +563,10 @@ export default {
     addFileModal() {
       this.fileModalKey = random(1, 999)
       this.showModalFile = true
+    },
+    showModalNode() {
+      this.show_node_modal = true
+      this.key_node_modal = random(1, 999)
     }
   },
   async mounted() {

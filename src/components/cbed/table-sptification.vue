@@ -48,7 +48,10 @@
 		<tr>
 			<th colspan="4">Стандартные или покупные детали (Тип ПД)</th>
 		</tr>
-		<tr v-for='material in listPokDet' :key='material.mat'>
+		<tr v-for='material in listPokDet' 
+			class='td-row'
+			@click='openMaterial(material.mat.id)'
+			:key='material.mat'>
 			<td>{{ material.art }} </td>
 			<td>{{ material.mat.name }}</td>
 			<td> 
@@ -63,7 +66,10 @@
 		<tr>
 			<th colspan="4">Расходные материалы (Тип РМ)</th>
 		</tr>
-		<tr v-for='material in materialList' :key='material.mat'>
+		<tr v-for='material in materialList' 
+			class='td-row'
+			@click='openMaterial(material.mat.id)'
+			:key='material.mat'>
 			<td>{{ material.art }} </td>
 			<td>{{ material.mat.name }}</td>
 			<td> 
@@ -86,12 +92,18 @@
 		v-if='parametrs_detal'
 		:id='parametrs_detal'
 	/>
+	<MaterialInformation 
+		:key='material_key'
+		v-if='material_id'
+		:id='material_id'
+	/>
 	</div>
 </template>
 <script>
 import {random} from 'lodash';
 import ModalCbed from '@/components/cbed/cbed-modal.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
+import MaterialInformation from '@/components/mathzag/material-information.vue';
 export default {
 	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList'],
 	data() {
@@ -100,9 +112,11 @@ export default {
 			detalModalKey: random(1, 999),
       cbedModalKey: random(1, 999),
       parametrs_cbed: null,
+			material_key: random(1, 999),
+			material_id: null,
 		}
 	},
-	components: {ModalCbed, DetalModal},
+	components: {ModalCbed, DetalModal, MaterialInformation},
 	methods: {
 		openCbed(id) {
 			if(!id) return false
@@ -113,6 +127,10 @@ export default {
 			if(!id) return false
 			this.parametrs_detal = id,
       this.detalModalKey = random(1, 999)
+		},
+		openMaterial(id) {
+			this.material_key = random(1, 999)
+			this.material_id = id
 		}
 	},
 }

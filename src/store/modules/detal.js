@@ -190,6 +190,26 @@ export default {
     }
   },
   mutations: {
+    reverseMidlevareDetal(state) {
+      if(!state.middleware_detals.length) return false
+      state.detal = state.middleware_detals
+      state.middleware_detals = []
+    },
+    detalToShipmentsSort(state, detal) {
+      if(state.middleware_detals.length == 0) {
+        state.middleware_detals = state.detal
+        state.detal = []
+      }
+
+      for(let det of detal) {
+        let check = true
+        for(let det_two of state.detal) {
+          if(det_two.id == det.id) check = false
+        }
+        if(check) state.detal.push(det)
+        else check = false
+      }
+    },
     addNewDetalToArr(state, detal) {
       state.detal.push(detal)
     },
@@ -322,6 +342,6 @@ export default {
           if(item.id == id) state.detal.push(item)
         }
       }
-    }
+    },
   }
 }
