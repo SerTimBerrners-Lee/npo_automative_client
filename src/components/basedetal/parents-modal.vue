@@ -7,6 +7,9 @@
 					v-if='izd' 
 					:izd='izd'
 					:css='"full"'
+          :no_show_izd='no_show_izd'
+          :no_show_cb='no_show_cb'
+          :no_show_det='no_show_det'
 				/>
       </div>
     </div>
@@ -16,7 +19,7 @@
 <script>
 import TableNode from '@/components/mathzag/table-node.vue';
 export default {
-  props: ['izd'],
+  props: ['izd', 'no_show_izd', 'no_show_cb', 'no_show_det'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',

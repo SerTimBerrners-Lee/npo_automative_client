@@ -2,7 +2,7 @@
   <div :class="border_show ? '' + css : 'right-div-bfp '+ css">
     <h3>Принадлежность</h3>
     <div :class="border_show ? 'node_item' + css  : 'block node_item' + css ">
-      <h3 class="link_h3" @click='showIzd = !showIzd' v-if='izd.products'>
+      <h3 class="link_h3" @click='showIzd = !showIzd' v-if='izd.products && !no_show_izd'>
         Изделие: {{ izd.products.length }} </h3>
       <div class="scroll-table table-fbp" v-if='showIzd'>
         <table>
@@ -21,7 +21,7 @@
           </tr>
         </table>
       </div>
-      <h3 class="link_h3" @click='showSB = !showSB' v-if='izd.cbeds || izd.cbed'>
+      <h3 class="link_h3" @click='showSB = !showSB' v-if='!no_show_cb && izd.cbeds || izd.cbed'>
         Сборочная единица: {{ izd.cbeds ? izd.cbeds.length : izd.cbed.length }}</h3>
       <div class="scroll-table table-fbp" v-if='showSB'>
         <table>
@@ -41,7 +41,7 @@
           </tr>
         </table>
       </div>
-      <h3 class="link_h3" @click='showDetal = !showDetal'  v-if='izd.detals'>
+      <h3 class="link_h3" @click='showDetal = !showDetal'  v-if='izd.detals && !no_show_cb'>
         Деталь: {{ izd.detals.length }} </h3>
       <div class="scroll-table table-fbp" v-if='showDetal'>
         <table>
@@ -93,7 +93,7 @@ import ModalCbed from '@/components/cbed/cbed-modal.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import ModalProduct from '@/components/baseproduct/product-modal.vue';
 export default {
-  props: ['izd', 'border_show', 'css'],
+  props: ['izd', 'border_show', 'css', 'no_show_izd', 'no_show_cb', 'no_show_det'],
   data() {
     return {
       showIzd: false,

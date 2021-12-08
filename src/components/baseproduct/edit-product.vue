@@ -230,6 +230,8 @@
       v-if='getOneSelectProduct && show_node_modal'
       :izd='getOneSelectProduct'
       :key='key_node_modal'
+      :no_show_det='"true"'
+      :no_show_cb='"true"'
     />
     <Loader v-if='loader' /> 
   </div>

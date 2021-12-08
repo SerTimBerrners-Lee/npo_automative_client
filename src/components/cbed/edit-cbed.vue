@@ -235,6 +235,7 @@
       v-if='getOneSelectCbEd && show_node_modal'
       :izd='getOneSelectCbEd'
       :key='key_node_modal'
+      :no_show_det='"true"'
     />
     <Loader v-if='loader' /> 
   </div>

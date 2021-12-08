@@ -71,9 +71,11 @@
     :techProcessID='techProcessID'
   />
   <NodeModal
-      v-if='selecteProduct && show_node_modal'
-      :izd='selecteProduct'
-      :key='key_node_modal'
+    v-if='selecteProduct && show_node_modal'
+    :izd='selecteProduct'
+    :key='key_node_modal'
+    :no_show_det='"true"'
+    :no_show_cb='"true"'
     />
 </template>
 

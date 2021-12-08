@@ -1,76 +1,76 @@
 <template>
-<div class="right-menu-modal informat">
-  <div :class='destroyModalLeft' @click="destroyModalF"></div>
-  <div :class='destroyModalRight'>
-    <div :style="hiddens" > 
+  <div class="right-menu-modal informat">
+    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalRight'>
+      <div :style="hiddens" > 
 
-      <div class="right_info_block" >
-				<h3>Краткая Информация о Сборочной Единице</h3>
-				<div class="block" v-if='selectedCbEd'>
-					<p class='name_parg'>
-						<span class="title_span">Наименование: </span><span>{{ selectedCbEd.name }}</span>
-					</p>
-					<p class='name_parg'>
-						<span class="title_span">Артикул: </span><span>{{ selectedCbEd.articl }}</span>
-					</p>
-					<MediaSlider :width='"width: 93%;"' v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
-          <button 
-            style='width: 98%;'
-            class="btn" 
-            v-if='selectedCbEd' 
-            @click='$router.push({path: "/cbed/edit/false"})'>Полная информация</button>
-          <div>
-						<h3>Спетификация Сборочной единицы</h3>
-						<TableSpetification
-              :key='selectedCbEd.id + selectedCbEd'
-							:listCbed='listCbed'
-							:listDetal='listDetal'
-							:listPokDet='listPokDet'
-							:materialList='materialList'
-						/>
-					</div>
-					<div>
-						<h3>Характеристики</h3>
-						<div>
-							<p v-for='har in JSON.parse(selectedCbEd.haracteriatic)' :key='har'>
-								<span>{{ har.name }}({{har.ez}}): </span>
-								<span style='font-weight:bold;'>{{ har.znach }} </span>
-							</p>
-						</div>
-					</div>
-					<div v-if='selectedCbEd.parametrs'>
-						<h3>Параметры</h3>
-						<p v-for='par in JSON.parse(selectedCbEd.parametrs)' :key='par'>
-							<span>{{ par.name }}({{par.ez}}): </span>
-							<span style='font-weight:bold;'>{{ par.znach }} </span>
-						</p>
-					</div>
-					<div>
-						<h3>Описание / Примечание</h3>
-						<textarea maxlength='250' style="width: 90%; height: 120px;" :value='selectedCbEd.description'> </textarea>
-					</div>
-          <TableDocument :title='"Документы"'  :documents='selectedCbEd.documents'/>
-					<h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес
-            <span style='font-size:12px;'>
-              ({{ selectedCbEd && selectedCbEd.techProcesses && selectedCbEd.techProcesses.operations ? 
-                selectedCbEd.techProcesses.operations.length : '0' }} операции)</span>
-          </h3>
-          <h3 v-else>Нет технологического процесса</h3>
-          <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
-				</div>
+        <div class="right_info_block" >
+          <h3>Краткая Информация о Сборочной Единице</h3>
+          <div class="block" v-if='selectedCbEd'>
+            <p class='name_parg'>
+              <span class="title_span">Наименование: </span><span>{{ selectedCbEd.name }}</span>
+            </p>
+            <p class='name_parg'>
+              <span class="title_span">Артикул: </span><span>{{ selectedCbEd.articl }}</span>
+            </p>
+            <MediaSlider :width='"width: 93%;"' v-if='selectedCbEd.documents.length' :data='selectedCbEd.documents' :key='selectedCbEd.documents' />
+            <button 
+              style='width: 98%;'
+              class="btn" 
+              v-if='selectedCbEd' 
+              @click='$router.push({path: "/cbed/edit/false"})'>Полная информация</button>
+            <div>
+              <h3>Спетификация Сборочной единицы</h3>
+              <TableSpetification
+                :key='selectedCbEd.id + selectedCbEd'
+                :listCbed='listCbed'
+                :listDetal='listDetal'
+                :listPokDet='listPokDet'
+                :materialList='materialList'
+              />
+            </div>
+            <div>
+              <h3>Характеристики</h3>
+              <div>
+                <p v-for='har in JSON.parse(selectedCbEd.haracteriatic)' :key='har'>
+                  <span>{{ har.name }}({{har.ez}}): </span>
+                  <span style='font-weight:bold;'>{{ har.znach }} </span>
+                </p>
+              </div>
+            </div>
+            <div v-if='selectedCbEd.parametrs'>
+              <h3>Параметры</h3>
+              <p v-for='par in JSON.parse(selectedCbEd.parametrs)' :key='par'>
+                <span>{{ par.name }}({{par.ez}}): </span>
+                <span style='font-weight:bold;'>{{ par.znach }} </span>
+              </p>
+            </div>
+            <div>
+              <h3>Описание / Примечание</h3>
+              <textarea maxlength='250' style="width: 90%; height: 120px;" :value='selectedCbEd.description'> </textarea>
+            </div>
+            <TableDocument :title='"Документы"'  :documents='selectedCbEd.documents'/>
+            <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес
+              <span style='font-size:12px;'>
+                ({{ selectedCbEd && selectedCbEd.techProcesses && selectedCbEd.techProcesses.operations ? 
+                  selectedCbEd.techProcesses.operations.length : '0' }} операции)</span>
+            </h3>
+            <h3 v-else>Нет технологического процесса</h3>
+            <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+          </div>
+        </div>
       </div>
     </div>
   </div>
-</div>
  <TechProcess 
     v-if='techProcessIsShow'
     :key='techProcessKey'
     :techProcessID='techProcessID'
   />
   <NodeModal
-      v-if='selectedCbEd && show_node_modal'
-      :izd='selectedCbEd'
-      :key='key_node_modal'
+    v-if='selectedCbEd && show_node_modal'
+    :izd='selectedCbEd'
+    :key='key_node_modal'
     />
 </template>
 <script>
