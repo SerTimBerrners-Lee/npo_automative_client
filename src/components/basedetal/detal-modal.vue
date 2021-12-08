@@ -61,10 +61,10 @@
     :techProcessID='techProcessID'
   />
   <NodeModal
-      v-if='getOneSelectDetal && show_node_modal'
-      :izd='getOneSelectDetal'
-      :key='key_node_modal'
-    />
+    v-if='getOneSelectDetal && show_node_modal'
+    :izd='getOneSelectDetal'
+    :key='key_node_modal'
+  />
 </template>
 <script>
 import {isEmpty, random} from 'lodash';

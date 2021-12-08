@@ -89,9 +89,6 @@
 <script>
 import { random } from 'lodash';
 import { mapActions } from 'vuex';
-import ModalCbed from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
-import ModalProduct from '@/components/baseproduct/product-modal.vue';
 export default {
   props: ['izd', 'border_show', 'css', 'no_show_izd', 'no_show_cb', 'no_show_det'],
   data() {
@@ -109,7 +106,12 @@ export default {
       product_modal_key: random(1, 999)
     }
   },
-  components: {DetalModal, ModalCbed, ModalProduct},
+  components: {},
+  beforeCreate() {
+    this.$options.components.DetalModal = require('@/components/basedetal/detal-modal.vue').default;
+    this.$options.components.ModalCbed = require('@/components/cbed/cbed-modal.vue').default;
+    this.$options.components.ModalProduct = require('@/components/baseproduct/product-modal.vue').default;
+  },
   methods: {
     ...mapActions(['']),
     setDetals(detal, e) {

@@ -101,8 +101,6 @@
 </template>
 <script>
 import {random} from 'lodash';
-import ModalCbed from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
 import MaterialInformation from '@/components/mathzag/material-information.vue';
 export default {
 	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList'],
@@ -116,7 +114,11 @@ export default {
 			material_id: null,
 		}
 	},
-	components: {ModalCbed, DetalModal, MaterialInformation},
+	beforeCreate() {
+    this.$options.components.DetalModal = require('@/components/basedetal/detal-modal.vue').default
+    this.$options.components.ModalCbed = require('@/components/cbed/cbed-modal.vue').default
+  },
+	components: {MaterialInformation},
 	methods: {
 		openCbed(id) {
 			if(!id) return false

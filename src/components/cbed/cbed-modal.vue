@@ -71,6 +71,7 @@
     v-if='selectedCbEd && show_node_modal'
     :izd='selectedCbEd'
     :key='key_node_modal'
+    :no_show_det='"true"'
     />
 </template>
 <script>
