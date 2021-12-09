@@ -1,6 +1,6 @@
 <template>
   <div :class="border_show ? '' + css : 'right-div-bfp '+ css">
-    <h3>Принадлежность</h3>
+    <h3>{{ title ? title : 'Принадлежность' }}</h3>
     <div :class="border_show ? 'node_item' + css  : 'block node_item' + css ">
       <h3 class="link_h3" @click='showIzd = !showIzd' v-if='izd.products && !no_show_izd'>
         Изделие: {{ izd.products.length }} </h3>
@@ -41,7 +41,7 @@
           </tr>
         </table>
       </div>
-      <h3 class="link_h3" @click='showDetal = !showDetal'  v-if='izd.detals && !no_show_cb'>
+      <h3 class="link_h3" @click='showDetal = !showDetal'  v-if='izd.detals && !no_show_det'>
         Деталь: {{ izd.detals.length }} </h3>
       <div class="scroll-table table-fbp" v-if='showDetal'>
         <table>
@@ -90,7 +90,7 @@
 import { random } from 'lodash';
 import { mapActions } from 'vuex';
 export default {
-  props: ['izd', 'border_show', 'css', 'no_show_izd', 'no_show_cb', 'no_show_det'],
+  props: ['izd', 'border_show', 'css', 'no_show_izd', 'no_show_cb', 'no_show_det', 'title'],
   data() {
     return {
       showIzd: false,
@@ -135,14 +135,9 @@ export default {
       this.tr = e
       this.tr.classList.add('td-row-all')
     },
-  },
-  async mounted() {
-    console.log(this.$props.izd)
   }
 }
 </script>
-
-
 <style scoped>
 .right-div-bfp {
   width: 414px;
@@ -161,6 +156,6 @@ th {
   height: auto;
 }
 .full {
-  width:100%;
+  width: 98%;
 }
 </style>

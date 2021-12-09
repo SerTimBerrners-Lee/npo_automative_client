@@ -23,7 +23,6 @@
             >
         </p>
       </div>
-
         <div class="content_left_block">
           <div class="content_left_block_left">
             <div>
@@ -69,7 +68,11 @@
               <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
-              <TableDocument v-if='documentsData.length' :title='""' :documents='documentsData' @unmount='setDocs' />
+              <TableDocument 
+                v-if='documentsData.length' 
+                :title='""' 
+                :key='table_document_key'
+                :documents='documentsData'/>
             </div>
             <div>
             <h3>Документы</h3>
@@ -106,104 +109,112 @@
             style="height: 0px;" 
             @click='saveCbed'
             >{{$route.params.copy == "false" ? 'Обновить ' : 'Добавить'}}</button>
-          </div>
+        </div>
       </div>
 
     <div class="right_content">
-       <div v-if='dataMedia'>
-          <h3>Медиа файлы</h3>
-          <MediaSlider 
-            v-if='dataMedia' 
-            :static='true' 
-            :data='dataMedia' 
-            :key='randomDataMedia'
-            :width='"width: 30%;"'
-            :width_main='"width: 97%;"'
-            />
-       </div>
-         <div>
-            <h3>Параметры</h3>
-            <table class="tables_bf">
-              <tr>
-                <th>Наименование</th> 
-                <th>ЕИ</th>
-                <th>Значение</th>
-              </tr>
-              <tr class='tr_haracteristic td-row' 
-                  v-for='(par, inx) in obj.parametrs' 
-                  :key='par'
-                  @click='selectParametrs = {par, inx}'
-                  >
-                <td>
-                  <input 
-                    type="text" 
-                    :value='par.name' 
-                    class='inputs-small'
-                    @change='e => changeParametrs(e.target.value, "name", inx)'></td>
-                <td>
-                  <input 
-                    type="text" 
-                    :value='par.ez'
-                    style="width: 50px; text-align:center;"
-                    class='inputs-small small'
-                    @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
-                <td>
-                  <input 
-                    type="text" 
-                    :value='par.znach'
-                    style="width: 50px; text-align:center;"
-                    class='inputs-small'
-                    @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
-              </tr>
-            </table>
-            <div class="btn-control" >
-              <button class="btn-add btn-small" 
-                  @click='addParametrs'>Добавить</button>
-              <button class="btn-small" @click='removeParametrs'>Удалить</button>
-            </div>
-          </div>
-          <div>
-            <h3>Характеристики</h3>
-            <table class="tables_bf">
-              <tr>
-                <th>Наименование</th> 
-                <th>ЕИ</th>
-                <th>Значение</th>
-              </tr>
-              <tr 
-                class='tr_haracteristic td-row' 
-                v-for='(har, inx) in obj.haracteriatic' 
-                :key='har'
-                @click='selectHaracteristic = {har, inx}'
-                >
-                <td>
-                  <input 
-                    type="text" 
-                    :value='har.name' 
-                    class='inputs-small'
-                    @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
-                <td>
-                  <input 
-                    type="text" 
-                    :value='har.ez'
-                    style="width: 50px; text-align:center;"
-                    class='inputs-small small'
-                    @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
-                <td>
-                  <input 
-                    type="text" 
-                    :value='har.znach'
-                    style="width: 50px; text-align:center;"
-                    class='inputs-small'
-                    @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
-              </tr>
-            </table>
-            <div class="btn-control">
-              <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
-              <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
-            </div>
-          </div>
-        <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+      <div v-if='dataMedia'>
+        <h3>Медиа файлы</h3>
+        <MediaSlider 
+          v-if='dataMedia' 
+          :static='true' 
+          :data='dataMedia' 
+          :key='randomDataMedia'
+          :width='"width: 30%;"'
+          :width_main='"width: 97%;"'
+          />
+      </div>
+      <div>
+        <h3>Параметры</h3>
+        <table class="tables_bf">
+          <tr>
+            <th>Наименование</th> 
+            <th>ЕИ</th>
+            <th>Значение</th>
+          </tr>
+          <tr class='tr_haracteristic td-row' 
+              v-for='(par, inx) in obj.parametrs' 
+              :key='par'
+              @click='selectParametrs = {par, inx}'
+              >
+            <td>
+              <input 
+                type="text" 
+                :value='par.name' 
+                class='inputs-small'
+                @change='e => changeParametrs(e.target.value, "name", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='par.ez'
+                style="width: 50px; text-align:center;"
+                class='inputs-small small'
+                @change='e => changeParametrs(e.target.value, "ez", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='par.znach'
+                style="width: 50px; text-align:center;"
+                class='inputs-small'
+                @change='e => changeParametrs(e.target.value, "znach", inx)'></td>
+          </tr>
+        </table>
+        <div class="btn-control" >
+          <button class="btn-add btn-small" 
+              @click='addParametrs'>Добавить</button>
+          <button class="btn-small" @click='removeParametrs'>Удалить</button>
+        </div>
+      </div>
+      <div>
+        <h3>Характеристики</h3>
+        <table class="tables_bf">
+          <tr>
+            <th>Наименование</th> 
+            <th>ЕИ</th>
+            <th>Значение</th>
+          </tr>
+          <tr 
+            class='tr_haracteristic td-row' 
+            v-for='(har, inx) in obj.haracteriatic' 
+            :key='har'
+            @click='selectHaracteristic = {har, inx}'
+            >
+            <td>
+              <input 
+                type="text" 
+                :value='har.name' 
+                class='inputs-small'
+                @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='har.ez'
+                style="width: 50px; text-align:center;"
+                class='inputs-small small'
+                @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
+            <td>
+              <input 
+                type="text" 
+                :value='har.znach'
+                style="width: 50px; text-align:center;"
+                class='inputs-small'
+                @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
+          </tr>
+        </table>
+        <div class="btn-control">
+          <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
+          <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
+        </div>
+      </div>
+      <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+      <NodeParent
+        v-if='getOneSelectCbEd && show_node_modal'
+        :izd='getOneSelectCbEd'
+        :key='key_node_modal'
+        :no_show_det='"true"'
+        :css='"full"'
+        :title='" "'
+        />
     </div>
     <InformFolder  
       :title='titleMessage'
@@ -211,11 +222,6 @@
       :type = 'type'
       v-if='message'
       :key='keyInformTip'
-    />
-    <OpensFile 
-      :parametrs='itemFiles' 
-      v-if="showFile" 
-      :key='keyWhenModalGenerateFileOpen'
     />
     <BaseCbedModal 
       v-if='showCbed'
@@ -231,24 +237,16 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
     />
-    <NodeModal
-      v-if='getOneSelectCbEd && show_node_modal'
-      :izd='getOneSelectCbEd'
-      :key='key_node_modal'
-      :no_show_det='"true"'
-    />
     <Loader v-if='loader' /> 
   </div>
 </template>
-
 <script>
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
 import { random, isEmpty } from 'lodash';
 import TableSpetification from './table-sptification.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
-import NodeModal from '@/components/basedetal/parents-modal.vue';
+import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
@@ -309,9 +307,7 @@ export default {
       documentsData: [],
       dataMedia: [],
       randomDataMedia: random(10, 999),
-
-      showFile: false,
-      keyWhenModalGenerateFileOpen: random(10, 999),
+      table_document_key: random(10, 999),
 
       showCbed: false,
       generateKeyCbed: random(1, 999),
@@ -329,6 +325,9 @@ export default {
 				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
 					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
 			}
+    },
+    'documentsData.length': function () {
+      this.table_document_key = random(1, 999)
     }
   },
   computed: mapGetters([
@@ -337,7 +336,6 @@ export default {
     'getRoleAssets'
   ]),
   components: {
-    OpensFile,  
     ModalBaseMaterial, 
     TechProcess, 
     BaseDetalModal, 
@@ -346,7 +344,7 @@ export default {
     BaseFileModal,
     TableSpetification,
     TableDocument,
-    NodeModal
+    NodeParent
     },
   unmounted() {
     this.deleteStorageData()
@@ -355,8 +353,7 @@ export default {
     ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'updateCbed', 'getAllCbedArticl']),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_filemodal(res) {
-      if(res) 
-        this.documentsData = res
+      if(res) this.documentsData = res
     },
     unmount_tech_process(tp) {
       if(tp.id) {
@@ -373,9 +370,11 @@ export default {
       }
     },
     file_unmount(e) { 
-      if(!e) 
-        return 0
+      if(!e) return 0
       this.formData = e.formData
+      for(let fd of this.formData.getAll('document')) {
+        this.documentsData.push(fd)
+      }
     },
     unmount_material(mat) {
       if(this.instanMaterial == 2) {
@@ -554,17 +553,15 @@ export default {
         this.techProcessID =  !isEmpty(this.getOneSelectCbEd.techProcesses) ? this.getOneSelectCbEd.techProcesses.id : null
       }
     },
-    setDocs(dc) {
-      this.itemFiles = dc
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999);
-    },
     addFileModal() {
       this.fileModalKey = random(1, 999)
       this.showModalFile = true
     },
     showModalNode() {
-      this.show_node_modal = true
+      if(!this.getOneSelectCbEd) return false
+      if(typeof this.getOneSelectCbEd.cbed == 'string') 
+        this.getOneSelectCbEd.cbed = JSON.parse(this.getOneSelectCbEd.cbed)
+      this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     }
   },

@@ -115,6 +115,15 @@
         <TableDocument v-if='selecteProduct.documents.length'
           :documents='selecteProduct.documents'/>
         <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+        <NodeParent
+          v-if='selecteProduct && show_node_modal'
+          :izd='selecteProduct'
+          :key='key_node_modal'
+          :no_show_det='"true"'
+          :no_show_cb='"true"'
+          :css='"full"'
+          :title='" "'
+          />
       </div>
     </div>
     <Loader v-if='loader' />
@@ -124,21 +133,14 @@
       @unmount='unmount_tech_process'
       :techProcessID='techProcessID'
     />
-    <NodeModal
-      v-if='selecteProduct && show_node_modal'
-      :izd='selecteProduct'
-      :key='key_node_modal'
-      :no_show_det='"true"'
-      :no_show_cb='"true"'
-    />
   </div>
 </template>
 <script>
 import { random, isEmpty } from 'lodash';
 import Search from '@/components/search.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import NodeModal from '@/components/basedetal/parents-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
@@ -174,7 +176,7 @@ export default {
     MediaSlider, 
     TechProcess, 
     TableSpetification,
-    NodeModal
+    NodeParent
   },
   methods: {
     ...mapActions([
@@ -190,6 +192,7 @@ export default {
       'sortByNonOperationProduct',
     ]),
     setProduct(product, e) {
+      this.show_node_modal = false
       if(!product) return false
       this.getAllProductById(product.id).then(res => {
         if(!res) return false
@@ -203,7 +206,7 @@ export default {
       this.tr.classList.add('td-row-all')
     },
     showModalNode() {
-      this.show_node_modal = true
+      this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     },
     parseSpetification(obj) {

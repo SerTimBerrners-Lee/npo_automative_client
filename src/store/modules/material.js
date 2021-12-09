@@ -421,7 +421,7 @@ export default {
         return
 
       state.typeM = state.typeM
-        .filter(t =>  (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase())
+        .filter(t => ((t.name.toLowerCase()).indexOf(tm.toLowerCase(), 0) != -1))
     },
     searchPTypeMutation(state, tm) {
       if(!state.searchPTypeM.length) 
@@ -431,7 +431,7 @@ export default {
         return
           
       state.podTypeM = state.podTypeM
-        .filter(t =>  (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase())
+        .filter(t => ((t.name.toLowerCase()).indexOf(tm.toLowerCase(), 0) != -1))
     },
     searchMaterialMutation(state, tm) {
       if(!state.searchMaterial.length) 
@@ -441,7 +441,7 @@ export default {
       if(!tm) 
         return
       state.podMaterial = state.podMaterial
-        .filter(t =>  (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase())
+        .filter(t => ((t.name.toLowerCase()).indexOf(tm.toLowerCase(), 0) != -1))
     },
     clearCascheMaterial(state) {
       state.typeM = []

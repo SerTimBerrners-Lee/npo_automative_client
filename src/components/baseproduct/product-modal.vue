@@ -60,6 +60,15 @@
           </h3>
           <h3 v-else>Нет технологического процесса</h3>
           <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+          <NodeParent
+            v-if='selecteProduct && show_node_modal'
+            :izd='selecteProduct'
+            :key='key_node_modal'
+            :no_show_det='"true"'
+            :no_show_cb='"true"'
+            :css='"full"'
+            :title='" "'
+            />
 				</div>
       </div>
     </div>
@@ -70,20 +79,12 @@
     :key='techProcessKey'
     :techProcessID='techProcessID'
   />
-  <NodeModal
-    v-if='selecteProduct && show_node_modal'
-    :izd='selecteProduct'
-    :key='key_node_modal'
-    :no_show_det='"true"'
-    :no_show_cb='"true"'
-    />
 </template>
-
 <script>
 import {random, isEmpty} from 'lodash';
 import {mapGetters, mapMutations, mapActions } from 'vuex';
+import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import NodeModal from '@/components/basedetal/parents-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import TableSpetification from '@/components/cbed/table-sptification.vue';
@@ -119,7 +120,7 @@ export default {
     TechProcess, 
     TableSpetification, 
     TableDocument,
-    NodeModal
+    NodeParent
   },
   methods: {
     ...mapActions(['getAllProductById']),
@@ -131,7 +132,7 @@ export default {
       this.removeOperationStorage()
     },
     showModalNode() {
-      this.show_node_modal = true
+      this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     },
     setDocs(dc) {

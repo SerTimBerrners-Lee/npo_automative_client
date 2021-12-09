@@ -108,6 +108,14 @@
             <h3 class="link_h3">Себестоимость</h3>
             <h3 class="link_h3" @click='historyAction'>История изменений</h3>
             <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+            <NodeParent
+              v-if='getOneSelectDetal && show_node_modal'
+              :izd='getOneSelectDetal'
+              :key='key_node_modal'
+              :no_show_det='"true"'
+              :css='"full"'
+              :title='" "'
+              />
           </div>
         </div>
         <div class="btn-control out-btn-control control-save" v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
@@ -134,7 +142,7 @@
             :width_main='"width: 97%;"'
             />
         </div>
-        <TableDocument v-if='documentsData.length' :title='""' :documents='documentsData' @unmount='setDocs' />
+        <TableDocument v-if='documentsData.length' :title='""' :documents='documentsData' :key='table_document_key'  />
         <div class="btn-control" style='width: 100%;' v-if="getRoleAssets && getRoleAssets.assets.detalAssets.writeSomeone">
           <button class="btn-small" @click='addFileModal'>Добавить из базы</button>
         </div>
@@ -143,11 +151,6 @@
             :typeGetFile='"getfile"'
             @unmount='file_unmount'/>
         </div>
-        <OpensFile 
-          :parametrs='itemFiles' 
-          v-if="itemFiles" 
-          :key='keyWhenModalGenerateFileOpen'
-        />
       </div>
     </div>
     <HistoryActions 
@@ -171,11 +174,6 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
     />
-    <NodeModal
-      v-if='getOneSelectDetal && show_node_modal'
-      :izd='getOneSelectDetal'
-      :key='key_node_modal'
-    />
     <Loader v-if='loader' /> 
   </div>
 </template>
@@ -183,12 +181,11 @@
 import { showMessage } from '@/js/';
 import { random, isEmpty } from 'lodash';
 import PATH_TO_SERVER from '@/js/path.js';
-import NodeModal from './parents-modal.vue';
 import TechProcess from './tech-process-modal.vue';
 import HaracteristicZag from './haracteristic-zag.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
 import HistoryActions from '@/components/history-action.vue';
+import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
@@ -236,11 +233,9 @@ export default {
       randomDataMedia: random(10, 999),
       attention: false,
 
-      itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 999),
-
       showHAction: false,
       hAactionKey: random(1, 999),
+      table_document_key: random(10, 999),
 
       actions: [],
  
@@ -263,6 +258,9 @@ export default {
 				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
 					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
 			}
+    },
+    'documentsData.length': function () {
+      this.table_document_key = random(1, 999)
     }
   },
   computed: mapGetters(['getOneSelectDetal', 'getUsers', 'getRoleAssets']),
@@ -275,7 +273,7 @@ export default {
     HaracteristicZag,
     TableDocument,
     HistoryActions,
-    NodeModal,
+    NodeParent,
   },
   methods: {
     ...mapActions([
@@ -418,10 +416,6 @@ export default {
       this.deleteStorageData()
       this.delitPathNavigate(this.$route.path)
     },
-    setDocs(dc) {
-      this.itemFiles = dc
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
-    },
     historyAction() {
       if(!this.actions.length)
         return
@@ -437,7 +431,7 @@ export default {
       this.showModalFile = true
     },
     showModalNode() {
-      this.show_node_modal = true
+      this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     }
   },

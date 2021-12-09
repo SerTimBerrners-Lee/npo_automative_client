@@ -162,6 +162,14 @@
         <TableDocument v-if='selectedCbEd.documents.length'
           :documents='selectedCbEd.documents'/>
         <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+        <NodeParent
+          v-if='selectedCbEd && show_node_modal'
+          :izd='selectedCbEd'
+          :key='key_node_modal'
+          :no_show_det='"true"'
+          :css='"full"'
+          :title='" "'
+          />
       </div>
     </div>
     <Loader v-if='loader' /> 
@@ -176,12 +184,6 @@
       :key='productModalKey'
       v-if='parametrs_product'
     />
-    <NodeModal
-      v-if='selectedCbEd && show_node_modal'
-      :izd='selectedCbEd'
-      :key='key_node_modal'
-      :no_show_det='"true"'
-    />
   </div>
 </template>
  
@@ -189,7 +191,7 @@
 import { random, isEmpty } from 'lodash';
 import Search from '@/components/search.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import NodeModal from '@/components/basedetal/parents-modal.vue';
+import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
@@ -233,7 +235,7 @@ export default {
     TableSpetification,
     ProductModalInfo,
     TableDocument,
-    NodeModal,
+    NodeParent,
   },
   methods: {
     ...mapActions([
@@ -257,10 +259,15 @@ export default {
       'sortByNonOperationCbed',
     ]),
     showModalNode() {
-      this.show_node_modal = true
+      if(!this.selectedCbEd) return false
+      if(typeof this.selectedCbEd.cbed == 'string') 
+        this.selectedCbEd.cbed = JSON.parse(this.selectedCbEd.cbed)
+      this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     },
     setCbed(cbed, e) {
+      this.show_node_modal = false
+
       this.getOneCbEdById(cbed.id).then(res => {
         if(!res) return false
         this.selectedCbEd = res
@@ -302,7 +309,7 @@ export default {
         this.clearFilterCbedByProduct()
         e.classList.remove('td-row-all')
         this.selecteProduct = null
-        this.parametrs_product= null
+        this.parametrs_product = null
         return
       }
 

@@ -57,6 +57,14 @@
             </h3>
             <h3 v-else>Нет технологического процесса</h3>
             <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+            <NodeParent
+              v-if='selectedCbEd && show_node_modal'
+              :izd='selectedCbEd'
+              :key='key_node_modal'
+              :no_show_det='"true"'
+              :css='"full"'
+              :title='" "'
+              />
           </div>
         </div>
       </div>
@@ -67,19 +75,13 @@
     :key='techProcessKey'
     :techProcessID='techProcessID'
   />
-  <NodeModal
-    v-if='selectedCbEd && show_node_modal'
-    :izd='selectedCbEd'
-    :key='key_node_modal'
-    :no_show_det='"true"'
-    />
 </template>
 <script>
 import {isEmpty, random} from 'lodash';
 import TableSpetification from './table-sptification.vue';
 import {mapGetters, mapMutations, mapActions } from 'vuex';
+import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-import NodeModal from '@/components/basedetal/parents-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 export default {
@@ -113,7 +115,7 @@ export default {
     TechProcess, 
     TableSpetification, 
     TableDocument,
-    NodeModal
+    NodeParent
   },
   methods: {
     ...mapActions([
@@ -131,7 +133,10 @@ export default {
       this.techProcessKey = random(1, 999)
     },
     showModalNode() {
-      this.show_node_modal = true
+      if(!this.selectedCbEd) return false
+      if(typeof this.selectedCbEd.cbed == 'string') 
+        this.selectedCbEd.cbed = JSON.parse(this.selectedCbEd.cbed)
+      this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     }
   },

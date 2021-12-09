@@ -13,7 +13,7 @@ export default {
   getters: { 
     allCbed(state) {
       return state.cbed
-    },
+    }, 
     getOneSelectCbEd(state) {
       return state.select_cbed
     }
@@ -166,7 +166,7 @@ export default {
 
       state.cbed = state.cbed.filter(prod => 
         prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
-        ((prod.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
+        ((prod.name.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
       )
     },
     getAllCbEdByProduct(state, product) {

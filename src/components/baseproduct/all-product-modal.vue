@@ -27,7 +27,7 @@
 						:key='product'
 						class='td-row'
 						@click='e => setProduct(product, e.target.parentElement)'
-						>
+						@dblclick="infoModalProduct(product)">
 						<td>{{ product.fabricNumber }}</td>
 						<td>{{ product.articl }}</td>
 						<td>{{ product.name }}</td>
@@ -47,13 +47,18 @@
     </div>
     </div>
   </div>
+	<ProductModalInfo
+		:id='parametrs_product'
+		:key='productModalKey'
+		v-if='parametrs_product'
+	/>
 </div>
 </template>
-
 <script>
-
+import { random } from 'lodash';
+import Search from '@/components/search.vue';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
-import Search from '@/components/search.vue'
+import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
 export default {
   props: ['parametrs'],
   data() {
@@ -61,17 +66,22 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
+
+			parametrs_product: null,
+      productModalKey: random(1, 999),
 			
 			selecteProduct: null,
 			tr: null,
     }
   },
-  components: {Search},
+  components: {Search, ProductModalInfo},
   computed: mapGetters(['allProduct']),
 	methods: {
-		...mapActions(['getAllProduct']),
-		...mapMutations(['setOneProduct', 'searchProduct']),
-
+		...mapActions([
+			'getAllProduct',
+			'getAllProductById'
+		]),
+		...mapMutations(['searchProduct']),
 		destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -82,10 +92,19 @@ export default {
       this.selecteProduct = product
       if(this.tr) 
         this.tr.classList.remove('td-row-all')
-      this.setOneProduct(product)
+
+			this.getAllProductById(product.id).then(res => {
+        if(!res) return false
+        this.selecteProduct = res
+      })
 
       this.tr = e
       this.tr.classList.add('td-row-all')
+    },
+		infoModalProduct(product) {
+      if(!product) return false 
+      this.parametrs_product = product.id
+      this.productModalKey = random(1, 999)
     },
 		keySearch(v) {
       this.searchProduct(v)
@@ -101,7 +120,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
 
-		this.getAllProduct()
+		this.getAllProduct(true)
 
   },
 

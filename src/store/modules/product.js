@@ -15,7 +15,7 @@ export default {
     },
     getOneSelectProduct(state) {
       return state.select_product
-    } 
+    }  
   },
   actions: { 
     async createNewProduct(ctx, data) {
@@ -125,7 +125,7 @@ export default {
       state.product = state.filterProduct
       state.product = state.product.filter(prod => 
         prod.articl.slice(0, str.length).toLowerCase() == str.toLowerCase() || 
-        ((prod.name.slice(0, str.length).toLowerCase()) == str.toLowerCase()) ||
+        ((prod.name.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1) ||
         ((prod.fabricNumber.slice(0, str.length).toLowerCase()) == str.toLowerCase())
       )
     },

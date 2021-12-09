@@ -107,7 +107,11 @@
               <textarea maxlength='250' class='textarea' v-model.trim='obj.description' cols="30" rows="10"></textarea>
             </div>
             <div>
-              <TableDocument v-if='documentsData.length' :title='""' :documents='documentsData' @unmount='setDocs' />
+              <TableDocument 
+              v-if='documentsData.length' 
+              :title='""' 
+              :documents='documentsData' 
+              :key='table_document_key'/>
             </div>
             <div>
               <h3>Документы</h3>
@@ -157,47 +161,56 @@
           :width_main='"width: 97%;"'
           />
       </div>
-          <div>
-            <h3>Характеристики</h3>
-            <table class="tables_bf">
-              <tr>
-                <th>Наименование</th> 
-                <th>ЕИ</th>
-                <th>Значение</th>
-              </tr> 
-              <tr class='tr_haracteristic td-row' 
-                  v-for='(har, inx) in obj.haracteriatic' 
-                  :key='har'
-                  @click='selectHaracteristic = {har, inx}'
-                  >
-                <td>
-                  <input 
-                    type="text" 
-                    :value='har.name' 
-                    class='inputs-small'
-                    @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
-                <td>
-                  <input 
-                    type="text" 
-                    :value='har.ez'
-                    style="width: 50px; text-align:center;"
-                    class='inputs-small small'
-                    @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
-                <td>
-                  <input 
-                    type="text" 
-                    :value='har.znach'
-                    style="width: 50px; text-align:center;"
-                    class='inputs-small'
-                    @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
-              </tr>
-            </table>
-            <div class="btn-control">
-              <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
-              <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
-            </div>
+        <div>
+          <h3>Характеристики</h3>
+          <table class="tables_bf">
+            <tr>
+              <th>Наименование</th> 
+              <th>ЕИ</th>
+              <th>Значение</th>
+            </tr> 
+            <tr class='tr_haracteristic td-row' 
+                v-for='(har, inx) in obj.haracteriatic' 
+                :key='har'
+                @click='selectHaracteristic = {har, inx}'
+                >
+              <td>
+                <input 
+                  type="text" 
+                  :value='har.name' 
+                  class='inputs-small'
+                  @change='e => changeHaracteristic(e.target.value, "name", inx)'></td>
+              <td>
+                <input 
+                  type="text" 
+                  :value='har.ez'
+                  style="width: 50px; text-align:center;"
+                  class='inputs-small small'
+                  @change='e => changeHaracteristic(e.target.value, "ez", inx)'></td>
+              <td>
+                <input 
+                  type="text" 
+                  :value='har.znach'
+                  style="width: 50px; text-align:center;"
+                  class='inputs-small'
+                  @change='e => changeHaracteristic(e.target.value, "znach", inx)'></td>
+            </tr>
+          </table>
+          <div class="btn-control">
+            <button class="btn-add btn-small" @click='addHaracteristic'>Добавить</button>
+            <button class="btn-small" @click='removeHaracteristic'>Удалить</button>
           </div>
+        </div>
         <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
+        <NodeParent
+          v-if='getOneSelectProduct && show_node_modal'
+          :izd='getOneSelectProduct'
+          :key='key_node_modal'
+          :no_show_det='"true"'
+          :no_show_cb='"true"'
+          :css='"full"'
+          :title='" "'
+          />
     </div>
     </div>
     <InformFolder  
@@ -214,24 +227,12 @@
       :getListCbed='true'
       :listCbed='listCbed'
     />
-    <OpensFile 
-      :parametrs='itemFiles' 
-      v-if="showFile" 
-      :key='keyWhenModalGenerateFileOpen'
-    />
     <BaseFileModal 
       v-if='showModalFile'
       :key='fileModalKey'
       :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
-    />
-    <NodeModal
-      v-if='getOneSelectProduct && show_node_modal'
-      :izd='getOneSelectProduct'
-      :key='key_node_modal'
-      :no_show_det='"true"'
-      :no_show_cb='"true"'
     />
     <Loader v-if='loader' /> 
   </div>
@@ -240,9 +241,8 @@
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
 import { random, isEmpty } from 'lodash';
-import OpensFile from '@/components/filebase/openfile.vue';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
-import NodeModal from '@/components/basedetal/parents-modal.vue';
+import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
@@ -309,8 +309,7 @@ export default {
       dataMedia: [],
       randomDataMedia: random(10, 999),
 
-      showFile: false,
-      keyWhenModalGenerateFileOpen: random(10, 999),
+      table_document_key: random(10, 999),
 
       showModalFile: false,
       fileModalKey: random(1, 999),
@@ -328,6 +327,9 @@ export default {
 				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
 					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
 			}
+    },
+    'documentsData.length': function () {
+      this.table_document_key = random(1, 999)
     }
   },
   computed: mapGetters(['getUsers', 'getOneSelectProduct', 'getRoleAssets']),
@@ -341,7 +343,7 @@ export default {
     BaseFileModal,
     TableDocument,
     TableSpetification,
-    NodeModal
+    NodeParent
   },
   methods: {
     ...mapActions([
@@ -527,11 +529,6 @@ export default {
     responsCbed(res) {
       this.listCbed = res 
     },
-    setDocs(dc) {
-      this.itemFiles = dc
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999);
-    },
     updateForEdit() {
       this.attention = this.getOneSelectProduct.attention
       this.obj.name = this.getOneSelectProduct.name
@@ -567,7 +564,7 @@ export default {
       this.showModalFile = true
     },
     showModalNode() {
-      this.show_node_modal = true
+      this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     }
   },

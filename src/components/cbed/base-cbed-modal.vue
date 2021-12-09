@@ -31,6 +31,7 @@
             :key='product'
             class='td-row'
             @click='e => setProduct(product, e.target.parentElement)'
+            @dblclick="infoModalProduct(product)"
             >
             <td>{{ product.fabricNumber }}</td>
             <td>{{ product.articl }}</td>
@@ -64,7 +65,8 @@
                 <tr v-for='cb in allCbed' 
                   :key='cb'
                   class='td-row'
-                  @click='e => setCbed(cb, e.target.parentElement)'>
+                  @click='e => setCbed(cb, e.target.parentElement)'
+                  @dblclick="infoModalCbed(cb)">
                   <td>{{ cb.articl }}</td>
                   <td>{{ cb.name }}</td>
                   <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
@@ -86,10 +88,6 @@
                 </button>
               </p>
           </div>
-          <DetalModal
-            :key='detalModalKey'
-            v-if='detalIsShow'
-          />
           <!-- Cbed List -->
           <div v-if='cbedList.length > 0'>
           <table>
@@ -144,15 +142,24 @@
         </div>
       </div>
     </div>
+  <CbedModalInfo
+		:id='parametrs_cbed'
+		:key='cbedModalKey'
+		v-if='parametrs_cbed'
+	/>
+	<ProductModalInfo
+		:id='parametrs_product'
+		:key='productModalKey'
+		v-if='parametrs_product'
+	/>
 </div> 
 </template>
-
 <script>
-
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
 import { random } from 'lodash';
-import Search from '@/components/search.vue'
+import Search from '@/components/search.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
+import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
 export default {
   props: ['getListCbed', 'listCbed', 'get_one'],
   data() {
@@ -163,8 +170,12 @@ export default {
       
       selectedCbed: null,
       tr: null,
-      detalModalKey: random(1, 123e2),
-      detalIsShow: false,
+
+      parametrs_cbed: null,
+      parametrs_detal: null,
+      parametrs_product: null,
+      productModalKey: random(1, 999),
+
 
       cbedList: []
     }
@@ -172,7 +183,7 @@ export default {
   computed: mapGetters([
       'allCbed', 
       'allProduct']),
-  components: {DetalModal, Search},
+  components: {Search, CbedModalInfo, ProductModalInfo},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
@@ -180,7 +191,11 @@ export default {
       this.hiddens = 'display: none;'
     },
     ...mapActions([
-      'getAllCbed', 'deleteCbedById', 'getAllProduct'
+      'getAllCbed', 
+      'deleteCbedById', 
+      'getAllProduct',
+      'getAllProductById',
+      'getOneCbEdById'
     ]),
     ...mapMutations([
       'searchCbed', 
@@ -190,15 +205,25 @@ export default {
       'clearFilterCbedByProduct', 
       'setOneCbed'
     ]),
-    setCbed(cbEd, e) {
-      this.selectedCbEd = cbEd
+    setCbed(cbed, e) {
       if(this.tr_cb) 
         this.tr_cb.classList.remove('td-row-all')
   
-      this.selectedCbed = cbEd
+      this.selectedCbed = cbed
+
+      this.getOneCbEdById(cbed.id).then(res => {
+        if(!res) return false
+        this.selectedCbed = res
+        this.setOneCbed(res)
+      })
+
       this.tr_cb = e
       this.tr_cb.classList.add('td-row-all')
-      this.setOneCbed(this.selectedCbEd)
+    },
+    infoModalCbed(cb) {
+      if(!cb) return false
+      this.parametrs_cbed = cb.id
+      this.cbedModalKey = random(1, 999)
     },
     setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
@@ -208,14 +233,22 @@ export default {
           return
       }
       this.selecteProduct = product
-          if(this.tr_product) 
-          this.tr_product.classList.remove('td-row-all')
+      if(this.tr_product) 
+        this.tr_product.classList.remove('td-row-all')
   
-      this.setOneProduct(product)
-      this.getAllCbEdByProduct(product)
+      this.getAllProductById(product.id).then(res => {
+        if(!res) return false
+        this.selecteProduct = res
+        this.getAllCbEdByProduct(res)
+      })
 
       this.tr_product = e
       this.tr_product.classList.add('td-row-all')
+    },
+    infoModalProduct(product) {
+      if(!product) return false 
+      this.parametrs_product = product.id
+      this.productModalKey = random(1, 999)
     },
     keySearch(v) {
       this.searchCbed(v)
@@ -273,8 +306,8 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-    this.getAllProduct()
-    this.getAllCbed()
+    this.getAllProduct(true)
+    this.getAllCbed(true)
     if(this.$props.listCbed)
       this.cbedList = this.$props.listCbed
   }

@@ -276,8 +276,8 @@ export default {
       .filter(detal => 
         String(detal.articl)
         .slice(0, String(str).length) == String(str) || 
-        ((detal.name.slice(0, str.length).toLowerCase()) == str.toLowerCase())
-      ) 
+        ((detal.name.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
+      )
     },
     deleteDetalById(state, id) {
       state.detal = state.detal.filter(detal => detal.id != id)
