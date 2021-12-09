@@ -269,7 +269,6 @@ export default {
     ModalBaseMaterial, 
     TechProcess, 
     MediaSlider, 
-    OpensFile, 
     HaracteristicZag,
     TableDocument,
     HistoryActions,

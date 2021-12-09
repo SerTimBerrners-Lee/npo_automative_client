@@ -339,7 +339,6 @@ export default {
     BaseDetalModal, 
     BaseCbedModal,
     MediaSlider,
-    OpensFile,
     BaseFileModal,
     TableDocument,
     TableSpetification,
