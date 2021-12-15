@@ -98,22 +98,23 @@
   </div> 
 </template>
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
 import {random} from 'lodash';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 export default {
   props: [
     'allMaterial', 
     'instanMaterial', 
     'getOneMaterial', 
-    'matLightList'],
+    'matLightList'
+  ],
   data() {
     return {
       material: null,
       podMaterial: null,
       podPodMaterial: null,
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 3844),
+      keyWhenModalGenerateFileOpen: random(10, 999),
 
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
@@ -142,7 +143,9 @@ export default {
       'toEmptyPPT',
       'searchTypeMutation', 
       'searchPTypeMutation', 
-      'searchMaterialMutation']), 
+      'searchMaterialMutation',
+      'setOneTypeMMytation'
+    ]), 
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -151,6 +154,7 @@ export default {
     clickMat(mat, type) {
       if(type == 'type') {
         this.material = mat
+        this.setOneTypeMMytation(mat)
         if(this.$props.instanMaterial == 2 || this.$props.instanMaterial == 3)
           this.filterMatByPodType(mat.podMaterials)
       }

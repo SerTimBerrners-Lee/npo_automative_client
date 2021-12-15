@@ -160,17 +160,14 @@
   />
   </div>
 </template>
-
 <script>
-
-import { mapActions, mapGetters } from 'vuex';
-import {photoPreloadUrl, showMessage} from '@/js/';
 import {isEmpty, random} from 'lodash';
 import PATH_TO_SERVER from '@/js/path.js';
+import { mapActions, mapGetters } from 'vuex';
+import {photoPreloadUrl, showMessage} from '@/js/';
 import OpensFile from '@/components/filebase/openfile.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 import DatePicterCustom from '@/components/date-picter.vue';
-
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default ({ 
   data() {
     return {
@@ -362,15 +359,15 @@ computed: {
         this.urlImg = PATH_TO_SERVER+this.getSelectedUser.image
       }
 
-      if(this.getSelectedUser.documents.length) {
+      console.log(this.getSelectedUser)
+
+      if(this.getSelectedUser.documents && this.getSelectedUser.documents.length) 
         this.docFiles = this.getSelectedUser.documents
-      }
 
     }
   },
 })
 </script>
-
 <style scoped>
 .flex {
   display: flex;

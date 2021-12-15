@@ -415,7 +415,8 @@ export default {
 			'clearCascheInventary',
 			'filterAllPTEquipment',
 			'filterAllpInstrument',
-			'filterNameInventaryByPT'
+			'filterNameInventaryByPT',
+			'setOneTypeMMytation'
 		]),
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
@@ -450,6 +451,7 @@ export default {
 		clickMat(mat, type) {
       if(type == 'type') {
         this.material = mat
+				this.setOneTypeMMytation(mat)
         this.filterByNameMaterialById(mat) 
         if(mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
           this.filterMatByPodType(mat.podMaterials)

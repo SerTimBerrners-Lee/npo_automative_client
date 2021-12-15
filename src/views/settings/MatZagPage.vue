@@ -24,13 +24,11 @@
       :key='keyModals' />
   </div>
 </template>
-
 <script>
-import addEditMat from '@/components/mathzag/addeditmat.vue'
-import { random } from 'lodash'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import TableMaterial from '@/components/mathzag/table-material.vue'
-
+import { random } from 'lodash';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import addEditMat from '@/components/mathzag/addeditmat.vue';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 export default {
   data() {
     return {

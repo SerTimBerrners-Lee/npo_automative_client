@@ -1,7 +1,7 @@
-import PATH_TO_SERVER from '@/js/path.js'
-
+import PATH_TO_SERVER from '@/js/path.js';
 export default {
   state: {
+    setOneTypeM: {},
     typeM: [],
     instansTypeM: [],
     podTypeM: [],
@@ -139,7 +139,6 @@ export default {
       
       if(res.ok) {
        ctx.commit('addOnePodType', result)
-        console.log(result)
         return result
       }
     },
@@ -346,6 +345,21 @@ export default {
       state.podTypeM.push(data)
     },
     addOnePodType(state, typMaterial) {
+      if(typMaterial.instansMaterial == '1' && typMaterial.podPodMaterials && state.setOneTypeM) {
+
+        let new_arr = []
+        for(let item of state.setOneTypeM.podPodMaterials) {
+          let check = false
+          for(let item_two of typMaterial.podPodMaterials) {
+            if(item_two.id == item.id) check = true
+          }
+          if(check && !item.ban) {
+            new_arr.push(item)
+            check = false
+          }
+        }
+        return state.podMaterial = new_arr
+      }
       state.podMaterial = typMaterial.podPodMaterials.filter(material => !material.ban)
     },
     addOnePPTyep(state, PPT) {
@@ -472,6 +486,9 @@ export default {
       if(params.status == 'order') 
         state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries.length == params.val)
       if(params.status == 'all') return null
+    },
+    setOneTypeMMytation(state, typeM) {
+      state.setOneTypeM = typeM
     }
   }
 }

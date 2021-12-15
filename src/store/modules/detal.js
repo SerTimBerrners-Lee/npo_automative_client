@@ -12,7 +12,7 @@ export default {
     tmp_operation: []
   },
   getters: {
-    allDetal(state) {
+    allDetal(state) { 
       return state.detal
     },
     allOperationNewList(state) {

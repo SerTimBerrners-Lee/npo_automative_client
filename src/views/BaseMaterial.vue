@@ -93,7 +93,8 @@ export default {
       'searchPTypeMutation', 
       'searchMaterialMutation', 
       'clearCascheMaterial', 
-      'filterToAttentionMat', 
+      'filterToAttentionMat',
+      'setOneTypeMMytation' 
     ]),
     instansMaterial(instans, span) {
       if(!this.span)
@@ -113,6 +114,7 @@ export default {
     clickMat(mat, type) {
       if(type == 'type') {
         this.material = mat
+        this.setOneTypeMMytation(mat)
         this.filterByNameMaterial(mat) 
         if(mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
           this.filterMatByPodType(mat.podMaterials)

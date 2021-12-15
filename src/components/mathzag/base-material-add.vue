@@ -282,7 +282,8 @@ export default {
     ]),
   },  
   methods: {
-    ...mapActions(['getAllTypeMaterial',
+    ...mapActions([
+      'getAllTypeMaterial',
       'getOnePodType', 
       'getAllEdizm', 
       'podMaterial',
@@ -290,12 +291,14 @@ export default {
       'fetchGetOnePPM',
       'getAllPodTypeMaterial'
     ]),
-    ...mapMutations(['filterMatByPodType',
+    ...mapMutations([
+      'filterMatByPodType',
       'filterMaterialById',
       'filterPodMaterialById',
       'searchTypeMutation', 
       'searchPTypeMutation',
       'delitPathNavigate',
+      'setOneTypeMMytation'
     ]),
     unmount_filemodal(res) {
       if(res) 
@@ -309,7 +312,7 @@ export default {
     },
     addProvider() {
         this.showProvider = true
-        this.keyWhenModalListProvider = random(10, 3333)
+        this.keyWhenModalListProvider = random(10, 999)
     },
     file_unmount(e) { 
       if(!e) return 0
@@ -419,6 +422,7 @@ export default {
     clickMat(mat, type) {
       if(type == 'type') {
         this.material = mat
+        this.setOneTypeMMytation(mat)
         if(mat.podMaterials && mat.instansMaterial != 1) 
           this.filterMatByPodType(mat.podMaterials)
         this.obj.name = this.material.name
