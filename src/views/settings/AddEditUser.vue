@@ -358,9 +358,6 @@ computed: {
         this.imgShow = true
         this.urlImg = PATH_TO_SERVER+this.getSelectedUser.image
       }
-
-      console.log(this.getSelectedUser)
-
       if(this.getSelectedUser.documents && this.getSelectedUser.documents.length) 
         this.docFiles = this.getSelectedUser.documents
 

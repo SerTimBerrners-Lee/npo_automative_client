@@ -193,14 +193,12 @@ export default {
   }
 }
 </script>
-
 <style>
 h2 {
   color: #ffffff;
   margin: 2px; 
   font-size: 36px;
 }
-
 .conten {
   display: flex;
   background: #2f2e33;
@@ -214,18 +212,14 @@ h2 {
   padding-left: 10px;
   overflow: scroll;
 }
-
-
 .items_1 {
   display: flex;
   height: 150px;
 }
-
 .items_1 > div {
   display: flex;
   flex-direction: column;
 }
-
 .form-auth div:first-child {
   border: 1px solid aliceblue;
   border-radius: 4px;
@@ -235,7 +229,6 @@ h2 {
   padding: 10px;  
   margin-top: 20px;
 }
-
  select{
   height: 40px;
   width: 300px;
@@ -246,7 +239,6 @@ h2 {
   font-size: 22px;
   padding-left: 8px;
 }
-
 .input-auth {
   height: 40px;
   width: 290px;
@@ -258,7 +250,6 @@ h2 {
   margin: 6px;
   margin-top: 0px;
 }
-
 label {
   margin: 6px;
   margin-bottom: 3px;
@@ -268,7 +259,6 @@ label {
   margin-top: 25px;
   margin-left: 8px;
 }
-
 .btn {
   height: 40px;
   width: 300px;
@@ -278,32 +268,27 @@ label {
   margin-top: 25px;
   cursor: pointer;
 }
-
 .blues {
   background-color: #18a0fb;
   font-size: 16px;
   color: #ececec;
 }
-
 .form-auth div:first-child h2{
   font-size: 23px;
   font-weight: normal;
   padding-bottom: 25px;
 }
-
 .form-auth {
   display: flex;
   margin-top: 180px;
   margin-left: 130px;
 }
-
 .form-auth div:last-child {
   display: flex;
   margin-left: 30px;
   flex-wrap: wrap;
   width: 400px;
 } 
-
 .btn-number {
   border: 1px solid aliceblue;
   border-radius: 4px;
@@ -320,16 +305,13 @@ label {
   align-items: center;
   cursor: pointer;
 }
-
 .btn-number:hover {
   background-color: #fff;
   color: black;
 }
-
 .blues:hover {
   background-color: #35aeff;
 }
-
 .tabel-placholder {
   text-align: center;
   color: white;
