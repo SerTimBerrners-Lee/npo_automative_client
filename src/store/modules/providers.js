@@ -1,3 +1,5 @@
+
+import {sortState} from '@/js/index';
 import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
@@ -20,6 +22,8 @@ export default {
     sMaterial: [],
     sMaterialT: [],
     sMaterialPT: [],
+
+    date_is: '<'
   },
   getters: { 
     allProvider(state) {
@@ -258,6 +262,9 @@ export default {
         return state.tmp_attention  = []
       }
       state.providers = state.providers.filter(detal => detal.attention)
-    }
+    },
+    filterProviderToDate(state) {
+      state.date_is = sortState(state.providers, state.date_is)
+    },
   }
 }

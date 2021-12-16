@@ -109,6 +109,11 @@
         </div>
         <div>
           <div class="scroll-table" >
+            <QuickFilter 
+              @attention='sortToAttention'
+              @date_first='sortToDate'
+              @my_object='sortToMyObject'
+            />
             <table class="table-base-detal">
               <tr>
                 <th style='font-size: 12px'>Кол-во: {{allDetal.length}}</th>
@@ -118,12 +123,7 @@
               </tr>
               <tbody class='fixed_table_10'>
                 <tr>
-                  <th colspan="3" scope="col">Деталь (Тип Д) 
-                    <span class='exclamation tooltip' @click='sortToAttention'>
-                      <unicon name="exclamation" fill="red" />
-                      <span class='tooltiptext'>Соритировать по отметке</span>
-                    </span> 
-                  </th>
+                  <th colspan="3" scope="col">Деталь (Тип Д)</th>
                 </tr>
                 <tr>
                   <th>Артикул</th>
@@ -220,7 +220,7 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['allDetal', 'allCbed', 'allProduct']),
+  computed: mapGetters(['allDetal', 'allCbed', 'allProduct', 'getAuth']),
   components: {DetalModal, Search, CbedModalInfo, ProductModalInfo},
   methods: {
     ...mapActions([
@@ -249,7 +249,9 @@ export default {
       'addOneSelectDetal',
       'sortByNonOperationProduct',
       'sortByNonOperationCbed',
-      'sortByNonOperationDetal'
+      'sortByNonOperationDetal',
+      'filterDetalToDate',
+      'filterDetalToMyObject'
     ]),
     infoModalCbed(cb) {
       if(!cb) return false
@@ -274,6 +276,12 @@ export default {
     },
     sortToAttention() {
       this.filterToAttention()
+    },
+    sortToDate() {
+      this.filterDetalToDate()
+    },
+    sortToMyObject() {
+      this.filterDetalToMyObject(this.getAuth.id)
     },
     infoDetal() {
       if(!this.selectedDetal) return false

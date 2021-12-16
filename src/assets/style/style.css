@@ -1,9 +1,10 @@
 .exclamation {
   background: whitesmoke;
   border-radius: 8px;
-  opacity: 0.6;
+  opacity: 0.2;
   cursor: pointer;
   position: absolute;
+  z-index: 1;
 }
 .min_width {
   width: 10px;
@@ -20,7 +21,7 @@
   margin-left: 20px;
 }
 .exclamation:hover {
-  opacity: 1;
+  opacity: 0.9;
 }
 .hover {
   user-select: none;

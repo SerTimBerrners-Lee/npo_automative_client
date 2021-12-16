@@ -7,6 +7,8 @@
           :allProvider='allProvider' 
           @unmount='setProvider'
           :attention='true'
+          @sortToDate='sortToDate'
+          :hide_filter_responsibil='true'
           @unmount_attention='unmount_attention'/>
         <div class="btn-control">
           <button class="btn-small btn-add" @click="$router.push({path: '/baseprovider/addedit/add'})">Создать</button>
@@ -235,13 +237,17 @@ export default {
       'clearFilterProviders',
       'setProviderState',
       'clearCascheMaterial',
-      'filterToAttentionProvider'
+      'filterToAttentionProvider',
+      'filterProviderToDate'
     ]),
     unmount_table_material(providers) {
       this.filterByMaterial(providers)
     },
     unmount_attention() {
       this.filterToAttentionProvider()
+    },
+    sortToDate() {
+      this.filterProviderToDate()
     },
     openDeliveries(deliv) {
       this.param_deliv = deliv

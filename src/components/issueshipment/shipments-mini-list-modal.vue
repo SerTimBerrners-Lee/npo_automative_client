@@ -12,6 +12,7 @@
 					</tr>
           <tr v-for='shipments of getShipmentsSclad' 
             @click='e => setShipment(shipments, e.target.parentElement)'
+            @dblclick="openShipments"
             class='td-row'
             :key='shipments'>
             <td>{{ shipments.number_order }}</td>
@@ -30,13 +31,19 @@
       v-if='message'
       :key='keyInformTip'
     />
+    <ShipmentsModal 
+			:key='key_modal_shipments'
+			v-if='show_modal_shipments && selectedShip.id'
+			:id_shipments='selectedShip.id'
+		/>
   </div>
 </div>
 </template>
-
 <script>
+import {random} from 'lodash';
 import {showMessage} from '@/js/';
 import {mapGetters, mapActions} from 'vuex';
+import ShipmentsModal from './shipments-modal.vue';
 export default {
   props: ['parametrs'],
   data() {
@@ -52,16 +59,28 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+
+      key_modal_shipments: random(1, 999),
+      show_modal_shipments: false
     }
+  },
+  components: {
+    ShipmentsModal
   },
   computed: mapGetters(['getShipmentsSclad']),
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'fetchChangeToSclad']),
     destroyModalF() {
-        this.destroyModalLeft = 'left-block-modal-hidden'
-        this.destroyModalRight = 'content-modal-right-menu-hidden'
-        this.hiddens = 'display: none;'
-        this.$emit('unmount', true)
+      this.destroyModalLeft = 'left-block-modal-hidden'
+      this.destroyModalRight = 'content-modal-right-menu-hidden'
+      this.hiddens = 'display: none;'
+      this.$emit('unmount', true)
+    },
+    openShipments() {
+      if(this.selectedShip) {
+				this.key_modal_shipments = random(1, 999)
+				this.show_modal_shipments = true
+			}
     },
     setShipment(shipment, e) {
       if(this.tr && this.selectedShip.id == shipment.id) {

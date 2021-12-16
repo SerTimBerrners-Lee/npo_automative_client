@@ -1,16 +1,17 @@
 <template>
   <div class="cont scroll-table scrolls-type-490">
+    <QuickFilter 
+      v-if='attention'
+      @attention='$emit("unmount_attention")'
+      @date_first='$emit("sortToDate")'
+      @my_object='$emit("sortToMyObject")'
+      :hide_filter_responsibil='hide_filter_responsibil'
+    />
     <table class="type-table">
       <tbody class='fixed_table_10'>
         <tr>
           <th :class="width ? width : 'width-350'">
             {{ title }}
-            <span 
-              class='exclamation tooltip' v-if='attention' 
-              @click='$emit("unmount_attention")'>
-              <unicon name="exclamation" fill="red" />
-              <span class='tooltiptext'>Соритировать по отметке</span>
-            </span> 
             </th>
         </tr>
         <tr>
@@ -36,12 +37,10 @@
     </table>
   </div> 
 </template>
-
-
 <script>
 import Search from '@/components/search.vue';
 export default {
-  props: ['alltypeM', 'type', 'title', 'width', 'attention'],
+  props: ['alltypeM', 'type', 'title', 'width', 'attention', 'hide_filter_responsibil'],
   data() {
     return {
       element: null

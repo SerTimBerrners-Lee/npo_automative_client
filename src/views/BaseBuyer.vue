@@ -7,6 +7,8 @@
           :allBuyer='allBuyer' 
           @unmount='setBuyer'
           :attention='true'
+          @sortToDate='sortToDate'
+          :hide_filter_responsibil='true'
           @unmount_attention='unmount_attention'
          />
         <div class="btn-control">
@@ -134,13 +136,12 @@
     <Loader v-if='loader' />
   </div>
 </template>
-
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
 import random from 'lodash';
-import DescriptionModal from '@/components/description-modal.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import TableBuyer from '@/components/basebuyer/table-buyer.vue';
+import DescriptionModal from '@/components/description-modal.vue';
 export default {
   data() {
     return {
@@ -158,7 +159,7 @@ export default {
       description: '',
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 1222),
+      keyWhenModalGenerateFileOpen: random(10, 999),
       loader: false
     }
   },
@@ -172,7 +173,8 @@ export default {
     ]),
     ...mapMutations([
       'setBuyerState', 
-      'filterToAttentionBuyer'
+      'filterToAttentionBuyer',
+      'filterBuyerToDate'
     ]),
     setBuyer(buyer) {
       this.setBuyerState(buyer)
@@ -192,6 +194,9 @@ export default {
     },
     unmount_attention() {
       this.filterToAttentionBuyer()
+    },
+    sortToDate() {
+      this.filterBuyerToDate()
     },
     clickDoc(files) {
       if(files) { 

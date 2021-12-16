@@ -1,3 +1,5 @@
+
+import {sortState} from '@/js/index';
 import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
@@ -8,6 +10,8 @@ export default {
 
     searchBuyer: [],
     tmp_attention: [],
+
+    date_is: '<'
   },
   getters: { 
     allBuyer(state) {
@@ -86,6 +90,9 @@ export default {
         return state.tmp_attention  = []
       }
       state.buyer = state.buyer.filter(detal => detal.attention)
-    }
+    },
+    filterBuyerToDate(state) {
+      state.date_is = sortState(state.buyer, state.date_is)
+    },
   }
 }

@@ -18,7 +18,6 @@
 					<th>Срок отгрузки изд.</th>
 					<th id='parent'>Принадлежность</th>
 					<th>Габариты заготовки, мм</th>
-					<th>Тип заготовки</th>
 					<th class='work_operation'>Предыдущая операция </th>
 					<th>Статус</th>
 					<th>Сделано, шт</th>
@@ -50,7 +49,6 @@
 						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
 					</td>
 					<td class='center'>{{ meatl.detal ? meatl.detal.DxL : 'Нет детали' }}</td>
-					<td class='center'>{{ meatl.detal && meatl.detal.mat_za_obj ? meatl.detal.mat_za_obj.material.name : 'Нет материала' }}</td>
 					<td class='center hover work_operation'>{{ showOperation(meatl,  "before") }}</td>
 					<td :class='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0  ? "success_operation" : "work_operation" ' class='center'>{{ 
 						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>

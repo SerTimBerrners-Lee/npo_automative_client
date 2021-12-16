@@ -57,6 +57,11 @@
             </div>
           </div>
           <div>
+            <QuickFilter 
+              @attention='sortToAttention'
+              @date_first='sortToDate'
+              @my_object='sortToMyObject'
+            />
             <table class="table-base-detal">
               <tr>
                 <th style='font-size: 12px'>Кол-во: {{allCbed.length}}</th>
@@ -66,12 +71,7 @@
               </tr>
               <tbody class='fixed_table_10'>
                 <tr>
-                  <th colspan="3" scope="col">Сборочная единица (Тип СБ)
-                    <span class='exclamation tooltip' @click='sortToAttention'>
-                      <unicon name="exclamation" fill="red" />
-                      <span class='tooltiptext'>Соритировать по отметке</span>
-                    </span> 
-                  </th>
+                  <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
                 </tr>
                 <tr>
                   <th>Артикул</th>
@@ -138,6 +138,7 @@
             :listDetal='listDetal'
             :listPokDet='listPokDet'
             :materialList='materialList'
+            :izd='selectedCbEd'
           />
         </div>
         <div v-if='selectedCbEd.haracteriatic'>
@@ -227,7 +228,7 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['allCbed', 'allProduct']),
+  computed: mapGetters(['allCbed', 'allProduct', 'getAuth']),
   components: {
     Search, 
     MediaSlider, 
@@ -257,6 +258,8 @@ export default {
       'setOneProduct',
       'sortByNonOperationProduct',
       'sortByNonOperationCbed',
+      'filterCbedToDate',
+      'filterCbedToMyObject'
     ]),
     showModalNode() {
       if(!this.selectedCbEd) return false
@@ -282,6 +285,12 @@ export default {
     },
     sortToAttention() {
       this.filterToAttentionCbed()
+    },
+    sortToDate() {
+      this.filterCbedToDate()
+    },
+    sortToMyObject() {
+      this.filterCbedToMyObject(this.getAuth.id)
     },
     parseSpetification(obj) {
       this.materialList = []

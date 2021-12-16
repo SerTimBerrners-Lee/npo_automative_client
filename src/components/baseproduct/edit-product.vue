@@ -32,6 +32,7 @@
                 :listDetal='listDetal'
                 :listPokDet='listPokDet'
                 :materialList='materialList'
+                :izd='getOneSelectProduct'
               />
               <ModalBaseMaterial 
                 :key='modalMaterialKey'

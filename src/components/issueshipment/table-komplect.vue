@@ -22,7 +22,8 @@
 			<tr v-for='shipments of shipmentsArr'
 				:key='shipments'
 				class='td-row'
-				@click='e => setShipments(shipments, e.target.parentElement)'>
+				@click='e => setShipments(shipments, e.target.parentElement)'
+				@dblclick="shipmentsModal">
 				<td>{{ shipments.number_order }}</td>
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
@@ -75,6 +76,11 @@
 			:key='komplect_generate_key'
 			:parametrs='parametrs_komplect'
 		/>
+		<ShipmentsModal 
+			:key='key_modal_shipments'
+			v-if='show_modal_shipments && selectShipments.id'
+			:id_shipments='selectShipments.id'
+		/>
 	</div>
 </template>
 <script>
@@ -84,6 +90,7 @@ import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
 import KomplectModal from './komplect-modal.vue';
+import ShipmentsModal from './shipments-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 export default {
@@ -106,16 +113,26 @@ export default {
 			itemFiles: [],
       keyWhenModalGenerateFileOpen: random(1, 999),
 
-			loader: false
+			loader: false,
+
+			key_modal_shipments: random(1, 999),
+			show_modal_shipments: false
 		}	
 	},
 	components: {
 		DescriptionModal, 
 		OpensFile,
-		KomplectModal
+		KomplectModal,
+		ShipmentsModal
 	},
 	methods: {
 		...mapMutations(['setOneShipment']),
+		shipmentsModal() {
+			if(this.selectShipments) {
+				this.key_modal_shipments = random(1, 999)
+				this.show_modal_shipments = true
+			}
+		},
 		setShipments(shipments, e) {
 			if(this.tr && this.selectShipments.id == shipments.id) {
 				this.tr.classList.remove('td-row-all')

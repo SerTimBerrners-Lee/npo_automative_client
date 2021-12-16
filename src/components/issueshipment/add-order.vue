@@ -104,6 +104,10 @@
 					<FileLoader 
 						:typeGetFile='"getfile"'
 						@unmount='file_unmount'/>
+					<div class="btn-control" style='margin-top: 20px;'>
+						<button class="btn-small" @click='addFileModalBase' >Добавить основание из базы</button>
+						<button class="btn-small" @click='addFileModal' >Добавить из базы</button>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -170,6 +174,12 @@
 		:key='keyGenerateBuyer'
 		v-if='showBuyer'
 		@unmount='unmount_buyer'/>
+		<BaseFileModal 
+      v-if='showModalFile'
+      :key='fileModalKey'
+      :fileArrModal='documentsData'
+      @unmount='unmount_filemodal'
+    />
 	<Loader v-if='loader' />
 	</div>
 </template>
@@ -184,6 +194,7 @@ import DatePicterCustom from '@/components/date-picter.vue';
 import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
 import BaseBuyer from '@/components/basebuyer/list-buyer.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 import ProductList from '@/components/baseproduct/all-product-modal.vue';
 import TableShipments from '@/components/issueshipment/table-komplect.vue';
 import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
@@ -219,6 +230,7 @@ export default {
 			cbedModalKey: random(1, 999),
 			showBuyer: false, 
 			keyGenerateBuyer: random(1, 999),
+			documentsData: [],
 			
 			date_order: new Date().toLocaleDateString("ru-RU"),
 			date_shipments: new Date().toLocaleDateString("ru-RU"),
@@ -231,7 +243,11 @@ export default {
 			description: '',
 			list_cbed_detal: [],
 			list_hidden_cbed_detal: [],
-			is_not_product: false
+			is_not_product: false,
+
+			showModalFile: false,
+      fileModalKey: random(1, 999),
+			selectedBaseProvesses: false
 		}
 	},
 	watch: {
@@ -257,7 +273,8 @@ export default {
 			DetalModal,
 			CbedModalInfo,
 			TableShipments,
-			BaseBuyer
+			BaseBuyer,
+			BaseFileModal
 	},
 	methods: {
 		...mapActions([
@@ -295,6 +312,23 @@ export default {
 				this.docFiles.push(doc)
 				this.documents.push(doc)
 			}
+		},
+		unmount_filemodal(res) {
+      if(res && !this.selectedBaseProvesses) {
+				res.forEach((doc) => this.documents.push(doc))
+			} else if(this.selectedBaseProvesses) {
+				this.documents.push(res[0])
+				this.base = res[0].name
+				this.selectedBaseProvesses = false
+			}
+    },
+		addFileModal() {
+      this.fileModalKey = random(1, 999)
+      this.showModalFile = true
+    },
+		addFileModalBase() {
+			this.addFileModal()
+			this.selectedBaseProvesses = true
 		},
 		selectBuyer() {
 			this.showBuyer = true;
@@ -506,9 +540,9 @@ export default {
 			this.select_tr_inx = inx
 		},
 		save_order() {
-			if(!this.is_not_product)
-				if(!this.base || !this.select_product) 
-					return showMessage('', 'Все поля должны быть заполнены', 'w', this)
+			if(!this.is_not_product && !this.select_product)
+					return showMessage('', 'Выберите Изделие', 'w', this)
+			
 			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w', this)
 			this.loader = true
 			const data = {
@@ -524,6 +558,15 @@ export default {
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
 				list_hidden_cbed_detal: JSON.stringify(this.list_hidden_cbed_detal)
 			} 
+
+			if(this.documentsData.length) {
+				let new_arr = []
+				for(let dat of this.documentsData) {
+					new_arr.push(dat.id)
+				}
+				data['documentsData'] = JSON.stringify(new_arr)
+			}
+
 			if(this.select_product) {
 				data['product'] = {
 					id: this.select_product.id,
@@ -607,8 +650,6 @@ export default {
 			this.editVariable()
 		} else 
 			if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent))
-		
-
 	}
 }
 </script>

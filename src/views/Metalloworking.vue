@@ -19,7 +19,6 @@
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
             <th>Габариты заготовки</th>
-            <th>Тип заготовки</th>
             <th>Материал</th>
             <th id='operation'>Операции</th>
             <th>Готовность</th>
@@ -39,7 +38,6 @@
             <td class='center'>{{ metalowork.kolvo_shipments }}</td>
             <td class='center'>{{ metalowork.detal ? metalowork.detal.kolvo_shipments : 'Нет детали' }}</td>
             <td class='center'>{{ metalowork.detal ? metalowork.detal.DxL : 'Нет детали' }}</td>
-            <td class='center'>{{ metalowork.detal && metalowork.detal.mat_za_obj ? metalowork.detal.mat_za_obj.material.name : 'Нет заготовки' }}</td>
             <td>{{metalowork.detal && metalowork.detal.mat_za_obj ?  metalowork.detal.mat_za_obj.name : 'Нет заготовки' }}</td>
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />

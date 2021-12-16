@@ -10,23 +10,36 @@
 				<td class='center_block checkbox_parent' style='height:20px; border: none; border-bottom: 1px solid #e4e4e4ce'>
 					<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
 				</td>
-				<td>{{ order.number_order }}</td>
-				<td>{{ order.date_shipments }}</td>
+				<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
+				<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
 			</tr>
 		</table>
 		<div class="btn-control">
       <button class="btn-small" @click='clearFilter'>Сбросить все фильтры</button>
     </div>
+		<ShipmentsModal 
+			:key='key_modal_shipments'
+			v-if='ship_id'
+			:id_shipments='ship_id'
+		/>
 	</div>
 </template>
 <script>
+import {random} from 'lodash';
 import {mapMutations} from 'vuex';
+import ShipmentsModal from './shipments-modal.vue';
 export default {
 	props: ['getShipments'],
 	data() {
 		return {
 			span_ship: null,
+
+			key_modal_shipments: random(1, 999),
+			ship_id: null
 		}
+	},
+	components: {
+		ShipmentsModal
 	},
 	methods: {
 		...mapMutations([
@@ -34,6 +47,10 @@ export default {
       'breackFIlterAssembl',
 			'breackFIlterMetal'
     ]),
+		openShipments(id) {
+			this.ship_id = id
+			this.key_modal_shipments = random(1, 999)
+		},
 		toSetOrders(shipments, e) {
       if(this.span_ship) {
         this.breackFIlterMetal()

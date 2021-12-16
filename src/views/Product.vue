@@ -4,6 +4,11 @@
       <h3>Изделия</h3>
       <div class="main_table_control">
         <div class="scroll-table" >
+          <QuickFilter 
+            @attention='sortToAttention'
+            @date_first='sortToDate'
+            @my_object='sortToMyObject'
+          />
           <table class="table-base-detal">
             <tr>
               <th style='font-size: 12px'>Кол-во: {{allProduct.length}}</th>
@@ -13,12 +18,7 @@
             </tr>
             <tbody class='fixed_table_10'>
               <tr>
-                <th colspan="3" scope="col">Изделие
-                  <span class='exclamation tooltip' @click='sortToAttention'>
-                    <unicon name="exclamation" fill="red" />
-                    <span class='tooltiptext'>Соритировать по отметке</span>
-                  </span> 
-                </th>
+                <th colspan="3" scope="col">Изделие</th>
               </tr>
               <tr>
                 <th>Заводской номер</th>
@@ -91,6 +91,7 @@
             :listDetal='listDetal'
             :listPokDet='listPokDet'
             :materialList='materialList'
+            :izd='selecteProduct'
           />
         </div>
         <div v-if='selecteProduct.haracteriatic'>
@@ -169,7 +170,7 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['allProduct']),
+  computed: mapGetters(['allProduct', 'getAuth']),
   components: {
     Search, 
     TableDocument, 
@@ -190,6 +191,8 @@ export default {
       'searchProduct', 
       'filterToAttentionProduct',
       'sortByNonOperationProduct',
+      'filterProductToDate',
+      'filterProductToMyObject'
     ]),
     setProduct(product, e) {
       this.show_node_modal = false
@@ -227,6 +230,12 @@ export default {
     },
     sortToAttention() {
       this.filterToAttentionProduct()
+    },
+    sortToDate() {
+      this.filterProductToDate()
+    },
+    sortToMyObject() {
+      this.filterProductToMyObject(this.getAuth.id)
     },
     editProduct() {
       if(!this.selecteProduct)

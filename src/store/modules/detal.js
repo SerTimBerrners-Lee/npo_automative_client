@@ -1,5 +1,6 @@
-import PATH_TO_SERVER from '@/js/path.js'
- 
+
+import {sortState} from '@/js/index';
+import PATH_TO_SERVER from '@/js/path.js';
 export default { 
   state: {
     detal: [],
@@ -9,7 +10,10 @@ export default {
     operationNewList: localStorage.getItem('newOperationItem') ?
       JSON.parse(localStorage.getItem('newOperationItem')) : [],
     tmp_attention: [],
-    tmp_operation: []
+    tmp_operation: [],
+    tmp_responsible: [],
+
+    date_is: '<'
   },
   getters: {
     allDetal(state) { 
@@ -328,6 +332,17 @@ export default {
         return state.tmp_attention  = []
       }
       state.detal = state.detal.filter(detal => detal.attention)
+    },
+    filterDetalToDate(state) {
+      state.dete_id = sortState(state.detal, state.dete_id)
+    },
+    filterDetalToMyObject(state, user_id) {
+      if(state.tmp_responsible.length == 0) state.tmp_responsible = state.detal
+      else {
+        state.detal = state.tmp_responsible
+        return state.tmp_responsible = []
+      }
+      state.detal = state.detal.filter(detal => detal.responsibleId == user_id)
     },
     sortByNonOperationDetal(state, arr_operation) {
       if(state.tmp_operation.length == 0)

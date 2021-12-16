@@ -1,3 +1,5 @@
+
+import {sortState} from '@/js/index';
 import PATH_TO_SERVER from '@/js/path.js';
 export default {
   state: {
@@ -14,7 +16,7 @@ export default {
     linkId: 0,
 
     sTypeM: [],
-    sPTypeM: [],
+    sPTypeM: [], 
     sProviderPM: [],
 
     stateMaterialTime: [],
@@ -23,6 +25,8 @@ export default {
     searchTypeM: [],
     searchPTypeM: [],
     searchMaterial: [],
+
+    date_is: '<'
   },
   getters: {
     alltypeM(state) {
@@ -474,6 +478,9 @@ export default {
         return state.tmp_attention  = []
       }
       state.podMaterial = state.podMaterial.filter(detal => detal.attention)
+    },
+    filterMaterialToDate(state) {
+      state.date_is = sortState(state.podMaterial, state.date_is)
     },
     /**
      * 

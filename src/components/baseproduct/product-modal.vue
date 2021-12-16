@@ -27,6 +27,7 @@
 							:listDetal='listDetal'
 							:listPokDet='listPokDet'
 							:materialList='materialList'
+              :izd='selecteProduct'
 						/>
 					</div>
 					<div>
@@ -109,7 +110,7 @@ export default {
 
       techProcessIsShow: false,
       techProcessKey: random(10, 999),
-      techProcessID: null,
+      techProcessID: null
     }
   },
   computed: mapGetters([ 

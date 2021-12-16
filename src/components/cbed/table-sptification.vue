@@ -97,13 +97,24 @@
 		v-if='material_id'
 		:id='material_id'
 	/>
+	<ComplectModal 
+    v-if='show_complect_modal && izd'
+    :key='key_complect_modal'
+    :parametrs='{type: "izd", obj: izd}'
+  />
+	<button 
+		style='width: 98%;'
+		v-if='izd' 
+		@click='openComplectModal'
+		class="btn">Полная спетификация</button>
 	</div>
 </template>
 <script>
 import {random} from 'lodash';
+import ComplectModal from '@/components/baseproduct/complect-modal.vue';
 import MaterialInformation from '@/components/mathzag/material-information.vue';
 export default {
-	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList'],
+	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList', 'izd'],
 	data() {
 		return {
 			parametrs_detal: null,
@@ -112,14 +123,21 @@ export default {
       parametrs_cbed: null,
 			material_key: random(1, 999),
 			material_id: null,
+
+			show_complect_modal: false,
+      key_complect_modal: random(1, 999)
 		}
 	},
 	beforeCreate() {
     this.$options.components.DetalModal = require('@/components/basedetal/detal-modal.vue').default
     this.$options.components.ModalCbed = require('@/components/cbed/cbed-modal.vue').default
   },
-	components: {MaterialInformation},
+	components: {MaterialInformation, ComplectModal},
 	methods: {
+		openComplectModal() {
+      this.show_complect_modal = true
+      this.key_complect_modal = random(1, 999)
+    },
 		openCbed(id) {
 			if(!id) return false
       this.cbedModalKey = random(1, 999)

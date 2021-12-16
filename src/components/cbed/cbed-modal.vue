@@ -27,6 +27,7 @@
                 :listDetal='listDetal'
                 :listPokDet='listPokDet'
                 :materialList='materialList'
+                :izd='selectedCbEd'
               />
             </div>
             <div>

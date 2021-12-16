@@ -8,11 +8,15 @@
             <th rowspan="2" scope="rowgroup">№</th>
             <th rowspan="2" scope="rowgroup">Наименование операции </th>
             <th colspan="3" scope="colgroup">Учет выработки сотрудником в нормо-часах</th>
+            <th colspan="3" scope="colgroup">Прочие параметры</th>
           </tr>
           <tr>
             <th>Подготовительное</th> 
             <th>Вспомогательное</th>
             <th>Основное</th>
+            <th>С ЧПУ</th>
+            <th>Резка круга / профиля</th>
+            <th>Листовая резка</th>
           </tr>
           <tr class="td-row"  
             v-for="(operation, inx) in operations" 
@@ -48,6 +52,28 @@
                 :checked='operation.mainTime'
                 @change='operations[inx].mainTime = !operations[inx].mainTime'>
             </td>
+            <td class="checkeds">
+              <input type="checkbox" 
+                :value='operation.cpu'
+                :checked='operation.cpu'
+                @change='operations[inx].cpu = !operations[inx].cpu'>
+            </td>
+            <td class="checkeds">
+              <input 
+                type='radio'
+                name='square'
+                :value='operation.square'
+                :checked='operation.square'
+                @change='operations[inx].square = !operations[inx].square'>
+            </td>
+            <td class="checkeds">
+              <input 
+                type='radio'
+                name='list'
+                :value='operation.list'
+                :checked='operation.list'
+                @change='operations[inx].list = !operations[inx].list'>
+            </td>
           </tr>
         </table>
       </div>
@@ -66,18 +92,16 @@
     </div>
   </div>
 </template>
-
 <script>
 import { mapActions, mapGetters } from 'vuex';
-
 export default {
   data() {
     return {
-        operations: [],
-        isCreate: false,
+      operations: [],
+      isCreate: false,
 
-        selected: null,
-        span: null
+      selected: null,
+      span: null
     }
   },
   computed: mapGetters(['getTypeOperations', 'getRoleAssets']),
@@ -93,7 +117,10 @@ export default {
         name: '',
         preTime: false,
         helperTime: false,
-        mainTime: false
+        mainTime: false,
+        cpu: false,
+        square: false,
+        list: false
       })
       this.isCreate = true
     },
@@ -118,15 +145,13 @@ export default {
         
     },
     deleteTO() {
-      if(!this.selected)
-        return 0
+      if(!this.selected) return 0
 
       this.deleteTypeOperation(this.selected.id)
       this.operations = this.operations.filter(op => op.id != this.selected.id)
     },
     editTO() {
-      if(!this.selected && !this.selected.id)
-        return 0
+      if(!this.selected && !this.selected.id) return 0
 
       this.updateTypeOperation(this.selected)
       this.$refs.edit.classList.remove('btn-add')
@@ -135,10 +160,8 @@ export default {
   },
   async mounted() {
     await this.getAllTypeOperations()
-
-    if(this.getTypeOperations) {
+    if(this.getTypeOperations) 
       this.operations = this.getTypeOperations
-    }
   }
 }
 </script>

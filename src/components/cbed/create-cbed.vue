@@ -202,7 +202,7 @@
       :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
-  />
+    />
   <Loader v-if='loader' /> 
   </div>
 </template>

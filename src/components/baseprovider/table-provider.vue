@@ -1,15 +1,16 @@
 <template>
 	<div class="scroll-table">
+		<QuickFilter 
+      v-if='attention'
+      @attention='$emit("unmount_attention")'
+      @date_first='$emit("sortToDate")'
+      @my_object='$emit("sortToMyObject")'
+      :hide_filter_responsibil='hide_filter_responsibil'
+    />
 		<table class="provider_table"> 
 			<tr> 
 				<th>ИНН</th>
 				<th style="width: 440px;">Наименование поставщика
-					<span 
-            class='exclamation tooltip' v-if='attention' 
-            @click='$emit("unmount_attention")'>
-            <unicon name="exclamation" fill="red" />
-            <span class='tooltiptext'>Соритировать по отметке</span>
-          </span> 
 				</th>
 			</tr>
 			<tr>
@@ -34,12 +35,11 @@
 		</table>
 	</div>
 </template>
-
 <script>
-import Search from '@/components/search.vue';
 import {mapMutations} from 'vuex';
+import Search from '@/components/search.vue';
 export default {
-	props: ['allProvider', 'attention'],
+	props: ['allProvider', 'attention', 'hide_filter_responsibil'],
 	data() {
 		return {
 			span_provider: null

@@ -1,3 +1,5 @@
+
+import {sortState} from '@/js/index';
 import PATH_TO_SERVER from '@/js/path.js'
 
 export default {
@@ -7,7 +9,10 @@ export default {
     select_product: {},
 
     tmp_attention: [],
-    tmp_operation: []
+    tmp_operation: [],
+    tmp_responsible: [],
+
+    date_is: '<'
   },
   getters: {
     allProduct(state) {
@@ -136,7 +141,18 @@ export default {
         state.product = state.tmp_attention 
         return state.tmp_attention  = []
       }
-      state.product = state.product.filter(detal => detal.attention)
+      state.product = state.product.filter(product => product.attention)
+    },
+    filterProductToDate(state) {
+      state.dete_id = sortState(state.product, state.dete_id)
+    },
+    filterProductToMyObject(state, user_id) {
+      if(state.tmp_responsible.length == 0) state.tmp_responsible = state.product
+      else {
+        state.product = state.tmp_responsible
+        return state.tmp_responsible = []
+      }
+      state.product = state.product.filter(product => product.responsibleId == user_id)
     },
     sortByNonOperationProduct(state, arr_operation) {
       if(state.tmp_operation.length == 0)

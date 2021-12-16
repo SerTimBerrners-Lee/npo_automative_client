@@ -1,3 +1,5 @@
+
+import {sortState} from '@/js/index';
 import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
@@ -8,7 +10,10 @@ export default {
     select_cbed: {},
 
     tmp_attention: [],
-    tmp_operation: []
+    tmp_operation: [],
+    tmp_responsible: [],
+
+    date_is: '<'
   }, 
   getters: { 
     allCbed(state) {
@@ -212,6 +217,17 @@ export default {
         return state.tmp_attention  = []
       }
       state.cbed = state.cbed.filter(detal => detal.attention)
+    },
+    filterCbedToDate(state) {
+      state.dete_id = sortState(state.cbed, state.dete_id)
+    },
+    filterCbedToMyObject(state, user_id) {
+      if(state.tmp_responsible.length == 0) state.tmp_responsible = state.cbed
+      else {
+        state.cbed = state.tmp_responsible
+        return state.tmp_responsible = []
+      }
+      state.cbed = state.cbed.filter(cbed => cbed.responsibleId == user_id)
     },
     sortByNonOperationCbed(state, arr_operation) {
       if(state.tmp_operation.length == 0)

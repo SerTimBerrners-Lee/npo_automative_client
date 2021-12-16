@@ -29,6 +29,8 @@
               :type='"podPM"' 
               :attention='true'
               @unmount_attention='unmount_attention'
+              @sortToDate='sortToDate'
+              :hide_filter_responsibil='true'
               @search='searchM' 
               @clickMat='clickMat' />
           </div>
@@ -85,7 +87,9 @@ export default {
       'fetchGetOnePPM', 
       'getAllPodTypeMaterial',
       'fetchGetAllPPM']),
-    ...mapMutations(['filterByNameMaterial', 'filterMatByPodType',
+    ...mapMutations([
+      'filterByNameMaterial', 
+      'filterMatByPodType',
       'addOnePPTyep', 
       'getInstansMaterial', 
       'throwInstans',
@@ -94,7 +98,8 @@ export default {
       'searchMaterialMutation', 
       'clearCascheMaterial', 
       'filterToAttentionMat',
-      'setOneTypeMMytation' 
+      'setOneTypeMMytation' ,
+      'filterMaterialToDate'
     ]),
     instansMaterial(instans, span) {
       if(!this.span)
@@ -110,6 +115,9 @@ export default {
     },
     unmount_attention() {
       this.filterToAttentionMat()
+    },
+    sortToDate() {
+      this.filterMaterialToDate()
     },
     clickMat(mat, type) {
       if(type == 'type') {
