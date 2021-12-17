@@ -350,11 +350,10 @@
 		<Loader v-if='loader' />
 	</div>
 </template>
-
 <script> 
+import {getKolvoMaterial} from '@/js/edizm.js';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
-import {getKolvoMaterial} from '@/js/edizm.js';
 export default {
 	data() {
 		return {
@@ -507,7 +506,7 @@ export default {
 		},
 		getOnlyEquipmentDeficit() {
 			this.clearAllState()
-			this.fetchAllEquipment()
+			this.fetchAllEquipment(true)
 			this.getAllEquipmentPType()
 			this.fetchAllEquipmentType()
 		},

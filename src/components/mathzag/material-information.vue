@@ -1,51 +1,56 @@
 <template>
-<div class="right-menu-modal informat">
-  <div :class='destroyModalLeft' @click="destroyModalF"></div>
-  <div :class='destroyModalRight'>
-    <div :style="hiddens" > 
+  <div class="right-menu-modal informat">
+    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalRight'>
+      <div :style="hiddens" > 
 
-      <div class="right_info_block" v-if='getOnePPT && getOnePPT.name'>
-        <div class="block">
-          <h3>Краткая Информация об Материале</h3>
-          <p class='name_parg'>
-            <span class="title_span">Наименование: </span><span>{{ getOnePPT.name }}</span>
-          </p>
-          <MediaSlider :width='"width: 93%;"' v-if='getOnePPT.documents.length' :data='getOnePPT.documents' :key='getOnePPT.documents' />
-          <div>
-          <span>Описание / Примечание</span>
-          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOnePPT.description'> </textarea>
-          </div>
-          <div v-if='getOnePPT.documents.length > 0'>
-            <h3>Документы</h3>
-            <table style="width: 100%;">
-              <tr>
-                <th>Файл</th>
-              </tr>
-              <tr class="td-row" v-for='doc in getOnePPT.documents' :key='doc' @click='setDocs(doc)'>
-                <td>{{ doc.name }}</td>
-              </tr>
-            </table>
-            <div class="btn-control">
-            <button class="btn-small" @click='openDock'>Открыть</button>
+        <div class="right_info_block" v-if='getOnePPT && getOnePPT.name'>
+          <div class="block">
+            <h3>Краткая Информация об Материале</h3>
+            <p class='name_parg'>
+              <span class="title_span">Наименование: </span><span>{{ getOnePPT.name }}</span>
+            </p>
+            <MediaSlider :width='"width: 93%;"' v-if='getOnePPT.documents.length' :data='getOnePPT.documents' :key='getOnePPT.documents' />
+            <button 
+              style='width: 98%;'
+              v-if='getOnePPT' 
+              @click='$router.push({path: `/material/add/edit/${this.getOnePPT.id}`}) '
+              class="btn">Полная Информация</button>
+            <div>
+              <span>Описание / Примечание</span>
+              <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOnePPT.description'> </textarea>
             </div>
-            <OpensFile 
-              :parametrs='itemFiles' 
-              v-if="showFile" 
-              :key='keyWhenModalGenerateFileOpen'
-            />
+            <div v-if='getOnePPT.documents.length > 0'>
+              <h3>Документы</h3>
+              <table style="width: 100%;">
+                <tr>
+                  <th>Файл</th>
+                </tr>
+                <tr class="td-row" v-for='doc in getOnePPT.documents' :key='doc' @click='setDocs(doc)'>
+                  <td>{{ doc.name }}</td>
+                </tr>
+              </table>
+              <div class="btn-control">
+              <button class="btn-small" @click='openDock'>Открыть</button>
+              </div>
+              <OpensFile 
+                :parametrs='itemFiles' 
+                v-if="showFile" 
+                :key='keyWhenModalGenerateFileOpen'
+              />
+            </div>
+            <h3 @click="providershow" v-if='!getOnePPT.providers.length' style='cursor:pointer;'>Поставищики {{ getOnePPT.providers.length }}</h3>
+              <ShowProvider
+                :allProvider='getOnePPT.providers' 
+                :key='keyProvidersModalEq'
+                v-if='showProvidersEq'
+              />
+              <ModalInformation v-if='showModalInformation' :key='keyModalInformation' />
           </div>
-          <h3 @click="providershow" v-if='!getOnePPT.providers.length' style='cursor:pointer;'>Поставищики {{ getOnePPT.providers.length }}</h3>
-            <ShowProvider
-              :allProvider='getOnePPT.providers' 
-              :key='keyProvidersModalEq'
-              v-if='showProvidersEq'
-            />
-            <ModalInformation v-if='showModalInformation' :key='keyModalInformation' />
         </div>
       </div>
     </div>
   </div>
-</div>
 </template>
 <script>
 import {isEmpty, random} from 'lodash';

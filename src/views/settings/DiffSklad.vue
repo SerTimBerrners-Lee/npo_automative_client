@@ -58,11 +58,8 @@ export default {
         }
         return false
       }
-
       this.updateDeficit = true
-
     },
-
     setUpdate() {
       this.fetchUpdateDeficit({
         minRemainder: Number(this.minRemainder),

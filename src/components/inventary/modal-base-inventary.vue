@@ -35,11 +35,9 @@
     </div>
   </div> 
 </template>
-
 <script>
-
-import TableMaterial from '@/components/mathzag/table-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 import {random} from 'lodash'
 export default {
   props: ['listEquipment','get_one'],
@@ -50,7 +48,7 @@ export default {
       inventary: null,
 
       showModalInformationEq: false,
-      keyModalInformation: random(1, 34e121),
+      keyModalInformation: random(1, 999),
 
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
@@ -118,20 +116,6 @@ export default {
       this.inventary = inventary
       this.fetchOneInventary(inventary.id)
     },
-    // ---------------------------------------
-    // addEuipmentToList() {
-    //   let add = true
-    //   if(this.equipmentList.length > 0) {
-    //     for(let eq of this.equipmentList) {
-    //       if(eq.id == this.equipment.id)
-    //         add=false
-    //     }
-    //   }
-    //   if(add) {
-    //     this.equipmentListId.push(this.equipment.id)
-    //     this.equipmentList.push(this.equipment);
-    //   }
-    // },
 		addInventaryToList() {
 			if(!this.inventary) return false
 		},
@@ -140,17 +124,6 @@ export default {
       this.$emit('unmount', this.inventary)
       return this.destroyModalF()
     },
-    // delEQ(id) {
-    //   this.equipmentList = this.equipmentList.filter(eq => eq.id != id)
-    //   this.equipmentListId = this.equipmentListId.filter(eq => eq != id)
-    // },
-    // addInventary() {
-    //   this.destroyModalF()
-    //   this.$emit('unmount_eq', {
-    //     equipmentListId: this.equipmentListId,
-    //     equipmentList: this.equipmentList,
-    //   })
-    // },
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -159,12 +132,6 @@ export default {
     this.fetchAllInventary()
     this.fetchAllPInventary()
     this.fetchAllNameInventary()
-    // if(this.$props.listEquipment) {
-    //   this.equipmentList = this.$props.listEquipment
-    //   this.$props.listEquipment.forEach((el) => {
-    //     this.equipmentListId.push(el.id)
-    //   })
-    // }
   }
 }
 </script>

@@ -207,12 +207,12 @@
 </template>
 
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue'   ;
-import { mapActions, mapGetters, mapMutations } from 'vuex'           ;
+import { showMessage } from '@/js/';
+import { random, isEmpty } from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
-import { random, isEmpty } from 'lodash'                              ;
-import { showMessage } from '@/js/'                                   ;
-import OpensFile from '@/components/filebase/openfile.vue'            ;
 import BaseFileModal from '@/components/filebase/base-files-modal.vue';
 export default {
   data() {
@@ -298,7 +298,8 @@ export default {
       'searchTypeMutation', 
       'searchPTypeMutation',
       'delitPathNavigate',
-      'setOneTypeMMytation'
+      'setOneTypeMMytation',
+      'addOnePPTyep'
     ]),
     unmount_filemodal(res) {
       if(res) 
@@ -412,7 +413,6 @@ export default {
             showMessage('', 'Материал усешно создан. Перенаправление на главную страницу...', 's', this)
           }
         }
-
         setTimeout(() => {
           this.$router.push('/basematerial')
           this.delitPathNavigate(this.$route.path)
@@ -531,14 +531,19 @@ export default {
       this.showModalFile = true
     },
     exit() {
-      this.$router.push("/basematerial")
+      this.$router.back()
       this.delitPathNavigate(this.$route.path)
     }
   },
   async mounted() {
     this.getAllEdizm()
-    if(this.$route.params.type == 'edit' || this.$route.params.type == 'copy')
+    if(this.$route.params.type == 'edit' || this.$route.params.type == 'copy') {
+      if(!this.$route.params.id) return this.exit()
+
+      const material = await this.fetchGetOnePPM(this.$route.params.id)
+      this.addOnePPTyep(material)
       this.editGetDataPPT()
+    }
   }
 }
 </script>

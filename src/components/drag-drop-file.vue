@@ -21,8 +21,8 @@
 
 
 <script>
-import AddFile from '@/components/filebase/addfile.vue';
 import { random }  from 'lodash';
+import AddFile from '@/components/filebase/addfile.vue';
 export default {
   props: ['typeGetFile', 'is_one'],
   emits: ["unmount"],

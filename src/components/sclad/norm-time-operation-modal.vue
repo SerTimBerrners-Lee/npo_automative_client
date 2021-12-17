@@ -21,7 +21,6 @@
   </div>
 </div>
 </template>
-
 <script>
 import {mapGetters, mapActions} from 'vuex';
 import { OperationTime } from '@/js/operation.js';

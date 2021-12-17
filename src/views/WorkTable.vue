@@ -68,10 +68,10 @@
 </template>
 
 <script>
-import { mapGetters, mapActions} from 'vuex';
 import { dateIncrementHors } from '@/js/';
-import DatePicterRange from '@/components/date-picter-range.vue';
+import { mapGetters, mapActions} from 'vuex';
 import IssueForMe from '@/components/issue/issue-for-me.vue';
+import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
   data() {
     return {

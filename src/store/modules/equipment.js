@@ -1,4 +1,6 @@
-import PATH_TO_SERVER from '@/js/path.js'
+
+import {sortState} from '@/js/index';
+import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
   state: {
@@ -8,10 +10,13 @@ export default {
     equipment: {},
 
     tmp_attention: [],
+    tmp_responsible: [],
 
     searchTypeEq: [],
     searchPTypeEq: [],
-    searchEq: [] 
+    searchEq: [],
+
+    date_is: '<'
   },
   getters: {
     allEquipmentType(state) {
@@ -143,8 +148,8 @@ export default {
       ctx.commit('addOneEquipment', result)
       return result 
     },
-    async fetchAllEquipment(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/`)
+    async fetchAllEquipment(ctx, light='false') {
+      const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/all/${light}`)
       const result = await res.json()
       ctx.commit('pushAllEquipment', result)
       return result 
@@ -270,6 +275,17 @@ export default {
         return state.tmp_attention  = []
       }
       state.equipments = state.equipments.filter(detal => detal.attention)
+    },
+    filterEquipmentToDate(state) {
+      state.date_is = sortState(state.equipments, state.date_is)
+    },
+    filterEquipmentToMyObject(state, user_id) {
+      if(state.tmp_responsible.length == 0) state.tmp_responsible = state.equipments
+      else {
+        state.equipments = state.tmp_responsible
+        return state.tmp_responsible = []
+      }
+      state.equipments = state.equipments.filter(eq => eq.responsibleId == user_id)
     },
     clearCascheEquipment(state) {
       state.equipments = []

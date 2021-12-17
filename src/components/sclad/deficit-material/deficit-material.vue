@@ -150,7 +150,6 @@
 		<Loader v-if='loader' />
 	</div>
 </template>
-
 <script> 
 import print from 'print-js';
 import {getKolvoMaterial} from '@/js/edizm.js';

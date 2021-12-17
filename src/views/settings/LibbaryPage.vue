@@ -34,9 +34,9 @@
 </template>
 
 <script>
+import { random } from 'lodash';
 import {mapActions, mapGetters} from 'vuex';
 import AddEditModal from '@/components/library/add-edit.modal.vue';
-import { random } from 'lodash';
 export default {
   data() {
     return{

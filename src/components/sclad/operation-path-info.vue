@@ -72,12 +72,11 @@
     />
 	</div>
 </template>
-
 <script>
-import DescriptionModal from '@/components/description-modal.vue';
-import  { worksHors, workingForMarks }  from '@/js/operation.js';
-import { mapActions, mapGetters } from 'vuex';
 import { random } from 'lodash';
+import { mapActions, mapGetters } from 'vuex';
+import  { worksHors, workingForMarks }  from '@/js/operation.js';
+import DescriptionModal from '@/components/description-modal.vue';
 export default {
 	props: ['tp', 'izdeles'],
 	data() {

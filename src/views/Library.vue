@@ -89,15 +89,13 @@
       :key='keyWhenModalGenerateFileOpen' />
 	</div>
 </template>
-
 <script>
-
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddFileLink from '@/components/library/add-file.vue';
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
 import OpensFile from '@/components/filebase/openfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import AddFileLink from '@/components/library/add-file.vue';
 export default {
   data() {
     return {  

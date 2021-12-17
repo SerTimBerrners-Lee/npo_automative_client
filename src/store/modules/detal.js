@@ -10,7 +10,7 @@ export default {
     operationNewList: localStorage.getItem('newOperationItem') ?
       JSON.parse(localStorage.getItem('newOperationItem')) : [],
     tmp_attention: [],
-    tmp_operation: [],
+    tmp_operation: [], 
     tmp_responsible: [],
 
     date_is: '<'

@@ -46,8 +46,8 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapMutations } from 'vuex';
 import { dataFormat, timeFormat } from '@/js/';
+import { mapGetters, mapMutations } from 'vuex';
 export default {
   data() {
     let date = new Date();

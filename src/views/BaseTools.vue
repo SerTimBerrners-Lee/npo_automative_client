@@ -28,7 +28,7 @@
           @clickMat="clickPPTInstrument"/>
     </div>
     <div class="btn-control btn-control-tools-w" style="margin-top: 10px;">
-        <button class="btn-small btn-add" @click="$router.push({path: '/instrument/add/create'})">Создать</button>
+        <button class="btn-small btn-add" @click="$router.push({path: '/instrument/add/create/0'})">Создать</button>
         <button class="btn-small btn-add" @click='addCopy'>Создать копированием</button>
         <button class="btn-small" @click='edit'>Редактировать</button>
       </div>  
@@ -101,9 +101,14 @@ export default {
   computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
   components: {TableMaterial, OpensFile, ShowProvider, MediaSlider},
   methods: {
-    ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 
-      'fetchOneNameInstrument', 'banNameInstrument',
-      'getPTInstrumentList', 'getAllNameInstrument']),
+    ...mapActions([
+      'fetchAllInstruments', 
+      'getAllPTInstances', 
+      'fetchOneNameInstrument', 
+      'banNameInstrument',
+      'getPTInstrumentList', 
+      'getAllNameInstrument'
+    ]),
     ...mapMutations([
       'filterAllpInstrument', 
       'getInstansTools', 
@@ -131,12 +136,12 @@ export default {
     edit() {
       if(!this.getOneNameInstrument)
         return 0 
-      this.$router.push({path: '/instrument/edit/false'})
+      this.$router.push({path: `/instrument/edit/false/${this.getOneNameInstrument.id}`})
     },
     addCopy() {
       if(!this.getOneNameInstrument)
         return 0 
-      this.$router.push({path: '/instrument/edit/true'})
+      this.$router.push({path: `/instrument/edit/true/${this.getOneNameInstrument.id}`})
     },
     banned() {
       if(!this.getOneNameInstrument)

@@ -4,16 +4,21 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 
-      <div class="right_info_block" v-if='getOneNameInstrument.name'>
+      <div class="right_info_block" v-if='getOneNameInstrument && getOneNameInstrument.name'>
         <div class="block">
           <h3>Краткая Информация об инструменте или оснастки</h3>
           <p class='name_parg'>
           <span class="title_span">Наименование: </span><span>{{ getOneNameInstrument.name }}</span>
           </p>
           <MediaSlider :width='"width: 93%;"' v-if='getOneNameInstrument.documents.length' :data='getOneNameInstrument.documents' :key='getOneNameInstrument.documents' />
+          <button 
+            style='width: 98%;'
+            v-if='getOneNameInstrument' 
+            @click='$router.push({path: `/instrument/edit/false/${getOneNameInstrument.id}`})'
+            class="btn">Полная Информация</button>
           <div>
-          <span>Описание / Примечание</span>
-          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
+            <span>Описание / Примечание</span>
+            <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='getOneNameInstrument.description'> </textarea>
           </div>
           <div v-if='getOneNameInstrument.documents.length > 0'>
             <h3>Документы</h3>
@@ -40,7 +45,6 @@
               :key='keyProvidersModal'
               v-if='showProviders'
             />
-            <ModalInformation v-if='showModalInformation' :key='keyModalInformation' />
         </div>
       </div>
 
@@ -48,17 +52,14 @@
   </div>
 </div>
 </template>
-
 <script>
-import OpensFile from '@/components/filebase/openfile.vue'
-import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
-import {isEmpty, random} from 'lodash'
-import {mapGetters } from 'vuex'
+import {isEmpty, random} from 'lodash';
+import {mapGetters, mapActions } from 'vuex';
+import OpensFile from '@/components/filebase/openfile.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
-
+import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 export default {
-    
-  props: ['parametrs'],
+  props: ['id'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -68,13 +69,21 @@ export default {
       itemFiles: null,
       showFile: false,
       showProviders: false,
-      keyProvidersModal: random(1, 34342),
-      keyWhenModalGenerateFileOpen: random(1, 23123),
+      keyProvidersModal: random(1, 999),
+      keyWhenModalGenerateFileOpen: random(1, 999),
     }
   },
-  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
+  computed: mapGetters([
+    'allTInstrument', 
+    'allPTInstrument', 
+    'allPPTInstrument', 
+    'getOneNameInstrument'
+  ]),
   components: {OpensFile, ShowProvider, MediaSlider},
   methods: {
+    ...mapActions([
+      'fetchOneNameInstrument'
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -84,8 +93,7 @@ export default {
       this.itemFiles = dc
     },
     openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
+      if(isEmpty(this.itemFiles)) return 0
       this.showFile = true
       this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
@@ -95,21 +103,19 @@ export default {
         this.showProviders = true
       }
     }
-      
   },
-  mounted() {
+  async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
+    if(!this.$props.id) return this.destroyModalF()
+
+    await this.fetchOneNameInstrument(this.$props.id)
   },
 }
 </script>
-
 <style scoped>
-.informat {
-  z-index: 99999999;
-}
 .right-menu-p>input {
   width: 70%;
 }

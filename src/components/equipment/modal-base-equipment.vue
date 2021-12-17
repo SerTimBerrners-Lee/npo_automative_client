@@ -106,7 +106,6 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    // ---------------------------------------
     addEuipmentToList() {
       if(!this.equipment)
         return 0;
@@ -155,7 +154,7 @@ export default {
     this.hiddens = 'opacity: 1;'
     this.fetchAllEquipmentType()
     this.getAllEquipmentPType()
-    this.fetchAllEquipment()
+    this.fetchAllEquipment(true)
     if(this.$props.listEquipment) {
       this.equipmentList = this.$props.listEquipment
       this.$props.listEquipment.forEach((el) => {

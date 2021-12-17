@@ -77,12 +77,12 @@
 
 
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
-import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 import {random, isEmpty} from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
 export default {
   data() {
     return {
@@ -93,8 +93,8 @@ export default {
       itemFiles: null,
       showFile: false,
       showProviders: false,
-      keyProvidersModal: random(1, 34342),
-      keyWhenModalGenerateFileOpen: random(1, 23123),
+      keyProvidersModal: random(1, 999),
+      keyWhenModalGenerateFileOpen: random(1, 999),
       span: null,
       loader: false,
     }

@@ -16,7 +16,7 @@
       </div>
     </div>
     <div class="main_contents">
-      <div class="left_content">
+      <div class="left_content"> 
        <div>
          <h3>Выбор типа и подтипа</h3>
           <div>
@@ -89,19 +89,19 @@
           :key='keyWhenModalGenerate'
             />
         <div v-if='documents.length > 0'>
-            <h3>Документы</h3>
-            <table class="file_table">
-                <tr>
-                    <th>Файл</th>
-                </tr>
-                <tr class="td-row" v-for='doc in documents' :key='doc' @click='setDocs(doc)'>
-                    <td>{{ doc.name }}</td>
-                </tr>
-            </table>
-            <div class="btn-control">
-              <button class="btn-small" @click='openDock'>Открыть</button>
-              <button class="btn-small" @click='removeFile'>Удалить</button>
-            </div>
+          <h3>Документы</h3>
+          <table class="file_table">
+            <tr>
+              <th>Файл</th>
+            </tr>
+            <tr class="td-row" v-for='doc in documents' :key='doc' @click='setDocs(doc)'>
+              <td>{{ doc.name }}</td>
+            </tr>
+          </table>
+          <div class="btn-control">
+            <button class="btn-small" @click='openDock'>Открыть</button>
+            <button class="btn-small" @click='removeFile'>Удалить</button>
+          </div>
         </div>
       </div>
     </div>
@@ -125,13 +125,13 @@
   </div>
 </template>
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { showMessage } from '@/js/';
+import { isEmpty, random }  from 'lodash';
 import AddFile from '@/components/filebase/addfile.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 import ListProvider from '@/components/baseprovider/list-provider.vue';
-import { isEmpty, random }  from 'lodash';
-import { showMessage } from '@/js/';
 export default {
   data() {
     return {
@@ -140,13 +140,13 @@ export default {
       docFiles: [],
       formData: null,
       isChangeFolderFile: false,
-      keyWhenModalGenerate: random(10, 3333),
+      keyWhenModalGenerate: random(10, 999),
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(10, 3333),
+      keyWhenModalGenerateFileOpen: random(10, 999),
       documents: [],
       showProvider: false,
-      keyWhenModalListProvider: random(10, 3333),
+      keyWhenModalListProvider: random(10, 999),
       providers: [],
       providersId: [],
       obj: {
@@ -187,7 +187,9 @@ export default {
       'getAllEdizm', 
       'updateNameInstrument', 
       'removeFileInstrument',
-      'addNameInstrument']),
+      'addNameInstrument',
+      'fetchOneNameInstrument'
+    ]),
     ...mapMutations([
       'filterAllpInstrument', 
       'filterAllInstrumentNyId', 
@@ -226,14 +228,13 @@ export default {
         this.formData.append('parentId', this.PTInstrument.id)
         this.addNameInstrument(this.formData)
       }
-
       this.exit()
     },
     removeFile() {
       if(isEmpty(this.itemFiles))
         return 0
       this.removeFileInstrument(this.itemFiles.id)
-      this.documents = this.document.filter(dc => dc.id != this.itemFiles.id   )
+      this.documents = this.document.filter(dc => dc.id != this.itemFiles.id)
     },
     pushProvider(provider) { 
       if(!provider)
@@ -243,7 +244,7 @@ export default {
     },
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 3843)
+      this.keyWhenModalListProvider = random(10, 999)
     },
     setDocs(dc) {
         this.itemFiles = dc
@@ -252,7 +253,7 @@ export default {
       if(isEmpty(this.itemFiles))
         return 0
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 3843)
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     checkedUpdate() {
       if(isEmpty(this.getOneNameInstrument)) 
@@ -281,8 +282,6 @@ export default {
       })
 
     },
-
-    // ADD FILE and SET INSTRUMENT TO TABLE
     clickTInstrument(instrument) {
       this.TInstrument = instrument
       this.filterAllpInstrument(instrument)
@@ -297,7 +296,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 3333)
+      this.keyWhenModalGenerate = random(10, 999)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -305,21 +304,20 @@ export default {
       this.formData = e.formData
     },
     exit() {
-      this.$router.push("/basetools")
+      this.$router.push('/basetools')
       this.delitPathNavigate(this.$route.path)
     }
   },
   async mounted() {
     this.loader = true
     await this.getAllEdizm()
+    if(!this.$route.params.id) return this.exit()
+    await this.fetchOneNameInstrument(this.$route.params.id)
     await this.checkedUpdate()
-
     this.loader = false
   }
 }
 </script>
-
-
 <style>
 .file_table {
   width: 590px;

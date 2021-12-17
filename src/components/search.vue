@@ -16,7 +16,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: ['placeholder', 'search_data'],

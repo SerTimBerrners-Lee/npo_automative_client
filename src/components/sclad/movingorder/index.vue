@@ -82,8 +82,8 @@
 <script>
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
 import AddMovind from './add-moving-modal.vue';
+import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
 		return {

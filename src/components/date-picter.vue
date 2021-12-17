@@ -16,9 +16,7 @@
 		</DatePicker>
 	</div>
 </template>
-
 <script>
-
 export default {
 	props: ['dateStart', 'dats'],
 	data() {

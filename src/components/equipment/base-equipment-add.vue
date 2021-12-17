@@ -136,11 +136,11 @@ export default {
       formData: null,
       isChangeFolderFile: false,
       showProvider: false,
-      keyWhenModalGenerate: random(10, 384e4),
-      keyWhenModalListProvider: random(10, 384e4),
+      keyWhenModalGenerate: random(10, 999),
+      keyWhenModalListProvider: random(10, 999),
       providers: [],
       providersId: [],
-      instrumentKey: random(10, 384e4),
+      instrumentKey: random(10, 999),
       instrumentIsShow: false,
       obj: {
         name: '',
@@ -185,7 +185,7 @@ export default {
       ]),
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 384e4)
+      this.keyWhenModalListProvider = random(10, 999)
     },
     pushProvider(provider) { 
       if(!provider)
@@ -194,7 +194,7 @@ export default {
       this.providersId.push({id: provider.id})
     },
     addInstrument() {
-      this.instrumentKey = random(10, 384e4)
+      this.instrumentKey = random(10, 999)
       this.instrumentIsShow = true
     },
     addEquipment() {
@@ -235,7 +235,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384e24)
+      this.keyWhenModalGenerate = random(10, 999)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -267,8 +267,6 @@ export default {
   }
 }
 </script>
-
-
 <style>
 .sle {
   background-color: white;

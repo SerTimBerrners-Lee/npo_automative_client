@@ -45,9 +45,9 @@
 
 <script>
 
-import { mapGetters, mapActions } from 'vuex'
-import { random } from 'lodash'
-import addEdizm from '@/components/edizm/addedizm.vue'
+import { random } from 'lodash';
+import { mapGetters, mapActions } from 'vuex';
+import addEdizm from '@/components/edizm/addedizm.vue';
 export default {
   data() {
     return {
@@ -70,17 +70,14 @@ export default {
         type: tip, 
         typeE: this.allTypeEdizm
       }
-      return 0;
+        return 0;
       }
-
       if(tip == 'edit' && this.itemsSelect) {
         this.parametrs = {
           type: tip,
           obj: this.itemsSelect
         }
       }
-
-
     },
     unmount(res) {
       if(!res)
@@ -97,10 +94,9 @@ export default {
     },
     delitEdizm() {
       if(!this.itemsSelect)
-          return 0;
+        return 0;
       this.removeEdizm(this.itemsSelect.id)
     }
-    
   },
   async mounted() {
     this.getAllEdizm()

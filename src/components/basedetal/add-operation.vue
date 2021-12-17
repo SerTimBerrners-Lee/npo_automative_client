@@ -216,13 +216,13 @@
 </template>
 <script>
 import {random, isEmpty } from 'lodash';
+import PATH_TO_SERVER from '@/js/path.js';
+import { mapActions, mapGetters } from 'vuex';
 import AddFile from '@/components/filebase/addfile.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
 import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
-import { mapActions, mapGetters } from 'vuex';
-import PATH_TO_SERVER from '@/js/path.js';
-import OpensFile from '@/components/filebase/openfile.vue';
 export default {
   props: ['operation'],
   data() {
@@ -231,14 +231,14 @@ export default {
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
       docFiles: [],
-      keyWhenModalGenerate: random(10, 384e12),
+      keyWhenModalGenerate: random(10, 999),
       isChangeFolderFile: false,
       formData: null,
       dataMedia: [],
-      randomDataMedia: random(10, 384e12),
-      instrumentKey: random(10, 34e12),
-      metInstrumentKey: random(10, 23e9),
-      osnInstrumentKey: random(10, 23e9),
+      randomDataMedia: random(10, 999),
+      instrumentKey: random(10, 999),
+      metInstrumentKey: random(10, 999),
+      osnInstrumentKey: random(10, 999),
       instrumentIsShow: false,
       instrumentMerIsShow: false,
       instrumentOsnIsShow: false,
@@ -247,11 +247,11 @@ export default {
       instrumentOsnList: [],
       eqIsShow: false,
       eqList: [],
-      eqKey: random(1, 13e23),
+      eqKey: random(1, 13e29993),
       documentsOperationList: [],
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(10, 323e8),
+      keyWhenModalGenerateFileOpen: random(10, 999),
 
       preTime: 0,
       helperTime: 0,
@@ -315,7 +315,7 @@ export default {
       val.target.files.forEach(f => {
         this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384e12)
+      this.keyWhenModalGenerate = random(10, 999)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -325,28 +325,28 @@ export default {
       if(all) 
         all.forEach(f => {
           this.dataMedia.push({name: f.name, path: f.url})
-          this.randomDataMedia = random(10, 38100)
+          this.randomDataMedia = random(10, 999)
         })
     },
     addInstrument(t = 'ins') {
       if(t == 'mer') {
-        this.metInstrumentKey = random(1, 23123)
+        this.metInstrumentKey = random(1, 999)
         this.instrumentMerIsShow = true
       }
         
       if(t == 'ins') {
-        this.instrumentKey = random(10, 384e12)
+        this.instrumentKey = random(10, 999)
         this.instrumentIsShow = true
       }
 
       if(t == 'osn') {
-        this.osnInstrumentKey = random(10, 34e12)
+        this.osnInstrumentKey = random(10, 999)
         this.instrumentOsnIsShow = true
       }
     },
     addEquipment() {
       this.eqIsShow = true
-      this.eqKey = random(10, 384e12)
+      this.eqKey = random(10, 999)
     },
     unmount_instrument(inst) {
       this.instrumentList = []
@@ -379,7 +379,7 @@ export default {
       if(isEmpty(this.itemFiles))
         return 0
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
   },
   async mounted() {
@@ -420,7 +420,7 @@ export default {
           this.dataMedia.push({path : PATH_TO_SERVER+d.path, name: d.name})
         )
 
-        this.randomDataMedia = random(10, 38100)
+        this.randomDataMedia = random(10, 999)
       })
 
     }

@@ -145,7 +145,6 @@
 		</div>
 	</div>
 </template>
-
 <script> 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';

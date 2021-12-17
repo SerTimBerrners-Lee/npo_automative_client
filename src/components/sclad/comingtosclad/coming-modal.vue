@@ -156,7 +156,6 @@
     />
   </div>
 </template>
-
 <script>
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';

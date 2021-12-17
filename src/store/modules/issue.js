@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js'
+import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
 	state: {

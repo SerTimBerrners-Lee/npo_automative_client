@@ -88,8 +88,8 @@
 </template> 
 
 <script>
-import {mapGetters, mapActions, mapMutations} from 'vuex';
 import { random } from 'lodash';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 export default {
 	data() {

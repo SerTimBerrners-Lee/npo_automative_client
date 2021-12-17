@@ -32,9 +32,9 @@
 </template>
 
 <script>
+import { isEmpty } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
 import AddRoles from '@/components/dolznuser/addroles.vue';
-import { isEmpty } from 'lodash';
 export default {
   data() {
     return {

@@ -1,6 +1,6 @@
 
 import {sortState} from '@/js/index';
-import PATH_TO_SERVER from '@/js/path.js'
+import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
   state: {

@@ -26,11 +26,10 @@
     />
   </div>
 </template>
-
 <script>
+import { showMessage } from '@/js/';
 import { mapGetters, mapMutations } from 'vuex';
 import { assetsFunction } from '@/js/assets.js';
-import { showMessage } from '@/js/';
 export default {
   data() {
     return {
@@ -108,7 +107,6 @@ export default {
   }
 }
 </script>
-
 <style>
 .active-span {
   border-bottom: 2px solid #141414;

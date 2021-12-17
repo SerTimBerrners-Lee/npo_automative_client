@@ -11,9 +11,14 @@
             <span class="title_span">Наименование: </span><span>{{ equipment.name }}</span>
           </p>
           <MediaSlider :width='"width: 93%;"' v-if='equipment.documents.length' :data='equipment.documents' :key='equipment.documents' />
-          <div>
-          <span>Описание / Примечание</span>
-          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='equipment.description'> </textarea>
+          <button 
+            style='width: 98%;'
+            v-if='equipment' 
+            @click='$router.push({path: `/equipment/edit/false/${equipment.id}`})'
+            class="btn">Полная Информация</button>
+          <div> 
+            <span>Описание / Примечание</span>
+            <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='equipment.description'> </textarea>
           </div>
           <div v-if='equipment.documents.length > 0'>
             <h3>Документы</h3>
@@ -40,12 +45,11 @@
               :key='keyProvidersModalEq'
               v-if='showProvidersEq'
             />
-            <ModalInformation v-if='showModalInformation' :key='keyModalInformation' />
         </div>
       </div>
     </div>
   </div>
-</div>
+</div> 
 </template>
 <script>
 import {isEmpty, random} from 'lodash';

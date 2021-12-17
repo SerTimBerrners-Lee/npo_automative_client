@@ -87,14 +87,14 @@
   </div>
 </template> 
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { random }  from 'lodash';
 import { getReversDate, showMessage } from '@/js/';
 import Tables from '@/components/filebase/tables.vue';
+import Assign from '@/components/filebase/assign.vue';
 import AddFile from '@/components/filebase/addfile.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import { random }  from 'lodash';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import NodeTable from '@/components/filebase/node-table.vue';
-import Assign from '@/components/filebase/assign.vue';
 export default {
   data() {
     return {

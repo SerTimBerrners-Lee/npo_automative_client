@@ -292,7 +292,7 @@ const routes = [
     component: AddDetal
   },
   {
-    path: '/equipment/edit/:copy',
+    path: '/equipment/edit/:copy/:id',
     name: 'Редактировать/Копировать Оборудование',
     component: EditBaseEquipment,
     props: true
@@ -303,7 +303,7 @@ const routes = [
     component: AddBaseEquipment
   },
   {
-    path: '/instrument/edit/:copy',
+    path: '/instrument/edit/:copy/:id',
     name: 'Редактировать инструмент',
     component: EditBaseInstrument,
     props: true
@@ -326,7 +326,7 @@ const routes = [
     component: WorkTable
   },
   {
-    path: '/material/add/:type',
+    path: '/material/add/:type/:id',
     name: 'Создать/Редактировать',
     component: AddMaterialBase,
     props: true

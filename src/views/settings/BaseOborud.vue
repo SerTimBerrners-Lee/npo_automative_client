@@ -1,42 +1,40 @@
 <template>
-    <div class="main-dive">
-        <h3>8. База Оборудования (типы и подтипы)</h3>
-        <div class="cont">
-            <TableMaterial :title='"Тип"' 
-                :alltypeM="allEquipmentType" 
-                :type='"T"' 
-                @clickMat="clickEquipmentType"/>
-            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
-                <button class="btn-add btn-small" @click='create("TYPE")'>Создать</button>
-                <button class="btn-small"  @click='edit("TYPE", "edit")'>Редактировать</button>
-                <button class="btn-small" @click='remove("TYPE")'>Удалить</button>
-            </div>
-        </div>
-        <div class="cont">
-            <TableMaterial :title='"Подтип"' 
-                :alltypeM="allEquipmentPType" 
-                :type="'PT'" 
-                @clickMat="clickEquipmentPType"/>
-            <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
-                <button class="btn-add btn-small" @click='create("PODTYPE")'>Создать</button>
-                <button class="btn-small" @click="edit('PODTYPE', 'edit')">Редактировать</button>
-                <button class="btn-small" @click="remove('PODTYPE')">Удалить</button>
-            </div>
-        </div>
-        <addEditEquipment
-                @unmount='unmount' 
-                :parametrs='parametrs' 
-                v-if='showIs'
-                :key='keyModals' />
+  <div class="main-dive">
+    <h3>8. База Оборудования (типы и подтипы)</h3>
+    <div class="cont">
+      <TableMaterial :title='"Тип"' 
+        :alltypeM="allEquipmentType" 
+        :type='"T"' 
+        @clickMat="clickEquipmentType"/>
+      <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+        <button class="btn-add btn-small" @click='create("TYPE")'>Создать</button>
+        <button class="btn-small"  @click='edit("TYPE", "edit")'>Редактировать</button>
+        <button class="btn-small" @click='remove("TYPE")'>Удалить</button>
+      </div>
     </div>
+    <div class="cont">
+      <TableMaterial :title='"Подтип"' 
+        :alltypeM="allEquipmentPType" 
+        :type="'PT'" 
+        @clickMat="clickEquipmentPType"/>
+      <div class="btn-control" v-if="getRoleAssets && getRoleAssets.assets.settingsAssets.edit">
+        <button class="btn-add btn-small" @click='create("PODTYPE")'>Создать</button>
+        <button class="btn-small" @click="edit('PODTYPE', 'edit')">Редактировать</button>
+        <button class="btn-small" @click="remove('PODTYPE')">Удалить</button>
+      </div>
+    </div>
+    <addEditEquipment
+      @unmount='unmount' 
+      :parametrs='parametrs' 
+      v-if='showIs'
+      :key='keyModals' />
+  </div>
 </template>
-
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue'
-import addEditEquipment from '@/components/equipment/add-edit-equipment.vue'
-import { mapGetters, mapActions, mapMutations } from 'vuex'
-import { random } from 'lodash'
-
+import { random } from 'lodash';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import addEditEquipment from '@/components/equipment/add-edit-equipment.vue';
 export default {
   data() {
     return{
@@ -124,7 +122,7 @@ export default {
         }
       }
       
-      this.keyModals = random(2, 3332)
+      this.keyModals = random(2, 999)
       this.showIs = true
     },
     remove(type) {

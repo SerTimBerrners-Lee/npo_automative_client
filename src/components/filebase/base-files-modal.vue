@@ -87,12 +87,11 @@
 </template>
 
 <script>
-
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { random }  from 'lodash';
 import { getReversDate, showMessage } from '@/js/';
 import Tables from '@/components/filebase/tables.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import { random }  from 'lodash';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
   props: ['fileArrModal', 'search'],
   data() {
@@ -115,8 +114,8 @@ export default {
       nowFileType: '',
       searchFileType: '',
       docFiles: [],
-      keyWhenModalGenerate: random(10, 38444),
-      keyWhenModalGenerateFileOpen: random(10, 38444),
+      keyWhenModalGenerate: random(10, 99),
+      keyWhenModalGenerateFileOpen: random(10, 99),
 
       WhenModalGenerateFileOpenShow: false,
       
@@ -153,19 +152,19 @@ export default {
     },
     dbPushFile(file) {
       if(this.itemFiles) {
-        this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
+        this.keyWhenModalGenerateFileOpen = random(5, 99)
         this.WhenModalGenerateFileOpenShow = true
       }else {
         this.fetchFileById(file.id).then((res) => {
         this.itemFiles = res
-        this.keyWhenModalGenerateFileOpen = random(5, 9373e2)
+        this.keyWhenModalGenerateFileOpen = random(5, 99)
         this.WhenModalGenerateFileOpenShow = true
         })
       }
     },
     addingFileToDetal() {
       if(this.itemFiles) {
-        this.generateKeyBFM = random(5, 9373e2)
+        this.generateKeyBFM = random(5, 99)
         this.showBFM = true
       }
     },

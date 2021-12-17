@@ -40,10 +40,10 @@
   </div>
 </template>
 <script>
+import { random } from 'lodash';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import TableMaterial from '@/components/mathzag/table-material.vue';
 import addEditInventary from '@/components/inventary/add-edit-modal.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import { random } from 'lodash';
 export default {
   data() {
     return{

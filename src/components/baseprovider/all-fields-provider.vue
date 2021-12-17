@@ -92,10 +92,9 @@
   </div>
 </div>
 </template>
-
 <script>
-import OpensFile from '@/components/filebase/openfile.vue';
 import random from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
 export default {
   props: ['allProvider', 'getProvider'],
   data() {

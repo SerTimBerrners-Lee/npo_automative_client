@@ -79,11 +79,10 @@
 
 	</div>
 </template>
-
 <script> 
-import { mapGetters, mapActions, mapMutations } from 'vuex';
 import Search from '@/components/search.vue';
 import CbEdVue from '../../../views/CbEd.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
 	data() {
 		return {

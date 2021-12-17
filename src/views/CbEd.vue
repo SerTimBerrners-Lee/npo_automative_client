@@ -10,8 +10,12 @@
                 <tr>
                   <th style='font-size: 12px'>Кол-во: {{allProduct.length}}</th>
                   <th style='font-size: 12px'>Без операций: {{ сolNotOperation(allProduct, productOperation) }}</th>
-                  <th style='font-size: 12px'><span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
-                    <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}</span></span></th>
+                  <th style='font-size: 12px'>
+                    <span class='hover tooltip' @click='sortOperationProduct'>Сортировать 
+                      <span class='tooltiptext'>Показать {{  allProduct.length == productOperation.length ? "все" : 'без операций' }}
+                      </span>
+                  </span>
+                  </th>
                 </tr>
                 <tbody class='fixed_table_10'>
                   <tr>
@@ -187,7 +191,7 @@
     />
   </div>
 </template>
- 
+
 <script>
 import { random, isEmpty } from 'lodash';
 import Search from '@/components/search.vue';

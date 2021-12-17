@@ -349,7 +349,7 @@ export default {
       state.podTypeM.push(data)
     },
     addOnePodType(state, typMaterial) {
-      if(typMaterial.instansMaterial == '1' && typMaterial.podPodMaterials && state.setOneTypeM) {
+      if(typMaterial.podPodMaterials && state.setOneTypeM) {
 
         let new_arr = []
         for(let item of state.setOneTypeM.podPodMaterials) {
@@ -364,7 +364,6 @@ export default {
         }
         return state.podMaterial = new_arr
       }
-      state.podMaterial = typMaterial.podPodMaterials.filter(material => !material.ban)
     },
     addOnePPTyep(state, PPT) {
       state.onePPT = PPT

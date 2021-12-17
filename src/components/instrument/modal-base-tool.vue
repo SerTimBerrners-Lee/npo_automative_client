@@ -52,14 +52,18 @@
         </div>
       </div>
     </div>
-    <ModalInformation v-if='showModalInformation' :key='keyModalInformation' />
+    <ModalInstrumentInformation 
+      v-if='showModalInformation' 
+      :key='keyModalInformation' 
+      :id='PPTInstrument.id'
+    />
 </div> 
 </template>
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
 import {random} from 'lodash';
-import ModalInformation from '@/components/instrument/modal-information.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import ModalInstrumentInformation from '@/components/instrument/modal-information.vue';
 export default {
   props: ['listInstrument', 'typeInstrument', 'get_one'],
   data() {
@@ -79,18 +83,28 @@ export default {
       instrumentListId: []
     }
   },
-  computed: mapGetters(['allTInstrument', 'allPTInstrument', 'allPPTInstrument', 'getOneNameInstrument']),
-  components: {TableMaterial, ModalInformation},
+  computed: mapGetters([
+    'allTInstrument', 
+    'allPTInstrument', 
+    'allPPTInstrument', 
+    'getOneNameInstrument'
+  ]),
+  components: {TableMaterial, ModalInstrumentInformation},
   methods: {
-    ...mapActions(['fetchAllInstruments', 'getAllPTInstances', 
-      'fetchOneNameInstrument', 'banNameInstrument', 
-      'getPTInstrumentList', 'getAllNameInstrument']),
+    ...mapActions([
+      'fetchAllInstruments', 
+      'getAllPTInstances', 
+      'banNameInstrument', 
+      'getPTInstrumentList', 
+      'getAllNameInstrument'
+    ]),
   ...mapMutations([
       'filterAllpInstrument', 
       'getInstansTools',
       'searchTypeInst',
       'searchPTInst',
-      'searchNameInst']),
+      'searchNameInst'
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -107,13 +121,10 @@ export default {
     },
     clickPPTInstrument(PPTInstrument) {
       this.PPTInstrument = PPTInstrument
-      this.fetchOneNameInstrument(PPTInstrument.id)
     },
-    dbClickPPTInstrument(PPTInstrument) {
-      this.PPTInstrument = PPTInstrument
-      this.fetchOneNameInstrument(PPTInstrument.id)
+    dbClickPPTInstrument() {
       this.showModalInformation = true;
-      this.keyModalInformation = random(10, 4444)
+      this.keyModalInformation = random(10, 999)
     },
     addInstrumentToList() {
       if(!this.PPTInstrument)

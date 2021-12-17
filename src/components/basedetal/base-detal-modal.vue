@@ -399,7 +399,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .main_table_control>div {
 	width: 32%;

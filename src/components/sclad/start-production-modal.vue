@@ -62,7 +62,6 @@
     />
 </div>
 </template>
-
 <script>
 import {random} from 'lodash';
 import { mapActions} from 'vuex';

@@ -28,7 +28,8 @@
             :title='"Наименование (Марка / типоразмер)"' 
             :type='"podPM"' 
             @search='searchM' 
-            @clickMat='clickMat' />
+            @clickMat='clickMat'
+            @dbClickMat="openMaterial" />
         </div>
           <div class="btn-control body_table_instr" v-if='!getOneMaterial'>
             <button class="btn-small btn-add" @click='addMaterialToList'>Выбрать</button>
@@ -95,12 +96,18 @@
         </div>
       </div>
     </div>
+    <MaterialInformation 
+      :key='material_key'
+      v-if='material_id'
+      :id='material_id'
+    />
   </div> 
 </template>
 <script>
 import {random} from 'lodash';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import TableMaterial from '@/components/mathzag/table-material.vue';
+import MaterialInformation from '@/components/mathzag/material-information.vue';
 export default {
   props: [
     'allMaterial', 
@@ -121,11 +128,14 @@ export default {
       hiddens: 'opacity: 1;',
 
       materialList: [],
-      materialListId: []
+      materialListId: [],
+
+      material_key: random(1, 999),
+			material_id: null,
     }
   },
   computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
-  components: {TableMaterial},
+  components: {TableMaterial, MaterialInformation},
   methods: {
     ...mapActions([
       'getAllTypeMaterial', 
@@ -192,7 +202,7 @@ export default {
         }
       }
       let kolvo = []
-      let check = 0 // если ЕИ только одна
+      let check = 0 
       let inx_end_ez;
       if(this.podPodMaterial.kolvo) {
         try {
@@ -278,7 +288,11 @@ export default {
     },
     searchM(val) {
       this.searchMaterialMutation(val)
-    }
+    },
+    openMaterial(mat) {
+			this.material_key = random(1, 999)
+			this.material_id = mat.id
+		}
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'

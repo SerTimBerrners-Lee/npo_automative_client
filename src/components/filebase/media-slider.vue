@@ -23,10 +23,9 @@
 </template>
 
 <script>
-
-import {photoPreloadUrl} from '@/js/'
-import PATH_TO_SERVER from '@/js/path.js'
-import { isEmpty } from 'lodash'
+import { isEmpty } from 'lodash';
+import {photoPreloadUrl} from '@/js/';
+import PATH_TO_SERVER from '@/js/path.js';
 export default {
   props: ['data', 'width', 'static', 'width_main'],
   data() {

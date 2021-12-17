@@ -338,7 +338,6 @@ export default {
 
 }
 </script>
-
 <style scoped>
 .p_picter {
   display: flex;

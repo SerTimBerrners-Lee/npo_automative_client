@@ -35,7 +35,7 @@
               @clickMat='clickMat' />
           </div>
           <div class="btn-control" style="margin-top: 10px;">
-            <button class="btn-small btn-add" @click="$router.push({path: '/material/add/create'}) ">Создать</button>
+            <button class="btn-small btn-add" @click="$router.push({path: `/material/add/create/0`}) ">Создать</button>
             <button class="btn-small btn-add" @click='createCopy'>Создать копированием</button>
             <button class="btn-small" @click="editMaterial">Редактировать</button>
           </div> 
@@ -57,7 +57,6 @@
     </div>
   </div>
 </template> 
-
 <script>
 import random from 'lodash';
 import OpensFile from '@/components/filebase/openfile.vue';
@@ -145,13 +144,11 @@ export default {
     },
     editMaterial() {
       if(!this.podPodMaterial) return 0
-      this.addOnePPTyep(this.podPodMaterial)
-      this.$router.push({path: '/material/add/edit'}) 
+      this.$router.push({path: `/material/add/edit/${this.podPodMaterial.id}`}) 
     },
     createCopy( ) {
       if(!this.podPodMaterial) return 0
-      this.addOnePPTyep(this.podPodMaterial)
-      this.$router.push({path: '/material/add/copy'}) 
+      this.$router.push({path: `/material/add/copy/${this.podPodMaterial.id}`}) 
     },
     banPPM() {
       if(!this.podPodMaterial) return 0
@@ -179,7 +176,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .cont {
   display: flex;

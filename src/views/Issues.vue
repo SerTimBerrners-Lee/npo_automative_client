@@ -49,14 +49,14 @@
 	</div>
 </template>
 <script>
-import {random} from 'lodash'                                                   ;
-import AddIssue from '@/components/issue/add-issue.vue'                         ;
-import { mapActions, mapGetters } from 'vuex'                                   ; 
-import { dateIncrementHors } from '@/js/'                                       ;
-import DatePicterRange from '@/components/date-picter-range.vue'                ;
-import IssueForMe from '@/components/issue/issue-for-me.vue'                    ;
-import IssueMy from '@/components/issue/issue-my.vue'                           ;
-import IssueController from '@/components/issue/issue-controller.vue'           ;
+import {random} from 'lodash';
+import { dateIncrementHors } from '@/js/';
+import { mapActions, mapGetters } from 'vuex'; 
+import IssueMy from '@/components/issue/issue-my.vue';
+import AddIssue from '@/components/issue/add-issue.vue';
+import IssueForMe from '@/components/issue/issue-for-me.vue';
+import DatePicterRange from '@/components/date-picter-range.vue';
+import IssueController from '@/components/issue/issue-controller.vue';
 export default {
 	data() {
 		return{

@@ -79,19 +79,19 @@
 	/>
 </template>
 <script>
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
-import BaseProductModal from '@/components/baseproduct/all-product-modal.vue';
-import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
-import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
-import BaseTools from '@/components/instrument/modal-base-tool.vue';
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
-import ListBuyer from '@/components/basebuyer/base-buyer-modal.vue';
-import BaseInventary from '@/components/inventary/modal-base-inventary.vue';
-import ModalUsersList from '@/components/users/modal-list-user.vue';
-import {mapActions} from 'vuex';
 import {random} from 'lodash';
+import {mapActions} from 'vuex';
 import { showMessage } from '@/js/';
+import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
+import BaseTools from '@/components/instrument/modal-base-tool.vue';
+import ListBuyer from '@/components/basebuyer/base-buyer-modal.vue';
+import ModalUsersList from '@/components/users/modal-list-user.vue';
+import ListProvider from '@/components/baseprovider/list-provider.vue';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
+import BaseInventary from '@/components/inventary/modal-base-inventary.vue';
+import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import BaseProductModal from '@/components/baseproduct/all-product-modal.vue';
 export default {
 	props: ['itemFiles'],
 	data() {

@@ -43,7 +43,6 @@
 <script>
 import { getReversDate } from '@/js/';
 import Search from '@/components/search.vue';
-
 export default {
   props: ['documents', 'search_data'],
   data() {
@@ -73,7 +72,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 table{
   user-select: none;

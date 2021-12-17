@@ -75,12 +75,11 @@
     />
   </div>
 </template>
-
 <script>
+import {showMessage} from '@/js';
 import { mapActions, mapGetters } from 'vuex';
 import DatePicterCustom from '@/components/date-picter.vue';
 import { afterAndBeforeOperation, returnKolvoCreate } from '@/js/operation.js';
-import {showMessage} from '@/js';
 export default {
   props: ['parametrs', 'type_izd'],
   data() {

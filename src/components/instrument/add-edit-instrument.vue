@@ -6,24 +6,24 @@
       <div v-if="parametrs.instrument == 'TYPE'">
         <h3>{{ titleapp }} типа инструмента или оснастки</h3>
         <div class="block">
-            <p class="p_modal_name">  
-                <span>Наименование: </span>
-                <input type="text" v-model.trim='inputs'>
+          <p class="p_modal_name">  
+            <span>Наименование: </span>
+            <input type="text" v-model.trim='inputs'>
+          </p>
+          <div class='block_radio'>
+            <p class='p_radio'>
+              <label for="r1"> Инструмент</label>
+              <input id='r1' type="radio" value="1" v-model="instans">
             </p>
-            <div class='block_radio'>
-              <p class='p_radio'>
-                <label for="r1"> Инструмент</label>
-                <input id='r1' type="radio" value="1" v-model="instans">
-              </p>
-              <p class='p_radio'>
-                <label for="r2"> Оснастка</label>
-                <input id='r2' type="radio"  value="2" v-model="instans">
-              </p>
-              <p class='p_radio'>
-                <label for="r3"> Мерительный инструмент</label>
-                <input id='r3' type="radio"  value="3" v-model="instans">
-              </p>
-            </div>
+            <p class='p_radio'>
+              <label for="r2"> Оснастка</label>
+              <input id='r2' type="radio"  value="2" v-model="instans">
+            </p>
+            <p class='p_radio'>
+              <label for="r3"> Мерительный инструмент</label>
+              <input id='r3' type="radio"  value="3" v-model="instans">
+            </p>
+          </div>
         </div>
         <div class="btn-control out-btn-control">
             <button class="btn-status btn-black" 
@@ -42,20 +42,20 @@
       <div v-if="parametrs.instrument == 'PODTYPE'">
         <h3>{{ titleapp }} подтипа инструмента или оснастки</h3>
         <div class="block">
-            <p class='p_modal_name'> 
-                <span>Наименование: </span>
-                <input type="text" v-model.trim='inputs'>
-            </p>
+          <p class='p_modal_name'> 
+            <span>Наименование: </span>
+            <input type="text" v-model.trim='inputs'>
+          </p>
         </div>
         <div class="btn-control out-btn-control">
+          <button class="btn-status btn-black" 
+            v-if="parametrs.type == 'create'" 
+            @click='create'
+            >Сохранить</button>
             <button class="btn-status btn-black" 
-              v-if="parametrs.type == 'create'" 
-              @click='create'
-              >Сохранить</button>
-              <button class="btn-status btn-black" 
-              v-if="parametrs.type == 'edit'"
-              @click='update'>Сохранить</button>
-            <button class="btn-status" @click='destroyModalF'>Отменить</button>
+            v-if="parametrs.type == 'edit'"
+            @click='update'>Сохранить</button>
+          <button class="btn-status" @click='destroyModalF'>Отменить</button>
         </div>
       </div>
     </div>
@@ -120,7 +120,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .out-btn-control {
   width: 96%;

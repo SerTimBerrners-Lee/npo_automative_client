@@ -106,11 +106,11 @@
   </div>
 </template>
 <script>
-import ModalUsersList from '@/components/users/modal-list-user.vue';
-import AddFile from '@/components/filebase/addfile.vue';
-import { mapActions, mapGetters } from 'vuex';
-import { showMessage } from '@/js/';
 import { random } from 'lodash';
+import { showMessage } from '@/js/';
+import { mapActions, mapGetters } from 'vuex';
+import AddFile from '@/components/filebase/addfile.vue';
+import ModalUsersList from '@/components/users/modal-list-user.vue';
 export default {
   props: ['parametrs'],
   data() {

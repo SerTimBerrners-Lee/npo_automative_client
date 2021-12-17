@@ -9,7 +9,6 @@
     </div>
   </div>
 </template>
-
 <script>
 export default {
   props: ['parametrs'],
@@ -18,7 +17,7 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
-	
+
 			description: ''
     }
   },

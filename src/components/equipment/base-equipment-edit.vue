@@ -30,7 +30,7 @@
        <div>
          <h3>Выбор типа и подтипа</h3>
           <div>
-           <TableMaterial :title='"Тип (инструмента или оснастки)"' 
+          <TableMaterial :title='"Тип (инструмента или оснастки)"' 
             :alltypeM="allEquipmentType" 
             :type='"T"' 
             :width='"width-260"'
@@ -93,21 +93,21 @@
           v-if="isChangeFolderFile" 
           @unmount='file_unmount'
           :key='keyWhenModalGenerate'
-            />
+        />
         <div v-if='documents.length > 0'>
-            <h3>Документы</h3>
-            <table class="file_table">
-                <tr>
-                    <th>Файл</th>
-                </tr>
-                <tr class="td-row" v-for='doc in documents' :key='doc' @click='setDocs(doc)'>
-                    <td>{{ doc.name }}</td>
-                </tr>
-            </table>
-            <div class="btn-control">
-              <button class="btn-small" @click='openDock'>Открыть</button>
-              <button class="btn-small" @click='removeFile'>Удалить</button>
-            </div>
+          <h3>Документы</h3>
+          <table class="file_table">
+            <tr>
+              <th>Файл</th>
+            </tr>
+            <tr class="td-row" v-for='doc in documents' :key='doc' @click='setDocs(doc)'>
+              <td>{{ doc.name }}</td>
+            </tr>
+          </table>
+          <div class="btn-control">
+            <button class="btn-small" @click='openDock'>Открыть</button>
+            <button class="btn-small" @click='removeFile'>Удалить</button>
+          </div>
         </div>
         <h3 @click="addInstrument" class="link_h3">Привязанный инструмент или оснастка</h3>
       </div>
@@ -137,17 +137,15 @@
     <Loader v-if='loader' />
   </div>
 </template>
-
-
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
+import { showMessage } from '@/js/';
+import { isEmpty, random }  from 'lodash';
 import AddFile from '@/components/filebase/addfile.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
-import { isEmpty, random }  from 'lodash';
-import { showMessage } from '@/js/';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
 import BaseTools from '@/components/instrument/modal-base-tool.vue';
+import ListProvider from '@/components/baseprovider/list-provider.vue';
 export default {
   data() {
     return {
@@ -157,16 +155,16 @@ export default {
       docFiles: [],
       formData: null,
       isChangeFolderFile: false,
-      keyWhenModalGenerate: random(10, 323e8),
+      keyWhenModalGenerate: random(10, 999),
       itemFiles: null,
       showFile: false,
-      keyWhenModalGenerateFileOpen: random(10, 323e8),
+      keyWhenModalGenerateFileOpen: random(10, 999),
       documents: [],
       showProvider: false,
-      keyWhenModalListProvider: random(10, 323e8),
+      keyWhenModalListProvider: random(10, 999),
       providers: [],
       providersId: [],
-      instrumentKey: random(10, 323e8),
+      instrumentKey: random(10, 999),
       instrumentIsShow: false,
       obj: {
         name: '',
@@ -206,11 +204,13 @@ export default {
       'updateEquipment', 
       'removeFileEquipment',
       'getAllUsers', 
-      'creqteEquipment']),
+      'creqteEquipment',
+      'fetchOneEquipment'
+    ]),
     ...mapMutations([
       'filterAllPTEquipment', 
       'filterAllEquipmentById', 
-      'delitPathNavigate'
+      'delitPathNavigate',
     ]),
     saveEquipment() {
       if(this.$route.params.copy == 'false' && !this.obj.id)
@@ -251,7 +251,7 @@ export default {
       this.exit()
     },
     addInstrument() {
-      this.instrumentKey = random(10, 38e9)
+      this.instrumentKey = random(10, 999)
       this.instrumentIsShow = true
     },
     removeFile() {
@@ -266,16 +266,15 @@ export default {
     },
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 38e9)
+      this.keyWhenModalListProvider = random(10, 999)
     },
     setDocs(dc) {
       this.itemFiles = dc
     },
     openDock() {
-      if(isEmpty(this.itemFiles))
-          return 0
+      if(isEmpty(this.itemFiles)) return 0
       this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 38e9)
+      this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
     checkedUpdate() {
       if(isEmpty(this.equipment)) 
@@ -316,7 +315,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 34e9)
+      this.keyWhenModalGenerate = random(10, 999)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -333,12 +332,15 @@ export default {
     }
   },
   async mounted() {
+    if(!this.$route.params.id) 
+        return this.$router.push('/baseequipment')
+
     this.loader = true
+    await this.fetchOneEquipment(this.$route.params.id)
     await this.getAllEdizm()
     await this.checkedUpdate()
     await this.getAllUsers()
     this.loader = false
-
   }
 }
 </script>

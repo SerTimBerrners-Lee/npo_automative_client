@@ -20,8 +20,8 @@
   </div>
 </template>
 <script>
-import { mapGetters, mapActions} from 'vuex';
 import TableBuyer from './table-buyer.vue';
+import { mapGetters, mapActions} from 'vuex';
 export default {
   props: ['parametrs'],
   data() {
@@ -58,7 +58,6 @@ export default {
   },
 }
 </script>
-
 <style scoped>
 .tr-select{
   background-color: #d3d3d3;

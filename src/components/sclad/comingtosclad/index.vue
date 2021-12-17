@@ -99,7 +99,6 @@
     <Loader v-if='loader' />
   </div>
 </template>
-
 <script>
 import {random} from 'lodash';
 import {mapGetters, mapActions} from 'vuex';

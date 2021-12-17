@@ -2,25 +2,27 @@
   <h3>База Оборудования</h3>
   <div class="main_content">
     <div class="body_table">
-        <div>
-      <TableMaterial :title='"Тип"' 
-        :alltypeM="allEquipmentType" 
-        :type='"T"' 
-        @search='serhType'
-        @clickMat="clickEquipmentType"/>
-      <TableMaterial :title='"Подтип"' 
-        :alltypeM="allEquipmentPType" 
-        :type="'PT'"  
-        @search='serhPType'
-        @clickMat="clickEquipmentPType"/>
-      <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
-        :alltypeM="allEquipment" 
-        :type="'PPT'" 
-        :attention='true'
-        @unmount_attention='unmount_attention'
-        @search='serhEq'
-        @clickMat="clickEquipment"/>
-    </div>
+      <div>
+        <TableMaterial :title='"Тип"' 
+          :alltypeM="allEquipmentType" 
+          :type='"T"' 
+          @search='serhType'
+          @clickMat="clickEquipmentType"/>
+        <TableMaterial :title='"Подтип"' 
+          :alltypeM="allEquipmentPType" 
+          :type="'PT'"  
+          @search='serhPType'
+          @clickMat="clickEquipmentPType"/>
+        <TableMaterial :title='" Наименование (Марка / типоразмер)"' 
+          :alltypeM="allEquipment" 
+          :type="'PPT'" 
+          :attention='true'
+          @unmount_attention='unmount_attention'
+          @search='serhEq'
+          @sortToDate='sortToDate'
+          @sortToMyObject='sortToMyObject'
+          @clickMat="clickEquipment"/>
+      </div>
     <div class="btn-control btn-control-eq-w" style="margin-top: 10px;">
         <button class="btn-small btn-add" @click="$router.push({path: '/equipment/add'})">Создать</button>
         <button class="btn-small btn-add" @click='copyEquipment'>Создать копированием</button>
@@ -63,18 +65,15 @@
             />
         </div> 
          <h3 @click="providershow" style='cursor:pointer;'>Поставищики {{ equipment.providers.length }}</h3>
-            <ShowProvider
-              :allProvider='equipment.providers' 
-              :key='keyProvidersModal'
-              v-if='showProviders'
-            /> 
+          <ShowProvider
+            :allProvider='equipment.providers' 
+            :key='keyProvidersModal'
+            v-if='showProviders'
+          /> 
       </div>
     </div>
   </div>
-
 </template>
-
-
 <script>
 import {isEmpty, random} from 'lodash';
 import OpensFile from '@/components/filebase/openfile.vue';
@@ -98,7 +97,8 @@ export default {
     'allEquipmentType', 
     'allEquipmentPType', 
     'allEquipment', 
-    'equipment'
+    'equipment',
+    'getAuth'
   ]),
   components: {TableMaterial, OpensFile, ShowProvider, MediaSlider},
   methods: {
@@ -115,10 +115,18 @@ export default {
       'searchTypeEq',
       'searchPTypeEq',
       'searchEq',
-      'filterToAttentionEq'
+      'filterToAttentionEq',
+      'filterEquipmentToDate',
+      'filterEquipmentToMyObject'
     ]),
     unmount_attention() {
       this.filterToAttentionEq()
+    },
+    sortToDate() {
+      this.filterEquipmentToDate()
+    },
+    sortToMyObject() {
+      this.filterEquipmentToMyObject(this.getAuth.id)
     },
     clickEquipmentType(equipment) {
       this.equipmentT = equipment
@@ -134,12 +142,12 @@ export default {
     edit() {
       if(isEmpty(this.equipment))
         return 0 
-      this.$router.push({path: '/equipment/edit/false'})
+      this.$router.push({path: `/equipment/edit/false/${this.equipment.id}`})
     },
     copyEquipment() {
       if(isEmpty(this.equipment))
         return 0 
-      this.$router.push({path: '/equipment/edit/true'})
+      this.$router.push({path: `/equipment/edit/true/${this.equipment.id}`})
     },
     banned() {
       if(isEmpty(this.equipment))
@@ -174,7 +182,7 @@ export default {
   async mounted() {
     this.fetchAllEquipmentType()
     this.getAllEquipmentPType()
-    this.fetchAllEquipment()
+    this.fetchAllEquipment(true)
   }
 }
 </script>

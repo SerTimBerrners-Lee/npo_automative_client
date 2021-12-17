@@ -109,12 +109,12 @@
   </div>
 </template>
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
 import { random }  from 'lodash';
 import { showMessage } from '@/js/';
+import AddFile from '@/components/filebase/addfile.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import ListProvider from '@/components/baseprovider/list-provider.vue';
 export default {
   data() {
     return {
@@ -167,7 +167,7 @@ export default {
     ]), 
     addProvider() {
       this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 384^5)
+      this.keyWhenModalListProvider = random(10, 999)
     },
     pushProvider(provider) { 
       if(!provider)
@@ -219,7 +219,7 @@ export default {
       val.target.files.forEach(f => {
           this.docFiles.push(f)
       })
-      this.keyWhenModalGenerate = random(10, 384e3)
+      this.keyWhenModalGenerate = random(10, 999)
       this.isChangeFolderFile = true
     },
     file_unmount(e) { 
@@ -246,13 +246,10 @@ export default {
       await this.fetchAllInstruments()
       await this.getPTInstrumentList()
     }
-
     this.loader = false
   }
 }
 </script>
-
-
 <style>
 .instr_select {
   width: 210px;

@@ -61,10 +61,9 @@
   </div>    
   <MiniLoader v-if='loader' />
 </template>
-
 <script>
-import { mapGetters, mapActions, mapMutations } from 'vuex';
 import Search from '@/components/search.vue';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
   props: ['id_product', 'is_empty'],
   data() {

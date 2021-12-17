@@ -97,12 +97,11 @@
   </div>
 </template>
 <script scoped>
-
-import AddContact from '@/components/baseprovider/add-contact.vue';
-import { random } from 'lodash';
-import { mapActions, mapGetters, mapMutations } from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
 import { showMessage } from '@/js/';
+import { random } from 'lodash';
+import OpensFile from '@/components/filebase/openfile.vue';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import AddContact from '@/components/baseprovider/add-contact.vue';
 export default {
   data() {
     return {
@@ -128,7 +127,7 @@ export default {
       docFiles: [],
 
       itemFiles: null,
-      keyWhenModalGenerateFileOpen: random(10, 1222),
+      keyWhenModalGenerateFileOpen: random(10, 999),
 
       titleMessage: '',
       message: '',
@@ -223,7 +222,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .pointer-files-to-add {
   margin: 10px;

@@ -14,7 +14,6 @@
 			</span> 
 	</div>
 </template>
-
 <script>
 export default {
 	props: ['hide_filter_responsibil'],

@@ -5,18 +5,18 @@
       <div :style="hiddens">
         <h3> Добавить покупателя </h3>
         <h4>База покупателя</h4>
-        <TableBuyer :allBuyer='allBuyer' @unmount='setBuyer'/>
+        <TableBuyer :allBuyer='allBuyer' @unmount='setBuyer' :hide_filter_responsibil='true'/>
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click="destroyModalF">Отменить</button>
           <button class="btn-status btn-black" @click="responseBuyer" >Добавить</button>
         </div>
-      </div>
+      </div> 
     </div>
   </div>
 </template>
 <script>
-import { mapGetters, mapActions} from 'vuex';
 import TableBuyer from './table-buyer.vue';
+import { mapGetters, mapActions} from 'vuex';
 export default {
   props: ['parametrs'],
   data() {
@@ -53,7 +53,6 @@ export default {
   },
 }
 </script>
-
 <style scoped>
 .tr-select{
   background-color: #d3d3d3;
@@ -61,68 +60,68 @@ export default {
 .inn_td {
   width: 30%;
 }
-  table {
-    width: 100%;
-  }
-  p {
-    display: flex;
-    flex-direction: column;
-  }
-  p input {
-    width: 90%;
-  }
-  p textarea {
-    width: 90%;
-  }
-  .right-menu-p>input {
-    width: 70%;
-  }
-  .main-fb-modal-block p {
-    display: flex;
-    flex-wrap: nowrap;
-    align-items: center;
-  }
-  .main-fb-modal-block {
-    display: flex;
-    flex-wrap: wrap;
-    width: 64%;
-    justify-content: space-between;
-  }
-  .main-fb-modal-block>p * {
-    margin-left: 10px;
-  }
-  .fb-img-block {
-    width: 36%;
-    float: left;
-    height: 190px;
-  }
-  .scroll-table {
-    width: 98%;
-    height: 78vh;
-  }
-  .out-btn-control {
-    margin-top: 10px;
-  }
-  .span-type-files {
-    width: 100%;
-    display: flex;
-    height: 100%;
-    justify-content: center;
-    align-items: center;
-    font-size: 70px;
-    color: #606060;
-    background: #a4a4a4;
-  }
-  .imgShow-modal {
-    height: 100%;
-    width: 100%;
-  }
-  .imgShow-modal-div {
-    display: flex;
-    justify-content: center;
-    widows: 100%;
-    height: 100%;
-  }
+table {
+  width: 100%;
+}
+p {
+  display: flex;
+  flex-direction: column;
+}
+p input {
+  width: 90%;
+}
+p textarea {
+  width: 90%;
+}
+.right-menu-p>input {
+  width: 70%;
+}
+.main-fb-modal-block p {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+}
+.main-fb-modal-block {
+  display: flex;
+  flex-wrap: wrap;
+  width: 64%;
+  justify-content: space-between;
+}
+.main-fb-modal-block>p * {
+  margin-left: 10px;
+}
+.fb-img-block {
+  width: 36%;
+  float: left;
+  height: 190px;
+}
+.scroll-table {
+  width: 98%;
+  height: 78vh;
+}
+.out-btn-control {
+  margin-top: 10px;
+}
+.span-type-files {
+  width: 100%;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  font-size: 70px;
+  color: #606060;
+  background: #a4a4a4;
+}
+.imgShow-modal {
+  height: 100%;
+  width: 100%;
+}
+.imgShow-modal-div {
+  display: flex;
+  justify-content: center;
+  widows: 100%;
+  height: 100%;
+}
 .content-modal-right-menu-hidden {
   animation: width-replace 1s 1 ease;
 }
@@ -143,7 +142,7 @@ export default {
 .content-modal-right-menu>div {
   animation: hidden-content 1s 1 ease;
 }
-  @keyframes width {
+@keyframes width {
   from {
     width: 1vw;
   }

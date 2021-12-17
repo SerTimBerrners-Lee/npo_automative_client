@@ -206,7 +206,6 @@
   <Loader v-if='loader' /> 
   </div>
 </template>
-
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';

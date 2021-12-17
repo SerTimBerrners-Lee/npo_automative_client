@@ -123,12 +123,12 @@
   </div>
 </template>
 <script>
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
+import { showMessage } from '@/js/';
 import { isEmpty, random }  from 'lodash';
 import OpensFile from '@/components/filebase/openfile.vue';
-import { showMessage } from '@/js/';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import TableMaterial from '@/components/mathzag/table-material.vue';
+import ListProvider from '@/components/baseprovider/list-provider.vue';
 export default {
   data() {
     return {
@@ -326,8 +326,6 @@ export default {
   }
 }
 </script>
-
-
 <style>
 .table_main {
   display: flex;
