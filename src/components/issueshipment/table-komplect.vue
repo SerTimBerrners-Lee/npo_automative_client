@@ -1,7 +1,7 @@
 <template>
 	<div class="table-scroll">
 		<table> 
-			<tr>
+			<tr class='fixed_table_85'>
 				<th>Заказ</th>
 				<th>Артикул изделия</th>
 				<th>Наименование изделия</th>

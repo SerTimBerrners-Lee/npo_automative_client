@@ -66,8 +66,8 @@
               <p class="checkbox_block" @click='e => toProduction(cbed, e.target)'></p>
             </td>
             <td class='center'>СБ</td>
-            <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='shipmentsShow(cbed.shipments)' class='link_img' atl='Показать' />
+            <td class='center link_img' @click='returnShipmentsDateModal(cbed.shipments)' >
+              {{returnShipmentsKolvo(cbed.shipments)}}
             </td>
             <td class='center'>{{ cbed.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(cbed.id, 'cbed')">{{ cbed.name }}</td>
@@ -98,8 +98,8 @@
             <td class='center checkbox_parent' >
             </td>
             <td class='center'> Д </td>
-            <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='shipmentsShow(detal.shipments)' class='link_img' atl='Показать' />
+            <td class='center link_img' @click='returnShipmentsDateModal(detal.shipments)' >
+              {{returnShipmentsKolvo(detal.shipments)}}
             </td>
             <td class='center'>{{ detal.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(detal.id, 'detal')">{{ detal.name }}</td>
@@ -184,8 +184,8 @@
 </template>
 <script>
 import {random} from 'lodash';
-import { showMessage } from '@/js/';
 import Search from '@/components/search.vue';
+import { showMessage, comparison } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
@@ -292,7 +292,18 @@ export default {
       this.showNormTimeOperation = true;
       this.normTimeOperationKey = random(1, 999)
     },
-    shipmentsShow(shipments) {
+    returnShipmentsKolvo(shipments) {
+      if(!shipments || shipments.length == 0) return '-'
+      let end_date = shipments[0]?.number_order.split('от')[0] || '-'
+      for(let ship1 of shipments) {
+        for(let ship2 of shipments) {
+          if(!ship1.number_order) continue;
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0]
+        }
+      }
+      return end_date
+    },
+    returnShipmentsDateModal(shipments) {
       if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
       this.shipments = shipments
       this.shipmentKey = random(1, 999)

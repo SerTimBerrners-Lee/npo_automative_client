@@ -1,6 +1,6 @@
 <template>
-	<div class="table-scroll">
-		<table>
+	<div class="table-scroll float_block">
+		<table class='float_block'>
 			<tr> 
 				<th><unicon name="check" fill="royalblue" /></th> 
 				<th>Заказ покупателя из задач на отгрузку</th>
@@ -14,7 +14,7 @@
 				<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
 			</tr>
 		</table>
-		<div class="btn-control">
+		<div class="btn-control float_btn">
       <button class="btn-small" @click='clearFilter'>Сбросить все фильтры</button>
     </div>
 		<ShipmentsModal 
@@ -75,3 +75,15 @@ export default {
 	}
 }
 </script>
+
+<style scoped>
+.float_block {
+	position: sticky;
+  top: 85px;
+	z-index: 2;
+}
+.float_btn {
+	position: sticky;
+	top: 300px;
+}
+</style>

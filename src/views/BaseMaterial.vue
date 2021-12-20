@@ -178,6 +178,7 @@ export default {
 </script>
 <style scoped>
 .cont {
+  
   display: flex;
   flex-direction: column;
 }

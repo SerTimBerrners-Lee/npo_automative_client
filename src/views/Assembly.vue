@@ -8,10 +8,10 @@
     <div class='table_block'> 
       <ShipmentList
         @unmount_set='toSetOrders' 
-        :getShipments='getShipments'/>
+        :getShipments='getShipments'/> 
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
-          <tr>
+          <tr class='fixed_table_85'>
             <th>Заказ склада</th>
             <th>Дата готовности</th>
             <th>Сборочная единица</th>
@@ -28,13 +28,13 @@
           </tr> 
           <tr v-for='assemble of getAssembles' :key='assemble'>
             <td>{{ assemble.date_order }}</td>
-            <td class='center'>
-              <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='returnShipmentsKolvo(assemble.cbed.shipments)' class='link_img' atl='Показать' />
+            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)' >
+              {{returnShipmentsKolvo(assemble?.cbed?.shipments)}}
             </td>
-            <td>{{ assemble.cbed ? assemble.cbed.name : 'Нет СБ' }}</td>
-            <td>{{ assemble.cbed ? assemble.cbed.articl : 'Нет СБ' }}</td>
+            <td>{{ assemble?.cbed?.name || 'Нет СБ' }}</td>
+            <td>{{ assemble?.cbed?.articl || 'Нет СБ' }}</td>
             <td class='center'>{{ assemble.kolvo_shipments }}</td>
-            <td class='center'>{{ assemble.cbed ? assemble.cbed.shipments_kolvo : 'Нет СБ' }}</td>
+            <td class='center'>{{ assemble?.cbed?.shipments_kolvo || 'Нет СБ' }}</td>
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>
@@ -96,7 +96,7 @@
 <script>
 import print from 'print-js';
 import {random} from 'lodash';
-import { showMessage } from '@/js/';
+import { showMessage, comparison } from '@/js/';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DescriptionModal from '@/components/description-modal.vue';
@@ -193,7 +193,17 @@ export default {
       this.show_operaiton_m = true
     }, 
     returnShipmentsKolvo(shipments) {
-      if(!shipments || shipments.length == 0) return showMessage('', 'Нет прикрепленных заказов', 'w', this)
+      if(!shipments || shipments.length == 0) return '-'
+      let end_date = shipments[0]?.date_shipments || '-'
+      for(let ship1 of shipments) {
+        for(let ship2 of shipments) {
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.date_shipments
+        }
+      }
+      return end_date
+    },
+    returnShipmentsDateModal(shipments) {
+      if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this)
       this.shipmentKey = random(1, 999)
       this.shipments = shipments
     },

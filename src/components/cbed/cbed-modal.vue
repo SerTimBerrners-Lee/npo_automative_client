@@ -163,11 +163,9 @@ export default {
 			if(this.selectedCbEd.listCbed)
 				this.listCbed = JSON.parse(this.selectedCbEd.listCbed)
 		} catch(e) {console.error(e)}
-
   },
 }
 </script>
-
 <style scoped>
 .informat {
   z-index: 10;

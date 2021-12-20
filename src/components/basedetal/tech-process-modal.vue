@@ -376,7 +376,6 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .operation_select {
   background-color: white;

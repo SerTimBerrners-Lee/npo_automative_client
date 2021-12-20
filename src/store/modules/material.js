@@ -364,6 +364,7 @@ export default {
         }
         return state.podMaterial = new_arr
       }
+      state.podMaterial = typMaterial.podPodMaterials.filter(material => !material.ban)
     },
     addOnePPTyep(state, PPT) {
       state.onePPT = PPT

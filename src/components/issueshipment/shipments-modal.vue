@@ -8,7 +8,7 @@
 			v-if='getShipments.length && Number(this.$route.params.parent)'
 			:shipmentsArr='getShipments'
 			@unmount='unmount_table_shipments'/>
-		<h3>Зваказ № {{number_order}}</h3>
+		<h3>Заказ {{number_order}}</h3>
 		<div class="block">
 			<p class='p_flex'>
 				<span>Дата заказа:</span>

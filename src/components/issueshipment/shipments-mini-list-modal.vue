@@ -24,20 +24,20 @@
         <button class="btn-small btn-add" @click='changeToSclad'>Переместить на склад</button>
       </div>
     </div>
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
-    <ShipmentsModal 
-			:key='key_modal_shipments'
-			v-if='show_modal_shipments && selectedShip.id'
-			:id_shipments='selectedShip.id'
-		/>
   </div>
 </div>
+  <InformFolder  
+    :title='titleMessage'
+    :message = 'message'
+    :type = 'type'
+    v-if='message'
+    :key='keyInformTip'
+  />
+  <ShipmentsModal 
+    :key='key_modal_shipments'
+    v-if='show_modal_shipments && selectedShip.id'
+    :id_shipments='selectedShip.id'
+  />
 </template>
 <script>
 import {random} from 'lodash';
@@ -110,7 +110,6 @@ export default {
   },
 }
 </script>
-
 <style scoped>
 .out-btn-control {
   width: 96%;

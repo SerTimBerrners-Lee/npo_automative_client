@@ -11,7 +11,7 @@
         :getShipments='getShipments'/>
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
-          <tr>
+          <tr class='fixed_table_85'>
             <th>Заказ склада</th>
             <th>Дата готовности</th> 
             <th>Деталь</th>
@@ -30,8 +30,8 @@
           </tr>
           <tr v-for='metalowork of getMetaloworkings' :key='metalowork'>
             <td>{{ metalowork.date_order }}</td>
-            <td class='center'>
-              <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='returnShipmentsKolvo(metalowork.detal.shipments)' class='link_img' atl='Показать' />
+            <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
+              {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
             </td>
             <td>{{ metalowork.detal ? metalowork.detal.name: "Нет детали" }}</td>
             <td>{{ metalowork.detal ? metalowork.detal.articl: "Нет детали" }}</td>
@@ -96,11 +96,10 @@
     <Loader v-if='loader' />
 	</div>
 </template>
-
 <script>
 import print from 'print-js';
 import {random} from 'lodash';
-import { showMessage } from '@/js/';
+import { showMessage, comparison } from '@/js/';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DescriptionModal from '@/components/description-modal.vue';
@@ -194,7 +193,17 @@ export default {
       this.show_operaiton_m = true
     },
     returnShipmentsKolvo(shipments) {
-      if(!shipments || shipments.length == 0) return showMessage('', 'Нет прикрепленных заказов', 'w', this)
+      if(!shipments || shipments.length == 0) return '-'
+      let end_date = shipments[0]?.date_shipments || '-'
+      for(let ship1 of shipments) {
+        for(let ship2 of shipments) {
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.date_shipments
+        }
+      }
+      return end_date
+    },
+    returnShipmentsDateModal(shipments) {
+      if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this)
       this.shipmentKey = random(1, 999)
       this.shipments = shipments
     },

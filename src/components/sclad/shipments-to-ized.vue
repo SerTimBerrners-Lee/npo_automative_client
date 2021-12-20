@@ -10,7 +10,9 @@
 						<th>№ Заказа</th>
 						<th>Дата Заказа</th>
 					</tr>
-          <tr v-for='shipment of shipments' :key="shipment">
+          <tr v-for='shipment of shipments_arr' :key="shipment" 
+            class='td-row'
+            @click="openShipments(shipment.id)">
             <td>{{ shipment.number_order }}</td>
             <td class='center'>{{ shipment.date_order }}</td>
           </tr>
@@ -20,8 +22,16 @@
     </div>
   </div>
 </div>
+  <ShipmentsModal 
+    :key='key_modal_shipments'
+    v-if='shipments_id'
+    :id_shipments='shipments_id'
+  />
 </template>
 <script>
+import {random} from 'lodash';
+import { comparison } from '@/js/';
+import ShipmentsModal from '@/components/issueshipment/shipments-modal.vue';
 export default {
   props: ['shipments'],
   data() {
@@ -29,19 +39,45 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
+
+      shipments_arr: [],
+
+      key_modal_shipments: random(1, 999),
+      shipments_id: null
     }
   },
+  components: {ShipmentsModal},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
+    openShipments(id) {
+      this.key_modal_shipments = random(1, 999)
+      this.shipments_id = id
+    }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
+
+    if(this.$props.shipments) 
+      this.shipments_arr = this.$props.shipments
+
+    let variables;
+    for(let ship1 in this.shipments_arr) {
+      for(let ship2 in this.shipments_arr) {
+        if(comparison(this.shipments_arr[ship1].date_shipments, 
+          this.shipments_arr[ship2].date_shipments, '<')) {
+            variables = this.shipments_arr[ship1]
+            this.shipments_arr[ship1] = this.shipments_arr[ship2]
+            this.shipments_arr[ship2] = variables
+          }
+      }
+    }
+    
   },
 }
 </script>
