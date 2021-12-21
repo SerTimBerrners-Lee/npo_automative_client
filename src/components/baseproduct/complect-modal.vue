@@ -25,9 +25,14 @@
                   <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
                   <td class='center'> {{obj.kol}} </td>
                 </tr>
-                <tr>
+              </table>
+
+              <table>
+                 <tr>
                   <th>№</th>
                   <th>Артикул</th>
+                  <th>DxL</th>
+                  <th>Материал Заготовки</th>
                   <th>Наименование Детали</th>
                   <th>Кол-во</th>
                 </tr>
@@ -37,6 +42,8 @@
                   class='td-row'>
                   <td class='center'>{{ inx + 1 }}</td>
                   <td>{{ obj.obj.articl }}</td>
+                  <td class='center'>{{ obj?.obj?.DxL }}</td>
+                  <td> {{ obj?.obj?.zag?.name }} </td>
                   <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
                   <td class='center'> {{obj.kol}} </td>
                 </tr>
@@ -45,7 +52,6 @@
               <table>
                 <tr>
                   <th>№</th>
-                  <th>Артикул</th>
                   <th>Тип</th>
                   <th>Подтип</th>
                   <th>Наименование Материала</th>
@@ -58,7 +64,6 @@
                   class='td-row'
                   @click='openMaterial(obj.obj.id)'>
                   <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj.articl }}</td>
                   <td>{{ obj.obj?.material?.name }}</td>
                   <td>{{ obj.obj?.podMaterial?.name }}</td>
                   <td>{{ obj.obj.name }}</td>
@@ -71,7 +76,6 @@
                   class='td-row'
                   @click='openMaterial(obj.obj.id)'>
                   <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj.articl }}</td>
                   <td>{{ obj.obj?.material?.name }}</td>
                   <td>{{ obj.obj?.podMaterial?.name }}</td>
                   <td>{{ obj.obj.name }}</td>
@@ -84,7 +88,6 @@
                   class='td-row'
                   @click='openMaterial(obj.obj.id)'>
                   <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj.articl }}</td>
                   <td>{{ obj.obj?.material?.name }}</td>
                   <td>{{ obj.obj?.podMaterial?.name }}</td>
                   <td>{{ obj.obj.name }}</td>
@@ -227,5 +230,85 @@ table, .table_block {
 }
 .table_block {
   flex-direction: column;
+}
+
+.content-modal-right-menu-hidden {
+  animation: width-replace 1s 1 ease;
+}
+.content-modal-right-menu-hidden>div {
+  animation: hidden-content-replace 1s 1 ease;
+}
+.content-modal-right-menu {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 50%;
+}
+.left-block-modal {
+  width: 50%;
+  height: 10000px;
+  animation: width-right 1s 1 ease;
+}
+.left-block-modal-hidden {
+  animation: width-right-replace 1s 1 ease;
+}
+.content-modal-right-menu>div {
+  animation: hidden-content 1s 1 ease;
+}
+@keyframes width {
+  from {
+    width: 1%;
+  }
+  to {
+    width: 50%;
+  }
+}
+@keyframes width-right {
+  from {
+    width: 0%;
+  }
+  to {
+    width: 50%;
+  }
+}
+@keyframes hidden-content {
+  from {
+    opacity: 0;
+  }
+  80% {
+    opacity: 0;
+  }
+  90% {
+    opacity: 0.5;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes width-replace {
+  from {
+    width: 50vw;
+  }
+  to {
+    width: 00vw;
+  }
+}
+@keyframes width-right-replace {
+  from {
+    width: 50vw;
+  }
+  to {
+    width: 0vw;
+  }
+}
+@keyframes hidden-content-replace {
+  from {
+    opacity: 1;
+  }
+  20% {
+    opacity: 0;
+  }
+  to {
+    opacity: 0;
+  }
 }
 </style>

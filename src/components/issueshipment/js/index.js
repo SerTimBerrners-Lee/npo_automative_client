@@ -1,7 +1,7 @@
 /* main 
 * Рекурсивно подсчитывает количество СБ и Д в изделии или СБ
 */
-function checkedJsonList(izd, ctx, recursive = false) {
+async function checkedJsonList(izd, ctx, recursive = false) {
 	if(!ctx) return false
 
 	// Рекурсивно проходим по сборке (если есть)
@@ -16,34 +16,36 @@ function checkedJsonList(izd, ctx, recursive = false) {
 	// Проходим по деталям
 	if(izd.detals && izd.detals.length && izd.listDetal) {
 		let list_detals = JSON.parse(izd.listDetal)
-		pushElement(izd.detals, list_detals, 'detal', ctx, recursive)
-		for(let det of list_detals ) {
-			ctx.$store.dispatch('getOneDetal', det.det.id).then(res => {
-				for(let i = 0; i < det.kol; i++) {
-					let mat_true = false
-					let material_find
-					for(let material of res.materials) {
-						if(material.id == res.mat_zag) {
-							mat_true = true
-							material_find = material
+			for(let det in list_detals) {
+				const res = await ctx.$store.dispatch('getOneDetal', list_detals[det].det.id)
+					for(let i = 0; i < list_detals[det].kol; i++) {
+						let mat_true = false
+						let material_find
+						for(let material of res.materials) {
+							if(material.id == res.mat_zag) {
+								mat_true = true
+								material_find = material
+								list_detals[det].det.zag = material
+							}
 						}
+						if(mat_true) {
+							let parse_str
+							if(res.materialList) {
+								parse_str = JSON.parse(res.materialList)
+								parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
+								parse_str = JSON.stringify(parse_str)
+							} else
+								parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1}])
+						
+							mat_true = false
+							checkedJsonList({...res, materialList: parse_str}, ctx)
+						}
+						else checkedJsonList(res, ctx)
 					}
-					if(mat_true) {
-						let parse_str
-						if(res.materialList) {
-							parse_str = JSON.parse(res.materialList)
-							parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
-							parse_str = JSON.stringify(parse_str)
-						} else
-							parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1}])
-					
-						mat_true = false
-						checkedJsonList({...res, materialList: parse_str}, ctx)
-					}
-					else checkedJsonList(res, ctx)
-				}
-			}) 
-		}
+					if(det == list_detals.length -1)
+						pushElement(izd.detals, list_detals, 'detal', ctx, recursive)
+			}
+		
 	}
 
 	// Проходим по материалам
@@ -94,6 +96,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 			if(id == element.id) {
 				element.articl = item.art
 				kol = Number(item.kol)
+				element.zag = item?.det?.zag
 			}
 		}
 		
@@ -122,7 +125,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 			arr[check_dublecate].kol = Number(arr[check_dublecate].kol) + Number(kol)
 		else {
 			if(type == 'material') {
-				ctx.fetchGetOnePPM(element.id).then(res => {
+				ctx.$store.dispatch("fetchGetOnePPM", element.id).then(res => {
 					element['podMaterial'] = res?.podMaterial || null
 					element['material'] = res?.material || null
 					arr.push({
