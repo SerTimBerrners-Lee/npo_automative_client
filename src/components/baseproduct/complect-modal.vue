@@ -5,42 +5,93 @@
       <div :style="hiddens" >
 
         <div class='table_block'>
-          <h3>Комплектация</h3>
-          <table>
-            <tr>
-              <th>№</th>
-              <th>Артикул</th>
-              <th>Наименование СБ или детали</th>
-              <th>Кол-во</th>
-            </tr>
-            <tr 
-              v-for='(obj, inx) of izd_arr' 
-              :key='obj'
-              class='td-row'>
-              <td class='center'>{{ inx + 1 }}</td>
-              <td>{{ obj.obj.articl }}</td>
-              <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
-              <td class='center'> {{obj.kol}} </td>
-            </tr>
-          </table>
+          <h3>Комплектация 
+            <button class='btn-small' @click='printPage'>На печать</button>
+          </h3>
+          <div id='spec_table'>
+             <table>
+                <tr>
+                  <th>№</th>
+                  <th>Артикул</th>
+                  <th>Наименование СБ</th>
+                  <th>Кол-во</th>
+                </tr>
+                <tr 
+                  v-for='(obj, inx) of izd_cbed_arr' 
+                  :key='obj'
+                  class='td-row'>
+                  <td class='center'>{{ inx + 1 }}</td>
+                  <td>{{ obj.obj.articl }}</td>
+                  <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
+                  <td class='center'> {{obj.kol}} </td>
+                </tr>
+                <tr>
+                  <th>№</th>
+                  <th>Артикул</th>
+                  <th>Наименование Детали</th>
+                  <th>Кол-во</th>
+                </tr>
+                <tr 
+                  v-for='(obj, inx) of izd_detal_arr' 
+                  :key='obj'
+                  class='td-row'>
+                  <td class='center'>{{ inx + 1 }}</td>
+                  <td>{{ obj.obj.articl }}</td>
+                  <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
+                  <td class='center'> {{obj.kol}} </td>
+                </tr>
+              </table>
 
-          <table>
-            <tr>
-              <th>№</th>
-              <th>Артикул</th>
-              <th>Наименование Материала</th>
-              <th>Кол-во</th>
-            </tr>
-            <tr 
-              v-for='(obj, inx) of material_arr' 
-              :key='obj'
-              class='td-row'>
-              <td class='center'>{{ inx + 1 }}</td>
-              <td>{{ obj.obj.articl }}</td>
-              <td @click='openMaterial(obj.obj.id)'>{{ obj.obj.name }}</td>
-              <td class='center'> {{obj.kol}} </td>
-            </tr>
-          </table>
+              <table>
+                <tr>
+                  <th>№</th>
+                  <th>Артикул</th>
+                  <th>Тип</th>
+                  <th>Подтип</th>
+                  <th>Наименование Материала</th>
+                  <th>Кол-во</th>
+                </tr>
+                <th colspan='6' v-if='material_arr.one.length'>Материалы для деталей</th>
+                <tr 
+                  v-for='(obj, inx) of material_arr.one' 
+                  :key='obj'
+                  class='td-row'
+                  @click='openMaterial(obj.obj.id)'>
+                  <td class='center'>{{ inx + 1 }}</td>
+                  <td>{{ obj.obj.articl }}</td>
+                  <td>{{ obj.obj?.material?.name }}</td>
+                  <td>{{ obj.obj?.podMaterial?.name }}</td>
+                  <td>{{ obj.obj.name }}</td>
+                  <td class='center'> {{obj.kol}} </td>
+                </tr>
+                <th colspan='6' v-if='material_arr.two.length'>Покупные детали</th>
+                <tr 
+                  v-for='(obj, inx) of material_arr.two' 
+                  :key='obj'
+                  class='td-row'
+                  @click='openMaterial(obj.obj.id)'>
+                  <td class='center'>{{ inx + 1 }}</td>
+                  <td>{{ obj.obj.articl }}</td>
+                  <td>{{ obj.obj?.material?.name }}</td>
+                  <td>{{ obj.obj?.podMaterial?.name }}</td>
+                  <td>{{ obj.obj.name }}</td>
+                  <td class='center'> {{obj.kol}} </td>
+                </tr>
+                <th colspan='6' v-if='material_arr.free.length'>Расходные материалы</th>
+                <tr 
+                  v-for='(obj, inx) of material_arr.free' 
+                  :key='obj'
+                  class='td-row'
+                  @click='openMaterial(obj.obj.id)'>
+                  <td class='center'>{{ inx + 1 }}</td>
+                  <td>{{ obj.obj.articl }}</td>
+                  <td>{{ obj.obj?.material?.name }}</td>
+                  <td>{{ obj.obj?.podMaterial?.name }}</td>
+                  <td>{{ obj.obj.name }}</td>
+                  <td class='center'> {{obj.kol}} </td>
+                </tr>
+              </table>
+          </div>
         </div>
 
       </div>
@@ -64,9 +115,9 @@
   </div>
 </template>
 <script>
+import print from 'print-js';
+import {mapActions} from 'vuex';
 import {isEmpty, random} from 'lodash';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
 import {checkedJsonList} from '@/components/issueshipment/js/index';
 import MaterialInformation from '@/components/mathzag/material-information.vue';
 export default {
@@ -87,15 +138,22 @@ export default {
       material_key: random(1, 999),
       material_id: null,
 
-      material_arr: [],
-      izd_arr: []
+      material_arr: {
+        one: [],
+        two: [],
+        free: [],
+      },
+      izd_cbed_arr: [],
+      izd_detal_arr: []
 
     }
   },
   components: {
-    DetalModal,
-		CbedModalInfo,
     MaterialInformation
+  },
+  beforeCreate() {
+    this.$options.components.DetalModal = require('@/components/basedetal/detal-modal.vue').default
+    this.$options.components.CbedModalInfo = require('@/components/cbed/cbed-modal.vue').default
   },
   watch: {
     'list_cbed_detal.length': function() {
@@ -106,15 +164,30 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['fetchGetOnePPM']),
     destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
 			this.hiddens = 'display: none;'
 			this.$emit('unmount')
     },
+    printPage() {
+      print({
+        printable: 'spec_table',
+        type: 'html',
+        targetStyles: ['*'],
+        documentTitle: 'Комплектация для "' + this.$props?.parametrs?.obj?.name + '"' || '-',
+        ignoreElements: ['operation', 'doc', 'discription'],
+        font_size: '10pt'
+      })
+    },
     concatArrs() {
-      this.izd_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type != 'material')
-      this.material_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == 'material')
+      this.izd_cbed_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "cbed")
+      this.izd_detal_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "detal")
+
+      this.material_arr.one = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == 'material' && el?.obj?.material?.instansMaterial == 1)
+      this.material_arr.two = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == 'material' && el?.obj?.material?.instansMaterial == 2)
+      this.material_arr.free = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == 'material' && el?.obj?.material?.instansMaterial == 3)
     },
     showInformIzdel(id, type) {
 			if(type == 'cbed') {

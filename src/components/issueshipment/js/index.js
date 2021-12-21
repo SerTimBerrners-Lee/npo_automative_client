@@ -47,12 +47,12 @@ function checkedJsonList(izd, ctx, recursive = false) {
 	}
 
 	// Проходим по материалам
-	if(izd.materials && izd.materials.length && izd.materialList) {
+	if(izd.materials && izd.materials.length && izd.materialList) 
 		parseMaterialList(izd, izd.materialList, ctx, recursive)
-	}
-	if(izd.materials && izd.materials.length && izd.listPokDet) {
+	
+	if(izd.materials && izd.materials.length && izd.listPokDet) 
 		parseMaterialList(izd, izd.listPokDet, ctx, recursive)
-	}
+	
 }
 
 function parseMaterialList(izd, materialJson, ctx, recursive) {
@@ -73,10 +73,6 @@ function parseMaterialList(izd, materialJson, ctx, recursive) {
 function pushElement(elements, list_pars, type, ctx, recursive = false) {
 	if(!ctx) return false
 
-	if(type == 'material') {
-		console.log('elements', elements)
-		console.log('list_pars', list_pars)
-	}
 	for(let element of elements) {
 		let kol = 1;
 		element.type = type
@@ -97,7 +93,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 			}
 			if(id == element.id) {
 				element.articl = item.art
-				kol = item.kol
+				kol = Number(item.kol)
 			}
 		}
 		
@@ -112,27 +108,38 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 
 		if(check) {
 			if(!recursive || type == 'material') 
-				chechAndAddElement(ctx.list_cbed_detal, element, kol)
+				chechAndAddElement(ctx.list_cbed_detal, element, kol, type, ctx)
 			else {
-				chechAndAddElement(ctx.list_hidden_cbed_detal, element, kol)
+				chechAndAddElement(ctx.list_hidden_cbed_detal, element, kol, type, ctx)
 			}
 		} 
 		
 	}
 
-	function chechAndAddElement(arr, element, kol) {
+	function chechAndAddElement(arr, element, kol, type, ctx) {
 		const check_dublecate = checkDublecate(arr, element)
 		if(check_dublecate != null) 
-			arr[check_dublecate].kol = arr[check_dublecate].kol + kol
+			arr[check_dublecate].kol = Number(arr[check_dublecate].kol) + Number(kol)
 		else {
-			arr.push({
-				type,
-				obj: {id: element.id, name: element.name,  articl: element.articl},
-				kol
-			})
+			if(type == 'material') {
+				ctx.fetchGetOnePPM(element.id).then(res => {
+					element['podMaterial'] = res?.podMaterial || null
+					element['material'] = res?.material || null
+					arr.push({
+						type,
+						obj: {...element},
+						kol
+					})
+				})
+			} else {
+				arr.push({
+					type,
+					obj: {...element},
+					kol
+				})
+			}
 		}
 	}
-
 }
 
 /**
