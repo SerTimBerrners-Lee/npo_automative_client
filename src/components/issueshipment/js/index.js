@@ -4,7 +4,6 @@
 async function checkedJsonList(izd, ctx, recursive = false) {
 	if(!ctx) return false
 
-	// Рекурсивно проходим по сборке (если есть)
 	if(izd.cbeds && izd.cbeds.length && izd.listCbed) {
 		let list_cbed = JSON.parse(izd.listCbed)
 		pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive)
@@ -28,7 +27,7 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 							mat_true = true
 							material_find = material
 							list_detals[det].det.zag = material
-							LEN = res.DxL.split('x')[1] ? Number(res.DxL.split('x')[1]) : 0
+							LEN = res.DxL.split('x')[1] ? (Number(res.DxL.split('x')[1]) / 1000) : 0
 							MASS = Number(res?.massZag || 0) 
 						}
 					}
@@ -63,9 +62,9 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 
 function parseMaterialList(izd, materialJson, ctx, recursive) {
 	try {
-		let list_material = JSON.parse(materialJson)
+		const list_material = JSON.parse(materialJson)
 		pushElement(izd.materials, list_material, 'material', ctx, recursive)
-	} catch (e) {console.error(e)}
+	} catch (e) {console.error(e)} 
 }
 /**
  * Добавляем материал СБ или Деталь 
@@ -100,7 +99,6 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					break;
 			}
 			if(id == element.id) {
-				element.articl = item.art
 				kol = Number(item.kol)
 				element.zag = item?.det?.zag
 			}
@@ -111,9 +109,9 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 		for(let iz = 0; iz < ctx.list_cbed_detal.length; iz++) {
 			if(element.id == ctx.list_cbed_detal[iz].obj.id && element.name == ctx.list_cbed_detal[iz].obj.name) {
 				ctx.list_cbed_detal[iz].kol = Number(ctx.list_cbed_detal[iz].kol) + Number(kol)
-				if(type == 'material' && element.LEN) {
-					ctx.list_cbed_detal[iz].obj.LEN = Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN)
-					ctx.list_cbed_detal[iz].obj.MASS = Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS)
+				if(type == 'material') {
+					if(element.LEN)	ctx.list_cbed_detal[iz].obj.LEN = Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN)
+					if(element.MASS) ctx.list_cbed_detal[iz].obj.MASS = (Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS)).toFixed(3)
 				}
 				check = false
 			}	
@@ -122,27 +120,26 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 		if(check) {
 			if(!recursive || type == 'material') 
 				chechAndAddElement(ctx.list_cbed_detal, element, kol, type, ctx)
-			else {
+			else 
 				chechAndAddElement(ctx.list_hidden_cbed_detal, element, kol, type, ctx)
-			}
-		} 
-		
+		}
 	}
 
-	function chechAndAddElement(arr, element, kol, type, ctx) {
+	async function chechAndAddElement(arr, element, kol, type, ctx) {
 		const check_dublecate = checkDublecate(arr, element)
 		if(check_dublecate != null) arr[check_dublecate].kol = Number(arr[check_dublecate].kol) + Number(kol)
 		else {
 			if(type == 'material') {
-				ctx.$store.dispatch("fetchGetOnePPM", element.id).then(res => {
-					element['podMaterial'] = res?.podMaterial || null
-					element['material'] = res?.material || null
+				const res = await ctx.$store.dispatch("fetchGetOnePPM", element.id)
+				element['podMaterial'] = res?.podMaterial || null
+				element['material'] = res?.material || null
+				const check_dublecate = checkDublecate(arr, element)
+				if(!check_dublecate)
 					arr.push({
 						type,
 						obj: {...element},
 						kol
 					})
-				})
 			} else {
 				arr.push({
 					type,
@@ -152,6 +149,14 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 			}
 		}
 	}
+}
+
+function checkDublecate(arr, res) {
+	for(let inx in arr) {
+		if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) 
+			return inx
+	}
+	return null
 }
 
 /**
@@ -180,13 +185,6 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 /**
  * Осуществляем проверку на дублирование
 */
-function checkDublecate(arr, res) {
-	for(let inx in arr) {
-		if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) 
-			return inx
-	}
-	return null
-}
 
 
 export {

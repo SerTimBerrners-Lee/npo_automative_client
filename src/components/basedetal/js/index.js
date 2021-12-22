@@ -63,13 +63,13 @@ const parseVariableFold = (m, ctx) => {
 		const thickness = JSON.parse(m.material.thickness)
 		const wallThickness = JSON.parse(m.material.wallThickness)
 		const width = JSON.parse(m.material.width)
-		if(height) ctx.obj.variables_znach.push({
+		if(height && height.znach == 'variable') ctx.obj.variables_znach.push({
 			name: 'Высота', ez: 'мм', znach: height.znach == 'variable' ? 0:JSON.parse(m.height).znach})
-		if(thickness) ctx.obj.variables_znach.push({
+		if(thickness && thickness.znach == 'variable') ctx.obj.variables_znach.push({
 			name: 'Толщина', ez: 'мм', znach: thickness.znach == 'variable' ? 0:JSON.parse(m.thickness).znach})
-		if(wallThickness) ctx.obj.variables_znach.push({
+		if(wallThickness && wallThickness.znach == 'variable') ctx.obj.variables_znach.push({
 			name: 'Толщина стенки', ez: 'мм', znach: wallThickness.znach == 'variable' ? 0:JSON.parse(m.wallThickness).znach})
-		if(width) ctx.obj.variables_znach.push({
+		if(width && width.znach == 'variable') ctx.obj.variables_znach.push({
 			name: 'Ширина', ez: 'мм', znach: width.znach == 'variable' ? 0: JSON.parse(m.width).znach})
 	} catch(e) {console.error(e)}
 }
