@@ -28,7 +28,7 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 							material_find = material
 							list_detals[det].det.zag = material
 							LEN = res.DxL.split('x')[1] ? (Number(res.DxL.split('x')[1]) / 1000) : 0
-							MASS = Number(res?.massZag || 0) 
+							MASS = Number(res?.massZag || 0)
 						}
 					}
 					if(mat_true) { 
@@ -110,8 +110,8 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 			if(element.id == ctx.list_cbed_detal[iz].obj.id && element.name == ctx.list_cbed_detal[iz].obj.name) {
 				ctx.list_cbed_detal[iz].kol = Number(ctx.list_cbed_detal[iz].kol) + Number(kol)
 				if(type == 'material') {
-					if(element.LEN)	ctx.list_cbed_detal[iz].obj.LEN = Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN)
-					if(element.MASS) ctx.list_cbed_detal[iz].obj.MASS = (Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS)).toFixed(3)
+					if(element.LEN)	ctx.list_cbed_detal[iz].obj.LEN = (Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN))
+					if(element.MASS) ctx.list_cbed_detal[iz].obj.MASS = (Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS))
 				}
 				check = false
 			}	

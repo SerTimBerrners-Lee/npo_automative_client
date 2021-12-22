@@ -69,8 +69,8 @@
                   @click='openMaterial(mat.obj.id)'>
                   <td class='center'>{{ ++inx }}</td>
                   <td>{{ mat.obj?.name }}</td>
-                  <td class="center">{{ mat?.obj?.MASS }}</td>
-                  <td class="center">{{ mat?.obj?.LEN }}</td>
+                  <td class="center">{{ mat?.obj?.MASS.toFixed(3) }}</td>
+                  <td class="center">{{ mat?.obj?.LEN.toFixed(3) }}</td>
                 </tr>
               </tbody>
             </table>
