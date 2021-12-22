@@ -18,32 +18,36 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 		let list_detals = JSON.parse(izd.listDetal)
 			for(let det in list_detals) {
 				const res = await ctx.$store.dispatch('getOneDetal', list_detals[det].det.id)
-					for(let i = 0; i < list_detals[det].kol; i++) {
-						let mat_true = false
-						let material_find
-						for(let material of res.materials) {
-							if(material.id == res.mat_zag) {
-								mat_true = true
-								material_find = material
-								list_detals[det].det.zag = material
-							}
+				for(let i = 0; i < list_detals[det].kol; i++) {
+					let mat_true = false
+					let material_find
+					let LEN = 0
+					let MASS = 0
+					for(let material of res.materials) {
+						if(material.id == res.mat_zag) {
+							mat_true = true
+							material_find = material
+							list_detals[det].det.zag = material
+							LEN = res.DxL.split('x')[1] ? Number(res.DxL.split('x')[1]) : 0
+							MASS = Number(res?.massZag || 0) 
 						}
-						if(mat_true) {
-							let parse_str
-							if(res.materialList) {
-								parse_str = JSON.parse(res.materialList)
-								parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
-								parse_str = JSON.stringify(parse_str)
-							} else
-								parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1}])
-						
-							mat_true = false
-							checkedJsonList({...res, materialList: parse_str}, ctx)
-						}
-						else checkedJsonList(res, ctx)
 					}
-					if(det == list_detals.length -1)
-						pushElement(izd.detals, list_detals, 'detal', ctx, recursive)
+					if(mat_true) { 
+						let parse_str
+						if(res.materialList) {
+							parse_str = JSON.parse(res.materialList)
+							parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name,  LEN, MASS}, kol: 1})
+							parse_str = JSON.stringify(parse_str)
+						} else
+							parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name, LEN, MASS}, kol: 1}])
+					
+						mat_true = false
+						checkedJsonList({...res, materialList: parse_str}, ctx)
+					}
+					else checkedJsonList(res, ctx)
+				}
+				if(det == list_detals.length -1)
+					pushElement(izd.detals, list_detals, 'detal', ctx, recursive)
 			}
 		
 	}
@@ -90,6 +94,8 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					id = item.det.id
 					break;
 				case 'material':
+					element.LEN = item.mat.LEN
+					element.MASS = item.mat.MASS
 					id = item.mat.id
 					break;
 			}
@@ -105,6 +111,10 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 		for(let iz = 0; iz < ctx.list_cbed_detal.length; iz++) {
 			if(element.id == ctx.list_cbed_detal[iz].obj.id && element.name == ctx.list_cbed_detal[iz].obj.name) {
 				ctx.list_cbed_detal[iz].kol = Number(ctx.list_cbed_detal[iz].kol) + Number(kol)
+				if(type == 'material' && element.LEN) {
+					ctx.list_cbed_detal[iz].obj.LEN = Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN)
+					ctx.list_cbed_detal[iz].obj.MASS = Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS)
+				}
 				check = false
 			}	
 		}
@@ -121,8 +131,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 
 	function chechAndAddElement(arr, element, kol, type, ctx) {
 		const check_dublecate = checkDublecate(arr, element)
-		if(check_dublecate != null) 
-			arr[check_dublecate].kol = Number(arr[check_dublecate].kol) + Number(kol)
+		if(check_dublecate != null) arr[check_dublecate].kol = Number(arr[check_dublecate].kol) + Number(kol)
 		else {
 			if(type == 'material') {
 				ctx.$store.dispatch("fetchGetOnePPM", element.id).then(res => {

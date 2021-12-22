@@ -5,101 +5,124 @@
       <div :style="hiddens" >
 
         <div class='table_block'>
-          <h3>Комплектация 
+          <h3>Спетификация
             <button class='btn-small' @click='printPage'>На печать</button>
           </h3>
           <div id='spec_table'>
-             <table>
+            <h3 class='center'>Детали</h3>
+            <table>
                 <tr>
-                  <th>№</th>
-                  <th>Артикул</th>
-                  <th>Наименование СБ</th>
-                  <th>Кол-во</th>
-                </tr>
-                <tr 
-                  v-for='(obj, inx) of izd_cbed_arr' 
-                  :key='obj'
-                  class='td-row'>
-                  <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj.articl }}</td>
-                  <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
-                  <td class='center'> {{obj.kol}} </td>
-                </tr>
-              </table>
-
-              <table>
-                 <tr>
-                  <th>№</th>
-                  <th>Артикул</th>
-                  <th>DxL</th>
-                  <th>Материал Заготовки</th>
-                  <th>Наименование Детали</th>
-                  <th>Кол-во</th>
-                </tr>
-                <tr 
-                  v-for='(obj, inx) of izd_detal_arr' 
-                  :key='obj'
-                  class='td-row'>
-                  <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj.articl }}</td>
-                  <td class='center'>{{ obj?.obj?.DxL }}</td>
-                  <td> {{ obj?.obj?.zag?.name }} </td>
-                  <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
-                  <td class='center'> {{obj.kol}} </td>
-                </tr>
-              </table>
-
-              <table>
-                <tr>
-                  <th>№</th>
-                  <th>Тип</th>
-                  <th>Подтип</th>
-                  <th>Наименование Материала</th>
-                  <th>Кол-во</th>
-                </tr>
-                <th colspan='6' v-if='material_arr.one.length'>Материалы для деталей</th>
-                <tr 
-                  v-for='(obj, inx) of material_arr.one' 
-                  :key='obj'
+                <th>№</th>
+                <th>Артикул</th>
+                <th>Наименование Детали</th>
+                <th>Материал Заготовки</th>
+                <th>Размер заготовки</th>
+                <th>Кол-во</th>
+              </tr>
+              <tr 
+                v-for='(obj, inx) of izd_detal_arr' 
+                :key='obj'
+                class='td-row'
+                @click='showInformIzdel(obj.obj.id, obj.type)'>
+                <td class='center'>{{ inx + 1 }}</td>
+                <td>{{ obj.obj.articl }}</td>
+                <td>{{ obj.obj.name }}</td>
+                <td> {{ obj?.obj?.zag?.name }} </td>
+                <td class='center'>{{ obj?.obj?.DxL }}</td>
+                <td class='center'> {{obj.kol}} </td>
+              </tr>
+            </table>
+            <h3 class='center'>Сборочная единицы</h3>
+            <table>
+              <tr>
+                <th>№</th>
+                <th>Артикул</th>
+                <th>Наименование СБ</th>
+                <th>Кол-во</th>
+              </tr>
+              <tr 
+                v-for='(obj, inx) of izd_cbed_arr' 
+                :key='obj'
+                class='td-row'>
+                <td class='center'>{{ inx + 1 }}</td>
+                <td>{{ obj.obj.articl }}</td>
+                <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
+                <td class='center'> {{obj.kol}} </td>
+              </tr>
+            </table>
+            <h3 class='center'>Материалы для деталей</h3>
+            <table>
+              <tr>
+                <th>№</th>
+                <th>Наименование</th>
+                <th>кг</th>
+                <th>м</th>
+              </tr>
+              <tbody 
+                v-for='(obj, inx) of material_arr.one' 
+                :key='obj'>
+                <th colspan='4'> {{ obj?.name }} </th>
+                <tr
+                  v-for='(mat) of obj.material' 
+                  :key='mat'
                   class='td-row'
-                  @click='openMaterial(obj.obj.id)'>
-                  <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj?.material?.name }}</td>
-                  <td>{{ obj.obj?.podMaterial?.name }}</td>
-                  <td>{{ obj.obj.name }}</td>
-                  <td class='center'> {{obj.kol}} </td>
+                  @click='openMaterial(mat.obj.id)'>
+                  <td class='center'>{{ ++inx }}</td>
+                  <td>{{ mat.obj?.name }}</td>
+                  <td class="center">{{ mat?.obj?.MASS }}</td>
+                  <td class="center">{{ mat?.obj?.LEN }}</td>
                 </tr>
-                <th colspan='6' v-if='material_arr.two.length'>Покупные детали</th>
-                <tr 
-                  v-for='(obj, inx) of material_arr.two' 
-                  :key='obj'
+              </tbody>
+            </table>
+            <h3 class='center'>Покупные материалы</h3>
+            <table>
+              <tr>
+                <th>№</th>
+                <th>Наименование</th>
+                <th>Кол-во</th>
+              </tr>
+              <tbody 
+                v-for='(obj, inx) of material_arr.two' 
+                :key='obj'>
+                <th colspan='4'> {{ obj?.name }} </th>
+                <tr
+                  v-for='(mat) of obj.material' 
+                  :key='mat'
                   class='td-row'
-                  @click='openMaterial(obj.obj.id)'>
-                  <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj?.material?.name }}</td>
-                  <td>{{ obj.obj?.podMaterial?.name }}</td>
-                  <td>{{ obj.obj.name }}</td>
-                  <td class='center'> {{obj.kol}} </td>
+                  @click='openMaterial(mat.obj.id)'>
+                  <td class='center'>{{ ++inx }}</td>
+                  <td>{{ mat.obj?.name }}</td>
+                  <td class="center">{{ mat?.kol }}</td>
                 </tr>
-                <th colspan='6' v-if='material_arr.free.length'>Расходные материалы</th>
-                <tr 
-                  v-for='(obj, inx) of material_arr.free' 
-                  :key='obj'
+              </tbody>
+            </table>
+            <h3 class='center'>Расходные материалы</h3>
+            <table>
+              <tr>
+                <th>№</th>
+                <th>Наименование</th>
+                <th>Кол-во</th>
+              </tr>
+              <tbody 
+                v-for='(obj, inx) of material_arr.free' 
+                :key='obj'>
+                <th colspan='4'> {{ obj?.name }} </th>
+                <tr
+                  v-for='(mat) of obj.material' 
+                  :key='mat'
                   class='td-row'
-                  @click='openMaterial(obj.obj.id)'>
-                  <td class='center'>{{ inx + 1 }}</td>
-                  <td>{{ obj.obj?.material?.name }}</td>
-                  <td>{{ obj.obj?.podMaterial?.name }}</td>
-                  <td>{{ obj.obj.name }}</td>
-                  <td class='center'> {{obj.kol}} </td>
+                  @click='openMaterial(mat.obj.id)'>
+                  <td class='center'>{{ ++inx }}</td>
+                  <td>{{ mat.obj?.name }}</td>
+                  <td class="center">{{ mat?.kol }}</td>
                 </tr>
-              </table>
+              </tbody>
+            </table>
           </div>
         </div>
 
       </div>
     </div>
-
   <DetalModal
 		:key='detalModalKey'
 		v-if='parametrs_detal'
@@ -187,10 +210,42 @@ export default {
     concatArrs() {
       this.izd_cbed_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "cbed")
       this.izd_detal_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "detal")
-
-      this.material_arr.one = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == 'material' && el?.obj?.material?.instansMaterial == 1)
-      this.material_arr.two = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == 'material' && el?.obj?.material?.instansMaterial == 2)
-      this.material_arr.free = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == 'material' && el?.obj?.material?.instansMaterial == 3)
+      this.funConcatMaterial()
+    },
+    funConcatMaterial() {
+      this.material_arr.one = []
+      this.material_arr.two = []
+      this.material_arr.free = []
+      
+      for(let item of this.list_cbed_detal.concat(this.list_hidden_cbed_detal)) {
+        if(item.type != 'material') continue
+        switch(item?.obj?.material?.instansMaterial || 3) {
+          case '1':
+            this.pushAndCheck(this.material_arr.one, item)
+            break;
+          case '2':
+            this.pushAndCheck(this.material_arr.two, item)
+            break;
+          case '3':
+            this.pushAndCheck(this.material_arr.free, item)
+            break;
+        }
+      }
+    },
+    pushAndCheck(arr, item) {
+      let check = true
+      for(let inx in arr) {
+        if(arr[inx].name == item?.obj?.material?.name || '') {
+          arr[inx].material.push(item)
+          check = false
+        }
+      }
+      if(check) {
+        arr.push({
+          name: item?.obj?.material?.name || '',
+          material: [item]
+        })
+      } else check = true
     },
     showInformIzdel(id, type) {
 			if(type == 'cbed') {
@@ -209,7 +264,7 @@ export default {
     openMaterial(id) {
 			this.material_key = random(1, 999)
 			this.material_id = id
-		}
+		},
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
