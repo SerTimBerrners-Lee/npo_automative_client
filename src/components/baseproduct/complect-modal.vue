@@ -67,7 +67,7 @@
                   :key='mat'
                   class='td-row'
                   @click='openMaterial(mat.obj.id)'>
-                  <td class='center'>{{ ++inx }}</td>
+                  <td class='center'>{{ inx + 1 }}</td>
                   <td>{{ mat.obj?.name }}</td>
                   <td class="center">{{ mat?.obj?.MASS.toFixed(3) }}</td>
                   <td class="center">{{ mat?.obj?.LEN.toFixed(3) }}</td>
@@ -90,7 +90,7 @@
                   :key='mat'
                   class='td-row'
                   @click='openMaterial(mat.obj.id)'>
-                  <td class='center'>{{ ++inx }}</td>
+                  <td class='center'>{{ inx+1 }}</td>
                   <td>{{ mat.obj?.name }}</td>
                   <td class="center">{{ mat?.kol }}</td>
                 </tr>
@@ -112,7 +112,7 @@
                   :key='mat'
                   class='td-row'
                   @click='openMaterial(mat.obj.id)'>
-                  <td class='center'>{{ ++inx }}</td>
+                  <td class='center'>{{ inx+1 }}</td>
                   <td>{{ mat.obj?.name }}</td>
                   <td class="center">{{ mat?.kol }}</td>
                 </tr>
@@ -170,7 +170,7 @@ export default {
         free: [],
       },
       izd_cbed_arr: [],
-      izd_detal_arr: []
+      izd_detal_arr: [],
 
     }
   },

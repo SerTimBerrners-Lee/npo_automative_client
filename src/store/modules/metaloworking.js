@@ -40,6 +40,16 @@ export default {
 				return result
 			}
     },
+    async fetchMetalloworkingDelete(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`, {
+        method: 'delete'
+      })
+			if(res.ok) {
+				const result = await res.json()
+        ctx.commit('deleteMetalloworking', id)
+				return result
+			}
+    },
     async fetchAllMetalloworkingTypeOperation(ctx, op_id) { 
       const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/typeoperation/${op_id}`)
       if(res.ok) {
@@ -59,6 +69,9 @@ export default {
         }
         state.metaloworkings.push(met)
       }
+    },
+    deleteMetalloworking(state, id) {
+      state.metaloworkings = state.metaloworkings.filter(metal => metal.id != id)
     },
     allMetaloworkingOperation(state, result) {
       state.metaloworkings = []

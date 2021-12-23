@@ -16,13 +16,13 @@
 							<th>Готовность %</th>
 							<th>Готовность к сборке</th>
 						</tr>
-						<tr v-for='shipments of assemble.cbed.shipments' :key='shipments'>
-							<td>{{ assemble.number_order }}</td>
-							<td>{{ assemble.date_shipments }}</td>
-							<td>{{ shipments.product.name }}</td>
-							<td>{{ assemble.cbed.name}}</td>
-							<td>{{ shipments.product.articl }}</td>
-							<td class='center'>{{ shipments.kol }}</td>
+						<tr v-for='shipments of assemble?.cbed?.shipments || []' :key='shipments'>
+							<td>{{ assemble?.number_order }}</td>
+							<td>{{ assemble?.date_shipments }}</td>
+							<td>{{ shipments?.product.name }}</td>
+							<td>{{ assemble?.cbed.name}}</td>
+							<td>{{ shipments?.product.articl }}</td>
+							<td class='center'>{{ shipments?.kol }}</td>
 							<td class='center'>{{ 0 }}</td>
 							<td class='center'>{{ 0 }}</td>
 						</tr>
@@ -87,9 +87,9 @@ export default {
     this.hiddens = 'opacity: 1;'
 
     this.loader = true 
-    if(this.$props.assemble && this.$props.assemble.tech_process) {
+    if(this.$props.assemble && this.$props.assemble?.tech_process) {
       this.props_izdeles = this.$props.assemble
-      this.props_tp = this.$props.assemble.tech_process
+      this.props_tp = this.$props.assemble?.tech_process
     }
     
 		if(this.$props.assemble && this.$props.assemble.shipments) 

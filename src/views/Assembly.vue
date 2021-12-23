@@ -12,8 +12,9 @@
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tr class='fixed_table_85'>
-            <th>Заказ склада</th>
             <th>Дата готовности</th>
+            <th>Заказ склада</th>
+            <th>№ Заказа</th>
             <th>Сборочная единица</th>
             <th>Артикул СБ</th>
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
@@ -26,10 +27,16 @@
             <th>Время на сборку, ч</th>
             <th id='discription'>Примечание</th>
           </tr> 
-          <tr v-for='assemble of getAssembles' :key='assemble'>
-            <td>{{ assemble.date_order }}</td>
+          <tr 
+            v-for='assemble of getAssembles' :key='assemble'
+            @click='e => setObject(assemble, e.target.parentElement)'
+            class='td-row'>
             <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)' >
               {{returnShipmentsKolvo(assemble?.cbed?.shipments)}}
+            </td>
+            <td>{{ assemble.date_order }}</td>
+            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)' >
+              {{returnShipmentsKolvo(assemble?.cbed?.shipments, 2)}}
             </td>
             <td>{{ assemble?.cbed?.name || 'Нет СБ' }}</td>
             <td>{{ assemble?.cbed?.articl || 'Нет СБ' }}</td>
@@ -39,7 +46,7 @@
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>
             <td>{{  }}</td>
-            <td>{{ "нет" }}</td>
+            <td class='center'>{{ "нет" }}</td>
             <td :class='assemble.status == "Готово" ? "success_operation" : "work_operation" '>{{ assemble.status }}</td>
             <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
@@ -53,6 +60,7 @@
       </div>
     </div> 
     <div class="btn-control">
+      <button class="btn-small" @click='removeObject'>Удалить</button>
       <button class="btn-small" @click='printPage'>Печать</button>
     </div>
     <DescriptionModal 
@@ -128,7 +136,10 @@ export default {
 
       assemble_props: null,
 
-      loader: false
+      loader: false,
+
+      span: null,
+      selectAssembly: null
 		}
 	},
   computed: mapGetters([
@@ -150,12 +161,25 @@ export default {
       'fetchAssemble',
       'fetchAssembleById',
       'getAllTypeOperations',
-      'getOneCbEdField'
+      'getOneCbEdField',
+      'fetchAssemblyDelete'
     ]),
     ...mapMutations([
       'filterAssemblByShipments',
       'breackFIlterAssembl'
     ]),
+    setObject(obj, e) {
+      if(this.span) this.span.classList.remove('td-row-all')
+
+      this.span = e
+      this.span.classList.add('td-row-all')
+
+      this.selectAssembly = obj
+    },
+    removeObject() {
+      if(!this.selectAssembly) return showMessage('', 'Выберите объект для удаления', 'w', this)
+      this.fetchAssemblyDelete(this.selectAssembly.id)
+    },
     printPage() {
       print({
         printable: 'tablebody',
@@ -192,12 +216,13 @@ export default {
       this.key_operation_m = random(1, 999)
       this.show_operaiton_m = true
     }, 
-    returnShipmentsKolvo(shipments) {
+    returnShipmentsKolvo(shipments, znach_return = 1) {
       if(!shipments || shipments.length == 0) return '-'
       let end_date = shipments[0]?.date_shipments || '-'
+      if(znach_return == 2) end_date = shipments[0]?.number_order || '-'
       for(let ship1 of shipments) {
         for(let ship2 of shipments) {
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.date_shipments
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order
         }
       }
       return end_date

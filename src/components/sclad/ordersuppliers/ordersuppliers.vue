@@ -15,6 +15,7 @@
           <tr>
             <th>№ Заказа</th>
             <th>Дата создания</th>
+            <th>Тип Заказа</th>
             <th>Наименование поставщика</th>
             <th>№ счета и Дата</th>
             <th>Сумма, руб.</th>
@@ -29,6 +30,7 @@
             :key="order">
             <td>{{ order.name }}</td>
             <td>{{ order.date_create }}</td>
+            <td v-if='order.provider'>ПП</td>
             <td>{{ order.provider ? order.provider.name : 'Нет поставщика' }}</td>
             <td>{{ order.number_check }}</td>
             <td>{{ order.count }}</td>

@@ -39,6 +39,16 @@ export default {
 				return result
 			} 
     },
+    async fetchAssemblyDelete(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/assemble/${id}`, {
+        method: 'delete'
+      })
+			if(res.ok) {
+				const result = await res.json()
+        ctx.commit('deleteAssemble', id)
+				return result
+			}
+    },
     async fetchAllAssembleTypeOperation(ctx, op_id) { 
       const res = await fetch(`${PATH_TO_SERVER}api/assemble/typeoperation/${op_id}`)
       if(res.ok) {
@@ -58,6 +68,9 @@ export default {
         }
         state.assembles.push(ass)
       }
+    },
+    deleteAssemble(state, id) {
+      state.assembles = state.assembles.filter(ass => ass.id != id)
     },
     allAssembleOperation(state, result) { 
       state.assembles = []

@@ -12,8 +12,9 @@
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tr class='fixed_table_85'>
+            <th>Дата готовности</th>
             <th>Заказ склада</th>
-            <th>Дата готовности</th> 
+            <th>№ Заказа</th>
             <th>Деталь</th>
             <th>Артикул Детали</th>
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
@@ -28,10 +29,16 @@
             <th>Отходы (стружка), кг</th>
             <th id='discription'>Примечание</th>
           </tr>
-          <tr v-for='metalowork of getMetaloworkings' :key='metalowork'>
-            <td>{{ metalowork.date_order }}</td>
+          <tr 
+            v-for='metalowork of getMetaloworkings' :key='metalowork'
+            @click='e => setObject(metalowork, e.target.parentElement)'
+            class='td-row'>
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
               {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
+            </td>
+            <td>{{ metalowork.date_order }}</td>
+            <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
+              {{returnShipmentsKolvo(metalowork?.detal?.shipments, 2)}}
             </td>
             <td>{{ metalowork.detal ? metalowork.detal.name: "Нет детали" }}</td>
             <td>{{ metalowork.detal ? metalowork.detal.articl: "Нет детали" }}</td>
@@ -57,6 +64,7 @@
       </div> 
     </div>
      <div class="btn-control">
+        <button class="btn-small" @click='removeObject'>Удалить</button>
         <button class="btn-small" @click='printPage'>Печать</button>
       </div>
       <DescriptionModal 
@@ -132,6 +140,9 @@ export default {
       metaloworking_props: null,
 
       loader: false,
+
+      span: null,
+      selectMetalloworking: null
 		}
 	},
 	computed: mapGetters([
@@ -152,12 +163,25 @@ export default {
     ...mapActions([
       'fetchAllShipmentsMetaloworking', 
       'fetchMetaloworking',
-      'getAllTypeOperations'
+      'getAllTypeOperations',
+      'fetchMetalloworkingDelete'
     ]),
     ...mapMutations([
       'filterMetaloworkingByShipments', 
       'breackFIlterMetal'
     ]),
+    setObject(obj, e) {
+      if(this.span) this.span.classList.remove('td-row-all')
+
+      this.span = e
+      this.span.classList.add('td-row-all')
+
+      this.selectMetalloworking = obj
+    },
+    removeObject() {
+      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для удаления', 'w', this)
+      this.fetchMetalloworkingDelete(this.selectMetalloworking.id)
+    },
     printPage() {
       print({
         printable: 'tablebody', 
@@ -192,12 +216,13 @@ export default {
       this.key_operation_m = random(1, 999)
       this.show_operaiton_m = true
     },
-    returnShipmentsKolvo(shipments) {
+    returnShipmentsKolvo(shipments, znach_return = 1) {
       if(!shipments || shipments.length == 0) return '-'
       let end_date = shipments[0]?.date_shipments || '-'
+      if(znach_return == 2) end_date = shipments[0]?.number_order || '-'
       for(let ship1 of shipments) {
         for(let ship2 of shipments) {
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.date_shipments
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order
         }
       }
       return end_date
