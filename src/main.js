@@ -8,6 +8,7 @@ import MiniLoader from '@/components/mini-loader.vue';
 import QuickFilter from '@/components/quick-filter.vue';
 import FileLoader from '@/components/drag-drop-file.vue';
 import InformFolder from '@/components/InformFolder.vue';
+import MiniNavigation from '@/components/mini-navigation.vue';
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import { 
     uniTimes, 
@@ -59,6 +60,7 @@ createApp(App)
     .component('FileLoader', FileLoader)
     .component('QuickFilter', QuickFilter)
     .component('InformFolder', InformFolder)
+    .component('MiniNavigation', MiniNavigation)
     .use(Unicon, {
         height: 32, 
         width: 32

@@ -9,6 +9,14 @@
       </div>
     </div>
 
+    <MiniNavigation 
+      @unmount='filterType' 
+      :arrData='[
+        "От Поставщика",
+        "Только Сборки",
+        "Только Металлообработка"
+      ]' />
+
     <div style='width: fit-content;'>
       <div class="scroll-table" style='width: 99%; height: 550px;'>
         <table>
@@ -30,7 +38,7 @@
             :key="order">
             <td>{{ order.name }}</td>
             <td>{{ order.date_create }}</td>
-            <td v-if='order.provider'>ПП</td>
+            <td v-if='order.provider' class='center'>{{ order.name }}П</td>
             <td>{{ order.provider ? order.provider.name : 'Нет поставщика' }}</td>
             <td>{{ order.number_check }}</td>
             <td>{{ order.count }}</td>
@@ -51,9 +59,9 @@
                     v-for='material of detals_order'
                     :key='material'
                     class='td-row'>
-                    <td >{{ material.art }}</td>
-                    <td >{{ material.name }}</td>
-                    <td >
+                    <td>{{ material.art }}</td>
+                    <td>{{ material.name }}</td>
+                    <td>
                       <span v-if='material.ez == 1'>шт</span>
                       <span v-if='material.ez == 2'>л</span>
                       <span v-if='material.ez == 3'>кг</span>
@@ -66,6 +74,70 @@
                       <span class="tooltiptext" >Общая сумма: {{ Number(material.kol) * Number(material.sum)  }}</span>
                     </td>
                     <td>{{ material.description }}</td>
+                  </tr>
+                </table>
+              </div>
+              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+            </td>
+          </tr>
+          <!-- Assemblye-->
+          <tr 
+            class='td-row' 
+            v-for='ass of getAssembles' :key='ass'>
+            <td>{{ ass?.id }}</td>
+            <td>{{ ass?.date_order }}</td>
+            <td class='center'>{{ ass?.id + 'C' }}</td>
+            <td>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.buyer?.name || 'склад' }}</td>
+            <td class='center'>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.base || '-' }}</td>
+            <td class='center'>-</td>
+            <td>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.date_shipments }}</td>
+            <td>{{ ass.status }}</td>
+            <td class='center tooltip'>
+              <div class="tooltiptext">
+                <table>
+                  <tr>
+                    <th>Артикул</th>
+                    <th>Наименование</th>
+                    <th>Кол-во</th>
+                    <th>Примечание</th>
+                  </tr>
+                  <tr>
+                    <td>{{ ass?.cbed?.articl }}</td>
+                    <td>{{ ass?.cbed?.name }}</td>
+                    <td>{{ ass.kolvo_shipments }}</td>
+                    <td>{{ ass.description }}</td>
+                  </tr>
+                </table>
+              </div>
+              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+            </td>
+          </tr>
+          <!-- Metalloworking-->
+          <tr 
+            class='td-row' 
+            v-for='metal of getMetaloworkings' :key='metal'>
+            <td>{{ metal?.id }}</td>
+            <td>{{ metal?.date_order }}</td>
+            <td class='center'>{{ metal?.id + 'M' }}</td>
+            <td>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.buyer?.name || 'склад' }}</td>
+            <td class='center'>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.base || '-' }}</td>
+            <td class='center'>-</td>
+            <td>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.date_shipments }}</td>
+            <td>{{ metal.status }}</td>
+            <td class='center tooltip'>
+              <div class="tooltiptext">
+                <table>
+                  <tr>
+                    <th>Артикул</th>
+                    <th>Наименование</th>
+                    <th>Кол-во</th>
+                    <th>Примечание</th>
+                  </tr>
+                  <tr>
+                    <td>{{ metal?.detal?.articl }}</td>
+                    <td>{{ metal?.detal?.name }}</td>
+                    <td>{{ metal.kolvo_shipments }}</td>
+                    <td>{{ metal.description }}</td>
                   </tr>
                 </table>
               </div>
@@ -93,8 +165,9 @@
 </template>
 <script>
 import {random} from 'lodash';
+import { comparison } from '@/js/'; 
 import AddOrder from './add-order.vue';
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
 export default {
 	data() {
@@ -110,10 +183,23 @@ export default {
       loader: false
 		}
 	},
-  computed: mapGetters(['getAllDeliveries']),
+  computed: mapGetters([
+    'getAllDeliveries', 
+    'getAssembles', 
+    'getMetaloworkings'
+  ]),
 	components: {AddOrder, DatePicterRange},
 	methods: {
-    ...mapActions(['fetchGetDeliveries']),
+    ...mapActions([
+      'fetchGetDeliveries',
+      'fetchAssemble',
+      'fetchMetaloworking'
+    ]),
+    ...mapMutations([
+      'allAssemble',
+      'allMetaloworking',
+      'setAllDeliveries'
+    ]),
     unmount_order() {
       this.fetchGetDeliveries()
       this.order_parametr = null
@@ -145,11 +231,51 @@ export default {
     },
     changeDatePicterRange(val) {
       console.log(val)
+    },
+    returnShipmentsKolvo(shipments) {
+      if(!shipments || shipments.length == 0) return '-'
+      let end_date = shipments[0]
+      for(let ship1 of shipments) {
+        for(let ship2 of shipments) {
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) 
+            end_date = ship1
+        }
+      }
+      return end_date
+    },
+    filterType(number) {
+      this.clearAllState()
+      switch(number) {
+        case 1:
+          this.getAllState()
+          break;
+        case 2: 
+          this.fetchGetDeliveries()
+          break;
+        case 3:
+          this.fetchAssemble()
+          break;
+        case 4: 
+          this.fetchMetaloworking()
+          break;
+      }
+    },
+    clearAllState() {
+      this.allAssemble([])
+      this.allMetaloworking([])
+      this.setAllDeliveries([])
+    },
+    getAllState() {
+      this.fetchGetDeliveries()
+      this.fetchAssemble()
+      this.fetchMetaloworking()
     }
 	},
 	async mounted() {
     this.loader = true
     await this.fetchGetDeliveries()
+    await this.fetchAssemble()
+    await this.fetchMetaloworking()
     this.loader = false
 	}
 }

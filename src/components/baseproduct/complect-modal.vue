@@ -53,21 +53,19 @@
             <h3 class='center'>Материалы для деталей</h3>
             <table>
               <tr>
-                <th>№</th>
                 <th>Наименование</th>
                 <th>кг</th>
                 <th>м</th>
               </tr>
               <tbody 
-                v-for='(obj, inx) of material_arr.one' 
+                v-for='obj of material_arr.one' 
                 :key='obj'>
                 <th colspan='4'> {{ obj?.name }} </th>
                 <tr
-                  v-for='(mat) of obj.material' 
+                  v-for='mat of obj.material' 
                   :key='mat'
                   class='td-row'
                   @click='openMaterial(mat.obj.id)'>
-                  <td class='center'>{{ inx + 1 }}</td>
                   <td>{{ mat.obj?.name }}</td>
                   <td class="center">{{ mat?.obj?.MASS.toFixed(3) }}</td>
                   <td class="center">{{ mat?.obj?.LEN.toFixed(3) }}</td>
@@ -77,20 +75,18 @@
             <h3 class='center'>Покупные материалы</h3>
             <table>
               <tr>
-                <th>№</th>
                 <th>Наименование</th>
                 <th>Кол-во</th>
               </tr>
               <tbody 
-                v-for='(obj, inx) of material_arr.two' 
+                v-for='obj of material_arr.two' 
                 :key='obj'>
                 <th colspan='4'> {{ obj?.name }} </th>
                 <tr
-                  v-for='(mat) of obj.material' 
+                  v-for='mat of obj.material' 
                   :key='mat'
                   class='td-row'
                   @click='openMaterial(mat.obj.id)'>
-                  <td class='center'>{{ inx+1 }}</td>
                   <td>{{ mat.obj?.name }}</td>
                   <td class="center">{{ mat?.kol }}</td>
                 </tr>
@@ -99,12 +95,11 @@
             <h3 class='center'>Расходные материалы</h3>
             <table>
               <tr>
-                <th>№</th>
                 <th>Наименование</th>
                 <th>Кол-во</th>
               </tr>
               <tbody 
-                v-for='(obj, inx) of material_arr.free' 
+                v-for='obj of material_arr.free' 
                 :key='obj'>
                 <th colspan='4'> {{ obj?.name }} </th>
                 <tr
@@ -112,7 +107,6 @@
                   :key='mat'
                   class='td-row'
                   @click='openMaterial(mat.obj.id)'>
-                  <td class='center'>{{ inx+1 }}</td>
                   <td>{{ mat.obj?.name }}</td>
                   <td class="center">{{ mat?.kol }}</td>
                 </tr>
