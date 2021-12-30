@@ -12,16 +12,21 @@ const calcParams = (m, ctx) => {
 	let density = m.density
 	if(oD) {
 		oD = JSON.parse(oD)
-		if(m.material.outsideDiametr) 
-			ctx.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
+		if(!m.material.outsideDiametr || !oD?.znach) 
+			ctx.obj.DxL = null
+		else ctx.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
+	} else {
+		if(m.material?.outsideDiametr && (JSON.parse(m.material.outsideDiametr)?.znach == 'variable'))
+			ctx.obj.DxL = padStart('x', oD?.znach?.length + 1 || 1, oD?.znach || 0)
+		else ctx.obj.DxL = null
 	}
-	if(leng) {
+	if(leng && ctx.obj.DxL) {
 		leng = JSON.parse(leng)
 		if(m.material.length) 
 			ctx.obj.DxL = padEnd(ctx.obj.DxL, ctx.obj.DxL.length + leng.znach.length, leng.znach)
 	}
 	//  Чтобы узнать Массу нужно ПЛОТНОСТЬ * (ПЛОЩАДЬ СЕЧЕНИЯ * ДЛИНУ)
-	if(aCS) {
+	if(aCS && ctx.obj.DxL) {
 		aCS = JSON.parse(aCS)
 		if(m.material.areaCrossSectional) {
 			let dxl = ctx.obj.DxL.split('x')
@@ -57,26 +62,29 @@ function floatParse(n) {
 
 const parseVariableFold = (m, ctx) => {
 	if(!m.material) return false
-	console.log("Материал При добавлении заготовки к детали: ", m)
 	try{
-		const height = JSON.parse(m.material.height)
-		const thickness = JSON.parse(m.material.thickness)
-		const wallThickness = JSON.parse(m.material.wallThickness)
-		const width = JSON.parse(m.material.width)
-		if(height && height.znach == 'variable') ctx.obj.variables_znach.push({
-			name: 'Высота', ez: 'мм', znach: height.znach == 'variable' ? 0:JSON.parse(m.height).znach})
-		if(thickness && thickness.znach == 'variable') ctx.obj.variables_znach.push({
-			name: 'Толщина', ez: 'мм', znach: thickness.znach == 'variable' ? 0:JSON.parse(m.thickness).znach})
-		if(wallThickness && wallThickness.znach == 'variable') ctx.obj.variables_znach.push({
-			name: 'Толщина стенки', ez: 'мм', znach: wallThickness.znach == 'variable' ? 0:JSON.parse(m.wallThickness).znach})
-		if(width && width.znach == 'variable') ctx.obj.variables_znach.push({
-			name: 'Ширина', ez: 'мм', znach: width.znach == 'variable' ? 0: JSON.parse(m.width).znach})
+		console.log(m)
+		const height = m.material.height ? JSON.parse(m.material.height) : null
+		const thickness = m.material.thickness ? JSON.parse(m.material.thickness) : null
+		const wallThickness = m.material.wallThickness ? JSON.parse(m.material.wallThickness) : null
+		const width = m.material.width ? JSON.parse(m.material.width) : null
+		const leng = m.material.length ? JSON.parse(m.material.length) : null
+		if(height) ctx.obj.variables_znach.push({
+				name: 'Высота', ez: 'мм', znach: height?.znach == 'variable' ? 0 : JSON.parse(m.height)?.znach}) 
+		if(thickness) ctx.obj.variables_znach.push({
+				name: 'Толщина', ez: 'мм', znach: thickness?.znach == 'variable' ? 0:JSON.parse(m.thickness)?.znach})
+		if(wallThickness) ctx.obj.variables_znach.push({
+				name: 'Толщина стенки', ez: 'мм', znach: wallThickness?.znach == 'variable' ? 0:JSON.parse(m.wallThickness)?.znach})
+		if(width) ctx.obj.variables_znach.push({
+				name: 'Ширина', ez: 'мм', znach: width?.znach == 'variable' ? 0: JSON.parse(m.width)?.znach})
+		if(leng && typeof ctx.obj.DxL != 'string') ctx.obj.variables_znach.push({
+			name: 'Длина', ez: 'мм', znach: leng?.znach == 'variable' ? 0: JSON.parse(m.length)?.znach})
 	} catch(e) {console.error(e)}
 }
 
 
 const changeHaracteristic = (val, inx, ctx) =>  {
-	if(inx == 'DxL') {
+	if(inx == 'DxL' && ctx.obj.DxL) {
 		if(val.indexOf('x') < 0) {
 			ctx.obj.DxL = 'x'
 			return 0

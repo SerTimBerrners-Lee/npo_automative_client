@@ -61,7 +61,7 @@
 				<td class='center'>шт</td>
 				<td class='td_link center' @click='getMaterialForDetal("zam")' v-text='mat_zag_zam.name || mat_zag_zam' ></td>
 			</tr>
-			<tr>
+			<tr v-if='typeof obj.DxL === "string"'>
 				<td>Размер заготовки DxL</td>
 				<td class='center'>мм</td>
 				<td class='center'>
