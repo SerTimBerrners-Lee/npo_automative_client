@@ -75,7 +75,7 @@
               <td class='center'>{{ detal.metalloworking_kolvo }}</td>
               <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal.my_kolvo  }}</td>
-              <td class='center'>да</td>
+              <td class='center'>{{ returnZnachCPU(detal) }}</td>
               <td class='center'>{{ JSON.parse(detal.parametrs).preTime.znach }}</td>
               <td class='center'>{{ JSON.parse(detal.parametrs).helperTime.znach }}</td>
               <td class='center'>{{ JSON.parse(detal.parametrs).mainTime.znach}}</td>
@@ -202,6 +202,15 @@ export default {
     unmount_clear() {
       this.reverseMidlevareCbed()
       this.reverseMidlevareDetal()
+    },
+    returnZnachCPU(detal) {
+      if(!detal?.techProcesses?.operations?.length) return 'нет'
+      let op = detal.techProcesses.operations
+      for(let item of op) {
+        if(item?.typeOperation?.cpu) return 'да'
+      }
+      return 'нет'
+
     },
     toSetOrders(shipments) {
       this.unmount_clear()

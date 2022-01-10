@@ -2,13 +2,14 @@
   <table>
     <tbody class='fixed_table_10'>
       <tr>
+        <th>№</th>
         <th>Тип</th>
         <th>Наименование</th>
         <th>Дата</th>
         <th>Примечание</th>
       </tr>
       <tr>
-        <td colspan="4">
+        <td colspan="5">
           <Search 
             :placeholder="'Поиск по Артиклу'"
             @unmount='keySearch' 
@@ -17,20 +18,22 @@
         </td>
       </tr>
     </tbody>
-    <tr v-for="file in documents" 
+    <tr v-for="(file, inx) in documents" 
       :key="file" 
       class="td-row" 
       @click="e => propEvent(file, e.target.parentElement)"
       @dblclick="dbEvent(file)"
       :class='file.banned ? "del_background" : ""'
       >
-      <td>{{ file.type }}</td>
+      <td class='center' style="width: 10px">{{ inx }}</td>
+      <td style="width: 10px">{{ file.type }}</td>
       <td width="400px">{{ file.name }}</td>
-      <td>{{ file.updatedAt ?
+      <td width="100px">{{ file.updatedAt ?
         getDateRevers(file.updatedAt)
         : '...' }}</td>
       <td class="width-350">{{ file.description }}</td>
     </tr>
+    
     <tr class="td-row">
       <td>...</td>
       <td width="400px">...</td>
@@ -73,7 +76,8 @@ export default {
 }
 </script>
 <style scoped>
-table{
+table {
   user-select: none;
+  width: min-content;
 }
 </style>

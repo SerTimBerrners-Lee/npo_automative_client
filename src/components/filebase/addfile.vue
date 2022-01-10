@@ -139,7 +139,7 @@ export default {
     },
     returnZnachName(file_name) {
       for(let name of this.data_names) {
-        if(name.name == file_name) return false
+        if(name.name?.toLocaleLowerCase() == file_name.toLocaleLowerCase()) return false
       }
       return  true 
     },
