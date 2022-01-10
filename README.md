@@ -53,3 +53,4 @@ npm run lint
 	RewriteRule . /index.html [L]
 </Directory>
 ```
+> sudo a2enmod rewrite && sudo service apache2 restart
