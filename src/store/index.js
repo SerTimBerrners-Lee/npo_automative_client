@@ -9,6 +9,7 @@ import edizm from './modules/edizm';
 import buyer from './modules/buyer';
 import sclad from './modules/sclad';
 import issue from './modules/issue';
+import socket from './modules/socket';
 import moving from './modules/moving';
 import library from './modules/library';
 import product from './modules/product';
@@ -49,7 +50,8 @@ export default createStore({
     settings,
     library,
     inventary,
-    moving
+    moving,
+    socket
   }
 })
   

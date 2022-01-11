@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<h3>Комплектация производства - Заготовительная операция - Резка круга / профиля</h3>
-		<div>
+		<!-- <div>
 			<div class="block header_block">
 				<DatePicterRange 
           @unmount='changeDatePicterRange'  
@@ -14,9 +14,9 @@
 					<input id='not_zag' type="checkbox" >
 				</div>
 			</div>
-		</div>
+		</div> -->
 
-    <div class='table_block'>
+    <!-- <div class='table_block'>
       <div class="table-scroll">
         <table>
           <tr>
@@ -33,7 +33,6 @@
           </tr>
         </table>
       </div>
-			<!-- Заготовка -->
 			<div class="scroll-table table_material" style='margin-left: 5px;'>
 				<table>
 					<tr>
@@ -76,44 +75,63 @@
 						<th>Отметка о выполнении</th>
 					</tr>
 				</table>
-			</div>
+			</div> 
+		</div> -->
+		
+		<OpPgMetalloworking 
+			v-if='showTableOperation'
+			:type_operation_id='type_operation_id'
+			:name_operaiton='name_operaiton'
+		/>
+
+		<div v-if='!type_operation_id' style='margin-top: 20px;'>
+			Операций не найдено
 		</div>
+		
 		<div class="btn-control">
 			<button class="btn-small">Печать задания</button>
 			<button class="btn-small btn-add">Создать накладную на передачу заготовок на металлообработку</button>
-		</div>
+		</div> 
+
+		<Loader v-if='loader' />
 	</div>
 </template>
 
 <script> 
 import { mapGetters, mapActions } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
+import OpPgMetalloworking from '@/components/metalloworking/table-operation.vue';
 export default {
 	data() {
 		return {
-			span: null,
-			instansLet: 0,
+			name_operaiton: '', 
+			type_operation_id: null,
+			showTableOperation: false,
 
-			material: null,
-			span_material: null,
+
+			loader: false
 		}
 	},
-	components: {DatePicterRange},
-	computed: mapGetters(['getShipments']),
+	components: {OpPgMetalloworking},
+	computed: mapGetters(['getTypeOperations']),
 	methods: {
-		...mapActions(['fetchAllShipments']),
-		changeDatePicterRange(val) {
-      console.log(val)
-    },
-		toSetOrders(shipments, e) {
-      if(e.classList.item(1)) 
-        return e.classList.remove('checkbox_block_select')
-      
-      e.classList.add('checkbox_block_select')
-    }
+		...mapActions(['getAllTypeOperations']),
+
 	},
 	async mounted() {
-		this.fetchAllShipments()
+		// Получить все операции найти тип с отметкой и тогда показать 
+		this.loader = true
+		await this.getAllTypeOperations()
+		
+
+		for(let item of this.getTypeOperations) {
+			if(item.square) {
+				this.type_operation_id = item.id
+				this.name_operation = item.name
+				this.showTableOperation = true
+				break;
+			}
+		}
+		this.loader = false
 	}
 }
 </script>

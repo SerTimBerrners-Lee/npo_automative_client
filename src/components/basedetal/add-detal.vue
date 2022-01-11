@@ -171,6 +171,15 @@ export default {
           { name: 'Масса детали', ez: 'кг', znach: 0}
         ],
         DxL: 'x',
+
+        diametr: '',
+				lengt: '',
+				height: '',
+				thickness: '',
+				wallThickness: '',
+				width: '',
+				areaCS: '',
+
         massZag: '',
         trash: '',
         variables_znach: []
@@ -223,6 +232,14 @@ export default {
     },
     unmount_har_zam(obj) {
       this.obj.DxL = obj.DxL
+      this.obj.diametr = obj.diametr
+      this.obj.lengt = obj.lengt
+      this.obj.height = obj.height
+      this.obj.thickness = obj.thickness
+      this.obj.wallThickness = obj.wallThickness
+      this.obj.width = obj.width
+      this.obj.areaCS = obj.areaCS
+      
       this.obj.massZag = obj.massZag
       this.obj.trash = obj.trash
       this.obj.haracteriatic = obj.haracteriatic
@@ -274,6 +291,15 @@ export default {
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
       this.formData.append('variables_znach', JSON.stringify(this.obj.variables_znach))
       this.formData.append('DxL', this.obj.DxL)
+
+      this.formData.append('diametr', this.obj.diametr)
+      this.formData.append('lengt', this.obj.lengt)
+      this.formData.append('height', this.obj.height)
+      this.formData.append('thickness', this.obj.thickness)
+      this.formData.append('wallThickness', this.obj.wallThickness)
+      this.formData.append('width', this.obj.width)
+      this.formData.append('areaCS', this.obj.areaCS)
+
       this.formData.append('massZag', this.obj.massZag)
       this.formData.append('trash', this.obj.trash)
       this.formData.append('attention', this.attention)

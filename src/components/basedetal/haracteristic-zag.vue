@@ -61,15 +61,81 @@
 				<td class='center'>шт</td>
 				<td class='td_link center' @click='getMaterialForDetal("zam")' v-text='mat_zag_zam.name || mat_zag_zam' ></td>
 			</tr>
-			<tr v-if='typeof obj.DxL === "string"'>
-				<td>Размер заготовки DxL</td>
+			<tr v-if="(obj.diametr !== '')">
+				<td>Диаметр</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "DxL")'
-						style="width: 50px;"
+						@change='e=>editHarZag(e.target.value, "diametr")'
+						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.DxL'>
+						v-model='obj.diametr'>
+				</td>
+			</tr>
+			<tr v-if='obj.lengt'>
+				<td>Длина</td>
+				<td class='center'>мм</td>
+				<td class='center'>
+					<input type="text"
+						@change='e=>editHarZag(e.target.value, "lengt")'
+						style="width: 100px;"
+						class='inputs-small center'
+						v-model='obj.lengt'>
+				</td>
+			</tr>
+			<tr v-if='obj.height'>
+				<td>Высота</td>
+				<td class='center'>мм</td>
+				<td class='center'>
+					<input type="text"
+						@change='e=>editHarZag(e.target.value, "height")'
+						style="width: 100px;"
+						class='inputs-small center'
+						v-model='obj.height'>
+				</td>
+			</tr>
+			<tr v-if='obj.thickness'>
+				<td>Толщина</td>
+				<td class='center'>мм</td>
+				<td class='center'>
+					<input type="text"
+						@change='e=>editHarZag(e.target.value, "thickness")'
+						style="width: 100px;"
+						class='inputs-small center'
+						v-model='obj.thickness'>
+				</td>
+			</tr>
+			<tr v-if='obj.wallThickness'>
+				<td>Толщина стенки</td>
+				<td class='center'>мм</td>
+				<td class='center'>
+					<input type="text"
+						@change='e=>editHarZag(e.target.value, "wallThickness")'
+						style="width: 100px;"
+						class='inputs-small center'
+						v-model='obj.wallThickness'>
+				</td>
+			</tr>
+			<tr v-if='obj.width'>
+				<td>Ширина</td>
+				<td class='center'>мм</td>
+				<td class='center'>
+					<input type="text"
+						@change='e=>editHarZag(e.target.value, "width")'
+						style="width: 100px;"
+						class='inputs-small center'
+						v-model='obj.width'>
+				</td>
+			</tr>
+			<tr v-if='obj.areaCS'>
+				<td>Площадь сечения</td>
+				<td class='center'>мм</td>
+				<td class='center'>
+					<input type="text"
+						@change='e=>editHarZag(e.target.value, "areaCS")'
+						style="width: 100px;"
+						class='inputs-small center'
+						v-model='obj.areaCS'>
 				</td>
 			</tr>
 			<tr>
@@ -77,20 +143,10 @@
 				<td class='center'>кг</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "mass")'
-						style="width: 50px;"
+						@change='e=>editHarZag(e.target.value, "massZag")'
+						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.massZag'>
-				</td>
-			</tr>
-			<tr v-for='(vars, inx) of obj.variables_znach' :key='vars'>
-				<td>{{vars.name}}</td>
-				<td class='center'>{{ vars.ez }}</td>
-				<td class='center'>
-					<input type="text"
-						style="width: 50px;"
-						class='inputs-small center'
-						v-model='obj.variables_znach[inx].znach'>
 				</td>
 			</tr>
 			<tr>
@@ -99,7 +155,7 @@
 				<td class='center'>
 					<input type="text"
 						@change='e=>editHarZag(e.target.value, "trash")'
-						style="width: 50px; text-align:center;"
+						style="width: 100px; text-align:center;"
 						class='inputs-small center'
 						v-model='obj.trash'>
 				</td>
@@ -129,6 +185,14 @@ export default {
 
 			obj: {
         DxL: 'x',
+				diametr: '',
+				lengt: '',
+				height: '',
+				thickness: '',
+				wallThickness: '',
+				width: '',
+				areaCS: '',
+
         massZag: '',
         trash: '',
 				haracteriatic: [
@@ -207,6 +271,15 @@ export default {
 	mounted() {
 		if(this.$props.parametrs && this.$props.parametrs.obj ) {
 			this.obj.DxL = this.$props.parametrs.obj.DxL
+			this.obj.diametr = this.$props.parametrs.obj.diametr
+			this.obj.lengt = this.$props.parametrs.obj.lengt
+			this.obj.height = this.$props.parametrs.obj.height
+			this.obj.thickness = this.$props.parametrs.obj.thickness
+			this.obj.wallThickness = this.$props.parametrs.obj.wallThickness
+			this.obj.width = this.$props.parametrs.obj.width
+			this.obj.areaCS = this.$props.parametrs.obj.areaCS
+
+
 			this.obj.massZag = this.$props.parametrs.obj.massZag
 			this.obj.trash = this.$props.parametrs.obj.trash
 			this.obj.haracteriatic = this.$props.parametrs.obj.haracteriatic
