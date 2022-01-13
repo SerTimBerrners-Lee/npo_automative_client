@@ -142,54 +142,13 @@ export default {
 
     if(this.$props.parametrs) {
       this.komplect = this.$props.parametrs.izd
+      for(let item of this.komplect) {
+        if(!item.my_kolvo || item.my_kolvo < 1) {
+          showMessage('', 'Количество не должно быть больше 0', 'w', this)
+          return this.destroyModalF()
+        }
+      }
     }
-    // if(this.$props.parametrs && this.$props.parametrs.izd) {
-    //   let izd = this.$props.parametrs.izd
-    //   if(izd.listCbed) {
-    //     let cb = JSON.parse(izd.listCbed)
-    //     for(let iz of cb) {
-    //       this.komplect.push({
-    //         type: 'СБ',
-    //         art: iz.art,
-    //         name: iz.cb.name,
-    //         kol: iz.kol
-    //       })
-    //     }
-    //   }
-    //   if(izd.listDetal) {
-    //     let cb = JSON.parse(izd.listDetal)
-    //     for(let iz of cb) {
-    //       this.komplect.push({
-    //         type: 'Д',
-    //         art: iz.art,
-    //         name: iz.det.name,
-    //         kol: iz.kol
-    //       })
-    //     }
-    //   }
-    //   if(izd.listPokDet) {
-    //     let cb = JSON.parse(izd.listPokDet)
-    //     for(let iz of cb) {
-    //       this.komplect.push({
-    //         type: 'ПД',
-    //         art: iz.art,
-    //         name: iz.mat.name,
-    //         kol: iz.kol
-    //       })
-    //     }
-    //   }
-    //   if(izd.materialList) {
-    //     let cb = JSON.parse(izd.materialList)
-    //     for(let iz of cb) {
-    //       this.komplect.push({
-    //         type: 'РМ',
-    //         art: iz.art,
-    //         name: iz.mat.name,
-    //         kol: iz.kol
-    //       })
-    //     }
-    //   }
-    // }
   },
 }
 </script>

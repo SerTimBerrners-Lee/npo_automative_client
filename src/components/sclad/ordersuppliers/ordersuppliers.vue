@@ -207,6 +207,8 @@ export default {
     addOrder() {
       this.showAddOrder = true
       this.AddOrderKey = random(1, 999)
+      
+      this.order_parametr = null
     },
     getDetals(order) {
       if(order.product) {

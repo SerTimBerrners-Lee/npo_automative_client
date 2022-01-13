@@ -60,7 +60,7 @@
               </p>
             </div>
           </div>
-          <div>
+          <div class="scroll-table">
             <QuickFilter 
               @attention='sortToAttention'
               @date_first='sortToDate'

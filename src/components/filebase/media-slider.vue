@@ -27,6 +27,7 @@ import { isEmpty } from 'lodash';
 import {photoPreloadUrl} from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
 export default {
+  // data = {name, path, (banned*)}
   props: ['data', 'width', 'static', 'width_main'],
   data() {
     return {
@@ -64,10 +65,14 @@ export default {
     if(!this.$props.data)
       return 0
 
+    // Принимает параметры name, path, (banned*)
     let i= 0
     for(let file of this.$props.data) {
       i++
-      photoPreloadUrl(file, (res) => {
+      if(file?.banned) continue
+      if(file?.path?.indexOf('_archive_', 1) != -1) continue
+      
+      photoPreloadUrl(file, res => {
         if(res.type == 'movi' || res.type == 'img') 
           if(this.$props.static)
             this.files.push({ path: file.path, type: res.type})

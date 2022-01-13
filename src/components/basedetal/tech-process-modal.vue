@@ -249,7 +249,7 @@ export default {
       let all = this.formData.getAll("document")
       if(all) 
         all.forEach(f => {
-          this.dataMedia.push({name: f.name, path: f.url})
+          this.dataMedia.push({name: f.name, path: f.url, banned: f.banned})
           this.randomDataMedia = random(10, 999)
         })
     },
@@ -366,7 +366,7 @@ export default {
         }
 
         this.documentsData.forEach(d => {
-          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name})
+          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned})
         })
         this.randomDataMedia = random(10, 999)
       }).catch(() => {

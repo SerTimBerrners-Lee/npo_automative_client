@@ -32,7 +32,7 @@
           <p style='margin: 5px;'>
             <label for="docsFileSelected" class='btn-small btn-file'>Загрузить счет</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-            <span class='active'>{{ name_check }}</span>
+            <span class='active' @click='openFiles()'>{{ name_check }}</span>
           </p>
         </div>
 
@@ -177,12 +177,18 @@
       v-if='message'
       :key='keyInformTip'
     />
+    <OpensFile 
+      :parametrs='docFiles' 
+      v-if="showModalFiles" 
+      :key='keyWhenModalGenerateFileOpen'
+    />
   </div>
 </template>
 <script>
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
 import AddFile from '@/components/filebase/addfile.vue';
+import OpensFile from '@/components/filebase/openfile.vue';
 import DatePicterCustom from '@/components/date-picter.vue';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import AddPosition from '@/components/sclad/comingtosclad/new-position.vue';
@@ -199,6 +205,8 @@ export default {
       date_shipments: new Date().toLocaleString('ru-RU').split(',')[0],
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
+      keyWhenModalGenerateFileOpen: random(1, 999),
+      showModalFiles: false,
       isChangeFolderFile: false,
       name_check: '',
       formData: new FormData,
@@ -234,7 +242,8 @@ export default {
     AddFile, 
     ProviderList,
     AddPosition,
-    TableMaterialFilter
+    TableMaterialFilter,
+    OpensFile
   },
   methods: {
     ...mapActions([
@@ -279,6 +288,11 @@ export default {
     },
     unmount_date_picters(val) {
       this.date_shipments = val
+    },
+    // Просматриваем файл-счет
+    openFiles() { 
+      this.keyWhenModalGenerateFileOpen = random(1, 999)
+      this.showModalFiles = true
     },
     addDock(val) {
       val.target.files.forEach(f => {
@@ -355,7 +369,7 @@ export default {
     },
     editKol(inx, val) {
       let check = toNumber(val)
-      if(!check) return this.material_lists[inx].kol = 0
+      if(!check || val < 1) return this.material_lists[inx].kol = 1
 
       this.material_lists[inx].kol = toNumber(val)
     },
@@ -441,11 +455,14 @@ export default {
       if(order.product)
         try { this.material_lists = JSON.parse(order.product) } catch (e) { console.error(e) }
 
-      if(order.documents && order.documents.length) 
+      if(order.documents && order.documents.length) {
         this.name_check = order.documents[0].name
+        this.docFiles = order.documents
+      }
       
       this.date_shipments = order.date_shipments
     },
+    // Выбираем Единицу измерения
     changeValuesEz(inx, e) {
       let ez_position =  Number(e.value)
       this.material_lists[inx].ez = ez_position
