@@ -76,6 +76,12 @@ export default {
             this.shipments_arr[ship2] = variables
           }
       }
+
+      if(this.shipments_arr[ship1].to_sklad && this.shipments_arr[ship1].number_order.indexOf('C') == -1) {
+        let char = this.shipments_arr[ship1].number_order.split('')
+        char.unshift('C')
+        this.shipments_arr[ship1].number_order = char.join('')
+      }
     }
     
   },

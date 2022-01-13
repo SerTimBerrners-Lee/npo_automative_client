@@ -7,6 +7,7 @@
     </div>
     <div class='table_block'>
       <ShipmentList
+        v-if='getShipments.length'
         @unmount_set='toSetOrders'
         :getShipments='getShipments'/>
       <div class="table-scroll" style='margin-left: 5px;'>

@@ -78,6 +78,6 @@ export default {
 <style scoped>
 table {
   user-select: none;
-  width: min-content;
+  width: 890px;
 }
 </style>

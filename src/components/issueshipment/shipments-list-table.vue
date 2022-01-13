@@ -21,6 +21,7 @@
 			:key='key_modal_shipments'
 			v-if='ship_id'
 			:id_shipments='ship_id'
+			@unmount_shpment='unmount_shpment'
 		/>
 	</div>
 </template>
@@ -35,7 +36,9 @@ export default {
 			span_ship: null,
 
 			key_modal_shipments: random(1, 999),
-			ship_id: null
+			ship_id: null,
+
+			varShipment: []
 		}
 	},
 	components: {
@@ -45,8 +48,12 @@ export default {
 		...mapMutations([
       'filterAssemblByShipments',
       'breackFIlterAssembl',
-			'breackFIlterMetal'
+			'breackFIlterMetal',
+			'pusshAddShipments'
     ]),
+		unmount_shpment() {
+			this.pusshAddShipments(this.varShipment)
+		},
 		openShipments(id) {
 			this.ship_id = id
 			this.key_modal_shipments = random(1, 999)
@@ -72,6 +79,9 @@ export default {
 
 			this.$emit('unmount_clear')
     },
+	},
+	async mounted() {
+		this.varShipment = this.$props.getShipments
 	}
 }
 </script>

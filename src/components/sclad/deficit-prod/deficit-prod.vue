@@ -17,6 +17,7 @@
     <div class='table_block'>
       <div style='width: 400px;'>
         <ShipmentList
+          v-if='getShipments.length'
           @unmount_set='toSetOrders'
           @unmount_clear='unmount_clear'
           :getShipments='getShipments'/>
@@ -71,7 +72,7 @@
             </td>
             <td class='center'>{{ cbed.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(cbed.id, 'cbed')">{{ cbed.name }}</td>
-            <td class='center'>
+            <td class='center' @click='returnShipmentsDateModal(cbed.shipments)'>
               <img src="@/assets/img/link.jpg" @click='showParents(cbed, "cb")' class='link_img' atl='Показать' />
             </td>
             <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
@@ -103,7 +104,7 @@
             </td>
             <td class='center'>{{ detal.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(detal.id, 'detal')">{{ detal.name }}</td>
-            <td class='center'>
+            <td class='center' @click='returnShipmentsDateModal(detal.shipments)'>
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
             <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>

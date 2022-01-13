@@ -16,6 +16,7 @@
       <div class='table_block'> 
         <div style='width: 400px;'>
           <ShipmentList
+            v-if='getShipments.length'
             @unmount_set='toSetOrders'
             @unmount_clear='unmount_clear'
             :getShipments='getShipments'/>
@@ -67,7 +68,7 @@
               </td>
               <td class='center'>{{ detal.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>
-              <td class='center'>
+              <td class='center' @click='returnShipmentsDateModal(detal.shipments)'>
                 <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
               </td>
               <td class='center'>{{ detal.shipments_kolvo  }}</td>
@@ -128,6 +129,11 @@
       v-if='parametrs_detal'
       :id='parametrs_detal'
     />
+    <ShipmentsModal 
+      :shipments='shipments'
+      v-if='shipments.length'
+      :key='shipmentKey'
+    />
 
     <Loader v-if='loader' />
   </div>
@@ -141,6 +147,7 @@ import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import StartPraduction from '@/components/sclad/start-production-modal.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
@@ -175,6 +182,8 @@ export default {
       detalModalKey: random(1, 999),
 			parametrs_detal: false,
 
+      shipments: [],
+
       kolvo_all: 0,
       loader: false
     }
@@ -188,7 +197,8 @@ export default {
     ProductListModal,
     DetalModal,
     Search,
-    ShipmentList
+    ShipmentList,
+    ShipmentsModal
   },
   methods: {
     ...mapActions(['setchDeficitDeficit', 'getOneDetal', 'fetchAllShipments']),
@@ -222,6 +232,11 @@ export default {
     },
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
+    },
+    returnShipmentsDateModal(shipments) {
+      if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
+      this.shipments = shipments
+      this.shipmentKey = random(1, 999)
     },
     start() {
       if(!this.toProductionArr.length)

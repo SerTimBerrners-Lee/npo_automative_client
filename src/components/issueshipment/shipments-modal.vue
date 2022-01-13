@@ -215,6 +215,8 @@ export default {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
+
+			this.$emit('unmount_shpment')
 		},
 		changeDatePicter(date) {
 			this.date_order = date

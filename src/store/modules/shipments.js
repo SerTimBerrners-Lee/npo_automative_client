@@ -37,11 +37,11 @@ export default {
 				return true
 			return false
 		},
-		async fetchAllShipments(ctx) { 
+		async fetchAllShipments(ctx, sort) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments`)
 			if(res.ok) {
 				const result = await res.json()
-				ctx.commit('allShipments', result)
+				ctx.commit('allShipments', {result, sort, ctx})
 				return result
 			}
 		},
@@ -59,19 +59,19 @@ export default {
 				return result
 			}
 		},
-		async fetchAllShipmentsAssemble(ctx) { 
+		async fetchAllShipmentsAssemble(ctx, sort) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/assemble`)
 			if(res.ok) {
 				const result = await res.json()
-				ctx.commit('allShipments', result)
+				ctx.commit('allShipments', {result, sort, ctx})
 				return result
 			}
 		},
-		async fetchAllShipmentsMetaloworking(ctx) { 
+		async fetchAllShipmentsMetaloworking(ctx, sort) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/metaloworking`)
 			if(res.ok) {
 				const result = await res.json()
-				ctx.commit('allShipments', result)
+				ctx.commit('allShipments', {result, sort, ctx})
 				return result
 			}
 		},
@@ -86,7 +86,7 @@ export default {
 		}
 	},
 	mutations: {
-		allShipments(state, result) {
+		allShipments(state, {result, sort = 'sort_sclad', ctx}) {
 			state.shipments = []
 			for(let ship of result) {
 				if(ship.date_shipments) 
@@ -94,6 +94,30 @@ export default {
 				else ship.difference = 0
 			}
 			state.shipments = result.sort((a, b) => a.difference - b.difference)
+
+			ctx.commit('sortShipmentParams', sort)
+		},
+		sortShipmentParams(state, sort) {
+			if(!sort) return 
+			// Сортируем все что заказано на склад идет в конец
+			let arr_var1 = []
+			let arr_var2 = []
+			if(sort == 'sort_sclad') {
+				for(let el of state.shipments) {
+					if(el.to_sklad && el.number_order) {
+						let char = el.number_order.split('')
+						char.unshift('C')
+						el.number_order = char.join('')
+						arr_var1.push(el)
+					}
+					else arr_var2.push(el)
+				}
+
+				state.shipments = [].concat(arr_var2, arr_var1)
+			}
+		},
+		pusshAddShipments(state, result) {
+			state.shipments = result
 		},
 		shipmentsSclad(state, result) {
 			state.shipments_sclad = result
