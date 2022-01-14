@@ -90,34 +90,35 @@
 									:rowspan="getKolvoMaterial(material).length + 1"
 									class='td-row'> {{ material.name }}</td>
 						</tr>
+
 						<tr v-for='ez of getKolvoMaterial(material)' :key='ez'>
 							<td>{{ez.ez}}</td>
 							<td class='center min_width'>
 								{{ ez.material_kolvo }}
 							</td>
 							<td class='center min_width'>
-								{{ material.shipments_kolvo }}
+								{{ ez.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
-								{{ material.shipments_kolvo }}
+								{{ ez.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
-								{{ material.shipments_kolvo }}
+								{{ ez.shipments_kolvo }}
 							</td>	
 							<td class='center min_width'>
-								{{ material.shipments_kolvo }}
+								{{ ez.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
-								{{ material.shipments_kolvo }}
+								{{ ez.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
-								{{ -material.shipments_kolvo }}
+								{{ -ez.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
-								{{ material.price }}
+								{{ ez.price }}
 							</td>
 							<td class='center min_width'>
-								{{ material.shipments_kolvo }}
+								{{ ez.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
 								{{ 0 }}
@@ -132,7 +133,7 @@
 								{{ returnOstatokWays(material)}}
 							</td>
 							<td class='center min_width'>
-								{{ material.shipments_kolvo }}
+								{{ ez.shipments_kolvo }}
 							</td>
 							<td class='center min_width'>
 								{{ material.deliveries && material.deliveries.length ? "Заказано" : 'Не заказано'}}
@@ -212,13 +213,14 @@ export default {
 
     },
 		clickMat(mat) {
-			this.filterByNameMaterial(mat) 
+			this.filterByNameMaterial(mat)
     },
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null
 			}
+			
 			if(this.span_material)
 				this.span_material.classList.remove('td-row-all')
 			this.span_material = span
