@@ -11,8 +11,8 @@ export default {
     },
   }, 
   actions: {
-    async fetchMetaloworking(ctx) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking`)
+    async fetchMetaloworking(ctx, isBan = false) { 
+      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/all/${isBan}`)
 			if(res.ok) {
 				const result = await res.json()
         ctx.commit('allMetaloworking', result)
@@ -43,6 +43,16 @@ export default {
     async fetchMetalloworkingDelete(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`, {
         method: 'delete'
+      })
+			if(res.ok) {
+				const result = await res.json()
+        ctx.commit('deleteMetalloworking', id)
+				return result
+			}
+    },
+    async fetchCombackMetallowork(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/comback/${id}`, {
+        method: 'put'
       })
 			if(res.ok) {
 				const result = await res.json()

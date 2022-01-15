@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<h3>Металлообработка</h3>
+    <p 
+      class='hover active' 
+      style='text-align: end;'
+      @click='showArchive'>
+      {{ isArchive ? "все металлообработки" : "металлообработки в архиве" }}
+    </p>
 		<div class="block"> 
       <button class="btn" @click='openOperation'>Детали по операциям</button>
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
@@ -64,10 +70,16 @@
         </table>
       </div> 
     </div>
-     <div class="btn-control">
-        <button class="btn-small" @click='removeObject'>Удалить</button>
-        <button class="btn-small" @click='printPage'>Печать</button>
-      </div>
+    <div class="btn-control">
+      <button class="btn-small" v-if='!isArchive'  
+        @click='removeObject'>Переместить в архив</button>
+      <button class="btn-small btn-add" v-if='isArchive' 
+        @click='combackArchive'>Вернуть из Архива</button>
+      <button class="btn-small btn-del" v-if='isArchive' 
+        @click='removeObject'>Удалить безвозвратно</button>
+
+      <button class="btn-small" @click='printPage'>Печать</button>
+    </div>
       <DescriptionModal 
         v-if='description'
         :key='descriptionKey'
@@ -143,7 +155,8 @@ export default {
       loader: false,
 
       span: null,
-      selectMetalloworking: null
+      selectMetalloworking: null,
+      isArchive: false
 		}
 	},
 	computed: mapGetters([
@@ -165,12 +178,25 @@ export default {
       'fetchAllShipmentsMetaloworking', 
       'fetchMetaloworking',
       'getAllTypeOperations',
-      'fetchMetalloworkingDelete'
+      'fetchMetalloworkingDelete',
+      'fetchCombackMetallowork'
     ]),
     ...mapMutations([
       'filterMetaloworkingByShipments', 
       'breackFIlterMetal'
     ]),
+    combackArchive() {
+      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w', this)
+      this.fetchCombackMetallowork(this.selectMetalloworking.id).then(() => {
+        return showMessage('', 'Металлообработка возвращена из архива', 's', this)
+      }).catch(() => {
+        return showMessage('', 'Металлообработку не удалось вернуть из архива', 's', this)
+      })
+    }, 
+    showArchive() {
+      this.isArchive = !this.isArchive
+      this.fetchMetaloworking(this.isArchive)
+    }, 
     setObject(obj, e) {
       if(this.span) this.span.classList.remove('td-row-all')
 
@@ -181,7 +207,9 @@ export default {
     },
     removeObject() {
       if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для удаления', 'w', this)
-      this.fetchMetalloworkingDelete(this.selectMetalloworking.id)
+      this.fetchMetalloworkingDelete(this.selectMetalloworking.id).then(() => {
+        return showMessage('', 'Статус Металлообработки изменен', 's', this)
+      })
     },
     printPage() {
       print({

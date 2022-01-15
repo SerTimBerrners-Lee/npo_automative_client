@@ -11,8 +11,8 @@ export default {
     },
   }, 
   actions: {
-    async fetchAssemble(ctx) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble`)
+    async fetchAssemble(ctx, isBan = false) { 
+      const res = await fetch(`${PATH_TO_SERVER}api/assemble/all/${isBan}`)
 			if(res.ok) {
 				const result = await res.json()
 				ctx.commit('allAssemble', result)
@@ -42,6 +42,16 @@ export default {
     async fetchAssemblyDelete(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/assemble/${id}`, {
         method: 'delete'
+      })
+			if(res.ok) {
+				const result = await res.json()
+        ctx.commit('deleteAssemble', id)
+				return result
+			}
+    },
+    async fetchCombackAssemble(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/assemble/comback/${id}`, {
+        method: 'put'
       })
 			if(res.ok) {
 				const result = await res.json()

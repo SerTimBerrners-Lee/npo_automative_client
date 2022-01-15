@@ -2,18 +2,7 @@
   <div>
     <h3>16. Сохранение баз данных, настроек, истории действий</h3>
     <div class='main_db'>
-      <div class="block">
-        <span class="span_db">Делать резервную копию базы данных каждые: </span>
-        <select name="save_time_db" id="db_save">
-          <option>12 ч</option>
-          <option>24 ч</option>
-          <option>2 д</option>
-          <option>4 д</option>
-          <option>6 д</option>
-          <option>8 д</option>
-          <option>12 д</option>
-          <option>Никогда</option>
-        </select>
+      <div class="block block_db">
         <br>
         <button class="btn blues" @click='pushNewDB'>Генерировать новую копию сейчас</button>
 
@@ -178,10 +167,14 @@ tr {
   font-size: 16px;
   width: 100%;
 }
-.block {
+.block, .block_db {
   width: 400px;
   padding: 20px;
   margin-top: 20px;
+}
+.block_db {
+  display: flex;
+  justify-content: center;
 }
 .img-to-card {
   height: 90px;

@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<h3>Сборка</h3>
+    <p 
+      class='hover active' 
+      style='text-align: end;'
+      @click='showArchive'>
+      {{ isArchive ? "все сборки" : "сборки в архиве" }}
+    </p>
 		<div class="block">
       <button class="btn" @click='openOperation'>Сборочные единицы по операциям</button>
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
@@ -61,7 +67,14 @@
       </div>
     </div> 
     <div class="btn-control">
-      <button class="btn-small" @click='removeObject'>Удалить</button>
+      <button class="btn-small" v-if='!isArchive'  
+        @click='removeObject'>Переместить в архив</button>
+
+      <button class="btn-small btn-add" v-if='isArchive' 
+        @click='combackArchive'>Вернуть из Архива</button>
+      <button class="btn-small btn-del" v-if='isArchive' 
+        @click='removeObject'>Удалить безвозвратно</button>
+
       <button class="btn-small" @click='printPage'>Печать</button>
     </div>
     <DescriptionModal 
@@ -140,7 +153,8 @@ export default {
       loader: false,
 
       span: null,
-      selectAssembly: null
+      selectAssembly: null,
+      isArchive: false
 		}
 	},
   computed: mapGetters([
@@ -163,12 +177,25 @@ export default {
       'fetchAssembleById',
       'getAllTypeOperations',
       'getOneCbEdField',
-      'fetchAssemblyDelete'
+      'fetchAssemblyDelete',
+      'fetchCombackAssemble'
     ]),
     ...mapMutations([
       'filterAssemblByShipments',
       'breackFIlterAssembl'
     ]),
+    combackArchive() {
+      if(!this.selectAssembly) return showMessage('', 'Выберите объект для изменения', 'w', this)
+      this.fetchCombackAssemble(this.selectAssembly.id).then(() => {
+        return showMessage('', 'Сборка возвращена из архива', 's', this)
+      }).catch(() => {
+        return showMessage('', 'Сборку не удалось вернуть из архива', 's', this)
+      })
+    }, 
+    showArchive() {
+      this.isArchive = !this.isArchive
+      this.fetchAssemble(this.isArchive)
+    }, 
     setObject(obj, e) {
       if(this.span) this.span.classList.remove('td-row-all')
 
@@ -179,7 +206,9 @@ export default {
     },
     removeObject() {
       if(!this.selectAssembly) return showMessage('', 'Выберите объект для удаления', 'w', this)
-      this.fetchAssemblyDelete(this.selectAssembly.id)
+      this.fetchAssemblyDelete(this.selectAssembly.id).then(() => {
+        return showMessage('', 'Статус Сборки изменен', 's', this)
+      })
     },
     printPage() {
       print({
