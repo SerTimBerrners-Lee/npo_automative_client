@@ -46,12 +46,12 @@
             <td>{{ metalowork.date_order }}</td>
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
               {{returnShipmentsKolvo(metalowork?.detal?.shipments, 2)}}
-            </td>
-            <td>{{ metalowork.detal ? metalowork.detal.name: "Нет детали" }}</td>
-            <td>{{ metalowork.detal ? metalowork.detal.articl: "Нет детали" }}</td>
-            <td class='center'>{{ metalowork.kolvo_shipments }}</td>
-            <td class='center'>{{ metalowork.detal ? metalowork.detal.kolvo_shipments : 'Нет детали' }}</td>
-            <td class='center'>{{ metalowork.detal ? metalowork.detal.DxL : 'Нет детали' }}</td>
+            </td> 
+            <td>{{ metalowork?.detal?.name || "Нет детали" }}</td>
+            <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td>
+            <td class='center'>{{ metalowork?.kolvo_shipments }}</td>
+            <td class='center'>{{ metalowork?.detal?.shipments_kolvo || 'Нет детали' }}</td>
+            <td class='center'>{{ metalowork?.detal?.DxL || 'Нет детали' }}</td>
             <td>{{metalowork.detal && metalowork.detal.mat_za_obj ?  metalowork.detal.mat_za_obj.name : 'Нет заготовки' }}</td>
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
@@ -198,6 +198,7 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
+      console.log(obj)
       if(this.span) this.span.classList.remove('td-row-all')
 
       this.span = e
@@ -226,7 +227,8 @@ export default {
         this.filterMetaloworkingByShipments(shipments.detals)
     },
     openOperationPath(metalowork) {
-      if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет детали', 'w', this);
+      console.log(metalowork)
+      if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет Технологической операции!', 'w', this);
       this.metaloworking_props = metalowork
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true

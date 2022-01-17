@@ -237,7 +237,7 @@ export default {
       })
     },
     openOperationPath(assemble) {
-      if(!assemble.tech_process || !assemble.tech_process.operations) return showMessage('', 'Нет Сборочной единицы ', 'w', this);
+      if(!assemble.tech_process || !assemble.tech_process.operations) return showMessage('', 'Нет Технологической операции! ', 'w', this);
       this.assemble_props = assemble
       this.keyOperationPathModal = random(1, 999)
       this.showOperationPathModal = true

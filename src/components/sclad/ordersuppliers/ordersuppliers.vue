@@ -83,12 +83,15 @@
           <!-- Assemblye-->
           <tr 
             class='td-row' 
-            v-for='ass of getAssembles' :key='ass'>
+            v-for='ass of getAssembles' :key='ass'
+            @click='openTreatment(ass, "ass")'>
             <td>{{ ass?.id }}</td>
             <td>{{ ass?.date_order }}</td>
             <td class='center'>{{ ass?.id + 'C' }}</td>
             <td>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.buyer?.name || 'склад' }}</td>
-            <td class='center'>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.base || '-' }}</td>
+            <td class='center' @click='returnShipmentsDateModal(ass?.cbed?.shipments)' >
+              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+            </td>
             <td class='center'>-</td>
             <td>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.date_shipments }}</td>
             <td>{{ ass.status }}</td>
@@ -115,12 +118,15 @@
           <!-- Metalloworking-->
           <tr 
             class='td-row' 
-            v-for='metal of getMetaloworkings' :key='metal'>
+            v-for='metal of getMetaloworkings' :key='metal'
+            @click='openTreatment(metal, "metal")'>
             <td>{{ metal?.id }}</td>
             <td>{{ metal?.date_order }}</td>
             <td class='center'>{{ metal?.id + 'M' }}</td>
             <td>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.buyer?.name || 'склад' }}</td>
-            <td class='center'>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.base || '-' }}</td>
+            <td class='center' @click='returnShipmentsDateModal(metal?.detal?.shipments)' >
+              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+            </td>
             <td class='center'>-</td>
             <td>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.date_shipments }}</td>
             <td>{{ metal.status }}</td>
@@ -160,15 +166,36 @@
       @unmount='unmount_order'
       :order_parametr='order_parametr'
     />
+    <TreatmentEdit
+      v-if='treatment'
+      :type_treatment='type_treatment'
+      :treatment='treatment'
+      :key='treatment_key'
+      @unmount_treatment='unmount_treatment'
+    />
+    <ShipmentsModal 
+      :shipments='shipments'
+      v-if='shipments.length'
+      :key='shipmentKey'
+    />
+    <InformFolder   
+      :title='titleMessage'
+      :message = 'message'
+      :type = 'type'
+      v-if='message'
+      :key='keyInformTip'
+    />
     <Loader v-if='loader' />
   </div>
 </template>
 <script>
 import {random} from 'lodash';
-import { comparison } from '@/js/'; 
+import { comparison, showMessage } from '@/js/'; 
 import AddOrder from './add-order.vue';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
+import TreatmentEdit from '@/components/sclad/edit-treatment.vue';
+import ShipmentsModal from '@/components/sclad/shipments-to-ized.vue';
 export default {
 	data() {
 		return {
@@ -180,7 +207,17 @@ export default {
       order: null,
       order_parametr: null,
 
-      loader: false
+      loader: false,
+
+      type_treatment: null,
+      treatment: null,
+      treatment_key: random(1, 999),
+      shipments: [],
+      shipmentKey: random(1, 999),
+
+      message: '',
+      type: '',
+      keyInformTip: random(1, 999),
 		}
 	},
   computed: mapGetters([
@@ -188,7 +225,12 @@ export default {
     'getAssembles', 
     'getMetaloworkings'
   ]),
-	components: {AddOrder, DatePicterRange},
+	components: {
+    AddOrder, 
+    DatePicterRange, 
+    TreatmentEdit,
+    ShipmentsModal
+  },
 	methods: {
     ...mapActions([
       'fetchGetDeliveries',
@@ -200,9 +242,25 @@ export default {
       'allMetaloworking',
       'setAllDeliveries'
     ]),
+    unmount_treatment(type) {
+      if(type == 'ass') this.fetchAssemble()
+      if(type == 'metal') this.fetchMetaloworking()
+      this.treatment = null
+      this.type_treatment = null
+    },
     unmount_order() {
       this.fetchGetDeliveries()
       this.order_parametr = null
+    },
+    returnShipmentsDateModal(shipments) {
+      if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this)
+      this.shipmentKey = random(1, 999)
+      this.shipments = shipments
+    },
+    openTreatment(treatment, type) {
+      this.type_treatment = type
+      this.treatment = treatment
+      this.treatment_key = random(1, 999)
     },
     addOrder() {
       this.showAddOrder = true

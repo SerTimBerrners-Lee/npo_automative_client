@@ -29,7 +29,21 @@ export default {
 			})
 			
 			if(res.ok) 
-				return true
+				return true 
+			return false
+    },
+    async fetchUpdateAssemble(ctx, data) { 
+      const res = await fetch(`${PATH_TO_SERVER}api/assemble`, {
+				headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "put",
+        body: JSON.stringify({...data})
+			})
+			
+			if(res.ok) 
+				return true 
 			return false
     },
     async fetchAssembleById(ctx, id) { 
