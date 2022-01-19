@@ -73,7 +73,7 @@
             <td class='center'>{{ cbed.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(cbed.id, 'cbed')">{{ cbed.name }}</td>
             <td class='center' @click='returnShipmentsDateModal(cbed.shipments)'>
-              <img src="@/assets/img/link.jpg" @click='showParents(cbed, "cb")' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
             <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
             <td class='center min_width-100'>{{ 0 }}</td>
@@ -153,11 +153,6 @@
       :key='shipmentKey'
       @unmount='unmount_sh_list'
     />
-    <ProductListModal
-      v-if='productListForIzd'
-      :key='keyParentsModal'
-      :parametrs='productListForIzd'
-    />
     <InformFolder  
       :title='titleMessage'
       :message = 'message'
@@ -194,7 +189,6 @@ import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import StartProduction from '@/components/sclad/start-production-modal.vue';
-import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
@@ -219,8 +213,6 @@ export default {
       showNormTimeOperation: false,
       normTimeOperationKey: random(1, 999),
 
-      keyParentsModal: random(1, 999),
-      productListForIzd: null,
       detalModalKey: random(1, 999),
 			parametrs_detal: false,
 			parametrs_cbed: null,
@@ -238,8 +230,7 @@ export default {
     StartProduction, 
     DescriptionModal, 
     NormTimeOperation, 
-    ShipmentsMiniList, 
-    ProductListModal,
+    ShipmentsMiniList,
     ShipmentsModal,
     DetalModal,
     CbedModalInfo,
@@ -248,8 +239,6 @@ export default {
   },
   methods: {
     ...mapActions([
-      'getOneCbEdById', 
-      'getOneDetal', 
       'setchDeficitCbed', 
       'setchDeficitDeficit',
       'fetchAllShipments'
@@ -333,19 +322,6 @@ export default {
     setIzdels(izd) {
       this.select_izd = izd
     },
-    showParents(izd, type) {
-      if(type == 'cb') {
-        this.getOneCbEdById(izd.id).then(res => {
-          this.productListForIzd = { products: res.products, type, id: izd.id }
-          this.keyParentsModal = random(1, 999)
-        })
-      } else {
-        this.getOneDetal(izd.id).then(res => {
-          this.productListForIzd = { products: res.products, cbeds: res.cbed, type, id: izd.id }
-          this.keyParentsModal = random(1, 999)
-        })
-      }
-    },
     returnProductionColvo(cbed) {
       if(!cbed || !cbed.assemble || cbed.assemble.length == 0) return 0
       let count = 0
@@ -390,7 +366,7 @@ export default {
     this.loader = true
     await this.setchDeficitCbed()
     await this.setchDeficitDeficit()
-    this.fetchAllShipments()
+    await this.fetchAllShipments({sort: undefined, light: true})
     this.loader = false
   }
 }

@@ -312,7 +312,7 @@ export default {
   async mounted() {
     this.loader = true
     await this.setchDeficitDeficit()
-    this.fetchAllShipments()
+    await this.fetchAllShipments({sort: undefined, light: true})
     this.loader = false
   }
 }

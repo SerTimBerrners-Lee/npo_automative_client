@@ -308,7 +308,7 @@ export default {
   },
 	async mounted() {
     this.loader = true
-    await this.fetchAllShipmentsMetaloworking() 
+    await this.fetchAllShipmentsMetaloworking({sort: undefined, light: true})
     await this.getAllTypeOperations()
     await this.fetchMetaloworking()
     this.filterOperation()

@@ -37,8 +37,8 @@ export default {
 				return true
 			return false
 		},
-		async fetchAllShipments(ctx, sort) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments`)
+		async fetchAllShipments(ctx, {sort = "sort_sclad", light = false}) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/${light}`)
 			if(res.ok) {
 				const result = await res.json()
 				ctx.commit('allShipments', {result, sort, ctx})
@@ -59,16 +59,16 @@ export default {
 				return result
 			}
 		},
-		async fetchAllShipmentsAssemble(ctx, sort) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/assemble`)
+		async fetchAllShipmentsAssemble(ctx, {sort = "sort_sclad", light = false}) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/assemble/${light}`)
 			if(res.ok) {
 				const result = await res.json()
 				ctx.commit('allShipments', {result, sort, ctx})
 				return result
 			}
 		},
-		async fetchAllShipmentsMetaloworking(ctx, sort) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/metaloworking`)
+		async fetchAllShipmentsMetaloworking(ctx, {sort = "sort_sclad", light = false}) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/metaloworking/${light}`)
 			if(res.ok) {
 				const result = await res.json()
 				ctx.commit('allShipments', {result, sort, ctx})

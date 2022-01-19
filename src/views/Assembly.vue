@@ -307,11 +307,10 @@ export default {
 	},
 	async mounted() {
     this.loader = true
-    await this.fetchAllShipmentsAssemble()
+    await this.fetchAllShipmentsAssemble({sort: undefined, light: true})
     await this.fetchAssemble()
     await this.getAllTypeOperations()
     this.filterOperation()
-    
     this.loader = false
 	}
 }

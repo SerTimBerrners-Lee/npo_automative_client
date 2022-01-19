@@ -27,7 +27,7 @@
 </template>
 <script>
 import {random} from 'lodash';
-import {mapMutations} from 'vuex';
+import {mapMutations, mapActions} from 'vuex';
 import ShipmentsModal from './shipments-modal.vue';
 export default {
 	props: ['getShipments'],
@@ -45,11 +45,12 @@ export default {
 		ShipmentsModal
 	},
 	methods: {
+		...mapActions(['fetchAllShipmentsById']),
 		...mapMutations([
       'filterAssemblByShipments',
       'breackFIlterAssembl',
 			'breackFIlterMetal',
-			'pusshAddShipments'
+			'pusshAddShipments',
     ]),
 		unmount_shpment() {
 			this.pusshAddShipments(this.varShipment)
@@ -66,7 +67,9 @@ export default {
       }
       this.span_ship = e
       this.span_ship.classList.add('checkbox_block_select')
-			this.$emit('unmount_set', shipments)
+			this.fetchAllShipmentsById(shipments.id).then(res => {
+				this.$emit('unmount_set', res)
+			})
     },
 		clearFilter() {
       if(this.span_ship) {
