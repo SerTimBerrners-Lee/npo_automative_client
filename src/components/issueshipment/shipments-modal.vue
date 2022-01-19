@@ -283,7 +283,7 @@ export default {
     this.hiddens = 'opacity: 1;'
 
 		this.fetchAllBuyers()
-		await this.fetchAllShipments()
+		await this.fetchAllShipments({ sort: undefined, light: false })
 
 		this.list_cbed_detal = []
 		this.list_hidden_cbed_detal = []

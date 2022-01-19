@@ -90,7 +90,7 @@ export default {
 	},
 	async mounted() {
 		this.loader = true
-		await this.fetchAllShipments()
+		await this.fetchAllShipments({sort: "sort_sclad", light: false})
 		this.loader = false
 	}
 }

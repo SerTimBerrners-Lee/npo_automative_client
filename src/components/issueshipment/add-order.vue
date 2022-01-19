@@ -285,11 +285,13 @@ export default {
 			'getAllProductByIdLight',
 			'fetchUpdateShipments',
 			'getOneCbEdById',
-			'fetchAllShipments'
+			'fetchAllShipments',
+			'fetchAllShipmentsById',
 		]),
 		...mapMutations([
+			'setOneShipment',
 			'addOneSelectDetal',
-			'filterToParentShipments'
+			'filterToParentShipments',
 		]),
 		unmount_buyer(buyer) {
 			if(buyer) this.buyer = buyer.id
@@ -640,13 +642,17 @@ export default {
 	},
 	async mounted() {
 		this.fetchAllBuyers()
-		await this.fetchAllShipments()
+		await this.fetchAllShipments({sort: undefined, light: false})
 
 		this.list_cbed_detal = []
 		this.list_hidden_cbed_detal = []
 
 		if(this.$route.params.edit && this.$route.params.edit == 'true') {
-			if(isEmpty(this.getOneShipments)) return this.$router.push('/issueshipment')
+			if(isEmpty(this.getOneShipments)) return this.$router.back()
+			const shipments = await this.fetchAllShipmentsById(this.getOneShipments.id)
+			if(!shipments) return this.$router.back()
+			console.log(shipments)
+			this.setOneShipment(shipments)
 			this.editVariable()
 		} else 
 			if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent))

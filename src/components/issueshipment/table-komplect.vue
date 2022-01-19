@@ -141,6 +141,7 @@ export default {
 			if(this.tr) this.tr.classList.remove('td-row-all')
 			this.tr = e 
 			this.tr.classList.add('td-row-all')
+
 			this.setOneShipment(shipments)
 			this.selectShipments = shipments;
 			this.$emit('unmount', this.selectShipments)
