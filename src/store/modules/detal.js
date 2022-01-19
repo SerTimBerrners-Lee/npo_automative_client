@@ -83,7 +83,7 @@ export default {
       const result = await res.json()
       if(result.length) {
         for(let inx in result) {
-          result[inx]['my_kolvo'] = result[inx]['shipments_kolvo']
+          result[inx]['my_kolvo'] = result[inx]['shipments_kolvo'] * 3 - result[inx]['shipments_kolvo'] 
         }
       }
       ctx.commit('setDetalMutation', result)

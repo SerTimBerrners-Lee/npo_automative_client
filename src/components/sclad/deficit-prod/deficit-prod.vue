@@ -77,8 +77,8 @@
             </td>
             <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
             <td class='center min_width-100'>{{ 0 }}</td>
-            <td class='center min_width-100'>{{ 0 }}</td>
-            <td class='center min_width-100'>{{ cbed.cbed_kolvo + cbed.shipments_kolvo *3 }}</td>
+            <td class='center min_width-100'>{{ cbed?.min_remaining || 0 }}</td>
+            <td class='center min_width-100'>{{ cbed.shipments_kolvo * 3 }}</td>
             <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed.my_kolvo }}</td> 
             <td class='center min_width-100'>{{ cbed.parametrs ? 
@@ -109,7 +109,7 @@
             </td>
             <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
             <td class='center'>{{ 0 }}</td>
-            <td class='center'>{{ 0 }}</td>
+            <td class='center'>{{ cbed?.min_remaining || 0 }}</td>
             <td class='center'>{{ detal.detal_kolvo + detal.shipments_kolvo *3 }}</td>
             <td class='center'>{{ getTimming(detal.parametrs) }}</td>
             <td class='center'>{{ detal.detal_kolvo + detal.shipments_kolvo }}</td> 
