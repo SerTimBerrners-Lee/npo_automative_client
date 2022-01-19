@@ -78,7 +78,7 @@
             <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
             <td class='center min_width-100'>{{ 0 }}</td>
             <td class='center min_width-100'>{{ cbed?.min_remaining }}</td>
-            <td class='center min_width-100'>{{ detal?.min_remaining * 3 }}</td>
+            <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td>
             <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed.my_kolvo }}</td> 
             <td class='center min_width-100'>{{ cbed.parametrs ? 
