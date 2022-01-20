@@ -487,6 +487,7 @@ export default {
       this.obj.parametrs.push({name: '', ez: '', znach: ''})
     },
     removeHaracteristic() {
+      if(this.selectHaracteristic.inx < 2) return false;
       if(this.selectHaracteristic) {
         this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1)
         this.selectHaracteristic = null

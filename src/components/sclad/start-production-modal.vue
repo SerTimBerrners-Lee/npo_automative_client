@@ -144,8 +144,9 @@ export default {
       this.komplect = this.$props.parametrs.izd
       for(let item of this.komplect) {
         if(!item.my_kolvo || item.my_kolvo < 1) {
-          showMessage('', 'Количество не должно быть больше 0', 'w', this)
-          return this.destroyModalF()
+          item.my_kolvo = item.min_remaining
+          // showMessage('', 'Количество не должно быть больше 0', 'w', this)
+          // return this.destroyModalF()
         }
       }
     }

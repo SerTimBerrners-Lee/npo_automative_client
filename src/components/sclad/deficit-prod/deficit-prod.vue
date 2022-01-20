@@ -15,7 +15,7 @@
       </div>
     </div>
     <div class='table_block'>
-      <div style='width: 400px;'>
+      <div style='width: 400px;'> 
         <ShipmentList
           v-if='getShipments.length'
           @unmount_set='toSetOrders'
@@ -28,6 +28,7 @@
             <tr>
               <th colspan="6" class='min_width-100'>Комплектация сборки, детали</th>
               <th rowspan="3" class='min_width-100'>Дефицит</th>
+              <th rowspan="3" class='min_width-100'>Дефицит на План</th>
               <th rowspan="3" class='min_width-100'>Реальный остаток с учетом планируемых отгрузок</th>
               <th rowspan="3" class='min_width-100'>Минимальный остаток</th>
               <th rowspan="3" class='min_width-100'>Рекомендуемый остаток</th>
@@ -75,12 +76,13 @@
             <td class='center' @click='returnShipmentsDateModal(cbed.shipments)'>
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
-            <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.shipments_kolvo }}</td>
+            <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.min_remaining }}</td>
+            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td>
             <td class='center min_width-100'>{{ 0 }}</td>
             <td class='center min_width-100'>{{ cbed?.min_remaining }}</td>
             <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td>
             <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
-            <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed.my_kolvo }}</td> 
+            <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed?.my_kolvo || cbed.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>{{ cbed.parametrs ? 
               Number(JSON.parse(cbed.parametrs)[0].znach) * cbed.shipments_kolvo
               : '' }}</td>
@@ -107,12 +109,13 @@
             <td class='center' @click='returnShipmentsDateModal(detal.shipments)'>
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
-            <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.shipments_kolvo }}</td>
+            <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.min_remaining }}</td>
+            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{ detal?.min_remaining }}</td>
             <td class='center'>{{ detal?.min_remaining * 3 }}</td>
             <td class='center'>{{ getTimming(detal.parametrs) }}</td>
-            <td class='center'>{{ detal.detal_kolvo + detal.shipments_kolvo }}</td> 
+            <td class='center'>{{ detal?.my_kolvo || detal?.min_remaining * 3 }}</td> 
             <td class='center'>{{ detal.parametrs ? 
               getTimming(detal.parametrs, detal.shipments_kolvo)
               : '' }}</td>

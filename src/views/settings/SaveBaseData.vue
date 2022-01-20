@@ -174,7 +174,9 @@ tr {
 }
 .block_db {
   display: flex;
+  flex-direction: column;
   justify-content: center;
+  align-items: center;
 }
 .img-to-card {
   height: 90px;
