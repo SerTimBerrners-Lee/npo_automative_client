@@ -11,6 +11,7 @@ import InformFolder from '@/components/InformFolder.vue';
 import MiniNavigation from '@/components/mini-navigation.vue';
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import { 
+    uniImport,
     uniTimes, 
     uniSetting, 
     uniUser, 
@@ -27,9 +28,11 @@ import {
     uniStar,
     uniExclamation,
     uniAlignCenterV,
-    uniOkta } from 'vue-unicons/dist/icons';
+    uniOkta 
+} from 'vue-unicons/dist/icons';
 
 Unicon.add([
+    uniImport,
     uniAlignCenterV, 
     uniOkta, 
     uniExclamation, 

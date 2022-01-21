@@ -20,9 +20,11 @@ export default {
     },
     async fetchAddDB() {
       const res =  await fetch(`${PATH_TO_SERVER}api/settings/db/new/`)
+      console.log(res)
       if(res.ok)
         return true
-        else return false
+
+      return false
     },
     async fetchDropDB(ctx, name_dump) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/db/${name_dump}`, {

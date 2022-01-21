@@ -21,6 +21,12 @@
               Уничтожить 
             </div>
           </div>
+          <unicon 
+            class='icons_import' 
+            name="import" 
+            fill="black" 
+            width='25'
+            @click='downloadDB()' />
         </div>
       </div>
       <div class="db-date-block">
@@ -69,6 +75,7 @@
 <script>
 import { showMessage } from '@/js/';
 import {mapGetters, mapActions} from 'vuex';
+import PATH_TO_SERVER from '@/js/path.js';
 export default {
   data() {
     return{
@@ -92,7 +99,10 @@ export default {
       'fetchInactionHors', 
       'fetchChangeInaction'
     ]),
-
+    downloadDB() {
+      if(!this.select_db) return showMessage('', 'Резервная копия не выбрана', 's', this)
+      window.open(`${PATH_TO_SERVER}static/db/${this.select_db.name}`)
+    },
     fetchAllDump() {
       this.fetchDB().then(() => this.loader = false)
     },
@@ -234,5 +244,14 @@ tr {
 }
 .g4>div div:hover {
   box-shadow: 5px -1px 15px -2px #515ada;
+}
+.g4>.unicon {
+  padding: 5px;
+  margin:0px;
+  height:20px;
+  border-radius: 25px;
+}
+.g4>.unicon:hover {
+  box-shadow: 5px -1px 15px -2px #2b34ad;
 }
 </style>
