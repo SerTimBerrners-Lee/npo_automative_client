@@ -290,6 +290,7 @@ export default {
 
 		if(!this.$props.id_shipments) return this.destroyModalF()
 		const result = await this.fetchAllShipmentsById(this.$props.id_shipments)
+		if(!result) return this.destroyModalF()
 		this.setOneShipment(result)
 		this.editVariable()
   },

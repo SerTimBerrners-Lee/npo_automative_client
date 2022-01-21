@@ -96,7 +96,6 @@ export default {
 				else ship.difference = 0
 			}
 			state.shipments = result.sort((a, b) => a.difference - b.difference)
-
 			ctx.commit('sortShipmentParams', sort)
 		},
 		sortShipmentParams(state, sort) {
