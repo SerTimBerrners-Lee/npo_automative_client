@@ -101,7 +101,7 @@ export default {
     ]),
     downloadDB() {
       if(!this.select_db) return showMessage('', 'Резервная копия не выбрана', 's', this)
-      window.open(`${PATH_TO_SERVER}static/db/${this.select_db.name}`)
+      window.open(`${PATH_TO_SERVER}db/${this.select_db.name}`)
     },
     fetchAllDump() {
       this.fetchDB().then(() => this.loader = false)
