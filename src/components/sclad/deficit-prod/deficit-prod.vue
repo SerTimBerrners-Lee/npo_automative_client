@@ -6,11 +6,15 @@
         <DatePicterRange 
           @unmount='changeDatePicterRange'  
         />
-        <span>Фильтры по статусу:</span>
         <div>
-          <label for='z'>Заказано</label><input id='z' type="checkbox">
-          <label for='zn'>Не заказано</label><input id='zn' type="checkbox">
-          <label for='end'>Выполнено</label><input id='end' type='checkbox'> 
+          <select 
+            class='select-small' 
+            v-model='selectEnumStatus'>
+            <option 
+              v-for='item of enumStatus' 
+              :key='item' 
+              :value='item'>{{ item }}</option>
+          </select>
         </div>
       </div>
     </div>
@@ -88,7 +92,8 @@
               : '' }}</td>
             <td class='center min_width-100'>{{ cbed.cbed_kolvo +  returnProductionColvo(cbed) }}</td>
             <td class='center min_width-100'>{{  }}</td>
-            <td class='center min_width-100'>{{ cbed.assemble && cbed.assemble.length ? "Заказано" : 'Не заказано' }}</td>
+            <td v-if='cbed.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
+            <td v-else class='center min_width-100 work_operation'>Не заказано</td>
             <td class='center min_width-100'>{{ cbed.assemble && cbed.assemble.length ? cbed.assemble[cbed.assemble.length - 1].date_order : '' }}</td>
             <td class='center min_width-100'>
               <img src="@/assets/img/link.jpg" @click='openDescription(cbed.description)' class='link_img' atl='Показать' />
@@ -121,7 +126,8 @@
               : '' }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{  }}</td>
-            <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? "Заказано" : 'Не заказано' }}</td>
+            <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
+            <td v-else class='center min_width-100 work_operation'>Не заказано</td>
             <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].date_order : '' }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDescription(detal.description)' class='link_img' atl='Показать' />
@@ -224,7 +230,14 @@ export default {
       select_izd: null,
 
       loader: false,
-      type_norm_time: 'cb'
+      type_norm_time: 'cb',
+
+      selectEnumStatus: 'Все',
+      enumStatus: [
+        'Все',
+        'Заказано',
+        'Не заказано'
+      ]
     }
   },
   computed: mapGetters(['allCbed', 'allDetal', 'getShipments']),
@@ -240,6 +253,12 @@ export default {
     Search,
     ShipmentList
   },
+  watch: {
+    selectEnumStatus: function(val) {
+      this.changeStatusDeficitDetal(val)
+      this.changeStatusDeficitCbed(val)
+    }
+  },
   methods: {
     ...mapActions([
       'setchDeficitCbed', 
@@ -251,7 +270,9 @@ export default {
       'cbedToShipmentsSort',
       'detalToShipmentsSort',
       'reverseMidlevareCbed',
-      'reverseMidlevareDetal'
+      'reverseMidlevareDetal',
+      'changeStatusDeficitDetal',
+      'changeStatusDeficitCbed'
     ]),
     keySearchCb(v) {
       this.searchCbed(v)
@@ -367,6 +388,8 @@ export default {
   },
   async mounted() {
     this.loader = true
+    this.reverseMidlevareDetal()
+    this.reverseMidlevareCbed()
     await this.setchDeficitCbed()
     await this.setchDeficitDeficit()
     await this.fetchAllShipments({sort: undefined, light: true})

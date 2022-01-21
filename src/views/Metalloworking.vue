@@ -42,7 +42,7 @@
             class='td-row'>
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
               {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
-            </td>
+            </td> 
             <td>{{ metalowork.date_order }}</td>
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
               {{returnShipmentsKolvo(metalowork?.detal?.shipments, 2)}}
@@ -57,7 +57,10 @@
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
             <td>{{  }}</td>
-            <td :class='metalowork.status == "Готово" ? "success_operation" : "work_operation"'>{{ metalowork.status }}</td>
+            <td v-if='metalowork.status == enumStatus[0]' class='work_operation'>{{ metalowork.status  }}</td>
+            <td v-if='metalowork.status == enumStatus[1]' class='success_operation'>{{ metalowork.status  }}</td>
+            <td v-if='metalowork.status == enumStatus[2]' class='delete_operation'>{{ metalowork.status  }}</td>
+            <td v-if='metalowork.status == enumStatus[3]' class='delete_operation'>{{ metalowork.status  }}</td>
             <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
             </td>
@@ -153,6 +156,13 @@ export default {
       metaloworking_props: null,
 
       loader: false,
+
+      enumStatus: [				
+				'В процессе',
+        'Готово',
+        'В архиве',
+        'Просрочено' 
+			],
 
       span: null,
       selectMetalloworking: null,

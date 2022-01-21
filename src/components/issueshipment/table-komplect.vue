@@ -37,14 +37,18 @@
 				</td>
 				<td class='center'>{{ shipments.kol }}</td>
 				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td>
-				<td class='center'>{{ shipments.difference }}</td>
+				<td class='center'>{{ shipments.difference}}</td>
 				<td style='width:50px; word-break: break-all;' class='center active'  
 					@click='openDocuments(shipments)' >
 					{{ shipments.base }}
 				</td>
 				<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td>
 				<td></td>
-				<td>{{ shipments.status }}</td>
+				<td v-if='shipments.status == enumShipments[0]' class='work_operation'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[1]' class='delete_operation'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[2]' class='work_operation'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[3]' class='success_operation'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[4]' class='delete_operation'>{{ shipments.status  }}</td>
 				<td>{{ shipments.date_shipments }}</td>
 				<td></td>
 				<td></td>
@@ -116,7 +120,15 @@ export default {
 			loader: false,
 
 			key_modal_shipments: random(1, 999),
-			show_modal_shipments: false
+			show_modal_shipments: false,
+
+			enumShipments: [				
+				'Заказано',
+				'Удалено',
+				'Выполняется',
+				'Выполнено',
+				'Просрочено'
+			],
 		}	
 	},
 	components: {

@@ -358,5 +358,16 @@ export default {
         }
       }
     },
+    changeStatusDeficitDetal(state, status) {
+      if(state.middleware_detals.length < 1)
+        state.middleware_detals = state.detal
+
+      state.detal = state.middleware_detals
+      if(status == 'Все') return false;
+      state.detal = state.detal.filter(el => {
+        if(status == "Не заказано" && el.metalloworking_kolvo < 1) return el
+        if(status == "Заказано" && el.metalloworking_kolvo > 1) return el
+      })
+    }
   }
 }

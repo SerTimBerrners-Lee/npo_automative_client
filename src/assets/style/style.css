@@ -131,7 +131,7 @@
 .work_operation {
   background-color: #ffee63;
 }
-.work_operation, .success_operation {
+.work_operation, .success_operation, .delete_operation {
   padding-left: 2px;
   padding-right: 2px;
   margin: 0px;
@@ -139,6 +139,9 @@
 .success_operation {
   background-color: #bdffa9;
   padding: 2px;
+}
+.delete_operation {
+  background-color:#ee09428f;
 }
 .checkbox_block:hover {
   background: #4d7ce2ce;

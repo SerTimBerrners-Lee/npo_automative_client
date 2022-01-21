@@ -5,6 +5,8 @@ export default {
 		shipments: [],
 		shipments_sclad: [],
 
+		variable_shipments: [],
+
 		one_shipments: {}
 	},
 	getters: { 
@@ -133,6 +135,14 @@ export default {
 		},
 		filterToParentShipments(state, id) {
 			state.shipments = state.shipments.filter(ship => ship.id == id)
+		},
+		filterShipmentsToStatus(state, value) {
+			if(state.variable_shipments.length == 0)
+				state.variable_shipments = state.shipments
+			state.shipments = state.variable_shipments
+			if(value == 'Все') return false;
+
+			state.shipments = state.shipments.filter((el) => el.status == value)
 		}
 	}
 }

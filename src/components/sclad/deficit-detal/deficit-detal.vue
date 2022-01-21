@@ -7,10 +7,14 @@
           @unmount='changeDatePicterRange'  
         />
         <div>
-          <span>Фильтры по статусу:</span>
-          <label for='z'>Заказано</label><input id='z' type="checkbox">
-          <label for='zn'>Не заказано</label><input id='zn' type="checkbox">
-          <label for='end'>Выполнено</label><input id='end' type='checkbox'>
+          <select 
+            class='select-small' 
+            v-model='selectEnumStatus'>
+            <option 
+              v-for='item of enumStatus' 
+              :key='item' 
+              :value='item'>{{ item }}</option>
+          </select>
         </div>
       </div>
       <div class='table_block'> 
@@ -82,7 +86,8 @@
               <td class='center'>{{ JSON.parse(detal.parametrs).mainTime.znach}}</td>
               <td class='center'>{{ getTimming(detal.parametrs, detal.shipments_kolvo) }}</td>
               <td class='center'></td>
-              <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? "Заказано" : 'Не заказано' }}</td>
+              <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
+              <td v-else class='center min_width-100 work_operation'>Не заказано</td>
               <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].date_order : '' }}</td>
               <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].number_order : '' }}</td>
               <td class='center'>
@@ -185,7 +190,14 @@ export default {
       shipments: [],
 
       kolvo_all: 0,
-      loader: false
+      loader: false,
+      
+      selectEnumStatus: 'Все',
+      enumStatus: [
+        'Все',
+        'Заказано',
+        'Не заказано'
+      ]
     }
   },
   computed: mapGetters(['allDetal', 'getShipments']),
@@ -200,14 +212,18 @@ export default {
     ShipmentList,
     ShipmentsModal
   },
+  watch: {
+    selectEnumStatus: function(val) {
+      this.changeStatusDeficitDetal(val)
+    }
+  },
   methods: {
     ...mapActions(['setchDeficitDeficit', 'getOneDetal', 'fetchAllShipments']),
     ...mapMutations([
       'filterDetalToArticle',
-      'cbedToShipmentsSort',
       'detalToShipmentsSort',
-      'reverseMidlevareCbed',
       'reverseMidlevareDetal',
+      'changeStatusDeficitDetal',
     ]),
     unmount_clear() {
       this.reverseMidlevareCbed()
@@ -311,6 +327,7 @@ export default {
   },
   async mounted() {
     this.loader = true
+    this.reverseMidlevareDetal()
     await this.setchDeficitDeficit()
     await this.fetchAllShipments({sort: undefined, light: true})
     this.loader = false

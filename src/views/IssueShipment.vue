@@ -5,6 +5,16 @@
 			<DatePicterRange 
 				@unmount='changeDatePicterRange'  
 			/>
+			<div>
+				<select 
+					class='select-small' 
+					v-model='selectEnumShipments'>
+					<option 
+						v-for='item of enumShipments' 
+						:key='item' 
+						:value='item'>{{ item }}</option>
+				</select>
+			</div>
 		</div>
 		<div>
 			<h3>Комлектация</h3>
@@ -55,7 +65,17 @@ export default {
       type: '',
       keyInformTip: random(1, 999),
 
-			loader: false
+			loader: false,
+
+			enumShipments: [
+				'Все',				
+				'Заказано',
+				'Удалено',
+				'Выполняется',
+				'Выполнено',
+				'Просрочено'
+			],
+			selectEnumShipments: 'Все'
 		}	
 	},
 	computed: mapGetters(['getShipments']),
@@ -63,13 +83,19 @@ export default {
 		DatePicterRange,
 		TableShipments
 	},
+	watch: {
+		selectEnumShipments: function(val) {
+			this.filterShipmentsToStatus(val)
+		}
+	},
 	methods: {
 		...mapActions([ 
 			'fetchDeleteShipments',
 			'fetchAllShipments'
 		]),
 		...mapMutations([
-      'setOneShipment'
+      'setOneShipment',
+			'filterShipmentsToStatus'
     ]),
 		unmount_table_shipments(select_shipemnts) {
 			if(!select_shipemnts) return false

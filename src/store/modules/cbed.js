@@ -10,7 +10,7 @@ export default {
     select_cbed: {},
 
     tmp_attention: [],
-    tmp_operation: [],
+    tmp_operation: [], 
     tmp_responsible: [],
 
     date_is: '<'
@@ -243,6 +243,17 @@ export default {
           if(item.id == id) state.cbed.push(item)
         }
       }
+    },
+    changeStatusDeficitCbed(state, status) {
+      if(state.middleware_state.length < 1)
+        state.middleware_state = state.cbed
+
+      state.cbed = state.middleware_state
+      if(status == 'Все') return false;
+      state.cbed = state.cbed.filter(el => {
+        if(status == "Не заказано" && el.assemble_kolvo < 1) return el
+        if(status == "Заказано" && el.assemble_kolvo > 1) return el
+      })
     }
   }
 }

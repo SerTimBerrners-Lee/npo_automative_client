@@ -54,7 +54,10 @@
             </td>
             <td>{{  }}</td>
             <td class='center'>{{ "нет" }}</td>
-            <td :class='assemble.status == "Готово" ? "success_operation" : "work_operation" '>{{ assemble.status }}</td>
+            <td v-if='assemble.status == enumStatus[0]' class='work_operation'>{{ assemble.status  }}</td>
+            <td v-if='assemble.status == enumStatus[1]' class='success_operation'>{{ assemble.status  }}</td>
+            <td v-if='assemble.status == enumStatus[2]' class='delete_operation'>{{ assemble.status  }}</td>
+            <td v-if='assemble.status == enumStatus[3]' class='delete_operation'>{{ assemble.status  }}</td>
             <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
             </td>
@@ -151,6 +154,13 @@ export default {
       assemble_props: null,
 
       loader: false,
+
+      enumStatus: [				
+				'В процессе',
+        'Готово',
+        'В архиве',
+        'Просрочено' 
+			],
 
       span: null,
       selectAssembly: null,
