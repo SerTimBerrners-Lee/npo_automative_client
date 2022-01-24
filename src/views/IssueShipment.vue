@@ -116,7 +116,7 @@ export default {
 	},
 	async mounted() {
 		this.loader = true
-		await this.fetchAllShipments({sort: "sort_sclad", light: false})
+		await this.fetchAllShipments({sort: "sort", light: false})
 		this.loader = false
 	}
 }

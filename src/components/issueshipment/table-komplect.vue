@@ -84,15 +84,16 @@
 			:key='key_modal_shipments'
 			v-if='show_modal_shipments && selectShipments.id'
 			:id_shipments='selectShipments.id'
+			@unmount_shpment='unmount_shpment'
 		/>
 	</div>
 </template>
 <script>
 import {random} from 'lodash';
-import { mapMutations } from 'vuex';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
+import { mapMutations, mapGetters } from 'vuex';
 import KomplectModal from './komplect-modal.vue';
 import ShipmentsModal from './shipments-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
@@ -106,6 +107,8 @@ export default {
 			message: '',
       type: '',
       keyInformTip: random(1, 999),
+
+			arrShipmentsState: [],
 
 			parametrs_komplect: null,
 			komplect_generate_key: random(1, 999),
@@ -137,10 +140,15 @@ export default {
 		KomplectModal,
 		ShipmentsModal
 	},
+	computed: mapGetters(['getShipments']),
 	methods: {
-		...mapMutations(['setOneShipment']),
+		...mapMutations(['setOneShipment', 'pusshAddShipments']),
+		unmount_shpment() {
+			this.pusshAddShipments(this.arrShipmentsState)
+		},	
 		shipmentsModal() {
 			if(this.selectShipments) {
+				this.arrShipmentsState = this.getShipments
 				this.key_modal_shipments = random(1, 999)
 				this.show_modal_shipments = true
 			}
