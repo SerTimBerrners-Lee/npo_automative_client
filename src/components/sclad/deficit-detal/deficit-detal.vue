@@ -72,13 +72,13 @@
               </td>
               <td class='center'>{{ detal.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>
-              <td class='center' @click='returnShipmentsDateModal(detal.shipments)'>
+              <td class='center' @click='returnShipmentsDateModal(detal, "detal")'>
                 <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
               </td>
               <td class='center'>{{ detal.shipments_kolvo }}</td>
               <td class='center'>{{ detal.detal_kolvo }}</td>
               <td class='center'>{{ detal.metalloworking_kolvo }}</td>
-              <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.min_remaining }}</td>
+              <td class='center' style='color: red;'>{{returnDificit(detal, detal.detal_kolvo)}}</td> <!-- Дефицит -->
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal?.my_kolvo || detal.min_remaining * 3  }}</td>
               <td class='center'>{{ returnZnachCPU(detal) }}</td>
               <td class='center'>{{ JSON.parse(detal.parametrs).preTime.znach }}</td>
@@ -136,6 +136,7 @@
     />
     <ShipmentsModal 
       :shipments='shipments'
+      :izd='izdForSchipment'
       v-if='shipments.length'
       :key='shipmentKey'
     />
@@ -191,6 +192,7 @@ export default {
 
       kolvo_all: 0,
       loader: false,
+      izdForSchipment: null,
       
       selectEnumStatus: 'Все',
       enumStatus: [
@@ -238,6 +240,10 @@ export default {
       return 'нет'
 
     },
+    returnDificit(izd, kol) {
+      return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
+        0 : kol - izd.min_remaining - izd.shipments_kolvo
+    },
     toSetOrders(shipments) {
       this.unmount_clear()
       this.cbedToShipmentsSort(shipments.cbeds)
@@ -249,9 +255,11 @@ export default {
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
     },
-    returnShipmentsDateModal(shipments) {
+    returnShipmentsDateModal(izd, type) {
+      let shipments = izd.shipments
       if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
       this.shipments = shipments
+      this.izdForSchipment = {izd, type}
       this.shipmentKey = random(1, 999)
     },
     start() {

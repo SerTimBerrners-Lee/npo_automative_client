@@ -33,8 +33,8 @@
               <th colspan="6" class='min_width-120'>Комплектация сборки, детали</th>
               <th rowspan="3" class='min_width-120'>Дефицит</th>
               <th rowspan="3" class='min_width-120'>Дефицит на План</th>
-              <th rowspan="3" class='min_width-120'>Дефицит на Заказам</th>
-              <th rowspan="3" class='min_width-120'>Реальный остаток с учетом планируемых отгрузок</th>
+              <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
+              <th rowspan="3" class='min_width-120'>Остаток</th>
               <th rowspan="3" class='min_width-120'>Минимальный остаток</th>
               <th rowspan="3" class='min_width-120'>Рекомендуемый остаток</th>
               <th rowspan="3" class='min_width-120'>Норма времени на одну единицу (сборка+изготовл.)</th>
@@ -78,15 +78,15 @@
             </td>
             <td class='center'>{{ cbed.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(cbed.id, 'cbed')">{{ cbed.name }}</td>
-            <td class='center' @click='returnShipmentsDateModal(cbed.shipments)'>
+            <td class='center' @click='returnShipmentsDateModal(cbed, "cbed")'>
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
-            <td class='center min_width-100' style='color: red;'>{{ cbed.cbed_kolvo - cbed.min_remaining }}</td>
-            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td>
-            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td>
-            <td class='center min_width-100'>{{ 0 }}</td>
-            <td class='center min_width-100'>{{ cbed?.min_remaining }}</td>
-            <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td>
+            <td class='center min_width-100' style='color: red;'>{{ returnDificit(cbed, cbed.cbed_kolvo) }}</td> <!-- Дефицит -->
+            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> <!-- Дефицит на План -->
+            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+            <td class='center min_width-100'>{{ cbed.cbed_kolvo }}</td> <!-- Остаток -->
+            <td class='center min_width-100'>{{ cbed?.min_remaining }}</td> <!-- Минимальный остаток -->
+            <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
             <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed?.my_kolvo || cbed.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>{{ cbed.parametrs ? 
@@ -113,15 +113,15 @@
             </td>
             <td class='center'>{{ detal.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(detal.id, 'detal')">{{ detal.name }}</td>
-            <td class='center' @click='returnShipmentsDateModal(detal.shipments)'>
+            <td class='center' @click='returnShipmentsDateModal(detal, "detal")'>
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
-            <td class='center' style='color: red;'>{{ detal.detal_kolvo - detal.min_remaining }}</td>
-            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td>
-            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td>
-            <td class='center'>{{ 0 }}</td>
-            <td class='center'>{{ detal?.min_remaining }}</td>
-            <td class='center'>{{ detal?.min_remaining * 3 }}</td>
+            <td class='center' style='color: red;'>{{ returnDificit(detal, detal.detal_kolvo) }}</td> <!-- Дефицит -->
+            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Дефицит на План -->
+            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+            <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
+            <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->
+            <td class='center'>{{ detal?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
             <td class='center'>{{ getTimming(detal.parametrs) }}</td>
             <td class='center'>{{ detal?.my_kolvo || detal?.min_remaining * 3 }}</td> 
             <td class='center'>{{ detal.parametrs ? 
@@ -184,6 +184,7 @@
     />
     <ShipmentsModal 
       :shipments='shipments'
+      :izd='izdForSchipment'
       v-if='shipments.length'
       :key='shipmentKey'
     />
@@ -235,6 +236,8 @@ export default {
       loader: false,
       type_norm_time: 'cb',
 
+      izdForSchipment: null,
+
       selectEnumStatus: 'Все',
       enumStatus: [
         'Все',
@@ -277,6 +280,10 @@ export default {
       'changeStatusDeficitDetal',
       'changeStatusDeficitCbed'
     ]),
+    returnDificit(izd, kol) {
+      return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
+        0 : kol - izd.min_remaining - izd.shipments_kolvo
+    },
     keySearchCb(v) {
       this.searchCbed(v)
     },
@@ -320,9 +327,11 @@ export default {
       }
       return end_date
     },
-    returnShipmentsDateModal(shipments) {
+    returnShipmentsDateModal(izd, type) {
+      let shipments = izd.shipments
       if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
       this.shipments = shipments
+      this.izdForSchipment = {izd, type}
       this.shipmentKey = random(1, 999)
     },
     getTimming(param, kol = 1) {
