@@ -5,6 +5,7 @@
           <div>
             <h3>Склад продукции</h3>
             <div class="block">
+              <div class="type-operation" @click="$router.push('/deficitizd')">Дефицит Изделий</div>
               <div class="type-operation" @click="$router.push('/deficitprod')">Дефицит продукции (комплектация изделий)</div>
               <div class="type-operation" @click="$router.push('/deficitdetal')">Дефицит Деталей</div>
               <div class="type-operation" @click="$router.push('/ostatokprod')">Остатки продукции, сборок и деталей на складе</div>

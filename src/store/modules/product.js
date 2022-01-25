@@ -101,6 +101,21 @@ export default {
         return result
       }
     },
+
+    async setchDeficitProducts(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/get/deficit/`)
+      if(res.ok) {
+        const result = await res.json()
+        if(result.length) {
+          for(let inx in result) {
+            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result.product_kolvo
+          }
+        }
+        console.log(result)
+        ctx.commit('addAllProduct', result)
+        return result 
+      }
+    },
     
     async fetchAllProductOperation() {
       const res = await fetch(`${PATH_TO_SERVER}api/product/operation`)

@@ -55,6 +55,7 @@ import NotFound from '@/components/not-found.vue';
 import DefcitDetal from '@/components/sclad/deficit-detal/deficit-detal.vue';
 import DeficitMaterial from '@/components/sclad/deficit-material/deficit-material.vue';
 import DeficitProd from '@/components/sclad/deficit-prod/deficit-prod.vue';
+import DeficitIzd from '@/components/sclad/deficit-izd/deficit-izd.vue';
 import AddOrder from '@/components/issueshipment/add-order.vue';
 import OrderSuppliers from '@/components/sclad/ordersuppliers/ordersuppliers.vue';
 import CompletAssembl from '@/components/sclad/completassembl/completassembl.vue';
@@ -224,6 +225,11 @@ const routes = [
     path: '/deficitprod',
     name: 'Дефицит продукции',
     component: DeficitProd
+  },
+  {
+    path: '/deficitizd',
+    name: 'Дефицит Изделий',
+    component: DeficitIzd
   },
   {
     path: '/deficitmaterial',

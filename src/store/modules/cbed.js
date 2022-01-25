@@ -94,7 +94,7 @@ export default {
       if(res.ok) {
         ctx.commit('deleteCbedByIdMutation', id)
       }
-    },
+    }, 
 
     async getOneCbEdById(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/cbed/one/${id}`)
@@ -110,8 +110,7 @@ export default {
         const result = await res.json()
         if(result.length) {
           for(let inx in result) {
-            // Мое количество = Рекомендуемй остаток 
-            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3
+            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result.cbed_kolvo
           }
         }
         ctx.commit('addAllCbed', result)

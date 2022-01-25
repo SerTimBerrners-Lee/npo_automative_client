@@ -4,9 +4,11 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
       <h3>Список заказов</h3>
-      <p v-if='izd'>Для {{
-          izd?.type == 'cbed' ? "Сборки" : "Детали"
-        }}: {{ izd?.izd?.name }}</p>
+      <p v-if='izd'>Для 
+        <span v-if='izd?.type =="cbed"'></span>
+        <span v-if='izd?.type =="detal"'></span>
+        <span v-if='izd?.type =="product"'></span>
+        : {{ izd?.izd?.name }}</p>
 			<div class="block">
 				<table v-if='shipments.length'>
 					<tr>
@@ -63,6 +65,7 @@ export default {
       this.shipments_id = id
     },
     returnCountIzd(item, izd, type) {
+      if(type == 'product') return item.kol || 0
       try {
         let count = 0;
         const list = JSON.parse(item.list_cbed_detal)
@@ -70,7 +73,6 @@ export default {
         for(const obj of [].concat(list, listTwo)) {
           if(obj.type == type && obj.obj.id == izd.id) count += item.kol  
         }
-        console.log(count)
         return count;
       } catch (err) {console.error(err)}
     }
