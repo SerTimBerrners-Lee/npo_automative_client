@@ -32,6 +32,7 @@
             <tr>
               <th colspan="6" class='min_width-120'>Комплектация сборки, детали</th>
               <th rowspan="3" class='min_width-120'>Дефицит</th>
+              <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
               <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
               <th rowspan="3" class='min_width-120'>Остаток</th>
               <th rowspan="3" class='min_width-120'>Минимальный остаток</th>
@@ -81,7 +82,7 @@
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
             <td class='center min_width-100' style='color: red;'>{{ returnDificit(cbed, cbed.cbed_kolvo) }}</td> <!-- Дефицит -->
-            <!-- <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> Дефицит на План -->
+            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipmentss_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
             <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.cbed_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ cbed?.min_remaining }}</td> <!-- Минимальный остаток -->
@@ -116,7 +117,7 @@
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
             <td class='center' style='color: red;'>{{ returnDificit(detal, detal.detal_kolvo) }}</td> <!-- Дефицит -->
-            <!-- <td class='center min_width-100' style='color: red;'>{{ -detal.shipmentss_kolvo }}</td> Дефицит на План -->
+            <td class='center min_width-100' style='color: red;'>{{ -detal.shipmentss_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
             <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
             <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->

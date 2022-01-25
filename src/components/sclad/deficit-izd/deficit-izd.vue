@@ -32,6 +32,7 @@
             <tr>
               <th colspan="5" class='min_width-120'>Изделие</th>
               <th rowspan="3" class='min_width-120'>Дефицит</th>
+              <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
               <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
               <th rowspan="3" class='min_width-120'>Остаток</th>
               <th rowspan="3" class='min_width-120'>Минимальный остаток</th>
@@ -74,7 +75,7 @@
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
             <td class='center min_width-100' style='color: red;'>{{ returnDificit(product, product.product_kolvo) }}</td> <!-- Дефицит -->
-            <!-- <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> Дефицит на План -->
+            <td class='center min_width-100' style='color: red;'>{{ -product.shipments_kolvo }}</td> <!-- Дефицит по Заказам покупател  -->
             <td class='center min_width-100' style='color: red;'>{{ -product.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ product.product_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ product?.min_remaining }}</td> <!-- Минимальный остаток -->
