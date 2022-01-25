@@ -82,7 +82,7 @@
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
             <td class='center min_width-100' style='color: red;'>{{ returnDificit(cbed, cbed.cbed_kolvo) }}</td> <!-- Дефицит -->
-            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipmentss_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
+            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
             <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.cbed_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ cbed?.min_remaining }}</td> <!-- Минимальный остаток -->
