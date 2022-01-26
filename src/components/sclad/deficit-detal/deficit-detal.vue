@@ -81,9 +81,9 @@
               <td class='center' style='color: red;'>{{returnDificit(detal, detal.detal_kolvo)}}</td> <!-- Дефицит -->
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal?.my_kolvo || detal.min_remaining * 3  }}</td>
               <td class='center'>{{ returnZnachCPU(detal) }}</td>
-              <td class='center'>{{ JSON.parse(detal.parametrs).preTime.znach }}</td>
-              <td class='center'>{{ JSON.parse(detal.parametrs).helperTime.znach }}</td>
-              <td class='center'>{{ JSON.parse(detal.parametrs).mainTime.znach}}</td>
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).preTime.znach : ''}}</td>
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).helperTime.znach : '' }}</td>
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).mainTime.znach : ''}}</td>
               <td class='center'>{{ getTimming(detal.parametrs, detal.shipments_kolvo) }}</td>
               <td class='center'></td>
               <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>

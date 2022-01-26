@@ -117,7 +117,7 @@
               <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
             </td>
             <td class='center' style='color: red;'>{{ returnDificit(detal, detal.detal_kolvo) }}</td> <!-- Дефицит -->
-            <td class='center min_width-100' style='color: red;'>{{ -detal.shipmentss_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
+            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
             <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
             <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->

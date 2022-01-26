@@ -16,7 +16,7 @@ export default {
         const result = await res.json()
         ctx.commit('setDeficit', result)
         return result
-      }
+      } 
     },
     async fetchUpdateDeficit(ctx, data) {
       return await fetch(`${PATH_TO_SERVER}api/sclad/deficit`, {
@@ -39,6 +39,46 @@ export default {
       })
       if(res.ok) return true
       return false
+    },
+    async setchDeficitCbed(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/cbed`)
+      if(!res.ok) return false
+
+      const result = await res.json()
+      if(result.length) {
+        for(let inx in result) {
+          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result.cbed_kolvo
+        }
+      }
+      ctx.commit('addAllCbed', result)
+      return result 
+    },
+    async setchDeficitDeficit(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/detal`)
+      if(!res.ok) return false
+
+      const result = await res.json()
+      if(result.length) {
+        for(let inx in result) {
+          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3
+        }
+      }
+      ctx.commit('setDetalMutation', result)
+      return result
+    },
+    async setchDeficitProducts(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/product`)
+      if(res.ok) {
+        const result = await res.json()
+        if(result.length) {
+          for(let inx in result) {
+            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result.product_kolvo
+          }
+        }
+        
+        ctx.commit('addAllProduct', result)
+        return result 
+      }
     },
   },
   mutations: {

@@ -104,20 +104,6 @@ export default {
       }
     },
 
-    async setchDeficitCbed(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/cbed/deficit`)
-      if(res.ok) {
-        const result = await res.json()
-        if(result.length) {
-          for(let inx in result) {
-            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result.cbed_kolvo
-          }
-        }
-        ctx.commit('addAllCbed', result)
-        return result 
-      }
-    },
-
     async fetchAllCbedOperation() {
       const res = await fetch(`${PATH_TO_SERVER}api/cbed/operation`)
       if(res.ok) return await res.json()

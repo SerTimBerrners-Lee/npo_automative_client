@@ -78,17 +78,6 @@ export default {
       const result = await res.json()
       ctx.commit('setDetalMutation', result)
     },
-    async setchDeficitDeficit(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/deficit`)
-      const result = await res.json()
-      if(result.length) {
-        for(let inx in result) {
-          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3
-        }
-      }
-      ctx.commit('setDetalMutation', result)
-      return result
-    },
     async getAllDetalsArticl() {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/articl`)
       const result = await res.json()
