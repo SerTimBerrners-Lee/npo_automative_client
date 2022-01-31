@@ -7,12 +7,13 @@ export default {
     product: [],
     filterProduct: [],
     select_product: {},
+    middleware_state: [],
 
     tmp_attention: [],
     tmp_operation: [],
     tmp_responsible: [],
 
-    date_is: '<'
+    date_is: '<' 
   },
   getters: {
     allProduct(state) {
@@ -166,6 +167,17 @@ export default {
           if(item.id == id) state.product.push(item)
         }
       }
+    },
+    changeStatusDeficitProduct(state, status) {
+      if(state.middleware_state.length < 1)
+        state.middleware_state = state.product
+
+      state.product = state.middleware_state
+      if(status == 'Все') return false; 
+      state.product = state.product.filter(el => {
+        if(status == "Не заказано" && el.assemble_kolvo < 1) return el
+        if(status == "Заказано" && el.assemble_kolvo > 0) return el
+      })
     }
   }
 }

@@ -115,7 +115,7 @@
 			<button 
 				class="btn-status" 
 				style="height: 0px;"
-				@click="$router.push('/issueshipment')">
+				@click="$router.back()">
 				Отменить 
 			</button>
 				<button 

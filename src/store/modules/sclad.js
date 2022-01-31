@@ -47,7 +47,7 @@ export default {
       const result = await res.json()
       if(result.length) {
         for(let inx in result) {
-          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result.cbed_kolvo
+          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['cbed_kolvo']
         }
       }
       ctx.commit('addAllCbed', result)
@@ -60,7 +60,7 @@ export default {
       const result = await res.json()
       if(result.length) {
         for(let inx in result) {
-          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3
+          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['detal_kolvo']
         }
       }
       ctx.commit('setDetalMutation', result)
@@ -72,7 +72,7 @@ export default {
         const result = await res.json()
         if(result.length) {
           for(let inx in result) {
-            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result.product_kolvo
+            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['product_kolvo']
           }
         }
         

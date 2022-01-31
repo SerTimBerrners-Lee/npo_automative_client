@@ -355,7 +355,7 @@ export default {
       if(status == 'Все') return false;
       state.detal = state.detal.filter(el => {
         if(status == "Не заказано" && el.metalloworking_kolvo < 1) return el
-        if(status == "Заказано" && el.metalloworking_kolvo > 1) return el
+        if(status == "Заказано" && el.metalloworking_kolvo > 0) return el
       })
     }
   }

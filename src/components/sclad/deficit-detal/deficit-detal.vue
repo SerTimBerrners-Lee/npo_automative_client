@@ -67,8 +67,10 @@
             <tr v-for='detal of allDetal' :key='detal'
               class='td-row'
               @click='setIzdels(detal)'>
-              <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-                <p class="checkbox_block" @click='e => toProduction(detal, e.target)'></p>
+              <td>
+                <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                  <p class="checkbox_block" @click='e => toProduction(detal, e.target)'></p>
+                </div>
               </td>
               <td class='center'>{{ detal.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>

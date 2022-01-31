@@ -48,7 +48,7 @@
             <td>{{ assemble?.cbed?.name || 'Нет СБ' }}</td>
             <td>{{ assemble?.cbed?.articl || 'Нет СБ' }}</td>
             <td class='center'>{{ assemble.kolvo_shipments }}</td>
-            <td class='center'>{{ assemble?.cbed?.shipments_kolvo || 'Нет СБ' }}</td>
+            <td class='center'>{{ assemble.cbed?.shipments_kolvo || 0 }}</td>
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>

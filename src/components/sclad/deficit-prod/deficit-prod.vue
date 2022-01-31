@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Дефицит продукции (комплектации изделий)</h3>
+    <h3>Дефицит Сборочных Едениц</h3>
     <div>
       <div class="block header_block">
         <DatePicterRange 
@@ -69,8 +69,10 @@
           <tr v-for='cbed of allCbed' :key='cbed' 
             class='td-row'
             @click='setIzdels(cbed)'>
-            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-              <p class="checkbox_block" @click='e => toProduction(cbed, e.target)'></p>
+            <td>
+              <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                <p class="checkbox_block" @click='e => toProduction(cbed, e.target)'></p>
+              </div>
             </td>
             <td class='center'>СБ</td>
             <td class='center link_img' @click='returnShipmentsDateModal(cbed.shipments)' >
@@ -140,7 +142,7 @@
         <div class='btn-control'>
           <button class="btn-small" @click='normTimeOperation'>Норма времени по операциям</button>
           <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
-          <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
+          <button class="btn-small" @click='$router.push("/addorder/false/false")'> Добавить заказ </button>
         </div>
       </div>
     </div>

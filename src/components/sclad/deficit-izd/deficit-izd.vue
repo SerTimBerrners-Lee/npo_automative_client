@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Дефицит Изделий</h3>
+    <h3>Дефицит Продукции</h3>
     <div>
       <div class="block header_block">
         <DatePicterRange 
@@ -30,7 +30,7 @@
         <table>
           <tbody class='fixed_table_85'>
             <tr>
-              <th colspan="5" class='min_width-120'>Изделие</th>
+              <th colspan="6" class='min_width-120'>Изделие</th>
               <th rowspan="3" class='min_width-120'>Дефицит</th>
               <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
               <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
@@ -40,12 +40,16 @@
               <th rowspan="3" class='min_width-120'>Норма времени на одну единицу (сборка+изготовл.)</th>
               <th rowspan="3" class='min_width-120'>СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
               <th rowspan="3" class='min_width-120'>Общая норма времени (сборка+изготовл.)</th>
+              <th rowspan="3" class='min_width-120'>Заказано на производстве</th>
               <th rowspan="3" class='min_width-120'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
               <th rowspan="3" class='min_width-120'>Уровень комплектации, %</th>
-              <th rowspan="3" class='min_width-120'>Дата последнего запуска</th>
+              <th rowspan="3" class='min_width-120'>Статус</th>
               <th rowspan="3" class='min_width-120'>Примечание</th>
             </tr>
             <tr>
+              <th @click='selectAllItem' style='cursor: pointer;'>
+                <unicon name="check" fill="royalblue" />
+              </th> 
               <th>№ Заказа</th>
               <th>Заводской номер</th>
               <th>Артикул</th>
@@ -65,6 +69,11 @@
           <tr v-for='product of allProduct' :key='product' 
             class='td-row'
             @click='setIzdels(product)'>
+            <td>
+              <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                <p class="checkbox_block" @click='e => toProduction(product, e.target)'></p>
+              </div>
+            </td>
             <td class='center link_img' @click='returnShipmentsDateModal(product.shipments)' >
               {{returnShipmentsKolvo(product.shipments)}}
             </td>
@@ -84,9 +93,10 @@
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ product?.my_kolvo || product.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>
             </td>
-            <td class='center min_width-100'>{{ product.product_kolvo + product.shipments_kolvo }}</td>
-            <td class='center min_width-100'>{{  }}</td>
-            <td v-if='product.shipments_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
+            <td class='center min_width-100'>{{ product.shipments_kolvo }}</td>  <!-- Заказано на производстве -->
+            <td class='center min_width-100'>{{ product.product_kolvo + product.assemble_kolvo }}</td>  <!-- Реальный остаток с уч. отгрузок -->
+            <td class='center min_width-100'>{{  }}</td>  <!-- Ур. комплектации -->
+            <td v-if='product.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
             <td v-else class='center min_width-100 work_operation'>Не заказано</td>
             <td class='center min_width-100'>
               <img src="@/assets/img/link.jpg" @click='openDescription(product.description)' class='link_img' atl='Показать' />
@@ -97,7 +107,7 @@
         <div class='btn-control'>
           <button class="btn-small" @click='normTimeOperation'>Норма времени по операциям</button>
           <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
-          <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
+          <button class="btn-small" @click='$router.push("/addorder/false/false")'> Добавить заказ </button>
         </div>
       </div>
     </div>
@@ -135,6 +145,11 @@
       :key='productModalKey'
       v-if='parametrs_product'
     />
+    <StartProduction 
+      v-if='parametrs'
+      :key='startProductionModalKey'
+      :parametrs='parametrs'
+    />
     <Loader v-if='loader' />
   </div>
 </template>
@@ -147,6 +162,7 @@ import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
+import StartProduction from '@/components/sclad/start-production-modal.vue';
 import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
@@ -167,12 +183,16 @@ export default {
       showNormTimeOperation: false,
       normTimeOperationKey: random(1, 999),
 
+      parametrs: null,
+      startProductionModalKey: random(1, 888),
+
       select_izd: null,
 
       loader: false,
       type_norm_time: 'cb',
 
       izdForSchipment: null,
+      toProductionArr: [],
 
       selectEnumStatus: 'Все',
       enumStatus: [
@@ -194,12 +214,12 @@ export default {
     ShipmentsMiniList,
     ShipmentsModal,
     Search,
-    ShipmentList
+    ShipmentList,
+    StartProduction
   },
   watch: {
     selectEnumStatus: function(val) {
-      this.changeStatusDeficitDetal(val)
-      this.changeStatusDeficitCbed(val)
+      this.changeStatusDeficitProduct(val)
     }
   },
   methods: {
@@ -210,8 +230,7 @@ export default {
     ...mapMutations([
       'searchProduct',
       'detalToShipmentsSort',
-      'changeStatusDeficitDetal',
-      'changeStatusDeficitCbed'
+      'changeStatusDeficitProduct',
     ]),
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
@@ -241,7 +260,7 @@ export default {
     },
     normTimeOperation() {
       if(!this.select_izd)
-        return showMessage('', 'Для начала выберите СБ', 'w', this)
+        return showMessage('', 'Для начала выберите Изделие', 'w', this)
       this.showNormTimeOperation = true;
       this.normTimeOperationKey = random(1, 999)
     },
@@ -284,6 +303,26 @@ export default {
     changeDatePicterRange(val) {
       console.log(val)
     },
+    toProduction(izd, e) {
+      e.classList.toggle('checkbox_block_select')
+      let check = true
+      for(let izdd of this.toProductionArr) {
+        if(izdd.id == izd.id) {
+          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id)
+          check = false
+        }
+      }
+      if(check) this.toProductionArr.push(izd)
+    },
+    start() {
+      if(!this.toProductionArr.length)
+        return showMessage('', 'Для начала выберите Изделие', 'w', this)
+      this.parametrs = {
+        izd: this.toProductionArr,
+        type: 'prod'
+      }
+      this.startProductionModalKey = random(1, 999)
+    },
   },
   async mounted() {
     this.loader = true
@@ -310,5 +349,4 @@ export default {
 th {
   font-size: 13px;
 }
-
 </style>

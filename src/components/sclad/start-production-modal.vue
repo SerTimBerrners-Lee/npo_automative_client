@@ -33,7 +33,9 @@
             <th>Кол-во</th>
           </tr>
           <tr v-for='izd of komplect' :key='izd'>
-            <td class='center'>{{ parametrs && parametrs.type == 'cb' ? "СБ" : "Д" }}</td>
+            <td class='center' v-if='parametrs.type == "cb"'>СБ</td>
+            <td class='center' v-if='parametrs.type == "det"'>Д</td>
+            <td class='center' v-if='parametrs.type == "prod"'>И</td>
             <td>{{ izd.articl }}</td>
             <td>{{ izd.name }}</td>
             <td class='center'>{{ izd.my_kolvo }}</td>
@@ -114,16 +116,17 @@ export default {
         if(komplect.my_kolvo == 0) continue;
         data['my_kolvo'] = komplect.my_kolvo
         data['shipments_kolvo'] = komplect.shipments_kolvo
-        if(this.$props.parametrs.type == 'cb') {
+        if(this.$props.parametrs.type == 'cb' || this.$props.parametrs.type == 'prod') {
           this.fetchCreateAssemble({
             ...data,
-            cbed_id: komplect.id
+            cbed_id: komplect.id,
+            type: this.$props.parametrs.type
           }).then(res => this.endResult(res, komplect.name))
         }
         if(this.$props.parametrs.type == 'det') {
           this.fetchCreateMetaloworking({
             ...data,
-            detal_id: komplect.id
+            detal_id: komplect.id,
           }).then(res => this.endResult(res, komplect.name))
         }
       }
@@ -143,11 +146,8 @@ export default {
     if(this.$props.parametrs) {
       this.komplect = this.$props.parametrs.izd
       for(let item of this.komplect) {
-        if(!item.my_kolvo || item.my_kolvo < 1) {
+        if(!item.my_kolvo || item.my_kolvo < 1) 
           item.my_kolvo = item.min_remaining
-          // showMessage('', 'Количество не должно быть больше 0', 'w', this)
-          // return this.destroyModalF()
-        }
       }
     }
   },

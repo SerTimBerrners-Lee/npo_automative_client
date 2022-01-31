@@ -7,8 +7,10 @@
 				<th>Дата отгрузки покупателю</th>
 			</tr>
 			<tr v-for='order of getShipments' :key='order'>
-				<td class='center_block checkbox_parent' style='height:20px; border: none; border-bottom: 1px solid #e4e4e4ce'>
-					<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
+				<td>
+					<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+						<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
+					</div>
 				</td>
 				<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
 				<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>

@@ -237,7 +237,7 @@ export default {
       if(status == 'Все') return false;
       state.cbed = state.cbed.filter(el => {
         if(status == "Не заказано" && el.assemble_kolvo < 1) return el
-        if(status == "Заказано" && el.assemble_kolvo > 1) return el
+        if(status == "Заказано" && el.assemble_kolvo > 0) return el
       })
     }
   }
