@@ -6,12 +6,24 @@
         <DatePicterRange 
           @unmount='changeDatePicterRange'  
         />
+        <span>Статусы: </span>
         <div>
           <select 
             class='select-small' 
             v-model='selectEnumStatus'>
             <option 
               v-for='item of enumStatus' 
+              :key='item' 
+              :value='item'>{{ item }}</option>
+          </select>
+        </div>
+        <span>Дефициты: </span>
+        <div>
+          <select 
+            class='select-small' 
+            v-model='selectEnumDeficit'>
+            <option 
+              v-for='item of enumDeficit' 
               :key='item' 
               :value='item'>{{ item }}</option>
           </select>
@@ -92,8 +104,8 @@
             <td class='center min_width-100'></td>
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ product?.my_kolvo || product.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>
-            </td>
-            <td class='center min_width-100'>{{ product.shipments_kolvo }}</td>  <!-- Заказано на производстве -->
+            </td> 
+            <td class='center min_width-100'>{{ product.assemble_kolvo }}</td>  <!-- Заказано на производстве -->
             <td class='center min_width-100'>{{ product.product_kolvo + product.assemble_kolvo }}</td>  <!-- Реальный остаток с уч. отгрузок -->
             <td class='center min_width-100'>{{  }}</td>  <!-- Ур. комплектации -->
             <td v-if='product.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
@@ -195,10 +207,16 @@ export default {
       toProductionArr: [],
 
       selectEnumStatus: 'Все',
+      selectEnumDeficit: 'Все',
       enumStatus: [
         'Все',
         'Заказано',
         'Не заказано'
+      ],
+      enumDeficit: [
+        'Все',
+        'Общий',
+        'По заказам покупателя'
       ],
 
       parametrs_product: null,
@@ -220,6 +238,9 @@ export default {
   watch: {
     selectEnumStatus: function(val) {
       this.changeStatusDeficitProduct(val)
+    },
+    selectEnumDeficit: function(val) {
+      this.changeKolDeficitProduct({status: val, deficit: this.returnDificit})
     }
   },
   methods: {
@@ -231,6 +252,9 @@ export default {
       'searchProduct',
       'detalToShipmentsSort',
       'changeStatusDeficitProduct',
+      'reverseMidlevareProduct',
+      'productToShipmentsSort',
+      'changeKolDeficitProduct'
     ]),
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
@@ -240,8 +264,7 @@ export default {
       this.searchProduct(v)
     },
     unmount_clear() {
-      this.reverseMidlevareCbed()
-      this.reverseMidlevareDetal()
+      this.reverseMidlevareProduct()
     },
     showInformIzdel(productId) {
       if(!productId) return false 
@@ -250,8 +273,7 @@ export default {
     },
     toSetOrders(shipments) {
       this.unmount_clear()
-      this.cbedToShipmentsSort(shipments.cbeds)
-      this.detalToShipmentsSort(shipments.detals)
+      this.productToShipmentsSort([shipments.product])
     },
     openDescription(description) {
       this.showDescriptionModal = true

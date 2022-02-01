@@ -168,6 +168,27 @@ export default {
         }
       }
     },
+    reverseMidlevareProduct(state) {
+      if(!state.middleware_state.length) return false
+      state.product = state.middleware_state
+      state.middleware_state = []
+    },
+    productToShipmentsSort(state, product) {
+      if(state.middleware_state.length == 0) {
+        state.middleware_state = state.product
+        state.product = []
+      }
+
+      for(let prod of product) {
+        if(!prod) continue;
+        let check = true
+        for(let prod_two of state.product) {
+          if(prod_two.id == prod.id) check = false
+        }
+        if(check) state.product.push(prod)
+        else check = false
+      }
+    },
     changeStatusDeficitProduct(state, status) {
       if(state.middleware_state.length < 1)
         state.middleware_state = state.product
@@ -177,6 +198,17 @@ export default {
       state.product = state.product.filter(el => {
         if(status == "Не заказано" && el.assemble_kolvo < 1) return el
         if(status == "Заказано" && el.assemble_kolvo > 0) return el
+      })
+    },
+    changeKolDeficitProduct(state, props) {
+      if(state.middleware_state.length < 1)
+        state.middleware_state = state.product
+
+      state.product = state.middleware_state
+      if(props.status == 'Все') return false; 
+      state.product = state.product.filter(el => {
+        if(props.status == "Общий" && props.deficit(el, el.product_kolvo) < 0) return el
+        if(props.status == "По заказам покупателя" && el.shipments_kolvo > 0) return el
       })
     }
   }
