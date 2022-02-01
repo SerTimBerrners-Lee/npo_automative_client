@@ -38,11 +38,11 @@
             v-for='assemble of getAssembles' :key='assemble'
             @click='e => setObject(assemble, e.target.parentElement)'
             class='td-row'>
-            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)' >
+            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)'> <!-- Дата готовности --> 
               {{returnShipmentsKolvo(assemble?.cbed?.shipments)}}
             </td>
-            <td>{{ assemble.date_order }}</td>
-            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)' >
+            <td>{{ assemble.date_order }}</td> <!-- Заказ склада -->
+            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)' > <!-- Дата готовности -->
               {{returnShipmentsKolvo(assemble?.cbed?.shipments, 2)}}
             </td>
             <td>{{ assemble?.cbed?.name || 'Нет СБ' }}</td>
