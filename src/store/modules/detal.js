@@ -357,6 +357,19 @@ export default {
         if(status == "Не заказано" && el.metalloworking_kolvo < 1) return el
         if(status == "Заказано" && el.metalloworking_kolvo > 0) return el
       })
+    },
+    changeDeficitDetal(state, props) {
+      if(state.middleware_detals.length < 1)
+        state.middleware_detals = state.detal
+
+      state.detal = state.middleware_detals
+      if(props.status == 'Все') return false; 
+      state.detal = state.detal.filter(el => {
+        if(props.status == "Общий" && props.deficit(el, el.detal_kolvo) < 0) return el
+        if(props.status == "По заказам покупателя" && el.shipments_kolvo > 0) return el
+      })
+
+      state.detal = state.detal.sort((a, b) => a - b) 
     }
   }
 }

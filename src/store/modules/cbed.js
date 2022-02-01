@@ -239,6 +239,19 @@ export default {
         if(status == "Не заказано" && el.assemble_kolvo < 1) return el
         if(status == "Заказано" && el.assemble_kolvo > 0) return el
       })
+    },
+    changeDeficitCbed(state, props) {
+      if(state.middleware_state.length < 1)
+        state.middleware_state = state.cbed
+      console.log(props)
+      state.cbed = state.middleware_state
+      if(props.status == 'Все') return false; 
+      state.cbed = state.cbed.filter(el => {
+        if(props.status == "Общий" && props.deficit(el, el.cbed_kolvo) < 0) return el
+        if(props.status == "По заказам покупателя" && el.shipments_kolvo > 0) return el
+      })
+
+      state.cbed = state.cbed.sort((a, b) => a - b) 
     }
   }
 }

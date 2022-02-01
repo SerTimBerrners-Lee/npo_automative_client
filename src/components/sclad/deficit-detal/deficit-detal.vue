@@ -6,12 +6,24 @@
         <DatePicterRange 
           @unmount='changeDatePicterRange'  
         />
+        <span>Статусы: </span>
         <div>
           <select 
             class='select-small' 
             v-model='selectEnumStatus'>
             <option 
               v-for='item of enumStatus' 
+              :key='item' 
+              :value='item'>{{ item }}</option>
+          </select>
+        </div>
+        <span>Дефициты: </span>
+        <div>
+          <select 
+            class='select-small' 
+            v-model='selectEnumDeficit'>
+            <option 
+              v-for='item of enumDeficit' 
               :key='item' 
               :value='item'>{{ item }}</option>
           </select>
@@ -35,6 +47,7 @@
                 <th rowspan="3" class='min_width-100'>Кол-во на производстве</th>
                 <th rowspan="3" class='min_width-100'>Дефицит деталей</th>
                 <th rowspan="3" class='min_width-100'>СВОЕ кол-во в производство</th>
+                <th rowspan="3" class='min_width-120'>Заказано на производстве</th>
                 <th rowspan="3" class='min_width-100'>ЧПУ</th>
                 <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th>
                 <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th>
@@ -82,6 +95,7 @@
               <td class='center'>{{ detal.metalloworking_kolvo }}</td>
               <td class='center' style='color: red;'>{{returnDificit(detal, detal.detal_kolvo)}}</td> <!-- Дефицит -->
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal?.my_kolvo || detal.min_remaining * 3  }}</td>
+              <td class='center'>{{ detal.metalloworking_kolvo }}</td> <!-- Количество в производстве -->
               <td class='center'>{{ returnZnachCPU(detal) }}</td>
               <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).preTime.znach : ''}}</td>
               <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).helperTime.znach : '' }}</td>
@@ -197,11 +211,17 @@ export default {
       izdForSchipment: null,
       
       selectEnumStatus: 'Все',
+      selectEnumDeficit: 'Все',
       enumStatus: [
         'Все',
         'Заказано',
         'Не заказано'
-      ]
+      ],
+      enumDeficit: [
+        'Все',
+        'Общий',
+        'По заказам покупателя'
+      ],
     }
   },
   computed: mapGetters(['allDetal', 'getShipments']),
@@ -219,8 +239,11 @@ export default {
   watch: {
     selectEnumStatus: function(val) {
       this.changeStatusDeficitDetal(val)
+    },
+    selectEnumDeficit: function(val) {
+      this.changeDeficitDetal({status: val, deficit: this.returnDificit})
     }
-  },
+  }, 
   methods: {
     ...mapActions(['setchDeficitDeficit', 'getOneDetal', 'fetchAllShipments']),
     ...mapMutations([
@@ -228,9 +251,9 @@ export default {
       'detalToShipmentsSort',
       'reverseMidlevareDetal',
       'changeStatusDeficitDetal',
+      'changeDeficitDetal',
     ]),
     unmount_clear() {
-      this.reverseMidlevareCbed()
       this.reverseMidlevareDetal()
     },
     returnZnachCPU(detal) {
@@ -240,7 +263,6 @@ export default {
         if(item?.typeOperation?.cpu) return 'да'
       }
       return 'нет'
-
     },
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
@@ -248,7 +270,6 @@ export default {
     },
     toSetOrders(shipments) {
       this.unmount_clear()
-      this.cbedToShipmentsSort(shipments.cbeds)
       this.detalToShipmentsSort(shipments.detals)
     },
     keySearch(v) {

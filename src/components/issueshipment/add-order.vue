@@ -610,7 +610,7 @@ export default {
 			this.kol = this.getOneShipments.kol
 			this.bron = this.getOneShipments.bron
 			this.base = this.getOneShipments.base
-			this.buyer = this.getOneShipments?.buyer?.id
+			this.buyer = this.getOneShipments.buyer?.id
 			this.to_sklad = this.getOneShipments.to_sklad
 			if(this.getOneShipments.product) {
 				this.getAllProductByIdLight(this.getOneShipments.product.id)

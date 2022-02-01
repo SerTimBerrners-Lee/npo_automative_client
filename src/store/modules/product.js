@@ -210,6 +210,8 @@ export default {
         if(props.status == "Общий" && props.deficit(el, el.product_kolvo) < 0) return el
         if(props.status == "По заказам покупателя" && el.shipments_kolvo > 0) return el
       })
+
+      state.product = state.product.sort((a, b) => a - b) 
     }
   }
 }

@@ -6,12 +6,24 @@
         <DatePicterRange 
           @unmount='changeDatePicterRange'  
         />
+        <span>Статусы: </span>
         <div>
           <select 
             class='select-small' 
             v-model='selectEnumStatus'>
             <option 
               v-for='item of enumStatus' 
+              :key='item' 
+              :value='item'>{{ item }}</option>
+          </select>
+        </div>
+        <span>Дефициты: </span>
+        <div>
+          <select 
+            class='select-small' 
+            v-model='selectEnumDeficit'>
+            <option 
+              v-for='item of enumDeficit' 
               :key='item' 
               :value='item'>{{ item }}</option>
           </select>
@@ -30,7 +42,7 @@
         <table>
           <tbody class='fixed_table_85'>
             <tr>
-              <th colspan="6" class='min_width-120'>Комплектация сборки, детали</th>
+              <th colspan="5" class='min_width-120'>Комплектация сборки, детали</th>
               <th rowspan="3" class='min_width-120'>Дефицит</th>
               <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
               <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
@@ -40,6 +52,7 @@
               <th rowspan="3" class='min_width-120'>Норма времени на одну единицу (сборка+изготовл.)</th>
               <th rowspan="3" class='min_width-120'>СВОЕ кол-во(по умолч. равно рекоменд. кол-ву)</th>
               <th rowspan="3" class='min_width-120'>Общая норма времени (сборка+изготовл.)</th>
+              <th rowspan="3" class='min_width-120'>Заказано на производстве</th>
               <th rowspan="3" class='min_width-120'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
               <th rowspan="3" class='min_width-120'>Уровень комплектации, %</th>
               <th rowspan="3" class='min_width-120'>Статус</th>
@@ -51,7 +64,6 @@
                 <unicon name="check" fill="royalblue" />
               </th> 
               <th>Тип</th>
-              <th>№ Заказа</th>
               <th>Артикул</th>
               <th>Наименование</th>
               <th>Принадлежность</th>
@@ -75,9 +87,6 @@
               </div>
             </td>
             <td class='center'>СБ</td>
-            <td class='center link_img' @click='returnShipmentsDateModal(cbed.shipments)' >
-              {{returnShipmentsKolvo(cbed.shipments)}}
-            </td>
             <td class='center'>{{ cbed.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(cbed.id, 'cbed')">{{ cbed.name }}</td>
             <td class='center' @click='returnShipmentsDateModal(cbed, "cbed")'>
@@ -93,9 +102,10 @@
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed?.my_kolvo || cbed.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>{{ cbed.parametrs ? 
               Number(JSON.parse(cbed.parametrs)[0].znach) * cbed.shipments_kolvo
-              : '' }}</td>
+              : '' }}</td> <!-- Общее время выполения на сборку  -->
+            <td class='center min_width-100'>{{ cbed.assemble_kolvo }}</td> <!-- Заказано на производстве -->
             <td class='center min_width-100'>{{ cbed.cbed_kolvo +  returnProductionColvo(cbed) }}</td>
-            <td class='center min_width-100'>{{  }}</td>
+            <td class='center min_width-100'>{{  }}</td> <!-- Уровень компленктации -->
             <td v-if='cbed.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
             <td v-else class='center min_width-100 work_operation'>Не заказано</td>
             <td class='center min_width-100'>{{ cbed.assemble && cbed.assemble.length ? cbed.assemble[cbed.assemble.length - 1].date_order : '' }}</td>
@@ -110,9 +120,6 @@
             <td class='center checkbox_parent' >
             </td>
             <td class='center'> Д </td>
-            <td class='center link_img' @click='returnShipmentsDateModal(detal.shipments)' >
-              {{returnShipmentsKolvo(detal.shipments)}}
-            </td>
             <td class='center'>{{ detal.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(detal.id, 'detal')">{{ detal.name }}</td>
             <td class='center' @click='returnShipmentsDateModal(detal, "detal")'>
@@ -129,6 +136,7 @@
             <td class='center'>{{ detal.parametrs ? 
               getTimming(detal.parametrs, detal.shipments_kolvo)
               : '' }}</td>
+            <td class='center min_width-100'>{{ detal.metalloworking_kolvo }}</td> <!-- Заказано на производстве -->
             <td class='center'>{{ 0 }}</td>
             <td class='center'>{{  }}</td>
             <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
@@ -241,11 +249,17 @@ export default {
       izdForSchipment: null,
 
       selectEnumStatus: 'Все',
+      selectEnumDeficit: 'Все',
       enumStatus: [
         'Все',
         'Заказано',
         'Не заказано'
-      ]
+      ],
+      enumDeficit: [
+        'Все',
+        'Общий',
+        'По заказам покупателя'
+      ],
     }
   },
   computed: mapGetters(['allCbed', 'allDetal', 'getShipments']),
@@ -265,6 +279,10 @@ export default {
     selectEnumStatus: function(val) {
       this.changeStatusDeficitDetal(val)
       this.changeStatusDeficitCbed(val)
+    },
+    selectEnumDeficit: function(val) {
+      this.changeDeficitDetal({status: val, deficit: this.returnDificit})
+      this.changeDeficitCbed({status: val, deficit: this.returnDificit})
     }
   },
   methods: {
@@ -280,7 +298,9 @@ export default {
       'reverseMidlevareCbed',
       'reverseMidlevareDetal',
       'changeStatusDeficitDetal',
-      'changeStatusDeficitCbed'
+      'changeStatusDeficitCbed',
+      'changeDeficitDetal',
+      'changeDeficitCbed'
     ]),
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 

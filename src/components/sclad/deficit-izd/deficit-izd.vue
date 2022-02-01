@@ -42,7 +42,7 @@
         <table>
           <tbody class='fixed_table_85'>
             <tr>
-              <th colspan="6" class='min_width-120'>Изделие</th>
+              <th colspan="5" class='min_width-120'>Изделие</th>
               <th rowspan="3" class='min_width-120'>Дефицит</th>
               <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
               <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
@@ -61,8 +61,7 @@
             <tr>
               <th @click='selectAllItem' style='cursor: pointer;'>
                 <unicon name="check" fill="royalblue" />
-              </th> 
-              <th>№ Заказа</th>
+              </th>
               <th>Заводской номер</th>
               <th>Артикул</th>
               <th>Наименование</th>
@@ -85,9 +84,6 @@
               <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
                 <p class="checkbox_block" @click='e => toProduction(product, e.target)'></p>
               </div>
-            </td>
-            <td class='center link_img' @click='returnShipmentsDateModal(product.shipments)' >
-              {{returnShipmentsKolvo(product.shipments)}}
             </td>
             <td class='center'>{{ product.fabricNumber }}</td>
             <td class='center'>{{ product.articl }}</td>
@@ -299,6 +295,7 @@ export default {
     },
     returnShipmentsDateModal(izd, type) {
       let shipments = izd.shipments
+      console.log(izd.shipments)
       if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
       this.shipments = shipments
       this.izdForSchipment = {izd, type}

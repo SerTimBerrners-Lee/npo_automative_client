@@ -246,7 +246,7 @@ export default {
 			this.kol = this.getOneShipments.kol
 			this.bron = this.getOneShipments.bron
 			this.base = this.getOneShipments.base
-			this.buyer = this.getOneShipments.id
+			this.buyer = this.getOneShipments.buyer?.id
 			this.to_sklad = this.getOneShipments.to_sklad
 			this.number_order = this.getOneShipments.number_order
 			if(this.getOneShipments.product) {
@@ -282,7 +282,8 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-		this.fetchAllBuyers()
+		await this.fetchAllBuyers()
+		console.log(this.allBuyer)
 		await this.fetchAllShipments({ sort: undefined, light: false })
 
 		this.list_cbed_detal = []
