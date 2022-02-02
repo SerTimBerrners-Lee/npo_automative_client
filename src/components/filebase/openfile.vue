@@ -269,7 +269,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-    this.getAllUsers()
+    this.getAllUsers(true)
     if(this.parametrs.type == 'create') {
       return 0;
     }

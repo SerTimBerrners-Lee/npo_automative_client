@@ -20,11 +20,18 @@ export default {
   actions: { 
     async fetchFiles(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/documents`)
-
+      if(!res.ok) return false
       const result = await res.json()
       ctx.commit('updateFiles', result);
       ctx.commit('getNoBanFiles');
-      ctx.commit('getBannedFiles');
+    },
+
+    async fetchBannedFiles(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/banned/all/${ctx.state.banFiles.length}`)
+      if(!res.ok) return false;
+      const result = await res.json()
+      if(result?.length)
+        ctx.commit('getBannedFiles', result)
     },
 
     async fetchFilesNames() {
@@ -129,8 +136,11 @@ export default {
     getNoBanFiles(state) {
       state.noBanFiles = state.files.filter(f => !f.banned)
     },
-    getBannedFiles(state){
-      state.banFiles = state.files.filter(f => f.banned)
+    getBannedFiles(state, files = []){
+      if(files.length == 0)
+        state.banFiles = state.files.filter(f => f.banned)
+      if(files.length)
+        state.banFiles = files.filter(f => f.banned)
     },
     searchToFiles(state, str) {
       if(!state.filterFiles.length)

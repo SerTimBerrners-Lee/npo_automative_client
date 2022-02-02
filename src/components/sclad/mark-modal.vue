@@ -165,7 +165,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
 		this.loader = true
-		await this.getAllUsers()
+		await this.getAllUsers(true)
 		await this.getAllTypeOperations()
 
 		if(this.$props.parametrs) {

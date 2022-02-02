@@ -261,7 +261,7 @@ export default {
     this.loader = true
     await this.fetchAllEquipmentType()
     await this.getAllEdizm()
-    await this.getAllUsers()
+    await this.getAllUsers(true)
     await this.getAllEquipmentPType()
     this.loader = false
   }

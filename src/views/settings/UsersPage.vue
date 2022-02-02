@@ -244,7 +244,7 @@ export default {
       this.banUserById(this.id).then(mes => {
         showMessage('', mes.message, mes.type, this)
         if(mes.type == 's') 
-          this.getAllUsers()
+          this.getAllUsers(true)
       })
     },
     openNewWindow(url) {

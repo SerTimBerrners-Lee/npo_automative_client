@@ -339,7 +339,7 @@ export default {
     await this.fetchOneEquipment(this.$route.params.id)
     await this.getAllEdizm()
     await this.checkedUpdate()
-    await this.getAllUsers()
+    await this.getAllUsers(true)
     this.loader = false
   }
 }

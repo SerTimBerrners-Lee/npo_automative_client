@@ -25,7 +25,7 @@
       @dblclick="dbEvent(file)"
       :class='file.banned ? "del_background" : ""'
       >
-      <td class='center' style="width: 10px">{{ inx }}</td>
+      <td class='center' style="width: 10px">{{ inx + 1 }}</td>
       <td style="width: 10px">{{ file.type }}</td>
       <td width="400px">{{ file.name }}</td>
       <td width="100px">{{ file.updatedAt ?

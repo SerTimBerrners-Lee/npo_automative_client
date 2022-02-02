@@ -53,7 +53,7 @@ export default {
     this.destroyModalLeft = 'left-block-modal'
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
-    this.getAllUsers()
+    this.getAllUsers(true)
   },
 }
 </script>
