@@ -45,12 +45,15 @@ export default {
       if(!res.ok) return false
 
       const result = await res.json()
+      let cbeds = []
       if(result.length) {
         for(let inx in result) {
           result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['cbed_kolvo']
+          if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
+            cbeds.push(result[inx])
         }
       }
-      ctx.commit('addAllCbed', result)
+      ctx.commit('addAllCbed', cbeds)
       return result 
     },
     async setchDeficitDeficit(ctx) {
@@ -58,27 +61,34 @@ export default {
       if(!res.ok) return false
 
       const result = await res.json()
+      let detals = []
       if(result.length) {
         for(let inx in result) {
           result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['detal_kolvo']
+          if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
+            detals.push(result[inx])
         }
       }
-      ctx.commit('setDetalMutation', result)
+      ctx.commit('setDetalMutation', detals)
       return result
     },
     async setchDeficitProducts(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/product`)
-      if(res.ok) {
-        const result = await res.json()
-        if(result.length) {
-          for(let inx in result) {
-            result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['product_kolvo']
-          }
+      if(!res.ok) return false;
+      const result = await res.json()
+
+      let products = []
+      if(result.length) {
+        for(let inx in result) {
+          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['product_kolvo']
+          if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
+            products.push(result[inx])
         }
-        
-        ctx.commit('addAllProduct', result)
-        return result 
       }
+      
+      ctx.commit('addAllProduct', products)
+      return result 
+      
     },
   },
   mutations: {

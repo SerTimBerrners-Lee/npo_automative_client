@@ -49,26 +49,29 @@ export default {
 
     async getAllArticlProduct() {
       const res = await fetch(`${PATH_TO_SERVER}api/product/articl`)
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      if(!res.ok) return false
+      const result = await res.json()
+      return result
     },
 
     async getAllProductByIdLight(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/light/${id}`)
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      if(!res.ok) return false
+      const result = await res.json()
+      return result
     },
 
     async getAllProductById(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/one/${id}`)
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      if(!res.ok) return false
+      const result = await res.json()
+      return result
+    },
+
+    async getAllProductShipmentsById(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/shipments/${id}`)
+      if(!res.ok) return false
+      return await res.json()
     },
 
     async updateProduct(ctx, data) {

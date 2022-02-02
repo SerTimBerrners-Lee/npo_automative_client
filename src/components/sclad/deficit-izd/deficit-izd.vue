@@ -242,7 +242,8 @@ export default {
   methods: {
     ...mapActions([
       'setchDeficitProducts', 
-      'fetchAllShipments'
+      'fetchAllShipments',
+      'getAllProductShipmentsById'
     ]),
     ...mapMutations([
       'searchProduct',
@@ -295,8 +296,15 @@ export default {
     },
     returnShipmentsDateModal(izd, type) {
       let shipments = izd.shipments
-      console.log(izd.shipments)
-      if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
+      if(izd.shipments == undefined) {
+        this.getAllProductShipmentsById(izd.id).then(res => {
+          this.shipments = res.shipments
+          this.izdForSchipment = {izd, type}
+          this.shipmentKey = random(1, 999)
+        })
+      }
+      if(shipments && shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
+      if(!shipments) return;
       this.shipments = shipments
       this.izdForSchipment = {izd, type}
       this.shipmentKey = random(1, 999)

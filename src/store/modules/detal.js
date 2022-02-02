@@ -199,7 +199,11 @@ export default {
         for(let det_two of state.detal) {
           if(det_two.id == det.id) check = false
         }
-        if(check) state.detal.push(det)
+        if(check) {
+          for(const item of state.middleware_detals) {
+            if(item.id == det.id) state.detal.push(item)
+          }
+        }
         else check = false
       }
     },

@@ -128,7 +128,11 @@ export default {
         for(let cb_two of state.cbed) {
           if(cb_two.id == cb.id) check = false
         }
-        if(check) state.cbed.push(cb)
+        if(check) {
+          for(const item of state.middleware_state) {
+            if(item.id == cb.id) state.cbed.push(item)
+          }
+        }
         else check = false
       }
     },
