@@ -223,7 +223,7 @@ const routes = [
   },
   {
     path: '/deficitprod',
-    name: 'Дефицит продукции',
+    name: 'Дефицит сборок',
     component: DeficitProd
   },
   {

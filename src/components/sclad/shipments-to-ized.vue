@@ -70,8 +70,9 @@ export default {
         let count = 0;
         const list = JSON.parse(item.list_cbed_detal)
         const listTwo = JSON.parse(item.list_hidden_cbed_detal)
-        for(const obj of [].concat(list, listTwo)) {
-          if(obj.type == type && obj.obj.id == izd.id) count += item.kol  
+        const arr = [].concat(list, listTwo)
+        for(const obj of arr) {
+          if(obj.type == type && obj.obj.id == izd.id) count += obj.kol  
         }
         return count;
       } catch (err) {console.error(err)}
@@ -110,7 +111,6 @@ export default {
         this.shipments_arr[ship1].number_order = char.join('')
       }
     }
-    
   },
 }
 </script>
@@ -119,7 +119,7 @@ export default {
 .out-btn-control {
   width: 96%;
 }
-table{ 
+table { 
   width: 100%;
   margin-bottom: 50px;
 }

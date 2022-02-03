@@ -36,6 +36,7 @@
           v-if='getShipments.length'
           @unmount_set='toSetOrders'
           @unmount_clear='unmount_clear'
+          @unmount_action='unmount_action'
           :getShipments='getShipments'/>
       </div>
       <div style='margin-left: 5px;'>
@@ -93,7 +94,7 @@
             </td>
             <td class='center min_width-100' style='color: red;'>{{ returnDificit(product, product.product_kolvo) }}</td> <!-- Дефицит -->
             <td class='center min_width-100' style='color: red;'>{{ -product.shipments_kolvo }}</td> <!-- Дефицит по Заказам покупател  -->
-            <td class='center min_width-100' style='color: red;'>{{ -product.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+            <td class='center min_width-100'>{{ product.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ product.product_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ product?.min_remaining }}</td> <!-- Минимальный остаток -->
             <td class='center min_width-100'>{{ product?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
@@ -158,7 +159,7 @@
       :key='startProductionModalKey'
       :parametrs='parametrs'
     />
-    <Loader v-if='loader' />
+    <Loader v-if='loader' :key='new Date().getTime()' />
   </div>
 </template>
 <script>
@@ -254,14 +255,17 @@ export default {
       'changeKolDeficitProduct'
     ]),
     returnDificit(izd, kol) {
-      return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
-        0 : kol - izd.min_remaining - izd.shipments_kolvo
+      return kol - izd.min_remaining  > 0 ? 
+        0 : kol - izd.min_remaining
     },
     keySearch(v) {
       this.searchProduct(v)
     },
     unmount_clear() {
       this.reverseMidlevareProduct()
+    },
+    unmount_action() {
+      this.loader = true
     },
     showInformIzdel(productId) {
       if(!productId) return false 
@@ -271,6 +275,7 @@ export default {
     toSetOrders(shipments) {
       this.unmount_clear()
       this.productToShipmentsSort([shipments.product])
+      this.loader = false
     },
     openDescription(description) {
       this.showDescriptionModal = true

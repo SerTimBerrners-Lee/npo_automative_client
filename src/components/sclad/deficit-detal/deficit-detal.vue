@@ -42,22 +42,24 @@
             <tbody class='fixed_table_85'>
               <tr>
                 <th colspan="4" class='min_width-100'>Детали для сборок из комплектации</th>
-                <th rowspan="3" class='min_width-100'>Необх. кол-во на дефицит по комплектациям</th>
-                <th rowspan="3" class='min_width-100'>Остаток на складе</th>
-                <th rowspan="3" class='min_width-100'>Кол-во на производстве</th>
-                <th rowspan="3" class='min_width-100'>Дефицит деталей</th>
-                <th rowspan="3" class='min_width-100'>СВОЕ кол-во в производство</th>
-                <th rowspan="3" class='min_width-120'>Заказано на производстве</th>
+                
+                <th rowspan="3" class='min_width-120'>Дефицит</th>
+                <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
+                <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
+                <th rowspan="3" class='min_width-120'>Остаток</th>
+                <th rowspan="3" class='min_width-120'>Минимальный остаток</th>
+                <th rowspan="3" class='min_width-120'>Рекомендуемый остаток</th>
                 <th rowspan="3" class='min_width-100'>ЧПУ</th>
-                <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th>
-                <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th>
-                <th rowspan="3" class='min_width-100'>Норма времени (основное), ч</th>
-                <th rowspan="3" class='min_width-100'>Норма времени (общее на парт.), ч</th>
-                <th rowspan="3" class='min_width-100'>Уровень комплектации, %</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th> 
+                <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th> 
+                <th rowspan="3" class='min_width-100'>Норма времени (основное), ч</th> 
+                <th rowspan="3" class='min_width-100'>Норма времени (общее на парт.), ч</th> 
+                <th rowspan="3" class='min_width-100'>СВОЕ кол-во (по ум. = рекомендуемому. кол-ву)</th>
+                <th rowspan="3" class='min_width-120'>Заказано на производстве</th> 
+                <th rowspan="3" class='min_width-120'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th> <!-- остаток с учетом -->
                 <th rowspan="3" class='min_width-100'>Статус</th>
-                <th rowspan="3" class='min_width-100'>Дата последнего запуска</th>
-                <th rowspan="3" class='min_width-100'>№ последнего Заказа</th>
-                <th rowspan="3" class='min_width-100'>Примечание</th>
+                <th rowspan="3" class='min_width-100'>Техпроцесс</th>
+                <th rowspan="3" class='min_width-100'>Примечание</th> 
               </tr>
               <tr>
                 <th @click='selectAllItem' style='cursor: pointer;'>
@@ -88,33 +90,40 @@
               <td class='center'>{{ detal.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>
               <td class='center' @click='returnShipmentsDateModal(detal, "detal")'>
-                <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
+                <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
               </td>
-              <td class='center'>{{ detal.shipments_kolvo }}</td>
-              <td class='center'>{{ detal.detal_kolvo }}</td>
-              <td class='center'>{{ detal.metalloworking_kolvo }}</td>
-              <td class='center' style='color: red;'>{{returnDificit(detal, detal.detal_kolvo)}}</td> <!-- Дефицит -->
-              <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>{{ detal?.my_kolvo || detal.min_remaining * 3  }}</td>
-              <td class='center'>{{ detal.metalloworking_kolvo }}</td> <!-- Количество в производстве -->
-              <td class='center'>{{ returnZnachCPU(detal) }}</td>
-              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).preTime.znach : ''}}</td>
-              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).helperTime.znach : '' }}</td>
-              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).mainTime.znach : ''}}</td>
-              <td class='center'>{{ getTimming(detal.parametrs, detal.shipments_kolvo) }}</td>
-              <td class='center'></td>
+
+              <td class='center' style='color: red;'>{{ returnDificit(detal, detal.detal_kolvo) }}</td> <!-- Дефицит -->
+              <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
+              <td class='center min_width-100'>{{ detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+              <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
+              <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->
+              <td class='center'>{{ detal?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
+              <td class='center'>{{ returnZnachCPU(detal) }}</td> <!-- ЧПУ --->
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).preTime.znach : ''}}</td> <!-- Норма времени (подготовительное) -->
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).helperTime.znach : '' }}</td><!-- Норма времени (вспомогательное) -->
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).mainTime.znach : ''}}</td><!-- Норма времени (основное) -->
+              <td class='center'>{{ getTimming(detal.parametrs, detal.shipments_kolvo) }}</td><!-- Норма времени (общее на парт.) -->
+              <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>
+                  {{ detal?.my_kolvo || detal.min_remaining * 3  }}
+              </td> <!-- СВОЕ кол-во -->
+              <td class='center'>{{ detal.metalloworking_kolvo }}</td><!-- Заказано на производстве -->
+              <td class='center'>{{ detal.detal_kolvo + detal.metalloworking_kolvo  }}</td> <!-- Реальный остаток с учетом -->
               <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
-              <td v-else class='center min_width-100 work_operation'>Не заказано</td>
-              <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].date_order : '' }}</td>
-              <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].number_order : '' }}</td>
+              <td v-else class='center min_width-100 work_operation'>Не заказано</td> <!-- Статус -->
+              <td class='center'>
+                <img src="@/assets/img/link.jpg" @click='showTechProcess(detal)' class='link_img' atl='Показать' />
+              </td><!-- Техпроцесс -->
               <td class='center'>
                 <img src="@/assets/img/link.jpg" @click='openDescription(detal.description)' class='link_img' atl='Показать' />
-              </td>
+              </td><!-- Примечание -->
           </tr>
           </table>
-           <div class='btn-control'>
-              <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
-              <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
-            </div>
+
+          <div class='btn-control'>
+            <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
+            <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
+          </div>
         </div>
       </div>
     </div>
@@ -132,11 +141,6 @@
       v-if='showShipment'
       :key='shipmentKey'
       @unmount='unmount_sh_list'
-    />
-    <ProductListModal
-      v-if='productListForIzd'
-      :key='keyParentsModal'
-      :parametrs='productListForIzd'
     />
     <InformFolder  
       :title='titleMessage'
@@ -156,6 +160,12 @@
       v-if='shipments.length'
       :key='shipmentKey'
     />
+    <TechProcess 
+      v-if='techProcessID'
+      :key='techProcessKey'
+      @unmount='unmount_tech_process'
+      :techProcessID='techProcessID'
+    />
 
     <Loader v-if='loader' />
   </div>
@@ -170,8 +180,8 @@ import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
+import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import StartPraduction from '@/components/sclad/start-production-modal.vue';
-import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 export default {
@@ -190,9 +200,6 @@ export default {
       parametrs: null,
 
       description: '',
-
-      keyParentsModal: random(1, 999),
-      productListForIzd: null,
 
       selectShipment: [],
       toProductionArr: [],
@@ -222,6 +229,9 @@ export default {
         'Общий',
         'По заказам покупателя'
       ],
+
+      techProcessKey: random(1, 999),
+      techProcessID: null
     }
   },
   computed: mapGetters(['allDetal', 'getShipments']),
@@ -229,12 +239,12 @@ export default {
     DatePicterRange, 
     StartPraduction, 
     DescriptionModal, 
-    ShipmentsMiniList, 
-    ProductListModal,
+    ShipmentsMiniList,
     DetalModal,
     Search,
     ShipmentList,
-    ShipmentsModal
+    ShipmentsModal,
+    TechProcess
   },
   watch: {
     selectEnumStatus: function(val) {
@@ -245,7 +255,7 @@ export default {
     }
   }, 
   methods: {
-    ...mapActions(['setchDeficitDeficit', 'getOneDetal', 'fetchAllShipments']),
+    ...mapActions(['setchDeficitDeficit', 'fetchAllShipments']),
     ...mapMutations([
       'filterDetalToArticle',
       'detalToShipmentsSort',
@@ -265,8 +275,8 @@ export default {
       return 'нет'
     },
     returnDificit(izd, kol) {
-      return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
-        0 : kol - izd.min_remaining - izd.shipments_kolvo
+      return kol - izd.min_remaining > 0 ? 
+        0 : kol - izd.min_remaining
     },
     toSetOrders(shipments) {
       this.unmount_clear()
@@ -277,6 +287,9 @@ export default {
     },
     unmount_sh_list(res) {
       if(res) this.fetchAllShipmentsSclad(true)
+    },
+    unmount_tech_process() {
+      this.techProcessID = null
     },
     returnShipmentsDateModal(izd, type) {
       let shipments = izd.shipments
@@ -331,12 +344,6 @@ export default {
         console.error(e)
       }
     },
-    showParents(detal, type) {
-      this.getOneDetal(detal.id).then(res => {
-        this.productListForIzd = { products: res.products, cbeds: res.cbed, type, id: detal.id }
-        this.keyParentsModal = random(1, 999)
-      })
-    },
     openDescription(description) {
       this.showDescriptionModal = true
       this.descriptionKey = random(1, 999)
@@ -354,7 +361,12 @@ export default {
 		},
     changeDatePicterRange(val) {
       console.log(val)
-    }
+    },
+    showTechProcess(detal) {
+      if(!detal.techProcesses) return showMessage('', 'Нет Технологического процесса', 'w', this)
+      this.techProcessID = detal.techProcesses.id
+      this.techProcessKey = random(1, 999)
+    },
   },
   async mounted() {
     this.loader = true

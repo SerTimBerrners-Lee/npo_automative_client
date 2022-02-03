@@ -56,7 +56,6 @@
               <th rowspan="3" class='min_width-120'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th>
               <th rowspan="3" class='min_width-120'>Уровень комплектации, %</th>
               <th rowspan="3" class='min_width-120'>Статус</th>
-              <th rowspan="3" class='min_width-120'>Дата последнего запуска</th>
               <th rowspan="3" class='min_width-120'>Примечание</th>
             </tr>
             <tr>
@@ -94,7 +93,7 @@
             </td>
             <td class='center min_width-100' style='color: red;'>{{ returnDificit(cbed, cbed.cbed_kolvo) }}</td> <!-- Дефицит -->
             <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
-            <td class='center min_width-100' style='color: red;'>{{ -cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+            <td class='center min_width-100'>{{ cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.cbed_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ cbed?.min_remaining }}</td> <!-- Минимальный остаток -->
             <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
@@ -103,17 +102,15 @@
             <td class='center min_width-100'>{{ cbed.parametrs ? 
               Number(JSON.parse(cbed.parametrs)[0].znach) * cbed.shipments_kolvo
               : '' }}</td> <!-- Общее время выполения на сборку  -->
-            <td class='center min_width-100'>{{ cbed.assemble_kolvo }}</td> <!-- Заказано на производстве -->
-            <td class='center min_width-100'>{{ cbed.cbed_kolvo +  returnProductionColvo(cbed) }}</td>
+            <td class='center min_width-100'>{{ cbed.assemble_kolvo }}</td> <!-- Заказано на производстве --> 
+            <td class='center min_width-100'>{{ cbed.cbed_kolvo + cbed.assemble_kolvo }}</td> <!-- Реальный остаток с учетом -->
             <td class='center min_width-100'>{{  }}</td> <!-- Уровень компленктации -->
             <td v-if='cbed.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
             <td v-else class='center min_width-100 work_operation'>Не заказано</td>
-            <td class='center min_width-100'>{{ cbed.assemble && cbed.assemble.length ? cbed.assemble[cbed.assemble.length - 1].date_order : '' }}</td>
             <td class='center min_width-100'>
               <img src="@/assets/img/link.jpg" @click='openDescription(cbed.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
-
           
           <tr v-for='detal of allDetal' :key='detal' 
             class='td-row'>
@@ -123,11 +120,11 @@
             <td class='center'>{{ detal.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(detal.id, 'detal')">{{ detal.name }}</td>
             <td class='center' @click='returnShipmentsDateModal(detal, "detal")'>
-              <img src="@/assets/img/link.jpg" @click='showParents(detal, "det")' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
             <td class='center' style='color: red;'>{{ returnDificit(detal, detal.detal_kolvo) }}</td> <!-- Дефицит -->
             <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
-            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+            <td class='center min_width-100'>{{ detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
             <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->
             <td class='center'>{{ detal?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
@@ -137,11 +134,10 @@
               getTimming(detal.parametrs, detal.shipments_kolvo)
               : '' }}</td>
             <td class='center min_width-100'>{{ detal.metalloworking_kolvo }}</td> <!-- Заказано на производстве -->
-            <td class='center'>{{ 0 }}</td>
-            <td class='center'>{{  }}</td>
+            <td class='center'>{{ detal.detal_kolvo + detal.metalloworking_kolvo  }}</td> <!-- Реальный остаток с учетом -->
+            <td class='center'>{{  }}</td> <!-- Уровень компленктации -->
             <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
             <td v-else class='center min_width-100 work_operation'>Не заказано</td>
-            <td class='center'>{{ detal.metaloworking && detal.metaloworking.length ? detal.metaloworking[detal.metaloworking.length - 1].date_order : '' }}</td>
             <td class='center'>
               <img src="@/assets/img/link.jpg" @click='openDescription(detal.description)' class='link_img' atl='Показать' />
             </td>
@@ -300,14 +296,16 @@ export default {
       'changeStatusDeficitDetal',
       'changeStatusDeficitCbed',
       'changeDeficitDetal',
-      'changeDeficitCbed'
+      'changeDeficitCbed',
+      'filterDetalToArticle'
     ]),
     returnDificit(izd, kol) {
-      return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
-        0 : kol - izd.min_remaining - izd.shipments_kolvo
+      return kol - izd.min_remaining > 0 ? 
+        0 : kol - izd.min_remaining
     },
     keySearchCb(v) {
       this.searchCbed(v)
+      this.filterDetalToArticle(v)
     },
     unmount_clear() {
       this.reverseMidlevareCbed()
@@ -379,14 +377,6 @@ export default {
     },
     setIzdels(izd) {
       this.select_izd = izd
-    },
-    returnProductionColvo(cbed) {
-      if(!cbed || !cbed.assemble || cbed.assemble.length == 0) return 0
-      let count = 0
-      for(let ass of cbed.assemble) {
-        count = count + ass.kolvo_shipments
-      }
-      return count
     },
     alt(e) {
       if(!this.select_izd)

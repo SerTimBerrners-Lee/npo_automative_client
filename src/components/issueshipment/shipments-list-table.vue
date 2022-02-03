@@ -62,6 +62,8 @@ export default {
 			this.key_modal_shipments = random(1, 999)
 		},
 		toSetOrders(shipments, e) {
+			this.$emit('unmount_action')
+
       if(this.span_ship) {
         this.breackFIlterMetal()
 				this.breackFIlterAssembl()

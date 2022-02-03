@@ -67,7 +67,7 @@
 						v-for='(obj, inx) of list_cbed_detal' 
 						:key='obj'
 						class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
-						<td>{{ inx + 1 }}</td>
+						<td class='center'>{{ inx + 1 }}</td>
 						<td>{{ obj.obj.articl }}</td>
 						<td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
 						<td class='center'>
@@ -282,8 +282,9 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
+		this.loader = true
+
 		await this.fetchAllBuyers()
-		console.log(this.allBuyer)
 		await this.fetchAllShipments({ sort: undefined, light: false })
 
 		this.list_cbed_detal = []
@@ -294,6 +295,8 @@ export default {
 		if(!result) return this.destroyModalF()
 		this.setOneShipment(result)
 		this.editVariable()
+
+		this.loader = false
   },
 }
 </script>
