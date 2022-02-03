@@ -96,7 +96,7 @@
             <td class='center min_width-100'>{{ cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.cbed_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ cbed?.min_remaining }}</td> <!-- Минимальный остаток -->
-            <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
+            <td class='center min_width-100'>{{ cbed?.min_remaining * 3 + cbed.shipments_kolvo }}</td> <!-- Рекомендуемый остаток -->
             <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed?.my_kolvo || cbed.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>{{ cbed.parametrs ? 
@@ -252,8 +252,8 @@ export default {
       'changeDeficitCbed'
     ]),
     returnDificit(izd, kol) {
-      return kol - izd.min_remaining > 0 ? 
-        0 : kol - izd.min_remaining
+      return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
+        0 : kol - izd.min_remaining - izd.shipments_kolvo 
     },
     keySearchCb(v) {
       this.searchCbed(v)

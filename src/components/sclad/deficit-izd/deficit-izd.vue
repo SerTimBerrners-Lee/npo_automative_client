@@ -97,7 +97,7 @@
             <td class='center min_width-100'>{{ product.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ product.product_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ product?.min_remaining }}</td> <!-- Минимальный остаток -->
-            <td class='center min_width-100'>{{ product?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
+            <td class='center min_width-100'>{{ product?.min_remaining * 3 + product.shipments_kolvo }}</td> <!-- Рекомендуемый остаток -->
             <td class='center min_width-100'></td>
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ product?.my_kolvo || product.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>
@@ -255,8 +255,8 @@ export default {
       'changeKolDeficitProduct'
     ]),
     returnDificit(izd, kol) {
-      return kol - izd.min_remaining  > 0 ? 
-        0 : kol - izd.min_remaining
+      return kol - izd.min_remaining - izd.shipments_kolvo  > 0 ? 
+        0 : kol - izd.min_remaining - izd.shipments_kolvo
     },
     keySearch(v) {
       this.searchProduct(v)
