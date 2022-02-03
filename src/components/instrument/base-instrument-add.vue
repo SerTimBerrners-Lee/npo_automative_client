@@ -14,7 +14,7 @@
             v-model='attention'>
         </p>
       </div>
-    </div>
+    </div> 
     <div class="main_contents">
       <div class="left_content">
        <div>
