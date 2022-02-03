@@ -111,37 +111,6 @@
               <img src="@/assets/img/link.jpg" @click='openDescription(cbed.description)' class='link_img' atl='Показать' />
             </td>
           </tr>
-          
-          <tr v-for='detal of allDetal' :key='detal' 
-            class='td-row'>
-            <td class='center checkbox_parent' >
-            </td>
-            <td class='center'> Д </td>
-            <td class='center'>{{ detal.articl }}</td>
-            <td class='center' @dblclick="showInformIzdel(detal.id, 'detal')">{{ detal.name }}</td>
-            <td class='center' @click='returnShipmentsDateModal(detal, "detal")'>
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
-            <td class='center' style='color: red;'>{{ returnDificit(detal, detal.detal_kolvo) }}</td> <!-- Дефицит -->
-            <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
-            <td class='center min_width-100'>{{ detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
-            <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
-            <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->
-            <td class='center'>{{ detal?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
-            <td class='center'>{{ getTimming(detal.parametrs) }}</td>
-            <td class='center'>{{ detal?.my_kolvo || detal?.min_remaining * 3 }}</td> 
-            <td class='center'>{{ detal.parametrs ? 
-              getTimming(detal.parametrs, detal.shipments_kolvo)
-              : '' }}</td>
-            <td class='center min_width-100'>{{ detal.metalloworking_kolvo }}</td> <!-- Заказано на производстве -->
-            <td class='center'>{{ detal.detal_kolvo + detal.metalloworking_kolvo  }}</td> <!-- Реальный остаток с учетом -->
-            <td class='center'>{{  }}</td> <!-- Уровень компленктации -->
-            <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
-            <td v-else class='center min_width-100 work_operation'>Не заказано</td>
-            <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openDescription(detal.description)' class='link_img' atl='Показать' />
-            </td>
-          </tr>
         </table>
         <div class='btn-control'>
           <button class="btn-small" @click='normTimeOperation'>Норма времени по операциям</button>
@@ -178,11 +147,6 @@
       v-if='message'
       :key='keyInformTip'
     />
-    <DetalModal
-      :key='detalModalKey'
-      v-if='parametrs_detal'
-      :id='parametrs_detal'
-    />
     <CbedModalInfo
       :id='parametrs_cbed'
       :key='cbedModalKey'
@@ -203,7 +167,6 @@ import Search from '@/components/search.vue';
 import { showMessage, comparison } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
@@ -232,8 +195,6 @@ export default {
       showNormTimeOperation: false,
       normTimeOperationKey: random(1, 999),
 
-      detalModalKey: random(1, 999),
-			parametrs_detal: false,
 			parametrs_cbed: null,
 			cbedModalKey: random(1, 999),
 
@@ -258,7 +219,7 @@ export default {
       ],
     }
   },
-  computed: mapGetters(['allCbed', 'allDetal', 'getShipments']),
+  computed: mapGetters(['allCbed', 'getShipments']),
   components: {
     DatePicterRange, 
     StartProduction, 
@@ -266,38 +227,29 @@ export default {
     NormTimeOperation, 
     ShipmentsMiniList,
     ShipmentsModal,
-    DetalModal,
     CbedModalInfo,
     Search,
     ShipmentList
   },
   watch: {
     selectEnumStatus: function(val) {
-      this.changeStatusDeficitDetal(val)
       this.changeStatusDeficitCbed(val)
     },
     selectEnumDeficit: function(val) {
-      this.changeDeficitDetal({status: val, deficit: this.returnDificit})
       this.changeDeficitCbed({status: val, deficit: this.returnDificit})
     }
   },
   methods: {
     ...mapActions([
-      'setchDeficitCbed', 
-      'setchDeficitDeficit',
+      'setchDeficitCbed',
       'fetchAllShipments'
     ]),
     ...mapMutations([
       'searchCbed',
       'cbedToShipmentsSort',
-      'detalToShipmentsSort',
       'reverseMidlevareCbed',
-      'reverseMidlevareDetal',
-      'changeStatusDeficitDetal',
       'changeStatusDeficitCbed',
-      'changeDeficitDetal',
-      'changeDeficitCbed',
-      'filterDetalToArticle'
+      'changeDeficitCbed'
     ]),
     returnDificit(izd, kol) {
       return kol - izd.min_remaining > 0 ? 
@@ -305,16 +257,13 @@ export default {
     },
     keySearchCb(v) {
       this.searchCbed(v)
-      this.filterDetalToArticle(v)
     },
     unmount_clear() {
       this.reverseMidlevareCbed()
-      this.reverseMidlevareDetal()
     },
     toSetOrders(shipments) {
       this.unmount_clear()
       this.cbedToShipmentsSort(shipments.cbeds)
-      this.detalToShipmentsSort(shipments.detals)
     },
     start() {
       if(!this.toProductionArr.length)
@@ -402,20 +351,12 @@ export default {
 					this.cbedModalKey = random(1, 999)
 				}
 			}
-			if(type == 'detal') {
-				if(id) {
-					this.parametrs_detal = id
-					this.detalModalKey = random(1, 999)
-				}
-			}
 		}
   },
   async mounted() {
     this.loader = true
-    this.reverseMidlevareDetal()
     this.reverseMidlevareCbed()
     await this.setchDeficitCbed()
-    await this.setchDeficitDeficit()
     await this.fetchAllShipments({sort: undefined, light: true})
     this.loader = false
   }

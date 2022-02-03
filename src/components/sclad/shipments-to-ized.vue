@@ -72,7 +72,7 @@ export default {
         const listTwo = JSON.parse(item.list_hidden_cbed_detal)
         const arr = [].concat(list, listTwo)
         for(const obj of arr) {
-          if(obj.type == type && obj.obj.id == izd.id) count += obj.kol  
+          if(obj.type == type && obj.obj.id == izd.id) count += Number(obj.kol)  
         }
         return count;
       } catch (err) {console.error(err)}

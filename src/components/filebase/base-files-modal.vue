@@ -94,6 +94,9 @@ export default {
       }
       if(change) this.modalArrFiles.push(this.itemFiles)
     },
+    delFile(id) {
+      this.modalArrFiles = this.modalArrFiles.filter(file => file.id != id)
+    },
     dbPushFile(file) {
       if(this.itemFiles) {
         this.keyWhenModalGenerateFileOpen = random(5, 99)
