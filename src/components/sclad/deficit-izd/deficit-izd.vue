@@ -101,7 +101,7 @@
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ product?.my_kolvo || product.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>
             </td> 
-            <td class='center min_width-100'>{{ product.shipments_kolvo }}</td>  <!-- Заказано на производстве -->
+            <td class='center min_width-100'>{{ product.assemble_kolvo }}</td>  <!-- Заказано на производстве -->
             <td class='center min_width-100'>{{ product.product_kolvo + product.assemble_kolvo }}</td>  <!-- Реальный остаток с уч. отгрузок -->
             <td class='center min_width-100'>{{  }}</td>  <!-- Ур. комплектации -->
             <td v-if='product.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
