@@ -88,7 +88,15 @@ export default {
       
       ctx.commit('addAllProduct', products)
       return result 
-      
+    },
+    async fetchGetAllDeficitPPM(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit`)
+      if(res.ok) {
+        const result = await res.json()
+        ctx.commit('sortPPMtoParent', result)
+        console.log(result)
+        return result
+      }
     },
   },
   mutations: {

@@ -2,28 +2,48 @@
 	<div>
 		<h3>Дефицит материалов</h3>
 		<div class='header_block'>
-			<DatePicterRange 
-				@unmount='changeDatePicterRange'  
-			/>
 			<p>
-				<span>Фильтрация по статусу</span>
-				<label for="order">Заказано: </label>
-				<input 
-					type="checkbox" 
-					id="order" 
-					v-model='filter_order'
-					@click='e => filterOrder(e.target.checked)'>
 				<label for="no_order">Все: </label>
 				<input 
 					type="checkbox" 
 					id="no_order" 
 					v-model='all_type_order'
 					@click='e => filterAll(e.target.checked)'>
+					<label for="order">Заказано: </label>
+				<input 
+					type="checkbox" 
+					id="order" 
+					v-model='filter_order'
+					@click='e => filterOrder(e.target.checked)'>
+					<label for="order">Не Заказано: </label>
+				<input 
+					type="checkbox" 
+					id="order" 
+					v-model='filter_order'
+					@click='e => filterOrder(e.target.checked)'>
+					<label for="order">Дефицит общий: </label>
+				<input 
+					type="checkbox" 
+					id="order" 
+					v-model='filter_order'
+					@click='e => filterOrder(e.target.checked)'>
+					<label for="order">Дефицит по заказам покупателя: </label>
+				<input 
+					type="checkbox" 
+					id="order" 
+					v-model='filter_order'
+					@click='e => filterOrder(e.target.checked)'>
+					<label for="order">Все: </label>
+				<input 
+					type="checkbox" 
+					id="order" 
+					v-model='filter_order'
+					@click='e => filterOrder(e.target.checked)'>
 			</p>
 		</div> 
  
 		<div style='width: max-content;'>
-			<div class="scroll-table table_material" style='height: 100%;'>
+			<div class="scroll-table table_material " style='height: 100%;'>
 				<table style="width: 200px;">
 					<tr>
 						<th>Категория</th>
@@ -65,82 +85,95 @@
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
-				<table style='margin-left: 20px;' v-if='getOnePodMaterial.length' id='tablebody'>
-					<tr>
-						<th style='width: 100px;'>Наименование</th>
-						<th>ЕИ</th>
-						<th>Остаток на дату</th>
-						<th>План расход на план</th>
-						<th>План остаток</th>
-						<th>Среднестат. расход</th>
-						<th>Мин. остаток</th>
-						<th>Рек. остаток</th>
-						<th>Дефицит</th>
-						<th>Дефицит в рублях</th>
-						<th>Рек. заказ</th>
-						<th>План приход (данные по счету)</th>
-						<th>Дата прихода</th>
-						<th>План остаток после план прихода</th>
-						<th>План дефицит/Профицит</th>
-						<th>Статус</th>
-					</tr>
-					<tbody v-for='material of getOnePodMaterial' :key='material'>
-						<tr>
-							<td @click='e => setMaterial(material, e.target)'
+				<div v-if='getOnePodMaterial.length'>
+					<table style='margin-left: 20px;' id='tablebody'>
+						<tbody class='fixed_table_10'>
+							<tr>
+								<th class='min_width-50'>Наименование</th>
+								<th class='min_width-50'>Принадлежность по заказам</th>
+								<th class='min_width-50'>Принадлежность по Изд. СБ. Д.</th>
+								<th class='min_width-50'>ЕИ</th>
+								<th class='min_width-50'>Дефицит</th>
+								<th class='min_width-50'>Стоимость 1 ЕД</th>
+								<th class='min_width-50'>Стоимость Дефицита</th>
+								<th class='min_width-50'>Дефицит по заказ покупателя</th>
+								<th class='min_width-50'>Потребность по заказам покупателя</th>
+								<th class='min_width-50'>Остаток</th>
+								<th class='min_width-50'>Минимальный остаток</th>
+								<th class='min_width-50'>Рекомендуемый Остаток</th>
+								<th class='min_width-50'>Рекомендуемый заказ</th>
+								<th class='min_width-50'>Приход. кол-во</th>
+								<th class='min_width-50'>Планируемая дата прихода</th>
+								<th class='min_width-50'>Остаток с учетом заказов покупателя и прихода</th>
+								<th class='min_width-50'>Статус</th>
+								<th class='min_width-50'>Примечание</th>
+							</tr>
+						</tbody>
+						<tbody v-for='material of getOnePodMaterial' :key='material'>
+							<tr>
+								<td 
+									@click='e => setMaterial(material, e.target)'
 									:rowspan="getKolvoMaterial(material).length + 1"
-									class='td-row'> {{ material.name }}</td>
-						</tr>
+									class='td-row'> {{ material.name }}
+								</td>
+								<td class='center' :rowspan="6">
+									<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+								</td>
+								<td class='center' :rowspan="6">
+									<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+								</td>
+							</tr>
 
-						<tr v-for='ez of getKolvoMaterial(material)' :key='ez'>
-							<td>{{ez.ez}}</td>
-							<td class='center min_width'>
-								{{ ez.material_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ ez.shipments_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ ez.shipments_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ ez.shipments_kolvo }}
-							</td>	
-							<td class='center min_width'>
-								{{ ez.shipments_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ ez.shipments_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ -ez.shipments_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ ez.price }}
-							</td>
-							<td class='center min_width'>
-								{{ ez.shipments_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ 0 }}
-							</td>
-							<td class='center tooltip min_width'> 
-								{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '' }}
-								<div class="tooltiptext" v-if='material.deliveries && material.deliveries.length'>
-									<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
-								</div>
-							</td>
-							<td class='center min_width'>
-								{{ returnOstatokWays(material)}}
-							</td>
-							<td class='center min_width'>
-								{{ ez.shipments_kolvo }}
-							</td>
-							<td class='center min_width'>
-								{{ material.deliveries && material.deliveries.length ? "Заказано" : 'Не заказано'}}
-							</td>
-						</tr>
-					</tbody>
-				</table>
+							<tr v-for='ez of getKolvoMaterial(material)' :key='ez'>
+								<td>{{ez.ez}}</td>
+								<td class='center min_width' style='color: red;'>
+									{{ ez.material_kolvo - (ez.min_remaining+ez.shipments_kolvo) }}
+								</td>
+								<td class='center min_width'>
+									{{ ez.price }}
+								</td>
+								<td class='center min_width'>
+									{{ ez.price * (ez.material_kolvo - (ez.min_remaining+ez.shipments_kolvo)) }}
+								</td>
+								<td class='center min_width' style='color: red;'>
+									{{ ez.material_kolvo - ez.shipments_kolvo  }} 
+								</td>	<!-- Дефицит по заказ покупателя -->
+								<td class='center min_width'>
+									{{ ez.shipments_kolvo }}
+								</td> <!-- Потребность по заказам покупателя -->
+								<td class='center min_width'>
+									{{ ez.material_kolvo }}
+								</td>
+								<td class='center min_width'>
+									{{ ez.min_remaining }}
+								</td>
+								<td class='center min_width'>
+									{{ ez.min_remaining * 3 + ez.shipments_kolvo }}
+								</td>
+								<td class='center min_width'>
+									{{ ez.min_remaining * 3 + ez.shipments_kolvo }}
+								</td> <!-- Рекомендуемый заказ -->
+								<td class='center min_width'>
+									{{ ez.deliveries_kolvo }}
+								</td> <!-- Приход. кол-во(Заказаное количество) -->
+								<td class='center tooltip min_width'> 
+									{{ material.deliveries && material.deliveries.length ? material.deliveries[0].date_shipments : '-' }}
+									<div class="tooltiptext" v-if='material.deliveries && material.deliveries.length'>
+										<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
+									</div>
+								</td>
+								<td class='center min_width'>
+									{{ ez.shipments_kolvo - ez.deliveries_kolvo }}
+								</td>
+								<td v-if='ez.deliveries_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
+								<td v-else class='center min_width-100 work_operation'>Не заказано</td>
+								<td class='center min_width'>
+									<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+								</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
 				<h3 v-else style='margin-left: 20px;'>Нет Дефицита</h3>
 			</div>
 				<div class='btn-control'>
@@ -155,7 +188,7 @@
 import print from 'print-js';
 import {getKolvoMaterial} from '@/js/edizm.js';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
+
 export default {
 	data() {
 		return {
@@ -170,7 +203,7 @@ export default {
 			all_type_order: true
 		}
 	},
-	components: {DatePicterRange},
+	components: {},
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM']),
@@ -216,6 +249,7 @@ export default {
 			this.filterByNameMaterial(mat)
     },
 		setMaterial(material, span) {
+			console.log(material)
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null
@@ -227,23 +261,6 @@ export default {
 			this.span_material.classList.add('td-row-all')
 
 			this.material = material
-		},
-		returnOstatokWays(material) {
-			if(!material.deliveries) return 0
-
-			let count = 0
-			for(let dev of material.deliveries) {
-				if(!dev.product) continue;
-				try { 
-					let pars = JSON.parse(dev.product)
-					for(let product of pars) {
-						if(product.id == material.id)
-							count = count + Number(product.kol)
-					}
-				} catch(e) {	console.error(e) 	}
-			}
-			if(count - material.shipments_kolvo < 0 ) return +count 
-			return count - material.shipments_kolvo
 		},
 		getKolvoMaterial(mat) {
 			return getKolvoMaterial(mat)

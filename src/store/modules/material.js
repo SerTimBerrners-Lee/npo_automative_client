@@ -194,14 +194,6 @@ export default {
         return result
       }
     },
-    async fetchGetAllDeficitPPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialdeficit`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('sortPPMtoParent', result)
-        return result
-      }
-    },
     async fetchAllProviderMaterial(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider`)
       if(res.ok) {
