@@ -22,8 +22,8 @@ export default {
     }
   },
   actions: { 
-    async fetchAllBuyers(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/buyer`)
+    async fetchAllBuyers(ctx, light = 'false') {
+      const res =  await fetch(`${PATH_TO_SERVER}api/buyer/light/${light}`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit("setAllBuyer", result)

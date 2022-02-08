@@ -47,6 +47,13 @@ export default {
 				return result
 			}
 		},
+		async fetchAllShipmentsTo(ctx) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/to/shipments/`)
+			if(!res.ok) return false;
+			const result = await res.json()
+			ctx.commit('allShipments', {result, undefined, ctx})
+			return result
+		},
 		async fetchDeleteShipments(ctx, id) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`, {
 				method: 'delete'
@@ -54,8 +61,15 @@ export default {
 			if(res.ok)
 				ctx.commit('deleteShipmentMutation', id)
 		},
-		async fetchAllShipmentsById(ctx, id) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`)
+		async fetchAllShipmentsById(ctx, obj) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/light/${obj.id}/${obj.light}`)
+			if(res.ok) {
+				const result = await res.json()
+				return result
+			}
+		},
+		async fetchAllIzdToShipments(ctx, id) {
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/one/izd/${id}/`)
 			if(res.ok) {
 				const result = await res.json()
 				return result

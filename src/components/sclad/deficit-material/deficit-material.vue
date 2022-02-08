@@ -119,13 +119,13 @@
 								<td class='center' :rowspan="6">
 									<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
 								</td>
-								<td class='center' :rowspan="6">
+								<td class='center' @click="showRemaningParent(material.id)" :rowspan="6">
 									<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
 								</td>
 							</tr>
 
 							<tr v-for='ez of getKolvoMaterial(material)' :key='ez'>
-								<td>{{ez.ez}}</td>
+								<td class='center'>{{ez.ez}}</td>
 								<td class='center min_width' style='color: red;'>
 									{{ ez.material_kolvo - (ez.min_remaining+ez.shipments_kolvo) }}
 								</td>
@@ -145,10 +145,10 @@
 									{{ ez.material_kolvo }}
 								</td>
 								<td class='center min_width'>
-									{{ ez.min_remaining }}
+									<strong>{{ ez.min_remaining }}</strong>
 								</td>
 								<td class='center min_width'>
-									{{ ez.min_remaining * 3 + ez.shipments_kolvo }}
+									<strong>{{ ez.min_remaining * 3 + ez.shipments_kolvo }}</strong>
 								</td>
 								<td class='center min_width'>
 									{{ ez.min_remaining * 3 + ez.shipments_kolvo }}
@@ -181,13 +181,20 @@
 					<button class="btn-small" @click='printPage'> Печать отчета </button>
 				</div>
 		</div>
+		<MaterialParentModal
+			:mat_id='mat_id'
+			v-if='mat_id'
+			:key='materialParentKey'
+		/>
 		<Loader v-if='loader' />
 	</div>
 </template>
 <script> 
 import print from 'print-js';
+import {random} from 'lodash';
 import {getKolvoMaterial} from '@/js/edizm.js';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import MaterialParentModal from './material-parent-modal.vue';
 
 export default {
 	data() {
@@ -200,10 +207,13 @@ export default {
 
 			loader: false,
 			filter_order: false,
-			all_type_order: true
+			all_type_order: true,
+
+			mat_id: null,
+			materialParentKey: random(1, 999)
 		}
 	},
-	components: {},
+	components: {MaterialParentModal},
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
 		...mapActions(['fetchGetAllDeficitPPM']),
@@ -224,6 +234,11 @@ export default {
         font_size: '10pt'
       })
     },
+		showRemaningParent(id) {
+			if(!id) return false;
+			this.mat_id = id
+			this.materialParentKey = random(1, 999)
+		},
 		filterOrder(val) {
 			this.all_type_order = false
 			this.filterMaterialStatus({status: 'order', val})

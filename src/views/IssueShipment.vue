@@ -91,7 +91,7 @@ export default {
 	methods: {
 		...mapActions([ 
 			'fetchDeleteShipments',
-			'fetchAllShipments'
+			'fetchAllShipmentsTo'
 		]),
 		...mapMutations([
       'setOneShipment',
@@ -116,7 +116,7 @@ export default {
 	},
 	async mounted() {
 		this.loader = true
-		await this.fetchAllShipments({sort: "sort", light: false})
+		await this.fetchAllShipmentsTo()
 		this.loader = false
 	}
 }

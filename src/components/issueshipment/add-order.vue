@@ -285,7 +285,7 @@ export default {
 			'getAllProductByIdLight',
 			'fetchUpdateShipments',
 			'getOneCbEdById',
-			'fetchAllShipments',
+			'fetchAllShipmentsTo',
 			'fetchAllShipmentsById',
 		]),
 		...mapMutations([
@@ -612,8 +612,8 @@ export default {
 			this.base = this.getOneShipments.base
 			this.buyer = this.getOneShipments.buyer?.id
 			this.to_sklad = this.getOneShipments.to_sklad
-			if(this.getOneShipments.product) {
-				this.getAllProductByIdLight(this.getOneShipments.product.id)
+			if(this.getOneShipments.productId) {
+				this.getAllProductByIdLight(this.getOneShipments.productId)
 				.then(res => this.select_product = res)
 			} else this.is_not_product = true
 			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents
@@ -641,17 +641,16 @@ export default {
 		}
 	},
 	async mounted() {
-		this.fetchAllBuyers()
-		await this.fetchAllShipments({sort: undefined, light: false})
+		this.fetchAllBuyers(true)
+		await this.fetchAllShipmentsTo()
 
 		this.list_cbed_detal = []
 		this.list_hidden_cbed_detal = []
 
 		if(this.$route.params.edit && this.$route.params.edit == 'true') {
 			if(isEmpty(this.getOneShipments)) return this.$router.back()
-			const shipments = await this.fetchAllShipmentsById(this.getOneShipments.id)
+			const shipments = await this.fetchAllShipmentsById({id: this.getOneShipments.id, light: true})
 			if(!shipments) return this.$router.back()
-			console.log(shipments)
 			this.setOneShipment(shipments)
 			this.editVariable()
 		} else 

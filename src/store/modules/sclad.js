@@ -98,6 +98,14 @@ export default {
         return result
       }
     },
+    async fetchMatRemParent(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialparents/${id}`)
+      if(!res.ok) return false;
+
+      const result = await res.json()
+      console.log(result)
+      return result
+    },
   },
   mutations: {
     setDeficit(state, result) { 

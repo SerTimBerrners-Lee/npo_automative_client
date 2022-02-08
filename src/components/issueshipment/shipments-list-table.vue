@@ -17,7 +17,7 @@
 			</tr>
 		</table>
 		<div class="btn-control float_btn">
-      <button class="btn-small" @click='clearFilter'>Сбросить все фильтры</button>
+      <button class="btn-small botton" @click='clearFilter'>Сбросить все фильтры</button>
     </div>
 		<ShipmentsModal 
 			:key='key_modal_shipments'
@@ -47,7 +47,7 @@ export default {
 		ShipmentsModal
 	},
 	methods: {
-		...mapActions(['fetchAllShipmentsById']),
+		...mapActions(['fetchAllShipmentsById', 'fetchAllIzdToShipments']),
 		...mapMutations([
       'filterAssemblByShipments',
       'breackFIlterAssembl',
@@ -71,7 +71,7 @@ export default {
       }
       this.span_ship = e
       this.span_ship.classList.add('checkbox_block_select')
-			this.fetchAllShipmentsById(shipments.id).then(res => {
+			this.fetchAllIzdToShipments(shipments.id).then(res => {
 				this.$emit('unmount_set', res)
 			})
     },
@@ -102,5 +102,8 @@ export default {
 .float_btn {
 	position: sticky;
 	top: 300px;
+}
+.botton {
+	position: absolute;
 }
 </style>

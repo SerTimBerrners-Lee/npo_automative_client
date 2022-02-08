@@ -207,7 +207,7 @@ export default {
 		...mapActions([
 			'fetchAllBuyers',  
 			'getAllProductByIdLight',
-			'fetchAllShipments',
+			'fetchAllShipmentsTo',
 			'fetchAllShipmentsById'
 		]),
 		...mapMutations(['setOneShipment']),
@@ -249,10 +249,11 @@ export default {
 			this.buyer = this.getOneShipments.buyer?.id
 			this.to_sklad = this.getOneShipments.to_sklad
 			this.number_order = this.getOneShipments.number_order
-			if(this.getOneShipments.product) {
-				this.getAllProductByIdLight(this.getOneShipments.product.id)
+			if(this.getOneShipments.productId) {
+				this.getAllProductByIdLight(this.getOneShipments.productId)
 				.then(res => this.select_product = res)
 			} else this.is_not_product = true
+
 			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents
 			try {
 				if(this.getOneShipments.list_cbed_detal)
@@ -284,14 +285,14 @@ export default {
 
 		this.loader = true
 
-		await this.fetchAllBuyers()
-		await this.fetchAllShipments({ sort: undefined, light: false })
+		await this.fetchAllBuyers(true)
+		await this.fetchAllShipmentsTo()
 
 		this.list_cbed_detal = []
 		this.list_hidden_cbed_detal = []
 
 		if(!this.$props.id_shipments) return this.destroyModalF()
-		const result = await this.fetchAllShipmentsById(this.$props.id_shipments)
+		const result = await this.fetchAllShipmentsById({id: this.$props.id_shipments, light: true})
 		if(!result) return this.destroyModalF()
 		this.setOneShipment(result)
 		this.editVariable()
