@@ -69,7 +69,7 @@
 						class='td-row' 
 						v-for='typ of alltypeM' 
 						:key='typ'
-						@click='clickMat(typ)'>
+						@click='clickMat(typ, "type")'>
 						<td>{{ typ.name }}</td>
 					</tr>
 				</table>
@@ -216,13 +216,18 @@ export default {
 	components: {MaterialParentModal},
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
-		...mapActions(['fetchGetAllDeficitPPM']),
+		...mapActions([
+			'getAllTypeMaterial',
+			'getAllPodTypeMaterial',
+			'fetchGetAllDeficitPPM'
+		]),
 		...mapMutations([
 			'getInstansMaterial', 
 			'filterByNameMaterial', 
 			'clearCascheMaterial', 
 			'clearCascheMaterial',
-			'filterMaterialStatus'
+			'filterMaterialStatus',
+			'filterMatByPodType'
 		]),
 		printPage() {
       print({
@@ -260,12 +265,18 @@ export default {
       this.instansLet = instans
 
     },
-		clickMat(mat) {
-			this.filterByNameMaterial(mat)
+		clickMat(mat, type = 'podT') {
 			console.log(mat)
+			this.filterByNameMaterial(mat)
+			if(type == 'type') {
+				if(mat.instansMaterial == 1) {
+					this.getInstansMaterial(1)
+					this.instansLet = 1
+				}
+				else this.filterMatByPodType(mat.podMaterials)
+			}
     },
 		setMaterial(material, span) {
-			console.log(material)
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null
@@ -290,6 +301,8 @@ export default {
 		this.clearCascheMaterial()
 
 		this.clearCascheMaterial()
+		await this.getAllTypeMaterial()
+    await this.getAllPodTypeMaterial()
 		await this.fetchGetAllDeficitPPM()
 		this.loader = false
 	}

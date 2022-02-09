@@ -93,7 +93,7 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit`)
       if(res.ok) {
         const result = await res.json()
-        ctx.commit('sortPPMtoParent', result)
+        ctx.commit('sortAllForeficitMaterial', result)
         console.log(result)
         return result
       }

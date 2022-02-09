@@ -4,14 +4,14 @@ import PATH_TO_SERVER from '@/js/path.js';
 export default {
   state: {
     setOneTypeM: {},
-    typeM: [],
+    typeM: [], // тип
     instansTypeM: [],
-    podTypeM: [],
+    podTypeM: [], // под тип
     instansPodTypeM: [],
 
     tmp_attention: [],
     
-    podMaterial: [],
+    podMaterial: [], // материал c
     onePPT: {},
     linkId: 0,
 
@@ -245,7 +245,7 @@ export default {
               state.typeM[inx].podPodMaterials.push(mat)
             }
           }
-          if(!check) 
+          if(!check)  
             state.typeM.push({ ...mat.material, podPodMaterials: [mat]})        
             else check = false 
           if(!state.typeM.length)
@@ -270,7 +270,35 @@ export default {
             state.podTypeM.push({ ...mat.podMaterial, podPodMaterials: [mat]})
         } 
       }
+    },
+    sortAllForeficitMaterial(state, result) {
+      for(const item of state.podTypeM) {
+        let materials = []
+        for(let inx in item.podPodMaterials) {
+          for(const mat of result) {
+            if(mat.id == item.podPodMaterials[inx].id) materials.push(mat)
+          }
+        }
+        item.podPodMaterials = materials
+      }
 
+      for(const item of state.typeM) {
+        let materials = []
+        for(let item2 of item.podPodMaterials) {
+          for(const mat of result) {
+            if(mat.id == item2.id) materials.push(mat)
+          }
+        }
+        item.podPodMaterials = materials
+
+        for(let inx in item.podMaterials) {
+          for(const pt of state.podTypeM) {
+            if(pt.id == item.podMaterials[inx].id) item.podMaterials[inx] = pt
+          }
+        }
+      }
+
+      state.podMaterial = result
     },
     throwInstans(state) {
       state.instansTypeM = []
@@ -300,7 +328,7 @@ export default {
         state.instansPodTypeM = state.podTypeM
 
       state.linkId = instans
-
+      
       state.typeM = state.instansTypeM.filter(mat => mat.instansMaterial == instans)
       state.podTypeM = state.instansPodTypeM.filter(mat => mat.instansMaterial == instans)
       state.typeM.forEach(el => {

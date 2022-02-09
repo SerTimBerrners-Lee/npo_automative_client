@@ -85,6 +85,8 @@ export default {
 
     const izd = this.$props.izd
 
+    console.log(this.$props.shipments)
+
     if(this.$props.shipments) {
       this.shipments_arr = this.$props.shipments
       if(izd && izd.izd) {

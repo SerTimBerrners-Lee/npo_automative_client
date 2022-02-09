@@ -233,7 +233,8 @@ export default {
       'getOneDetal',
       'fetchAllProductOperation',
       'fetchAllCbedOperation',
-      'fetchAllDetalOperation'
+      'fetchAllDetalOperation',
+      'getOneCbEdBelongs'
     ]),
     ...mapMutations([
       'filterDetalToArticle',
@@ -295,15 +296,20 @@ export default {
         e.classList.remove('td-row-all')
         return this.selectedCbEd = null
       }
-      this.selectedCbEd = cbed
+      
+
       if(this.tr_cb) 
         this.tr_cb.classList.remove('td-row-all')
 
       this.getOneCbEdById(cbed.id).then(res => {
         if(!res) return false
-        this.selectedCbEd = res
-        this.getAllDetalByProduct(res)
-        this.setOneCbed(res)  
+        this.getOneCbEdBelongs(res.id).then(result => {
+          res.detals = result.detals
+          res.products = result.products
+          this.getAllDetalByProduct(res)
+          this.selectedCbEd = res
+          this.setOneCbed(res)  
+        })
       })
 
       this.tr_cb = e
