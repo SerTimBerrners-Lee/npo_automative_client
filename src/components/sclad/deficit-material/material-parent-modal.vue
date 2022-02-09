@@ -5,103 +5,108 @@
     <div :style="hiddens" >
       <h3>Принадлежность материала.</h3>
 			<div class="block">
+        <p><strong>Поставщики: </strong><span>{{ this.countProviders }}</span></p>
+        <p><strong>Инстремент: </strong><span>{{ this.countTools }}</span></p>
+        <p><strong>Оборудование: </strong><span>{{ this.countEquipment }}</span></p>
+        <p><strong>Сотрудник: </strong><span>{{ this.countUsers }}</span></p>
         <div class='table_block'>
-          <p>Принадлежность к <strong>Изделиям</strong>: {{ products.length }}</p>
+          <p><strong>Изделие</strong>: {{ products.length }}</p>
           <table v-if='products.length'>
             <tbody>
               <tr>
+                <th colspan="3" rowspan="1">Изделие</th>
+                <th class='tooltip' rowspan="2">Материал
+                  <p class="tooltiptext">Кол-во материала на 1 ед.</p>
+                </th>
+              </tr>
+              <tr>
                 <th>Наименование</th>
-                <th>В комплектации</th>
-                <th class='tooltip'>Мин. остаток
-                  <p class="tooltiptext">Количество * Мин остаток * 2</p>
-                </th>
-                <th class='tooltip'>Потребность по заказам
-                  <p class="tooltiptext">Количество * Потребность по заказам * 2</p>
-                </th>
-                <th>ЕИ</th>
+                <th>Дефицит</th>
+                <th class='tooltip'>Дефицит по заказам покупателя</th>
               </tr>
             </tbody>
             <tbody v-for='product of products' :key="product" >
               <tr>
-                <td rowspan='2'>{{ product.name }}</td>
+                <td :rowspan='product.materialList.length +2' class='center'>{{ product.name }}</td>
+                <td :rowspan='product.materialList.length +2' class='center'>{{ -(Number(product.min_remaining)+Number(product.shipments_kolvo)) }}</td>
+                <td :rowspan='product.materialList.length +2' class='center'>{{ -Number(product.shipments_kolvo) }}</td>
               </tr>
-              <tr v-for='mat of product.materialList' :key='mat'>
-                <td class='center'>{{ Math.round(mat.kol) }}</td>
-                <td class='center'>{{ Math.round(mat.kol) * Number(product.min_remaining) * 2 }}</td>
-                <td class='center'>{{ Math.round(mat.kol) * Number(product.shipments_kolvo) * 2 }}</td>
-                <td class="center" v-if='!mat.ez || mat.ez == 1'>шт</td>
-                <td class="center" v-if='mat.ez == 2'>л</td>
-                <td class="center" v-if='mat.ez == 3'>кг</td>
-                <td class="center" v-if='mat.ez == 4'>м</td>
-                <td class="center" v-if='mat.ez == 5'>м.куб</td>
+              <tr v-for='mat of detal.materialList' :key='mat'>
+                <td class='center'>{{ Math.round(mat.kol) + " " + returnEz(mat.ez)}} </td>
               </tr>
             </tbody>
           </table>
         </div>
 
        <div class='table_block'>
-        <p>Принадлежность к <strong>Сборкам</strong>: {{ cbeds.length }}</p>
+        <p><strong>Сборка</strong>: {{ cbeds.length }}</p>
 				<table v-if='cbeds.length'>
           <tbody>
             <tr>
+              <th colspan="3" rowspan="1">Сборочная единица</th>
+              <th class='tooltip' rowspan="2">Изделие</th>
+              <th class='tooltip' rowspan="2">Материал
+                <p class="tooltiptext">Кол-во материала на 1 ед.</p>
+              </th>
+            </tr>
+            <tr>
               <th>Наименование</th>
-              <th>В комплектации</th>
-              <th class='tooltip'>Мин. остаток
-                <p class="tooltiptext">Количество * Мин остаток * 2</p>
-              </th>
-              <th class='tooltip'>Потребность по заказам
-                <p class="tooltiptext">Количество * Потребность по заказам * 2</p>
-              </th>
-              <th>ЕИ</th>
+              <th>Дефицит</th>
+              <th class='tooltip'>Дефицит по заказам покупателя</th>
             </tr>
           </tbody>
           <tbody v-for='cbed of cbeds' :key="cbed" >
             <tr>
-              <td rowspan='2'>{{ cbed.name }}</td>
+              <td :rowspan='cbed.materialList.length +2' class='center'>{{ cbed.name }}</td>
+              <td :rowspan='cbed.materialList.length +2' class='center'>{{ -(Number(cbed.min_remaining)+Number(cbed.shipments_kolvo)) }}</td>
+              <td :rowspan='cbed.materialList.length +2' class='center'>{{ -Number(cbed.shipments_kolvo) }}</td>
+              <td :rowspan='cbed.materialList.length +2' class='center type-issue tooltip'>Изделий: {{ cbed.products.length }}
+                <p class='tooltiptext'>
+                  <span v-for='(item, inx) of cbed.products' :key='item'>
+                    {{ inx + 1}}.  {{item.name}}
+                  </span>
+                </p>
+              </td>
             </tr>
             <tr v-for='mat of cbed.materialList' :key='mat'>
-              <td class='center'>{{ Math.round(mat.kol) }}</td>
-              <td class='center'>{{ Math.round(mat.kol) * Number(cbed.min_remaining) * 2 }}</td>
-              <td class='center'>{{ Math.round(mat.kol) * Number(cbed.shipments_kolvo) * 2 }}</td>
-              <td class="center" v-if='!mat.ez || mat.ez == 1'>шт</td>
-              <td class="center" v-if='mat.ez == 2'>л</td>
-              <td class="center" v-if='mat.ez == 3'>кг</td>
-              <td class="center" v-if='mat.ez == 4'>м</td>
-              <td class="center" v-if='mat.ez == 5'>м.куб</td>
+              <td class='center'>{{ Math.round(mat.kol) + " " + returnEz(mat.ez)}} </td>
             </tr>
           </tbody>
 				</table>
        </div>
       
       <div class='table_block'>
-        <p>Принадлежность к <strong>Деталям</strong>: {{ detals.length }}</p>
+        <p><strong>Деталь</strong>: {{ detals.length }}</p>
 				<table v-if='detals.length'>
           <tbody>
             <tr>
+              <th colspan="3" rowspan="1">Деталь</th>
+              <th class='tooltip' rowspan="2">Изделие</th>
+              <th class='tooltip' rowspan="2">Материал
+                <p class="tooltiptext">Кол-во материала на 1 ед.</p>
+              </th>
+            </tr>
+            <tr>
               <th>Наименование</th>
-              <th>В комплектации</th>
-              <th class='tooltip'>Мин. остаток
-                <p class="tooltiptext">Количество * Мин остаток * 2</p>
-              </th>
-              <th class='tooltip'>Потребность по заказам
-                <p class="tooltiptext">Количество * Потребность по заказам * 2</p>
-              </th>
-              <th>ЕИ</th>
+              <th>Дефицит</th>
+              <th class='tooltip'>Дефицит по заказам покупателя</th>
             </tr>
           </tbody>
           <tbody v-for='detal of detals' :key="detal" >
             <tr>
-              <td rowspan='2'>{{ detal.name }}</td>
+              <td :rowspan='detal.materialList.length +2' class='center'>{{ detal.name }}</td>
+              <td :rowspan='detal.materialList.length +2' class='center'>{{ -(Number(detal.min_remaining)+Number(detal.shipments_kolvo)) }}</td>
+              <td :rowspan='detal.materialList.length +2' class='center'>{{ -Number(detal.shipments_kolvo) }}</td>
+              <td :rowspan='detal.materialList.length +2' class='center type-issue tooltip'>Изделий: {{ detal.products.length }}
+                <p class='tooltiptext'>
+                  <span v-for='(item, inx) of detal.products' :key='item'>
+                    {{ inx + 1}}.  {{item.name}}
+                  </span>
+                </p>
+              </td>
             </tr>
             <tr v-for='mat of detal.materialList' :key='mat'>
-              <td class='center'>{{ Math.round(mat.kol) }}</td>
-              <td class='center'>{{ Math.round(mat.kol) * Number(detal.min_remaining) * 2 }}</td>
-              <td class='center'>{{ Math.round(mat.kol) * Number(detal.shipments_kolvo) * 2 }}</td>
-              <td class="center" v-if='!mat.ez || mat.ez == 1'>шт</td>
-              <td class="center" v-if='mat.ez == 2'>л</td>
-              <td class="center" v-if='mat.ez == 3'>кг</td>
-              <td class="center" v-if='mat.ez == 4'>м</td>
-              <td class="center" v-if='mat.ez == 5'>м.куб</td>
+              <td class='center'>{{ Math.round(mat.kol) + " " + returnEz(mat.ez)}} </td>
             </tr>
           </tbody>
 				</table>
@@ -127,6 +132,10 @@ export default {
       products: [],
       cbeds: [],
       detals: [],
+      countProviders: 0,
+      countUsers: 0,
+      countEquipment: 0,
+      countTools: 0
     }
   },
   components: {},
@@ -137,6 +146,16 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
+    returnEz(ez) {
+      let str = '(шт)'
+      if(ez == 1) str = '(шт)';
+      if(ez == 2) str = '(л)';
+      if(ez == 3) str = '(кг)';
+      if(ez == 4) str = '(м)';
+      if(ez == 5) str = '(м.куб)';
+      
+      return str;
+    }
   },
   async mounted() {
     this.destroyModalLeft = 'left-block-modal'
@@ -152,9 +171,10 @@ export default {
     this.cbeds = this.parents.filter(el => el.type =='cbed')
     this.detals = this.parents.filter(el => el.type =='detal')
 
-    console.log(this.cbeds)
-
-    console.log(this.parents)
+    for(const item of this.parents) {
+      if(item.type == 'provider' && item.count) 
+        this.countProviders += item.count
+    }
     
   },
 }
@@ -190,5 +210,16 @@ textarea {
   flex-direction: column;
   padding-top: 5px;
   padding-bottom: 5px;
+}
+.tooltiptext {
+  top: 100px;
+  left: 100px;
+  height: fit-content;
+  width: 100px;
+  display: flex;
+  flex-direction: column;
+}
+.tooltiptext>span {
+  margin-top: 5px;
 }
 </style>

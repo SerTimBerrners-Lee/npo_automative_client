@@ -235,6 +235,7 @@ export default {
       state.podMaterial = result
       state.typeM = []
       state.podTypeM = []
+
       for(let mat of result) {
         let check = false
         if(mat.material) {
@@ -482,9 +483,30 @@ export default {
     filterMaterialStatus(state, params) {
       if(state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial
       state.podMaterial = state.stateMaterialTime
-      if(params.status == 'order') 
-        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries.length == params.val)
       if(params.status == 'all') return null
+     
+      if(params.val == 'yes')
+        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries_kolvo > 0)
+      if(params.val == 'no')
+        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries_kolvo <= 0)
+
+      if(params.val == 'def') {
+        state.podMaterial = state.stateMaterialTime.filter(m => (m.material_kolvo - m.min_remaining+m.shipments_kolvo) < 0)
+        state.podMaterial.sort((a, b) =>
+        (a.material_kolvo - (a.min_remaining+a.shipments_kolvo)) - (b.material_kolvo - (b.min_remaining+b.shipments_kolvo)))
+      }
+      if(params.val == 'ship') {
+        state.podMaterial = state.stateMaterialTime.filter(m => m.shipments_kolvo > 0)
+        state.podMaterial.sort((a, b) => b.shipments_kolvo - a.shipments_kolvo)
+      }
+
+      if(params.val == 'all_def') {
+        state.podMaterial = state.stateMaterialTime.filter(m => (m.material_kolvo - m.min_remaining+m.shipments_kolvo) < 0)
+        
+        state.podMaterial = state.stateMaterialTime.filter(m => m.shipments_kolvo > 0)
+        state.podMaterial.sort((a, b) => b.shipments_kolvo - a.shipments_kolvo)
+      }
+      
     },
     setOneTypeMMytation(state, typeM) {
       state.setOneTypeM = typeM

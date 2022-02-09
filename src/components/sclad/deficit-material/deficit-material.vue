@@ -3,42 +3,42 @@
 		<h3>Дефицит материалов</h3>
 		<div class='header_block'>
 			<p>
-				<label for="no_order">Все: </label>
+				<label for="order1">Все: </label>
 				<input 
-					type="checkbox" 
-					id="no_order" 
-					v-model='all_type_order'
+					type="radio" 
+					id="order1"
+					name='order'
 					@click='e => filterAll(e.target.checked)'>
-					<label for="order">Заказано: </label>
+				<label for="order2">Заказано: </label>
 				<input 
-					type="checkbox" 
-					id="order" 
-					v-model='filter_order'
-					@click='e => filterOrder(e.target.checked)'>
-					<label for="order">Не Заказано: </label>
+					type="radio" 
+					id="order2 " 
+					name='order'
+					@click='e => filterOrder(e.target.checked, "yes")'>
+				<label for="order3">Не Заказано: </label>
 				<input 
-					type="checkbox" 
-					id="order" 
-					v-model='filter_order'
-					@click='e => filterOrder(e.target.checked)'>
-					<label for="order">Дефицит общий: </label>
+					type="radio" 
+					id="order3" 
+					name='order'
+					@click='e => filterOrder(e.target.checked, "no")'>
+				<label for="order4">Дефицит общий: </label>
 				<input 
-					type="checkbox" 
-					id="order" 
-					v-model='filter_order'
-					@click='e => filterOrder(e.target.checked)'>
-					<label for="order">Дефицит по заказам покупателя: </label>
+					type="radio" 
+					id="order4"
+					name='order' 
+					@click='e => filterOrder(e.target.checked, "def")'>
+				<label for="order5">Дефицит по заказам покупателя: </label>
 				<input 
-					type="checkbox" 
-					id="order" 
-					v-model='filter_order'
-					@click='e => filterOrder(e.target.checked)'>
-					<label for="order">Все: </label>
+					type="radio" 
+					id="order5"
+					name='order' 
+					@click='e => filterOrder(e.target.checked, "ship")'>
+				<label for="order6">Все Дефициты: </label>
 				<input 
-					type="checkbox" 
-					id="order" 
-					v-model='filter_order'
-					@click='e => filterOrder(e.target.checked)'>
+					type="radio" 
+					id="order6"
+					name='order' 
+					@click='e => filterOrder(e.target.checked, "all_def")'>
 			</p>
 		</div> 
  
@@ -239,8 +239,8 @@ export default {
 			this.mat_id = id
 			this.materialParentKey = random(1, 999)
 		},
-		filterOrder(val) {
-			this.all_type_order = false
+		filterOrder(check, val) {
+			this.all_type_order = !check
 			this.filterMaterialStatus({status: 'order', val})
 		},
 		filterAll(val) {
@@ -262,6 +262,7 @@ export default {
     },
 		clickMat(mat) {
 			this.filterByNameMaterial(mat)
+			console.log(mat)
     },
 		setMaterial(material, span) {
 			console.log(material)
