@@ -162,8 +162,8 @@
 										<span v-for='dev of material.deliveries' :key='dev'>{{ dev.date_shipments }}</span>
 									</div>
 								</td>
-								<td class='center min_width'>
-									{{ ez.shipments_kolvo - ez.deliveries_kolvo }}
+								<td class='center min_width' style='color: red;'>
+									{{ ez.deliveries_kolvo - ez.shipments_kolvo }}
 								</td>
 								<td v-if='ez.deliveries_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
 								<td v-else class='center min_width-100 work_operation'>Не заказано</td>
