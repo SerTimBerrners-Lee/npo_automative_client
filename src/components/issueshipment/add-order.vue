@@ -368,6 +368,7 @@ export default {
 			this.date_shipments = date
 		},
 		selectProduct() {
+			this.kol = 1
 			this.showProduct = true,
 			this.keyProductModal = random(1, 999)
 		},
@@ -540,6 +541,9 @@ export default {
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
 				list_hidden_cbed_detal: JSON.stringify(this.list_hidden_cbed_detal)
 			} 
+
+			console.log(this.list_cbed_detal, 'this.list_cbed_detal')
+			console.log(this.list_hidden_cbed_detal, 'this.list_hidden_cbed_detal')
 
 			if(this.documentsData.length) {
 				let new_arr = []
