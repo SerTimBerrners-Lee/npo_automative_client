@@ -148,7 +148,7 @@
 									<strong>{{ ez.min_remaining }}</strong>
 								</td>
 								<td class='center min_width'>
-									<strong>{{ ez.min_remaining * 3 + ez.shipments_kolvo }}</strong>
+									<strong>{{ ez.min_remaining * 3 }}</strong>
 								</td>
 								<td class='center min_width'>
 									{{ ez.min_remaining * 3 + ez.shipments_kolvo }}

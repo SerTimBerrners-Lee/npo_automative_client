@@ -98,7 +98,7 @@
               <td class='center min_width-100'>{{ detal.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
               <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
               <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->
-              <td class='center'>{{ detal?.min_remaining * 3 + detal.shipments_kolvo}}</td> <!-- Рекомендуемый остаток -->
+              <td class='center'>{{ detal?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
               <td class='center'>{{ returnZnachCPU(detal) }}</td> <!-- ЧПУ --->
               <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).preTime.znach : ''}}</td> <!-- Норма времени (подготовительное) -->
               <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).helperTime.znach : '' }}</td><!-- Норма времени (вспомогательное) -->

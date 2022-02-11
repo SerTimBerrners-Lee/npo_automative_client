@@ -48,7 +48,7 @@ export default {
       let cbeds = []
       if(result.length) {
         for(let inx in result) {
-          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['cbed_kolvo']
+          result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['cbed_kolvo']
           if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
             cbeds.push(result[inx])
         }
@@ -64,7 +64,7 @@ export default {
       let detals = []
       if(result.length) {
         for(let inx in result) {
-          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['detal_kolvo']
+          result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['detal_kolvo']
           if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
             detals.push(result[inx])
         }
@@ -80,7 +80,7 @@ export default {
       let products = []
       if(result.length) {
         for(let inx in result) {
-          result[inx]['my_kolvo'] = result[inx]['min_remaining'] * 3 - result[inx]['product_kolvo']
+          result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['product_kolvo']
           if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
             products.push(result[inx])
         }
