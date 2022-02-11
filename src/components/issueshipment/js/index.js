@@ -8,13 +8,15 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 		let list_cbed = JSON.parse(izd.listCbed)
 		pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive)
 		for(let cb of list_cbed) {
-			ctx.$store.dispatch('getOneCbEdById', cb.cb.id).then(res => parserListIzd(res, cb.kol, ctx))
+			ctx.$store.dispatch('getOneCbEdById', cb.cb.id).then(res => 
+				parserListIzd(res, cb.kol, ctx))
 		}
 	}
 
 	// Проходим по деталям
 	if(izd.detals && izd.detals.length && izd.listDetal) {
 		let list_detals = JSON.parse(izd.listDetal)
+		console.log(list_detals)
 			for(let det in list_detals) {
 				const res = await ctx.$store.dispatch('getOneDetal', list_detals[det].det.id)
 				for(let i = 0; i < list_detals[det].kol; i++) {
@@ -99,6 +101,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					break;
 			}
 			if(id == element.id) {
+				console.log(item.kol)
 				kol = Number(item.kol)
 				element.zag = item?.det?.zag
 			}
@@ -108,7 +111,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 		let check = true
 		for(let iz = 0; iz < ctx.list_cbed_detal.length; iz++) {
 			if(element.id == ctx.list_cbed_detal[iz].obj.id && element.name == ctx.list_cbed_detal[iz].obj.name) {
-				ctx.list_cbed_detal[iz].kol = Number(ctx.list_cbed_detal[iz].kol) + Number(kol)
+				ctx.list_cbed_detal[iz].kol += Number(kol)
 				if(type == 'material') {
 					if(element.LEN)	ctx.list_cbed_detal[iz].obj.LEN = (Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN))
 					if(element.MASS) ctx.list_cbed_detal[iz].obj.MASS = (Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS))
@@ -127,7 +130,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 
 	async function chechAndAddElement(arr, element, kol, type, ctx) {
 		const check_dublecate = checkDublecate(arr, element)
-		if(check_dublecate != null) arr[check_dublecate].kol = Number(arr[check_dublecate].kol) + Number(kol)
+		if(check_dublecate != null) arr[check_dublecate].kol += Number(kol)
 		else {
 			if(type == 'material') {
 				const res = await ctx.$store.dispatch("fetchGetOnePPM", element.id)
@@ -138,13 +141,13 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					arr.push({
 						type,
 						obj: {...element},
-						kol
+						kol: Number(kol)
 					})
 			} else {
 				arr.push({
 					type,
 					obj: {...element},
-					kol
+					kol: Number(kol)
 				})
 			}
 		}

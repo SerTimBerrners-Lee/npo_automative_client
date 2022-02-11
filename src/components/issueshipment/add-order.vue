@@ -254,6 +254,7 @@ export default {
 		kol: function(znach) {
 			if(!this.select_product) return 0 
 			this.list_cbed_detal = []
+			this.list_hidden_cbed_detal = []
 			for(let inx = 0; inx < znach; inx++) {
 				this.checkedJsonList(this.select_product)
 			}
@@ -394,30 +395,7 @@ export default {
 				let list_detals = JSON.parse(izd.listDetal)
 				this.pushElement(izd.detals, list_detals, 'detal', recursive)
 				for(let det of list_detals ) {
-					this.getOneDetal(det.det.id).then(res => {
-						for(let i = 0; i < det.kol; i++) {
-							let mat_true = false
-							let material_find
-							for(let material of res.materials) {
-								if(material.id == res.mat_zag) {
-									mat_true = true
-									material_find = material
-								}
-							}
-							if(mat_true) {
-								let parse_str
-								if(res.materialList) {
-									parse_str = JSON.parse(res.materialList)
-									parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1})
-									parse_str = JSON.stringify(parse_str)
-								} else
-									parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name }, kol: 1}])
-								this.checkedJsonList({...res, materialList: parse_str})
-								mat_true = false
-							}
-							else this.checkedJsonList(res)
-						}
-					}) 
+					this.getOneDetal(det.det.id).then(res => this.checkedJsonList(res)) 
 				}
 			}
 		},
@@ -435,7 +413,7 @@ export default {
 							break;
 					}
 					if(id == element.id)
-						kol = item.kol
+						kol = Number(item.kol)
 				}
 				if(type != 'mat')  {
 					let check = true
@@ -450,19 +428,19 @@ export default {
 							this.list_cbed_detal.push({
 								type,
 								obj: {id: element.id, name: element.name,  articl: element.articl},
-								kol
+								kol: Number(kol)
 							})
 						else {
 							element.obj = {id: element.id}
 							element.type = type
 							const check_dublecate = this.checkDublecate(this.list_hidden_cbed_detal, element)
 							if(check_dublecate != null) 
-								this.list_hidden_cbed_detal[check_dublecate].kol = this.list_hidden_cbed_detal[check_dublecate].kol + kol
+								this.list_hidden_cbed_detal[check_dublecate].kol = Number(this.list_hidden_cbed_detal[check_dublecate].kol) + Number(kol)
 							else 
 								this.list_hidden_cbed_detal.push({
 									type,
 									obj: {id: element.id, name: element.name,  articl: element.articl},
-									kol
+									kol: Number(kol)
 								})
 						}
 					} else check = true
@@ -474,8 +452,8 @@ export default {
 		 */
 		parserListIzd(res, kol) {
 			try {
-				let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
-				let detals = res.listDetal ? JSON.parse(res.listDetal) : []
+				const cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
+				const detals = res.listDetal ? JSON.parse(res.listDetal) : []
 				if(cbeds.length) {
 					for(let inx in cbeds) {
 						cbeds[inx] = cbeds[inx].cb
@@ -491,7 +469,6 @@ export default {
 				for(let i = 0; i < kol; i++) 
 					this.checkedJsonList({...res, cbeds, detals}, true)
 			} catch(e) {console.error(e)}
-				
 		},
 		/**
 		 * Добавляем СБ или Д
@@ -499,10 +476,12 @@ export default {
 		responseDetalCb(res) {
 			if(res && res.type == 'cbed') 
 				this.parserListIzd(res.obj, 1)
-
+		
 			const check_dublecate = this.checkDublecate(this.list_cbed_detal, res)
-			if(check_dublecate != null) 
-				return this.list_cbed_detal[check_dublecate].kol++
+			if(check_dublecate != null) {
+				this.list_cbed_detal[check_dublecate].kol = Number(this.list_cbed_detal[check_dublecate].kol)
+				this.list_cbed_detal[check_dublecate].kol++
+			}
 			this.list_cbed_detal.push({
 				...res, 
 				obj: {id: res.obj.id, name: res.obj.name, articl: res.obj.articl},
@@ -518,8 +497,9 @@ export default {
 			}
 			return null
 		},	
+		// ТО DO: Изменение работает только для определенного элемента на детей оно не распростроняется!!!
 		editKolVo(inx, val) {
-			this.list_cbed_detal[inx].kol = val
+			this.list_cbed_detal[inx].kol = Number(val)
 		},
 		deleteCbEdDetal() {
 			if(this.select_tr_inx == null) return 0;
