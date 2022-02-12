@@ -49,7 +49,7 @@ export default {
       if(result.length) {
         for(let inx in result) {
           result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['cbed_kolvo']
-          if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
+          if(result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0) 
             cbeds.push(result[inx])
         }
       }
@@ -65,7 +65,7 @@ export default {
       if(result.length) {
         for(let inx in result) {
           result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['detal_kolvo']
-          if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
+          if(result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0) 
             detals.push(result[inx])
         }
       }
@@ -81,7 +81,7 @@ export default {
       if(result.length) {
         for(let inx in result) {
           result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['product_kolvo']
-          if(result[inx]['min_remaining'] > 1 || result[inx]['shipments_kolvo'] > 1) 
+          if(result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0) 
             products.push(result[inx])
         }
       }
