@@ -103,7 +103,7 @@
               Number(JSON.parse(cbed.parametrs)[0].znach) * cbed.shipments_kolvo
               : '' }}</td> <!-- Общее время выполения на сборку  -->
             <td class='center min_width-100'>{{ cbed.assemble_kolvo }}</td> <!-- Заказано на производстве --> 
-            <td class='center min_width-100'>{{ cbed.cbed_kolvo + cbed.assemble_kolvo }}</td> <!-- Реальный остаток с учетом -->
+            <td class='center min_width-100'>{{ cbed.cbed_kolvo + cbed.assemble_kolvo - cbed.shipments_kolvo }}</td> <!-- Реальный остаток с учетом -->
             <td class='center min_width-100'>{{  }}</td> <!-- Уровень компленктации -->
             <td v-if='cbed.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
             <td v-else class='center min_width-100 work_operation'>Не заказано</td>

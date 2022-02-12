@@ -108,7 +108,7 @@
                   {{ detal?.my_kolvo || detal.min_remaining * 3  }}
               </td> <!-- СВОЕ кол-во -->
               <td class='center'>{{ detal.metalloworking_kolvo }}</td><!-- Заказано на производстве -->
-              <td class='center'>{{ detal.detal_kolvo + detal.metalloworking_kolvo  }}</td> <!-- Реальный остаток с учетом -->
+              <td class='center'>{{ detal.detal_kolvo + detal.metalloworking_kolvo - detal.shipments_kolvo }}</td> <!-- Реальный остаток с учетом -->
               <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
               <td v-else class='center min_width-100 work_operation'>Не заказано</td> <!-- Статус -->
               <td class='center'>

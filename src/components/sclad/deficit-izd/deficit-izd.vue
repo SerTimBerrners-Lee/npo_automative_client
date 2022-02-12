@@ -98,12 +98,12 @@
             <td class='center min_width-100'>{{ product.product_kolvo }}</td> <!-- Остаток -->
             <td class='center min_width-100'>{{ product?.min_remaining }}</td> <!-- Минимальный остаток -->
             <td class='center min_width-100'>{{ product?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
-            <td class='center min_width-100'></td>
+            <td class='center min_width-100'></td> <!-- Норма времени на одну -->
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ product?.my_kolvo || product.min_remaining * 3  }}</td> 
             <td class='center min_width-100'>
-            </td> 
+            </td> <!-- Общая норма времени -->
             <td class='center min_width-100'>{{ product.assemble_kolvo }}</td>  <!-- Заказано на производстве -->
-            <td class='center min_width-100'>{{ product.product_kolvo + product.assemble_kolvo }}</td>  <!-- Реальный остаток с уч. отгрузок -->
+            <td class='center min_width-100'>{{ product.product_kolvo + product.assemble_kolvo - product.shipments_kolvo }}</td>  <!-- Реальный остаток с уч. отгрузок -->
             <td class='center min_width-100'>{{  }}</td>  <!-- Ур. комплектации -->
             <td v-if='product.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
             <td v-else class='center min_width-100 work_operation'>Не заказано</td>
