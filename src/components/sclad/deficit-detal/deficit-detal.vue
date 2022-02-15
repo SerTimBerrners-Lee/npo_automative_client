@@ -41,7 +41,7 @@
           <table>
             <tbody class='fixed_table_85'>
               <tr>
-                <th colspan="6" class='min_width-100'>Детали для сборок из комплектации</th>
+                <th colspan="5" class='min_width-100'>Детали для сборок из комплектации</th>
                 <th rowspan="3" class='min_width-120'>Дефицит</th>
                 <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
                 <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
@@ -71,7 +71,7 @@
               </tr>
               <tr>
                 <td colspan='1'>Поиск: </td>
-                <td colspan="3">
+                <td colspan="4">
                   <Search 
                     :placeholder="'Поиск по Артиклу и Наименованию'"
                     @unmount='keySearch' 

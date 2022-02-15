@@ -11,12 +11,12 @@ export default {
   }, 
   actions: {
     async fetchDeficit(ctx) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit`)
-      if(res.ok == true) {
-        const result = await res.json()
-        ctx.commit('setDeficit', result)
-        return result
-      } 
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit`);
+      if(!res.ok) return false; 
+      
+      const result = await res.json();
+      ctx.commit('setDeficit', result);
+      return result;
     },
     async fetchUpdateDeficit(ctx, data) {
       return await fetch(`${PATH_TO_SERVER}api/sclad/deficit`, {

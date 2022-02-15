@@ -48,16 +48,16 @@
 					<tr>
 						<th>Категория</th>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(0, e.target.parentElement)'>
+					<tr class='td-row' @click='e => instansMaterial(0, e.target)'>
 						<td>Все</td>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(1, e.target.parentElement)'>
+					<tr class='td-row' @click='e => instansMaterial(1, e.target)'>
 						<td>Материалы </td>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(2, e.target.parentElement)'>
+					<tr class='td-row' @click='e => instansMaterial(2, e.target)'>
 						<td>Покупные детали</td>
 					</tr>
-					<tr class='td-row' @click='e => instansMaterial(3, e.target.parentElement)'>
+					<tr class='td-row' @click='e => instansMaterial(3, e.target)'>
 						<td>Расходные материалы</td>
 					</tr>
 				</table>
@@ -69,7 +69,7 @@
 						class='td-row' 
 						v-for='typ of alltypeM' 
 						:key='typ'
-						@click='clickMat(typ, "type")'>
+						@click='e => clickMat(typ, "type", e.target)'>
 						<td>{{ typ.name }}</td>
 					</tr>
 				</table>
@@ -81,7 +81,7 @@
 						class='td-row' 
 						v-for='p_type of allPodTypeM' 
 						:key='p_type'
-						@click='clickMat(p_type)'>
+						@click='e => clickMat(p_type, undefined, e.target)'>
 						<td>{{ p_type.name }}</td>
 					</tr>
 				</table>
@@ -116,7 +116,7 @@
 									class='center'
 									:rowspan="getKolvoMaterial(material).length + 1">{{ inx+1 }}</td>
 								<td 
-									@click='e => setMaterial(material, e.target)'
+									@click='e => setMaterial(material, e.target.parentElement)'
 									:rowspan="getKolvoMaterial(material).length + 1"
 									class='td-row'> {{ material.name }}
 								</td>
@@ -227,7 +227,10 @@ export default {
 
 			shipments: [],
 			showModalShipments: false,
-			shipmentKey: random(1, 999)
+			shipmentKey: random(1, 999),
+
+			e_type_material: null,
+			e_ptype_material: null,
 		}
 	},
 	components: {MaterialParentModal, ShipmentsModal},
@@ -258,7 +261,6 @@ export default {
       })
     },
 		openShipmentsModal(material) {
-			console.log(material);
 			this.getShipmentsForOneMaterial(material.id).then(res => {
 				if(!res || !res.length) return showMessage('', 'Нет Заказов или произошла ощибка.', 'i', this);
 				this.material = material;
@@ -295,70 +297,63 @@ export default {
 		},
 		showRemaningParent(id) {
 			if(!id) return false;
-			this.mat_id = id
-			this.materialParentKey = random(1, 999)
+			this.mat_id = id;
+			this.materialParentKey = random(1, 999);
 		},
 		filterOrder(check, val) {
 			this.all_type_order = !check
-			this.filterMaterialStatus({status: 'order', val})
+			this.filterMaterialStatus({status: 'order', val});
 		},
 		filterAll(val) {
 			this.filter_order = false
-			this.filterMaterialStatus({status: 'all', val})
+			this.filterMaterialStatus({status: 'all', val});
 		},
 		instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
+			this.span = this.eSelectSpan(this.span, span);
+			if(this.instansLet == instans) return 0;
 
-      this.span = span
-			this.span.classList.add('td-row-all')
-
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
-
+      this.getInstansMaterial(instans);
+      this.instansLet = instans;
     },
-		clickMat(mat, type = 'podT') {
-			console.log(mat)
-			this.filterByNameMaterial(mat)
+		clickMat(mat, type = 'podT', e) {
+			this.filterByNameMaterial(mat);
 			if(type == 'type') {
 				if(mat.instansMaterial == 1) {
-					this.getInstansMaterial(1)
-					this.instansLet = 1
+					this.getInstansMaterial(1);
+					this.instansLet = 1;
 				}
-				else this.filterMatByPodType(mat.podMaterials)
-			}
+				else this.filterMatByPodType(mat.podMaterials);
+				this.e_type_material = this.eSelectSpan(this.e_type_material, e);
+			} else this.e_ptype_material = this.eSelectSpan(this.e_ptype_material, e);
     },
+		eSelectSpan(e_last, e_now) {
+			if(e_last) e_last.classList.remove('td-row-all');
+			e_last = e_now;
+			e_last.classList.add('td-row-all');
+			return e_last;
+		},
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
-				return this.span_material = null
+				return this.span_material = null;
 			}
-			
-			if(this.span_material)
-				this.span_material.classList.remove('td-row-all')
-			this.span_material = span
-			this.span_material.classList.add('td-row-all')
 
-			this.material = material
+			this.span_material = this.eSelectSpan(this.span_material, span);
+			this.material = material;
 		},
 		getKolvoMaterial(mat) {
-			return getKolvoMaterial(mat)
+			return getKolvoMaterial(mat);
 		},
-		changeDatePicterRange(val) {
-			console.log(val)
-		}
 	},
 	async mounted() {
-		this.loader = true
-		this.clearCascheMaterial()
+		this.loader = true;
+		this.clearCascheMaterial();
 
-		this.clearCascheMaterial()
-		await this.getAllTypeMaterial()
-    await this.getAllPodTypeMaterial()
-		await this.fetchGetAllDeficitPPM()
-		this.loader = false
+		this.clearCascheMaterial();
+		await this.getAllTypeMaterial();
+    await this.getAllPodTypeMaterial();
+		await this.fetchGetAllDeficitPPM();
+		this.loader = false;
 	}
 } 
 </script>
