@@ -23,6 +23,7 @@ import operation from './modules/operation';
 import shipments from './modules/shipments';
 import navigation from './modules/navigation';
 import instruments from './modules/instruments';
+import techprocess from './modules/techprocess';
 import metaloworking from './modules/metaloworking';
 
 export default createStore({
@@ -51,7 +52,8 @@ export default createStore({
     library,
     inventary,
     moving,
-    socket
+    socket,
+    techprocess
   }
 })
   

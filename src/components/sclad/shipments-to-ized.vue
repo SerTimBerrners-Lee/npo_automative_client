@@ -5,10 +5,11 @@
     <div :style="hiddens" >
       <h3>Список заказов</h3>
       <p v-if='izd'>Для 
-        <span v-if='izd?.type =="cbed"'></span>
-        <span v-if='izd?.type =="detal"'></span>
-        <span v-if='izd?.type =="product"'></span>
-        : {{ izd?.izd?.name }}</p>
+        <strong v-if='izd?.type =="cbed"'>Сборки:</strong>
+        <strong v-if='izd?.type =="detal"'>Детали:</strong>
+        <strong v-if='izd?.type =="product"'>Изделия:</strong>
+        <strong v-if='izd?.type =="material"'>Материала:</strong>
+          {{ izd?.izd?.name }}</p>
 			<div class="block">
 				<table v-if='shipments.length'>
 					<tr>
@@ -66,6 +67,7 @@ export default {
     },
     returnCountIzd(item, izd, type) {
       if(type == 'product') return item.kol || 0
+      if(type == 'material') return item.shipments_material || 0
       try {
         let count = 0;
         const list = JSON.parse(item.list_cbed_detal)
@@ -86,6 +88,7 @@ export default {
     const izd = this.$props.izd
 
     console.log(this.$props.shipments)
+    console.log(izd);
 
     if(this.$props.shipments) {
       this.shipments_arr = this.$props.shipments

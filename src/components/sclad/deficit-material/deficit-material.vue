@@ -89,6 +89,7 @@
 					<table style='margin-left: 20px;' id='tablebody'>
 						<tbody class='fixed_table_10'>
 							<tr>
+								<th class='center'>№</th>
 								<th class='min_width-50'>Наименование</th>
 								<th class='min_width-50'>Принадлежность по заказам</th>
 								<th class='min_width-50'>Принадлежность по Изд. СБ. Д.</th>
@@ -109,17 +110,20 @@
 								<th class='min_width-50'>Примечание</th>
 							</tr>
 						</tbody>
-						<tbody v-for='material of getOnePodMaterial' :key='material'>
+						<tbody v-for='(material, inx) of getOnePodMaterial' :key='material'>
 							<tr>
+								<td 
+									class='center'
+									:rowspan="getKolvoMaterial(material).length + 1">{{ inx+1 }}</td>
 								<td 
 									@click='e => setMaterial(material, e.target)'
 									:rowspan="getKolvoMaterial(material).length + 1"
 									class='td-row'> {{ material.name }}
 								</td>
-								<td class='center' :rowspan="6">
+								<td class='center' @click='openShipmentsModal(material)' :rowspan="getKolvoMaterial(material).length + 1">
 									<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
 								</td>
-								<td class='center' @click="showRemaningParent(material.id)" :rowspan="6">
+								<td class='center' @click="showRemaningParent(material.id)" :rowspan="getKolvoMaterial(material).length + 1">
 									<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
 								</td>
 							</tr>
@@ -177,7 +181,7 @@
 				<h3 v-else style='margin-left: 20px;'>Нет Дефицита</h3>
 			</div>
 				<div class='btn-control'>
-					<button class="btn-small"> Выгрузка в Excel </button>
+					<button class="btn-small" @click="exportExcel"> Выгрузка в Excel </button>
 					<button class="btn-small" @click='printPage'> Печать отчета </button>
 				</div>
 		</div>
@@ -186,15 +190,24 @@
 			v-if='mat_id'
 			:key='materialParentKey'
 		/>
+		<ShipmentsModal 
+      :shipments='shipments'
+      :izd='{ izd: material, type: "material" }'
+      v-if='showModalShipments && shipments.length'
+      :key='shipmentKey'
+    />
 		<Loader v-if='loader' />
 	</div>
 </template>
 <script> 
+import XLSX from 'xlsx';
 import print from 'print-js';
 import {random} from 'lodash';
+import { showMessage } from '@/js/';
 import {getKolvoMaterial} from '@/js/edizm.js';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MaterialParentModal from './material-parent-modal.vue';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 
 export default {
 	data() {
@@ -210,16 +223,21 @@ export default {
 			all_type_order: true,
 
 			mat_id: null,
-			materialParentKey: random(1, 999)
+			materialParentKey: random(1, 999),
+
+			shipments: [],
+			showModalShipments: false,
+			shipmentKey: random(1, 999)
 		}
 	},
-	components: {MaterialParentModal},
+	components: {MaterialParentModal, ShipmentsModal},
 	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
 	methods: {
 		...mapActions([
 			'getAllTypeMaterial',
 			'getAllPodTypeMaterial',
-			'fetchGetAllDeficitPPM'
+			'fetchGetAllDeficitPPM',
+			'getShipmentsForOneMaterial'
 		]),
 		...mapMutations([
 			'getInstansMaterial', 
@@ -239,6 +257,42 @@ export default {
         font_size: '10pt'
       })
     },
+		openShipmentsModal(material) {
+			console.log(material);
+			this.getShipmentsForOneMaterial(material.id).then(res => {
+				if(!res || !res.length) return showMessage('', 'Нет Заказов или произошла ощибка.', 'i', this);
+				this.material = material;
+				this.showModalShipments = true;
+				this.shipments = res;
+				this.shipmentKey = random(1, 999);
+			})
+    },
+		exportExcel() {
+			const workbook = XLSX.utils.table_to_book(document.getElementById('tablebody'), {
+				sheet: "Дефицит Материалов"
+			});
+
+			const wscols = [ 
+				{wch:1},
+				{wch:40}
+			];
+			workbook.Sheets["Дефицит Материалов"]['!cols'] = wscols;
+			workbook.Sheets["Дефицит Материалов"]['!cols'][0] = { hidden: true };
+			workbook.Sheets["Дефицит Материалов"]['!cols'][2] = { hidden: true };
+			workbook.Sheets["Дефицит Материалов"]['!cols'][3] = { hidden: true };
+			workbook.Sheets["Дефицит Материалов"]['!cols'][17] = { wch: 15 };
+			workbook.Sheets["Дефицит Материалов"]['!cols'][18] = { hidden: true };
+
+			const wopts = {
+				bookType: 'xlsx',
+				bookSST: false,
+				type: 'base64'
+			};
+			const wbout = XLSX.write(workbook, wopts);
+			const mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + wbout;
+			window.location.href = mediaType;
+
+		},
 		showRemaningParent(id) {
 			if(!id) return false;
 			this.mat_id = id

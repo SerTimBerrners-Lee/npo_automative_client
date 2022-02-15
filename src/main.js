@@ -10,44 +10,44 @@ import FileLoader from '@/components/drag-drop-file.vue';
 import InformFolder from '@/components/InformFolder.vue';
 import MiniNavigation from '@/components/mini-navigation.vue';
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
-import { 
+import {
     uniImport,
-    uniTimes, 
-    uniSetting, 
-    uniUser, 
-    uniPower, 
-    uniHouseUserMonochrome, 
-    uniPlay, 
-    uniTrash, 
+    uniTimes,
+    uniSetting,
+    uniUser,
+    uniPower,
+    uniHouseUserMonochrome,
+    uniPlay,
+    uniTrash,
     uniSearchAlt,
     uniCheck,
     uniHistory,
     uniMinusSquareFull,
     uniGlassTea,
-    uniPen, 
+    uniPen,
     uniStar,
     uniExclamation,
     uniAlignCenterV,
-    uniOkta 
+    uniOkta
 } from 'vue-unicons/dist/icons';
 
 Unicon.add([
     uniImport,
-    uniAlignCenterV, 
-    uniOkta, 
-    uniExclamation, 
-    uniPen, 
-    uniGlassTea, 
-    uniStar, 
-    uniHistory, 
-    uniMinusSquareFull, 
-    uniTimes, 
-    uniSetting, 
-    uniUser, 
-    uniPower, 
-    uniHouseUserMonochrome, 
-    uniPlay, 
-    uniTrash, 
+    uniAlignCenterV,
+    uniOkta,
+    uniExclamation,
+    uniPen,
+    uniGlassTea,
+    uniStar,
+    uniHistory,
+    uniMinusSquareFull,
+    uniTimes,
+    uniSetting,
+    uniUser,
+    uniPower,
+    uniHouseUserMonochrome,
+    uniPlay,
+    uniTrash,
     uniSearchAlt, 
     uniCheck
 ])
@@ -65,6 +65,6 @@ createApp(App)
     .component('InformFolder', InformFolder)
     .component('MiniNavigation', MiniNavigation)
     .use(Unicon, {
-        height: 32, 
+        height: 32,
         width: 32
     }).mount('#app')

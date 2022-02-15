@@ -91,19 +91,21 @@ export default {
     },
     async fetchGetAllDeficitPPM(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('sortAllForeficitMaterial', result)
-        console.log(result)
-        return result
-      }
+      if(!res.ok) return false;
+      const result = await res.json()
+      ctx.commit('sortAllForeficitMaterial', result)
+      return result
+    },
+    async getShipmentsForOneMaterial(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialonecshipments/${id}`)
+      if(!res.ok) return false;
+      const result = await res.json()
+      return result;
     },
     async fetchMatRemParent(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialparents/${id}`)
       if(!res.ok) return false;
-
       const result = await res.json()
-      console.log(result)
       return result
     },
   },

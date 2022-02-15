@@ -190,7 +190,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import AddOperation from '@/components/basedetal/add-operation.vue';
 export default {
-  props: ['techProcessID'],
+  props: ['techProcessID', 'izd', 'type_open', 'izd_type'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -223,11 +223,12 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
     },
-    ...mapActions(['updateOperationTech', 
-        'banOperation', 
-        'createTechProcess', 
-        'fetchTechProcess', 
-        'getAllTypeOperations']),
+    ...mapActions([
+      'updateOperationTech', 
+      'banOperation', 
+      'createTechProcess', 
+      'fetchTechProcess', 
+      'getAllTypeOperations']),
     ...mapMutations([
       'allOperationMutations', 
       'removeOperationStorage', 
@@ -277,14 +278,10 @@ export default {
       let instrumentMerID = operation.instrumentMerID
       let instrumentOsnID = operation.instrumentOsnID
 
-      if(type == 'eq')
-        eqID = val
-      if(type == 'inst')
-        instrumentID = val
-      if(type == 'mer')
-        instrumentMerID = val
-      if(type == 'osn')
-        instrumentOsnID = val
+      if(type == 'eq') eqID = val
+      if(type == 'inst') instrumentID = val
+      if(type == 'mer') instrumentMerID = val
+      if(type == 'osn') instrumentOsnID = val
 
       this.updateOperationTech({
         eqID, instrumentID,  instrumentMerID, instrumentOsnID, id: operation.id
@@ -311,6 +308,11 @@ export default {
 
       if(this.$props.techProcessID)
         this.formData.append("id", this.$props.techProcessID);
+
+      if(this.$props.izd && this.$props.izd_type) {
+        this.formData.append("izd_type", this.$props.izd_type);
+        this.formData.append("izd_id", this.$props.izd.id);
+      }
 
       this.createTechProcess(this.formData).then((res) => {
         this.$emit('unmount', { id: res.id, opers: this.allOperationNewList});

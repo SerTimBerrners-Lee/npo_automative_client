@@ -59,7 +59,7 @@
               ({{ selecteProduct && selecteProduct.techProcesses && selecteProduct.techProcesses.operations ? 
                 selecteProduct.techProcesses.operations.length : '0' }} операции)</span>
           </h3>
-          <h3 v-else>Нет технологического процесса</h3>
+          <h3 v-else class="link_h3" @click="createTechProcess">Добавить технологический процесс</h3>
           <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
           <NodeParent
             v-if='selecteProduct && show_node_modal'
@@ -78,6 +78,10 @@
  <TechProcess 
     v-if='techProcessIsShow'
     :key='techProcessKey'
+    :type_open='type_open_techprocess'
+    :izd='selecteProduct'
+    :izd_type='"product"'
+    @unmount='unmount_tech_process'
     :techProcessID='techProcessID'
   />
 </template>
@@ -110,7 +114,8 @@ export default {
 
       techProcessIsShow: false,
       techProcessKey: random(10, 999),
-      techProcessID: null
+      techProcessID: null,
+      type_open_techprocess: 'edit',
     }
   },
   computed: mapGetters([ 
@@ -131,6 +136,19 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
       this.removeOperationStorage()
+    },
+    unmount_tech_process(tp) {
+      this.type_open_techprocess = null;
+      if(tp && tp.id) {
+        this.techProcessID = tp.id;
+        this.selecteProduct.techProcesses = tp;
+        this.selecteProduct.techProcesses.operations = tp.opers;
+      }
+    },
+    createTechProcess() {
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
+      this.type_open_techprocess = 'create';
     },
     showModalNode() {
       this.show_node_modal = !this.show_node_modal

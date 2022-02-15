@@ -42,7 +42,7 @@
         <table>
           <tbody class='fixed_table_85'>
             <tr>
-              <th colspan="5" class='min_width-120'>Комплектация сборки, детали</th>
+              <th colspan="6" class='min_width-120'>Комплектация сборки</th>
               <th rowspan="3" class='min_width-120'>Дефицит</th>
               <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
               <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
@@ -59,6 +59,7 @@
               <th rowspan="3" class='min_width-120'>Примечание</th>
             </tr>
             <tr>
+              <th class='center'>№</th>
               <th @click='selectAllItem' style='cursor: pointer;'>
                 <unicon name="check" fill="royalblue" />
               </th> 
@@ -77,9 +78,10 @@
               </td>
             </tr>
           </tbody>
-          <tr v-for='cbed of allCbed' :key='cbed' 
+          <tr v-for='(cbed, inx) of allCbed' :key='cbed' 
             class='td-row'
             @click='setIzdels(cbed)'>
+            <td class='center'>{{ inx+1 }}</td>
             <td>
               <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
                 <p class="checkbox_block" @click='e => toProduction(cbed, e.target)'></p>

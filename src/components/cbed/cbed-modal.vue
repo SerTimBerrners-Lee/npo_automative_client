@@ -56,7 +56,7 @@
                 ({{ selectedCbEd && selectedCbEd.techProcesses && selectedCbEd.techProcesses.operations ? 
                   selectedCbEd.techProcesses.operations.length : '0' }} операции)</span>
             </h3>
-            <h3 v-else>Нет технологического процесса</h3>
+            <h3 v-else class="link_h3" @click="createTechProcess">Добавить технологический процесс</h3>
             <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
             <NodeParent
               v-if='selectedCbEd && show_node_modal'
@@ -75,6 +75,10 @@
     v-if='techProcessIsShow'
     :key='techProcessKey'
     :techProcessID='techProcessID'
+    :type_open='type_open_techprocess'
+    :izd='selectedCbEd'
+    :izd_type='"cbed"'
+    @unmount='unmount_tech_process'
   />
 </template>
 <script>
@@ -107,6 +111,7 @@ export default {
       techProcessIsShow: false,
       techProcessKey: random(10, 999),
       techProcessID: null,
+      type_open_techprocess: 'edit',
     }
   },
   computed: mapGetters([ 
@@ -128,6 +133,19 @@ export default {
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
       this.removeOperationStorage()
+    },
+    unmount_tech_process(tp) {
+      this.type_open_techprocess = null;
+      if(tp && tp.id) {
+        this.techProcessID = tp.id;
+        this.selectedCbEd.techProcesses = tp;
+        this.selectedCbEd.techProcesses.operations = tp.opers;
+      }
+    },
+    createTechProcess() {
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
+      this.type_open_techprocess = 'create';
     },
     showTechProcess() {
       this.techProcessIsShow = true

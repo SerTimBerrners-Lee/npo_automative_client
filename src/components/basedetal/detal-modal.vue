@@ -47,7 +47,7 @@
           <span style='font-size:12px;'>
             ({{ getOneSelectDetal && getOneSelectDetal.techProcesses && getOneSelectDetal.techProcesses.operations ? 
               getOneSelectDetal.techProcesses.operations.length : '0' }} операции)</span></h3>
-        <h3 v-else>Нет технологического процесса</h3>
+        <h3 v-else class="link_h3" @click="createTechProcess">Добавить технологический процесс</h3>
         <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
         <NodeParent
           v-if='getOneSelectDetal && show_node_modal'
@@ -65,6 +65,9 @@
  <TechProcess 
     v-if='techProcessIsShow'
     :key='techProcessKey'
+    :type_open='type_open_techprocess'
+    :izd='getOneSelectDetal'
+    :izd_type='"detal"'
     @unmount='unmount_tech_process'
     :techProcessID='techProcessID'
   />
@@ -97,6 +100,7 @@ export default {
       techProcessIsShow: false,
       techProcessKey: random(10, 999),
       techProcessID: null,
+      type_open_techprocess: 'edit',
 
       materialList: [],
       listPokDet: [],
@@ -121,18 +125,31 @@ export default {
       this.hiddens = 'display: none;'
       this.removeOperationStorage()
     },
+    createTechProcess() {
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
+      this.type_open_techprocess = 'create';
+    },
     showModalNode() {
-      this.show_node_modal = !this.show_node_modal
-      this.key_node_modal = random(1, 999)
+      this.show_node_modal = !this.show_node_modal;
+      this.key_node_modal = random(1, 999);
     },
     setDocs(dc) {
-      this.itemFiles = dc
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      this.itemFiles = dc;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     isEmptyF(obj) {
       return isEmpty(obj)
     },
-    unmount_tech_process(tp) {
+    async unmount_tech_process(tp) {
+      await this.setDetal(this.$props.id);
+      this.type_open_techprocess = null;
+      if(tp && tp.id) {
+        this.techProcessID = tp.id;
+        this.getOneSelectDetal.techProcesses = tp;
+        this.getOneSelectDetal.techProcesses.operations = tp.opers;
+      }
+
       if(tp.id) {
         if(tp.opers.length) {
         tp.opers.forEach(op => {
@@ -145,16 +162,20 @@ export default {
       this.techProcessIsShow = true
       this.techProcessKey = random(1, 999)
     },
+    async setDetal(_id) {
+      const getDetal = await this.getOneDetal(_id);
+      if(isEmpty(getDetal)) return this.destroyModalF();
+      this.addOneSelectDetal(getDetal);
+
+      this.loader = false;
+    }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-    if(!this.$props.id) return this.destroyModalF()
-
-    const getDetal = await this.getOneDetal(this.$props.id)
-    if(isEmpty(getDetal)) return this.destroyModalF()
-    this.addOneSelectDetal(getDetal)
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
+    if(!this.$props.id) return this.destroyModalF();
+    await this.setDetal(this.$props.id);
     
     this.getOneSelectDetal.materials.forEach(element => {
       if(element.id == this.getOneSelectDetal.mat_zag)
