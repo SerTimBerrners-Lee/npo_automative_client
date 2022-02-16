@@ -81,6 +81,7 @@
     :type_open='type_open_techprocess'
     :izd='selecteProduct'
     :izd_type='"product"'
+    :documents="selecteProduct.documents"
     @unmount='unmount_tech_process'
     :techProcessID='techProcessID'
   />

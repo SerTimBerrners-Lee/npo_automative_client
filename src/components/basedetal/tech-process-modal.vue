@@ -190,7 +190,7 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import AddOperation from '@/components/basedetal/add-operation.vue';
 export default {
-  props: ['techProcessID', 'izd', 'type_open', 'izd_type'],
+  props: ['techProcessID', 'izd', 'type_open', 'izd_type', 'documents'],
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -347,6 +347,14 @@ export default {
     this.hiddens = 'opacity: 1;'
 
     this.getAllTypeOperations()
+
+    if(this.$props.izd && this.$props.documents && this.$props.documents.length) {
+      for(let doc of this.$props.documents) {
+          photoPreloadUrl({name: doc.path}, respons => {
+            if(respons.type == 'img') this.documentsData.push(doc)
+          }, true)
+        }
+    }
 
     if(this.$props.techProcessID) {
       this.fetchTechProcess(this.$props.techProcessID).then((res) => {

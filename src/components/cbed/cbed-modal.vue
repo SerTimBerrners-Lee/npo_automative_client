@@ -78,6 +78,7 @@
     :type_open='type_open_techprocess'
     :izd='selectedCbEd'
     :izd_type='"cbed"'
+    :documents="selectedCbEd.documents"
     @unmount='unmount_tech_process'
   />
 </template>

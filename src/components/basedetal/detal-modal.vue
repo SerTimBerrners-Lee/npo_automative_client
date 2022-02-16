@@ -68,6 +68,7 @@
     :type_open='type_open_techprocess'
     :izd='getOneSelectDetal'
     :izd_type='"detal"'
+    :documents="getOneSelectDetal.documents"
     @unmount='unmount_tech_process'
     :techProcessID='techProcessID'
   />
@@ -116,7 +117,7 @@ export default {
     TechProcess,
     NodeParent
   },
-  methods: {
+  methods: { 
     ...mapActions(['getOneDetal']),
     ...mapMutations(['removeOperationStorage', 'addOneSelectDetal']),
     destroyModalF() {
