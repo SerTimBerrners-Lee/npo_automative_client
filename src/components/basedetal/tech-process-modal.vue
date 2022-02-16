@@ -350,10 +350,13 @@ export default {
 
     if(this.$props.izd && this.$props.documents && this.$props.documents.length) {
       for(let doc of this.$props.documents) {
-          photoPreloadUrl({name: doc.path}, respons => {
-            if(respons.type == 'img') this.documentsData.push(doc)
-          }, true)
-        }
+        photoPreloadUrl({name: doc.path}, respons => {
+          if(respons.type == 'img') this.documentsData.push(doc)
+        }, true)
+      }
+      this.documentsData.forEach(d => {
+        this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned})
+      })
     }
 
     if(this.$props.techProcessID) {
