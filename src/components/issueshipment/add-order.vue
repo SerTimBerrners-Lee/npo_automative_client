@@ -385,8 +385,9 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(10, 999)
     },
 		checkedJsonList(izd, recursive = false) {
-			if(izd.cbeds && izd.cbeds.length && izd.listCbed) {
+			if(izd.listCbed) {
 				let list_cbed = JSON.parse(izd.listCbed)
+				if(!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb)
 				this.pushElement(izd.cbeds, list_cbed, 'cbed', recursive)
 				for(let cb of list_cbed) {
 					this.getOneCbEdById(cb.cb.id).then(res => this.parserListIzd(res, cb.kol))
