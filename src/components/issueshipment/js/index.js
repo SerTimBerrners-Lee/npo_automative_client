@@ -4,12 +4,16 @@
 async function checkedJsonList(izd, ctx, recursive = false) {
 	if(!ctx) return false
 
-	if(izd.cbeds && izd.cbeds.length && izd.listCbed) {
+	if(izd.listCbed) {
 		let list_cbed = JSON.parse(izd.listCbed)
+		console.log(list_cbed, 'list_cbed')
+		if(!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb)
 		pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive)
 		for(let cb of list_cbed) {
-			ctx.$store.dispatch('getOneCbEdById', cb.cb.id).then(res => 
-				parserListIzd(res, cb.kol, ctx))
+			ctx.$store.dispatch('getOneCbEdById', cb.cb.id).then(res => {
+				console.log(res);
+				parserListIzd(res, cb.kol, ctx);
+			});
 		}
 	}
 
@@ -78,7 +82,7 @@ function parseMaterialList(izd, materialJson, ctx, recursive) {
  */
 function pushElement(elements, list_pars, type, ctx, recursive = false) {
 	if(!ctx) return false
-
+	console.log("pushElement");
 	for(let element of elements) {
 		let kol = 1;
 		element.type = type
