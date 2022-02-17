@@ -184,7 +184,7 @@ export default {
     }
   },
   methods: {
-    ...mapActions(['fetchGetOnePPM']),
+    ...mapActions(['fetchGetOnePPM', 'getOneCbEdField']),
     destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden'
 			this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -265,10 +265,24 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;' 
 		if(isEmpty(this.$props.parametrs)) return this.destroyModalF()
+    let obj = this.$props.parametrs.obj
 
-		if(this.$props.parametrs && this.$props.parametrs.obj && this.$props.parametrs.type == 'izd') {
-      checkedJsonList(this.$props.parametrs.obj, this)
-		}
+		if(obj && this.$props.parametrs.type == 'izd' || this.$props.parametrs.type == 'cbed') {
+      if(this.$props.parametrs.type == 'cbed') {
+        // Получаем сборку 
+        let izd_detals = await this.getOneCbEdField({fields: 'detals', id: obj.id})
+        !izd_detals ? izd_detals = [] : izd_detals = izd_detals.detals
+        let izd_materials = await this.getOneCbEdField({fields: 'materials', id: obj.id})
+        !izd_materials ? izd_materials = [] : izd_materials = izd_materials.materials
+        console.log(izd_detals)
+        console.log(izd_materials)
+        obj.detals = [...izd_detals];
+        obj.materials = [...izd_materials];
+        checkedJsonList(obj, this);
+        console.log(obj);
+      }
+      else checkedJsonList(obj, this);
+    }
   },
 }
 </script>

@@ -33,6 +33,7 @@
                 :listDetal='listDetal'
                 :listPokDet='listPokDet'
                 :materialList='materialList'
+                :type_izd='"izd"'
               />
               <!-- Покупные Детали -->
               <ModalBaseMaterial 

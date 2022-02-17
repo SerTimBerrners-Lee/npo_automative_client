@@ -16,7 +16,6 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 	// Проходим по деталям
 	if(izd.detals && izd.detals.length && izd.listDetal) {
 		let list_detals = JSON.parse(izd.listDetal)
-		console.log(list_detals)
 			for(let det in list_detals) {
 				const res = await ctx.$store.dispatch('getOneDetal', list_detals[det].det.id)
 				for(let i = 0; i < list_detals[det].kol; i++) {
@@ -101,20 +100,19 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					break;
 			}
 			if(id == element.id) {
-				console.log(item.kol)
-				kol = Number(item.kol)
+				kol = Number(item.kol);
 				element.zag = item?.det?.zag
 			}
 		}
 		
 		// Проверяем на повторение в основном массиве
-		let check = true
+		let check = true;
 		for(let iz = 0; iz < ctx.list_cbed_detal.length; iz++) {
 			if(element.id == ctx.list_cbed_detal[iz].obj.id && element.name == ctx.list_cbed_detal[iz].obj.name) {
-				ctx.list_cbed_detal[iz].kol += Number(kol)
+				ctx.list_cbed_detal[iz].kol += Number(kol);
 				if(type == 'material') {
-					if(element.LEN)	ctx.list_cbed_detal[iz].obj.LEN = (Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN))
-					if(element.MASS) ctx.list_cbed_detal[iz].obj.MASS = (Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS))
+					if(element.LEN)	ctx.list_cbed_detal[iz].obj.LEN = (Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN));
+					if(element.MASS) ctx.list_cbed_detal[iz].obj.MASS = (Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS));
 				}
 				check = false
 			}	
@@ -122,21 +120,21 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 
 		if(check) {
 			if(!recursive || type == 'material') 
-				chechAndAddElement(ctx.list_cbed_detal, element, kol, type, ctx)
+				chechAndAddElement(ctx.list_cbed_detal, element, kol, type, ctx);
 			else 
-				chechAndAddElement(ctx.list_hidden_cbed_detal, element, kol, type, ctx)
+				chechAndAddElement(ctx.list_hidden_cbed_detal, element, kol, type, ctx);
 		}
 	}
 
 	async function chechAndAddElement(arr, element, kol, type, ctx) {
-		const check_dublecate = checkDublecate(arr, element)
-		if(check_dublecate != null) arr[check_dublecate].kol += Number(kol)
+		const check_dublecate = checkDublecate(arr, element);
+		if(check_dublecate != null) arr[check_dublecate].kol += Number(kol);
 		else {
 			if(type == 'material') {
-				const res = await ctx.$store.dispatch("fetchGetOnePPM", element.id)
+				const res = await ctx.$store.dispatch("fetchGetOnePPM", element.id);
 				element['podMaterial'] = res?.podMaterial || null
 				element['material'] = res?.material || null
-				const check_dublecate = checkDublecate(arr, element)
+				const check_dublecate = checkDublecate(arr, element);
 				if(!check_dublecate)
 					arr.push({
 						type,

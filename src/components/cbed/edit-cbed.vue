@@ -33,6 +33,7 @@
                 :listPokDet='listPokDet'
                 :materialList='materialList'
                 :izd='getOneSelectCbEd'
+                :type_izd='"cbed"'
               />
               <!-- Покупные Детали -->
               <ModalBaseMaterial 
@@ -221,7 +222,7 @@
       :title='titleMessage'
       :message = 'message'
       :type = 'type'
-      v-if='message'
+      v-if='message' 
       :key='keyInformTip'
     />
     <BaseCbedModal 
@@ -351,7 +352,14 @@ export default {
     this.deleteStorageData()
   },
   methods: {
-    ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'updateCbed', 'getAllCbedArticl']),
+    ...mapActions([
+      'createNewDetal', 
+      'getAllUsers', 
+      'createNewCbEd', 
+      'updateCbed', 
+      'getAllCbedArticl',
+      'getOneCbEdField'
+    ]),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_filemodal(res) {
       if(res) this.documentsData = res
@@ -574,6 +582,9 @@ export default {
     this.loader = true
     await this.getAllUsers(true)
     this.data_arr = await this.getAllCbedArticl()
+    let izd_products = await this.getOneCbEdField({fields: 'products', id: this.getOneSelectCbEd.id});
+    !izd_products ? izd_products = [] : izd_products = izd_products.products;
+    this.getOneSelectCbEd.products = izd_products;
     this.loader = false
     
     this.updateForEdit()

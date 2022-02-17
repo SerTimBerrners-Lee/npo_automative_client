@@ -28,6 +28,7 @@
 							:listPokDet='listPokDet'
 							:materialList='materialList'
               :izd='selecteProduct'
+              :type_izd='"izd"'
 						/>
 					</div>
 					<div>

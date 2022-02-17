@@ -28,6 +28,7 @@
                 :listPokDet='listPokDet'
                 :materialList='materialList'
                 :izd='selectedCbEd'
+                :type_izd='"cbed"'
               />
             </div>
             <div>

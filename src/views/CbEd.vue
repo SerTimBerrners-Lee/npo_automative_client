@@ -143,6 +143,7 @@
             :listPokDet='listPokDet'
             :materialList='materialList'
             :izd='selectedCbEd'
+            :type_izd='"cbed"'
           />
         </div>
         <div v-if='selectedCbEd.haracteriatic'>

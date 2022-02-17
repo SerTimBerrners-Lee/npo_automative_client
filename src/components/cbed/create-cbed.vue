@@ -31,6 +31,7 @@
                 :listDetal='listDetal'
                 :listPokDet='listPokDet'
                 :materialList='materialList'
+                :type_izd='"cbed"'
               />
               <!-- Покупные Детали -->
               <ModalBaseMaterial 

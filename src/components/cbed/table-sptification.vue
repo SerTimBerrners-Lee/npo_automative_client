@@ -100,7 +100,7 @@
 	<ComplectModal 
     v-if='show_complect_modal && izd'
     :key='key_complect_modal'
-    :parametrs='{type: "izd", obj: izd}'
+    :parametrs='{type: type_izd, obj: izd}'
   />
 	<button 
 		style='width: 98%;'
@@ -114,7 +114,7 @@ import {random} from 'lodash';
 import ComplectModal from '@/components/baseproduct/complect-modal.vue';
 import MaterialInformation from '@/components/mathzag/material-information.vue';
 export default {
-	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList', 'izd'],
+	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList', 'izd', 'type_izd'],
 	data() {
 		return {
 			parametrs_detal: null,
