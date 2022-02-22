@@ -118,7 +118,6 @@
         <div class='btn-control'>
           <button class="btn-small" @click='normTimeOperation'>Норма времени по операциям</button>
           <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
-          <button class="btn-small" @click='$router.push("/addorder/false/false")'> Добавить заказ </button>
         </div>
       </div>
     </div>
@@ -132,11 +131,6 @@
       :key='normTimeOperationKey'
       :izdelie='select_izd'
       :type='type_norm_time'
-    />
-    <ShipmentsMiniList
-      v-if='showShipment'
-      :key='shipmentKey'
-      @unmount='unmount_sh_list'
     />
     <InformFolder  
       :title='titleMessage'
@@ -176,7 +170,6 @@ import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
 import StartProduction from '@/components/sclad/start-production-modal.vue';
 import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
-import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 export default {
   data() {
     return {
@@ -228,7 +221,6 @@ export default {
     DatePicterRange, 
     DescriptionModal, 
     NormTimeOperation, 
-    ShipmentsMiniList,
     ShipmentsModal,
     Search,
     ShipmentList,

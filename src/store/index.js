@@ -11,6 +11,7 @@ import sclad from './modules/sclad';
 import issue from './modules/issue';
 import socket from './modules/socket';
 import moving from './modules/moving';
+import working from './modules/working';
 import library from './modules/library';
 import product from './modules/product';
 import settings from './modules/settings';
@@ -53,7 +54,8 @@ export default createStore({
     inventary,
     moving,
     socket,
-    techprocess
+    techprocess,
+    working
   }
 })
   

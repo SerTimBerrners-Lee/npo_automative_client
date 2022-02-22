@@ -123,7 +123,6 @@
 
           <div class='btn-control'>
             <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
-            <button class="btn-small" @click='shipmentsAdd'> Добавить заказ </button>
           </div>
         </div>
       </div>
@@ -137,11 +136,6 @@
       v-if='showDescriptionModal'
       :key='descriptionKey'
       :parametrs='description'
-    />
-    <ShipmentsMiniList
-      v-if='showShipment'
-      :key='shipmentKey'
-      @unmount='unmount_sh_list'
     />
     <InformFolder  
       :title='titleMessage'
@@ -184,7 +178,6 @@ import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import TechProcess from '@/components/basedetal/tech-process-modal.vue';
 import StartPraduction from '@/components/sclad/start-production-modal.vue';
 import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
-import ShipmentsMiniList from '@/components/issueshipment/shipments-mini-list-modal.vue';
 export default {
   data() {
     return {
@@ -207,8 +200,6 @@ export default {
 
       select_izd: null,
  
-      showShipment: false,
-      shipmentKey: random(1, 999),
       detalModalKey: random(1, 999),
 			parametrs_detal: false,
 
@@ -239,8 +230,7 @@ export default {
   components: { 
     DatePicterRange, 
     StartPraduction, 
-    DescriptionModal, 
-    ShipmentsMiniList,
+    DescriptionModal,
     DetalModal,
     Search,
     ShipmentList,
@@ -307,10 +297,6 @@ export default {
         type: 'det'
       }
       this.startProductionModalKey = random(1, 999)
-    },
-    shipmentsAdd() {
-      this.showShipment = true
-      this.shipmentKey = random(1, 999)
     },
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select')

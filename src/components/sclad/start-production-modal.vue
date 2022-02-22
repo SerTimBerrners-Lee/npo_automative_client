@@ -6,17 +6,11 @@
       <h3>Запустить в производство</h3> 
       <div class="block">
         <p class='tooltip'>
-          <span>Дата заказа: </span>
-          <DatePicterCustom 
-            @unmount='change_date_order' 
-            :dateStart='date_order'
-          />
+          <span>Дата заказа: <span style="font-weight: bold;">{{ date_order }}</span> </span>
           <span class="tooltiptext">{{ date_order }}</span>
         </p>
         <p class='tooltip'>
-          <span>№ Заказа: </span>
-          <input type="text" v-model='number_order'>
-          <span class="tooltiptext" style='margin-top: 200px;'>{{ number_order }}</span>
+          <span>№ Заказа: <span style="font-weight: bold;">{{ number_order }}</span> </span>
         </p>
       </div>
       <div>
@@ -68,7 +62,6 @@
 import {random} from 'lodash';
 import { mapActions} from 'vuex';
 import { showMessage } from '@/js/';
-import DatePicterCustom from '@/components/date-picter.vue';
 export default {
   props: ['parametrs'],
   data() {
@@ -88,9 +81,11 @@ export default {
       komplect: []
     }
   },
-  components: {DatePicterCustom},
   methods: {
-    ...mapActions(['fetchCreateAssemble', 'fetchCreateMetaloworking']),
+    ...mapActions([
+      'fetchCreateWorking',
+      'fetchWorkingsCount'
+    ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
@@ -106,36 +101,43 @@ export default {
       if(!this.$props.parametrs || !this.$props.parametrs.izd)
         return showMessage('', 'Сначала выберите изделие', 'w', this)
 
-      const data = {
+      const workers_data = {
         date_order: this.date_order,
         number_order: this.number_order,
-        description: this.description
-      }
+        description: this.description,
+        type: this.$props.parametrs.type
+      };
+      const data = {};
+      const working = [];
 
       for(let komplect of this.komplect) {
         if(komplect.my_kolvo == 0) continue;
         data['my_kolvo'] = komplect.my_kolvo
         data['shipments_kolvo'] = komplect.shipments_kolvo
         if(this.$props.parametrs.type == 'cb' || this.$props.parametrs.type == 'prod') {
-          this.fetchCreateAssemble({
+          working.push({
             ...data,
             cbed_id: komplect.id,
-            type: this.$props.parametrs.type
-          }).then(res => this.endResult(res, komplect.name))
+          })
         }
         if(this.$props.parametrs.type == 'det') {
-          this.fetchCreateMetaloworking({
+          working.push({
             ...data,
             detal_id: komplect.id,
-          }).then(res => this.endResult(res, komplect.name))
+          })
         }
       }
+
+      if(!working.length) 
+        return showMessage('', 'Комплектация не определена', 'w', this);
+
+      this.fetchCreateWorking({ workers_complect: working, workers_data})
+        .then(res => this.endResult(res));
     },
-    endResult(res, name) {
-      if(res) {
-        this.destroyModalF()
-        return showMessage('', `${name } отправлено в производство`, 's', this)
-      } else return showMessage('', 'Произошла ошибка...', 'e', this)
+    endResult(res) {
+      if(!res) return showMessage('', 'Произошла ошибка...', 'e', this);
+      this.destroyModalF()
+      return showMessage('', `Заказа №${this.number_order} отправлен в производство`, 's', this)
     },
   },
   async mounted() {
@@ -150,6 +152,9 @@ export default {
           item.my_kolvo = item.min_remaining
       }
     }
+    // get number order 
+    const count = await this.fetchWorkingsCount() || new Date().getTime();
+    this.number_order = this.date_order.slice(this.date_order.length-2) + "-" + (count.count + 1);
   },
 }
 </script>
