@@ -22,7 +22,7 @@ export default {
       if(!res.ok) return false;
 
       const result = await res.json();
-      ctx.commit('addAllTInstrument', result);
+      ctx.commit('addAllWorkings', result);
     },
     async fetchWorkingsCount() {
       const res = await fetch(`${PATH_TO_SERVER}api/working/count/`);

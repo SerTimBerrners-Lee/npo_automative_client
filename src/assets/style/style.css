@@ -139,7 +139,10 @@
 .work_operation {
   background-color: #ffee63;
 }
-.work_operation, .success_operation, .delete_operation {
+.work_operation, 
+.success_operation, 
+.delete_operation, 
+.process_operation {
   padding-left: 2px;
   padding-right: 2px;
   margin: 0px;
@@ -147,6 +150,9 @@
 .success_operation {
   background-color: #bdffa9;
   padding: 2px;
+}
+.process_operation {
+  background-color: #0354ce5d;
 }
 .delete_operation {
   background-color:#ee09428f;

@@ -37,34 +37,35 @@
 					v-for='(meatl, inx) of getMetaloworkings'
 					:key='meatl'
 					>
-					<td>{{ inx + 1 }}</td>
+					<td class='center'>{{ inx + 1 }}</td>
 					<td>{{ meatl.detal ? meatl.detal.articl : 'Нет детали'}}</td>
-					<td>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
+					<td
+						class='td-row' 
+						@click='openDetal(meatl.detal)'>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
 					<td class='center'>{{ meatl.kolvo_shipments }}</td>
 					<td class='center'>
               <img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal.shipments)' class='link_img' atl='Показать' />
             </td>
 					<td class='center' id='parent'>
 						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
-					</td>
-					<td class='center'>{{ meatl.detal ? meatl.detal.DxL : 'Нет детали' }}</td>
-					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td>
-					<td class='center hover work_operation'>{{ showOperation(meatl,  "before") }}</td>
-					<td :class='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0  ? "success_operation" : "work_operation" ' class='center'>{{ 
+					</td> <!-- Принадлежность --> 
+					<td class='center'>{{ meatl.detal ? meatl.detal.DxL : 'Нет детали' }}</td> <!-- Габариты заготовки, мм --> 
+					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
+					<td class='center hover work_operation'>{{ showOperation(meatl,  "before") }}</td> <!-- Пред. операция --> 
+					<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0 ' class='success_operation center'>{{ 
 						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
-					<td class='center'>{{ returnKolvoCreate(meatl) }}</td>
+					<td v-if='returnKolvoCreate(meatl) == 0' class='work_operation center'>{{ 
+						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
+					<td v-else class='process_operation center'>{{ 
+						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
+					<td class='center'>{{ returnKolvoCreate(meatl) }}</td> <!-- Сделано шт. --> 
 					<td class='center'>{{ returnFloor(meatl.kolvo_shipments - returnKolvoCreate(meatl)) }}</td>
 					<td class='center'>{{ getTime(meatl).pt }}</td>
 					<td class='center'>{{ getTime(meatl).ht }}</td>
 					<td class='center'>{{ getTime(meatl).mt }}</td>
 					<td class='center'>{{ manyIzdTime(meatl, meatl.kolvo_shipments)	}}</td>
-					<td class='center'>
-						{{ 
-							dateIncrementHors(undefined, 
-							manyIzdTime(meatl, meatl.kolvo_shipments))
-						}} 
-					</td> 
-					<td class='center'>{{ meatl.detal ? responsible(meatl.detal) : "Нет детали" }}</td>
+					<td class='center'>{{ returnDateExist(meatl) }}</td> <!-- Дата исполнения --> 
+					<td class='center'>{{ responsible(meatl) }}</td> <!-- Исполнитель --> 
 					<td class='center'> {{ workingForMarks(meatl, meatl.marks) }} </td>
 					<td class='center hover success_operation'>{{ showOperation(meatl,  "after") }}</td>
 					<td class='center' id='doc'>
@@ -122,6 +123,11 @@
       :key='keyParentsModal'
       :parametrs='productListForIzd'
     />
+		<DetalModal
+      :key='detalModalKey'
+      v-if='parametrs_detal'
+      :id='parametrs_detal'
+    />
 
 		<Loader v-if='loader' />
 	</div>
@@ -139,6 +145,7 @@ import { 	afterAndBeforeOperation,
 					workingForMarks } from '@/js/operation.js';
 import CreateMark from '@/components/sclad/mark-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
+import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
@@ -161,6 +168,9 @@ export default {
 			productListForIzd: null, 
 			keyParentsModal: random(1, 999),
 
+			detalModalKey: random(1, 999),
+			parametrs_detal: false,
+
 			titleMessage: '',
       message: '',
       type: '',
@@ -170,10 +180,12 @@ export default {
 	computed: mapGetters(['getMetaloworkings', 'getUsers']),
 	components: {
 		DatePicterRange, 
-		OpensFile, 
-		DescriptionModal, CreateMark, 
-		ShipmentsModal, 
-		ProductListModal
+		OpensFile,
+		DescriptionModal,
+		DetalModal,
+		CreateMark,
+		ShipmentsModal,
+		ProductListModal,
 	},
 	methods: {
 		...mapActions([
@@ -203,8 +215,13 @@ export default {
         font_size: '10pt'
       })
     },   
+		openDetal(detal) {
+			if(!detal || !detal.id) return showMessage('', 'Нет детали!', 'w', this);
+			this.parametrs_detal = detal.id;
+      this.detalModalKey = random(1, 999);
+		},
 		showOperation(metal, type) {
-			if(!metal.tech_process || !metal.operation_id) return 'Нет операций'
+			if(!metal.tech_process || !metal.operation_id) return 'Нет операций';
 			return afterAndBeforeOperation(
 				metal.tech_process, metal.operation_id, type).full_name
 		},
@@ -261,12 +278,32 @@ export default {
       this.shipmentKey = random(1, 999)
       this.shipments = shipments
     },
-		responsible(detal) {
-			let user_id = detal.responsibleId
+		responsible(metal) {
+			if(!metal.marks || !metal.marks.length) return '-';
+			const mark = this.findMarks(metal.operation_id, metal.marks);
+			if(!mark) return '-';
+
+			let user_id = mark.user_id
 			for(let user of this.getUsers) {
 				if(user.id == user_id)
-					return user.login
+					return user.login;
 			}
+			return '-';
+		},
+		findMarks(operation_id, marks) {
+			let find = null;
+			for(const mark of marks) {
+				if(operation_id == mark.oper_id) find = mark;
+			}
+
+			return find;
+		},
+		returnDateExist(metal) {
+			if(!metal.marks || !metal.marks.length) return '-';
+			const mark = this.findMarks(metal.operation_id, metal.marks);
+			if(!mark) return '-';
+
+			return mark.date_build;
 		},
 		addMark(metal) {
 			this.mark_key = random(1, 999)

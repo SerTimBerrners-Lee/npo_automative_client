@@ -83,19 +83,17 @@
           <!-- Assemblye-->
           <tr 
             class='td-row' 
-            v-for='ass of getAssembles' :key='ass'
+            v-for='ass of assembles' :key='ass'
             @click='openTreatment(ass, "ass")'>
-            <td>{{ ass?.id }}</td>
-            <td>{{ ass?.date_order }}</td>
-            <td class='center'>{{ ass?.id + 'C' }}</td>
-            <td>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.buyer?.name || 'склад' }}</td>
-            <td class='center' @click='returnShipmentsDateModal(ass?.cbed?.shipments)' >
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
-            <td class='center'>-</td>
-            <td>{{ returnShipmentsKolvo(ass?.cbed?.shipments)?.date_shipments }}</td>
-            <td>{{ ass.status }}</td>
-            <td class='center tooltip'>
+            <td>{{ ass.number_order }}</td> <!-- Номер заказа -->
+            <td class='center'>{{ ass.date_order }}</td> <!-- Дата заказа -->
+            <td class='center'>{{ ass.number_order + 'C' }}</td> <!-- Тип Заказа -->
+            <td class='center'>склад</td> <!-- Поставщик -->
+            <td class='center'>{{ ass.date_order }}</td> <!-- Номер счета и дата -->
+            <td class='center'>-</td> <!-- Сумма -->
+            <td>-</td> <!-- Дата прихода -->
+            <td> В процессе </td> <!-- Статус -->
+            <td class='center tooltip'> <!-- Подробнее -->
               <div class="tooltiptext">
                 <table>
                   <tr>
@@ -218,12 +216,16 @@ export default {
       message: '',
       type: '',
       keyInformTip: random(1, 999),
+
+      assembles: [],
+      metalloworkings: []
 		}
 	},
   computed: mapGetters([
     'getAllDeliveries', 
     'getAssembles', 
-    'getMetaloworkings'
+    'getMetaloworkings',
+    'getWorkings'
   ]),
 	components: {
     AddOrder, 
@@ -235,10 +237,11 @@ export default {
     ...mapActions([
       'fetchGetDeliveries',
       'fetchAssemble',
-      'fetchMetaloworking'
+      'fetchMetaloworking',
+      'fetchAllWorkings'
     ]),
     ...mapMutations([
-      'allAssemble',
+      'allAssemble', 
       'allMetaloworking',
       'setAllDeliveries'
     ]),
@@ -332,11 +335,16 @@ export default {
     }
 	},
 	async mounted() {
-    this.loader = true
-    await this.fetchGetDeliveries()
-    await this.fetchAssemble()
-    await this.fetchMetaloworking()
-    this.loader = false
+    this.loader = true;
+    // await this.fetchGetDeliveries();
+    // await this.fetchAssemble();
+    // await this.fetchMetaloworking();
+    await this.fetchAllWorkings();
+
+    this.assembles = this.getWorkings.filter(el => el.type == 'ass');
+    this.metalloworkings = this.getWorkings.filter(el => el.type == 'metall');
+
+    this.loader = false;
 	}
 }
 </script>

@@ -1,3 +1,15 @@
+/**
+ * 
+ * @param {*} tp 
+ * @param {*} operation_id 
+ * @param {*} type 
+ * @returns {
+			before: beforeOperation,
+			after: afterOperation,
+			current: currentOperation
+		} || {name: '', full_name: ''}
+ */
+
 export function afterAndBeforeOperation(tp, operation_id, type = 'all') {
 	if(!tp.operations.length) return false
 	
@@ -17,6 +29,7 @@ export function afterAndBeforeOperation(tp, operation_id, type = 'all') {
 			break;
 		}
 	}
+
 	if(!beforeOperation)
 		beforeOperation = {name: '', full_name: 'Нет'}
 	if(!afterOperation)
