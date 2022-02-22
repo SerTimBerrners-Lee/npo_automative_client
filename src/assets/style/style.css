@@ -109,6 +109,9 @@
   background: #323232;
   color: #f3f1f1;
 }
+.bold {
+  font-weight: bold;
+}
 .table_block{
   display: flex;
 }

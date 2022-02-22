@@ -31,123 +31,135 @@
             <th>Статус</th>
             <th>Подробнее</th>
           </tr>
-          <tr 
-            class='td-row' 
+          <tbody
             v-for='order of getAllDeliveries' 
-            @click='e => selectOrder(order, e.target.parentElement)'
             :key="order">
-            <td>{{ order.name }}</td>
-            <td>{{ order.date_create }}</td>
-            <td v-if='order.provider' class='center'>{{ order.name }}П</td>
-            <td>{{ order.provider ? order.provider.name : 'Нет поставщика' }}</td>
-            <td>{{ order.number_check }}</td>
-            <td>{{ order.count }}</td>
-            <td>{{ order.date_shipments }}</td>
-            <td>Заказано</td>
-            <td class='center tooltip' @mousemove="getDetals(order)">
-              <div class="tooltiptext">
-                <table>
-                  <tr>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>ЕИ</th>
-                    <th>Кол-во</th>
-                    <th>Сумма, руб (за шт.)</th>
-                    <th>Примечание</th>
-                  </tr>
-                  <tr 
-                    v-for='material of detals_order'
-                    :key='material'
-                    class='td-row'>
-                    <td>{{ material.art }}</td>
-                    <td>{{ material.name }}</td>
-                    <td>
-                      <span v-if='material.ez == 1'>шт</span>
-                      <span v-if='material.ez == 2'>л</span>
-                      <span v-if='material.ez == 3'>кг</span>
-                      <span v-if='material.ez == 4'>м</span>
-                      <span v-if='material.ez == 5'>м.куб</span>
-                    </td>
-                    <td>{{ material.kol }}</td>
-                    <td
-                      class='tooltip'> {{ material.sum }}
-                      <span class="tooltiptext" >Общая сумма: {{ Number(material.kol) * Number(material.sum)  }}</span>
-                    </td>
-                    <td>{{ material.description }}</td>
-                  </tr>
-                </table>
-              </div>
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
-          </tr>
+            <tr 
+              class='td-row' 
+              v-if='show_dev'
+              @click='e => selectOrder(order, e.target.parentElement)'>
+              <td>{{ order.name }}</td>
+              <td>{{ order.date_create }}</td>
+              <td v-if='order.provider' class='center'>{{ order.name }}П</td>
+              <td>{{ order.provider ? order.provider.name : 'Нет поставщика' }}</td>
+              <td>{{ order.number_check }}</td>
+              <td>{{ order.count }}</td>
+              <td>{{ order.date_shipments }}</td>
+              <td>Заказано</td>
+              <td class='center tooltip' @mousemove="getDetals(order)">
+                <div class="tooltiptext">
+                  <table>
+                    <tr>
+                      <th>Артикул</th>
+                      <th>Наименование</th>
+                      <th>ЕИ</th>
+                      <th>Кол-во</th>
+                      <th>Сумма, руб (за шт.)</th>
+                      <th>Примечание</th>
+                    </tr>
+                    <tr 
+                      v-for='material of detals_order'
+                      :key='material'
+                      class='td-row'>
+                      <td>{{ material.art }}</td>
+                      <td>{{ material.name }}</td>
+                      <td>
+                        <span v-if='material.ez == 1'>шт</span>
+                        <span v-if='material.ez == 2'>л</span>
+                        <span v-if='material.ez == 3'>кг</span>
+                        <span v-if='material.ez == 4'>м</span>
+                        <span v-if='material.ez == 5'>м.куб</span>
+                      </td>
+                      <td>{{ material.kol }}</td>
+                      <td
+                        class='tooltip'> {{ material.sum }}
+                        <span class="tooltiptext" >Общая сумма: {{ Number(material.kol) * Number(material.sum)  }}</span>
+                      </td>
+                      <td>{{ material.description }}</td>
+                    </tr>
+                  </table>
+                </div>
+                <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+              </td>
+            </tr>
+          </tbody>
+          
           <!-- Assemblye-->
-          <tr 
-            class='td-row' 
-            v-for='ass of assembles' :key='ass'
-            @click='openTreatment(ass, "ass")'>
-            <td>{{ ass.number_order }}</td> <!-- Номер заказа -->
-            <td class='center'>{{ ass.date_order }}</td> <!-- Дата заказа -->
-            <td class='center'>{{ ass.number_order + 'C' }}</td> <!-- Тип Заказа -->
-            <td class='center'>склад</td> <!-- Поставщик -->
-            <td class='center'>{{ ass.date_order }}</td> <!-- Номер счета и дата -->
-            <td class='center'>-</td> <!-- Сумма -->
-            <td>-</td> <!-- Дата прихода -->
-            <td> В процессе </td> <!-- Статус -->
-            <td class='center tooltip'> <!-- Подробнее -->
-              <div class="tooltiptext">
-                <table>
-                  <tr>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Кол-во</th>
-                    <th>Примечание</th>
-                  </tr>
-                  <tr>
-                    <td>{{ ass?.cbed?.articl }}</td>
-                    <td>{{ ass?.cbed?.name }}</td>
-                    <td>{{ ass.kolvo_shipments }}</td>
-                    <td>{{ ass.description }}</td>
-                  </tr>
-                </table>
-              </div>
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
-          </tr>
+          <tbody v-for='ass of assembles' :key='ass'>
+            <tr 
+              class='td-row' 
+              v-if='show_ass'
+              @click='openWorkers(ass, "ass")'>
+              <td class='center'>{{ ass.number_order }}</td> <!-- Номер заказа -->
+              <td class='center'>{{ ass.date_order }}</td> <!-- Дата заказа -->
+              <td class='center bold'>{{ 'C' }}</td> <!-- Тип Заказа -->
+              <td class='center'>склад</td> <!-- Поставщик -->
+              <td class='center'>{{ ass.date_order }}</td> <!-- Номер счета и дата -->
+              <td class='center'>-</td> <!-- Сумма -->
+              <td class='center'>-</td> <!-- Дата прихода -->
+              <td> В работе </td> <!-- Статус -->
+              <td class='center tooltip'> <!-- Подробнее -->
+                <div class="tooltiptext">
+                  <table>
+                    <tr>
+                      <th>Артикул</th>
+                      <th>Наименование</th>
+                      <th>Кол-во</th>
+                      <th>Примечание</th>
+                    </tr>
+                    <tbody>
+                      <tr v-for='assm of ass.assemble' :key='assm'>
+                        <td>{{ assm.cbed?.articl }}</td>
+                        <td>{{ assm.cbed?.name }}</td>
+                        <td>{{ assm.kolvo_shipments }}</td>
+                        <td>{{ ass.description }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+              </td>
+            </tr>
+          </tbody>
           <!-- Metalloworking-->
-          <tr 
-            class='td-row' 
-            v-for='metal of getMetaloworkings' :key='metal'
-            @click='openTreatment(metal, "metal")'>
-            <td>{{ metal?.id }}</td>
-            <td>{{ metal?.date_order }}</td>
-            <td class='center'>{{ metal?.id + 'M' }}</td>
-            <td>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.buyer?.name || 'склад' }}</td>
-            <td class='center' @click='returnShipmentsDateModal(metal?.detal?.shipments)' >
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
-            <td class='center'>-</td>
-            <td>{{ returnShipmentsKolvo(metal?.detal?.shipments)?.date_shipments }}</td>
-            <td>{{ metal.status }}</td>
-            <td class='center tooltip'>
-              <div class="tooltiptext">
-                <table>
-                  <tr>
-                    <th>Артикул</th>
-                    <th>Наименование</th>
-                    <th>Кол-во</th>
-                    <th>Примечание</th>
-                  </tr>
-                  <tr>
-                    <td>{{ metal?.detal?.articl }}</td>
-                    <td>{{ metal?.detal?.name }}</td>
-                    <td>{{ metal.kolvo_shipments }}</td>
-                    <td>{{ metal.description }}</td>
-                  </tr>
-                </table>
-              </div>
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
-          </tr>
+          <tbody v-for='metal of metalloworkings' :key='metal'>
+            <tr 
+              class='td-row' 
+              v-if='show_metall'
+              @click='openWorkers(metal, "metal")'>
+              <td class='center'>{{ metal.number_order }}</td> <!-- Номер заказа -->
+              <td class='center'>{{ metal.date_order }}</td> <!-- Дата заказа -->
+              <td class='center bold'>{{ 'M' }}</td> <!-- Тип Заказа -->
+              <td class='center'>склад</td> <!-- Поставщик -->
+              <td class='center'>{{ metal.date_order }}</td> <!-- Номер счета и дата -->
+              <td class='center'>-</td> <!-- Сумма -->
+              <td class='center'>-</td> <!-- Дата прихода -->
+              <td> В работе </td> <!-- Статус -->
+              <td class='center tooltip'> <!-- Подробнее -->
+                <div class="tooltiptext">
+                  <table>
+                    <tbody>
+                      <tr>
+                        <th>Артикул</th>
+                        <th>Наименование</th>
+                        <th>Кол-во</th>
+                        <th>Примечание</th>
+                      </tr>
+                    </tbody>
+                    <tbody v-for='metall of metal.metall' :key='metall'>
+                      <tr>
+                        <td>{{ metall.detal?.articl }}</td>
+                        <td>{{ metall.detal?.name }}</td>
+                        <td>{{ metall.kolvo_shipments }}</td>
+                        <td>{{ metal.description }}</td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+              </td>
+            </tr>
+          </tbody>
       </table>
       </div>
       <div class='btn-control'>
@@ -188,9 +200,9 @@
 </template>
 <script>
 import {random} from 'lodash';
-import { comparison, showMessage } from '@/js/'; 
 import AddOrder from './add-order.vue';
-import {mapGetters, mapActions, mapMutations} from 'vuex';
+import {mapGetters, mapActions} from 'vuex';
+import { comparison, showMessage } from '@/js/'; 
 import DatePicterRange from '@/components/date-picter-range.vue';
 import TreatmentEdit from '@/components/sclad/edit-treatment.vue';
 import ShipmentsModal from '@/components/sclad/shipments-to-ized.vue';
@@ -218,7 +230,11 @@ export default {
       keyInformTip: random(1, 999),
 
       assembles: [],
-      metalloworkings: []
+      metalloworkings: [],
+
+      show_dev: true,
+      show_ass: true,
+      show_metall: true,
 		}
 	},
   computed: mapGetters([
@@ -240,11 +256,6 @@ export default {
       'fetchMetaloworking',
       'fetchAllWorkings'
     ]),
-    ...mapMutations([
-      'allAssemble', 
-      'allMetaloworking',
-      'setAllDeliveries'
-    ]),
     unmount_treatment(type) {
       if(type == 'ass') this.fetchAssemble()
       if(type == 'metal') this.fetchMetaloworking()
@@ -259,11 +270,6 @@ export default {
       if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this)
       this.shipmentKey = random(1, 999)
       this.shipments = shipments
-    },
-    openTreatment(treatment, type) {
-      this.type_treatment = type
-      this.treatment = treatment
-      this.treatment_key = random(1, 999)
     },
     addOrder() {
       this.showAddOrder = true
@@ -307,38 +313,36 @@ export default {
       return end_date
     },
     filterType(number) {
-      this.clearAllState()
       switch(number) {
         case 1:
-          this.getAllState()
+          this.show_dev = true;
+          this.show_ass = true;
+          this.show_metall = true;
           break;
         case 2: 
-          this.fetchGetDeliveries()
+          this.show_dev = true;
+          this.show_ass = false;
+          this.show_metall = false;
           break;
         case 3:
-          this.fetchAssemble()
+          this.show_dev = false;
+          this.show_ass = true;
+          this.show_metall = false;
           break;
         case 4: 
-          this.fetchMetaloworking()
+          this.show_dev = false;
+          this.show_ass = false;
+          this.show_metall = true;
           break;
       }
     },
-    clearAllState() {
-      this.allAssemble([])
-      this.allMetaloworking([])
-      this.setAllDeliveries([])
-    },
-    getAllState() {
-      this.fetchGetDeliveries()
-      this.fetchAssemble()
-      this.fetchMetaloworking()
+    openWorkers(obj, type) {
+      console.log(obj, type)
     }
 	},
 	async mounted() {
     this.loader = true;
-    // await this.fetchGetDeliveries();
-    // await this.fetchAssemble();
-    // await this.fetchMetaloworking();
+    await this.fetchGetDeliveries();
     await this.fetchAllWorkings();
 
     this.assembles = this.getWorkings.filter(el => el.type == 'ass');
