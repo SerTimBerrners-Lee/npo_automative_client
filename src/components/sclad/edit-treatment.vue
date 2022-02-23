@@ -54,10 +54,17 @@
   </div>
 </template>
 <script>
+import { mapActions } from 'vuex';
 import { showMessage } from '@/js/';
-import { mapActions, mapGetters, mapMutations } from 'vuex';
 export default {
-  props: ['treatment', 'type_treatment'],
+  props: {
+    treatment: {
+      type: Object
+    },
+    type_treatment: {
+      type: String
+    },
+  },
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -73,16 +80,10 @@ export default {
       description: '',
     }
   },
-  computed: mapGetters(['']),
-  components: {
-    
-    },
   methods: {
     ...mapActions([
       'fetchUpdateMetaloworking',
       'fetchUpdateAssemble'
-    ]),
-    ...mapMutations([
     ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
@@ -90,47 +91,44 @@ export default {
       this.hiddens = 'display: none;'
     },
     save() {
-
-      let data = {
+      const data = {
         kolvo_shipments : this.kolvo_shipments,
         description : this.description
       }
 
-      if(this.$props.type_treatment == 'ass') {
-        data['cbed_id'] = this.$props.treatment?.cbed?.id
-        data['ass_id'] = this.$props.treatment?.id
+      if(this.type_treatment == 'ass') {
+        data['cbed_id'] = this.treatment.cbed?.id;
+        data['ass_id'] = this.treatment.id;
+        data['ass_type'] = this.treatment.type_izd;
         this.fetchUpdateAssemble(data).then(res => {
           res ? showMessage('', 'Успешно', 's', this) : showMessage('', 'Произошла ошибка при изменении', 'e', this)
 
-          this.$emit('unmount_treatment', this.$props.type_treatment)
-          return this.destroyModalF()
+          this.$emit('unmount_treatment', this.type_treatment)
+          return this.destroyModalF();
         })
       }
-      if(this.$props.type_treatment == 'metal') {
-        data['detal_id'] = this.$props.treatment?.detal?.id
-        data['metal_id'] = this.$props.treatment?.id
+      if(this.type_treatment == 'metall') {
+        data['detal_id'] = this.treatment.detal?.id;
+        data['metal_id'] = this.treatment.id;
         this.fetchUpdateMetaloworking(data).then(res => {
           res ? showMessage('', 'Успешно', 's', this) : showMessage('', 'Произошла ошибка при изменении', 'e', this)
 
-          this.$emit('unmount_treatment', this.$props.type_treatment)
-          return this.destroyModalF()
+          this.$emit('unmount_treatment', this.type_treatment);
+          return this.destroyModalF();
         })
       }
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
-    console.log("type_treatment: ", this.$props.type_treatment)
-    console.log(this.$props.treatment)
+    if(!this.treatment) return this.destroyModalF();
+    if(!this.type_treatment) return this.destroyModalF();
 
-    if(!this.$props.treatment) return this.destroyModalF()
-    if(!this.$props.type_treatment) return this.destroyModalF()
-
-    this.kolvo_shipments = this.$props.treatment.kolvo_shipments
-    this.description = this.$props.treatment.description
+    this.kolvo_shipments = this.treatment.kolvo_shipments;
+    this.description = this.treatment.description;
   },
 }
 </script>

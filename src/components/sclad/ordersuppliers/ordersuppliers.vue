@@ -89,7 +89,7 @@
             <tr 
               class='td-row' 
               v-if='show_ass'
-              @click='openWorkers(ass, "ass")'>
+              @click='openWorkers(ass)'>
               <td class='center'>{{ ass.number_order }}</td> <!-- Номер заказа -->
               <td class='center'>{{ ass.date_order }}</td> <!-- Дата заказа -->
               <td class='center bold'>{{ 'C' }}</td> <!-- Тип Заказа -->
@@ -126,7 +126,7 @@
             <tr 
               class='td-row' 
               v-if='show_metall'
-              @click='openWorkers(metal, "metal")'>
+              @click='openWorkers(metal)'>
               <td class='center'>{{ metal.number_order }}</td> <!-- Номер заказа -->
               <td class='center'>{{ metal.date_order }}</td> <!-- Дата заказа -->
               <td class='center bold'>{{ 'M' }}</td> <!-- Тип Заказа -->
@@ -176,13 +176,6 @@
       @unmount='unmount_order'
       :order_parametr='order_parametr'
     />
-    <TreatmentEdit
-      v-if='treatment'
-      :type_treatment='type_treatment'
-      :treatment='treatment'
-      :key='treatment_key'
-      @unmount_treatment='unmount_treatment'
-    />
     <ShipmentsModal 
       :shipments='shipments'
       v-if='shipments.length'
@@ -195,16 +188,22 @@
       v-if='message'
       :key='keyInformTip'
     />
+    <WorkerModal
+      :worker='select_worker'
+      v-if='show_worker && select_worker'
+      :key='key_worker'
+      @unmount_working='unmount_working'
+    />
     <Loader v-if='loader' />
   </div>
 </template>
 <script>
 import {random} from 'lodash';
 import AddOrder from './add-order.vue';
-import {mapGetters, mapActions} from 'vuex';
+import WorkerModal from '../worker-modal.vue';
 import { comparison, showMessage } from '@/js/'; 
+import {mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range.vue';
-import TreatmentEdit from '@/components/sclad/edit-treatment.vue';
 import ShipmentsModal from '@/components/sclad/shipments-to-ized.vue';
 export default {
 	data() {
@@ -219,9 +218,6 @@ export default {
 
       loader: false,
 
-      type_treatment: null,
-      treatment: null,
-      treatment_key: random(1, 999),
       shipments: [],
       shipmentKey: random(1, 999),
 
@@ -235,6 +231,10 @@ export default {
       show_dev: true,
       show_ass: true,
       show_metall: true,
+
+      select_worker: null,
+      show_worker: false,
+      key_worker: random(1, 999),
 		}
 	},
   computed: mapGetters([
@@ -244,27 +244,29 @@ export default {
     'getWorkings'
   ]),
 	components: {
-    AddOrder, 
-    DatePicterRange, 
-    TreatmentEdit,
-    ShipmentsModal
+    AddOrder,
+    DatePicterRange,
+    ShipmentsModal,
+    WorkerModal,
   },
 	methods: {
     ...mapActions([
       'fetchGetDeliveries',
       'fetchAssemble',
       'fetchMetaloworking',
-      'fetchAllWorkings'
+      'fetchAllWorkings',
+      'fetchOneWorking'
     ]),
-    unmount_treatment(type) {
-      if(type == 'ass') this.fetchAssemble()
-      if(type == 'metal') this.fetchMetaloworking()
-      this.treatment = null
-      this.type_treatment = null
-    },
+    ...mapMutations(['deleteOneWorkign']),
     unmount_order() {
       this.fetchGetDeliveries()
       this.order_parametr = null
+    },
+    async unmount_working(_id) {
+      if(!_id) return false;
+      this.deleteOneWorkign(_id);
+      const works = await this.fetchOneWorking(_id);
+      this.openWorkers(works);
     },
     returnShipmentsDateModal(shipments) {
       if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this)
@@ -272,42 +274,42 @@ export default {
       this.shipments = shipments
     },
     addOrder() {
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
+      this.showAddOrder = true;
+      this.AddOrderKey = random(1, 999);
       
-      this.order_parametr = null
+      this.order_parametr = null;
     },
     getDetals(order) {
       if(order.product) {
         try {
-          let prod = JSON.parse(order.product)
-          this.detals_order = prod
+          let prod = JSON.parse(order.product);
+          this.detals_order = prod;
         } catch (e) {console.error(e)}
       }
     },
     selectOrder(order, span) {
-      this.order = order
+      this.order = order;
       if(this.span)
-        this.span.classList.remove('td-row-all')
-      this.span = span
-      this.span.classList.add('td-row-all')
+        this.span.classList.remove('td-row-all');
+      this.span = span;
+      this.span.classList.add('td-row-all');
     },
     editOrder() {
-      if(!this.order) return 0
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
-      this.order_parametr = this.order
+      if(!this.order) return 0;
+      this.showAddOrder = true;
+      this.AddOrderKey = random(1, 999);
+      this.order_parametr = this.order;
     },
     changeDatePicterRange(val) {
-      console.log(val)
+      console.log(val);
     },
     returnShipmentsKolvo(shipments) {
-      if(!shipments || shipments.length == 0) return '-'
-      let end_date = shipments[0]
+      if(!shipments || shipments.length == 0) return '-';
+      let end_date = shipments[0];
       for(let ship1 of shipments) {
         for(let ship2 of shipments) {
           if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) 
-            end_date = ship1
+            end_date = ship1;
         }
       }
       return end_date
@@ -336,8 +338,10 @@ export default {
           break;
       }
     },
-    openWorkers(obj, type) {
-      console.log(obj, type)
+    openWorkers(obj) {
+      this.select_worker = obj;
+      this.show_worker = true;
+      this.key_worker = random(1, 999);
     }
 	},
 	async mounted() {

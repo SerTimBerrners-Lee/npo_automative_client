@@ -42,11 +42,9 @@
             class='td-row'>
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
               {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
-            </td> 
-            <td>{{ metalowork.date_order }}</td>
-            <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
-              {{returnShipmentsKolvo(metalowork?.detal?.shipments, 2)}}
-            </td> 
+            </td> <!-- Дата готовности -->
+            <td>{{ metalowork.date_order }}</td> <!-- Заказ склада-->
+            <td class='center'>{{ metalowork.number_order }}</td>  <!-- № Заказа -->
             <td>{{ metalowork?.detal?.name || "Нет детали" }}</td>
             <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td>
             <td class='center'>{{ metalowork?.kolvo_shipments }}</td>

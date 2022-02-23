@@ -52,6 +52,12 @@ export default {
       this.$router.push('/')
     },
     alwas() {
+      console.log(
+        'alwas', 
+        this.inaction,
+        'id_interval',
+        this.id_inaction_interval
+      );
       if(this.id_inaction_interval)
         clearInterval(this.id_inaction_interval)
       this.id_inaction_interval = setInterval(() => {
@@ -61,26 +67,27 @@ export default {
   },
   async mounted() {
     // Токен обновляется после каждого обновления
+    console.warn('update user and inaction');
     if(this.getAuth && this.getAuth.id) {
-      let user = await this.getUserById(this.getAuth.id)
+      const user = await this.getUserById(this.getAuth.id);
       if(user) {
         if(!user) {
-          this.unAuth()
-          this.$emit('exit')
-          this.$router.push('/')
+          this.unAuth();
+          this.$emit('exit');
+          this.$router.push('/');
         }
         // Обновляем пользователя 
-        this.updateAuth(user)
+        this.updateAuth(user);
         // Обновляем роль
         if(user.role && user.role.assets) {
-          this.setRoleAssets({...user.role, assets: JSON.parse(user.role.assets)})
+          this.setRoleAssets({...user.role, assets: JSON.parse(user.role.assets)});
         }
       }
-    }
+    } 
 
-    let inaction = await this.fetchInactionHors()
+    let inaction = await this.fetchInactionHors();
     if(inaction) 
-      this.inaction = inaction.inaction
+      this.inaction = inaction.inaction;
   }
 }
 </script>

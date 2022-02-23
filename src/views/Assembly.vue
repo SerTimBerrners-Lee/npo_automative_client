@@ -42,10 +42,8 @@
               {{returnShipmentsKolvo(assemble?.cbed?.shipments)}}
             </td>
             <td>{{ assemble.date_order }}</td> <!-- Заказ склада -->
-            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)' > <!-- Дата готовности -->
-              {{returnShipmentsKolvo(assemble?.cbed?.shipments, 2)}}
-            </td>
-            <td>{{ assemble?.cbed?.name || 'Нет СБ' }}</td>
+           <td class='center'>{{ assemble.number_order }}</td>  <!-- № Заказа -->
+            <td>{{ assemble?.cbed?.name || 'Нет СБ' }}</td> 
             <td>{{ assemble?.cbed?.articl || 'Нет СБ' }}</td>
             <td class='center'>{{ assemble.kolvo_shipments }}</td>
             <td class='center'>{{ assemble.cbed?.shipments_kolvo || 0 }}</td>

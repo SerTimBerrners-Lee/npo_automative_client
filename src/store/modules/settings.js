@@ -34,11 +34,11 @@ export default {
         ctx.commit('filterDB', name_dump)
     },
     async fetchInactionHors() {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/inaction/`)
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/inaction/`);
+      if(!res.ok) return false;
+      
+      const result = await res.json();
+      return result;
     },
     async fetchChangeInaction(ctx, hors) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/inaction/${hors}`, {
