@@ -2,8 +2,8 @@
   <div class='main'>
     <h3>Заказано / в пути</h3>
 
-		<div v-if='getOnePodMaterial.length'>
-			<div class="scroll-table table_material">
+		<div v-if='getOnePodMaterial.length || getWorkings.length'>
+			<div class="scroll-table table_material" v-if='getOnePodMaterial.length'>
 				<table style="width: 200px;">
 					<tr>
 						<th>Категория</th>
@@ -72,6 +72,59 @@
           </tr>
       </table>
       </div>
+
+			<div class='scroll-table' v-if='getWorkings.length'>
+				<table>
+					<tr>
+            <th>№ Заказа</th>
+            <th>Дата создания</th>
+            <th>Тип Заказа</th>
+            <th>Наименование поставщика</th>
+            <th>№ счета и Дата</th>
+            <th>Сумма, руб.</th>
+            <th>Дата прихода</th>
+            <th>Статус</th>
+            <th>Подробнее</th>
+          </tr>
+					<tbody v-for='works of getWorkings' :key='works'>
+						<tr 
+							class='td-row' 
+							@click='openWorkers(works)'>
+							<td class='center'>{{ works.number_order }}</td> <!-- Номер заказа -->
+							<td class='center'>{{ works.date_order }}</td> <!-- Дата заказа -->
+							<td class='center bold'>{{ works.type == 'metall' ? 'M' : 'С'  }}</td> <!-- Тип Заказа -->
+							<td class='center'>склад</td> <!-- Поставщик -->
+							<td class='center'>{{ works.date_order }}</td> <!-- Номер счета и дата -->
+							<td class='center'>-</td> <!-- Сумма -->
+							<td class='center'>-</td> <!-- Дата прихода -->
+							<td> В работе </td> <!-- Статус -->
+							<td class='center tooltip'> <!-- Подробнее -->
+								<div class="tooltiptext">
+									<table>
+										<tbody>
+											<tr>
+												<th>Артикул</th>
+												<th>Наименование</th>
+												<th>Кол-во</th>
+												<th>Примечание</th>
+											</tr>
+										</tbody>
+										<tbody v-for='obj of works.metall.length ? works.metall : works.assemble' :key='obj'>
+											<tr>
+												<td>{{ obj?.detal?.articl || obj?.cbed?.articl }}</td>
+												<td>{{ obj?.detal?.name || obj?.cbed?.name }}</td>
+												<td>{{ obj?.kolvo_shipments }}</td>
+												<td>{{ obj?.description }}</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+								<img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 			<div class='btn-control'>
 					<button class="btn-small"> Печать отчета </button>
 			</div>
@@ -84,11 +137,19 @@
 			v-if="itemFiles" 
 			:key='keyWhenModalGenerateFileOpen'
     />
+		<WorkerModal
+      :worker='select_worker'
+      v-if='show_worker && select_worker'
+      :key='key_worker'
+			:type_open='"read"'
+      @unmount_working='unmount_working'
+    />
   </div>
 </template> 
 
 <script>
 import { random } from 'lodash';
+import WorkerModal from '../worker-modal.vue';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 export default {
@@ -103,14 +164,43 @@ export default {
 			itemFiles: null,
 			keyWhenModalGenerateFileOpen: random(1, 999),
 
-			loader: false
+			loader: false,
+
+			select_worker: null,
+      show_worker: false,
+      key_worker: random(1, 999),
 		}
 	},
-  computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
-	components: {OpensFile},
+  computed: mapGetters([
+		'getOnePodMaterial', 
+		'alltypeM', 
+		'allPodTypeM',
+		'getWorkings'
+	]),
+	components: {
+		OpensFile,
+		WorkerModal
+	},
 	methods: {
-    ...mapActions(['fetchGetAllShipmentsPPM']),
-    ...mapMutations(['getInstansMaterial', 'filterByNameMaterial', 'clearCascheMaterial']),
+    ...mapActions([
+			'fetchGetAllShipmentsPPM',
+			'fetchAllWorkings'
+		]),
+    ...mapMutations([
+			'getInstansMaterial', 
+			'filterByNameMaterial', 
+			'clearCascheMaterial',
+		]),
+		unmount_working(_id) {
+      if(!_id) return false;
+			this.select_worker = null;
+			this.show_worker = false;
+    },
+		openWorkers(obj) {
+      this.select_worker = obj;
+      this.show_worker = true;
+      this.key_worker = random(1, 999);
+    },
 		instansMaterial(instans, span) {
       if(this.span) 
 				this.span.classList.remove('td-row-all')
@@ -125,55 +215,55 @@ export default {
 
     },
 		clickMat(mat) {
-			this.filterByNameMaterial(mat) 
+			this.filterByNameMaterial(mat);
     },
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
-				return this.span_material = null
+				return this.span_material = null;
 			}
 			if(this.span_material)
-				this.span_material.classList.remove('td-row-all')
-			this.span_material = span
-			this.span_material.classList.add('td-row-all')
+				this.span_material.classList.remove('td-row-all');
+			this.span_material = span;
+			this.span_material.classList.add('td-row-all');
 
-			this.material = material
+			this.material = material;
 		},
     getComing(mat, type) {
-      if(!mat.dev)
-        return 0
-
+      if(!mat.dev) return 0
       try {
-        let pars_str = JSON.parse(mat.dev.product)
+        const pars_str = JSON.parse(mat.dev.product);
         for(let prod of pars_str) {
           if(prod.id == mat.id) {
             if(type == 'kol') 
-              return prod.kol
+              return prod.kol;
             if(type == 'ez')
-              return prod.ez
+              return prod.ez;
           }
         }
       } catch(e) { 
-				console.error(e)
+				console.error(e);
 			}
       
     },
 		materialOstat(material) {
-			let res = material.shipments_kolvo - this.getComing(material, 'kol')
-			return res < 0 ? -res : res
+			let res = material.shipments_kolvo - this.getComing(material, 'kol');
+			return res < 0 ? -res : res;
 		},
 		openCheck(documents) {
 			if(!documents || documents.length == 0)
 				return 0;
-			this.itemFiles = documents[0]
-			this.keyWhenModalGenerateFileOpen = random(1, 999)
+			this.itemFiles = documents[0];
+			this.keyWhenModalGenerateFileOpen = random(1, 999);
 		}
 	},
 	async mounted() {
-		this.loader = true
-    this.clearCascheMaterial()
-    await this.fetchGetAllShipmentsPPM()
-		this.loader = false
+		this.loader = true;
+    this.clearCascheMaterial();
+    await this.fetchGetAllShipmentsPPM();
+		await this.fetchAllWorkings();
+		console.log(this.getWorkings);
+		this.loader = false;
 	}
 }
 </script>

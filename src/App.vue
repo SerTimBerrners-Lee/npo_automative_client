@@ -33,7 +33,7 @@ export default {
       avtorization: this.getAuth,
       inaction: 1,
 
-      id_inaction_interval: null
+      id_inaction_interval: null,
     }
   },
   computed: mapGetters(['getAuth']),
@@ -48,15 +48,15 @@ export default {
       'unAuth'
     ]),
     exit() {
-      this.unAuth()
-      this.$router.push('/')
+      this.unAuth();
+      this.$router.push('/');
     },
     alwas() {
       if(this.id_inaction_interval)
         clearInterval(this.id_inaction_interval)
       this.id_inaction_interval = setInterval(() => {
           this.exit()
-      }, 60000 * this.inaction)
+      }, 60000 * this.inaction);
     }
   },
   async mounted() {
@@ -79,7 +79,6 @@ export default {
     } 
 
     const inaction = await this.fetchInactionHors();
-    console.warn('INACTION:', inaction);
     if(inaction && inaction.inaction) 
       this.inaction = inaction.inaction;
   }

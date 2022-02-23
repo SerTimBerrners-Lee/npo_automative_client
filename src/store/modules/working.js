@@ -17,8 +17,8 @@ export default {
     }
   },
   actions: { 
-    async fetchAllWorkings(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/working/`);
+    async fetchAllWorkings(ctx, archive = false) {
+      const res = await fetch(`${PATH_TO_SERVER}api/working/all/${archive}`);
       if(!res.ok) return false;
 
       const result = await res.json();

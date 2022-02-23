@@ -41,7 +41,7 @@
           </tr>
         </table>
       </div>
-      <div class="btn-control out-btn-control">
+      <div class="btn-control out-btn-control" v-if='type_open != "read"'>
         <button 
         class="btn-status"
         @click='destroyModalF'>
@@ -79,6 +79,9 @@ export default {
   props: {
     worker: {
       type: Object
+    },
+    type_open: {
+      type: String
     }
   },
   data() {
@@ -111,9 +114,9 @@ export default {
       'deleteOneWorkign'
     ]),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     unmount_treatment() {
       this.$emit('unmount_working', this.worker.id);
@@ -127,11 +130,9 @@ export default {
     },
     endResult(res) {
       if(!res) return showMessage('', 'Произошла ошибка...', 'e', this);
-      this.destroyModalF()
+
+      this.destroyModalF();
       return showMessage('', `Заказа №${this.number_order} отправлен в производство`, 's', this)
-    },
-    updateWorkers() {
-      console.log('sdfsdf');
     },
     init() {
       this.date_order = this.worker.date_order;
@@ -141,12 +142,14 @@ export default {
       if(this.worker.type == "metall") this.komplect = this.worker.metall;
       else this.komplect = this.worker.assemble;
     },
-    archeves() {
+    async archeves() {
       if(!this.worker.id) return false;
 
-      this.fetchBannedWorkers(this.worker.id);
+      await this.fetchBannedWorkers(this.worker.id);
       if(!this.worker.ban) 
         this.deleteOneWorkign(this.worker.id);
+      
+      this.$emit('unmount_working', this.worker.id);
     }
   },
   async mounted() {

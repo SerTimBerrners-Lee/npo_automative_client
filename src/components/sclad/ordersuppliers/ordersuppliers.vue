@@ -14,7 +14,8 @@
       :arrData='[
         "От Поставщика",
         "Только Сборки",
-        "Только Металлообработка"
+        "Только Металлообработка",
+        !arhives ? "Архив" : "Не Архив"
       ]' />
 
     <div style='width: fit-content;'>
@@ -112,7 +113,7 @@
                         <td>{{ assm.cbed?.articl }}</td>
                         <td>{{ assm.cbed?.name }}</td>
                         <td>{{ assm.kolvo_shipments }}</td>
-                        <td>{{ ass.description }}</td>
+                        <td>{{ assm.description }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -151,7 +152,7 @@
                         <td>{{ metall.detal?.articl }}</td>
                         <td>{{ metall.detal?.name }}</td>
                         <td>{{ metall.kolvo_shipments }}</td>
-                        <td>{{ metal.description }}</td>
+                        <td>{{ metall.description }}</td>
                       </tr>
                     </tbody>
                   </table>
@@ -235,6 +236,7 @@ export default {
       select_worker: null,
       show_worker: false,
       key_worker: random(1, 999),
+      arhives: false,
 		}
 	},
   computed: mapGetters([
@@ -249,7 +251,7 @@ export default {
     ShipmentsModal,
     WorkerModal,
   },
-	methods: {
+	methods: { 
     ...mapActions([
       'fetchGetDeliveries',
       'fetchAssemble',
@@ -267,6 +269,8 @@ export default {
       this.deleteOneWorkign(_id);
       const works = await this.fetchOneWorking(_id);
       this.openWorkers(works);
+
+      this.sortWorkers();
     },
     returnShipmentsDateModal(shipments) {
       if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this)
@@ -336,12 +340,28 @@ export default {
           this.show_ass = false;
           this.show_metall = true;
           break;
+        case 5: // Получаем архив и заменяем все на Архив
+          this.arhives = !this.arhives;
+          this.getArchives();
+          this.filterType(1);
+          break;
       }
+    },
+    async getArchives() {
+      this.loader = true;
+      await this.fetchAllWorkings(this.arhives);
+      this.sortWorkers();
+      this.loader = false;
     },
     openWorkers(obj) {
       this.select_worker = obj;
       this.show_worker = true;
       this.key_worker = random(1, 999);
+    },
+    sortWorkers() {
+      console.log("sortWorkers");
+      this.assembles = this.getWorkings.filter(el => el.type == 'ass' && el.ban == this.arhives);
+      this.metalloworkings = this.getWorkings.filter(el => el.type == 'metall' && el.ban == this.arhives);
     }
 	},
 	async mounted() {
@@ -349,8 +369,7 @@ export default {
     await this.fetchGetDeliveries();
     await this.fetchAllWorkings();
 
-    this.assembles = this.getWorkings.filter(el => el.type == 'ass');
-    this.metalloworkings = this.getWorkings.filter(el => el.type == 'metall');
+    this.sortWorkers();
 
     this.loader = false;
 	}
