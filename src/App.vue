@@ -52,12 +52,6 @@ export default {
       this.$router.push('/')
     },
     alwas() {
-      console.log(
-        'alwas', 
-        this.inaction,
-        'id_interval',
-        this.id_inaction_interval
-      );
       if(this.id_inaction_interval)
         clearInterval(this.id_inaction_interval)
       this.id_inaction_interval = setInterval(() => {
@@ -67,7 +61,6 @@ export default {
   },
   async mounted() {
     // Токен обновляется после каждого обновления
-    console.warn('update user and inaction');
     if(this.getAuth && this.getAuth.id) {
       const user = await this.getUserById(this.getAuth.id);
       if(user) {
@@ -85,8 +78,9 @@ export default {
       }
     } 
 
-    let inaction = await this.fetchInactionHors();
-    if(inaction) 
+    const inaction = await this.fetchInactionHors();
+    console.warn('INACTION:', inaction);
+    if(inaction && inaction.inaction) 
       this.inaction = inaction.inaction;
   }
 }
