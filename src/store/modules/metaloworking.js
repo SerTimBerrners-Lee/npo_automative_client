@@ -27,11 +27,10 @@ export default {
         },
         method: "post",
         body: JSON.stringify({...data})
-			})
+			});
 			
-			if(res.ok) 
-				return true
-			return false
+			if(!res.ok) return false;
+			return true;
     },
     async fetchUpdateMetaloworking(ctx, data) { 
       const res = await fetch(`${PATH_TO_SERVER}api/metaloworking`, {
@@ -47,11 +46,26 @@ export default {
 				return true
 			return false
     },
+    async fetchMetalloworkShapeBid(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/shapebid`, {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "post",
+        body: JSON.stringify(data)
+      });
+
+      if(!res.ok) return false; 
+      const result = await res.json()
+
+      return result;
+    },
     async fetchMetaloworkingById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`)
+      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`);
 			if(res.ok) {
-				const result = await res.json()
-				return result
+				const result = await res.json();
+				return result;
 			}
     },
     async fetchMetalloworkingDelete(ctx, id) {

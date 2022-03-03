@@ -81,8 +81,9 @@
 			</table>
 
 			<div class="btn-control">
+				<button class="btn-small" @click='shapeBid'>Сформировать заявку</button>
 				<button class="btn-small" @click='printPage'>Печать</button>
-				<button class="btn-small">Сбросить все фильтры</button>
+				<button class="btn-small" @click='printPage'>Печать</button>
 			</div>
 		</div>
 
@@ -138,6 +139,7 @@ import random from 'lodash';
 import print from 'print-js';
 import { showMessage } from '@/js/';
 import { dateIncrementHors } from '@/js/';
+import PATH_TO_SERVER from '@/js/path.js';
 import {mapGetters, mapActions} from 'vuex';
 import { 	afterAndBeforeOperation, 
 					OperationTime,
@@ -192,7 +194,8 @@ export default {
 			'fetchAllMetalloworkingTypeOperation',
 			'fetchOneOperationById',
 			'getOneDetal',
-			'getAllUsers'
+			'getAllUsers',
+			'fetchMetalloworkShapeBid',
 		]),
 		unmount_date_picterRange(val) {
       console.log(val)
@@ -204,6 +207,23 @@ export default {
 				showMessage('', 'Отметка о выполнении успешно создана', 's', this)
 			}	else 
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
+		},
+		// Формируем заявку в архиве
+		shapeBid() {
+			const data = this.getMetaloworkings.map(el => { 
+				return {
+					name: el?.detal?.name || null, 
+					id: el?.detal?.id || null,
+					kilvo: el.kolvo_shipments || 0
+				}
+			});
+
+			this.fetchMetalloworkShapeBid(data).then(res => {
+				console.log(res);
+				if(!res || !res.pathZip) return showMessage('', 'Не удалось сформировать заявку', 'w', this);
+				showMessage('', 'Заявка сформирована. Дождитесь загрузки.', 's', this);
+				window.open(`${PATH_TO_SERVER}/${res.pathZip}`, '_blank');
+			})
 		},
 		printPage() {
       print({
