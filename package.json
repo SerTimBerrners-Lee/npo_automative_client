@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
-    "serve:prod": "cross-env VUE_APP_PATH_TO_SERVER='https://npo-automotive.ru' VUE_APP_IS_PROD='true' vue-cli-service serve",
-    "build": "cross-env VUE_APP_PATH_TO_SERVER='https://npo-automotive.ru' VUE_APP_IS_PROD='true' vue-cli-service build",
+    "serve:prod": "cross-env VUE_APP_PATH_TO_SERVER='https://server-npo-automotive.ru' VUE_APP_IS_PROD='true' vue-cli-service serve",
+    "build": "cross-env VUE_APP_PATH_TO_SERVER='https://server-npo-automotive.ru' VUE_APP_IS_PROD='true' vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
