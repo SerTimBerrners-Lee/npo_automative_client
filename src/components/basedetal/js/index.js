@@ -1,4 +1,7 @@
 import {padStart, padEnd, isNaN} from 'lodash';
+// 1. Переменные значения - когда не показывабтся в материале, показываются при добавлении к детиле.
+// 2. Постоянно значение - когда показываем в материале и не можем поменять в детале.
+
 /**
  * Получаем материал и парсим параметры 
  * @param {*} m
@@ -61,25 +64,32 @@ function floatParse(n) {
 	return parseFloat(n.replace(",", "."));
 }
 
+/**
+ * После выбора материала 
+ * Парсим тип если значения переменные - 
+ * @param {material} m 
+ * @param {this} ctx 
+ * @returns 
+ */
 const parseVariableFold = (m, ctx) => {
-	if(!m.material) return false
+	if(!m.material) return false;
 	try{
 		console.log(m)
-		const diametr = m.material.outsideDiametr ? JSON.parse(m.material.outsideDiametr) : null
-		const areaCS = m.material.areaCrossSectional ? JSON.parse(m.material.areaCrossSectional) : null
-		const height = m.material.height ? JSON.parse(m.material.height) : null
-		const thickness = m.material.thickness ? JSON.parse(m.material.thickness) : null
-		const wallThickness = m.material.wallThickness ? JSON.parse(m.material.wallThickness) : null
-		const width = m.material.width ? JSON.parse(m.material.width) : null
-		const leng = m.material.length ? JSON.parse(m.material.length) : null
+		const diametr = m.material.outsideDiametr ? JSON.parse(m.material.outsideDiametr) : null,
+					areaCS = m.material.areaCrossSectional ? JSON.parse(m.material.areaCrossSectional) : null,
+					height = m.material.height ? JSON.parse(m.material.height) : null,
+					thickness = m.material.thickness ? JSON.parse(m.material.thickness) : null,
+					wallThickness = m.material.wallThickness ? JSON.parse(m.material.wallThickness) : null,
+					width = m.material.width ? JSON.parse(m.material.width) : null,
+					leng = m.material.length ? JSON.parse(m.material.length) : null;
 
-		if(height) height?.znach == 'variable' ? ctx.obj.height = 0 : ctx.obj.height = Number(JSON.parse(m.height)?.znach)
-		if(thickness) thickness?.znach == 'variable' ? ctx.obj.thickness = 0 : ctx.obj.thickness = Number(JSON.parse(m.thickness)?.znach)
-		if(wallThickness) wallThickness?.znach == 'variable' ? ctx.obj.wallThickness = 0 : ctx.obj.wallThickness = Number(JSON.parse(m.wallThickness)?.znach)
-		if(width) width?.znach == 'variable' ? ctx.obj.width = 0 : ctx.obj.width = Number(JSON.parse(m.width)?.znach)
-		if(leng) leng?.znach == 'variable' ? ctx.obj.leng = 0 : ctx.obj.leng = Number(JSON.parse(m.length)?.znach)
-		if(areaCS) areaCS?.znach == 'variable' ? ctx.obj.areaCS = 0 : ctx.obj.areaCS = Number(JSON.parse(m.areaCrossSectional)?.znach)
-		if(diametr) diametr?.znach == 'variable' ? ctx.obj.diametr = 0 : ctx.obj.diametr = Number(JSON.parse(m.outsideDiametr)?.znach)
+		if(height) height?.znach == 'variable' ? ctx.obj.height = 0 : ctx.obj.height = Number(JSON.parse(m.height)?.znach || 0);
+		if(thickness) thickness?.znach == 'variable' ? ctx.obj.thickness = 0 : ctx.obj.thickness = Number(JSON.parse(m.thickness)?.znach || 0);
+		if(wallThickness) wallThickness?.znach == 'variable' ? ctx.obj.wallThickness = 0 : ctx.obj.wallThickness = Number(JSON.parse(m.wallThickness)?.znach || 0);
+		if(width) width?.znach == 'variable' ? ctx.obj.width = 0 : ctx.obj.width = Number(JSON.parse(m.width)?.znach || 0);
+		if(leng) leng?.znach == 'variable' ? ctx.obj.leng = 0 : ctx.obj.leng = Number(JSON.parse(m.length)?.znach || 0);
+		if(areaCS) areaCS?.znach == 'variable' ? ctx.obj.areaCS = 0 : ctx.obj.areaCS = Number(JSON.parse(m.areaCrossSectional)?.znach || 0);
+		if(diametr) diametr?.znach == 'variable' ? ctx.obj.diametr = 0 : ctx.obj.diametr = Number(JSON.parse(m.outsideDiametr)?.znach || 0);
 		
 	} catch(e) {console.error(e)}
 }
@@ -88,46 +98,33 @@ const parseVariableFold = (m, ctx) => {
 const changeHaracteristic = (val, inx, ctx) =>  {
 	switch(inx) {
 		case "diametr":
-			ctx.obj['diametr'] = val
+			ctx.obj['diametr'] = val;
 			break;
 		case "lengt":
-			ctx.obj['lengt'] = val
+			ctx.obj['lengt'] = val;
 			break;
 		case "height":
-			ctx.obj['height'] = val
+			ctx.obj['height'] = val;
 			break;
 		case "thickness":
-			ctx.obj['thickness'] = val
+			ctx.obj['thickness'] = val;
 			break;
 			case "wallThickness":
-				ctx.obj['wallThickness'] = val
+				ctx.obj['wallThickness'] = val;
 			break;
 		case "width":
-			ctx.obj['width'] = val
+			ctx.obj['width'] = val;
 			break;
 		case "areaCS":
-			ctx.obj['areaCS'] = val
+			ctx.obj['areaCS'] = val;
 			break;
 		case "massZag":
-			ctx.obj['massZag'] = val
+			ctx.obj['massZag'] = val;
 			break;
 		case "trash":
-			ctx.obj['trash'] = val
+			ctx.obj['trash'] = val;
 			break;
 	}
-	// if(inx == 'DxL' && ctx.obj.DxL) {
-	// 	if(val.indexOf('x') < 0) {
-	// 		ctx.obj.DxL = 'x'
-	// 		return 0
-	// 	}
-	// 	let dxl = val.split('x')
-	// 	if(dxl.length == 2) {
-	// 		if(ctx.inputMassZag * dxl[1])
-	// 			ctx.obj.massZag = ctx.density * (ctx.inputMassZag * (Number(dxl[1])/1000))
-	// 		if(ctx.obj.massZag)
-	// 			ctx.obj.trash = ctx.obj.massZag - ctx.obj.haracteriatic[0].znach 
-	// 	}
-	// }
 }
 
 export {

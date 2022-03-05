@@ -61,78 +61,78 @@
 				<td class='center'>шт</td>
 				<td class='td_link center' @click='getMaterialForDetal("zam")' v-text='mat_zag_zam.name || mat_zag_zam' ></td>
 			</tr>
-			<tr v-if="(obj.diametr !== '')">
+			<tr v-if="obj.diametr != null">
 				<td>Диаметр</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "diametr")'
+						@change='e=> editHarZag(e.target.value, "diametr")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.diametr'>
 				</td>
 			</tr>
-			<tr v-if='obj.lengt'>
+			<tr v-if='obj.lengt != null'>
 				<td>Длина</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "lengt")'
+						@change='e=> editHarZag(e.target.value, "lengt")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.lengt'>
 				</td>
 			</tr>
-			<tr v-if='obj.height'>
+			<tr v-if='obj.height != null'>
 				<td>Высота</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "height")'
+						@change='e=> editHarZag(e.target.value, "height")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.height'>
 				</td>
 			</tr>
-			<tr v-if='obj.thickness'>
+			<tr v-if='obj.thickness != null'>
 				<td>Толщина</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "thickness")'
+						@change='e=> editHarZag(e.target.value, "thickness")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.thickness'>
 				</td>
 			</tr>
-			<tr v-if='obj.wallThickness'>
+			<tr v-if='obj.wallThickness != null'>
 				<td>Толщина стенки</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "wallThickness")'
+						@change='e=> editHarZag(e.target.value, "wallThickness")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.wallThickness'>
 				</td>
 			</tr>
-			<tr v-if='obj.width'>
+			<tr v-if='obj.width != null'>
 				<td>Ширина</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "width")'
+						@change='e=> editHarZag(e.target.value, "width")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.width'>
 				</td>
 			</tr>
-			<tr v-if='obj.areaCS'>
+			<tr v-if='obj.areaCS != null'>
 				<td>Площадь сечения</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "areaCS")'
+						@change='e=> editHarZag(e.target.value, "areaCS")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.areaCS'>
@@ -143,7 +143,7 @@
 				<td class='center'>кг</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "massZag")'
+						@change='e=> editHarZag(e.target.value, "massZag")'
 						style="width: 100px;"
 						class='inputs-small center'
 						v-model='obj.massZag'>
@@ -154,7 +154,7 @@
 				<td class='center'>кг</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=>editHarZag(e.target.value, "trash")'
+						@change='e=> editHarZag(e.target.value, "trash")'
 						style="width: 100px; text-align:center;"
 						class='inputs-small center'
 						v-model='obj.trash'>

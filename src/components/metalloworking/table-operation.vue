@@ -218,8 +218,9 @@ export default {
 				}
 			});
 
+			showMessage('', 'Обработка началась, дождитесь результата...', '', this);
+
 			this.fetchMetalloworkShapeBid(data).then(res => {
-				console.log(res);
 				if(!res || !res.pathZip) return showMessage('', 'Не удалось сформировать заявку', 'w', this);
 				showMessage('', 'Заявка сформирована. Дождитесь загрузки.', 's', this);
 				window.open(`${PATH_TO_SERVER}/${res.pathZip}`, '_blank');

@@ -26,7 +26,7 @@ const showMessage = (title, message, type, ctx) =>  {
     ctx.$data.titleMessage = 'Предупреждение';
   
   if(title == '' && type == '') 
-    ctx.$data.titleMessage = 'Информация';
+    ctx.$data.titleMessage = 'Уведомление';
 
   ctx.$data.message = message;
   ctx.$data.type = type;
@@ -118,6 +118,14 @@ const dateIncrementHors = (date, hors) =>  {
   return {day, mount, year, iterationHors}
 }
 
+/**
+ *  Сравнения дат.
+ *  В зависимости от условия выдает тип Boolean.
+ * @param {*} one_date 
+ * @param {*} two_date 
+ * @param {*} operation 
+ * @returns boolean
+ */
 const comparison = (one_date = new Date().toLocaleDateString('ru-RU'), two_date = new Date().toLocaleDateString('ru-RU'), operation = '==') => {
   let d1 = utfDate(one_date)
   let d2 = utfDate(two_date)
