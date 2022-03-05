@@ -15,7 +15,13 @@
 					<th>Кол-во, шт</th>
 					<th>Срок отгрузки изд.</th>
 					<th id='parent'>Принадлежность</th>
-					<th>Габариты заготовки, мм</th>
+					<th>Длина</th>
+					<th>Ширина</th>
+					<th>Высота</th>
+					<th>Толщина стенки</th>
+					<th>Наружный Диаметр</th>
+					<th>Толщина</th>
+					<th>Площадь сечения</th>
 					<th>Материал</th>
 					<th class='work_operation'>Предыдущая операция </th>
 					<th>Статус</th>
@@ -49,7 +55,13 @@
 					<td class='center' id='parent'>
 						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
 					</td> <!-- Принадлежность --> 
-					<td class='center'>{{ meatl.detal ? meatl.detal.DxL : 'Нет детали' }}</td> <!-- Габариты заготовки, мм --> 
+					<td class='center'>{{ meatl.detal?.lengt || '-' }}</td> <!-- Длина --> 
+					<td class='center'>{{ meatl.detal?.width || '-' }}</td> <!-- Ширина --> 
+					<td class='center'>{{ meatl.detal?.height || '-' }}</td> <!-- Высота --> 
+					<td class='center'>{{ meatl.detal?.wallThickness || '-' }}</td> <!-- Толщина стенки --> 
+					<td class='center'>{{ meatl.detal?.diametr || '-' }}</td> <!-- Диаметр --> 
+					<td class='center'>{{ meatl.detal?.thickness || '-' }}</td> <!-- Толщина --> 
+					<td class='center'>{{ meatl.detal?.areaCS || '-' }}</td> <!-- Площадь сечения --> 
 					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
 					<td class='center hover work_operation'>{{ showOperation(meatl,  "before") }}</td> <!-- Пред. операция --> 
 					<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0 ' class='success_operation center'>{{ 
