@@ -116,7 +116,7 @@ th {
 }
 td {
   border: 1px solid #d3d3d3;
-  padding: 5px !important;
+  padding: 5px;
 }
 .result-work {
   margin: 10px;

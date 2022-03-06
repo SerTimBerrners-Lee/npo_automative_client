@@ -136,11 +136,9 @@ table {
 }
 th {
   border: 1px solid #d3d3d3;
-  padding: 10px;
 }
 td {
   border: 1px solid #d3d3d3;
-  padding: 10px;
 }
 .block-one {
   width: max-content;

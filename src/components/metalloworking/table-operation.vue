@@ -1,9 +1,10 @@
 <template>
 	<div>
 		<div class="block header_block">
-			<DatePicterRange 
-				@unmount='unmount_date_picterRange'   
-			/>
+			<p>
+				<label for="sortZag">Сортировать по заготовки</label>
+				<input type="checkbox" id="sortZag" v-model='sortZag'>
+			</p>
 		</div>
 
 		<div v-if='getMetaloworkings.length'>
@@ -15,15 +16,14 @@
 					<th>Кол-во, шт</th>
 					<th>Срок отгрузки изд.</th>
 					<th id='parent'>Принадлежность</th>
-					<th>Длина</th>
-					<th>Ширина</th>
-					<th>Высота</th>
-					<th>Толщина стенки</th>
-					<th>Наружный Диаметр</th>
-					<th>Толщина</th>
-					<th>Площадь сечения</th>
-					<th>Материал</th>
-					<th class='work_operation'>Предыдущая операция </th>
+					<th class='th_showZagParam' @click='showZagParam = !showZagParam'>
+						<p v-if='showZagParam' >Параметры Заготовки</p>
+						<p v-else class='showZagParam tooltip'>>
+							<span class='tooltiptext'>Показать параметры Заготовки</span>
+						</p>
+					</th>
+					<th>Заготовка</th>
+					<th class='work_operation'>Предыдущая операция</th>
 					<th>Статус</th>
 					<th>Сделано, шт</th>
 					<th>Осталось, шт</th>
@@ -55,13 +55,40 @@
 					<td class='center' id='parent'>
 						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
 					</td> <!-- Принадлежность --> 
-					<td class='center'>{{ meatl.detal?.lengt || '-' }}</td> <!-- Длина --> 
-					<td class='center'>{{ meatl.detal?.width || '-' }}</td> <!-- Ширина --> 
-					<td class='center'>{{ meatl.detal?.height || '-' }}</td> <!-- Высота --> 
-					<td class='center'>{{ meatl.detal?.wallThickness || '-' }}</td> <!-- Толщина стенки --> 
-					<td class='center'>{{ meatl.detal?.diametr || '-' }}</td> <!-- Диаметр --> 
-					<td class='center'>{{ meatl.detal?.thickness || '-' }}</td> <!-- Толщина --> 
-					<td class='center'>{{ meatl.detal?.areaCS || '-' }}</td> <!-- Площадь сечения --> 
+					<td class='params_td' v-if='showZagParam'>
+						<tbody v-if='searchParams(meatl.detal)'>
+							<tr v-if='meatl.detal?.lengt'>
+								<td>Длина</td>
+								<td>{{ meatl.detal?.lengt }}</td>
+							</tr>
+							<tr v-if='meatl.detal?.width'>
+								<td>Ширина</td>
+								<td>{{ meatl.detal?.width }}</td>
+							</tr>
+							<tr v-if='meatl.detal?.height'>
+								<td>Высота</td>
+								<td>{{ meatl.detal?.height }}</td>
+							</tr>
+							<tr v-if='meatl.detal?.wallThickness'>
+								<td>Толщина стенки</td>
+								<td>{{ meatl.detal?.wallThickness }}</td>
+							</tr>
+							<tr v-if='meatl.detal?.diametr'>
+								<td>Наружный Диаметр</td>
+								<td>{{ meatl.detal?.diametr }}</td>
+							</tr>
+							<tr v-if='meatl.detal?.thickness'>
+								<td>Толщина</td>
+								<td>{{ meatl.detal?.thickness }}</td>
+							</tr>
+							<tr v-if='meatl.detal?.areaCS'>
+								<td>Площадь сечения</td>
+								<td>{{ meatl.detal?.areaCS }}</td>
+							</tr>
+						</tbody>
+						<p v-else class='center'>-</p>
+					</td>
+					<td v-else></td>
 					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
 					<td class='center hover work_operation'>{{ showOperation(meatl,  "before") }}</td> <!-- Пред. операция --> 
 					<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0 ' class='success_operation center'>{{ 
@@ -152,7 +179,7 @@ import print from 'print-js';
 import { showMessage } from '@/js/';
 import { dateIncrementHors } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
-import {mapGetters, mapActions} from 'vuex';
+import {mapGetters, mapActions, mapMutations} from 'vuex';
 import { 	afterAndBeforeOperation, 
 					OperationTime,
 					returnKolvoCreate,
@@ -160,7 +187,6 @@ import { 	afterAndBeforeOperation,
 import CreateMark from '@/components/sclad/mark-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
-import DatePicterRange from '@/components/date-picter-range.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
@@ -189,17 +215,25 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+
+			sortZag: true,
+			showZagParam: false,
 		}
 	},
 	computed: mapGetters(['getMetaloworkings', 'getUsers']),
 	components: {
-		DatePicterRange, 
 		OpensFile,
 		DescriptionModal,
 		DetalModal,
 		CreateMark,
 		ShipmentsModal,
 		ProductListModal,
+	},
+	watch: {
+		sortZag: function(val) {
+			console.log(val);
+			this.sortMatallZag(val);
+		}
 	},
 	methods: {
 		...mapActions([
@@ -209,9 +243,7 @@ export default {
 			'getAllUsers',
 			'fetchMetalloworkShapeBid',
 		]),
-		unmount_date_picterRange(val) {
-      console.log(val)
-    },
+		...mapMutations(['sortMatallZag']),
 		unmount_marks(res) {
 			if(res == 'closed') return false
 			if(res) {
@@ -239,6 +271,7 @@ export default {
 			})
 		},
 		printPage() {
+			this.showZagParam = true;
       print({
         printable: 'tablebody', 
         type: 'html',
@@ -246,8 +279,8 @@ export default {
         documentTitle: "Операция: " + this.$props.name_operaiton,
         ignoreElements: ['parent', 'doc', 'discription', 'mark'],
         font_size: '10pt'
-      })
-    },   
+      });
+    },  
 		openDetal(detal) {
 			if(!detal || !detal.id) return showMessage('', 'Нет детали!', 'w', this);
 			this.parametrs_detal = detal.id;
@@ -341,6 +374,16 @@ export default {
 		addMark(metal) {
 			this.mark_key = random(1, 999)
 			this.mark_data = metal
+		},
+		searchParams(det) {
+			if(!det) return false;
+
+			if(!det?.lengt && !det?.width && 
+				!det?.height && !det?.wallThickness &&
+				!det?.diametr && !det?.thickness && 
+				!det?.areaCS) return false;
+
+			return true;
 		}
 	},
 	async mounted() {
@@ -358,5 +401,16 @@ export default {
 <style scoped>
 th {
   word-break: break-all;
+}
+.params_td {
+	padding: 0px;
+}
+.header_block>p {
+	margin: 5px;
+}
+.header_block label {
+	margin: 0px;
+	cursor: pointer;
+	user-select: none;
 }
 </style>

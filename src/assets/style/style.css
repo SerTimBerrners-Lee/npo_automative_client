@@ -688,3 +688,16 @@ textarea {
   font-style: normal;
   font-weight: normal;
 }
+
+.th_showZagParam {
+	user-select: none;
+	cursor: pointer;
+  text-align: center;
+}
+.showZagParam {
+	border: 4px solid #8f8f8f;
+	border-radius: 50px;
+	width: 17px;
+	color: #8f8f8f;
+	font-weight: bold;
+}

@@ -3,7 +3,9 @@ import PATH_TO_SERVER from '@/js/path.js';
 export default {
   state: {
     metaloworkings: [],
-    filter_metal: []
+    filter_metal: [],
+
+    middleware: [],
   },
   getters: { 
     getMetaloworkings(state) {
@@ -137,6 +139,14 @@ export default {
     breackFIlterMetal(state) {
       if(state.filter_metal.length)
         state.metaloworkings = state.filter_metal
+    },
+    sortMatallZag(state, val) {
+      if(!state.middleware.length)
+        state.middleware = state.metaloworkings;
+        
+      state.metaloworkings = state.middleware;
+      state.metaloworkings = state.metaloworkings
+        .filter(el => val ? el?.detal?.mat_za_obj : !el?.detal?.mat_za_obj)
     }
   }
 }

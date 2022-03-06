@@ -26,7 +26,12 @@
             <th>Артикул Детали</th>
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
-            <th>Габариты заготовки</th>
+            <th class='th_showZagParam' @click='showZagParam = !showZagParam'>
+              <p v-if='showZagParam' >Параметры Заготовки</p>
+              <p v-else class='showZagParam tooltip'>>
+                <span class='tooltiptext'>Показать параметры Заготовки</span>
+              </p>
+            </th>
             <th>Материал</th>
             <th id='operation'>Операции</th>
             <th>Готовность</th>
@@ -49,7 +54,40 @@
             <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td>
             <td class='center'>{{ metalowork?.kolvo_shipments }}</td>
             <td class='center'>{{ metalowork?.detal?.shipments_kolvo || 'Нет детали' }}</td>
-            <td class='center'>{{ metalowork?.detal?.DxL || 'Нет детали' }}</td>
+            <td class='params_td' v-if='showZagParam'>
+              <tbody v-if='searchParams(metalowork.detal)'>
+                <tr v-if='metalowork.detal?.lengt'>
+                  <td>Длина</td>
+                  <td>{{ metalowork.detal?.lengt }}</td>
+                </tr>
+                <tr v-if='metalowork.detal?.width'>
+                  <td>Ширина</td>
+                  <td>{{ metalowork.detal?.width }}</td>
+                </tr>
+                <tr v-if='metalowork.detal?.height'>
+                  <td>Высота</td>
+                  <td>{{ metalowork.detal?.height }}</td>
+                </tr>
+                <tr v-if='metalowork.detal?.wallThickness'>
+                  <td>Толщина стенки</td>
+                  <td>{{ metalowork.detal?.wallThickness }}</td>
+                </tr>
+                <tr v-if='metalowork.detal?.diametr'>
+                  <td>Наружный Диаметр</td>
+                  <td>{{ metalowork.detal?.diametr }}</td>
+                </tr>
+                <tr v-if='metalowork.detal?.thickness'>
+                  <td>Толщина</td>
+                  <td>{{ metalowork.detal?.thickness }}</td>
+                </tr>
+                <tr v-if='metalowork.detal?.areaCS'>
+                  <td>Площадь сечения</td>
+                  <td>{{ metalowork.detal?.areaCS }}</td>
+                </tr>
+              </tbody>
+              <p v-else class='center'>-</p>
+					</td>
+					<td v-else></td>
             <td>{{metalowork.detal && metalowork.detal.mat_za_obj ?  metalowork.detal.mat_za_obj.name : 'Нет заготовки' }}</td>
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
@@ -154,6 +192,7 @@ export default {
       metaloworking_props: null,
 
       loader: false,
+      showZagParam: false,
 
       enumStatus: [				
 				'В процессе',
@@ -221,6 +260,7 @@ export default {
       })
     },
     printPage() {
+      this.showZagParam = true;
       print({
         printable: 'tablebody', 
         type: 'html',
@@ -312,7 +352,17 @@ export default {
         count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * metal.kolvo_shipments) / 60
       }
       return count.toFixed(2)
-    }
+    },
+    searchParams(det) {
+			if(!det) return false;
+
+			if(!det?.lengt && !det?.width && 
+				!det?.height && !det?.wallThickness &&
+				!det?.diametr && !det?.thickness && 
+				!det?.areaCS) return false;
+
+			return true;
+		}
   },
 	async mounted() {
     this.loader = true
