@@ -61,7 +61,7 @@
 				<td class='center'>шт</td>
 				<td class='td_link center' @click='getMaterialForDetal("zam")' v-text='mat_zag_zam.name || mat_zag_zam' ></td>
 			</tr>
-			<tr v-if="obj.diametr != null">
+			<tr v-if="obj.diametr != null && obj.diametr !== ''">
 				<td>Диаметр</td>
 				<td class='center'>мм</td>
 				<td class='center'>
@@ -72,7 +72,7 @@
 						v-model='obj.diametr'>
 				</td>
 			</tr>
-			<tr v-if='obj.lengt != null'>
+			<tr v-if='obj.lengt != null && obj.lengt !== ""'>
 				<td>Длина</td>
 				<td class='center'>мм</td>
 				<td class='center'>
@@ -83,7 +83,7 @@
 						v-model='obj.lengt'>
 				</td>
 			</tr>
-			<tr v-if='obj.height != null'>
+			<tr v-if='obj.height != null && obj.height !== ""'>
 				<td>Высота</td>
 				<td class='center'>мм</td>
 				<td class='center'>
@@ -94,7 +94,7 @@
 						v-model='obj.height'>
 				</td>
 			</tr>
-			<tr v-if='obj.thickness != null'>
+			<tr v-if='obj.thickness != null && obj.thickness !== ""'>
 				<td>Толщина</td>
 				<td class='center'>мм</td>
 				<td class='center'>
@@ -105,7 +105,7 @@
 						v-model='obj.thickness'>
 				</td>
 			</tr>
-			<tr v-if='obj.wallThickness != null'>
+			<tr v-if='obj.wallThickness != null && obj.wallThickness !== ""'>
 				<td>Толщина стенки</td>
 				<td class='center'>мм</td>
 				<td class='center'>
@@ -116,7 +116,7 @@
 						v-model='obj.wallThickness'>
 				</td>
 			</tr>
-			<tr v-if='obj.width != null'>
+			<tr v-if='obj.width != null && obj.width !== ""'>
 				<td>Ширина</td>
 				<td class='center'>мм</td>
 				<td class='center'>
@@ -127,7 +127,7 @@
 						v-model='obj.width'>
 				</td>
 			</tr>
-			<tr v-if='obj.areaCS != null'>
+			<tr v-if='obj.areaCS != null && obj.areaCS !== ""'>
 				<td>Площадь сечения</td>
 				<td class='center'>мм</td>
 				<td class='center'>
@@ -288,6 +288,8 @@ export default {
 			if(this.$props.parametrs.mat_zag) this.mat_zag = this.$props.parametrs.mat_zag
 			if(this.$props.parametrs.mat_zag_zam) this.mat_zag_zam = this.$props.parametrs.mat_zag_zam
 		}
+
+		console.log(this.obj);
 	}
 }
 </script>
