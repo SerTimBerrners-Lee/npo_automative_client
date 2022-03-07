@@ -342,6 +342,10 @@ export default {
       }
     },
     saveDetal() {
+      if(this.obj.diametr == '0' || this.obj.lengt == '0' || this.obj.height == '0' || this.obj.thickness == '0' || this.obj.wallThickness == '0' || this.obj.width == '0' || this.obj.areaCS == '0') {
+        return showMessage('', 'Заполните все поля для характеристик заготовки', 'w', this);
+      }
+
       if(this.obj.name.length < 3) 
         return 0
 

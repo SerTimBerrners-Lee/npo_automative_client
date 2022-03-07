@@ -66,21 +66,23 @@
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=> editHarZag(e.target.value, "diametr")'
+						@change='e => editHarZag(e.target.value, "diametr")'
 						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.diametr'>
+						v-model='obj.diametr' 
+						:disabled='isEdit.outsideDiametr'>
 				</td>
 			</tr>
 			<tr v-if='obj.lengt != null && obj.lengt !== ""'>
 				<td>Длина</td>
-				<td class='center'>мм</td>
+				<td class='center'>м</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=> editHarZag(e.target.value, "lengt")'
+						@change='e => editHarZag(e.target.value, "lengt")'
 						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.lengt'>
+						v-model='obj.lengt'
+						:disabled='isEdit.length'>
 				</td>
 			</tr>
 			<tr v-if='obj.height != null && obj.height !== ""'>
@@ -88,10 +90,11 @@
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=> editHarZag(e.target.value, "height")'
+						@change='e => editHarZag(e.target.value, "height")'
 						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.height'>
+						v-model='obj.height'
+						:disabled='isEdit.height'>
 				</td>
 			</tr>
 			<tr v-if='obj.thickness != null && obj.thickness !== ""'>
@@ -99,10 +102,11 @@
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=> editHarZag(e.target.value, "thickness")'
+						@change='e => editHarZag(e.target.value, "thickness")'
 						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.thickness'>
+						v-model='obj.thickness'
+						:disabled='isEdit.thickness'>
 				</td>
 			</tr>
 			<tr v-if='obj.wallThickness != null && obj.wallThickness !== ""'>
@@ -110,10 +114,11 @@
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=> editHarZag(e.target.value, "wallThickness")'
+						@change='e => editHarZag(e.target.value, "wallThickness")'
 						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.wallThickness'>
+						v-model='obj.wallThickness'
+						:disabled='isEdit.wallThickness'>
 				</td>
 			</tr>
 			<tr v-if='obj.width != null && obj.width !== ""'>
@@ -121,21 +126,23 @@
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=> editHarZag(e.target.value, "width")'
+						@change='e => editHarZag(e.target.value, "width")'
 						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.width'>
+						v-model='obj.width'
+						:disabled='isEdit.width'>
 				</td>
 			</tr>
 			<tr v-if='obj.areaCS != null && obj.areaCS !== ""'>
 				<td>Площадь сечения</td>
-				<td class='center'>мм</td>
+				<td class='center'>м.кв</td>
 				<td class='center'>
 					<input type="text"
-						@change='e=> editHarZag(e.target.value, "areaCS")'
+						@change='e => editHarZag(e.target.value, "areaCS")'
 						style="width: 100px;"
 						class='inputs-small center'
-						v-model='obj.areaCS'>
+						v-model='obj.areaCS'
+						:disabled='isEdit.areaCrossSectional'>
 				</td>
 			</tr>
 			<tr>
@@ -172,6 +179,7 @@
 </template>
 <script>
 import { random } from 'lodash';
+import { mapActions } from 'vuex';
 import {calcParams, changeHaracteristic, parseVariableFold} from './js/';
 import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
 export default {
@@ -182,6 +190,7 @@ export default {
 			modalMaterialIsShow:  false,
 			mat_zag: 'Задать',
 			mat_zag_zam: 'Задать',
+			material: null,
 
 			obj: {
         DxL: 'x',
@@ -200,96 +209,130 @@ export default {
         ],
 				variables_znach: []
       },
+			isEdit: {
+				outsideDiametr: false,
+				length: false,
+				height: false,
+				thickness: false,
+				wallThickness: false,
+				width: false,
+				areaCrossSectional: false
+			},
 			density: 0,
 		}
 	},
 	components: {ModalBaseMaterial},
 	methods: {
+		...mapActions(['getOneTypeMaterial']),
+		// ТОЛЬКО ПЕРЕМЕННЫЕ ЗНАЧЕНИЯ МОЖНО РЕДАКТИРОВАТЬ !!!
+		updateVariablesEdit(bools) {
+			try {
+				if(!this.material) return false;
+
+				for(const item in this.isEdit) {
+					const haracter = JSON.parse(this.material[item]);
+					if(!haracter || !haracter.znach) 
+						this.isEdit[item] = bools;
+					else if(haracter.znach == 'permanent')
+						this.isEdit[item] = bools;
+					else this.isEdit[item] = !bools;
+				}
+			} catch(err) {console.error(err)}
+
+		},
 		unmount_material(mat) {
 			if(!this.mat_zag) {
 				this.mat_zag = mat.material || 'Задать'
 				if(mat.material) {
-					this.calcParametr(mat.material)
-					this.parseVariableFolder(mat.material)
+					this.material = mat.material;
+					this.calcParametr(mat.material);
+					this.parseVariableFolder(mat.material);
 				}
 			}
 			if(!this.mat_zag_zam)
-				this.mat_zag_zam = mat.material || 'Задать'
-			return 0
+				this.mat_zag_zam = mat.material || 'Задать';
+
+			this.updateVariablesEdit(false);
+			return 0;
     },
 		getMaterialForDetal(t = '') {
-      this.modalMaterialKey = random(10, 999)
-      this.modalMaterialIsShow = true
+      this.modalMaterialKey = random(10, 999);
+      this.modalMaterialIsShow = true;
       t == 'zam' ? this.mat_zag_zam = '' : this.mat_zag = ''
     },
 		editHarZag(val, inx) {
-			changeHaracteristic(val, inx, this)
-			this.emits()
+			if(!val) val = 0;
+			changeHaracteristic(val, inx, this);
+			this.emits();
 		},
 		calcParametr(m) {
-			calcParams(m, this)
-
-			this.emits()
+			calcParams(m, this);
+			this.emits();
 		},
 		parseVariableFolder(m) {
-			parseVariableFold(m, this)
-
-			this.emits()
+			parseVariableFold(m, this);
+			this.emits();
 		},	
 		addHaracteristic() {
-      this.obj.haracteriatic.push({name: '', ez: '', znach: ''})
+      this.obj.haracteriatic.push({name: '', ez: '', znach: ''});
     },
     removeHaracteristic() {
-      if(this.selectHaracteristic.inx == 0) return false
+      if(this.selectHaracteristic.inx == 0) return false;
       if(this.selectHaracteristic) {
-        this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1)
-        this.selectHaracteristic = null
+        this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1);
+        this.selectHaracteristic = null;
       }
     },
     selectHaracteristicFunction(har, inx) {
-      this.selectHaracteristic = { har, inx}
+      this.selectHaracteristic = { har, inx };
     },
     changeHaracteristic(val, inst, inx) {
       if(inst == 'name')  
-        this.obj.haracteriatic[inx].name = val
+        this.obj.haracteriatic[inx].name = val;
       if(inst == 'ez')  
-        this.obj.haracteriatic[inx].ez = val
+        this.obj.haracteriatic[inx].ez = val;
       if(inst == 'znach')  {
-        this.obj.haracteriatic[inx].znach = val
+        this.obj.haracteriatic[inx].znach = val;
         if(inx == 0) 
-          this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag
+          this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag;
       }
 
-			this.emits()
+			this.emits();
     },
 		emits() {
-			this.obj['mat_zag'] = this.mat_zag
-			this.obj['mat_zag_zam'] = this.mat_zag_zam
-			this.$emit('unmount_har_zam', this.obj)
-		}
+			this.obj['mat_zag'] = this.mat_zag;
+			this.obj['mat_zag_zam'] = this.mat_zag_zam;
+			this.$emit('unmount_har_zam', this.obj);
+		},
 	}, 
-	mounted() {
+	async mounted() {
 		if(this.$props.parametrs && this.$props.parametrs.obj ) {
-			this.obj.DxL = this.$props.parametrs.obj.DxL
-			this.obj.diametr = this.$props.parametrs.obj.diametr
-			this.obj.lengt = this.$props.parametrs.obj.lengt
-			this.obj.height = this.$props.parametrs.obj.height
-			this.obj.thickness = this.$props.parametrs.obj.thickness
-			this.obj.wallThickness = this.$props.parametrs.obj.wallThickness
-			this.obj.width = this.$props.parametrs.obj.width
-			this.obj.areaCS = this.$props.parametrs.obj.areaCS
+			this.obj.DxL = this.$props.parametrs.obj.DxL;
+			this.obj.diametr = this.$props.parametrs.obj.diametr;
+			this.obj.lengt = this.$props.parametrs.obj.lengt;
+			this.obj.height = this.$props.parametrs.obj.height;
+			this.obj.thickness = this.$props.parametrs.obj.thickness;
+			this.obj.wallThickness = this.$props.parametrs.obj.wallThickness;
+			this.obj.width = this.$props.parametrs.obj.width;
+			this.obj.areaCS = this.$props.parametrs.obj.areaCS;
 
 
-			this.obj.massZag = this.$props.parametrs.obj.massZag
-			this.obj.trash = this.$props.parametrs.obj.trash
-			this.obj.haracteriatic = this.$props.parametrs.obj.haracteriatic
-			this.obj.variables_znach = this.$props.parametrs.obj.variables_znach
+			this.obj.massZag = this.$props.parametrs.obj.massZag;
+			this.obj.trash = this.$props.parametrs.obj.trash;
+			this.obj.haracteriatic = this.$props.parametrs.obj.haracteriatic;
+			this.obj.variables_znach = this.$props.parametrs.obj.variables_znach;
 
-			if(this.$props.parametrs.mat_zag) this.mat_zag = this.$props.parametrs.mat_zag
-			if(this.$props.parametrs.mat_zag_zam) this.mat_zag_zam = this.$props.parametrs.mat_zag_zam
+			if(this.$props.parametrs.mat_zag) {
+				this.mat_zag = this.$props.parametrs.mat_zag;
+				// Получаем материал для того чтобы втидеть что постоянное а что нет.
+				if(this.mat_zag.materialsId) 
+					this.material = await this.getOneTypeMaterial(this.mat_zag.materialsId);
+
+				this.updateVariablesEdit(true);
+			}
+			if(this.$props.parametrs.mat_zag_zam) 
+				this.mat_zag_zam = this.$props.parametrs.mat_zag_zam;
 		}
-
-		console.log(this.obj);
 	}
 }
 </script>

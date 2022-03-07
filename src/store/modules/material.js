@@ -53,6 +53,13 @@ export default {
       await ctx.commit("getTypeMaterial", result)
       return result
     },
+    async getOneTypeMaterial(ctx, _id) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/settings/materials/one/${_id}`);
+      if(!res.ok) return false; 
+      const result = await res.json();
+
+      return result;
+    },
     async getAllPodTypeMaterial(ctx, instans = 'all') {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${instans}`)
       const result = await res.json()
