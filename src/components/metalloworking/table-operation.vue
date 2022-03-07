@@ -27,9 +27,16 @@
 					<th>Статус</th>
 					<th>Сделано, шт</th>
 					<th>Осталось, шт</th>
-					<th>Норма времени (подготовительное), шт</th>
-					<th>Норма времени (вспомогательное), шт</th>
-					<th>Норма времени (основное), шт</th>
+
+					<th class='th_showZagParam' @click='showNormTime = !showNormTime'>
+						<p v-if='!showNormTime' class='showZagParam tooltip'>>
+							<span class='tooltiptext'>Показать Норма времени</span>
+						</p>
+					</th>
+
+					<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (подготовительное), шт</th>
+					<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (вспомогательное), шт</th>
+					<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (основное), шт</th>
 					<th>Норма времени (общее на парт.), ч</th>
 					<th>Дата исполнения</th>
 					<th>Исполнитель</th>
@@ -90,7 +97,12 @@
 					</td>
 					<td v-else></td>
 					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
-					<td class='center hover work_operation'>{{ showOperation(meatl,  "before") }}</td> <!-- Пред. операция --> 
+					<td class='center hover work_operation'>
+						<p class='last_column'>
+							<span>{{ showOperation(meatl,  "before") }}</span>
+							<span v-if='showOperation(meatl,  "before") != "Нет"'>Готово: {{ 0 }}</span>
+						</p>
+					</td> <!-- Пред. операция --> 
 					<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0 ' class='success_operation center'>{{ 
 						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
 					<td v-if='returnKolvoCreate(meatl) == 0' class='work_operation center'>{{ 
@@ -99,9 +111,10 @@
 						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
 					<td class='center'>{{ returnKolvoCreate(meatl) }}</td> <!-- Сделано шт. --> 
 					<td class='center'>{{ returnFloor(meatl.kolvo_shipments - returnKolvoCreate(meatl)) }}</td>
-					<td class='center'>{{ getTime(meatl).pt }}</td>
-					<td class='center'>{{ getTime(meatl).ht }}</td>
-					<td class='center'>{{ getTime(meatl).mt }}</td>
+					<td v-if='!showNormTime'></td>
+					<td class='center' v-if='showNormTime'>{{ getTime(meatl).pt }}</td>
+					<td class='center' v-if='showNormTime'>{{ getTime(meatl).ht }}</td>
+					<td class='center' v-if='showNormTime'>{{ getTime(meatl).mt }}</td>
 					<td class='center'>{{ manyIzdTime(meatl, meatl.kolvo_shipments)	}}</td>
 					<td class='center'>{{ returnDateExist(meatl) }}</td> <!-- Дата исполнения --> 
 					<td class='center'>{{ responsible(meatl) }}</td> <!-- Исполнитель --> 
@@ -218,6 +231,7 @@ export default {
 
 			sortZag: true,
 			showZagParam: false,
+			showNormTime: false
 		}
 	},
 	computed: mapGetters(['getMetaloworkings', 'getUsers']),
@@ -272,6 +286,7 @@ export default {
 		},
 		printPage() {
 			this.showZagParam = true;
+			this.showNormTime = true;
       print({
         printable: 'tablebody', 
         type: 'html',
@@ -413,4 +428,19 @@ th {
 	cursor: pointer;
 	user-select: none;
 }
+.last_column {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	flex-direction: column;
+}
+.last_column>span:last-child {
+	font-size: 12px;
+	margin-top: 5px;
+}
+.last_column>span:first-child {
+	font-size: 14px;
+	font-weight: bold;
+}
+
 </style>
