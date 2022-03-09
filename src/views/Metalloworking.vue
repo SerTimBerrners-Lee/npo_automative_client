@@ -60,39 +60,9 @@
             <td class='center'>{{ metalowork?.kolvo_shipments }}</td>
             <td class='center'>{{ metalowork?.detal?.shipments_kolvo || 'Нет детали' }}</td>
             <td class='params_td' v-if='showZagParam'>
-              <tbody v-if='searchParams(metalowork.detal)'>
-                <tr v-if='metalowork.detal?.lengt'>
-                  <td>Длина</td>
-                  <td>{{ metalowork.detal?.lengt }}</td>
-                </tr>
-                <tr v-if='metalowork.detal?.width'>
-                  <td>Ширина</td>
-                  <td>{{ metalowork.detal?.width }}</td>
-                </tr>
-                <tr v-if='metalowork.detal?.height'>
-                  <td>Высота</td>
-                  <td>{{ metalowork.detal?.height }}</td>
-                </tr>
-                <tr v-if='metalowork.detal?.wallThickness'>
-                  <td>Толщина стенки</td>
-                  <td>{{ metalowork.detal?.wallThickness }}</td>
-                </tr>
-                <tr v-if='metalowork.detal?.diametr'>
-                  <td>Наружный Диаметр</td>
-                  <td>{{ metalowork.detal?.diametr }}</td>
-                </tr>
-                <tr v-if='metalowork.detal?.thickness'>
-                  <td>Толщина</td>
-                  <td>{{ metalowork.detal?.thickness }}</td>
-                </tr>
-                <tr v-if='metalowork.detal?.areaCS'>
-                  <td>Площадь сечения</td>
-                  <td>{{ metalowork.detal?.areaCS }}</td>
-                </tr>
-              </tbody>
-              <p v-else class='center'>-</p>
-					</td>
-					<td v-else></td>
+              <TbodyZag :detal='metalowork.detal' />
+            </td>
+            <td v-else></td>
             <td>{{metalowork.detal && metalowork.detal.mat_za_obj ?  metalowork.detal.mat_za_obj.name : 'Нет заготовки' }}</td>
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
@@ -167,6 +137,7 @@ import {random} from 'lodash';
 import { showMessage, comparison } from '@/js/';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
+import TbodyZag from '@/components/metalloworking/tablezag.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import OperationModal from '@/components/sclad/workings-operations.vue';
@@ -221,6 +192,7 @@ export default {
 	components: {
     DescriptionModal, 
     OpensFile,
+    TbodyZag,
     OperationPathModal, 
     OperationModal, 
     ShipmentsModal,
@@ -364,17 +336,7 @@ export default {
         count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * metal.kolvo_shipments) / 60
       }
       return count.toFixed(2)
-    },
-    searchParams(det) {
-			if(!det) return false;
-
-			if(!det?.lengt && !det?.width && 
-				!det?.height && !det?.wallThickness &&
-				!det?.diametr && !det?.thickness && 
-				!det?.areaCS) return false;
-
-			return true;
-		}
+    }
   },
 	async mounted() {
     this.loader = true
@@ -412,5 +374,8 @@ td {
 .sort_span>label {
   color: black;
   margin: 0px;
+}
+.params_td {
+	padding: 0px;
 }
 </style>

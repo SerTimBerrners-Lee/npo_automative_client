@@ -20,7 +20,7 @@
           </tr>
           <tr>
             <td  @click='obj.length_permanent = ""'>Длина (L)</td>
-            <td>м, мм</td>
+            <td>мм</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -34,7 +34,7 @@
           </tr>
           <tr>
             <td  @click='obj.width_permanent = ""'>Ширина (A)</td>
-            <td>м, мм</td>
+            <td>мм</td>
             <td class="input_znach" >
               <p>
                 <span> Постоянное </span>
@@ -48,7 +48,7 @@
           </tr>
           <tr>
             <td @click='obj.height_permanent = ""'>Высота (B)</td>
-            <td>м, мм</td>
+            <td>мм</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>
@@ -104,7 +104,7 @@
           </tr>
           <tr>
             <td @click='obj.areaCrossSectional_permanent = ""'>Площадь сечения (S)</td>
-            <td>м2</td>
+            <td>м.кв</td>
             <td class="input_znach">
               <p>
                 <span> Постоянное </span>

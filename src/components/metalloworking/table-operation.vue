@@ -63,37 +63,7 @@
 						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
 					</td> <!-- Принадлежность --> 
 					<td class='params_td' v-if='showZagParam'>
-						<tbody v-if='searchParams(meatl.detal)'>
-							<tr v-if='meatl.detal?.lengt'>
-								<td>Длина</td>
-								<td>{{ meatl.detal?.lengt }}</td>
-							</tr>
-							<tr v-if='meatl.detal?.width'>
-								<td>Ширина</td>
-								<td>{{ meatl.detal?.width }}</td>
-							</tr>
-							<tr v-if='meatl.detal?.height'>
-								<td>Высота</td>
-								<td>{{ meatl.detal?.height }}</td>
-							</tr>
-							<tr v-if='meatl.detal?.wallThickness'>
-								<td>Толщина стенки</td>
-								<td>{{ meatl.detal?.wallThickness }}</td>
-							</tr>
-							<tr v-if='meatl.detal?.diametr'>
-								<td>Наружный Диаметр</td>
-								<td>{{ meatl.detal?.diametr }}</td>
-							</tr>
-							<tr v-if='meatl.detal?.thickness'>
-								<td>Толщина</td>
-								<td>{{ meatl.detal?.thickness }}</td>
-							</tr>
-							<tr v-if='meatl.detal?.areaCS'>
-								<td>Площадь сечения</td>
-								<td>{{ meatl.detal?.areaCS }}</td>
-							</tr>
-						</tbody>
-						<p v-else class='center'>-</p>
+						<TbodyZag :detal='meatl.detal' />
 					</td>
 					<td v-else></td>
 					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
@@ -190,6 +160,7 @@
 import random from 'lodash';
 import print from 'print-js';
 import { showMessage } from '@/js/';
+import TbodyZag from './tablezag.vue';
 import { dateIncrementHors } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
@@ -237,6 +208,7 @@ export default {
 	computed: mapGetters(['getMetaloworkings', 'getUsers']),
 	components: {
 		OpensFile,
+		TbodyZag,
 		DescriptionModal,
 		DetalModal,
 		CreateMark,
@@ -388,16 +360,6 @@ export default {
 		addMark(metal) {
 			this.mark_key = random(1, 999)
 			this.mark_data = metal
-		},
-		searchParams(det) {
-			if(!det) return false;
-
-			if(!det?.lengt && !det?.width && 
-				!det?.height && !det?.wallThickness &&
-				!det?.diametr && !det?.thickness && 
-				!det?.areaCS) return false;
-
-			return true;
 		}
 	},
 	async mounted() {
