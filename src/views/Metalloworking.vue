@@ -10,6 +10,11 @@
 		<div class="block"> 
       <button class="btn" @click='openOperation'>Детали по операциям</button>
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
+      
+      <span class='sort_span'>
+        <label for="sortZag">Сортировать по заготовки</label>
+        <input type="checkbox" id="sortZag" v-model='sortZag'>
+      </span>
     </div>
     <div class='table_block'>
       <ShipmentList
@@ -201,6 +206,7 @@ export default {
         'Просрочено' 
 			],
 
+      sortZag: true,
       span: null,
       selectMetalloworking: null,
       isArchive: false
@@ -220,6 +226,11 @@ export default {
     ShipmentsModal,
     ShipmentList
   },
+  watch: {
+		sortZag: function(val) {
+			this.sortMatallZag(val);
+		}
+	},
 	methods: {
     ...mapActions([
       'fetchAllShipmentsMetaloworking', 
@@ -230,7 +241,8 @@ export default {
     ]),
     ...mapMutations([
       'filterMetaloworkingByShipments', 
-      'breackFIlterMetal'
+      'breackFIlterMetal',
+      'sortMatallZag'
     ]),
     combackArchive() {
       if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w', this)
@@ -380,6 +392,8 @@ export default {
 }
 .block {
   padding: 5px;
+  display: flex;
+  align-items: center;
 }
 .block .btn {
   margin: 0px;
@@ -387,5 +401,16 @@ export default {
 td {
   width: 100px;
   word-break: break-all;
+}
+.sort_span {
+  margin-left: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: fit-content;
+}
+.sort_span>label {
+  color: black;
+  margin: 0px;
 }
 </style>

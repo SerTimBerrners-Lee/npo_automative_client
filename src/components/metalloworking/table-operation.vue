@@ -245,7 +245,6 @@ export default {
 	},
 	watch: {
 		sortZag: function(val) {
-			console.log(val);
 			this.sortMatallZag(val);
 		}
 	},
