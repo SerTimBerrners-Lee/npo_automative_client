@@ -90,7 +90,7 @@
               </td>
               <td class='center'>{{ detal.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>
-              <td class='center' @click='returnShipmentsDateModal(detal, "detal")'>
+              <td class='center' @click='returnShipmentsDateModal(detal)'>
                 <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
               </td>
 
@@ -282,12 +282,12 @@ export default {
     unmount_tech_process() {
       this.techProcessID = null
     },
-    returnShipmentsDateModal(izd, type) {
-      let shipments = izd.shipments
+    returnShipmentsDateModal(izd) {
+      const shipments = izd.shipments;
       if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
-      this.shipments = shipments
-      this.izdForSchipment = {izd, type}
-      this.shipmentKey = random(1, 999)
+      this.shipments = shipments;
+      this.izdForSchipment = {izd, type: 'detal'};
+      this.shipmentKey = random(1, 999);
     },
     start() {
       if(!this.toProductionArr.length)

@@ -541,7 +541,6 @@ export default {
         state.podMaterial = state.stateMaterialTime.filter(m => m.shipments_kolvo > 0)
         state.podMaterial.sort((a, b) => b.shipments_kolvo - a.shipments_kolvo)
       }
-      
     },
     setOneTypeMMytation(state, typeM) {
       state.setOneTypeM = typeM

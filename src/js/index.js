@@ -119,7 +119,7 @@ const dateIncrementHors = (date, hors) =>  {
 }
 
 /**
- *  Сравнения дат.
+ *  Сравнения дат. типа: '10.03.2022'
  *  В зависимости от условия выдает тип Boolean.
  * @param {*} one_date 
  * @param {*} two_date 
@@ -193,7 +193,7 @@ const sortState = (arr, operation) => {
     }
   }
 
-  return operation == '<' ? '>' : '<'
+  return operation == '<' ? '>' : '<';
 }
 
 export  {

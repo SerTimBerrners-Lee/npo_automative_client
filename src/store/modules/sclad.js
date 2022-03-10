@@ -28,18 +28,6 @@ export default {
         body: JSON.stringify({...data})
       })
     },
-    async fetchCreateMarks(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/mark`, {
-        method: "post",
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({...data})
-      })
-      if(res.ok) return true
-      return false
-    },
     async setchDeficitCbed(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/cbed`)
       if(!res.ok) return false
@@ -97,16 +85,38 @@ export default {
       return result
     },
     async getShipmentsForOneMaterial(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialonecshipments/${id}`)
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialonecshipments/${id}`);
       if(!res.ok) return false;
-      const result = await res.json()
+
+      const result = await res.json();
       return result;
     },
     async fetchMatRemParent(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialparents/${id}`)
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialparents/${id}`);
       if(!res.ok) return false;
-      const result = await res.json()
-      return result
+
+      const result = await res.json();
+      return result;
+    },
+    // Marks
+    async fetchMarksByOperation(ctx, _id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/marks/byoperation/${_id}`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      return result;
+    },
+    async fetchCreateMarks(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/mark`, {
+        method: "post",
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({...data})
+      })
+      if(res.ok) return true
+      return false
     },
   },
   mutations: {

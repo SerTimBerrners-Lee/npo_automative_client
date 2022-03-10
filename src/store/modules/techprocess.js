@@ -11,51 +11,6 @@ export default {
     },
   },
   actions: {
-    async createOperation(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/operation`, {
-        method :  'post',
-        body   :  data
-      })
-
-      if(!res.ok) return false;
-      const result = await res.json();
-      ctx.commit('addNewOperationToList', result);
-    },
-    async updateOperation(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/update`, {
-        method  :   'post',
-        body    :   data
-      })
-
-      if(!res.ok) return false;
-      const result = await res.json();
-      ctx.commit('updateOperationToList', result);
-    },
-    async updateOperationTech(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/up/tech`, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json'
-        },
-        method  :   'post',
-        body    :   JSON.stringify({
-          ...data
-        })
-      });
-
-      if(!res.ok) return false;
-      const result = await res.json();
-      ctx.commit('updateOperationToList', result);
-      
-    },
-    async banOperation(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/${id}`, {
-        method  : 'delete'
-      });
-
-      if(!res.ok) return false;
-      ctx.commit('banOperationMuttation', id);
-    },
     async createTechProcess(ctx, data) {
       if(!ctx.getters.getAuth)
         return 0
@@ -76,14 +31,6 @@ export default {
       if(!res.ok) return false; 
       return result 
     },
-    async fetchOneOperationById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/get/${id}`);
-
-      if(!res.ok) return false;
-      const result = await res.json()
-      return result 
-    },
-
     async fetchAllDetalOperation() {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/operation/include`);
 
@@ -94,10 +41,6 @@ export default {
   mutations: {
     allOperationMutations(state, data) {
       state.operationNewList = data
-      localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
-    },
-    addNewOperationToList(state, operation) {
-      state.operationNewList.push(operation)
       localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
     },
     /**
@@ -129,9 +72,5 @@ export default {
       state.operationNewList = []
       localStorage.setItem('newOperationItem', state.operationNewList )
     },
-    banOperationMuttation(state, id) {
-      state.operationNewList = state.operationNewList.filter(op => op.id != id)
-      localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
-    }
   }
 }

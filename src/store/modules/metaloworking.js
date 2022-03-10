@@ -1,4 +1,6 @@
 import PATH_TO_SERVER from '@/js/path.js';
+import { comparison } from '../../js/';
+import { returnKolvoCreate, returnShipmentsDate } from '../../js/operation';
 
 export default {
   state: {
@@ -6,6 +8,7 @@ export default {
     filter_metal: [],
 
     middleware: [],
+    middleware_status: [],
   },
   getters: { 
     getMetaloworkings(state) {
@@ -134,6 +137,14 @@ export default {
       }
       if(state.filter_metal.length == 0)
         state.filter_metal = state.metaloworkings 
+
+      // Фильтруем по дате отгрузки
+      new_arr = new_arr.sort((a, b) => {
+        if(!a.detal.shipments || !a.detal.shipments.length) return false;
+        if(!b.detal.shipments || !b.detal.shipments.length) return true;
+        return comparison(returnShipmentsDate(a.detal.shipments), returnShipmentsDate(b.detal.shipments), '<');
+      });
+
       state.metaloworkings = new_arr
     },
     breackFIlterMetal(state) {
@@ -147,6 +158,21 @@ export default {
       state.metaloworkings = state.middleware;
       state.metaloworkings = state.metaloworkings
         .filter(el => val ? el?.detal?.mat_za_obj : !el?.detal?.mat_za_obj)
+    },
+    sortMaterialStatus(state, val) {
+      if(state.middleware_status.length == 0) state.middleware_status = state.metaloworkings
+      
+      state.metaloworkings = state.middleware_status;
+      console.log(val);
+      if(val == 'Все') return null
+     
+      if(val == 'В работе')
+        state.metaloworkings = state.middleware_status.filter(m => (m.kolvo_shipments - returnKolvoCreate(m)) != 0 && !returnKolvoCreate(m))
+      if(val == 'Выполняется')
+        state.metaloworkings = state.middleware_status.filter(m => returnKolvoCreate(m) && returnKolvoCreate(m) != m.kolvo_shipments)
+
+      if(val == 'Готово') 
+        state.metaloworkings = state.middleware_status.filter(m => (m.kolvo_shipments - returnKolvoCreate(m)) < 1)
     }
   }
 }

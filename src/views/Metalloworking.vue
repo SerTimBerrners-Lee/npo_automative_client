@@ -24,6 +24,7 @@
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tr class='fixed_table_85'>
+            <th>№</th>
             <th>Дата готовности</th>
             <th>Заказ склада</th>
             <th>№ Заказа</th>
@@ -47,10 +48,11 @@
             <th id='discription'>Примечание</th>
           </tr>
           <tr 
-            v-for='metalowork of getMetaloworkings' :key='metalowork'
+            v-for='(metalowork, inx) of getMetaloworkings' :key='metalowork'
             @click='e => setObject(metalowork, e.target.parentElement)'
             class='td-row'>
-            <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal?.shipments)' >
+            <th>{{ inx + 1 }}</th>
+            <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal)' >
               {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
             </td> <!-- Дата готовности -->
             <td>{{ metalowork.date_order }}</td> <!-- Заказ склада-->
@@ -126,6 +128,7 @@
       :shipments='shipments'
       v-if='shipments.length'
       :key='shipmentKey'
+      :izd='izdForSchipment'
     />
 
     <Loader v-if='loader' />
@@ -134,7 +137,7 @@
 <script>
 import print from 'print-js';
 import {random} from 'lodash';
-import { showMessage, comparison } from '@/js/';
+import { showMessage, returnShipmentsDate } from '@/js/';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import TbodyZag from '@/components/metalloworking/tablezag.vue';
@@ -180,15 +183,18 @@ export default {
       sortZag: true,
       span: null,
       selectMetalloworking: null,
-      isArchive: false
+      isArchive: false,
+      izdForSchipment: null,
 		}
 	},
-	computed: mapGetters([
-    'getShipments',
-    'getTypeOperations',
-    'getMetaloworkings',
-    'ShipmentList'
-  ]),
+	computed: {
+    ...mapGetters([
+      'getShipments',
+      'getTypeOperations',
+      'getMetaloworkings',
+      'ShipmentList'
+    ])
+  },
 	components: {
     DescriptionModal, 
     OpensFile,
@@ -216,6 +222,9 @@ export default {
       'breackFIlterMetal',
       'sortMatallZag'
     ]),
+    returnShipmentsKolvo(shipments, znach_return = 1) {
+      return returnShipmentsDate(shipments, znach_return)
+    },
     combackArchive() {
       if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w', this)
       this.fetchCombackMetallowork(this.selectMetalloworking.id).then(() => {
@@ -279,21 +288,12 @@ export default {
       this.key_operation_m = random(1, 999)
       this.show_operaiton_m = true
     },
-    returnShipmentsKolvo(shipments, znach_return = 1) {
-      if(!shipments || shipments.length == 0) return '-'
-      let end_date = shipments[0]?.date_shipments || '-'
-      if(znach_return == 2) end_date = shipments[0]?.number_order || '-'
-      for(let ship1 of shipments) {
-        for(let ship2 of shipments) {
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order
-        }
-      }
-      return end_date
-    },
-    returnShipmentsDateModal(shipments) {
-      if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this)
-      this.shipmentKey = random(1, 999)
-      this.shipments = shipments
+    returnShipmentsDateModal(izd) {
+      const shipments = izd.shipments;
+      if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this);
+      this.shipmentKey = random(1, 999);
+      this.izdForSchipment = {izd, type: 'detal'};
+      this.shipments = shipments;
     },
     filterOperation() {
       for(let metal of this.getMetaloworkings) {

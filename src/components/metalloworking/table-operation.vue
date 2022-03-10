@@ -5,6 +5,12 @@
 				<label for="sortZag">Сортировать по заготовки</label>
 				<input type="checkbox" id="sortZag" v-model='sortZag'>
 			</p>
+			<p class='p_select_header'>
+				<label for="statusOperation">Сортировать по Статусу</label>
+				<select id="" class='select-small' v-model='selectStatusOperation'>
+					<option v-for='stat of statusOperation' :key='stat'>{{ stat }}</option>
+				</select>
+			</p>
 		</div>
 
 		<div v-if='getMetaloworkings.length'>
@@ -14,7 +20,8 @@
 					<th>Артикул Детали</th>
 					<th>Наименование Детали</th>
 					<th>Кол-во, шт</th>
-					<th>Срок отгрузки изд.</th>
+					<th>Срок отгрузки</th>
+					<th>Дата готовности</th>
 					<th id='parent'>Принадлежность</th>
 					<th class='th_showZagParam' @click='showZagParam = !showZagParam'>
 						<p v-if='showZagParam' >Параметры Заготовки</p>
@@ -56,8 +63,11 @@
 						class='td-row' 
 						@click='openDetal(meatl.detal)'>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
 					<td class='center'>{{ meatl.kolvo_shipments }}</td>
+					<td class='center link_img'>
+						{{ returnDateShipments(meatl?.detal?.shipments) }}
+					</td> <!-- Дата готовности -->
 					<td class='center'>
-              <img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal.shipments)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal)' class='link_img' atl='Показать' />
             </td>
 					<td class='center' id='parent'>
 						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
@@ -67,20 +77,20 @@
 					</td>
 					<td v-else></td>
 					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
-					<td class='center hover work_operation'>
+					<td :class='statusBeforeOperation(meatl, showOperation(meatl,  "before")) ? "center hover success_operation" : "center hover work_operation"'>
 						<p class='last_column'>
 							<span>{{ showOperation(meatl,  "before") }}</span>
-							<span v-if='showOperation(meatl,  "before") != "Нет"'>Готово: {{ 0 }}</span>
+							<span v-if='showOperation(meatl,  "before") != "Нет"'>Готово: {{ beforeOperationCount(meatl) }}</span>
 						</p>
 					</td> <!-- Пред. операция --> 
-					<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) <= 0 ' class='success_operation center'>{{ 
+					<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) == 0' class='success_operation center'>{{ 
 						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
-					<td v-if='returnKolvoCreate(meatl) == 0' class='work_operation center'>{{ 
-						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
-					<td v-else class='process_operation center'>{{ 
+					<td v-else-if='returnKolvoCreate(meatl) > 0' class='process_operation center'>{{ 
+						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td><!-- Статус --> 
+					<td v-else class='work_operation center'>{{ 
 						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
 					<td class='center'>{{ returnKolvoCreate(meatl) }}</td> <!-- Сделано шт. --> 
-					<td class='center'>{{ returnFloor(meatl.kolvo_shipments - returnKolvoCreate(meatl)) }}</td>
+					<td class='center'>{{ returnFloor(meatl.kolvo_shipments - returnKolvoCreate(meatl)) }}</td> <!-- Осталось шт. -->
 					<td v-if='!showNormTime'></td>
 					<td class='center' v-if='showNormTime'>{{ getTime(meatl).pt }}</td>
 					<td class='center' v-if='showNormTime'>{{ getTime(meatl).ht }}</td>
@@ -140,6 +150,7 @@
       :shipments='shipments'
       v-if='shipments.length'
       :key='shipmentKey'
+			:izd='izdForSchipment'
     />
 		<ProductListModal
       v-if='productListForIzd'
@@ -159,26 +170,27 @@
 <script>
 import random from 'lodash';
 import print from 'print-js';
-import { showMessage } from '@/js/';
 import TbodyZag from './tablezag.vue';
-import { dateIncrementHors } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
+import { 	showMessage, dateIncrementHors } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import { 	afterAndBeforeOperation, 
 					OperationTime,
 					returnKolvoCreate,
-					workingForMarks } from '@/js/operation.js';
+					workingForMarks,
+					returnShipmentsDate } from '@/js/operation.js';
 import CreateMark from '@/components/sclad/mark-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
+
 export default {
 	props: ['type_operation_id', 'name_operaiton'],
 	data() {
 		return {
-			loader: false,
+			loader: true,
 
 			itemFiles: [],
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -202,10 +214,20 @@ export default {
 
 			sortZag: true,
 			showZagParam: false,
-			showNormTime: false
+			showNormTime: false,
+
+			izdForSchipment: null,
+			beforesOperations: [],
+
+			statusOperation: [
+				'Все', 'В работе', 'Выполняется', 'Готово'
+			],
+			selectStatusOperation: 'Все'
 		}
 	},
-	computed: mapGetters(['getMetaloworkings', 'getUsers']),
+	computed: {
+		...mapGetters(['getMetaloworkings', 'getUsers'])
+	},
 	components: {
 		OpensFile,
 		TbodyZag,
@@ -218,6 +240,9 @@ export default {
 	watch: {
 		sortZag: function(val) {
 			this.sortMatallZag(val);
+		},
+		selectStatusOperation: function(val) {
+			this.sortMaterialStatus(val);
 		}
 	},
 	methods: {
@@ -227,8 +252,9 @@ export default {
 			'getOneDetal',
 			'getAllUsers',
 			'fetchMetalloworkShapeBid',
+			'fetchMarksByOperation',
 		]),
-		...mapMutations(['sortMatallZag']),
+		...mapMutations(['sortMatallZag', 'sortMaterialStatus']),
 		unmount_marks(res) {
 			if(res == 'closed') return false
 			if(res) {
@@ -237,6 +263,9 @@ export default {
 			}	else 
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e', this)
 		},
+		returnDateShipments (shipments, znach_return = 1) {
+			return returnShipmentsDate(shipments, znach_return);
+    },
 		// Формируем заявку в архиве
 		shapeBid() {
 			const data = this.getMetaloworkings.map(el => { 
@@ -305,7 +334,9 @@ export default {
       return `${dat.day}.${dat.mount}.${dat.year}`
     },
 		returnStatus(kol, create) {
-			return kol - create <= 0 ? "Готово" : "В работе"
+			if(kol - create <= 0) return "Готово";
+			if(create) return "Выполняется";
+			else return "В работе";
 		},
 		workingForMarks(operation, marks) {
 			if(!operation) return showMessage('', 'Нет операций', 'w', this)
@@ -324,11 +355,14 @@ export default {
 		returnFloor(number) {
 			return number < 0 ? 0 : number
 		},
-		returnShipmentsKolvo(shipments) {
+		returnShipmentsKolvo(izd) {
+			const shipments = izd.shipments;
 			if(!shipments || shipments.length == 0) 
-				return showMessage('', 'Нет прикрепленных заказов', 'w', this)
-      this.shipmentKey = random(1, 999)
-      this.shipments = shipments
+				return showMessage('', 'Нет заказов', 'w', this);
+				
+      this.shipmentKey = random(1, 999);
+			this.izdForSchipment = {izd, type: 'detal'};
+      this.shipments = shipments;
     },
 		responsible(metal) {
 			if(!metal.marks || !metal.marks.length) return '-';
@@ -360,16 +394,50 @@ export default {
 		addMark(metal) {
 			this.mark_key = random(1, 999)
 			this.mark_data = metal
+		},
+		// return 1 из 13
+		beforeOperationCount(metal) {
+			const its = this.beforesOperations.filter(item => item.id == metal.id);
+			if(!its[0]) return false;
+
+			const str = `${its[0].beforeCreateCount} из ${metal.kolvo_shipments}`;
+			return str;
+		},
+		// return true || false
+		statusBeforeOperation(metal, before_name) {
+			const its = this.beforesOperations.filter(item => item.id == metal.id);
+			if(!its[0] || its[0].beforeName != before_name) return false;
+
+			if(its[0].beforeCreateCount >= metal.kolvo_shipments) return true;
+			return false;
 		}
 	},
 	async mounted() {
 		if(!this.$props.type_operation_id)
-			return this.$router.back()
+			return this.$router.back();
 
-		this.loader = true
-    await this.fetchAllMetalloworkingTypeOperation(this.$props.type_operation_id)
-		await this.getAllUsers(true)
-		this.loader = false
+		this.loader = true;
+    await this.fetchAllMetalloworkingTypeOperation(this.$props.type_operation_id);
+		await this.getAllUsers(true);
+
+		for(const item of this.getMetaloworkings) {
+			let newItem = { id: item.id, beforeCreateCount: 0, beforeName: '' };
+			const beforeOperation = afterAndBeforeOperation(
+				item.tech_process, item.operation_id, 'before');
+			if(!beforeOperation || !beforeOperation.id) continue;
+			// Получаем все марки для текузей операции
+			const marks = await this.fetchMarksByOperation(beforeOperation.id);
+
+			if(marks && marks.length) {
+				for(const mark of marks) {
+					newItem.beforeName = beforeOperation.full_name;
+					newItem.beforeCreateCount += Number(mark.kol);
+				}
+			}  
+
+			this.beforesOperations.push(newItem)
+		}
+		this.loader = false;
 	}
 }
 </script>
@@ -402,6 +470,14 @@ th {
 .last_column>span:first-child {
 	font-size: 14px;
 	font-weight: bold;
+}
+.p_select_header {
+	display: flex;
+	width: 400px;
+	align-items: center;
+}
+.p_select_header>select {
+	width: 100px;
 }
 
 </style>
