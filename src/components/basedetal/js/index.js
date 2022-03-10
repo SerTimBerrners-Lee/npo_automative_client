@@ -101,7 +101,7 @@ function returnZnach(string) {
 	try {
 		if(!string) return 0;
 		const result = JSON.parse(string);
-		return Number(result?.znach) || 0;
+		return Number(floatParse(result?.znach)) || 0;
 	} catch(err) {console.error(err)}
 }
 
