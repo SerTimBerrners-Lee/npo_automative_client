@@ -1,20 +1,27 @@
 <template>
-	<div class="table-scroll float_block">
+	<div>
+		<tr @click="show_is = !show_is"> 
+			<th colspan="3" class='hide_td'>
+				{{ show_is ? 'Скрыть' : 'Показать' }} Задачи на отгрузку</th>
+		</tr>
+		<div class="table-scroll float_block" v-if='show_is'>
 		<table class='float_block'>
-			<tr> 
-				<th><unicon name="check" fill="royalblue" /></th> 
-				<th>Заказ покупателя из задач на отгрузку</th>
-				<th>Дата отгрузки покупателю</th>
-			</tr>
-			<tr v-for='order of getShipments' :key='order'>
-				<td>
-					<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-						<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
-					</div>
-				</td>
-				<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
-				<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
-			</tr>
+			<tbody>
+				<tr> 
+					<th><unicon name="check" fill="royalblue" /></th> 
+					<th>Заказ покупателя из задач на отгрузку</th>
+					<th>Дата отгру	зки покупателю</th>
+				</tr>
+				<tr v-for='order of getShipments' :key='order'>
+					<td>
+						<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+							<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
+						</div>
+					</td>
+					<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
+					<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
+				</tr>
+			</tbody>
 		</table>
 		<div class="btn-control float_btn">
       <button class="btn-small botton" @click='clearFilter'>Сбросить все фильтры</button>
@@ -25,6 +32,7 @@
 			:id_shipments='ship_id'
 			@unmount_shpment='unmount_shpment'
 		/>
+	</div>
 	</div>
 </template>
 <script>
@@ -40,7 +48,9 @@ export default {
 			key_modal_shipments: random(1, 999),
 			ship_id: null,
 
-			varShipment: []
+			varShipment: [],
+
+			show_is: true,
 		}
 	},
 	components: {
@@ -105,5 +115,11 @@ export default {
 }
 .botton {
 	position: absolute;
+}
+.hide_td {
+	cursor: pointer;
+	font-size: 10px;
+	padding: 1px !important;
+	user-select: none;
 }
 </style>

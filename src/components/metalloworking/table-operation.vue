@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div> 
 		<div class="block header_block">
 			<p>
 				<label for="sortZag">Сортировать по заготовки</label>
@@ -11,6 +11,13 @@
 					<option v-for='stat of statusOperation' :key='stat'>{{ stat }}</option>
 				</select>
 			</p>
+		</div>
+
+		<div class='shipments_block'>
+			<ShipmentList
+			v-if='getShipments.length'
+			@unmount_set='toSetOrders'
+			:getShipments='getShipments'/>
 		</div>
 
 		<div v-if='getMetaloworkings.length'>
@@ -184,6 +191,7 @@ import OpensFile from '@/components/filebase/openfile.vue';
 import DetalModal from '@/components/basedetal/detal-modal.vue';
 import DescriptionModal from '@/components/description-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
+import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
 import ProductListModal from '@/components/baseproduct/product-list-modal.vue';
 
 export default {
@@ -226,7 +234,11 @@ export default {
 		}
 	},
 	computed: {
-		...mapGetters(['getMetaloworkings', 'getUsers'])
+		...mapGetters([
+			'getMetaloworkings',
+			'getUsers',
+			'getShipments',
+		])
 	},
 	components: {
 		OpensFile,
@@ -236,6 +248,7 @@ export default {
 		CreateMark,
 		ShipmentsModal,
 		ProductListModal,
+		ShipmentList
 	},
 	watch: {
 		sortZag: function(val) {
@@ -253,8 +266,13 @@ export default {
 			'getAllUsers',
 			'fetchMetalloworkShapeBid',
 			'fetchMarksByOperation',
+			'fetchAllShipmentsMetaloworking'
 		]),
-		...mapMutations(['sortMatallZag', 'sortMaterialStatus']),
+		...mapMutations([
+			'sortMatallZag',
+			'sortMaterialStatus',
+			'filterMetaloworkingByShipments'
+		]),
 		unmount_marks(res) {
 			if(res == 'closed') return false
 			if(res) {
@@ -265,6 +283,11 @@ export default {
 		},
 		returnDateShipments (shipments, znach_return = 1) {
 			return returnShipmentsDate(shipments, znach_return);
+    },
+		toSetOrders(shipments) {
+			console.log(shipments);
+      if(shipments.detals && shipments.detals.length)
+        this.filterMetaloworkingByShipments(shipments.detals)
     },
 		// Формируем заявку в архиве
 		shapeBid() {
@@ -419,6 +442,7 @@ export default {
 		this.loader = true;
     await this.fetchAllMetalloworkingTypeOperation(this.$props.type_operation_id);
 		await this.getAllUsers(true);
+		await this.fetchAllShipmentsMetaloworking({sort: undefined, light: true})
 
 		for(const item of this.getMetaloworkings) {
 			let newItem = { id: item.id, beforeCreateCount: 0, beforeName: '' };
@@ -479,5 +503,9 @@ th {
 .p_select_header>select {
 	width: 100px;
 }
-
+.shipments_block {
+	float: left;
+	width: min-content;
+	margin-right: 21px;
+}
 </style>

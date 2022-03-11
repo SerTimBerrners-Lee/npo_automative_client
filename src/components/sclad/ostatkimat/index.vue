@@ -556,4 +556,7 @@ table {
 	display: flex;
 	flex-direction: column;
 }
+.number_td {
+	width: 10px;
+}
 </style>

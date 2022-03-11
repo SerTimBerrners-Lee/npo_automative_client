@@ -137,7 +137,8 @@
 <script>
 import print from 'print-js';
 import {random} from 'lodash';
-import { showMessage, returnShipmentsDate } from '@/js/';
+import { showMessage } from '@/js/';
+import { returnShipmentsDate } from '@/js/operation';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
 import OpensFile from '@/components/filebase/openfile.vue';
 import TbodyZag from '@/components/metalloworking/tablezag.vue';
@@ -223,7 +224,7 @@ export default {
       'sortMatallZag'
     ]),
     returnShipmentsKolvo(shipments, znach_return = 1) {
-      return returnShipmentsDate(shipments, znach_return)
+      return returnShipmentsDate(shipments, znach_return);
     },
     combackArchive() {
       if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w', this)
@@ -238,7 +239,6 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
-      console.log(obj)
       if(this.span) this.span.classList.remove('td-row-all')
 
       this.span = e
