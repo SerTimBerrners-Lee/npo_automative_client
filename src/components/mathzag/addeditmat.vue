@@ -89,7 +89,7 @@
             </td>
           </tr>
           <tr>
-            <td @click='obj.thickness_permanent = ""'>Толщина </td>
+            <td @click='obj.thickness_permanent = ""'>Толщина (H) </td>
             <td>мм</td>
             <td class="input_znach">
               <p>

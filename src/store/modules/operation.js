@@ -2,12 +2,17 @@ import PATH_TO_SERVER from '@/js/path.js';
 
 export default {
   state: {
-    type_operations: []
+    type_operations: [],
+    operationNewList: localStorage.getItem('newOperationItem') ?
+      JSON.parse(localStorage.getItem('newOperationItem')) : [],
   },
   getters: { 
     getTypeOperations(state) {
       return state.type_operations
-    }
+    },
+    allOperationNewList(state) {
+      return state.operationNewList
+    },
   }, 
   actions: {
     async createTypeOperation(ctx, data) {   // +
@@ -118,6 +123,39 @@ export default {
     banOperationMuttation(state, id) {
       state.operationNewList = state.operationNewList.filter(op => op.id != id)
       localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
-    }
+    },
+    allOperationMutations(state, data) {
+      state.operationNewList = data
+      localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
+    },
+    /**
+     * parametrs.inx: number;
+     * parametrs.positionTo: "top" || "bottom"
+     */
+    movingOperation(state, parametrs) {
+      let variable = state.operationNewList[parametrs.inx]
+      if(!variable) return false
+      if(parametrs.positionTo == 'top' && state.operationNewList[parametrs.inx - 1]) {
+        state.operationNewList[parametrs.inx] = state.operationNewList[parametrs.inx - 1]
+        state.operationNewList[parametrs.inx - 1] = variable
+      }
+      if(parametrs.positionTo == 'bottom' && state.operationNewList[parametrs.inx + 1]){
+        state.operationNewList[parametrs.inx] = state.operationNewList[parametrs.inx + 1]
+        state.operationNewList[parametrs.inx + 1] = variable
+      }
+      localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
+    },
+    updateOperationToList(state, operation) {
+      for(let inx = 0; inx < state.operationNewList.length; inx++) {
+        if(state.operationNewList[inx].id == operation.id) {
+          state.operationNewList[inx] = operation
+        }
+      }
+      localStorage.setItem('newOperationItem', JSON.stringify(state.operationNewList))
+    },
+    removeOperationStorage(state) {
+      state.operationNewList = []
+      localStorage.setItem('newOperationItem', state.operationNewList )
+    },
   }
 }

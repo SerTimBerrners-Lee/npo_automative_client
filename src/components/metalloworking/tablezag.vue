@@ -26,7 +26,7 @@
       <td>{{ detal?.diametr }}</td>
     </tr>
     <tr v-if='detal?.thickness'>
-      <td>s</td>
+      <td>H</td>
       <td>мм</td>
       <td>{{ detal?.thickness }}</td>
     </tr>
