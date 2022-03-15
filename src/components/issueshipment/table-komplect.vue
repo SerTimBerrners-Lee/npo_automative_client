@@ -37,7 +37,7 @@
 				</td>
 				<td class='center'>{{ shipments.kol }}</td>
 				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td>
-				<td class='center'>{{ shipments.difference}}</td>
+				<td class='center'>{{ shipments.difference }}</td>
 				<td style='width:50px; word-break: break-all;' class='center active'  
 					@click='openDocuments(shipments)' >
 					{{ shipments.base }}
@@ -93,7 +93,7 @@ import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
-import { mapMutations, mapGetters } from 'vuex';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 import KomplectModal from './komplect-modal.vue';
 import ShipmentsModal from './shipments-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
@@ -142,6 +142,7 @@ export default {
 	},
 	computed: mapGetters(['getShipments']),
 	methods: {
+		...mapActions(['fetchDocumentsShipments']),
 		...mapMutations(['setOneShipment', 'pusshAddShipments']),
 		unmount_shpment() {
 			this.pusshAddShipments(this.arrShipmentsState)
@@ -182,15 +183,19 @@ export default {
 			this.komplect_generate_key = random(1, 999)
 			this.parametrs_komplect = komplect
 		},	
-		openDocuments(shipments) {	
-			if(shipments.documents && shipments.documents.length) {
-				for(let doc of shipments.documents) {
+		async openDocuments(shipments) {	
+			if(!shipments.id) return showMessage('', 'Документов нет', 'w', this);
+			const ships = await this.fetchDocumentsShipments(shipments.id);
+			console.log(ships);
+
+			if(ships.documents && ships.documents.length) {
+				for(let doc of ships.documents) {
 					if(doc.name == shipments.base) {
-						this.keyWhenModalGenerateFileOpen = random(1, 999)
-						this.itemFiles = [doc]
+						this.keyWhenModalGenerateFileOpen = random(1, 999);
+						this.itemFiles = [doc];
 					}
 				}
-			} else showMessage('', 'Документов нет', 'w', this)
+			} else showMessage('', 'Документов нет', 'w', this);
     },
 	},
 }

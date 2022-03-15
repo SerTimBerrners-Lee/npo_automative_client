@@ -99,6 +99,12 @@ export default {
 				ctx.commit('deletToListShipments', id)
 				return true
 			}
+		},	
+		async fetchDocumentsShipments(ctx, id) {
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/documents/${id}`);
+			if(!res.ok) return false;
+			const result = await res.json();
+			return result;
 		}
 	},
 	mutations: {

@@ -4,6 +4,7 @@
 			v-if='getShipments.length && Number(this.$route.params.parent)'
 			:shipmentsArr='getShipments'
 			@unmount='unmount_table_shipments'/>
+
 		<h3>Создать заказ</h3>
 		<div class="block">
 			<p class='p_flex'>
@@ -33,9 +34,11 @@
 				/>
 				<label for='bran'>Бронь:</label>
 				<input id='bran' type="checkbox" v-model='bron'>
+
 				<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
 				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)">
 				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
+				
 				<span
 					class='hover'
 					@click='selectBuyer'>Покупатель:</span>
@@ -53,6 +56,7 @@
 				</span>
 			</p>
 		</div>
+
 		<div class='table_block'>
 			<div>
 				<h3>Комплектация изделия</h3>
@@ -111,6 +115,7 @@
 				</div>
 			</div>
 		</div>
+
 		<div class="btn-control out-btn-control">
 			<button 
 				class="btn-status" 
@@ -309,11 +314,12 @@ export default {
 			} catch(e) {console.error(e)}
 		},
 		file_unmount(e) {
-			if(!e) return 0
-			this.formData = e.formData
+			if(!e) return 0;
+			this.formData = e.formData;
+
 			for(let doc of e.formData.getAll('document')) {
-				this.docFiles.push(doc)
-				this.documents.push(doc)
+				this.docFiles.push(doc);
+				this.documents.push(doc);
 			}
 		},
 		unmount_filemodal(res) {
@@ -347,15 +353,18 @@ export default {
 		},
 		addDock(val, base = false) {
 			if(base && this.base) {
-				this.docFiles = this.docFiles.filter(doc => doc.name != this.base.name)
-				this.documents = this.documents.filter(doc => doc.name != this.base.name)
+				this.docFiles = this.docFiles
+					.filter(doc => doc.name != this.base.name);
+				this.documents = this.documents
+					.filter(doc => doc.name != this.base.name);
 			}
+
       val.files.forEach(f => {
         this.docFiles.push(f)
 				this.documents.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 999)
-      this.isChangeFolderFile = true
+      });
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
 		addCbEdDetal() {
 			this.showModalDetalCb = true;
