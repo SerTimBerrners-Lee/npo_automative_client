@@ -347,9 +347,6 @@ export default {
     TableSpetification,
     TableDocument,
     NodeParent
-    },
-  unmounted() {
-    this.deleteStorageData()
   },
   methods: {
     ...mapActions([
@@ -458,10 +455,6 @@ export default {
         this.delitPathNavigate(this.$route.path)
       }, 3000)
     },
-    deleteStorageData() {
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
-    },
     changeSelected() {
       switch (this.select_model) {
         case '2':
@@ -530,13 +523,12 @@ export default {
       }
     },
     showTechProcess() {
-      this.techProcessIsShow = true
-      this.techProcessKey = random(1, 999)
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
     },
     exit(){
-      this.$router.back()
-      this.deleteStorageData()
-      this.delitPathNavigate(this.$route.path)
+      this.$router.back();
+      this.delitPathNavigate(this.$route.path);
     },
     updateForEdit() {
       this.attention = this.getOneSelectCbEd.attention

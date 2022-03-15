@@ -209,9 +209,6 @@ export default {
       loader: false
     }
   },
-  unmounted() {
-    this.deleteStorageData() 
-  },
   watch: {
     'obj.articl': function (val, last_val) {
       if(!last_val) return false;
@@ -225,7 +222,7 @@ export default {
   components: {ModalBaseMaterial, TechProcess, BaseFileModal, HaracteristicZag},
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers', 'getAllDetalsArticl']),
-    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    ...mapMutations(['delitPathNavigate']),
     unmount_filemodal(res) {
       if(res) 
         this.documentsData = res
@@ -342,7 +339,6 @@ export default {
           })
       }
       
-      this.deleteStorageData()
       setTimeout(() =>  {
         this.$router.push('/basedetals')
         this.delitPathNavigate(this.$route.path)
@@ -359,12 +355,7 @@ export default {
     },
     exit(){
       this.$router.push("/basedetals")
-      this.deleteStorageData()
       this.delitPathNavigate(this.$route.path)
-    },
-    deleteStorageData() {
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
     },
     addFileModal() {
       this.fileModalKey = random(1, 999)

@@ -277,9 +277,6 @@ export default {
       loader: false
     }
   },
-  unmounted() {
-    this.deleteStorageData()
-  },
   watch: {
     'obj.articl': function (val, last_val) {
       if(!last_val) return false;
@@ -300,7 +297,7 @@ export default {
   },
   methods: {
     ...mapActions(['createNewProduct', 'getAllUsers', 'getAllArticlProduct']),
-    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    ...mapMutations(['delitPathNavigate']),
     unmount_tech_process(tp) {
       if(tp.id) {
         this.techProcessID = tp.id
@@ -388,7 +385,6 @@ export default {
 
       this.createNewProduct(this.formData)
 
-      this.deleteStorageData()
       setTimeout(() =>  {
         this.$router.back()
         this.delitPathNavigate(this.$route.path)
@@ -465,16 +461,11 @@ export default {
     },
 
     exit(){
-      this.$router.back()
-      this.deleteStorageData()
-      this.delitPathNavigate(this.$route.path)
+      this.$router.back();
+      this.delitPathNavigate(this.$route.path);
     },
     responsCbed(res) {
-      this.listCbed = res
-    },
-    deleteStorageData() {
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
+      this.listCbed = res;
     },
     addFileModal() {
       this.fileModalKey = random(1, 999)

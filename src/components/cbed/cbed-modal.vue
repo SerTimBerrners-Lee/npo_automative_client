@@ -86,7 +86,7 @@
 <script>
 import {isEmpty, random} from 'lodash';
 import TableSpetification from './table-sptification.vue';
-import {mapGetters, mapMutations, mapActions } from 'vuex';
+import {mapGetters, mapActions } from 'vuex';
 import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
@@ -116,8 +116,7 @@ export default {
       type_open_techprocess: 'edit',
     }
   },
-  computed: mapGetters([ 
-    'getOneSelectDetal']),
+  computed: mapGetters(['getOneSelectDetal']),
   components: {
     MediaSlider, 
     TechProcess, 
@@ -129,12 +128,10 @@ export default {
     ...mapActions([
       'getOneCbEdById'
     ]),
-    ...mapMutations(['removeOperationStorage']),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-      this.removeOperationStorage()
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     unmount_tech_process(tp) {
       this.type_open_techprocess = null;

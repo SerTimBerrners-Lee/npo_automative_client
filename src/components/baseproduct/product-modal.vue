@@ -89,7 +89,7 @@
 </template>
 <script>
 import {random, isEmpty} from 'lodash';
-import {mapGetters, mapMutations, mapActions } from 'vuex';
+import {mapGetters, mapActions } from 'vuex';
 import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
@@ -132,12 +132,10 @@ export default {
   },
   methods: {
     ...mapActions(['getAllProductById']),
-    ...mapMutations(['removeOperationStorage']),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-      this.removeOperationStorage()
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     unmount_tech_process(tp) {
       this.type_open_techprocess = null;

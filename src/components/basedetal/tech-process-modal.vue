@@ -219,9 +219,11 @@ export default {
   components: {AddFile, AddOperation, MediaSlider, OpensFile},
   methods: {
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
+
+      this.deleteStorage();
     },
     ...mapActions([
       'updateOperationTech', 
@@ -304,6 +306,7 @@ export default {
         operationList.push({  id: this.allOperationNewList[tp].id })
       }
       this.formData.append("operationList", JSON.stringify(operationList));
+      console.log('Операции перед сохранением ', operationList);
       this.formData.append("description", this.description);
 
       if(this.$props.techProcessID)
@@ -316,8 +319,12 @@ export default {
 
       this.createTechProcess(this.formData).then((res) => {
         this.$emit('unmount', { id: res.id, opers: this.allOperationNewList});
-        this.destroyModalF() 
+        this.destroyModalF();
       })
+    },
+    deleteStorage() {
+      localStorage.removeItem("tpID");
+      this.removeOperationStorage();
     },
     setDocs(dc) {
       this.itemFiles = dc
@@ -364,26 +371,28 @@ export default {
         if(!res) return 0
         if(res.operations) 
           this.allOperationMutations(res.operations)
-        this.description = res.description
+        this.description = res.description;
 
-        let document_izd = []
-        if(res.detal && res.detal.documents) document_izd = res.detal.documents
-        if(res.product && res.product.documents) document_izd = res.product.documents
-        if(res.cbed && res.cbed.documents) document_izd = res.cbed.documents
-        this.documentsData = res.documents
+        console.log('all operations: ', res.operations)
+
+        let document_izd = [];
+        if(res.detal && res.detal.documents) document_izd = res.detal.documents;
+        if(res.product && res.product.documents) document_izd = res.product.documents;
+        if(res.cbed && res.cbed.documents) document_izd = res.cbed.documents;
+        this.documentsData = res.documents;
 
         for(let doc of document_izd) {
           photoPreloadUrl({name: doc.path}, respons => {
-            if(respons.type == 'img') this.documentsData.push(doc)
-          }, true)
+            if(respons.type == 'img') this.documentsData.push(doc);
+          }, true);
         }
 
         this.documentsData.forEach(d => {
-          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned})
-        })
-        this.randomDataMedia = random(10, 999)
+          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned});
+        });
+        this.randomDataMedia = random(10, 999);
       }).catch(() => {
-        this.removeOperationStorage()
+        this.removeOperationStorage();
       })
     } 
   }

@@ -13,116 +13,118 @@
 			</p>
 		</div>
 
-		<div class='shipments_block'>
-			<ShipmentList
-			v-if='getShipments.length'
-			@unmount_set='toSetOrders'
-			:getShipments='getShipments'/>
-		</div>
+		<div class='body_container'>
+			<div class='shipments_block'>
+				<ShipmentList
+				v-if='getShipments.length'
+				@unmount_set='toSetOrders'
+				:getShipments='getShipments'/>
+			</div>
 
-		<div v-if='getMetaloworkings.length'>
-			<table id='tablebody'>
-				<tr>
-					<th>№</th>
-					<th>Артикул Детали</th>
-					<th>Наименование Детали</th>
-					<th>Кол-во, шт</th>
-					<th>Срок отгрузки</th>
-					<th>Дата готовности</th>
-					<th id='parent'>Принадлежность</th>
-					<th class='th_showZagParam' @click='showZagParam = !showZagParam'>
-						<p v-if='showZagParam' >Параметры Заготовки</p>
-						<p v-else class='showZagParam tooltip'>>
-							<span class='tooltiptext'>Показать параметры Заготовки</span>
-						</p>
-					</th>
-					<th>Заготовка</th>
-					<th class='work_operation'>Предыдущая операция</th>
-					<th>Статус</th>
-					<th>Сделано, шт</th>
-					<th>Осталось, шт</th>
+			<div v-if='getMetaloworkings.length'>
+				<table id='tablebody'>
+					<tr>
+						<th>№</th>
+						<th>Артикул Детали</th>
+						<th>Наименование Детали</th>
+						<th>Кол-во, шт</th>
+						<th>Срок отгрузки</th>
+						<th>Дата готовности</th>
+						<th id='parent'>Принадлежность</th>
+						<th class='th_showZagParam' @click='showZagParam = !showZagParam'>
+							<p v-if='showZagParam' >Параметры Заготовки</p>
+							<p v-else class='showZagParam tooltip'>>
+								<span class='tooltiptext'>Показать параметры Заготовки</span>
+							</p>
+						</th>
+						<th>Заготовка</th>
+						<th class='work_operation'>Предыдущая операция</th>
+						<th>Статус</th>
+						<th>Сделано, шт</th>
+						<th>Осталось, шт</th>
 
-					<th class='th_showZagParam' @click='showNormTime = !showNormTime'>
-						<p v-if='!showNormTime' class='showZagParam tooltip'>>
-							<span class='tooltiptext'>Показать Норма времени</span>
-						</p>
-					</th>
+						<th class='th_showZagParam' @click='showNormTime = !showNormTime'>
+							<p v-if='!showNormTime' class='showZagParam tooltip'>>
+								<span class='tooltiptext'>Показать Норма времени</span>
+							</p>
+						</th>
 
-					<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (подготовительное), шт</th>
-					<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (вспомогательное), шт</th>
-					<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (основное), шт</th>
-					<th>Норма времени (общее на парт.), ч</th>
-					<th>Дата исполнения</th>
-					<th>Исполнитель</th>
-					<th>Отработано, н. ч.</th>
-					<th class='success_operation'>Следующая операция</th>
-					<th id='doc'>Документы</th>
-					<th id='discription'>Примечание</th>
-					<th id='mark'>Отметка</th>
-				</tr>
-				<tr 
-					v-for='(meatl, inx) of getMetaloworkings'
-					:key='meatl'
-					>
-					<td class='center'>{{ inx + 1 }}</td>
-					<td>{{ meatl.detal ? meatl.detal.articl : 'Нет детали'}}</td>
-					<td
-						class='td-row' 
-						@click='openDetal(meatl.detal)'>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
-					<td class='center'>{{ meatl.kolvo_shipments }}</td>
-					<td class='center link_img'>
-						{{ returnDateShipments(meatl?.detal?.shipments) }}
-					</td> <!-- Дата готовности -->
-					<td class='center'>
-              <img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal)' class='link_img' atl='Показать' />
-            </td>
-					<td class='center' id='parent'>
-						<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
-					</td> <!-- Принадлежность --> 
-					<td class='params_td' v-if='showZagParam'>
-						<TbodyZag :detal='meatl.detal' />
-					</td>
-					<td v-else></td>
-					<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
-					<td :class='statusBeforeOperation(meatl, showOperation(meatl,  "before")) ? "center hover success_operation" : "center hover work_operation"'>
-						<p class='last_column'>
-							<span>{{ showOperation(meatl,  "before") }}</span>
-							<span v-if='showOperation(meatl,  "before") != "Нет"'>Готово: {{ beforeOperationCount(meatl) }}</span>
-						</p>
-					</td> <!-- Пред. операция --> 
-					<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) == 0' class='success_operation center'>{{ 
-						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
-					<td v-else-if='returnKolvoCreate(meatl) > 0' class='process_operation center'>{{ 
-						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td><!-- Статус --> 
-					<td v-else class='work_operation center'>{{ 
-						returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
-					<td class='center'>{{ returnKolvoCreate(meatl) }}</td> <!-- Сделано шт. --> 
-					<td class='center'>{{ returnFloor(meatl.kolvo_shipments - returnKolvoCreate(meatl)) }}</td> <!-- Осталось шт. -->
-					<td v-if='!showNormTime'></td>
-					<td class='center' v-if='showNormTime'>{{ getTime(meatl).pt }}</td>
-					<td class='center' v-if='showNormTime'>{{ getTime(meatl).ht }}</td>
-					<td class='center' v-if='showNormTime'>{{ getTime(meatl).mt }}</td>
-					<td class='center'>{{ manyIzdTime(meatl, meatl.kolvo_shipments)	}}</td>
-					<td class='center'>{{ returnDateExist(meatl) }}</td> <!-- Дата исполнения --> 
-					<td class='center'>{{ responsible(meatl) }}</td> <!-- Исполнитель --> 
-					<td class='center'> {{ workingForMarks(meatl, meatl.marks) }} </td>
-					<td class='center hover success_operation'>{{ showOperation(meatl,  "after") }}</td>
-					<td class='center' id='doc'>
-						<img src="@/assets/img/link.jpg" @click='openDocuments(meatl.operation_id)' class='link_img' atl='Показать' />
-					</td>
-					<td class='center' id='discription'>
-						<img src="@/assets/img/link.jpg" @click='openDescription(meatl.description)' class='link_img' atl='Показать' />
-					</td>
-					<td class='center hover' @click='addMark(meatl)' id='mark'>
-						<unicon name="pen" fill="black" width='20' />
-					</td>
-				</tr>
-			</table>
+						<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (подготовительное), шт</th>
+						<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (вспомогательное), шт</th>
+						<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (основное), шт</th>
+						<th>Норма времени (общее на парт.), ч</th>
+						<th>Дата исполнения</th>
+						<th>Исполнитель</th>
+						<th>Отработано, н. ч.</th>
+						<th class='success_operation'>Следующая операция</th>
+						<th id='doc'>Документы</th>
+						<th id='discription'>Примечание</th>
+						<th id='mark'>Отметка</th>
+					</tr>
+					<tr 
+						v-for='(meatl, inx) of getMetaloworkings'
+						:key='meatl'
+						>
+						<td class='center'>{{ inx + 1 }}</td>
+						<td>{{ meatl.detal ? meatl.detal.articl : 'Нет детали'}}</td>
+						<td
+							class='td-row' 
+							@click='openDetal(meatl.detal)'>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
+						<td class='center'>{{ meatl.kolvo_shipments }}</td>
+						<td class='center link_img'>
+							{{ returnDateShipments(meatl?.detal?.shipments) }}
+						</td> <!-- Дата готовности -->
+						<td class='center'>
+								<img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal)' class='link_img' atl='Показать' />
+							</td>
+						<td class='center' id='parent'>
+							<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
+						</td> <!-- Принадлежность --> 
+						<td class='params_td' v-if='showZagParam'>
+							<TbodyZag :detal='meatl.detal' />
+						</td>
+						<td v-else></td>
+						<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
+						<td :class='statusBeforeOperation(meatl, showOperation(meatl,  "before")) ? "center hover success_operation" : "center hover work_operation"'>
+							<p class='last_column'>
+								<span>{{ showOperation(meatl,  "before") }}</span>
+								<span v-if='showOperation(meatl,  "before") != "Нет"'>Готово: {{ beforeOperationCount(meatl) }}</span>
+							</p>
+						</td> <!-- Пред. операция --> 
+						<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) == 0' class='success_operation center'>{{ 
+							returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
+						<td v-else-if='returnKolvoCreate(meatl) > 0' class='process_operation center'>{{ 
+							returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td><!-- Статус --> 
+						<td v-else class='work_operation center'>{{ 
+							returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
+						<td class='center'>{{ returnKolvoCreate(meatl) }}</td> <!-- Сделано шт. --> 
+						<td class='center'>{{ returnFloor(meatl.kolvo_shipments - returnKolvoCreate(meatl)) }}</td> <!-- Осталось шт. -->
+						<td v-if='!showNormTime'></td>
+						<td class='center' v-if='showNormTime'>{{ getTime(meatl).pt }}</td>
+						<td class='center' v-if='showNormTime'>{{ getTime(meatl).ht }}</td>
+						<td class='center' v-if='showNormTime'>{{ getTime(meatl).mt }}</td>
+						<td class='center'>{{ manyIzdTime(meatl, meatl.kolvo_shipments)	}}</td>
+						<td class='center'>{{ returnDateExist(meatl) }}</td> <!-- Дата исполнения --> 
+						<td class='center'>{{ responsible(meatl) }}</td> <!-- Исполнитель --> 
+						<td class='center'> {{ workingForMarks(meatl, meatl.marks) }} </td>
+						<td class='center hover success_operation'>{{ showOperation(meatl,  "after") }}</td>
+						<td class='center' id='doc'>
+							<img src="@/assets/img/link.jpg" @click='openDocuments(meatl.operation_id)' class='link_img' atl='Показать' />
+						</td>
+						<td class='center' id='discription'>
+							<img src="@/assets/img/link.jpg" @click='openDescription(meatl.description)' class='link_img' atl='Показать' />
+						</td>
+						<td class='center hover' @click='addMark(meatl)' id='mark'>
+							<unicon name="pen" fill="black" width='20' />
+						</td>
+					</tr>
+				</table>
 
-			<div class="btn-control">
-				<button class="btn-small" @click='shapeBid'>Сформировать заявку</button>
-				<button class="btn-small" @click='printPage'>Печать</button>
-				<button class="btn-small" @click='printPage'>Печать</button>
+				<div class="btn-control">
+					<button class="btn-small" @click='shapeBid'>Сформировать заявку</button>
+					<button class="btn-small" @click='printPage'>Печать</button>
+					<button class="btn-small" @click='printPage'>Печать</button>
+				</div>
 			</div>
 		</div>
 
@@ -504,8 +506,10 @@ th {
 	width: 100px;
 }
 .shipments_block {
-	float: left;
 	width: min-content;
 	margin-right: 21px;
+}
+.body_container {
+	display: flex;
 }
 </style>

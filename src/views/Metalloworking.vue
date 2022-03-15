@@ -78,7 +78,7 @@
               <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
             </td>
             <td class='hover center'>{{ showAllTimers(metalowork) }}</td>
-            <td class='center'>{{metalowork.detal ? metalowork.detal.trash : 'Нет детали'}}</td>
+            <td class='center'>{{metalowork.detal?.trash ? Number(metalowork.detal.trash)?.toFixed(3) : 'Нет детали'}}</td>
             <td class='center' id='discription'>
               <img src="@/assets/img/link.jpg" @click='openDescription(metalowork.description)' class='link_img' atl='Показать' />
             </td>

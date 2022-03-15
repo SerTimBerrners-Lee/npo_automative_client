@@ -75,7 +75,7 @@
 			</tr>
 			<tr v-if='obj.lengt != null && obj.lengt !== ""'>
 				<td>Длина</td>
-				<td class='center'>м</td>
+				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
 						@change='e => editHarZag(e.target.value, "lengt")'

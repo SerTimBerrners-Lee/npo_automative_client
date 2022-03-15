@@ -257,9 +257,6 @@ export default {
       show_harater_zag: false
     }
   },
-  unmounted() {
-    this.deleteStorageData()
-  },
   watch: {
     'obj.articl': function (val, last_val) {
       if(!last_val) return false;
@@ -291,10 +288,10 @@ export default {
       'createNewDetal',
       'fetchAddFilesForDetal',
       'getAllDetalsArticl']),
-    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    ...mapMutations(['delitPathNavigate']),
     unmount_filemodal(res) {
       if(res) 
-        this.documentsData = res
+        this.documentsData = res;
     },
     unmount_har_zam(obj) {
       this.obj.DxL = obj.DxL
@@ -428,9 +425,8 @@ export default {
       this.clearData()
     },
     clearData() {
-      setTimeout(() =>  this.$router.push('/basedetals'), 3000)
-      this.deleteStorageData() 
-      this.delitPathNavigate(this.$route.path)
+      setTimeout(() =>  this.$router.push('/basedetals'), 3000);
+      this.delitPathNavigate(this.$route.path);
     },
     addPokMat() {
       this.modalMaterialKey = random(10, 999)
@@ -441,19 +437,14 @@ export default {
       this.techProcessKey = random(1, 999)
     },
     exit(){
-      this.$router.push("/basedetals")
-      this.deleteStorageData()
-      this.delitPathNavigate(this.$route.path)
+      this.$router.push("/basedetals");
+      this.delitPathNavigate(this.$route.path);
     },
     historyAction() {
       if(!this.actions.length)
         return
       this.hAactionKey = random(1, 888)
       this.showHAction = true
-    },
-    deleteStorageData(){
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
     },
     addFileModal() {
       this.fileModalKey = random(1, 999)

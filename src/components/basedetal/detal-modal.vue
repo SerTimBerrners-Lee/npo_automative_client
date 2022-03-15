@@ -34,8 +34,8 @@
             <span style='font-weight: bold;'>{{ getOneSelectDetal.massZag }}</span>
           </p>
           <p>
-            <span>Размеры заготовки DxL(мм):</span>
-            <span style='font-weight: bold;'>{{ getOneSelectDetal.DxL }}</span>
+            <span>Характеристики заготовки:</span>
+            <TableZag :detal='getOneSelectDetal' />
           </p>
           <p>
             <span>Норма времени изготовления общая(н.ч.):</span>
@@ -79,6 +79,7 @@ import TechProcess from './tech-process-modal.vue';
 import {mapGetters, mapMutations, mapActions } from 'vuex';
 import NodeParent from '@/components/mathzag/table-node.vue';
 import MediaSlider from '@/components/filebase/media-slider.vue';
+import TableZag from '@/components/metalloworking/tablezag.vue';
 import TableDocument from '@/components/filebase/table-document.vue';
 export default {
   props: ['id'],
@@ -115,16 +116,16 @@ export default {
     TableDocument, 
     MediaSlider, 
     TechProcess,
-    NodeParent
+    NodeParent,
+    TableZag
   },
   methods: { 
     ...mapActions(['getOneDetal']),
-    ...mapMutations(['removeOperationStorage', 'addOneSelectDetal']),
+    ...mapMutations(['addOneSelectDetal']),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
       this.destroyModalRight = 'content-modal-right-menu-hidden'
       this.hiddens = 'display: none;'
-      this.removeOperationStorage()
     },
     createTechProcess() {
       this.techProcessIsShow = true;

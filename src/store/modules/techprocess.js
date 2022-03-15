@@ -1,10 +1,6 @@
 
 import PATH_TO_SERVER from '@/js/path.js';
 export default { 
-  state: {
-  },
-  getters: {
-  },
   actions: {
     async createTechProcess(ctx, data) {
       if(!ctx.getters.getAuth)
@@ -16,7 +12,7 @@ export default {
       });
 
       if(!res.ok) return false;
-      const result = await res.json()
+      const result = await res.json();
       return result 
     },
     async fetchTechProcess(ctx, id) {
@@ -33,6 +29,4 @@ export default {
       return await res.json()
     }
   },
-  mutations: {
-  }
 }

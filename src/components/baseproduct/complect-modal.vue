@@ -67,8 +67,8 @@
                   class='td-row'
                   @click='openMaterial(mat.obj.id)'>
                   <td>{{ mat.obj?.name }}</td>
-                  <td class="center">{{ mat?.obj?.MASS.toFixed(3) }}</td>
-                  <td class="center">{{ mat?.obj?.LEN.toFixed(3) }}</td>
+                  <td class="center">{{ mat?.obj?.MASS?.toFixed(3) }}</td>
+                  <td class="center">{{ mat?.obj?.LEN?.toFixed(3) }}</td>
                 </tr>
               </tbody>
             </table>

@@ -353,7 +353,7 @@ export default {
       'updateProduct', 
       'getAllArticlProduct'
     ]),
-    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    ...mapMutations(['delitPathNavigate']),
      unmount_tech_process(tp) {
       if(tp.id) {
         this.techProcessID = tp.id
@@ -446,7 +446,6 @@ export default {
         this.createNewProduct(this.formData)
       }
 
-      this.deleteStorageData()
       setTimeout(() =>  {
         this.$router.back()
         this.delitPathNavigate(this.$route.path)
@@ -524,9 +523,8 @@ export default {
     },
 
     exit(){
-      this.$router.back()
-      this.deleteStorageData()
-      this.delitPathNavigate(this.$route.path)
+      this.$router.back();
+      this.delitPathNavigate(this.$route.path);
     },
     responsCbed(res) {
       this.listCbed = res 
@@ -556,10 +554,6 @@ export default {
 
         this.id = this.getOneSelectProduct.id
       }
-    },
-    deleteStorageData() {
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
     },
     addFileModal() {
       this.fileModalKey = random(1, 999)

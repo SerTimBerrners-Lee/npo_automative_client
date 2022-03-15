@@ -33,7 +33,7 @@
     <tr v-if='detal?.areaCS'>
       <td>S</td>
       <td>м.кв</td>
-      <td>{{ detal?.areaCS }}</td>
+      <td>{{ Number(detal?.areaCS)?.toFixed(3) }}</td>
     </tr>
   </tbody>
   <p v-else class='center'>-</p>
@@ -47,13 +47,9 @@ export default {
       type: Object
     }
   },
-  data() {
-    return {
-
-    }
-  },
   methods: {
     searchParams(det) {
+      console.log(det);
 			if(!det) return false;
 
 			if(!det?.lengt && !det?.width && 

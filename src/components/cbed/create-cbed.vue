@@ -284,9 +284,6 @@ export default {
     BaseFileModal, 
     TableSpetification
   },
-  unmounted() {
-    this.deleteStorageData()
-  },
   watch: {
     'obj.articl': function (val, last_val) {
       if(!last_val) return false;
@@ -298,7 +295,7 @@ export default {
   },
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers', 'createNewCbEd', 'getAllCbedArticl']),
-    ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
+    ...mapMutations(['delitPathNavigate']),
     unmount_articl(articl) {
       this.obj.articl = articl
     },
@@ -388,15 +385,10 @@ export default {
       showMessage('', 'Сборочная единица усешно создана. Перенаправление на главную страницу...', 's', this)
 
       this.createNewCbEd(this.formData)
-      this.deleteStorageData()
       setTimeout(() =>  {
         this.$router.back()
         this.delitPathNavigate(this.$route.path)
       }, 3000)
-    },
-    deleteStorageData() {
-      localStorage.removeItem("tpID")
-      this.removeOperationStorage()
     },
     changeSelected() {
       switch (this.select_model) {
@@ -470,7 +462,6 @@ export default {
     },
     exit(){
       this.$router.back()
-      this.deleteStorageData()
       this.delitPathNavigate(this.$route.path)
     },
     addFileModal() {
