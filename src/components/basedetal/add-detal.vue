@@ -228,21 +228,21 @@ export default {
         this.documentsData = res
     },
     unmount_har_zam(obj) {
-      this.obj.DxL = obj.DxL
-      this.obj.diametr = obj.diametr
-      this.obj.lengt = obj.lengt
-      this.obj.height = obj.height
-      this.obj.thickness = obj.thickness
-      this.obj.wallThickness = obj.wallThickness
-      this.obj.width = obj.width
-      this.obj.areaCS = obj.areaCS
+      this.obj.DxL = obj.DxL;
+      this.obj.diametr = obj.diametr;
+      this.obj.lengt = obj.lengt;
+      this.obj.height = obj.height;
+      this.obj.thickness = obj.thickness;
+      this.obj.wallThickness = obj.wallThickness;
+      this.obj.width = obj.width;
+      this.obj.areaCS = obj.areaCS;
       
-      this.obj.massZag = obj.massZag
-      this.obj.trash = obj.trash
-      this.obj.haracteriatic = obj.haracteriatic
-      this.obj.variables_znach = obj.variables_znach
-      this.mat_zag = obj.mat_zag
-      this.mat_zag_zam = obj.mat_zag_zam
+      this.obj.massZag = obj.massZag;
+      this.obj.trash = obj.trash;
+      this.obj.haracteriatic = obj.haracteriatic;
+      this.obj.variables_znach = obj.variables_znach;
+      this.mat_zag = obj.mat_zag;
+      this.mat_zag_zam = obj.mat_zag_zam;
     },
     unmount_tech_process(tp) {
       if(tp.id) {

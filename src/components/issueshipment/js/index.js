@@ -5,51 +5,56 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 	if(!ctx) return false
 
 	if(izd.listCbed) {
-		let list_cbed = JSON.parse(izd.listCbed)
+		const list_cbed = JSON.parse(izd.listCbed)
 		if(!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb)
 		pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive)
 		for(let cb of list_cbed) {
-			ctx.$store.dispatch('getOneCbEdById', cb.cb.id).then(res => {
-				parserListIzd(res, cb.kol, ctx);
-			});
+			const res = await ctx.$store.dispatch('getOneCbEdById', cb.cb.id);
+			parserListIzd(res, cb.kol, ctx);
 		}
 	}
 
 	// Проходим по деталям
 	if(izd.detals && izd.detals.length && izd.listDetal) {
-		let list_detals = JSON.parse(izd.listDetal)
+		const list_detals = JSON.parse(izd.listDetal);
 			for(let det in list_detals) {
-				const res = await ctx.$store.dispatch('getOneDetal', list_detals[det].det.id)
+				const res = await ctx.$store.dispatch('getOneDetal', list_detals[det].det.id);
+				
+				for(const item of izd.detals) {
+					if(item.id == res.id) item.articl = res.articl;
+				}
+
 				for(let i = 0; i < list_detals[det].kol; i++) {
-					let mat_true = false
-					let material_find
-					let LEN = 0
-					let MASS = 0
+					let mat_true = false;
+					let material_find;
+					let LEN = 0;
+					let MASS = 0;
 					for(let material of res.materials) {
 						if(material.id == res.mat_zag) {
-							mat_true = true
-							material_find = material
-							list_detals[det].det.zag = material
-							LEN = res.DxL.split('x')[1] ? (Number(res.DxL.split('x')[1]) / 1000) : 0
-							MASS = Number(res?.massZag || 0)
+							mat_true = true;
+							material_find = material;
+							list_detals[det].det.zag = material;
+							LEN = res.DxL.split('x')[1] ? (Number(res.DxL.split('x')[1]) / 1000) : 0;
+							MASS = Number(res?.massZag || 0);
 						}
 					}
 					if(mat_true) { 
 						let parse_str
 						if(res.materialList) {
-							parse_str = JSON.parse(res.materialList)
-							parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name,  LEN, MASS}, kol: 1})
-							parse_str = JSON.stringify(parse_str)
+							parse_str = JSON.parse(res.materialList);
+							parse_str.push({art: 1, mat: {id: material_find.id, name: material_find.name,  LEN, MASS}, kol: 1});
+							parse_str = JSON.stringify(parse_str);
 						} else
-							parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name, LEN, MASS}, kol: 1}])
+							parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name, LEN, MASS}, kol: 1}]);
 					
-						mat_true = false
-						checkedJsonList({...res, materialList: parse_str}, ctx)
+						mat_true = false;
+						checkedJsonList({...res, materialList: parse_str}, ctx);
 					}
-					else checkedJsonList(res, ctx)
+					else checkedJsonList(res, ctx);
 				}
-				if(det == list_detals.length -1)
-					pushElement(izd.detals, list_detals, 'detal', ctx, recursive)
+				if(det == list_detals.length -1) {
+					pushElement(izd.detals, list_detals, 'detal', ctx, recursive);
+				}
 			}
 		
 	}
@@ -83,7 +88,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 	for(let element of elements) {
 		let kol = 1;
 		element.type = type
-		element.obj = {id: element.id}
+		element.obj = {id: element.id, articl: element.articl}
 
 		for(let item of list_pars) {
 			let id;
@@ -156,7 +161,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 function checkDublecate(arr, res) {
 	for(let inx in arr) {
 		if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) 
-			return inx
+			return inx;
 	}
 	return null
 }
@@ -166,18 +171,18 @@ function checkDublecate(arr, res) {
 */
  function parserListIzd(res, kol, ctx) {
 	try {
-		let cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
-		let detals = res.listDetal ? JSON.parse(res.listDetal) : []
+		let cbeds = res.listCbed ? JSON.parse(res.listCbed) : [];
+		let detals = res.listDetal ? JSON.parse(res.listDetal) : [];
 		if(cbeds.length) {
 			for(let inx in cbeds) {
-				cbeds[inx] = cbeds[inx].cb
-				if(res.articl) cbeds[inx].articl = res.articl
+				cbeds[inx] = cbeds[inx].cb;
+				cbeds[inx].articl = res?.articl || '';
 			}
 		}
 		if(detals.length) {
 			for(let inx in detals) {
-				detals[inx] = detals[inx].det
-				if(res.articl) detals[inx].articl = res.articl
+				detals[inx] = detals[inx].det;
+				detals[inx].articl = res?.articl || '';
 			}
 		}
 		for(let i = 0; i < kol; i++) 

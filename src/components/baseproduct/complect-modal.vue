@@ -202,9 +202,10 @@ export default {
       })
     },
     concatArrs() {
-      this.izd_cbed_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "cbed")
-      this.izd_detal_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "detal")
-      this.funConcatMaterial()
+      this.izd_cbed_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "cbed");
+      this.izd_detal_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "detal");
+      console.log(this.izd_detal_arr);
+      this.funConcatMaterial();
     },
     funConcatMaterial() {
       this.material_arr.one = []
@@ -244,20 +245,20 @@ export default {
     showInformIzdel(id, type) {
 			if(type == 'cbed') {
 				if(id) {
-					this.parametrs_cbed = id
-					this.cbedModalKey = random(1, 999)
+					this.parametrs_cbed = id;
+					this.cbedModalKey = random(1, 999);
 				}
 			}
 			if(type == 'detal') {
 				if(id) {
-					this.parametrs_detal = id
-					this.detalModalKey = random(1, 999)
+					this.parametrs_detal = id;
+					this.detalModalKey = random(1, 999);
 				}
 			}
 		},
     openMaterial(id) {
-			this.material_key = random(1, 999)
-			this.material_id = id
+			this.material_key = random(1, 999);
+			this.material_id = id;
 		},
   },
   async mounted() {
