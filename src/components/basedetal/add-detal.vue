@@ -181,8 +181,7 @@ export default {
 				areaCS: '',
 
         massZag: '',
-        trash: '',
-        variables_znach: []
+        trash: ''
       },
       showModalFile: false,
       fileModalKey: random(1, 999),
@@ -240,7 +239,6 @@ export default {
       this.obj.massZag = obj.massZag;
       this.obj.trash = obj.trash;
       this.obj.haracteriatic = obj.haracteriatic;
-      this.obj.variables_znach = obj.variables_znach;
       this.mat_zag = obj.mat_zag;
       this.mat_zag_zam = obj.mat_zag_zam;
     },
@@ -290,7 +288,6 @@ export default {
       this.formData.append('description', this.obj.description)
       this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
-      this.formData.append('variables_znach', JSON.stringify(this.obj.variables_znach))
       this.formData.append('DxL', this.obj.DxL)
 
       this.formData.append('diametr', this.obj.diametr)

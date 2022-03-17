@@ -207,7 +207,6 @@ export default {
 				haracteriatic: [
           { name: 'Масса детали', ez: 'кг', znach: 0}
         ],
-				variables_znach: []
       },
 			isEdit: {
 				outsideDiametr: false,
@@ -242,16 +241,18 @@ export default {
 		},
 		unmount_material(mat) {
 			if(!this.mat_zag) {
-				this.mat_zag = mat.material || 'Задать'
+				this.mat_zag = mat.material || 'Задать';
 				if(mat.material) {
 					this.material = mat.material;
 					this.calcParametr(mat.material);
 					this.parseVariableFolder(mat.material);
-				}
+				} else 
+					this.nullable(true);
 			}
-			if(!this.mat_zag_zam)
+			if(!this.mat_zag_zam) {
 				this.mat_zag_zam = mat.material || 'Задать';
-
+				if(!mat.material) this.nullable(false, true);
+			}
 			this.updateVariablesEdit(false);
 			return 0;
     },
@@ -304,27 +305,48 @@ export default {
 			this.obj['mat_zag_zam'] = this.mat_zag_zam;
 			this.$emit('unmount_har_zam', this.obj);
 		},
+		updateObj(data) {
+			this.obj.DxL = data.DxL;
+			this.obj.diametr = data.diametr;
+			this.obj.lengt = data.lengt;
+			this.obj.height = data.height;
+			this.obj.thickness = data.thickness;
+			this.obj.wallThickness = data.wallThickness;
+			this.obj.width = data.width;
+			this.obj.areaCS = data.areaCS;
+
+			this.obj.massZag = data.massZag;
+			this.obj.trash = data.trash;
+		},
+		nullable(maz = false, zam = false) {
+			if(maz) {
+				this.updateObj({
+					DxL: '',
+					diametr: '',
+					lengt: '',
+					height: '',
+					thickness: '',
+					wallThickness: '',
+					width: '',
+					areaCS: '',
+					massZag: '',
+					trash: '',
+				});
+				this.mat_zag = 'Задать';
+			}
+
+			if(zam) this.mat_zag_zam = 'Задать';
+			this.emits();
+		}
 	}, 
 	async mounted() {
 		if(this.$props.parametrs && this.$props.parametrs.obj ) {
-			this.obj.DxL = this.$props.parametrs.obj.DxL;
-			this.obj.diametr = this.$props.parametrs.obj.diametr;
-			this.obj.lengt = this.$props.parametrs.obj.lengt;
-			this.obj.height = this.$props.parametrs.obj.height;
-			this.obj.thickness = this.$props.parametrs.obj.thickness;
-			this.obj.wallThickness = this.$props.parametrs.obj.wallThickness;
-			this.obj.width = this.$props.parametrs.obj.width;
-			this.obj.areaCS = this.$props.parametrs.obj.areaCS;
+			this.updateObj(this.$props.parametrs.obj);
 
-
-			this.obj.massZag = this.$props.parametrs.obj.massZag;
-			this.obj.trash = this.$props.parametrs.obj.trash;
 			this.obj.haracteriatic = this.$props.parametrs.obj.haracteriatic;
-			this.obj.variables_znach = this.$props.parametrs.obj.variables_znach;
 
 			if(this.$props.parametrs.mat_zag) {
 				this.mat_zag = this.$props.parametrs.mat_zag;
-				// Получаем материал для того чтобы втидеть что постоянное а что нет.
 				if(this.mat_zag.materialsId) 
 					this.material = await this.getOneTypeMaterial(this.mat_zag.materialsId);
 

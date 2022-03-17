@@ -17,9 +17,10 @@ export default {
     },
     async fetchTechProcess(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/techprocess/${id}`);
-      const result = await res.json()
-
       if(!res.ok) return false; 
+      const result = await res.json()
+      console.log(result, 'result');
+
       return result 
     },
     async fetchAllDetalOperation() {

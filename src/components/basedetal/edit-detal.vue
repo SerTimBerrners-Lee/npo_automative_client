@@ -207,7 +207,6 @@ export default {
         haracteriatic: [
           { name: 'Масса детали', ez: 'кг', znach: 0}
         ],
-        variables_znach: [],
         DxL: 'x',
 
         diametr: '',
@@ -306,7 +305,6 @@ export default {
       this.obj.massZag = obj.massZag;
       this.obj.trash = obj.trash;
       this.obj.haracteriatic = obj.haracteriatic;
-      this.obj.variables_znach = obj.variables_znach;
       this.mat_zag = obj.mat_zag;
       this.mat_zag_zam = obj.mat_zag_zam;
     },
@@ -349,28 +347,29 @@ export default {
       if(!this.formData)
         this.formData = new FormData()
 
-      this.formData.append('techProcessID', this.techProcessID || null)
-      this.formData.append('name', this.obj.name)
-      this.formData.append('articl', this.obj.articl)
-      this.formData.append('responsible', this.obj.responsible)
-      this.formData.append('description', this.obj.description)
-      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
-      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
-      this.formData.append('variables_znach', JSON.stringify(this.obj.variables_znach))
-      this.formData.append('DxL', this.obj.DxL)
+      this.formData.append('techProcessID', this.techProcessID || null);
+      this.formData.append('name', this.obj.name);
+      this.formData.append('articl', this.obj.articl);
+      this.formData.append('responsible', this.obj.responsible);
+      this.formData.append('description', this.obj.description);
+      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs));
+      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic));
+      this.formData.append('DxL', this.obj.DxL);
 
-      this.formData.append('diametr', this.obj.diametr)
-      this.formData.append('lengt', this.obj.lengt)
-      this.formData.append('height', this.obj.height)
-      this.formData.append('thickness', this.obj.thickness)
-      this.formData.append('wallThickness', this.obj.wallThickness)
-      this.formData.append('width', this.obj.width)
-      this.formData.append('areaCS', this.obj.areaCS)
+      console.log(this.obj);
 
-      this.formData.append('massZag', this.obj.massZag)
-      this.formData.append('trash', this.obj.trash)
-      this.formData.append('attention', this.attention)
-      this.formData.append('id', this.id)
+      this.formData.append('diametr', this.obj.diametr);
+      this.formData.append('lengt', this.obj.lengt);
+      this.formData.append('height', this.obj.height);
+      this.formData.append('thickness', this.obj.thickness);
+      this.formData.append('wallThickness', this.obj.wallThickness);
+      this.formData.append('width', this.obj.width);
+      this.formData.append('areaCS', this.obj.areaCS);
+
+      this.formData.append('massZag', this.obj.massZag);
+      this.formData.append('trash', this.obj.trash);
+      this.formData.append('attention', this.attention);
+      this.formData.append('id', this.id);
 
       if(this.documentsData.length) {
         let new_array = []
@@ -381,9 +380,9 @@ export default {
       }
 
       this.formData.append('mat_zag', this.mat_zag != 'Задать' ?
-        this.mat_zag.id : null)
+        this.mat_zag.id : '')
       this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
-         this.mat_zag_zam.id : null)
+         this.mat_zag_zam.id : '')
       if(this.materialList.length > 0) {
         for(let mat = 0; mat < this.materialList.length; mat++) {
           this.materialList[mat].mat = {
@@ -485,8 +484,6 @@ export default {
     this.obj.massZag = this.getOneSelectDetal.massZag
     this.obj.trash = this.getOneSelectDetal.trash
     this.attention = this.getOneSelectDetal.attention
-    this.obj.variables_znach = this.getOneSelectDetal.variables_znach ? 
-      JSON.parse(this.getOneSelectDetal.variables_znach) : []
     this.obj.haracteriatic = JSON.parse(this.getOneSelectDetal.haracteriatic)
     this.obj.responsible = this.getOneSelectDetal.user ? 
       this.getOneSelectDetal.user.id : null
