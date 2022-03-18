@@ -251,8 +251,10 @@ export default {
 			}
 			if(!this.mat_zag_zam) {
 				this.mat_zag_zam = mat.material || 'Задать';
+				this.emits();
 				if(!mat.material) this.nullable(false, true);
 			}
+
 			this.updateVariablesEdit(false);
 			return 0;
     },

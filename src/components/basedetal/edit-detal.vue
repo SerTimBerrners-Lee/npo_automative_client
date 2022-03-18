@@ -356,8 +356,6 @@ export default {
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic));
       this.formData.append('DxL', this.obj.DxL);
 
-      console.log(this.obj);
-
       this.formData.append('diametr', this.obj.diametr);
       this.formData.append('lengt', this.obj.lengt);
       this.formData.append('height', this.obj.height);
@@ -383,6 +381,7 @@ export default {
         this.mat_zag.id : '')
       this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
          this.mat_zag_zam.id : '')
+
       if(this.materialList.length > 0) {
         for(let mat = 0; mat < this.materialList.length; mat++) {
           this.materialList[mat].mat = {

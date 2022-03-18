@@ -44,47 +44,9 @@
  
 		<div style='width: max-content;'>
 			<div class="scroll-table table_material " style='height: 100%;'>
-				<table style="width: 200px;">
-					<tr>
-						<th>Категория</th>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(0, e.target)'>
-						<td>Все</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(1, e.target)'>
-						<td>Материалы </td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(2, e.target)'>
-						<td>Покупные детали</td>
-					</tr>
-					<tr class='td-row' @click='e => instansMaterial(3, e.target)'>
-						<td>Расходные материалы</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Тип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='typ of alltypeM' 
-						:key='typ'
-						@click='e => clickMat(typ, "type", e.target)'>
-						<td>{{ typ.name }}</td>
-					</tr>
-				</table>
-				<table style="width: 150px;">
-					<tr>
-						<th>Подтип</th>
-					</tr>
-					<tr 
-						class='td-row' 
-						v-for='p_type of allPodTypeM' 
-						:key='p_type'
-						@click='e => clickMat(p_type, undefined, e.target)'>
-						<td>{{ p_type.name }}</td>
-					</tr>
-				</table>
+
+				<TableTypeMaterial />
+
 				<div v-if='getOnePodMaterial.length'>
 					<table style='margin-left: 20px;' id='tablebody'>
 						<tbody class='fixed_table_10'>
@@ -204,7 +166,9 @@ import XLSX from 'xlsx';
 import print from 'print-js';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
+import { eSelectSpan } from '@/js/methods.js';
 import {getKolvoMaterial} from '@/js/edizm.js';
+import TableTypeMaterial from './table-type-material.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MaterialParentModal from './material-parent-modal.vue';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
@@ -233,8 +197,12 @@ export default {
 			e_ptype_material: null,
 		}
 	},
-	components: {MaterialParentModal, ShipmentsModal},
-	computed: mapGetters(['getOnePodMaterial', 'alltypeM', 'allPodTypeM']),
+	components: {
+		MaterialParentModal,
+		ShipmentsModal,
+		TableTypeMaterial
+	},
+	computed: mapGetters(['getOnePodMaterial']),
 	methods: {
 		...mapActions([
 			'getAllTypeMaterial',
@@ -243,12 +211,8 @@ export default {
 			'getShipmentsForOneMaterial'
 		]),
 		...mapMutations([
-			'getInstansMaterial', 
-			'filterByNameMaterial', 
-			'clearCascheMaterial', 
 			'clearCascheMaterial',
-			'filterMaterialStatus',
-			'filterMatByPodType'
+			'filterMaterialStatus'
 		]),
 		printPage() {
       print({
@@ -308,37 +272,13 @@ export default {
 			this.filter_order = false
 			this.filterMaterialStatus({status: 'all', val});
 		},
-		instansMaterial(instans, span) {
-			this.span = this.eSelectSpan(this.span, span);
-			if(this.instansLet == instans) return 0;
-
-      this.getInstansMaterial(instans);
-      this.instansLet = instans;
-    },
-		clickMat(mat, type = 'podT', e) {
-			this.filterByNameMaterial(mat);
-			if(type == 'type') {
-				if(mat.instansMaterial == 1) {
-					this.getInstansMaterial(1);
-					this.instansLet = 1;
-				}
-				else this.filterMatByPodType(mat.podMaterials);
-				this.e_type_material = this.eSelectSpan(this.e_type_material, e);
-			} else this.e_ptype_material = this.eSelectSpan(this.e_ptype_material, e);
-    },
-		eSelectSpan(e_last, e_now) {
-			if(e_last) e_last.classList.remove('td-row-all');
-			e_last = e_now;
-			e_last.classList.add('td-row-all');
-			return e_last;
-		},
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null;
 			}
 
-			this.span_material = this.eSelectSpan(this.span_material, span);
+			this.span_material = eSelectSpan(this.span_material, span);
 			this.material = material;
 		},
 		getKolvoMaterial(mat) {
@@ -349,7 +289,6 @@ export default {
 		this.loader = true;
 		this.clearCascheMaterial();
 
-		this.clearCascheMaterial();
 		await this.getAllTypeMaterial();
     await this.getAllPodTypeMaterial();
 		await this.fetchGetAllDeficitPPM();
