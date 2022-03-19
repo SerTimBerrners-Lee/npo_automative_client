@@ -1,3 +1,4 @@
+// Парсит каждую ЕИ в материале
 const getKolvoMaterial = (mat) => {
 	let arr_ez = []
 	try {
@@ -31,6 +32,8 @@ const getKolvoMaterial = (mat) => {
 	} catch (e) {console.error(e)}
 }
 
+// Возвращает  объект для каждой ЕИ
+
 const returnObjectPos = (obj, poz, ez) => {
 	return {
 		ez, 
@@ -41,8 +44,45 @@ const returnObjectPos = (obj, poz, ez) => {
 		price: Object.values(obj)[poz].price
 	}
 }
+// Возврашает html код в span для каждой ЕИ
+function returnSpanEz(kol) {
+	if(!kol) return false;
+	try {
+		const pars_json = JSON.parse(kol);
+		if(!pars_json) return '';
+		let str = '';
+		if(pars_json.c1) str = '<span> шт </span>';
+		if(pars_json.c2) str = str + '<span> л </span>';
+		if(pars_json.c3) str = str + '<span> кг </span>';
+		if(pars_json.c4) str = str + '<span> м </span>';
+		if(pars_json.c5) str = str + '<span> м.куб </span>';
+
+		return str
+	} catch (e) {console.error(e)}
+}
+// Вернуть уже по распарсеному объекту наименование 
+function returnEzName(ez) {
+	if(!ez) return '';
+
+	switch (ez) {
+		case 1:
+			return 'шт';
+		case 2:
+			return 'л';
+		case 3:
+			return 'кг';
+		case 4:
+			return 'м';
+		case 5:
+			return 'м.куб';
+		default:
+			return 'шт'
+	}
+}
 
 
 export {
-	getKolvoMaterial
+	getKolvoMaterial,
+	returnSpanEz,
+	returnEzName
 }

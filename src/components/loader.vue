@@ -61,13 +61,17 @@
       </path>
     </svg>
 
-    <div class='btn_block' v-if='time > 15'>
-      <button class="btn-small" @click='reloadToHome'>
-        Обновить и уйти на главную
-      </button>
-      <button class="btn-small" @click='reload'>
-        Обновить страницу
-      </button>
+    <div>
+      <p class='p_desctiprion'>{{ description }}{{ description_append }}</p>  
+      
+      <div class='btn_block' v-if='time > 15'>
+        <button class="btn-small" @click='reloadToHome'>
+          Обновить и уйти на главную
+        </button>
+        <button class="btn-small" @click='reload'>
+          Обновить страницу
+        </button>
+      </div>
     </div>
 
   </div>
@@ -84,6 +88,12 @@
 <script>
 import { showMessage } from '@/js/';
 export default {
+  props: {
+    description: {
+      type: String,
+      default: "Получениу данных"
+    }
+  },
   data() {
     return {
       time: 0,
@@ -93,6 +103,8 @@ export default {
       message: '',
       type: '',
       keyInformTip: 0,
+
+      description_append: '',
     }
   },
   watch: {
@@ -111,6 +123,11 @@ export default {
     },
     reloadToHome() {
       document.location.href = '/'
+    },
+    appendDesctiption() {
+      if(this.description_append.length == 1) this.description_append = '..';
+      else if(this.description_append.length == 2) this.description_append = '...';
+      else this.description_append = '.';
     }
   },
   beforeUnmount() {
@@ -118,7 +135,10 @@ export default {
       clearInterval(this.id_interval)
   },
   async mounted() {
-    this.id_interval = setInterval(() => this.time++, 1000)
+    this.id_interval = setInterval(() => {
+      this.time++;
+      this.appendDesctiption();
+    }, 1000);
   }
 }
 </script>
@@ -151,5 +171,8 @@ export default {
 }
 .btn_block * {
   margin-top: 10px;
+}
+.p_desctiprion {
+  font-size: 13px;
 }
 </style>

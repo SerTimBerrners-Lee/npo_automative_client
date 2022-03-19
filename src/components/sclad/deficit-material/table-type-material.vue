@@ -46,14 +46,19 @@
 
 <script>
 import { eSelectSpan } from '@/js/methods.js';
-import { mapGetters, mapMutations } from 'vuex';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 export default {
   computed: mapGetters(['alltypeM', 'allPodTypeM']),
   methods: {
+    ...mapActions([
+			'getAllTypeMaterial',
+			'getAllPodTypeMaterial',
+		]),
     ...mapMutations([
 			'getInstansMaterial', 
 			'filterByNameMaterial',
-			'filterMatByPodType'
+			'filterMatByPodType',
+      'clearCascheMaterial'
 		]),
     instansMaterial(instans, span) {
 			this.span = this.eSelectSpan(this.span, span);
@@ -73,6 +78,11 @@ export default {
 				this.e_type_material = eSelectSpan(this.e_type_material, e);
 			} else this.e_ptype_material = eSelectSpan(this.e_ptype_material, e);
     }
+  },
+  async mounted() {
+    this.clearCascheMaterial(); // Очищаем все 
+    await this.getAllTypeMaterial();
+    await this.getAllPodTypeMaterial();
   }
 }
 </script>
@@ -81,7 +91,7 @@ export default {
 .table_material {
   height: 600px;
 }
-.table_material>table:first-child {
+.table_material>table {
   height: fit-content;
 }
 </style>

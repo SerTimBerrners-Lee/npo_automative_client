@@ -26,6 +26,7 @@
                   <unicon name="check" fill="royalblue" width='20' />
                 </th> 
                 <th>Артикул</th>
+                <th>Тип</th>
                 <th>Наименование</th>
                 <th>ЕИ</th>
                 <th>Кол-во</th>
@@ -41,13 +42,10 @@
                 <td contenteditable="true" @keyup="e => editArt(inx, e.target.innerText)">
                   {{ prod.art }}
                 </td>
+                <td>{{ returnTypePosition(prod.type) }}</td>
                 <td>{{ prod.name }}</td>
                 <td>
-                  <span :value='1' v-if='prod.ez == 1'>шт</span>
-                  <span :value='2' v-if='prod.ez == 2'>л</span>
-                  <span :value='3' v-if='prod.ez == 3'>кг</span>
-                  <span :value='4' v-if='prod.ez == 4'>м</span>
-                  <span :value='5' v-if='prod.ez == 5'>м.куб</span>
+                  <span :value='prod.ez' v-text='returnEzName(prod.ez)'></span>
                 </td>
                 <td>
                   <input type="number" 
@@ -82,6 +80,7 @@
                   <unicon name="glass-tea" fill="#ee0942d0" width='20' />
                 </th> 
                 <th>Артикул</th>
+                <th>Тип</th>
                 <th>Наименование</th>
                 <th>ЕИ</th>
                 <th>Кол-во</th>
@@ -95,13 +94,10 @@
                   <p class="checkbox_block_del" @click='delProd(prod)'></p>
                 </td>
                 <td>{{ prod.art }}</td>
+                <td>{{ returnTypePosition(prod.type) }}</td>
                 <td>{{ prod.name }}</td>
                 <td>
-                  <span :value='1' v-if='prod.ez == 1'>шт</span>
-                  <span :value='2' v-if='prod.ez == 2'>л</span>
-                  <span :value='3' v-if='prod.ez == 3'>кг</span>
-                  <span :value='4' v-if='prod.ez == 4'>м</span>
-                  <span :value='5' v-if='prod.ez == 5'>м.куб</span>
+                  <span :value='prod.ez' v-text='returnEzName(prod.ez)'></span>
                 </td>
                 <td class='center'>{{ prod.kol }}</td>
                 <td class='center'>{{ prod.sum }}</td>
@@ -110,7 +106,7 @@
             </table>
           </div>
           <h3>Примечание</h3>
-          <textarea maxlength='250' class='textarea'  v-model='description'></textarea>
+          <textarea maxlength='250' class='textarea' v-model='description'></textarea>
         </div>
 
         <div class="block" style='padding: 5px;'>
@@ -159,10 +155,13 @@
 <script>
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
+import { returnEzName } from '@/js/edizm.js';
 import AddPosition from './new-position.vue';
 import { mapActions, mapGetters } from 'vuex';
 import AddFile from '@/components/filebase/addfile.vue';
+import { returnTypePosition, posToDeliveries } from '@/js/methods.js';
 import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
+
 export default {
   props: ['parametrs'],
   data() {
@@ -199,7 +198,9 @@ export default {
       loader: false
     }
   },
-  computed: mapGetters(['getAllDeliveries']),
+  computed: {
+    ...mapGetters(['getAllDeliveries']),
+  },
   components: {AddFile, ProviderList, AddPosition},
   methods: {
     ...mapActions([
@@ -208,37 +209,50 @@ export default {
       'fetchGetDeliveriesCaming',
     ]),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     unmount(e) {
       if(!e) 
         return 0
-      this.formData = e.formData
+      this.formData = e.formData;
       if(this.formData.get('document'))
-        this.document = this.formData.get('document').name
+        this.document = this.formData.get('document').name;
     },
     unmount_provider(provider) {
       if(provider && provider.product) {
-        this.provider = provider
-        this.product = provider.product
+        this.provider = provider;
+        this.product = provider.product;
       }
     },
-    unmount_position(material_list) {
-      if(material_list && material_list.length) {
-        material_list.forEach(e => this.product.push(e))
+    unmount_position(position_list) {
+      if(!position_list) return false;
+      
+      for(const item of position_list) {
+        const position = item.obj;
+        position.type = item.type;
+
+        const result = posToDeliveries(position, this.product);
+        console.log(result, 'result');
+        if(!result) continue;
+
+        this.product.push(result);
+        console.log(this.product);
       }
+    },
+    returnEzName (ez) {
+      return returnEzName(ez);
     },
     addDock(val) {
       val.target.files.forEach(f => {
-        this.docFiles.push(f)
+        this.docFiles.push(f);
       })
-      this.keyWhenModalGenerate = random(10, 1111)
-      this.isChangeFolderFile = true
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
     addProvider() {
-      this.key_provider_modal = random(1, 999)
+      this.key_provider_modal = random(1, 999);
     },
     editVariable() {
       // mampping providers
@@ -247,90 +261,93 @@ export default {
         for(let prov = 0; prov < this.allProvider.length; prov++) {
           if(this.allProvider[prov].id == dev.provider.id && this.allProvider[prov].product && this.allProvider[prov].product.length) {
             try {
-              let pars = JSON.parse(dev.product)
+              const pars = JSON.parse(dev.product)
               for(let d of pars) {
-                this.allProvider[prov].product.push(d)
+                this.allProvider[prov].product.push(d);
               }
             } catch (e) {console.error(e)}
-            check = false
+            check = false;
           }
         }
 
         if(check) {
           try {
-            let prod = JSON.parse(dev.product)
+            const prod = JSON.parse(dev.product);
             if(prod && prod.length)
-              this.allProvider.push({ ...dev.provider, product: prod})
+              this.allProvider.push({ ...dev.provider, product: prod});
           } catch(e) {console.error(e)}
-        } else check = false
+        } else check = false;
     }
+    },
+    returnTypePosition(type) {
+      return returnTypePosition(type)[0];
     },
     pushToServer() {
       if(!this.provider)
-        return showMessage('', 'Выберите поставщика!', 'w', this) 
+        return showMessage('', 'Выберите поставщика!', 'w', this);
       if(!this.formData.get('docs') && !this.formData.get('document'))
-        return showMessage('', 'Обязательно прикрепите документ!', 'w', this) 
+        return showMessage('', 'Обязательно прикрепите документ!', 'w', this);
 
-      this.formData.append('provider_id', this.provider.id)
-      this.formData.append('description', this.description)
-      this.formData.append('product_list', JSON.stringify(this.selected_products))
+      this.formData.append('provider_id', this.provider.id);
+      this.formData.append('description', this.description);
+      this.formData.append('product_list', JSON.stringify(this.selected_products));
 
-      this.fetchPushWaybillCreate(this.formData)
-      this.destroyModalF()
-      this.$emit('unmount', null)
+      this.fetchPushWaybillCreate(this.formData);
+      this.destroyModalF();
+      this.$emit('unmount', null);
     },
     setProd(prod) {
-      this.selected_products.push(prod)
+      this.selected_products.push(prod);
       for(let inx in this.product) {
         if(this.product[inx].id == prod.id && this.product[inx].art == prod.art)
-          this.product.splice(inx, 1)
+          this.product.splice(inx, 1);
       }
     },
     delProd(prod) {
-      this.product.push(prod)
+      this.product.push(prod);
       for(let inx in this.selected_products) {
         if(this.selected_products[inx].id == prod.id && this.selected_products[inx].art == prod.art)
-          this.selected_products.splice(inx, 1)
+          this.selected_products.splice(inx, 1);
       }
     },
     allItemsAdd() {
       for(let prod of this.product) {
-        this.selected_products.push(prod)
+        this.selected_products.push(prod);
       }
-      this.product = []
+      this.product = [];
     },
     allItemsDel() {
       for(let prod of this.selected_products) {
-        this.product.push(prod)
+        this.product.push(prod);
       }
-      this.selected_products = []
+      this.selected_products = [];
     },
     newPosition() {
-      this.key_position = random(1, 999)
-      this.show_position = true
+      this.key_position = random(1, 999);
+      this.show_position = true;
     },
     editArt(inx, val) {
-      this.product[inx].art = val
+      this.product[inx].art = val;
     },
     editKol(inx, val) {
-      let check = toNumber(val)
-      if(!check) return this.product[inx].kol = 0
+      let check = toNumber(val);
+      if(!check) return this.product[inx].kol = 0;
 
-      this.product[inx].kol = toNumber(val)
+      this.product[inx].kol = toNumber(val);
     },
     editSum(inx, val) {
-      this.product[inx].sum = val
+      this.product[inx].sum = val;
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
-    this.loader = true
-    await this.fetchGetDeliveriesCaming()
-    this.editVariable()
-    this.loader = false
+    this.loader = true;
+    await this.fetchGetDeliveriesCaming();
+    this.editVariable();
+    this.loader = false;
       
   },
 }

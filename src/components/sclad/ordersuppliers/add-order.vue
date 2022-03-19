@@ -38,43 +38,33 @@
 
         <div>
           <h3>Дефицитный материал</h3>
-          <div class="table-scroll">
-            <table>
-              <tr>
-                <th>Наименование</th>
-                <th>ЕИ</th>
-                <th>Дефицит</th>
-              </tr>
-              <tr 
-                v-for='material of getOnePodMaterial' 
-                class='td-row'
-                @click='e => selectDeficitMaterial(material, e.target.parentElement)'
-                :key="material">
-                <td>{{ material.name }}</td>
-                <td class='center tooltip'>
-                  <div class="tooltiptext" style='display:flex; flex-direction: column;'>
-                    <span v-for='kol of getKolvoMaterialForeach(material.kolvo, material.ez_kolvo)' :key='kol'>Дефицит в {{kol[0]+':'+kol[1]}}</span>
-                  </div>
-                  <span v-html='getKolvoMaterial(material.kolvo)' style='margin: 20px;'></span>
-                </td>
-                <td class='center'>{{ material.shipments_kolvo }}</td>
-              </tr>
-            </table>
-          </div>
-          <div class="btn-control" v-if='!only_view'>
-            <button 
-              class="btn-small btn-add"
-              @click='pushMaterial'>Добавить к поставщику </button>
+
+          <div class="scroll-table table_material " style='height: 100%;'>
+            <TableTypeMaterial />
+            <TableMaterial :type_view='"mini"' @unmount_material='selectDeficitMaterial' />
           </div>
         </div>
 
-        <div>
+        <div class="btn-control" v-if='!only_view'>
+          <button 
+            class="btn-small btn-add"
+            @click='pushMaterial'>Добавить к поставщику </button>
+        </div>
+
+        <div class='table_material_provider scroll-table'>
           <h3>Список поставляемого поставщиком</h3>
-          <TableMaterialFilter 
+          <TableMaterialFilter
             :id_product='id_product'
             :key='table_key'
             :is_empty='is_empty'
+            @unmount_material='selectDeficitMaterial'
           />
+        </div>
+
+        <div class="btn-control" v-if='!only_view'>
+          <button 
+            class="btn-small btn-add"
+            @click='pushMaterial'>Добавить к поставщику </button>
         </div>
 
         <div>
@@ -90,51 +80,49 @@
                 <th>Кол-во</th>
                 <th>Сумма, руб (за шт.)</th>
                 <th>Примечание</th>
+                <th>Тип</th>
               </tr>
               <tr 
-                v-for='(material, inx) of material_lists'
-                :key='material'
+                v-for='(position, inx) of position_lists'
+                :key='position'
                 class='td-row'
-                @click='setSelected(material)'>
+                @click='setSelected(position)'>
                 <td 
                   @keyup="e => editArt(inx, e.target.innerText)"
-                  contenteditable="true">{{ material.art }}</td>
-                <td >{{ material.name }}</td>
+                  contenteditable="true">{{ position.art }}</td>
+                <td>{{ position.name }}</td>
                 <td class='center'>
                   <select 
                     class='select-small' 
-                    v-if='!Number(material.ez)'
+                    v-if='!Number(position.ez)'
                     @change='e => changeValuesEz(inx, e.target)'>
                     <option value=""></option>
-                    <option :value='1' v-if='Object.values(material.ez)[0]'>шт</option>
-                    <option :value='2' v-if='Object.values(material.ez)[1]'>л</option>
-                    <option :value='3' v-if='Object.values(material.ez)[2]'>кг</option>
-                    <option :value='4' v-if='Object.values(material.ez)[3]'>м</option>
-                    <option :value='5' v-if='Object.values(material.ez)[4]'>м.куб</option>
+                    <option :value='1' v-if='Object.values(position.ez)[0]'>шт</option>
+                    <option :value='2' v-if='Object.values(position.ez)[1]'>л</option>
+                    <option :value='3' v-if='Object.values(position.ez)[2]'>кг</option>
+                    <option :value='4' v-if='Object.values(position.ez)[3]'>м</option>
+                    <option :value='5' v-if='Object.values(position.ez)[4]'>м.куб</option>
                   </select>
-                  <p v-else>
-                    <span :value='1' v-if='material.ez == 1'>шт</span>
-                    <span :value='2' v-if='material.ez == 2'>л</span>
-                    <span :value='3' v-if='material.ez == 3'>кг</span>
-                    <span :value='4' v-if='material.ez == 4'>м</span>
-                    <span :value='5' v-if='material.ez == 5'>м.куб</span>
+                  <p v-else @click='changeClickEz(inx)'>
+                    <span :value='prod.ez' v-text='returnEzName(prod.ez)'></span>
                   </p>
                 </td>
                 <td
                   @keyup="e => editKol(inx, e.target.innerText)"
                   @click='editKol(inx, null)'
-                  contenteditable="true">{{ material.kol }}</td>
+                  contenteditable="true">{{ position.kol }}</td>
                 <td
                   class='tooltip'>
                   <input type="number" 
                     @change="e => editSum(inx, e.target.value)"
                     @click='editSum(inx, null)'
-                    min='0' :value='material.sum'>
-                  <span class="tooltiptext" contenteditable="false">{{ Number(material.kol) * Number(material.sum)  }}</span>
+                    min='0' :value='position.sum'>
+                  <span class="tooltiptext" contenteditable="false">{{ Number(position.kol) * Number(position.sum)  }}</span>
                 </td>
                 <td
                   @keyup="e => editDescription(inx, e.target.innerText)"
-                  contenteditable="true">{{ material.description }}</td>
+                  contenteditable="true">{{ position.description }}</td>
+                <td>{{ returnTypePosition(position.type) }}</td>
               </tr>
             </table>
           </div>
@@ -188,12 +176,17 @@
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
 import AddFile from '@/components/filebase/addfile.vue';
+import { returnSpanEz, returnEzName } from '@/js/edizm.js';
 import OpensFile from '@/components/filebase/openfile.vue';
 import DatePicterCustom from '@/components/date-picter.vue';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
+import { posToDeliveries, returnTypePosition } from '@/js/methods.js';
 import AddPosition from '@/components/sclad/comingtosclad/new-position.vue';
 import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
+import TableMaterial from '@/components/sclad/deficit-material/table-material.vue';
 import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
+import TableTypeMaterial from '@/components/sclad/deficit-material/table-type-material.vue';
+
 export default {
   props: ['parametrs', 'order_parametr', 'only_view'],
   data() {
@@ -217,7 +210,7 @@ export default {
       number_check:  '',
       nds: 20,
       count: 0,
-      material_lists: [],
+      position_lists: [],
       description: '',
 
       titleMessage: '',
@@ -226,7 +219,6 @@ export default {
       keyInformTip: 0,
 
       selected_material: null,
-      span_deff: null,
 
       select_m: null,
       key_position: random(1, 999),
@@ -243,254 +235,228 @@ export default {
     ProviderList,
     AddPosition,
     TableMaterialFilter,
-    OpensFile
+    OpensFile,
+    TableMaterial,
+    TableTypeMaterial
   },
   methods: {
     ...mapActions([
       'fetchGetProviders', 
       'fetchGetAllDeficitPPM', 
       'fetchNewDeliveries', 
-      'updateDeliveries'
+      'updateDeliveries',
+      'getAllTypeMaterial',
+      'getAllPodTypeMaterial'
     ]),
     ...mapMutations([
       'clearCascheMaterial'
     ]),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     unmount_position(mat_l) {
-      this.clearCascheMaterial()
-      this.fetchGetAllDeficitPPM()
+      this.clearCascheMaterial();
+      this.fetchGetAllDeficitPPM();
+      this.getAllTypeMaterial();
+      this.getAllPodTypeMaterial();
+
       if(mat_l && mat_l.length) {
         for(let mat of mat_l) {
-          this.selected_material = mat.obj
-          this.selected_material.type = mat.type
-          this.pushMaterial()
+          this.selected_material = mat.obj;
+          this.selected_material.type = mat.type;
+          this.pushMaterial();
         }
       }
     },
     unmount(e) {
-      if(!e) 
-        return 0
-      this.formData = e.formData
+      if(!e) return 0;
+
+      this.formData = e.formData;
       if(this.formData.get('document'))
-        this.name_check = this.formData.get('document').name
+        this.name_check = this.formData.get('document').name;
+
+      this.number_check = this.name_check;
     },
     unmount_provider(provider) {
       if(provider)
-        this.provider = provider
+        this.provider = provider;
 
-      this.id_product = provider.id
-      this.table_key = random(1, 999)
+      this.id_product = provider.id;
+      this.table_key = random(1, 999);
 
     },
     unmount_date_picters(val) {
-      this.date_shipments = val
+      this.date_shipments = val;
+    },
+    returnEzName (ez) {
+      return returnEzName(ez);
     },
     // Просматриваем файл-счет
     openFiles() { 
-      this.keyWhenModalGenerateFileOpen = random(1, 999)
-      this.showModalFiles = true
+      this.keyWhenModalGenerateFileOpen = random(1, 999);
+      this.showModalFiles = true;
+    },
+    returnTypePosition(type) {
+      return returnTypePosition(type)[0];
     },
     addDock(val) {
       val.target.files.forEach(f => {
-        this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 999)
-      this.isChangeFolderFile = true
+        this.docFiles.push(f);
+      });
+
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
-    addProvider() {
-      this.fetchGetProviders().then(res => {
-        this.allProvider = res
-        this.key_provider_modal = random(1, 999)
-      })
+    async addProvider() {
+      const res = await this.fetchGetProviders();
+      this.allProvider = res;
+      this.key_provider_modal = random(1, 999);
     },
-    selectDeficitMaterial(mat, span) {
-      this.selected_material = mat
-      if(this.span_deff)
-        this.span_deff.classList.remove('td-row-all')
-      
-      this.span_deff = span
-      this.span_deff.classList.add('td-row-all')
-    },
-    getKolvoMaterial(kol) {
-			try {
-				const pars_json = JSON.parse(kol)
-        if(!pars_json) return ''
-				let str = ''
-				if(pars_json.c1) str = '<span> шт </span>'
-				if(pars_json.c2) str = str + '<span> л </span>'
-				if(pars_json.c3) str = str + '<span> кг </span>'
-				if(pars_json.c4) str = str + '<span> м </span>'
-				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str
-			} catch (e) {console.error(e)}
-		},
-    getKolvoMaterialForeach(kol, ez_kolvo) {
-      try {
-				const pars_json = JSON.parse(kol)
-        const ez_kol = JSON.parse(ez_kolvo)
-        if(!pars_json || !ez_kol) return []
-				let arr = []
-				if(pars_json.c1 && ez_kol.c1_kolvo) arr.push(['шт', ez_kol.c1_kolvo.material_kolvo - ez_kol.c1_kolvo.shipments_kolvo])
-				if(pars_json.c2 && ez_kol.c2_kolvo) arr.push(['л', ez_kol.c2_kolvo.material_kolvo -  ez_kol.c2_kolvo.shipments_kolvo]) 
-				if(pars_json.c3 && ez_kol.c3_kolvo) arr.push(['кг', ez_kol.c3_kolvo.material_kolvo -  ez_kol.c3_kolvo.shipments_kolvo]) 
-				if(pars_json.c4 && ez_kol.c4_kolvo) arr.push(['м', ez_kol.c4_kolvo.material_kolvo -  ez_kol.c4_kolvo.shipments_kolvo]) 
-				if(pars_json.c5 && ez_kol.c5_kolvo) arr.push(['м.куб', ez_kol.c5_kolvo.material_kolvo -  ez_kol.c5_kolvo.shipments_kolvo]) 
-				return arr
-			} catch (e) { console.error(e) }
+    selectDeficitMaterial(mat) {
+      this.selected_material = mat;
     },
     pushMaterial() {
-      if(!this.selected_material)
-        return 0
-      let material = this.selected_material
+      const position = posToDeliveries(this.selected_material, this.position_lists);
+      this.selected_material = null;
+      if(!position) return false;
 
-      for(let mat of this.material_lists) {
-        if(material.id == mat.id && material.type == mat.type) return 0
-      }
-      try {
-        let ez = this.getKolvoMaterial(material.kolvo) ? JSON.parse(material.kolvo) : 1
-        this.material_lists.push({
-          art: '',
-          name: material.name,
-          ez: ez,
-          kol: material.shipments_kolvo ? material.shipments_kolvo : 1,
-          sum: 0,
-          description: '',
-          type: material.type ? material.type : 'mat',
-          id: material.id
-        })
-      } catch(e) {console.error(e)}
+      this.position_lists.push(position);
     },
     editArt(inx, val) {
-      this.material_lists[inx].art = val
+      this.position_lists[inx].art = val;
     },
     editKol(inx, val) {
-      let check = toNumber(val)
-      if(!check || val < 1) return this.material_lists[inx].kol = 1
+      const check = toNumber(val);
+      if(!check || val < 1) return this.position_lists[inx].kol = 1;
 
-      this.material_lists[inx].kol = toNumber(val)
+      this.position_lists[inx].kol = toNumber(val);
     },
     editSum(inx, val) {
-      this.material_lists[inx].sum = val
-      this.changeMainSum()
+      this.position_lists[inx].sum = val;
+      this.changeMainSum();
     },
     editDescription(inx, val) {
-      this.material_lists[inx].description = val
+      this.position_lists[inx].description = val;
     },
     changeMainSum() {
       this.count = 0
-      if(this.material_lists.length) {
-        this.material_lists.forEach(s => 
+      if(this.position_lists.length) {
+        this.position_lists.forEach(s => 
           this.count = Number(this.count) + (Number(s.sum) * Number(s.kol))
         )
       }
     },
     newPosition() {
-      this.key_position = random(1, 999)
-      this.show_position = true
+      this.key_position = random(1, 999);
+      this.show_position = true;
     },
     clear() {
-      this.material_lists = []
-      this.count = 0
+      this.position_lists = [];
+      this.count = 0;
     },
     clearToSelect() {
-      if(!this.select_m) return 0
-      this.material_lists = this.material_lists.filter(e => e.id != this.select_m.id)
+      if(!this.select_m) return 0;
+      this.position_lists = this.position_lists.filter(e => e.id != this.select_m.id);
     },
     setSelected(material) {
-      this.select_m = material
+      this.select_m = material;
     },
     checkMaterialList() {
-      if(!this.material_lists.length) return false
-      for(let mat of this.material_lists) {
-        if(!Number(mat.ez)) mat.ez = 1
+      if(!this.position_lists.length) return false;
+      for(let mat of this.position_lists) {
+        if(!Number(mat.ez) || !mat.ez) mat.ez = 1;
       }
     },
-    save() {
-      if(!this.provider)
-        return showMessage('', 'Выберите поставщика', 'w', this)
-      if(!this.material_lists.length) 
-        return showMessage('', 'Выберите позиции для прихода', 'w', this)
+    async save() {
+      if(!this.provider) return showMessage('', 'Выберите поставщика', 'w', this);
+      if(!this.position_lists.length) return showMessage('', 'Выберите позиции для прихода', 'w', this);
+      if(!this.number_check) return showMessage('', 'Введите номер счета', 'w', this);
+      this.checkMaterialList();
 
-      this.checkMaterialList()
-
-      this.formData.append('provider_id', this.provider.id)
-      this.formData.append('number_check', this.number_check)
-      this.formData.append('nds', this.nds)
-      this.formData.append('count', this.count)
-      this.formData.append('material_lists', JSON.stringify(this.material_lists))
-      this.formData.append('date_shipments', this.date_shipments)
-      this.formData.append('description', this.description)
+      this.formData.append('provider_id', this.provider.id);
+      this.formData.append('number_check', this.number_check);
+      this.formData.append('nds', this.nds);
+      this.formData.append('count', this.count);
+      this.formData.append('position_lists', JSON.stringify(this.position_lists));
+      this.formData.append('date_shipments', this.date_shipments);
+      this.formData.append('description', this.description);
 
       if(this.$props.order_parametr) {
-        this.formData.append('id', this.$props.order_parametr.id)
-          this.updateDeliveries(this.formData).then(res => {
-            if(res) {
-              showMessage('', 'Успешно!', 's', this)
-              this.$emit('unmount', res)
-            }
-            else showMessage('', 'Произошла ошибка при создании поставки', 'e', this)
-            setTimeout(() => this.destroyModalF(), 1000)
-          })
-      } else {
-        this.fetchNewDeliveries(this.formData).then(res => {
+        this.formData.append('id', this.$props.order_parametr.id);
+          const res = await this.updateDeliveries(this.formData);
           if(res) {
-            showMessage('', 'Успешно!', 's', this)
-            this.$emit('unmount', res)
+            showMessage('', 'Успешно!', 's', this);
+            this.$emit('unmount', res);
           }
-          else showMessage('', 'Произошла ошибка при создании поставки', 'e', this)
-          setTimeout(() => this.destroyModalF(), 1000)
-        })
+          else showMessage('', 'Произошла ошибка при создании поставки', 'e', this);
+          setTimeout(() => this.destroyModalF(), 1000);
+      } else {
+        const res = await this.fetchNewDeliveries(this.formData);
+        console.log(res);
+        if(res) {
+          showMessage('', 'Успешно!', 's', this);
+          this.$emit('unmount', res);
+        }
+        else showMessage('', 'Произошла ошибка при создании поставки', 'e', this);
+        setTimeout(() => this.destroyModalF(), 1000);
       }
     },
     editVariables(order) {
-      this.provider = order.provider
-      this.number_check = order.number_check
-      this.nds = order.nds
-      this.count = order.count
-      this.description = order.description
+      this.provider = order.provider;
+      this.number_check = order.number_check;
+      this.nds = order.nds;
+      this.count = order.count;
+      this.description = order.description;
       if(order.product)
-        try { this.material_lists = JSON.parse(order.product) } catch (e) { console.error(e) }
+        try { this.position_lists = JSON.parse(order.product) } 
+          catch (e) { console.error(e) }
 
       if(order.documents && order.documents.length) {
-        this.name_check = order.documents[0].name
-        this.docFiles = order.documents
+        this.name_check = order.documents[0].name;
+        this.docFiles = order.documents;
       }
       
-      this.date_shipments = order.date_shipments
+      this.date_shipments = order.date_shipments;
     },
     // Выбираем Единицу измерения
-    changeValuesEz(inx, e) {
-      let ez_position =  Number(e.value)
-      this.material_lists[inx].ez = ez_position
+    changeValuesEz(inx, val) {
+      let ez_position = Number(val.value);
+      this.position_lists[inx].ez = ez_position;
 
-      const material = this.getOneMaterialById(this.material_lists[inx].id)
-      if(!material)return false
+      const material = this.getOneMaterialById(this.position_lists[inx].id);
+      if(!material) return false;
       try {
-        const pars = JSON.parse(material.ez_kolvo)
-        if(!pars) return 
-        this.material_lists[inx].def = Object.values(pars)[ez_position--].shipments_kolvo
-      }catch(e) {console.error(e)}
+        const pars = JSON.parse(material.ez_kolvo);
+        if(!pars) return;
+        this.position_lists[inx].def = Object.values(pars)[ez_position--].shipments_kolvo;
+      }catch(err) { console.error(err) }
+    },
+    // Сбрасываем единицу измерения
+    changeClickEz(inx) {
+      try {
+        const ez = returnSpanEz(this.position_lists[inx].kolvo) ? 
+          JSON.parse(this.position_lists[inx].kolvo) : 1;
+
+        this.position_lists[inx].ez = ez;
+      } catch (err) { console.error(err) }
     },
     getOneMaterialById(id) {
-      let find_material = this.getOnePodMaterial.filter(met => met.id == id)
-      if(!find_material && !find_material.length) return false
-      return find_material[0]
+      const find_material = this.getOnePodMaterial.filter(met => met.id == id);
+      if(!find_material && !find_material.length) return false;
+      return find_material[0];
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
-    this.fetchGetAllDeficitPPM()
+    this.fetchGetAllDeficitPPM();
 
-    if(this.$props.order_parametr) {
-      this.editVariables(this.$props.order_parametr)
-    }
+    if(this.$props.order_parametr)
+      this.editVariables(this.$props.order_parametr);
   },
 }
 </script>
@@ -540,10 +506,17 @@ table {
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
-  width: 40vw;
+  width: 50vw;
+}
+.table_material {
+	display: flex;
+  height: 650px !important;
+} 
+.table_material_provider {
+  height: 650px !important;
 }
 .left-block-modal {
-  width: 60vw;
+  width: 50vw;
   animation: width-right 1s 1 ease;
 }
 .left-block-modal-hidden {
@@ -557,7 +530,7 @@ table {
     width: 1vw;
   }
   to {
-    width: 40vw;
+    width: 50vw;
   }
 }
 @keyframes width-right {
@@ -565,7 +538,7 @@ table {
     width: 0vw;
   }
   to {
-    width: 60vw;
+    width: 50vw;
   }
 }
 @keyframes hidden-content {
@@ -584,7 +557,7 @@ table {
 }
 @keyframes width-replace {
   from {
-    width: 60vw;
+    width: 20vw;
   }
   to {
     width: 00vw;
@@ -592,7 +565,7 @@ table {
 }
 @keyframes width-right-replace {
   from {
-    width: 50vw;
+    width: 70vw;
   }
   to {
     width: 0vw;

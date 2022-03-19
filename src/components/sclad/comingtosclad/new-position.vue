@@ -118,10 +118,11 @@
           </table>
         </div>
 
-        <div v-if='material_list.length'>
+        <div v-if='position_list.length'>
           <table style='width: 90%'>
             <tr>
               <th>Выбранное</th>
+              <th>Тип</th>
               <th>ЕИ</th>
               <th>Кол-во, м</th>
               <th 
@@ -130,12 +131,13 @@
                 <unicon name="glass-tea" fill="#ee0942d0" width='20' />
               </th> 
             </tr>
-            <tr v-for='mat of material_list' :key='mat'>
-              <td>{{ mat.name }}</td>
-              <td v-html='mat.ez'></td>
-              <td>{{ mat.kol }}</td>
+            <tr v-for='pos of position_list' :key='pos'>
+              <td>{{ pos.name }}</td>
+              <td>{{ returnTypePosition(pos.type) }}</td>
+              <td v-html='pos.ez'></td>
+              <td>{{ pos.kol }}</td>
               <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-                <p class="checkbox_block_del" @click='delProd(mat)'></p>
+                <p class="checkbox_block_del" @click='delProd(pos)'></p>
               </td>
             </tr>
           </table>
@@ -151,6 +153,9 @@
   </div>
 </template>
 <script scoped>
+import { returnSpanEz } from '@/js/edizm.js';
+import { eSelectSpan } from '@/js/methods.js';
+import { returnTypePosition } from '@/js/methods.js';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 export default {
   props: ['parametrs'],
@@ -163,7 +168,7 @@ export default {
       span: null,
       instansLet: 0,
       span_material: null,
-      material_list: [],
+      position_list: [],
 
       loader: false
     }
@@ -185,10 +190,9 @@ export default {
   components: {},
   methods: {
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-      this.$emit('unmount', null)
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     ...mapActions([
       'getAllTypeMaterial',
@@ -227,132 +231,117 @@ export default {
 			'filterNameInventaryByPT'
     ]),
 		clickMat(mat) {
-			this.filterByNameMaterial(mat) 
+			this.filterByNameMaterial(mat);
+    },
+    returnTypePosition(type) {
+      return returnTypePosition(type)[0];
     },
     setProd(obj, span, type) {
-			if(this.span_material)
-				this.span_material.classList.remove('td-row-all')
-			this.span_material = span
-			this.span_material.classList.add('td-row-all')
+			this.span_material = eSelectSpan(this.span_material, span);
 
-      let check = true
-			for(let mat of this.material_list) {
-        if(mat.obj.id == obj.id && mat.type == type)
-          check = false
+      let check = true;
+			for(let mat of this.position_list) {
+        if(mat.obj.id == obj.id && mat.type == type) check = false;
       }
+      
       if(check) 
-        this.material_list.push({
+        this.position_list.push({
           kol: 1,
-          ez: this.getKolvoMaterial(obj.kolvo),
+          ez: returnSpanEz(obj.kolvo) || '<span> шт </span>',
           name: obj.name,
-          obj: obj,
+          obj: obj, 
           type: type
         })
       else
-        check = true
+        check = true;
     },
-    getKolvoMaterial(kol) {
-      if(!kol) return 'шт'
-			try {
-				let pars_json = JSON.parse(kol)
-				let str = ''
-				if(pars_json.c1) str = '<span> шт </span>'
-				if(pars_json.c2) str = str + '<span> л </span>'
-				if(pars_json.c3) str = str + '<span> кг </span>'
-				if(pars_json.c4) str = str + '<span> м </span>'
-				if(pars_json.c5) str = str + '<span> м.куб </span>'
-				return str
-			} catch (e) {
-				console.error(e)
-			}
-		},
     clickEq(eq, type) {
 			if(type == 'type') 
-				this.filterAllPTEquipment(eq)
+				this.filterAllPTEquipment(eq);
       if(type == 'podT') 
-				this.getOneEquipmentPType(eq.id)
+				this.getOneEquipmentPType(eq.id);
 		},
 		clickTools(tools, type) {
 			if(type == 'type') 
-				this.filterAllpInstrument(tools)
+				this.filterAllpInstrument(tools);
       if(type == 'podT') 
-				this.getAllPTInstances(tools.id)
+				this.getAllPTInstances(tools.id);
 		},
 		clickInventary(inventary, type) {
 			if(type == 'type') 
-				this.filterNameInventaryByPT(inventary.inventary)
+				this.filterNameInventaryByPT(inventary.inventary);
       if(type == 'podT') 
-				this.filterNameInventaryByPT(inventary.inventary)
+				this.filterNameInventaryByPT(inventary.inventary);
 		},
     getAllDeficit() {
-			this.clearAllState()
+			this.clearAllState();
 
-			this.getOnlyMaterialDeficit()
-			this.getAllNameInstrument()
+			this.getOnlyMaterialDeficit();
+			this.getAllNameInstrument();
 		},
 		getOnlyMaterialDeficit() {
-			this.clearAllState()
+			this.clearAllState();
 
-			this.getAllTypeMaterial()
-			this.getAllPodTypeMaterial()
-			this.fetchPPMNoLight()
+			this.getAllTypeMaterial();
+			this.getAllPodTypeMaterial();
+			this.fetchPPMNoLight();
 		},
 		getOnlyInstrumentDeficit() {
-			this.clearAllState()
-			this.getAllNameInstrument()
-			this.fetchAllInstruments()
-			this.getPTInstrumentList()
+			this.clearAllState();
+			this.getAllNameInstrument();
+			this.fetchAllInstruments();
+			this.getPTInstrumentList();
 		},
 		getOnlyEquipmentDeficit() {
-			this.clearAllState()
-			this.fetchAllEquipment()
-			this.getAllEquipmentPType()
-			this.fetchAllEquipmentType()
+			this.clearAllState();
+			this.fetchAllEquipment();
+			this.getAllEquipmentPType();
+			this.fetchAllEquipmentType();
 		},
 		getOnlyInventarytDeficit() {
-			this.clearAllState()
-			this.fetchAllInventary()
-			this.fetchAllPInventary()
-			this.fetchAllNameInventary()
+			this.clearAllState();
+			this.fetchAllInventary();
+			this.fetchAllPInventary();
+			this.fetchAllNameInventary();
 		},
 		clearAllState() {
-			this.clearCascheMaterial()
-			this.clearCascheInstrument()
-			this.clearCascheEquipment()
-			this.clearCascheInventary()
+			this.clearCascheMaterial();
+			this.clearCascheInstrument();
+			this.clearCascheEquipment();
+			this.clearCascheInventary();
 		},
     delProd(mat) {
-      let arr = []
-      for(let item of this.material_list) {
-        if((item.obj.id == mat.obj.id) && (item.obj.type == mat.obj.type)) continue
-        arr.push(item)
+      const arr = []
+      for(let item of this.position_list) {
+        if((item.obj.id == mat.obj.id) && (item.obj.type == mat.obj.type)) continue;
+        arr.push(item);
       }
-      this.material_list = arr
+      this.position_list = arr;
     },
     allItemsDel() {
-      this.material_list = []
+      this.position_list = [];
     },
     pushMaterial() {
-      this.$emit('unmount', this.material_list)
-      this.destroyModalF()
+      this.$emit('unmount', this.position_list);
+      this.destroyModalF();
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
-    this.loader = true
+    this.loader = true;
 
-    this.clearCascheMaterial()
-    await this.getAllTypeMaterial()
-    await this.getAllPodTypeMaterial()
-    await this.fetchPPMNoLight()
-    await this.getAllNameInstrument()
-		await this.fetchAllEquipment()
-		await this.fetchAllNameInventary()
+    this.clearCascheMaterial();
+    await this.getAllTypeMaterial();
+    await this.getAllPodTypeMaterial();
+    await this.fetchPPMNoLight();
+    await this.getAllNameInstrument();
+		await this.fetchAllEquipment();
+		await this.fetchAllNameInventary();
 
-    this.loader = false
+    this.loader = false;
   },
 }
 </script>
@@ -366,6 +355,7 @@ export default {
 .table_material {
   display: flex;
   height: 500px;
+  width: 880px;
 }
 .checkbox_parent {
   height: 15px;
@@ -381,10 +371,10 @@ table {
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
-  width: 40vw;
+  width: 50vw;
 }
 .left-block-modal {
-  width: 60vw;
+  width: 50vw;
   animation: width-right 1s 1 ease;
 }
 .left-block-modal-hidden {
@@ -398,7 +388,7 @@ table {
     width: 1vw;
   }
   to {
-    width: 40vw;
+    width: 50vw;
   }
 }
 @keyframes width-right {
@@ -406,7 +396,7 @@ table {
     width: 0vw;
   }
   to {
-    width: 60vw;
+    width: 50vw;
   }
 }
 @keyframes hidden-content {
@@ -425,7 +415,7 @@ table {
 }
 @keyframes width-replace {
   from {
-    width: 40vw;
+    width: 50vw;
   }
   to {
     width: 00vw;
@@ -433,7 +423,7 @@ table {
 }
 @keyframes width-right-replace {
   from {
-    width: 60vw;
+    width: 50vw;
   }
   to {
     width: 0vw;
