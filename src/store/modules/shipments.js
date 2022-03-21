@@ -25,10 +25,18 @@ export default {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {
 				method: "post",
 				body: data
-			})
-			if(res.ok) 
-				return true
-			return false
+			});
+			if(res.ok) return true;
+			return false;
+		},
+		async fetchCreateShComplit(ctx, data) {
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcheck`, {
+				method: "post",
+				body: data
+			});
+
+			if(res.ok) return true;
+			return false;
 		},
 		async fetchUpdateShipments(ctx, data) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {

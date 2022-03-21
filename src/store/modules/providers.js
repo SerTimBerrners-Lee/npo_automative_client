@@ -92,9 +92,8 @@ export default {
         method: 'POST',
         body:   data
       })
-      if(res.ok) {
-        return true
-      }
+      if(res.ok) return true;
+      return false;
     },
     async fetchGetDeliveriesCaming(ctx) {
       const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveriedcoming`)

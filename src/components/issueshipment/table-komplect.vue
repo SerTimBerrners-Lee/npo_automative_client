@@ -44,11 +44,11 @@
 				</td>
 				<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td>
 				<td></td>
-				<td v-if='shipments.status == enumShipments[0]' class='work_operation'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[1]' class='delete_operation'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[2]' class='work_operation'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[3]' class='success_operation'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[4]' class='delete_operation'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[0]' class='work_operation center'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[1]' class='delete_operation center'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[2]' class='work_operation center'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[3]' class='success_operation center'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[4]' class='delete_operation center'>{{ shipments.status  }}</td>
 				<td>{{ shipments.date_shipments }}</td>
 				<td></td>
 				<td></td>
@@ -93,10 +93,11 @@ import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
-import { mapMutations, mapGetters, mapActions } from 'vuex';
+import { eSelectSpan } from '@/js/methods.js';
 import KomplectModal from './komplect-modal.vue';
 import ShipmentsModal from './shipments-modal.vue';
 import OpensFile from '@/components/filebase/openfile.vue';
+import { mapMutations, mapGetters, mapActions } from 'vuex';
 import DescriptionModal from '@/components/description-modal.vue';
 export default {
 	props: ['shipmentsArr'],
@@ -129,7 +130,7 @@ export default {
 				'Заказано',
 				'Удалено',
 				'Выполняется',
-				'Выполнено',
+				'Отгружено',
 				'Просрочено'
 			],
 		}	
@@ -155,17 +156,13 @@ export default {
 			}
 		},
 		setShipments(shipments, e) {
-			if(this.tr && this.selectShipments.id == shipments.id) {
-				this.tr.classList.remove('td-row-all')
-				this.selectShipments = null 
-			}
-			if(this.tr) this.tr.classList.remove('td-row-all')
-			this.tr = e 
-			this.tr.classList.add('td-row-all')
+			if(this.selectShipments && this.selectShipments.id == shipments.id) 
+				this.selectShipments = null;
+			this.tr = eSelectSpan(this.tr, e);
 
-			this.setOneShipment(shipments)
+			this.setOneShipment(shipments);
 			this.selectShipments = shipments;
-			this.$emit('unmount', this.selectShipments)
+			this.$emit('unmount', this.selectShipments);
 		},
 		openDescription(description) {
       this.showDescriptionModal = true

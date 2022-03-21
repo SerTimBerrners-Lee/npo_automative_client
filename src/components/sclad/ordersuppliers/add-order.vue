@@ -30,7 +30,7 @@
 
         <div class="block" style='padding: 5px;' v-if='!only_view'>
           <p style='margin: 5px;'>
-            <label for="docsFileSelected" class='btn-small btn-file'>Загрузить счет</label>
+            <label for="docsFileSelected" class='btn-small btn_file'>Загрузить счет</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
             <span class='active' @click='openFiles()'>{{ name_check }}</span>
           </p>
@@ -83,46 +83,46 @@
                 <th>Тип</th>
               </tr>
               <tr 
-                v-for='(position, inx) of position_lists'
-                :key='position'
+                v-for='(pos, inx) of position_lists'
+                :key='pos'
                 class='td-row'
-                @click='setSelected(position)'>
+                @click='setSelected(pos)'>
                 <td 
                   @keyup="e => editArt(inx, e.target.innerText)"
-                  contenteditable="true">{{ position.art }}</td>
-                <td>{{ position.name }}</td>
+                  contenteditable="true">{{ pos.art }}</td>
+                <td>{{ pos.name }}</td>
                 <td class='center'>
                   <select 
                     class='select-small' 
-                    v-if='!Number(position.ez)'
+                    v-if='!Number(pos.ez)'
                     @change='e => changeValuesEz(inx, e.target)'>
                     <option value=""></option>
-                    <option :value='1' v-if='Object.values(position.ez)[0]'>шт</option>
-                    <option :value='2' v-if='Object.values(position.ez)[1]'>л</option>
-                    <option :value='3' v-if='Object.values(position.ez)[2]'>кг</option>
-                    <option :value='4' v-if='Object.values(position.ez)[3]'>м</option>
-                    <option :value='5' v-if='Object.values(position.ez)[4]'>м.куб</option>
+                    <option :value='1' v-if='Object.values(pos.ez)[0]'>шт</option>
+                    <option :value='2' v-if='Object.values(pos.ez)[1]'>л</option>
+                    <option :value='3' v-if='Object.values(pos.ez)[2]'>кг</option>
+                    <option :value='4' v-if='Object.values(pos.ez)[3]'>м</option>
+                    <option :value='5' v-if='Object.values(pos.ez)[4]'>м.куб</option>
                   </select>
                   <p v-else @click='changeClickEz(inx)'>
-                    <span :value='prod.ez' v-text='returnEzName(prod.ez)'></span>
+                    <span :value='pos.ez' v-text='returnEzName(pos.ez)'></span>
                   </p>
                 </td>
                 <td
                   @keyup="e => editKol(inx, e.target.innerText)"
                   @click='editKol(inx, null)'
-                  contenteditable="true">{{ position.kol }}</td>
+                  contenteditable="true">{{ pos.kol }}</td>
                 <td
                   class='tooltip'>
                   <input type="number" 
                     @change="e => editSum(inx, e.target.value)"
                     @click='editSum(inx, null)'
-                    min='0' :value='position.sum'>
-                  <span class="tooltiptext" contenteditable="false">{{ Number(position.kol) * Number(position.sum)  }}</span>
+                    min='0' :value='pos.sum'>
+                  <span class="tooltiptext" contenteditable="false">{{ Number(pos.kol) * Number(pos.sum)  }}</span>
                 </td>
                 <td
                   @keyup="e => editDescription(inx, e.target.innerText)"
-                  contenteditable="true">{{ position.description }}</td>
-                <td>{{ returnTypePosition(position.type) }}</td>
+                  contenteditable="true">{{ pos.description }}</td>
+                <td>{{ returnTypePosition(pos.type) }}</td>
               </tr>
             </table>
           </div>
@@ -175,17 +175,17 @@
 <script>
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
-import AddFile from '@/components/filebase/addfile.vue';
-import { returnSpanEz, returnEzName } from '@/js/edizm.js';
-import OpensFile from '@/components/filebase/openfile.vue';
-import DatePicterCustom from '@/components/date-picter.vue';
+import AddFile from '@/components/filebase/addfile';
+import { returnSpanEz, returnEzName } from '@/js/edizm';
+import OpensFile from '@/components/filebase/openfile';
+import DatePicterCustom from '@/components/date-picter';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import { posToDeliveries, returnTypePosition } from '@/js/methods.js';
-import AddPosition from '@/components/sclad/comingtosclad/new-position.vue';
-import ProviderList from '@/components/baseprovider/all-fields-provider.vue';
-import TableMaterial from '@/components/sclad/deficit-material/table-material.vue';
-import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
-import TableTypeMaterial from '@/components/sclad/deficit-material/table-type-material.vue';
+import { posToDeliveries, returnTypePosition } from '@/js/methods';
+import AddPosition from '@/components/sclad/comingtosclad/new-position';
+import ProviderList from '@/components/baseprovider/all-fields-provider';
+import TableMaterial from '@/components/sclad/deficit-material/table-material';
+import TableMaterialFilter from '@/components/baseprovider/table-material-filter';
+import TableTypeMaterial from '@/components/sclad/deficit-material/table-type-material';
 
 export default {
   props: ['parametrs', 'order_parametr', 'only_view'],
@@ -252,9 +252,10 @@ export default {
       'clearCascheMaterial'
     ]),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
+      console.log('destroyModalF');
+      this.destroyModalLeft = 'left-block-modal-hidden'
+      this.destroyModalRight = 'content-modal-right-menu-hidden'
+      this.hiddens = 'display: none;'
     },
     unmount_position(mat_l) {
       this.clearCascheMaterial();
@@ -365,7 +366,8 @@ export default {
     },
     checkMaterialList() {
       if(!this.position_lists.length) return false;
-      for(let mat of this.position_lists) {
+      for(const mat of this.position_lists) {
+        console.log(mat, 'mat')
         if(!Number(mat.ez) || !mat.ez) mat.ez = 1;
       }
     },
@@ -386,21 +388,20 @@ export default {
       if(this.$props.order_parametr) {
         this.formData.append('id', this.$props.order_parametr.id);
           const res = await this.updateDeliveries(this.formData);
-          if(res) {
-            showMessage('', 'Успешно!', 's', this);
-            this.$emit('unmount', res);
-          }
-          else showMessage('', 'Произошла ошибка при создании поставки', 'e', this);
-          setTimeout(() => this.destroyModalF(), 1000);
-      } else {
-        const res = await this.fetchNewDeliveries(this.formData);
-        console.log(res);
-        if(res) {
+          if(!res) 
+            return showMessage('', 'Произошла ошибка при создании поставки', 'e', this);
+          
           showMessage('', 'Успешно!', 's', this);
           this.$emit('unmount', res);
-        }
-        else showMessage('', 'Произошла ошибка при создании поставки', 'e', this);
-        setTimeout(() => this.destroyModalF(), 1000);
+          this.destroyModalF();
+      } else {
+        const res = await this.fetchNewDeliveries(this.formData);
+        if(!res) 
+          return showMessage('', 'Произошла ошибка при создании поставки', 'e', this);
+
+        showMessage('', 'Успешно!', 's', this);
+        this.$emit('unmount', res);
+        this.destroyModalF();
       }
     },
     editVariables(order) {
@@ -431,7 +432,7 @@ export default {
         const pars = JSON.parse(material.ez_kolvo);
         if(!pars) return;
         this.position_lists[inx].def = Object.values(pars)[ez_position--].shipments_kolvo;
-      }catch(err) { console.error(err) }
+      }catch(err) { console.error(err, 'changeValuesEz') }
     },
     // Сбрасываем единицу измерения
     changeClickEz(inx) {
@@ -449,9 +450,9 @@ export default {
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
+    this.destroyModalLeft = 'left-block-modal'
+    this.destroyModalRight = 'content-modal-right-menu'
+    this.hiddens = 'opacity: 1;'
 
     this.fetchGetAllDeficitPPM();
 
@@ -469,14 +470,6 @@ export default {
 }
 .header_block * {
   margin-left: 6px;
-}
-.btn-file{
-  color: black;
-  background: #d3d3d3;
-  padding: 6px;
-  font-weight: normal;
-  font-size: 16px;
-  cursor: pointer;
 }
 .header_block input{
   width: 50%;

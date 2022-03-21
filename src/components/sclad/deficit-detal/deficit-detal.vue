@@ -169,15 +169,15 @@
 <script>
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import DescriptionModal from '@/components/description-modal.vue';
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
-import StartPraduction from '@/components/sclad/start-production-modal.vue';
-import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
+import DetalModal from '@/components/basedetal/detal-modal';
+import DatePicterRange from '@/components/date-picter-range';
+import DescriptionModal from '@/components/description-modal';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
+import TechProcess from '@/components/basedetal/tech-process-modal';
+import StartPraduction from '@/components/sclad/start-production-modal';
+import ShipmentList from '@/components/issueshipment/shipments-list-table';
 export default {
   data() {
     return {
@@ -239,10 +239,10 @@ export default {
   },
   watch: {
     selectEnumStatus: function(val) {
-      this.changeStatusDeficitDetal(val)
+      this.changeStatusDeficitDetal(val);
     },
     selectEnumDeficit: function(val) {
-      this.changeDeficitDetal({status: val, deficit: this.returnDificit})
+      this.changeDeficitDetal({status: val, deficit: this.returnDificit});
     }
   }, 
   methods: {
@@ -258,29 +258,29 @@ export default {
       this.reverseMidlevareDetal()
     },
     returnZnachCPU(detal) {
-      if(!detal?.techProcesses?.operations?.length) return 'нет'
-      let op = detal.techProcesses.operations
+      if(!detal?.techProcesses?.operations?.length) return 'нет';
+      const op = detal.techProcesses.operations;
       for(let item of op) {
-        if(item?.typeOperation?.cpu) return 'да'
+        if(item?.typeOperation?.cpu) return 'да';
       }
-      return 'нет'
+      return 'нет';
     },
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
-        0 : kol - izd.min_remaining - izd.shipments_kolvo
+        0 : kol - izd.min_remaining - izd.shipments_kolvo;
     },
     toSetOrders(shipments) {
       this.unmount_clear()
-      this.detalToShipmentsSort(shipments.detals)
+      this.detalToShipmentsSort(shipments.detals);
     },
     keySearch(v) {
-      this.filterDetalToArticle(v)
+      this.filterDetalToArticle(v);
     },
     unmount_sh_list(res) {
-      if(res) this.fetchAllShipmentsSclad(true)
+      if(res) this.fetchAllShipmentsSclad(true);
     },
     unmount_tech_process() {
-      this.techProcessID = null
+      this.techProcessID = null;
     },
     returnShipmentsDateModal(izd) {
       const shipments = izd.shipments;
@@ -296,71 +296,71 @@ export default {
         izd: this.toProductionArr,
         type: 'det'
       }
-      this.startProductionModalKey = random(1, 999)
+      this.startProductionModalKey = random(1, 999);
     },
     toProduction(izd, e) {
-      e.classList.toggle('checkbox_block_select')
-      let check = true
+      e.classList.toggle('checkbox_block_select');
+      let check = true;
       for(let izdd of this.toProductionArr) {
         if(izdd.id == izd.id) {
-          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id)
-          check = false
+          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
+          check = false;
         }
       }
-      if(check) this.toProductionArr.push(izd)
+      if(check) this.toProductionArr.push(izd);
     },
     setIzdels(izd) {
-      this.select_izd = izd
+      this.select_izd = izd;
     },
     selectAllItem() {
       if(this.toProductionArr.length < this.allDetal.length) {
-        this.toProductionArr = this.allDetal
-        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'))
+        this.toProductionArr = this.allDetal;
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'));
       } else {
-        this.toProductionArr = []
-        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.remove('checkbox_block_select'))
+        this.toProductionArr = [];
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.remove('checkbox_block_select'));
       }
     },
     getTimming(param, kol = 1) {
-      if(!param) return 0
+      if(!param) return 0;
       try {
-        let pars = JSON.parse(param)
+        let pars = JSON.parse(param);
         if(pars) 
-          return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2)
+          return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2);
       } catch(e) {
-        console.error(e)
+        console.error(e);
       }
     },
     openDescription(description) {
-      this.showDescriptionModal = true
-      this.descriptionKey = random(1, 999)
-      this.description = description
+      this.showDescriptionModal = true;
+      this.descriptionKey = random(1, 999);
+      this.description = description;
     },
     alt(e) {
       if(!this.select_izd)
-        return showMessage('', 'Для начала выберите Деталь, иначе данные не сохранятся!', 'w', this)
-      this.select_izd.my_kolvo = Number(e.innerText)
+        return showMessage('', 'Для начала выберите Деталь, иначе данные не сохранятся!', 'w', this);
+      this.select_izd.my_kolvo = Number(e.innerText);
     },
     showInformIzdel(id) {
-      if(!id) return false 
-      this.parametrs_detal = id
-      this.detalModalKey = random(1, 999)
+      if(!id) return false;
+      this.parametrs_detal = id;
+      this.detalModalKey = random(1, 999);
 		},
     changeDatePicterRange(val) {
-      console.log(val)
+      console.log(val);
     },
     showTechProcess(detal) {
-      if(!detal.techProcesses) return showMessage('', 'Нет Технологического процесса', 'w', this)
-      this.techProcessID = detal.techProcesses.id
-      this.techProcessKey = random(1, 999)
+      if(!detal.techProcesses) return showMessage('', 'Нет Технологического процесса', 'w', this);
+      this.techProcessID = detal.techProcesses.id;
+      this.techProcessKey = random(1, 999);
     },
   },
   async mounted() {
-    this.loader = true
-    this.reverseMidlevareDetal()
-    await this.setchDeficitDeficit()
-    await this.fetchAllShipments({sort: undefined, light: true})
-    this.loader = false
+    this.loader = true;
+    this.reverseMidlevareDetal();
+    await this.setchDeficitDeficit();
+    await this.fetchAllShipments({sort: undefined, light: true});
+    this.loader = false;
   }
 }
 </script>

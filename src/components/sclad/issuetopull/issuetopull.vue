@@ -14,7 +14,7 @@
       </div>
     </div>
     <div>
-      <div class="scroll-table" style='width: 99%; height: fit-content;'>
+      <!-- <div class="scroll-table" style='width: 99%; height: fit-content;'>
       <table>
         <tr>
           <th colspan="10"></th>
@@ -94,105 +94,90 @@
           </td>
         </tr>
       </table>
+      </div> -->
+      <div style='width: fit-content;'>
+				<TableShipmentsSclad 
+					v-if='getShipments.length'
+					:shipmentsArr='getShipments'
+					@unmount='unmount_table_shipments'/>
       </div>
       <div class='btn-control'>
         <button class="btn-small">Сбросить все фильтры</button>
         <button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
       </div>
     </div>
-    <DescriptionModal
-      v-if='showDescriptionModal'
-      :key='descriptionKey'
-    />
     <Shipment 
-      v-if='showShipmentModal'
+      v-if='showShipmentModal && select_shipments'
       :key='shipmentKey'
+      :shipments_id='select_shipments.id'
+      @unmount='unmount_sh_complit'
     />
-    <DescriptionModal 
-      v-if='showDescriptionModal'
-      :key='descriptionKey'
-      :parametrs='description'
+    <InformFolder
+      :message = 'message'
+      :type = 'type'
+      v-if='message'
+      :key='keyInformTip'
+      :title='titleMessage'
     />
-    <OpensFile 
-      :parametrs='itemFiles' 
-      v-if="itemFiles.length" 
-      :key='keyWhenModalGenerateFileOpen'
-      />
     <Loader v-if='loader' />
   </div>
 </template>
 
 <script>
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import Shipment from './shippment.vue';
-import { dateIncrementHors } from '@/js/';
-import {mapGetters, mapActions} from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import DescriptionModal from '@/components/description-modal.vue';
+import Shipment from './sh-comlit.modal';
+import { mapGetters, mapActions } from 'vuex';
+import DatePicterRange from '@/components/date-picter-range';
+import TableShipmentsSclad from '@/components/issueshipment/table-complect-sclad';
+
 export default {
   data() {
     return {
-      showDescriptionModal: false,
-      descriptionKey: random(1, 999),
-
       showShipmentModal: false,
       shipmentKey: random(1, 999),
       select_shipments: null,
-      span: null,
-      description: '',
       loader: false,
 
-      keyWhenModalGenerateFileOpen: random(1, 999),
-      itemFiles: []
+      keyInformTip: random(1, 999),
+      message: '',
+      type: 's',
+
+			tr: null,
     }
   },
-  components: {DatePicterRange, DescriptionModal, Shipment, OpensFile},
+  components: {
+    DatePicterRange,
+    Shipment,
+    TableShipmentsSclad
+  },
   computed: mapGetters(['getShipments']),
   methods: {
-    ...mapActions(['fetchAllShipments']),
-    openDescription(description) {
-      this.showDescriptionModal = true
-      this.descriptionKey = random(1, 999)
-      this.description = description
+    ...mapActions(['fetchAllShipments', 'fetchAllShipmentsTo']),
+    unmount_table_shipments(sh) {
+      this.select_shipments = sh;
     },
     openShipment() {
+      console.log(this.select_shipments);
+      if(!this.select_shipments || !this.select_shipments.id) 
+        return showMessage('', 'Для начала выберите задачу', 'w', this);
+      
       this.showShipmentModal = true;
-      this.shipmentKey = random(1, 999)
+      this.shipmentKey = random(1, 999);
+    },
+    async unmount_sh_complit() {
+      this.loader = true;
+      await this.fetchAllShipmentsTo();
+      this.loader = false;
     },
     changeDatePicterRange(val) {
-      console.log(val)
-    },
-    returnKomplectinos(list_komplect) {
-      if(!list_komplect) return []
-      try {
-        const pars = JSON.parse(list_komplect)
-        if(!pars) return []
-        return pars
-      } catch(e) {console.error(e)}
-    },
-    incrementDay(date = new Date().toLocaleString('ru-RU').split(',')[0], day) {
-      const dat = dateIncrementHors(date, day*24)
-      return `${dat.iterationHors}`
-    },
-    openDocuments(documents) {
-      if(documents && documents.length) {
-        this.keyWhenModalGenerateFileOpen = random(1, 999)
-        this.itemFiles = documents
-      } else showMessage('', 'Документов нет', 'w', this)
-    },
-    setShipments(shipments, e) {
-      if(this.span) e.classList.remove('checkbox_block_select')
-      this.span = e
-      this.span.classList.add('checkbox_block_select')
-      this.select_shipments = shipments
-    },
+      console.log(val);
+    }
   },
   async mounted() {
-    this.loader = true
-    await this.fetchAllShipments()
-    this.loader = false
+    this.loader = true;
+    await this.fetchAllShipmentsTo();
+    this.loader = false;
   }
 }
 </script>

@@ -214,8 +214,7 @@ export default {
       this.hiddens = 'display: none;';
     },
     unmount(e) {
-      if(!e) 
-        return 0
+      if(!e) return 0;
       this.formData = e.formData;
       if(this.formData.get('document'))
         this.document = this.formData.get('document').name;
@@ -238,7 +237,6 @@ export default {
         if(!result) continue;
 
         this.product.push(result);
-        console.log(this.product);
       }
     },
     returnEzName (ez) {
@@ -261,7 +259,7 @@ export default {
         for(let prov = 0; prov < this.allProvider.length; prov++) {
           if(this.allProvider[prov].id == dev.provider.id && this.allProvider[prov].product && this.allProvider[prov].product.length) {
             try {
-              const pars = JSON.parse(dev.product)
+              const pars = JSON.parse(dev.product);
               for(let d of pars) {
                 this.allProvider[prov].product.push(d);
               }
@@ -283,8 +281,7 @@ export default {
       return returnTypePosition(type)[0];
     },
     pushToServer() {
-      if(!this.provider)
-        return showMessage('', 'Выберите поставщика!', 'w', this);
+      if(!this.provider) return showMessage('', 'Выберите поставщика!', 'w', this);
       if(!this.formData.get('docs') && !this.formData.get('document'))
         return showMessage('', 'Обязательно прикрепите документ!', 'w', this);
 

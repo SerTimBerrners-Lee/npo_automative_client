@@ -129,14 +129,16 @@
 </div>
 </template>
 <script>
-import {random} from 'lodash';
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
-import DatePicterCustom from '@/components/date-picter.vue';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-import TableShipments from '@/components/issueshipment/table-komplect.vue';
+import { random } from 'lodash';
+import { eSelectSpan } from '@/js/methods.js';
+import OpensFile from '@/components/filebase/openfile';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import DatePicterCustom from '@/components/date-picter';
+import CbedModalInfo from '@/components/cbed/cbed-modal';
+import DetalModal from '@/components/basedetal/detal-modal';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import TableShipments from '@/components/issueshipment/table-komplect';
+
 export default {
   props: ['id_shipments'],
   data() {
@@ -212,92 +214,88 @@ export default {
 		]),
 		...mapMutations(['setOneShipment']),
 		destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
 
-			this.$emit('unmount_shpment')
+			this.$emit('unmount_shpment');
 		},
 		changeDatePicter(date) {
-			this.date_order = date
+			this.date_order = date;
 		},
 		changeDatePicterShipments(date) {
-			this.date_shipments = date
+			this.date_shipments = date;
 		},
 		setDocs(dc) {
-      this.itemFiles = dc
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      this.itemFiles = dc;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
 		selectTr(inx, e) {
-			if(this.select_tr_inx == inx && this.tr) {
-				this.tr.classList.remove('td-row-all')
-				return this.select_tr_inx = null
-			}
-			if(this.tr) 
-				this.tr.classList.remove('td-row-all')
-			this.tr = e
-			this.tr.classList.add('td-row-all')
+			if(this.select_tr_inx == inx && this.tr) 
+				return this.select_tr_inx = null;
 
-			this.select_tr_inx = inx
+			this.tr = eSelectSpan(this.tr, e);
+			this.select_tr_inx = inx;
 		},
 		editVariable() {
-			this.date_order = this.getOneShipments.date_order
-			this.date_shipments = this.getOneShipments.date_shipments
-			this.kol = this.getOneShipments.kol
-			this.bron = this.getOneShipments.bron
-			this.base = this.getOneShipments.base
-			this.buyer = this.getOneShipments.buyer?.id
-			this.to_sklad = this.getOneShipments.to_sklad
-			this.number_order = this.getOneShipments.number_order
+			this.date_order = this.getOneShipments.date_order;
+			this.date_shipments = this.getOneShipments.date_shipments;
+			this.kol = this.getOneShipments.kol;
+			this.bron = this.getOneShipments.bron;
+			this.base = this.getOneShipments.base;
+			this.buyer = this.getOneShipments.buyer?.id;
+			this.to_sklad = this.getOneShipments.to_sklad;
+			this.number_order = this.getOneShipments.number_order;
 			if(this.getOneShipments.productId) {
 				this.getAllProductByIdLight(this.getOneShipments.productId)
-				.then(res => this.select_product = res)
-			} else this.is_not_product = true
+				.then(res => this.select_product = res);
+			} else this.is_not_product = true;
 
-			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents
+			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents;
 			try {
 				if(this.getOneShipments.list_cbed_detal)
-					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal)
+					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal);
 				if(this.getOneShipments.list_hidden_cbed_detal)
-					this.list_hidden_cbed_detal = JSON.parse(this.getOneShipments.list_hidden_cbed_detal)
+					this.list_hidden_cbed_detal = JSON.parse(this.getOneShipments.list_hidden_cbed_detal);
 			} catch(e) {console.error(e)}
-			this.description = this.getOneShipments.description
+			this.description = this.getOneShipments.description;
 		},
 		showInformIzdel(id, type) {
 			if(type == 'cbed') {
 				if(id) {
-					this.parametrs_cbed = id
-					this.cbedModalKey = random(1, 999)
+					this.parametrs_cbed = id;
+					this.cbedModalKey = random(1, 999);
 				}
 			}
 			if(type == 'detal') {
 				if(id) {
-					this.parametrs_detal = id
-					this.detalModalKey = random(1, 999)
+					this.parametrs_detal = id;
+					this.detalModalKey = random(1, 999);
 				}
 			}
 		}
 	},
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
-		this.loader = true
+		this.loader = true;
 
-		await this.fetchAllBuyers(true)
-		await this.fetchAllShipmentsTo()
+		await this.fetchAllBuyers(true);
+		await this.fetchAllShipmentsTo();
 
-		this.list_cbed_detal = []
-		this.list_hidden_cbed_detal = []
+		this.list_cbed_detal = [];
+		this.list_hidden_cbed_detal = [];
 
-		if(!this.$props.id_shipments) return this.destroyModalF()
-		const result = await this.fetchAllShipmentsById({id: this.$props.id_shipments, light: true})
-		if(!result) return this.destroyModalF()
-		this.setOneShipment(result)
-		this.editVariable()
+		if(!this.$props.id_shipments) return this.destroyModalF();
+		const result = await this.fetchAllShipmentsById({id: this.$props.id_shipments, light: true});
 
-		this.loader = false
+		if(!result) return this.destroyModalF();
+		this.setOneShipment(result);
+		this.editVariable();
+
+		this.loader = false;
   },
 }
 </script>
