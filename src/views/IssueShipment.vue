@@ -5,16 +5,7 @@
 			<DatePicterRange 
 				@unmount='changeDatePicterRange'  
 			/>
-			<div>
-				<select 
-					class='select-small' 
-					v-model='selectEnumShipments'>
-					<option 
-						v-for='item of enumShipments' 
-						:key='item' 
-						:value='item'>{{ item }}</option>
-				</select>
-			</div>
+			<SortStatus />
 		</div>
 		<div>
 			<h3>Комлектация</h3>
@@ -53,9 +44,10 @@
 <script>
 import {random} from 'lodash';
 import {showMessage} from '@/js/';
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import TableShipments from '@/components/issueshipment/table-komplect.vue';
+import {mapActions, mapGetters} from 'vuex';
+import DatePicterRange from '@/components/date-picter-range';
+import SortStatus from '@/components/issueshipment/sort-status';
+import TableShipments from '@/components/issueshipment/table-komplect';
 export default {
 	data() {
 		return {
@@ -66,52 +58,33 @@ export default {
       keyInformTip: random(1, 999),
 
 			loader: false,
-
-			enumShipments: [
-				'Все',				
-				'Заказано',
-				'Удалено',
-				'Выполняется',
-				'Отгружено',
-				'Просрочено'
-			],
-			selectEnumShipments: 'Все'
 		}	
 	},
 	computed: mapGetters(['getShipments']),
 	components: {
 		DatePicterRange,
-		TableShipments
-	},
-	watch: {
-		selectEnumShipments: function(val) {
-			this.filterShipmentsToStatus(val)
-		}
+		TableShipments,
+		SortStatus
 	},
 	methods: {
 		...mapActions([ 
 			'fetchDeleteShipments',
 			'fetchAllShipmentsTo'
 		]),
-		...mapMutations([
-      'setOneShipment',
-			'filterShipmentsToStatus'
-    ]),
 		unmount_table_shipments(select_shipemnts) {
-			if(!select_shipemnts) return false
-			this.selectShipments = select_shipemnts
+			if(!select_shipemnts) return false;
+			this.selectShipments = select_shipemnts;
 		},
 		changeDatePicterRange(val) {
       console.log(val)
     },
 		edit() {
-			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this)
-
-			this.$router.push({ path: "/addorder/true/false" })
+			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this);
+			this.$router.push({ path: "/addorder/true/false" });
 		},
 		deleteF() {
-			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this)
-			this.fetchDeleteShipments(this.selectShipments.id)
+			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this);
+			this.fetchDeleteShipments(this.selectShipments.id);
 		}
 	},
 	async mounted() {

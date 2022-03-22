@@ -11,90 +11,10 @@
           <label for='z'>Не учитывать "На склад"</label>
           <input id='z' type="checkbox">
         </div>
+        <SortStatus />
       </div>
     </div>
     <div>
-      <!-- <div class="scroll-table" style='width: 99%; height: fit-content;'>
-      <table>
-        <tr>
-          <th colspan="10"></th>
-          <th colspan="2">Задачи склада</th>
-          <th colspan="3"></th>
-          <th colspan="3">Остатки</th>
-          <th colspan="6"></th>
-        </tr>
-        <tr>
-          <th> 
-            <unicon name="check" fill="royalblue" />
-          </th>
-          <th>№ Заказа </th>
-          <th>Дата заказа</th>
-          <th>Наименование изделия</th>
-          <th>Комплектация, особенности заказа</th>
-          <th>Кол-во</th>
-          <th>Дата отгрузки</th>
-          <th>Осталось дней</th>
-          <th>Основание</th>
-          <th>Покупатель</th>
-          <th>Выполнение заготовительных операций, %</th>
-          <th>Комплектация участка сборки покупными деталями, %</th>
-          <th>Готовность к отгрузке, %</th>
-          <th>Статус</th>
-          <th>Потребность к отгрузке</th>
-          <th>На складе</th>
-          <th>На произв-в или план. остаток</th>
-          <th>Всего</th>
-          <th>Заводской №</th>
-          <th>ФИО сборщика</th>
-          <th>ФИО контроль</th>
-          <th>Документы</th>
-          <th>Примечание</th>
-        </tr>
-        <tr 
-          v-for='ship of getShipments' 
-          :key='ship'
-        >
-          <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-            <p class="checkbox_block" @click='e => setShipments(ship, e.target)'></p>
-          </td>
-          <td class='center'> {{ ship.number_order }}</td>
-          <td class='center'> {{ ship.date_order }} </td>
-          <td class='center'> {{ ship.product.name }} </td>
-          <td class='center komplect_td'> 
-            <p class='komplect_p' v-for='prod of returnKomplectinos(ship.list_cbed_detal)' :key='prod'>
-              <span class='prod_name'>{{prod.obj.name}}</span>
-              <span class='kol'>{{prod.kol}}</span>
-            </p> 
-          </td>
-          <td class='center'> {{ ship.kol }} </td>
-          <td>{{ ship.date_order }}</td>
-          <td class='center'> {{ incrementDay(undefined, ship.day_when_shipments) }} </td>
-          <td class='center'>{{ ship.base }}</td>
-          <td>{{ ship.buyer.name }}</td>
-          <td class='center'>{{ 0 }}</td>
-          <td class='center'>{{ 0 }}</td>
-          <td class='center'>{{ 0 }}</td>
-          <td>{{ ship.status }}</td>
-          <td class='center'>{{ 0 }}</td>
-          <td class='center'>{{ 0 }}</td>
-          <td class='center'>{{ 0 }}</td>
-          <td class='center'>{{ 0 }}</td>
-          <td class='center'>{{ ship.product.fabricNumber }}</td>
-          <td class='center'>{{  }}</td>
-          <td class='center'>{{  }}</td>
-          <td class='center'>
-            <img src="@/assets/img/link.jpg" @click='openDocuments(ship.documents)' class='link_img' atl='Показать' />
-          </td>
-          <td class='center'>
-            <img 
-              src="@/assets/img/link.jpg" 
-              @click='openDescription(ship.description)' 
-              class='link_img' 
-              atl='Показать' />
-          </td>
-        </tr>
-      </table>
-      </div> -->
       <div style='width: fit-content;'>
 				<TableShipmentsSclad 
 					v-if='getShipments.length'
@@ -129,6 +49,7 @@ import { showMessage } from '@/js/';
 import Shipment from './sh-comlit.modal';
 import { mapGetters, mapActions } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range';
+import SortStatus from '@/components/issueshipment/sort-status';
 import TableShipmentsSclad from '@/components/issueshipment/table-complect-sclad';
 
 export default {
@@ -149,7 +70,8 @@ export default {
   components: {
     DatePicterRange,
     Shipment,
-    TableShipmentsSclad
+    TableShipmentsSclad,
+    SortStatus
   },
   computed: mapGetters(['getShipments']),
   methods: {
@@ -158,7 +80,6 @@ export default {
       this.select_shipments = sh;
     },
     openShipment() {
-      console.log(this.select_shipments);
       if(!this.select_shipments || !this.select_shipments.id) 
         return showMessage('', 'Для начала выберите задачу', 'w', this);
       
