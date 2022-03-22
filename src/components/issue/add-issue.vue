@@ -145,11 +145,11 @@ import {random, isEmpty} from 'lodash';
 import PATH_TO_SERVER from '@/js/path';
 import {mapGetters, mapActions} from 'vuex';
 import { dataFormat, photoPreloadUrl } from '@/js/';
-import OpensFile from '@/components/filebase/openfile.vue';
-import DatePicterCustom from '@/components/date-picter.vue';
-import ModalUsersList from '@/components/users/modal-list-user.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
+import OpensFile from '@/components/filebase/openfile';
+import DatePicterCustom from '@/components/date-picter';
+import ModalUsersList from '@/components/users/modal-list-user';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import BaseProductModal from '@/components/baseproduct/base-product-all-modal';
 export default {
   props: ['parametrs', 'editIssue', 'is_me'],
   data() {

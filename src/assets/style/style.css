@@ -702,7 +702,7 @@ textarea {
 	font-weight: bold;
 }
 
-.click {
+.click, .cursor {
   cursor: pointer;
 }
 

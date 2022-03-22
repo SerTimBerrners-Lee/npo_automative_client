@@ -52,8 +52,12 @@
               <td></td>
               <td class='center'>{{ shipments?.product?.fabricNumber }}</td>
               <td class='center'>{{ shipments.date_shipments }}</td>
-              <td></td>
-              <td></td>
+              <td class='center cursor' @click='selectUser("executor")'>
+                {{ creater_user ? creater_user?.initial : 'Выбрать' }}
+              </td>
+              <td class='center cursor' @click='selectUser("controller")'>
+                {{ responsible_user ? responsible_user?.initial : 'Выбрать' }}
+              </td>
             </tr>
           </table>
         </div>
@@ -102,6 +106,12 @@
       v-if="showModalFiles" 
       :key='keyWhenModalGenerateFileOpen'
     />
+    <ModalUsersList 
+      v-if='showModalUser'
+      :key='keyModalUser'
+      :get_one='true'
+      @unmount='unmount_user_modal'
+    />
     <Loader v-if='loader' />
   </div>
 </div>
@@ -113,6 +123,7 @@ import { mapActions } from 'vuex';
 import { showMessage } from '@/js/';
 import AddFile from '@/components/filebase/addfile';
 import OpensFile from '@/components/filebase/openfile';
+import ModalUsersList from '@/components/users/modal-list-user';
 import KomplectModal from '@/components/issueshipment/komplect-modal';
 
 export default {
@@ -136,6 +147,8 @@ export default {
 
       parametrs_komplect: null,
 			komplect_generate_key: random(1, 999),
+      showModalUser: false, 
+      keyModalUser: random(1, 999),
 
       shipments: null,
 
@@ -151,10 +164,19 @@ export default {
       
       name_check: '',
 
+      responsible_user: '',
+      creater_user: '',
+      typeOpen: '',
+
       loader: false
     }
   },
-  components: { KomplectModal, OpensFile, AddFile },
+  components: { 
+    KomplectModal,
+    OpensFile,
+    AddFile,
+    ModalUsersList
+  },
   methods: {
     ...mapActions([
       'fetchAllShipmentsById',
@@ -167,6 +189,13 @@ export default {
 			this.hiddens = 'display: none;';
 
       this.$emit('unmount', this.shipments_id);
+    },
+    unmount_user_modal(data) {
+      if(!data) return false;
+
+      if(this.typeOpen == 'executor') this.creater_user = data;
+      if(this.typeOpen == 'controller') this.responsible_user = data;
+      this.typeOpen = '';
     },
     update() {
       this.date_order = this.shipments.date_order;
@@ -191,6 +220,12 @@ export default {
       this.keyWhenModalGenerate = random(10, 999);
       this.isChangeFolderFile = true;
     },
+    selectUser(type) {
+      this.typeOpen = type;
+
+      this.showModalUser = true;
+      this.keyModalUser = random(1, 999);
+    },
     async save() {
       this.formData.append('date_order', this.date_order.id);
       this.formData.append('number_order', this.number_order);
@@ -199,6 +234,8 @@ export default {
       this.formData.append('description', this.description);
       this.formData.append('name_check', this.name_check);
       this.formData.append('shipments_id', this.shipments_id);
+      this.formData.append('responsible_user_id', this.responsible_user.id || '');
+      this.formData.append('creater_user_id', this.creater_user.id || '');
 
       const saveResult = await this.fetchCreateShComplit(this.formData);
       if(saveResult) 

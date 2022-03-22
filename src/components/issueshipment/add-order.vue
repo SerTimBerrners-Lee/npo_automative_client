@@ -7,7 +7,7 @@
 
 		<h3>Создать заказ</h3>
 		<div class="block">
-			<p class='p_flex'>
+			<p class='p_flex'> 
 				<span>Дата заказа:</span>
 				<DatePicterCustom 
 					@unmount='changeDatePicter' 
