@@ -88,7 +88,7 @@
           @unmount='file_unmount'
           :key='keyWhenModalGenerate'
             />
-        <div v-if='arrFileGet.length > 0'>
+        <div>
           <h3>Документы</h3>
           <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs'/>
           <div class="btn-control">
