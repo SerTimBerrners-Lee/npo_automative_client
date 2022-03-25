@@ -35,6 +35,9 @@ export default {
 	},
   methods: {
     ...mapMutations(['filterShipmentsToStatus'])
+  },
+  mounted() {
+    this.selectEnumShipments = 'Выполняется';
   }
 }
 </script>

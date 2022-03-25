@@ -88,18 +88,11 @@
           @unmount='file_unmount'
           :key='keyWhenModalGenerate'
             />
-        <div v-if='documents.length > 0'>
+        <div v-if='arrFileGet.length > 0'>
           <h3>Документы</h3>
-          <table class="file_table">
-            <tr>
-              <th>Файл</th>
-            </tr>
-            <tr class="td-row" v-for='doc in documents' :key='doc' @click='setDocs(doc)'>
-              <td>{{ doc.name }}</td>
-            </tr>
-          </table>
+          <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs'/>
           <div class="btn-control">
-            <button class="btn-small" @click='openDock'>Открыть</button>
+            <button class="btn-small" @click='addFileModal'>Добавить файл из базы</button>
             <button class="btn-small" @click='removeFile'>Удалить</button>
           </div>
         </div>
@@ -109,11 +102,6 @@
       <button class="btn-status" @click='exit'>Отменить</button>
       <button class="btn-status btn-black" @click="addInstrument">Сохранить</button>
     </div>
-    <OpensFile 
-      :parametrs='itemFiles' 
-      v-if="showFile" 
-      :key='keyWhenModalGenerateFileOpen'
-    />
     <InformFolder  
       :title='titleMessage'
       :message = 'message'
@@ -121,17 +109,24 @@
       v-if='message'
       :key='keyInformTip'
     />
+    <BaseFileModal 
+      v-if='showModalFile'
+      :key='fileModalKey'
+      :fileArrModal='arrFileGet'
+      @unmount='unmount_filemodal'
+    />
     <Loader v-if='loader' />
   </div>
 </template>
 <script>
 import { showMessage } from '@/js/';
 import { isEmpty, random }  from 'lodash';
-import AddFile from '@/components/filebase/addfile.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
+import AddFile from '@/components/filebase/addfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
+import TableMaterial from '@/components/mathzag/table-material';
+import MiniTableDocuments from '@/components/filebase/mini-table';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import ListProvider from '@/components/baseprovider/list-provider';
 export default {
   data() {
     return {
@@ -142,8 +137,6 @@ export default {
       isChangeFolderFile: false,
       keyWhenModalGenerate: random(10, 999),
       itemFiles: null,
-      showFile: false,
-      keyWhenModalGenerateFileOpen: random(10, 999),
       documents: [],
       showProvider: false,
       keyWhenModalListProvider: random(10, 999),
@@ -166,7 +159,11 @@ export default {
       type: '',
       showInformPanel: false,
       keyInformTip: 0,
-      attention: false
+      attention: false,
+
+      fileModalKey: random(1, 999),
+      showModalFile: false,
+      arrFileGet: [],
     }
   }, 
   updated() {
@@ -180,7 +177,13 @@ export default {
     'getOneNameInstrument', 
     'getRoleAssets'
   ]),
-  components: {TableMaterial, AddFile, OpensFile, ListProvider},
+  components: {
+    TableMaterial,
+    AddFile,
+    ListProvider,
+    MiniTableDocuments,
+    BaseFileModal
+  },
   methods: {
     ...mapActions([
       'fetchAllInstruments', 
@@ -195,126 +198,131 @@ export default {
       'filterAllInstrumentNyId', 
       'delitPathNavigate'
     ]),
+    unmount_filemodal(res) {
+      if(res) this.arrFileGet = res;
+    },
     addInstrument() {
       if(this.$route.params.copy == 'false' && !this.obj.id)
-        return 0
+        return 0;
       if(this.$route.params.copy != 'false' && !this.PTInstrument)
-        return showMessage('', 'Выберите Подтип', 'w', this)
+        return showMessage('', 'Выберите Подтип', 'w', this);
       if(this.$route.params.copy != 'false' && !this.TInstrument)
-        return showMessage('', 'Выберите тип', 'w', this)
+        return showMessage('', 'Выберите тип', 'w', this);
       if(this.obj.name.length < 3)
-        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this)
+        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this);
       
-      if(!this.formData) 
-        this.formData = new FormData()
+      if(!this.formData) this.formData = new FormData();
       
       if(this.providersId)
-        this.providersId = JSON.stringify(this.providersId)
+        this.providersId = JSON.stringify(this.providersId);
 
-      this.formData.append('name', this.obj.name)
-      this.formData.append('deliveryTime', this.obj.deliveryTime)
-      this.formData.append('mountUsed', this.obj.mountUsed)
-      this.formData.append('minOstatok', this.obj.minOstatok)
-      this.formData.append('description', this.obj.description)
-      this.formData.append('providers', this.providersId)
-      this.formData.append('attention', this.attention)
+      this.formData.append('name', this.obj.name);
+      this.formData.append('deliveryTime', this.obj.deliveryTime);
+      this.formData.append('mountUsed', this.obj.mountUsed);
+      this.formData.append('minOstatok', this.obj.minOstatok);
+      this.formData.append('description', this.obj.description);
+      this.formData.append('providers', this.providersId);
+      this.formData.append('attention', this.attention);
+
+      console.log(this.arrFileGet, 'arrFileGet')
+      if(this.arrFileGet.length) {
+        const file_arr = this.arrFileGet.map(el => el.id);
+        this.formData.append('documents_base', JSON.stringify(file_arr));
+      }
+
       if(this.$route.params.copy == 'false') {
-        this.formData.append('id', this.obj.id)
-        this.updateNameInstrument(this.formData)
+        this.formData.append('id', this.obj.id);
+        this.updateNameInstrument(this.formData);
       } else {
-        if(!this.PTInstrument && !this.TInstrument)
-          return 0
-        this.formData.append('rootParentId', this.TInstrument.id)
-        this.formData.append('parentId', this.PTInstrument.id)
-        this.addNameInstrument(this.formData)
+        if(!this.PTInstrument && !this.TInstrument) return 0;
+
+        this.formData.append('rootParentId', this.TInstrument.id);
+        this.formData.append('parentId', this.PTInstrument.id);
+        this.addNameInstrument(this.formData);
       }
       this.exit()
     },
+    addFileModal() {
+      this.fileModalKey = random(1, 999);
+      this.showModalFile = true;
+    },
     removeFile() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.removeFileInstrument(this.itemFiles.id)
-      this.documents = this.document.filter(dc => dc.id != this.itemFiles.id)
+      if(isEmpty(this.itemFiles)) return 0;
+      this.removeFileInstrument(this.itemFiles.id);
+      this.documents = this.document.filter(dc => dc.id != this.itemFiles.id);
     },
     pushProvider(provider) { 
-      if(!provider)
-        return 0
-      this.providers.push(provider)
-      this.providersId.push({id: provider.id})
+      if(!provider) return 0;
+      this.providers.push(provider);
+      this.providersId.push({id: provider.id});
     },
     addProvider() {
-      this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 999)
+      this.showProvider = true;
+      this.keyWhenModalListProvider = random(10, 999);
     },
     setDocs(dc) {
-        this.itemFiles = dc
-    },
-    openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      this.itemFiles = dc;
     },
     checkedUpdate() {
       if(isEmpty(this.getOneNameInstrument)) 
-        return this.$router.push('/basetools')
+        return this.$router.push('/basetools');
           
       if(this.$route.params.copy == 'false') {
         this.filterAllInstrumentNyId({
           type: this.getOneNameInstrument.rootParentId, 
           pType: this.getOneNameInstrument.parent.id
-        })
+        });
 
-        this.obj.id = this.getOneNameInstrument.id
-        this.obj.parentId = this.getOneNameInstrument.parent.id
+        this.obj.id = this.getOneNameInstrument.id;
+        this.obj.parentId = this.getOneNameInstrument.parent.id;
       }              
       
-      this.obj.name = this.getOneNameInstrument.name
-      this.obj.deliveryTime = this.getOneNameInstrument.deliveryTime
-      this.obj.mountUsed = this.getOneNameInstrument.mountUsed
-      this.obj.minOstatok = this.getOneNameInstrument.minOstatok
-      this.obj.description = this.getOneNameInstrument.description
-      this.documents = this.getOneNameInstrument.documents
-      this.providers = this.getOneNameInstrument.providers
-      this.attention = this.getOneNameInstrument.attention
+      this.obj.name = this.getOneNameInstrument.name;
+      this.obj.deliveryTime = this.getOneNameInstrument.deliveryTime;
+      this.obj.mountUsed = this.getOneNameInstrument.mountUsed;
+      this.obj.minOstatok = this.getOneNameInstrument.minOstatok;
+      this.obj.description = this.getOneNameInstrument.description;
+      this.arrFileGet = this.getOneNameInstrument.documents;
+      this.providers = this.getOneNameInstrument.providers;
+      this.attention = this.getOneNameInstrument.attention;
       this.providers.forEach(provider => {
-        this.providersId.push({id: provider.id})
+        this.providersId.push({id: provider.id});
       })
 
     },
     clickTInstrument(instrument) {
-      this.TInstrument = instrument
-      this.filterAllpInstrument(instrument)
+      this.TInstrument = instrument;
+      this.filterAllpInstrument(instrument);
     },
     clickPTInstrument(PTInstrument) {
-      this.PTInstrument = PTInstrument
+      this.PTInstrument = PTInstrument;
     },
     clickPPTInstrument(PPTInstrument) {
-      this.PPTInstrument = PPTInstrument
+      this.PPTInstrument = PPTInstrument;
     },
     addDock(val) {
       val.target.files.forEach(f => {
-          this.docFiles.push(f)
+          this.docFiles.push(f);
       })
-      this.keyWhenModalGenerate = random(10, 999)
-      this.isChangeFolderFile = true
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
     file_unmount(e) { 
-      if(!e) return 0
-      this.formData = e.formData
+      if(!e) return 0;
+      this.formData = e.formData;
     },
     exit() {
-      this.$router.push('/basetools')
-      this.delitPathNavigate(this.$route.path)
+      this.$router.push('/basetools');
+      this.delitPathNavigate(this.$route.path);
     }
   },
   async mounted() {
-    this.loader = true
-    await this.getAllEdizm()
-    if(!this.$route.params.id) return this.exit()
-    await this.fetchOneNameInstrument(this.$route.params.id)
-    await this.checkedUpdate()
-    this.loader = false
+    this.loader = true;
+    await this.getAllEdizm();
+    if(!this.$route.params.id) return this.exit();
+    await this.fetchOneNameInstrument(this.$route.params.id);
+    await this.checkedUpdate();
+    this.loader = false;
   }
 }
 </script>

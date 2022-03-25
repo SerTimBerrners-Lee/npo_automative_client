@@ -152,19 +152,7 @@
               @unmount='file_unmount'/>
           </div>
           <div>
-            <table style='width: 85%; margin-top: 40px;' v-if='arrFileGet.length'>
-              <tr>
-                <th >Файл</th>
-              </tr>
-              <tr 
-                v-for='doc in  arrFileGet' 
-                :key='doc'
-                class='td-row'
-                @click='setDocs(doc)'
-                >
-                <td>{{ doc.name }}</td>
-              </tr>
-            </table>
+            <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs'/>
             <div class="btn-control" style='width: 83%; margin-top: 50px;'>
               <button class="btn-small" @click='addFileModal'>Добавить из базы</button>
             </div>
@@ -202,18 +190,19 @@
       :key='fileModalKey'
       :fileArrModal='arrFileGet'
       @unmount='unmount_filemodal'
-  />
+    />
   </div>
 </template>
 
 <script>
 import { showMessage } from '@/js/';
 import { random, isEmpty } from 'lodash';
-import OpensFile from '@/components/filebase/openfile.vue';
+import OpensFile from '@/components/filebase/openfile';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import TableMaterial from '@/components/mathzag/table-material';
+import MiniTableDocuments from '@/components/filebase/mini-table';
+import ListProvider from '@/components/baseprovider/list-provider';
+import BaseFileModal from '@/components/filebase/base-files-modal';
 export default {
   data() {
     return {
@@ -269,7 +258,13 @@ export default {
       fileModalKey: random(1, 999),
     }
   },
-  components: {TableMaterial, ListProvider, OpensFile, BaseFileModal},
+  components: { 
+    TableMaterial,
+    ListProvider,
+    OpensFile,
+    BaseFileModal,
+    MiniTableDocuments
+  },
   computed: {
     ...mapGetters([
       'alltypeM', 
@@ -302,107 +297,104 @@ export default {
       'addOnePPTyep'
     ]),
     unmount_filemodal(res) {
-      if(res) 
-        this.arrFileGet = res
+      if(res) this.arrFileGet = res;
     },
     pushProvider(provider) { 
-      if(!provider)
-        return 0
-      this.providers.push(provider)
-      this.providersId.push({id: provider.id})
+      if(!provider) return 0;
+      this.providers.push(provider);
+      this.providersId.push({id: provider.id});
     },
     addProvider() {
-        this.showProvider = true
-        this.keyWhenModalListProvider = random(10, 999)
+        this.showProvider = true;
+        this.keyWhenModalListProvider = random(10, 999);
     },
     file_unmount(e) { 
-      if(!e) return 0
-      this.formData = e.formData
+      if(!e) return 0;
+      this.formData = e.formData;
     },
     addItem(id = null) {
       if(this.$route.params.type != 'edit')  {
         if(this.obj.name == '') 
-          return showMessage('', 'У материала должно быть имя', 'w', this)
+          return showMessage('', 'У материала должно быть имя', 'w', this);
         if(!this.podMaterial)
-          return showMessage('', 'Выберите Подтип для материала', 'w', this)
+          return showMessage('', 'Выберите Подтип для материала', 'w', this);
         if(!this.material)
-          return showMessage('', 'Выберите Тип для материала', 'w', this)
+          return showMessage('', 'Выберите Тип для материала', 'w', this);
       }
-      let dat = this.obj 
+      const dat = this.obj;
       
-      if(!this.formData) 
-        this.formData = new FormData()
+      if(!this.formData) this.formData = new FormData();
         
-      this.formData.append('id', Number(id))
+      this.formData.append('id', Number(id));
 
       if(this.providersId)
-        this.providersId = JSON.stringify(this.providersId)
+        this.providersId = JSON.stringify(this.providersId);
 
       if(this.material)
-        this.formData.append('rootParentId', this.material.id)
-      this.formData.append('podTypeId', this.podMaterial.id)
-      this.formData.append('name', dat.name)
-      let length = JSON.stringify({
+        this.formData.append('rootParentId', this.material.id);
+      this.formData.append('podTypeId', this.podMaterial.id);
+      this.formData.append('name', dat.name);
+      const length = JSON.stringify({
         edizm: 7,
         znach: dat.length_input
-      })
-      this.formData.append('length', length)
-      let width = JSON.stringify({
+      });
+      this.formData.append('length', length);
+      const width = JSON.stringify({
         edizm: 7,
         znach: dat.width_input
-      }) 
-      this.formData.append('width', width)
-      let height = JSON.stringify({
+      });
+      this.formData.append('width', width);
+      const height = JSON.stringify({
         edizm: 7,
         znach: dat.height_input
-      })
-      this.formData.append('height', height)
-      let wallThickness =  JSON.stringify({
+      });
+      this.formData.append('height', height);
+      const wallThickness =  JSON.stringify({
         edizm: 7,
         znach: dat.wallThickness_input
-      })
-      this.formData.append('wallThickness', wallThickness)
-      let outsideDiametr = JSON.stringify({
+      });
+      this.formData.append('wallThickness', wallThickness);
+      const outsideDiametr = JSON.stringify({
         edizm: 7,
         znach: dat.outsideDiametr_input
-      }) 
-      this.formData.append('outsideDiametr', outsideDiametr)
-      let thickness = JSON.stringify({
+      });
+      this.formData.append('outsideDiametr', outsideDiametr);
+      const thickness = JSON.stringify({
         edizm: 7,
         znach: dat.thickness_input
-      }) 
-      this.formData.append('thickness', thickness)
+      });
+      this.formData.append('thickness', thickness);
 
-      let areaCrossSectional =  JSON.stringify({
+      const areaCrossSectional =  JSON.stringify({
         edizm: 10,
         znach: dat.areaCrossSectional_input
-      })
-      this.formData.append('areaCrossSectional', areaCrossSectional)
+      });
+      this.formData.append('areaCrossSectional', areaCrossSectional);
 
-      let density =  JSON.stringify({
+      const density =  JSON.stringify({
         edizm: 10,
         znach: dat.density_input
-      })
+      });
       
-      this.formData.append('density', density)
+      this.formData.append('density', density);
 
-      let deliveryTime = JSON.stringify({
+      const deliveryTime = JSON.stringify({
         edizm: 9,
         znach: dat.deliveryTime_input
-      })
-      this.formData.append('deliveryTime', deliveryTime)
+      });
+      this.formData.append('deliveryTime', deliveryTime);
 
-      let kolvo = JSON.stringify(dat.kolvo_select)
-      this.formData.append('kolvo', kolvo)
-      this.formData.append('providers', this.providersId) 
-      this.formData.append('description', dat.description)
-      this.formData.append('attention', this.attention)
+      const kolvo = JSON.stringify(dat.kolvo_select);
+      this.formData.append('kolvo', kolvo);
+      this.formData.append('providers', this.providersId) ;
+      this.formData.append('description', dat.description);
+      this.formData.append('attention', this.attention);
       if(this.arrFileGet.length) {
-        let new_array = []
-        for(let inx in this.arrFileGet) {
-          new_array.push(this.arrFileGet[inx].id)
+        const new_array = [];
+        for(const inx in this.arrFileGet) {
+          new_array.push(this.arrFileGet[inx].id);
         }
-        this.formData.append('file_base', JSON.stringify(new_array))
+        this.formData.append('file_base', JSON.stringify(new_array));
       }
 
       this.createNewPodPodMaterial(this.formData).then(res => {
@@ -414,135 +406,131 @@ export default {
           }
         }
         setTimeout(() => {
-          this.$router.push('/basematerial')
-          this.delitPathNavigate(this.$route.path)
-        }, 3000)
+          this.$router.push('/basematerial');
+          this.delitPathNavigate(this.$route.path);
+        }, 3000);
       })
     },
-    clickMat(mat, type) {
+    async clickMat(mat, type) {
       if(type == 'type') {
-        this.material = mat
-        this.setOneTypeMMytation(mat)
+        this.material = mat;
+        this.setOneTypeMMytation(mat);
         if(mat.podMaterials && mat.instansMaterial != 1) 
-          this.filterMatByPodType(mat.podMaterials)
-        this.obj.name = this.material.name
+          this.filterMatByPodType(mat.podMaterials);
+        this.obj.name = this.material.name;
       }
       if(type == 'podM') {
-        this.getOnePodType(mat.id).then((mat) => {
-          if(!mat) return 0
-          this.podMaterial = mat
-            if(JSON.parse(this.podMaterial.density))
-              this.obj.density_input =  JSON.parse(this.podMaterial.density).znach
-        
-          if(this.material)
-            this.obj.name = this.material.name + ' ' + this.podMaterial.name
-          else {
-            this.obj.name = ''
-            this.obj.name = this.obj.name + ' ' + mat.name 
-          }
-        })
+        const mats = await this.getOnePodType(mat.id);
+        if(!mats) return 0;
+        this.podMaterial = mats;
+        if(JSON.parse(this.podMaterial.density))
+          this.obj.density_input =  JSON.parse(this.podMaterial.density).znach;
+      
+        if(this.material)
+          this.obj.name = this.material.name + ' ' + this.podMaterial.name;
+        else {
+          this.obj.name = '';
+          this.obj.name = this.obj.name + ' ' + mats.name;
+        }
       }
     },
     updateInputSelect(mat) {
       if(mat.length) {
-        this.obj.length_select = JSON.parse(mat.length).edizm.id
-        this.obj.length_input = JSON.parse(mat.length).znach
+        this.obj.length_select = JSON.parse(mat.length).edizm.id;
+        this.obj.length_input = JSON.parse(mat.length).znach;
       }
       if(mat.width) {
-        this.obj.width_select = JSON.parse(mat.width).edizm.id
-        this.obj.width_input = JSON.parse(mat.width).znach
+        this.obj.width_select = JSON.parse(mat.width).edizm.id;
+        this.obj.width_input = JSON.parse(mat.width).znach;
       }
       if(mat.height) {
-        this.obj.height_select = JSON.parse(mat.height).edizm.id
-        this.obj.height_input = JSON.parse(mat.height).znach
+        this.obj.height_select = JSON.parse(mat.height).edizm.id;
+        this.obj.height_input = JSON.parse(mat.height).znach;
       }
       if(mat.wallThickness) {
-        this.obj.wallThickness_select = JSON.parse(mat.wallThickness).edizm.id
-        this.obj.wallThickness_input = JSON.parse(mat.wallThickness).znach
+        this.obj.wallThickness_select = JSON.parse(mat.wallThickness).edizm.id;
+        this.obj.wallThickness_input = JSON.parse(mat.wallThickness).znach;
       }
       if(mat.outsideDiametr) {
-        this.obj.outsideDiametr_select = JSON.parse(mat.outsideDiametr).edizm.id
-        this.obj.outsideDiametr_input = JSON.parse(mat.outsideDiametr).znach
+        this.obj.outsideDiametr_select = JSON.parse(mat.outsideDiametr).edizm.id;
+        this.obj.outsideDiametr_input = JSON.parse(mat.outsideDiametr).znach;
       }
       if(mat.thickness) {
-        this.obj.thickness_select = JSON.parse(mat.thickness).edizm.id
-        this.obj.thickness_input = JSON.parse(mat.thickness).znach
+        this.obj.thickness_select = JSON.parse(mat.thickness).edizm.id;
+        this.obj.thickness_input = JSON.parse(mat.thickness).znach;
       }
       if(mat.areaCrossSectional) {
-        this.obj.areaCrossSectional_select = JSON.parse(mat.areaCrossSectional).edizm.id
-        this.obj.areaCrossSectional_input = JSON.parse(mat.areaCrossSectional).znach
+        this.obj.areaCrossSectional_select = JSON.parse(mat.areaCrossSectional).edizm.id;
+        this.obj.areaCrossSectional_input = JSON.parse(mat.areaCrossSectional).znach;
       }
     },
     editGetDataPPT() {
       this.updateInputSelect(this.getOnePPT)
         if(!this.getOnePPT || !this.getOnePPT.material || !this.getOnePPT.podMaterialId) 
-          return this.$router.push('/basematerial')
+          return this.$router.push('/basematerial');
         
-      this.filterMaterialById(this.getOnePPT.material.id)
-      this.filterPodMaterialById(this.getOnePPT.podMaterialId)
-      this.podMaterial = this.getOnePPT.podMaterial
-      this.material = this.getOnePPT.material
-      this.attention = this.getOnePPT.attention
+      this.filterMaterialById(this.getOnePPT.material.id);
+      this.filterPodMaterialById(this.getOnePPT.podMaterialId);
+      this.podMaterial = this.getOnePPT.podMaterial;
+      this.material = this.getOnePPT.material;
+      this.attention = this.getOnePPT.attention;
 
-      this.obj.description = this.getOnePPT.description
-      this.obj.name = this.getOnePPT.name
+      this.obj.description = this.getOnePPT.description;
+      this.obj.name = this.getOnePPT.name;
       if(this.getOnePPT.deliveryTime) {
-        this.obj.deliveryTime_select = 9
-        this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach
+        this.obj.deliveryTime_select = 9;
+        this.obj.deliveryTime_input = JSON.parse(this.getOnePPT.deliveryTime).znach;
       }
       
       if(this.getOnePPT.kolvo) 
-          this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo)
+          this.obj.kolvo_select = JSON.parse(this.getOnePPT.kolvo);
       
       if(this.getOnePPT.density) {
-        this.obj.density_select = 10
-        this.obj.density_input = JSON.parse(this.getOnePPT.density).znach
+        this.obj.density_select = 10;
+        this.obj.density_input = JSON.parse(this.getOnePPT.density).znach;
       }
 
         this.providers = this.getOnePPT.providers
         if(this.providers ) 
-          this.providers.forEach(provider => {
-            this.providersId.push({id: provider.id})
-          })
+          this.providers.forEach(provider => this.providersId.push({id: provider.id}));
       if(this.$route.params.type == 'edit') {
-        if(this.getOnePPT.documents) 
-          this.arrFileGet = this.getOnePPT.documents
+        if(this.getOnePPT.documents) this.arrFileGet = this.getOnePPT.documents;
       }      
     },
     changeTypeForEdit() {
-      this.getAllTypeMaterial()
-      this.getAllPodTypeMaterial()
+      this.getAllTypeMaterial();
+      this.getAllPodTypeMaterial();
     },
     searchTypeM(val) {
-      this.searchTypeMutation(val)
+      this.searchTypeMutation(val);
     },
     searchPT(val) {
-      this.searchPTypeMutation(val)
+      this.searchPTypeMutation(val);
     },
     isEmptyForPug(obj) {
-      return isEmpty(obj)
+      return isEmpty(obj);
     },
     setDocs(doc) {
-      this.itemFiles = doc
-      this.keyWhenModalGenerateFileOpen = random(1, 999)
+      this.itemFiles = doc;
+      this.keyWhenModalGenerateFileOpen = random(1, 999);
     },
     addFileModal() {
-      this.fileModalKey = random(1, 999)
-      this.showModalFile = true
+      this.fileModalKey = random(1, 999);
+      this.showModalFile = true;
     },
     exit() {
-      this.$router.back()
-      this.delitPathNavigate(this.$route.path)
+      this.$router.back();
+      this.delitPathNavigate(this.$route.path);
     }
   },
   async mounted() {
-    this.getAllEdizm()
+    this.getAllEdizm();
     if(this.$route.params.type == 'edit' || this.$route.params.type == 'copy') {
-      if(!this.$route.params.id) return this.exit()
+      if(!this.$route.params.id) return this.exit();
 
-      const material = await this.fetchGetOnePPM(this.$route.params.id)
-      this.addOnePPTyep(material)
-      this.editGetDataPPT()
+      const material = await this.fetchGetOnePPM(this.$route.params.id);
+      this.addOnePPTyep(material);
+      this.editGetDataPPT();
     }
   }
 }

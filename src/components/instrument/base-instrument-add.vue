@@ -77,6 +77,14 @@
             <button class="btn-small btn-add" @click="addProvider">Добавить из базы</button>
           </div>
         </div>
+        <!-- Добавить файл из базы файлов -->
+        <div>
+          <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs'/>
+          <div class="btn-control" style='margin-top: 50px;'>
+            <button class="btn-small" @click='addFileModal'>Добавить файл из базы</button>
+          </div>
+        </div>
+
          <div class="pointer-files-to-add">
             <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
             <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
@@ -105,16 +113,24 @@
         v-if='message'
         :key='keyInformTip'
       />
+      <BaseFileModal 
+        v-if='showModalFile'
+        :key='fileModalKey'
+        :fileArrModal='arrFileGet'
+        @unmount='unmount_filemodal'
+      />
     <Loader v-if='loader' />
   </div>
 </template>
 <script>
 import { random }  from 'lodash';
 import { showMessage } from '@/js/';
-import AddFile from '@/components/filebase/addfile.vue';
+import AddFile from '@/components/filebase/addfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import ListProvider from '@/components/baseprovider/list-provider.vue';
+import TableMaterial from '@/components/mathzag/table-material';
+import MiniTableDocuments from '@/components/filebase/mini-table';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import ListProvider from '@/components/baseprovider/list-provider';
 export default {
   data() {
     return {
@@ -136,6 +152,9 @@ export default {
         minOstatok: '',
         description: ''
       },
+      fileModalKey: random(1, 999),
+      showModalFile: false,
+      arrFileGet: [],
 
       loader: false,
       titleMessage: '',
@@ -152,7 +171,13 @@ export default {
     'getLinkIdInstrument', 
     'getRoleAssets'
   ]),
-  components: {TableMaterial, AddFile, ListProvider},
+  components: {
+    TableMaterial,
+    AddFile,
+    ListProvider,
+    BaseFileModal,
+    MiniTableDocuments
+  },
   methods: {
     ...mapActions(['fetchAllInstruments', 
       'getAllEdizm', 
@@ -164,89 +189,97 @@ export default {
       'searchTypeInst',
       'searchPTInst',
       'delitPathNavigate',
-    ]), 
+    ]),
+    unmount_filemodal(res) {
+      if(res) this.arrFileGet = res;
+    },
     addProvider() {
-      this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 999)
+      this.showProvider = true;
+      this.keyWhenModalListProvider = random(10, 999);
     },
     pushProvider(provider) { 
-      if(!provider)
-        return 0
-      this.providers.push(provider)
+      if(!provider) return 0;
+      this.providers.push(provider);
       this.providersId.push({id: provider.id})
     },
-
+    addFileModal() {
+      this.fileModalKey = random(1, 999);
+      this.showModalFile = true;
+    },
     addInstrument() {
       if(!this.PTInstrument)
-        return showMessage('', 'Выберите Подтип', 'w', this)
+        return showMessage('', 'Выберите Подтип', 'w', this);
       if(!this.TInstrument)
-        return showMessage('', 'Выберите тип', 'w', this)
+        return showMessage('', 'Выберите тип', 'w', this);
       if(this.obj.name.length < 3)
-        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this)
+        return showMessage('', 'Наименование должно быть длинее 3-символов', 'w', this);
 
-      if(!this.formData) 
-        this.formData = new FormData()
+      if(!this.formData) this.formData = new FormData();
 
       if(this.providersId)
-        this.providersId = JSON.stringify(this.providersId)
+        this.providersId = JSON.stringify(this.providersId);
 
-      this.formData.append('rootParentId', this.TInstrument.id)
-      this.formData.append('name', this.obj.name)
-      this.formData.append('deliveryTime', this.obj.deliveryTime)
-      this.formData.append('mountUsed', this.obj.mountUsed)
-      this.formData.append('minOstatok', this.obj.minOstatok)
-      this.formData.append('description', this.obj.description)
-      this.formData.append('parentId', this.PTInstrument.id)
-      this.formData.append('providers', this.providersId)
-      this.formData.append('attention', this.attention)
-      this.addNameInstrument(this.formData)
+      this.formData.append('rootParentId', this.TInstrument.id);
+      this.formData.append('name', this.obj.name);
+      this.formData.append('deliveryTime', this.obj.deliveryTime);
+      this.formData.append('mountUsed', this.obj.mountUsed);
+      this.formData.append('minOstatok', this.obj.minOstatok);
+      this.formData.append('description', this.obj.description);
+      this.formData.append('parentId', this.PTInstrument.id);
+      this.formData.append('providers', this.providersId);
+      this.formData.append('attention', this.attention);
+
+      if(this.arrFileGet.length) {
+        const file_arr = this.arrFileGet.map(el => el.id);
+        this.formData.append('documents_base', JSON.stringify(file_arr));
+      }
+      this.addNameInstrument(this.formData);
       
-      this.exit()
+      this.exit();
     },
-
     // ADD FILE and SET INSTRUMENT TO TABLE
     clickTInstrument(instrument) {
-      this.TInstrument = instrument
-      this.filterAllpInstrument(instrument)
+      this.TInstrument = instrument;
+      this.filterAllpInstrument(instrument);
     },
     clickPTInstrument(PTInstrument) {
-      this.PTInstrument = PTInstrument
+      this.PTInstrument = PTInstrument;
     },
     clickPPTInstrument(PPTInstrument) {
-      this.PPTInstrument = PPTInstrument
+      this.PPTInstrument = PPTInstrument;
     },
     addDock(val) {
       val.target.files.forEach(f => {
-          this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 999)
-      this.isChangeFolderFile = true
+          this.docFiles.push(f);
+      });
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
     file_unmount(e) { 
-      if(!e) return 0
-      this.formData = e.formData
+      if(!e) return 0;
+      this.formData = e.formData;
     },
     serhType(inst) {
-      this.searchTypeInst(inst)
+      this.searchTypeInst(inst);
     },
     serhPType(inst) {
-      this.searchPTInst(inst)
+      this.searchPTInst(inst);
     },
     exit() {
-      this.$router.push("/basetools")
-      this.delitPathNavigate(this.$route.path)
+      this.$router.push("/basetools");
+      this.delitPathNavigate(this.$route.path);
     }
   },
   async mounted() {
-    this.loader = true
-    await this.fetchAllInstruments()
-    await this.getAllEdizm()
-    this.getInstansTools(this.getLinkIdInstrument || 0)
+    this.loader = true;
+    await this.fetchAllInstruments();
+    await this.getAllEdizm();
+    this.getInstansTools(this.getLinkIdInstrument || 0);
     if(!this.getLinkIdInstrument) {
-      await this.fetchAllInstruments()
-      await this.getPTInstrumentList()
+      await this.fetchAllInstruments();
+      await this.getPTInstrumentList();
     }
-    this.loader = false
+    this.loader = false;
   }
 }
 </script>
