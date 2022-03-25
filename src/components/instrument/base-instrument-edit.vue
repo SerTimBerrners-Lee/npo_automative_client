@@ -78,19 +78,15 @@
             <button class="btn-small btn-add" @click="addProvider">Добавить из базы</button>
           </div>
         </div>
-         <div class="pointer-files-to-add">
-            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+        <div style='height: 50px;'>
+          <FileLoader 
+            :typeGetFile='"getfile"'
+            @unmount='file_unmount'
+          />
         </div>
-        <AddFile :parametrs='docFiles' 
-          :typeGetFile='"getfile"'
-          v-if="isChangeFolderFile" 
-          @unmount='file_unmount'
-          :key='keyWhenModalGenerate'
-            />
         <div>
           <h3>Документы</h3>
-          <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs'/>
+          <MiniTableDocuments :arrFileGet='[...arrFileGet, ...documents]' @unmount='setDocs'/>
           <div class="btn-control">
             <button class="btn-small" @click='addFileModal'>Добавить файл из базы</button>
             <button class="btn-small" @click='removeFile'>Удалить</button>
@@ -121,7 +117,6 @@
 <script>
 import { showMessage } from '@/js/';
 import { isEmpty, random }  from 'lodash';
-import AddFile from '@/components/filebase/addfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import TableMaterial from '@/components/mathzag/table-material';
 import MiniTableDocuments from '@/components/filebase/mini-table';
@@ -132,10 +127,7 @@ export default {
     return {
       TInstrument: null,
       PTInstrument: null,
-      docFiles: [],
       formData: null,
-      isChangeFolderFile: false,
-      keyWhenModalGenerate: random(10, 999),
       itemFiles: null,
       documents: [],
       showProvider: false,
@@ -179,7 +171,6 @@ export default {
   ]),
   components: {
     TableMaterial,
-    AddFile,
     ListProvider,
     MiniTableDocuments,
     BaseFileModal
@@ -223,8 +214,7 @@ export default {
       this.formData.append('description', this.obj.description);
       this.formData.append('providers', this.providersId);
       this.formData.append('attention', this.attention);
-
-      console.log(this.arrFileGet, 'arrFileGet')
+      
       if(this.arrFileGet.length) {
         const file_arr = this.arrFileGet.map(el => el.id);
         this.formData.append('documents_base', JSON.stringify(file_arr));
@@ -300,16 +290,12 @@ export default {
     clickPPTInstrument(PPTInstrument) {
       this.PPTInstrument = PPTInstrument;
     },
-    addDock(val) {
-      val.target.files.forEach(f => {
-          this.docFiles.push(f);
-      })
-      this.keyWhenModalGenerate = random(10, 999);
-      this.isChangeFolderFile = true;
-    },
     file_unmount(e) { 
-      if(!e) return 0;
+      if(!e) return 0
       this.formData = e.formData;
+      for(const fd of this.formData.getAll('document')) {
+        this.documents.push(fd);
+      }
     },
     exit() {
       this.$router.push('/basetools');

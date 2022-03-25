@@ -79,22 +79,17 @@
         </div>
         <!-- Добавить файл из базы файлов -->
         <div>
-          <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs'/>
+          <MiniTableDocuments :arrFileGet='[...arrFileGet, ...documents]' @unmount='setDocs'/>
           <div class="btn-control" style='margin-top: 50px;'>
             <button class="btn-small" @click='addFileModal'>Добавить файл из базы</button>
           </div>
         </div>
-
-         <div class="pointer-files-to-add">
-            <label for="docsFileSelected">Перенесите сюда файлы или кликните для добавления с вашего компьютера.</label>
-            <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
+        <div style='height: 50px;'>
+          <FileLoader 
+            :typeGetFile='"getfile"'
+            @unmount='file_unmount'
+          />
         </div>
-        <AddFile :parametrs='docFiles' 
-          :typeGetFile='"getfile"'
-          v-if="isChangeFolderFile" 
-          @unmount='file_unmount'
-          :key='keyWhenModalGenerate'
-            />
       </div>
     </div>
     <div class="edit-save-block block" v-if="getRoleAssets && getRoleAssets.assets.instrumentAssets.writeSomeone">
@@ -125,7 +120,6 @@
 <script>
 import { random }  from 'lodash';
 import { showMessage } from '@/js/';
-import AddFile from '@/components/filebase/addfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import TableMaterial from '@/components/mathzag/table-material';
 import MiniTableDocuments from '@/components/filebase/mini-table';
@@ -136,14 +130,12 @@ export default {
     return {
       TInstrument: null,
       PTInstrument: null,
-      docFiles: [],
       formData: null,
-      isChangeFolderFile: false,
       showProvider: false,
-      keyWhenModalGenerate: random(10, 999),
       keyWhenModalListProvider: random(10, 999),
       providers: [],
       providersId: [],
+      documents: [],
       obj: {
         name: '',
         parentId: null,
@@ -173,7 +165,6 @@ export default {
   ]),
   components: {
     TableMaterial,
-    AddFile,
     ListProvider,
     BaseFileModal,
     MiniTableDocuments
@@ -248,16 +239,12 @@ export default {
     clickPPTInstrument(PPTInstrument) {
       this.PPTInstrument = PPTInstrument;
     },
-    addDock(val) {
-      val.target.files.forEach(f => {
-          this.docFiles.push(f);
-      });
-      this.keyWhenModalGenerate = random(10, 999);
-      this.isChangeFolderFile = true;
-    },
     file_unmount(e) { 
-      if(!e) return 0;
-      this.formData = e.formData;
+      if(!e) return 0
+      this.formData = e.formData
+      for(const fd of this.formData.getAll('document')) {
+        this.documents.push(fd);
+      }
     },
     serhType(inst) {
       this.searchTypeInst(inst);

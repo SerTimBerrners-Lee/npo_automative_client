@@ -81,7 +81,8 @@
             <div style='height: 50px;'>
               <FileLoader 
                 :typeGetFile='"getfile"'
-                @unmount='file_unmount'/>
+                @unmount='file_unmount'
+              />
             </div>
             <div class="btn-control" style='margin-top: 20px;'>
               <button class="btn-small" @click='addFileModal' >Добавить из базы</button>
