@@ -1,6 +1,6 @@
 <template>
   <div>
-    <table style='width: 100%' v-if='arrFileGet.length'>
+    <table style='width: 100%'>
       <tr>
         <th>Файл</th>
       </tr>
