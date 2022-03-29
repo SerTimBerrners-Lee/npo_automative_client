@@ -45,7 +45,7 @@
 </template>
 
 <script>
-import { eSelectSpan } from '@/js/methods.js';
+import { eSelectSpan } from '@/js/methods';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
 export default {
   computed: mapGetters(['alltypeM', 'allPodTypeM']),
@@ -61,7 +61,7 @@ export default {
       'clearCascheMaterial'
 		]),
     instansMaterial(instans, span) {
-			this.span = this.eSelectSpan(this.span, span);
+			this.span = eSelectSpan(this.span, span);
 			if(this.instansLet == instans) return 0;
 
       this.getInstansMaterial(instans);

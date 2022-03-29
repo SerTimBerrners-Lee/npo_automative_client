@@ -78,11 +78,24 @@ export default {
       return result 
     },
     async fetchGetAllDeficitPPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit`)
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit`);
       if(!res.ok) return false;
-      const result = await res.json()
-      ctx.commit('sortAllForeficitMaterial', result)
-      return result
+      const result = await res.json();
+      ctx.commit('sortAllForeficitMaterial', result);
+      return result;
+    },
+    /**
+     * 
+     * @param {*} ctx 
+     * @param {*} data { id: shipments.id, type: 'cbed' | 'detal' } 
+     * @returns 
+     */
+    async fetchMaterialToShipments(ctx, data) {
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit/shipments/${data.id}/${data.type}`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      console.log(result, 'result sclad.js');
     },
     async getShipmentsForOneMaterial(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialonecshipments/${id}`);

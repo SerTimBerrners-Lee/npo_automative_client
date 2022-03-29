@@ -61,8 +61,8 @@
 import XLSX from 'xlsx';
 import print from 'print-js';
 import { mapMutations } from 'vuex';
-import TableMaterial from './table-material.vue';
-import TableTypeMaterial from './table-type-material.vue';
+import TableMaterial from './table-material';
+import TableTypeMaterial from './table-type-material';
 
 export default {
 	data() {

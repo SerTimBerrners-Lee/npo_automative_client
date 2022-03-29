@@ -280,32 +280,32 @@ export default {
     },
     sortAllForeficitMaterial(state, result) {
       for(const item of state.podTypeM) {
-        let materials = []
-        for(let inx in item.podPodMaterials) {
+        const materials = [];
+        for(const inx in item.podPodMaterials) {
           for(const mat of result) {
-            if(mat.id == item.podPodMaterials[inx].id) materials.push(mat)
+            if(mat.id == item.podPodMaterials[inx].id) materials.push(mat);
           }
         }
-        item.podPodMaterials = materials
+        item.podPodMaterials = materials;
       }
 
       for(const item of state.typeM) {
-        let materials = []
-        for(let item2 of item.podPodMaterials) {
+        const materials = [];
+        for(const item2 of item.podPodMaterials) {
           for(const mat of result) {
-            if(mat.id == item2.id) materials.push(mat)
+            if(mat.id == item2.id) materials.push(mat);
           }
         }
         item.podPodMaterials = materials
 
-        for(let inx in item.podMaterials) {
+        for(const inx in item.podMaterials) {
           for(const pt of state.podTypeM) {
-            if(pt.id == item.podMaterials[inx].id) item.podMaterials[inx] = pt
+            if(pt.id == item.podMaterials[inx].id) item.podMaterials[inx] = pt;
           }
         }
       }
 
-      state.podMaterial = result
+      state.podMaterial = result;
     },
     throwInstans(state) {
       state.instansTypeM = []

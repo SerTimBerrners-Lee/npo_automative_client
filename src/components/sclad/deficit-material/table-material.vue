@@ -122,13 +122,13 @@
 </template>
 
 <script>
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import { eSelectSpan } from '@/js/methods.js';
-import {getKolvoMaterial} from '@/js/edizm.js';
+import { eSelectSpan } from '@/js/methods';
+import {getKolvoMaterial} from '@/js/edizm';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
-import MaterialParentModal from './material-parent-modal.vue';
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
+import MaterialParentModal from './material-parent-modal';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
 
 export default {
   props: {
@@ -163,14 +163,11 @@ export default {
 	},
   methods: {
     ...mapActions([
-			'getAllTypeMaterial',
-			'getAllPodTypeMaterial',
 			'fetchGetAllDeficitPPM',
 			'getShipmentsForOneMaterial'
 		]),
 		...mapMutations([
-			'clearCascheMaterial',
-			'filterMaterialStatus'
+			'clearCascheMaterial'
 		]),
     getKolvoMaterial(mat) {
 			return getKolvoMaterial(mat);
