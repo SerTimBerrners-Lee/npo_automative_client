@@ -110,42 +110,41 @@ export default {
     },
     detalToShipmentsSort(state, detal) {
       if(state.middleware_detals.length == 0) {
-        state.middleware_detals = state.detal
-        state.detal = []
+        state.middleware_detals = state.detal;
+        state.detal = [];
       }
 
-      for(let det of detal) {
+      for(const det of detal) {
         let check = true
-        for(let det_two of state.detal) {
-          if(det_two.id == det.id) check = false
+        for(const det_two of state.detal) {
+          if(det_two.id == det.id) check = false;
         }
         if(check) {
           for(const item of state.middleware_detals) {
-            if(item.id == det.id) state.detal.push(item)
+            if(item.id == det.id) state.detal.push(item);
           }
         }
-        else check = false
+        else check = false;
       }
     },
     addNewDetalToArr(state, detal) {
-      state.detal.push(detal)
+      state.detal.push(detal);
     },
     fetchUpdateDetalMutation(state, new_detal) {
       for(let inx in state.detal) {
-        if(state.detal[inx].id == new_detal.id) state.detal[inx] = new_detal
+        if(state.detal[inx].id == new_detal.id) state.detal[inx] = new_detal;
        }
     },
     addOneSelectDetal(state, detal) {
-      state.select_detal = detal
+      state.select_detal = detal;
     },
     setDetalMutation(state, data) {
-      state.detal = data.filter(detal => !detal.ban)
+      state.detal = data.filter(detal => !detal.ban);
     },
     filterDetalToArticle(state, str) {
-      if(!str) 
-        state.detal = state.filterDetal
+      if(!str) state.detal = state.filterDetal;
       if(state.filterDetal.length == 0)
-        state.filterDetal = state.detal
+        state.filterDetal = state.detal;
       
       state.detal = state
       .filterDetal
@@ -156,77 +155,76 @@ export default {
       )
     },
     deleteDetalById(state, id) {
-      state.detal = state.detal.filter(detal => detal.id != id)
+      state.detal = state.detal.filter(detal => detal.id != id);
       if(state.filterDetal.length) 
-        state.filterDetal = state.filterDetal.filter(detal => detal.id)
+        state.filterDetal = state.filterDetal.filter(detal => detal.id);
     },
 
     getAllDetalByProduct(state, product) {
       if(!state.middleware_detals.length)
-        state.middleware_detals = state.detal
+        state.middleware_detals = state.detal;
 
-      state.detal = state.middleware_detals
+      state.detal = state.middleware_detals;
 
-      let newDetals = [] 
-      for(let det of state.detal){
+      const newDetals = [];
+      for(const det of state.detal){
         for(let prod of product.detals) {
           let pars = null;
           try {
             if(product.listDetal) 
-              pars = JSON.parse(product.listDetal)
+              pars = JSON.parse(product.listDetal);
           } catch (e) {console.error(e)}
           if(prod.id == det.id) {
-            let detal_new = det
+            const detal_new = det;
             if(pars && !product.fabricNumber) {
               for(let uu of pars) {
                 if(uu.det.id == det.id)
-                  detal_new['kolvo_for_detal'] = uu.kol
+                  detal_new['kolvo_for_detal'] = uu.kol;
               }
             }
-            newDetals.push(detal_new)
+            newDetals.push(detal_new);
           }
         }
       }
-      state.detal = newDetals
+      state.detal = newDetals;
     },
     clearFilterDetalByProduct(state) {
       state.detal = state.middleware_detals.map(e => {
-        if(e.kolvo_for_detal) 
-          e.kolvo_for_detal = 0 
-        return e 
+        if(e.kolvo_for_detal) e.kolvo_for_detal = 0;
+        return e;
       })
     },
     filterToAttention(state) {
       if(state.tmp_attention.length == 0)
-        state.tmp_attention = state.detal
+        state.tmp_attention = state.detal;
       else {
         state.detal = state.tmp_attention 
-        return state.tmp_attention  = []
+        return state.tmp_attention  = [];
       }
-      state.detal = state.detal.filter(detal => detal.attention)
+      state.detal = state.detal.filter(detal => detal.attention);
     },
     filterDetalToDate(state) {
-      state.dete_id = sortState(state.detal, state.dete_id)
+      state.dete_id = sortState(state.detal, state.dete_id);
     },
     filterDetalToMyObject(state, user_id) {
-      if(state.tmp_responsible.length == 0) state.tmp_responsible = state.detal
+      if(state.tmp_responsible.length == 0) state.tmp_responsible = state.detal;
       else {
-        state.detal = state.tmp_responsible
-        return state.tmp_responsible = []
+        state.detal = state.tmp_responsible;
+        return state.tmp_responsible = [];
       }
-      state.detal = state.detal.filter(detal => detal.responsibleId == user_id)
+      state.detal = state.detal.filter(detal => detal.responsibleId == user_id);
     },
     sortByNonOperationDetal(state, arr_operation) {
       if(state.tmp_operation.length == 0)
-        state.tmp_operation = state.detal
+        state.tmp_operation = state.detal;
 
       if(arr_operation.length == state.detal.length) 
-        return state.detal = state.tmp_operation
+        return state.detal = state.tmp_operation;
 
       state.detal = []
       for(let id of arr_operation) {
         for(let item of state.tmp_operation) {
-          if(item.id == id) state.detal.push(item)
+          if(item.id == id) state.detal.push(item);
         }
       }
     },
@@ -237,8 +235,8 @@ export default {
       state.detal = state.middleware_detals
       if(status == 'Все') return false;
       state.detal = state.detal.filter(el => {
-        if(status == "Не заказано" && el.metalloworking_kolvo < 1) return el
-        if(status == "Заказано" && el.metalloworking_kolvo > 0) return el
+        if(status == "Не заказано" && el.metalloworking_kolvo < 1) return el;
+        if(status == "Заказано" && el.metalloworking_kolvo > 0) return el;
       })
     },
     changeDeficitDetal(state, props) {
@@ -248,11 +246,11 @@ export default {
       state.detal = state.middleware_detals
       if(props.status == 'Все') return false; 
       state.detal = state.detal.filter(el => {
-        if(props.status == "Общий" && props.deficit(el, el.detal_kolvo) < 0) return el
-        if(props.status == "По заказам покупателя" && el.shipments_kolvo > 0) return el
+        if(props.status == "Общий" && props.deficit(el, el.detal_kolvo) < 0) return el;
+        if(props.status == "По заказам покупателя" && el.shipments_kolvo > 0) return el;
       })
 
-      state.detal = state.detal.sort((a, b) => a - b) 
+      state.detal = state.detal.sort((a, b) => a - b);
     }
   }
 }

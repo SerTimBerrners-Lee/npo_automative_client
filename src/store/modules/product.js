@@ -25,90 +25,89 @@ export default {
   },
   actions: { 
     async createNewProduct(ctx, data) {
-      if(!ctx.getters.getAuth)
-        return 0
+      if(!ctx.getters.getAuth) return 0;
 
       const res = await fetch(`${PATH_TO_SERVER}api/product`, {
         method :  'post',
         body   :  data
-      })
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      });
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      return result;
     },
 
     async getAllProduct(ctx, light=false) {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/${light}`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('addAllProduct', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/product/${light}`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('addAllProduct', result);
+      return result;
     },
 
     async getAllArticlProduct() {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/articl`)
-      if(!res.ok) return false
-      const result = await res.json()
-      return result
+      const res = await fetch(`${PATH_TO_SERVER}api/product/articl`);
+      if(!res.ok) return false;
+      const result = await res.json();
+      return result;
     },
 
     async getAllProductByIdLight(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/light/${id}`)
-      if(!res.ok) return false
-      const result = await res.json()
-      return result
+      const res = await fetch(`${PATH_TO_SERVER}api/product/light/${id}`);
+      if(!res.ok) return false;
+      const result = await res.json();
+      return result;
     },
 
     async getAllProductById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/one/${id}`)
-      if(!res.ok) return false
-      const result = await res.json()
-      return result
+      const res = await fetch(`${PATH_TO_SERVER}api/product/one/${id}`);
+      if(!res.ok) return false;
+      const result = await res.json();
+      return result;
     },
 
     async getAllProductShipmentsById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/shipments/${id}`)
-      if(!res.ok) return false
-      return await res.json()
+      const res = await fetch(`${PATH_TO_SERVER}api/product/shipments/${id}`);
+      if(!res.ok) return false;
+      return await res.json();
     },
 
     async updateProduct(ctx, data) {
-      if(!ctx.getters.getAuth)
-        return 0
+      if(!ctx.getters.getAuth) return 0;
 
       const res = await fetch(`${PATH_TO_SERVER}api/product/update`, {
         method :  'post',
         body   :  data
-      })
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('updateProductMutation', result)
-        return result
-      }
+      });
+
+      if(!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('updateProductMutation', result);
+      return result;
     },
 
     async fetchDeleteProduct(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/${id}`, {method : 'delete'})
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('deleteProductById', id)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/product/${id}`, {method : 'delete'});
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('deleteProductById', id);
+      return result;
     },
 
     async attachFileToProduct(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/files/${data.product_id}/${data.file_id}`)
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/product/files/${data.product_id}/${data.file_id}`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      return result;
     },    
     async fetchAllProductOperation() {
-      const res = await fetch(`${PATH_TO_SERVER}api/product/operation`)
-      if(res.ok) return await res.json()
-      return []
+      const res = await fetch(`${PATH_TO_SERVER}api/product/operation`);
+      if(!res.ok) return [];
+      const result = await res.json();
+      return result;
     }
   },
   mutations: {
