@@ -41,7 +41,8 @@ const returnObjectPos = (obj, poz, ez) => {
 		shipments_kolvo: Object.values(obj)[poz].shipments_kolvo,
 		min_remaining: Object.values(obj)[poz].min_remaining,
 		deliveries_kolvo: Object.values(obj)[poz].deliveries_kolvo,
-		price: Object.values(obj)[poz].price
+		price: Object.values(obj)[poz].price,
+		poz
 	}
 }
 // Возврашает html код в span для каждой ЕИ

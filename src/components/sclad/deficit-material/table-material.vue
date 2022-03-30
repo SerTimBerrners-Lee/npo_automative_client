@@ -12,6 +12,7 @@
           <th class='min_width-50' v-if='type_view == "def"'>Принадлежность по Изд. СБ. Д.</th>
           <th class='min_width-50' v-if='type_view == "def" || type_view == "mini"'>ЕИ</th>
           <th class='min_width-50' v-if='type_view == "def" || type_view == "mini"'>Дефицит</th>
+          <th class='min_width-50' v-if='type_view == "def" || type_view == "plan"'>Дефицит на план</th>
           <th class='min_width-50' v-if='type_view == "def"'>Стоимость 1 ЕД</th>
           <th class='min_width-50' v-if='type_view == "def"'>Стоимость Дефицита</th>
           <th class='min_width-50' v-if='type_view == "def"'>Дефицит по заказ покупателя</th>
@@ -59,13 +60,16 @@
           <td class='center' v-if='type_view == "def" || type_view == "mini"'>{{ez.ez}}</td>
           <td class='center min_width' style='color: red;' v-if='type_view == "def" || type_view == "mini"'>
             {{ ez.material_kolvo - (ez.min_remaining + ez.shipments_kolvo) }}
-          </td>
+          </td> <!-- Дефицит -->
+          <td class='center min_width' style='color: red;' v-if='type_view == "def" || type_view == "plan"'>
+            {{ returnDefPlan(ez, material) }}
+          </td> <!-- Дефицит на план -->
           <td class='center min_width ' v-if='type_view == "def"'>
             {{ ez.price }}
-          </td>
+          </td> <!-- Стоимость -->
           <td class='center min_width' v-if='type_view == "def"'>
             {{ ez.price * (ez.material_kolvo - (ez.min_remaining+ez.shipments_kolvo)) }}
-          </td>
+          </td> <!-- Стоимость дефицита -->
           <td class='center min_width' style='color: red;' v-if='type_view == "def"'>
             {{ ez.material_kolvo - ez.shipments_kolvo  }} 
           </td>	<!-- Дефицит по заказ покупателя -->
@@ -196,6 +200,21 @@ export default {
 			this.mat_id = id;
 			this.materialParentKey = random(1, 999);
 		},
+    returnDefPlan(ez, material) {
+      if(!material.plan || !ez.poz) return 0;
+      switch (ez.ez) {
+        case 'шт':
+          return ez.material_kolvo - Object.values(material.plan.ez_kolvo)[0].min_remaining;
+        case 'л':
+          return ez.material_kolvo - Object.values(material.plan.ez_kolvo)[1].min_remaining;
+        case 'кг':
+          return ez.material_kolvo - Object.values(material.plan.ez_kolvo)[2].min_remaining;
+        case 'м':
+          return ez.material_kolvo - Object.values(material.plan.ez_kolvo)[3].min_remaining;
+        case 'м.куб':
+          return ez.material_kolvo - Object.values(material.plan.ez_kolvo)[4].min_remaining;
+      }
+    }
   },
   async mounted() {
 		this.loader = true;

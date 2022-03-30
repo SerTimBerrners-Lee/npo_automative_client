@@ -1,10 +1,10 @@
 import { returnSpanEz } from './edizm';
 
 // Удаляет выделенный класс у переданного объекта и возвращает для нового
-function eSelectSpan(e_last, e_now) {
-  if(e_last) e_last.classList.remove('td-row-all');
+function eSelectSpan(e_last, e_now, classs='td-row-all') {
+  if(e_last) e_last.classList.remove(classs);
   e_last = e_now;
-  e_last.classList.add('td-row-all');
+  e_last.classList.add(classs);
 
   return e_last;
 }

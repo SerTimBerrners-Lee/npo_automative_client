@@ -159,16 +159,16 @@
 </template>
 <script>
 import {random} from 'lodash';
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
 import { showMessage, comparison } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import DescriptionModal from '@/components/description-modal.vue';
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
-import StartProduction from '@/components/sclad/start-production-modal.vue';
-import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
-import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
+import CbedModalInfo from '@/components/cbed/cbed-modal';
+import DatePicterRange from '@/components/date-picter-range';
+import DescriptionModal from '@/components/description-modal';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
+import StartProduction from '@/components/sclad/start-production-modal';
+import ShipmentList from '@/components/issueshipment/shipments-list-table';
+import NormTimeOperation from '@/components/sclad/norm-time-operation-modal';
 export default {
   data() {
     return {
@@ -247,37 +247,37 @@ export default {
     ]),
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
-        0 : kol - izd.min_remaining - izd.shipments_kolvo 
+        0 : kol - izd.min_remaining - izd.shipments_kolvo;
     },
     keySearchCb(v) {
-      this.searchCbed(v)
+      this.searchCbed(v);
     },
     unmount_clear() {
-      this.reverseMidlevareCbed()
+      this.reverseMidlevareCbed();
     },
     toSetOrders(shipments) {
-      this.unmount_clear()
-      this.cbedToShipmentsSort(shipments.cbeds)
+      this.unmount_clear();
+      this.cbedToShipmentsSort(shipments.cbeds);
     },
     start() {
       if(!this.toProductionArr.length)
-        return showMessage('', 'Для начала выберите СБ и заказ', 'w', this)
+        return showMessage('', 'Для начала выберите СБ и заказ', 'w', this);
       this.parametrs = {
         izd: this.toProductionArr,
         type: 'cb'
       }
-      this.startProductionModalKey = random(1, 999)
+      this.startProductionModalKey = random(1, 999);
     },
     openDescription(description) {
-      this.showDescriptionModal = true
-      this.descriptionKey = random(1, 999)
-      this.description = description
+      this.showDescriptionModal = true;
+      this.descriptionKey = random(1, 999);
+      this.description = description;
     },
     normTimeOperation() {
       if(!this.select_izd)
-        return showMessage('', 'Для начала выберите СБ', 'w', this)
+        return showMessage('', 'Для начала выберите СБ', 'w', this);
       this.showNormTimeOperation = true;
-      this.normTimeOperationKey = random(1, 999)
+      this.normTimeOperationKey = random(1, 999);
     },
     returnShipmentsKolvo(shipments) {
       if(!shipments || shipments.length == 0) return '-'
@@ -285,74 +285,72 @@ export default {
       for(let ship1 of shipments) {
         for(let ship2 of shipments) {
           if(!ship1.number_order) continue;
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0]
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0];
         }
       }
-      return end_date
+      return end_date;
     },
     returnShipmentsDateModal(izd, type) {
-      let shipments = izd.shipments
+      const shipments = izd.shipments;
       if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
-      this.shipments = shipments
-      this.izdForSchipment = {izd, type}
-      this.shipmentKey = random(1, 999)
+      this.shipments = shipments;
+      this.izdForSchipment = {izd, type};
+      this.shipmentKey = random(1, 999);
     },
     getTimming(param, kol = 1) {
-      if(!param) return 0
+      if(!param) return 0;
       try {
-        let pars = JSON.parse(param)
+        const pars = JSON.parse(param);
         if(pars) 
-          return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2)
-      } catch(e) {
-        console.error(e)
-      }
+          return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2);
+      } catch(e) { console.error(e); }
     },
     toProduction(izd, e) {
-      e.classList.toggle('checkbox_block_select')
-      let check = true
+      e.classList.toggle('checkbox_block_select');
+      let check = true;
       for(let izdd of this.toProductionArr) {
         if(izdd.id == izd.id) {
-          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id)
-          check = false
+          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
+          check = false;
         }
       }
-      if(check) this.toProductionArr.push(izd)
+      if(check) this.toProductionArr.push(izd);
     },
     setIzdels(izd) {
-      this.select_izd = izd
+      this.select_izd = izd;
     },
     alt(e) {
       if(!this.select_izd)
-        return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w', this)
-      this.select_izd.my_kolvo = e.innerText
+        return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w', this);
+      this.select_izd.my_kolvo = e.innerText;
     },
     changeDatePicterRange(val) {
-      console.log(val)
+      console.log(val);
     },
     selectAllItem() {
       if(this.toProductionArr.length < this.allCbed.length) {
-        this.toProductionArr = this.allCbed
-        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'))
+        this.toProductionArr = this.allCbed;
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'));
       } else {
-        this.toProductionArr = []
-        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.remove('checkbox_block_select'))
+        this.toProductionArr = [];
+        document.getElementsByClassName('checkbox_block').forEach(el => el.classList.remove('checkbox_block_select'));
       }
     },
     showInformIzdel(id, type) {
 			if(type == 'cbed') {
 				if(id) {
-					this.parametrs_cbed = id
-					this.cbedModalKey = random(1, 999)
+					this.parametrs_cbed = id;
+					this.cbedModalKey = random(1, 999);
 				}
 			}
 		}
   },
   async mounted() {
-    this.loader = true
-    this.reverseMidlevareCbed()
-    await this.setchDeficitCbed()
-    await this.fetchAllShipments({sort: undefined, light: true})
-    this.loader = false
+    this.loader = true;
+    this.reverseMidlevareCbed();
+    await this.setchDeficitCbed();
+    await this.fetchAllShipments({sort: undefined, light: true});
+    this.loader = false;
   }
 }
 </script>

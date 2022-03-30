@@ -95,7 +95,9 @@ export default {
       if(!res.ok) return false;
 
       const result = await res.json();
-      console.log(result, 'result sclad.js');
+      ctx.commit('unsetSortMaterial');
+      ctx.commit('setDeficitToPlan', result);
+      return result;
     },
     async getShipmentsForOneMaterial(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialonecshipments/${id}`);

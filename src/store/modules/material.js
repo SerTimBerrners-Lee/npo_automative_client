@@ -544,6 +544,15 @@ export default {
     },
     setOneTypeMMytation(state, typeM) {
       state.setOneTypeM = typeM
+    },
+    // Кладем 
+    setDeficitToPlan(state, mats) {
+      if(!state.stateMaterialTime.length) state.stateMaterialTime = state.podMaterial;
+      state.podMaterial = mats;
+    },
+    unsetSortMaterial(state) {
+      if(state.stateMaterialTime.length) state.podMaterial = state.stateMaterialTime;
+      state.stateMaterialTime = [];
     }
   }
 }

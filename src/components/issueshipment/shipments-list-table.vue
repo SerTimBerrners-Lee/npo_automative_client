@@ -1,8 +1,11 @@
 <template>
 	<div>
-		<tr @click="show_is = !show_is"> 
-			<th colspan="3" class='hide_td'>
+		<tr> 
+			<th colspan="3" class='hide_td' @click="show_is = !show_is">
 				{{ show_is ? 'Скрыть' : 'Показать' }} Задачи на отгрузку</th>
+      <th @click='clearFilter' class='hide_td'>
+				Сбросить все фильтры
+			</th>
 		</tr>
 		<div class="table-scroll float_block" v-if='show_is'>
 		<table class='float_block'>
@@ -23,9 +26,6 @@
 				</tr>
 			</tbody>
 		</table>
-		<div class="btn-control float_btn">
-      <button class="btn-small botton" @click='clearFilter'>Сбросить все фильтры</button>
-    </div>
 		<ShipmentsModal 
 			:key='key_modal_shipments'
 			v-if='ship_id'
@@ -38,6 +38,7 @@
 <script>
 import {random} from 'lodash';
 import {mapMutations, mapActions} from 'vuex';
+import { eSelectSpan } from '@/js/methods.js';
 import ShipmentsModal from './shipments-modal.vue';
 export default {
 	props: ['getShipments'],
@@ -65,40 +66,40 @@ export default {
 			'pusshAddShipments',
     ]),
 		unmount_shpment() {
-			this.pusshAddShipments(this.varShipment)
+			this.pusshAddShipments(this.varShipment);
 		},
 		openShipments(id) {
-			this.ship_id = id
-			this.key_modal_shipments = random(1, 999)
+			this.ship_id = id;
+			this.key_modal_shipments = random(1, 999);
 		},
 		toSetOrders(shipments, e) {
-			this.$emit('unmount_action')
+			this.$emit('unmount_action');
 
       if(this.span_ship) {
-        this.breackFIlterMetal()
-				this.breackFIlterAssembl()
-        this.span_ship.classList.remove('checkbox_block_select')
+        this.breackFIlterMetal();
+				this.breackFIlterAssembl();
       }
-      this.span_ship = e
-      this.span_ship.classList.add('checkbox_block_select')
+      this.span_ship = eSelectSpan(this.span_ship, e, 'checkbox_block_select');
+
 			this.fetchAllIzdToShipments(shipments.id).then(res => {
 				this.$emit('unmount_set', res)
-			})
+			});
     },
 		clearFilter() {
       if(this.span_ship) {
-        this.span_ship.classList.remove('checkbox_block_select')
-        this.span_ship = null
+        this.span_ship.classList.remove('checkbox_block_select');
+        this.span_ship = null;
       }
-			if(!this.$props.getShipments || !this.$props.getShipments.length) return false
-			this.breackFIlterMetal()
-			this.breackFIlterAssembl()
+			
+			if(!this.$props.getShipments || !this.$props.getShipments.length) return false;
+			this.breackFIlterMetal();
+			this.breackFIlterAssembl();
 
-			this.$emit('unmount_clear')
+			this.$emit('unmount_clear');
     },
 	},
 	async mounted() {
-		this.varShipment = this.$props.getShipments
+		this.varShipment = this.$props.getShipments;
 	}
 }
 </script>
@@ -108,10 +109,11 @@ export default {
 	position: sticky;
   top: 85px;
 	z-index: 2;
+	max-width: 300px;
 }
 .float_btn {
-	position: sticky;
-	top: 300px;
+	position: fixed;
+	top: 30px;
 }
 .botton {
 	position: absolute;

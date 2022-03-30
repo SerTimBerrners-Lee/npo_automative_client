@@ -42,8 +42,9 @@
 <script>
 import {random} from 'lodash';
 import {showMessage} from '@/js/';
+import { eSelectSpan } from '@/js/methods';
 import {mapGetters, mapActions} from 'vuex';
-import ShipmentsModal from './shipments-modal.vue';
+import ShipmentsModal from './shipments-modal';
 export default {
   props: ['parametrs'],
   data() {
@@ -71,42 +72,38 @@ export default {
   methods: {
     ...mapActions(['fetchAllShipmentsSclad', 'fetchChangeToSclad']),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-      this.$emit('unmount', true)
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
+      this.$emit('unmount', true);
     },
     openShipments() {
       if(this.selectedShip) {
-				this.key_modal_shipments = random(1, 999)
-				this.show_modal_shipments = true
+				this.key_modal_shipments = random(1, 999);
+				this.show_modal_shipments = true;
 			}
     },
     setShipment(shipment, e) {
-      if(this.tr && this.selectedShip.id == shipment.id) {
-        this.tr.classList.remove('td-row-all')
-        this.selectedShip = null
-        return 
-      }
-      if(this.tr) this.tr.classList.remove('td-row-all')
-      this.tr = e
-      this.tr.classList.add('td-row-all')
-      this.selectedShip = shipment
+      if(this.selectedShip.id == shipment.id) 
+        return this.selectedShip = null;
+      
+      this.tr = eSelectSpan(this.tr, e);
+      this.selectedShip = shipment;
     },
     changeToSclad() {
-      if(!this.selectedShip) return false
+      if(!this.selectedShip) return false;
 
       this.fetchChangeToSclad(this.selectedShip.id).then(() => {
         return showMessage('', 'Заказ пернесен на склад.', 's', this)
-      })
+      });
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;' 
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
     
-    await this.fetchAllShipmentsSclad(false)
+    await this.fetchAllShipmentsSclad(false);
   },
 }
 </script>

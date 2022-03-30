@@ -42,7 +42,7 @@ export default {
 	},
 	methods: {
 		...mapActions(['fetchAllShipments', 'fetchMaterialToShipments']),
-		...mapMutations(['reverseMidlevareProduct', 'reverseMidlevareCbed']),
+		...mapMutations(['reverseMidlevareProduct', 'reverseMidlevareCbed', 'unsetSortMaterial']),
 		async toSetOrders(shipments) {
       this.unmount_clear();
       if (!shipments) return false;
@@ -51,8 +51,9 @@ export default {
 		unmount_clear() {
 			this.reverseMidlevareProduct();
 			this.reverseMidlevareCbed();
+			this.unsetSortMaterial();
     },
-	},
+	}, 
 	async mounted() {
 		await this.fetchAllShipments({sort: undefined, light: true});
 	}

@@ -40,14 +40,16 @@ export default {
 		ShipmentList
 	},
 	methods: {
-		...mapActions(['fetchAllShipments']),
-		...mapMutations(['reverseMidlevareDetal']),
-		toSetOrders(shipments) {
+		...mapActions(['fetchAllShipments', 'fetchMaterialToShipments']),
+		...mapMutations(['reverseMidlevareDetal', 'unsetSortMaterial']),
+		async toSetOrders(shipments) {
       this.unmount_clear();
-      console.log(shipments);
+      if (!shipments) return false;
+			await this.fetchMaterialToShipments({ id: shipments.id, type: 'detal' });
     },
 		unmount_clear() {
       this.reverseMidlevareDetal();
+			this.unsetSortMaterial();
     },
 	},
 	async mounted() {

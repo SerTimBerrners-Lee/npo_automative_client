@@ -44,11 +44,11 @@
 				</td>
 				<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td>
 				<td></td>
-				<td v-if='shipments.status == enumShipments[0]' class='work_operation center'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[1]' class='delete_operation center'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[2]' class='work_operation center'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[3]' class='success_operation center'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[4]' class='delete_operation center'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[0]' class='work_operation center'>{{ shipments.status }}</td>
+				<td v-if='shipments.status == enumShipments[1]' class='delete_operation center'>{{ shipments.status }}</td>
+				<td v-if='shipments.status == enumShipments[2]' class='work_operation center'>{{ shipments.status }}</td>
+				<td v-if='shipments.status == enumShipments[3]' class='success_operation center'>{{ shipments.status }}</td>
+				<td v-if='shipments.status == enumShipments[4]' class='delete_operation center'>{{ shipments.status }}</td>
 				<td>{{ shipments.date_shipments }}</td>
 				<td></td>
 				<td></td>
@@ -93,12 +93,12 @@ import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
 import { dateIncrementHors } from '@/js/';
-import { eSelectSpan } from '@/js/methods.js';
-import KomplectModal from './komplect-modal.vue';
-import ShipmentsModal from './shipments-modal.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
+import { eSelectSpan } from '@/js/methods';
+import KomplectModal from './komplect-modal';
+import ShipmentsModal from './shipments-modal';
+import OpensFile from '@/components/filebase/openfile';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
-import DescriptionModal from '@/components/description-modal.vue';
+import DescriptionModal from '@/components/description-modal';
 export default {
 	props: ['shipmentsArr'],
 	data() {

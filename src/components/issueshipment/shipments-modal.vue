@@ -132,9 +132,9 @@
 import { random } from 'lodash';
 import { eSelectSpan } from '@/js/methods.js';
 import OpensFile from '@/components/filebase/openfile';
-import { mapActions, mapGetters, mapMutations } from 'vuex';
 import DatePicterCustom from '@/components/date-picter';
 import CbedModalInfo from '@/components/cbed/cbed-modal';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal';
 import BaseFileModal from '@/components/filebase/base-files-modal';
 import TableShipments from '@/components/issueshipment/table-komplect';
