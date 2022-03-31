@@ -2,22 +2,14 @@
 	<div> 
 		<h3>Комплектация сборок на план</h3>
     <div class='table_block'>
-      <div class="table-scroll">
-        <table>
-          <tr>
-            <th><unicon name="check" fill="royalblue" /></th>
-            <th>Заказ покупателя из задач на отгрузку</th>
-            <th>Дата отгрузки покупателю</th>
-          </tr>
-           <tr v-for='order of getShipments' :key='order'>
-            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-              <p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
-            </td>
-            <td>{{ order.number_order }}</td>
-            <td class='center'>{{ order.date_shipments }}</td>
-          </tr>
-        </table>
-      </div> 
+      <ShipmentList
+        v-if='getShipments.length'
+        @unmount_set='toSetOrders'
+        @unmount_clear='unmount_clear'
+        @unmount_action='unmount_action'
+        :getShipments='getShipments'
+      />
+
        <div class="table-scroll" style='margin-left: 5px;'>
         <table>
           <tr>
@@ -36,17 +28,17 @@
             <th>Комплектация </th>
             <th>Документы</th>
           </tr>
-          <tr v-for='ass of assembles' :key='ass'>
-            <td>{{ ass.number_order }}</td>
-            <td>{{ ass.shipments.to_sklad ? 'Склад' : returnBuyer(ass.shipments.buyerId) }}</td>
+          <tr v-for='ass of getAssembles' :key='ass'>
+            <td class='center'>{{ ass.number_order }}</td>
+            <td class='center'>{{ ass.cbed.shipments.length || 'склад' }}</td>
             <td class='center'>{{ ass.cbed.articl }}</td>
             <td class='center'>{{ ass.cbed.name }}</td>
-            <td class='center'>{{ ass.kolvo_all }}</td>
-            <td class='center'>{{ ass.kolvo_order_byer }}</td>
-            <td class='center'>{{ 0 }}</td>
+            <td class='center'>{{ ass.kolvo_shipments }}</td>
+            <td class='center'>{{ ass.kolvo_shipments }}</td>
+            <td class='center'>{{ percent(ass) }}</td>
             <td class='center'>{{ 0 }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openDocuments(ass.cbed.id)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" @click='openDocuments(ass.cbed?.id)' class='link_img' atl='Показать' />
             </td>
           </tr>
         </table>
@@ -79,9 +71,11 @@
 <script>
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
-import AddWaybill from './add-waybill.vue';
+import AddWaybill from './add-waybill';
 import {mapGetters, mapActions} from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
+import OpensFile from '@/components/filebase/openfile';
+import ShipmentList from '@/components/issueshipment/shipments-list-table';
+
 export default {
 	data() {
 		return{
@@ -99,50 +93,60 @@ export default {
       keyInformTip: random(1, 999),
 		}
 	},
-	components: {AddWaybill, OpensFile},
+	components: {
+    AddWaybill,
+    OpensFile,
+    ShipmentList
+  },
   computed: mapGetters([
       'getShipments',
+      'getAssembles',
       'allBuyer'
     ]),
 	methods: {
     ...mapActions([
       'fetchAllShipmentsAssemble',
-      'fetchAssembleById',
       'fetchAllBuyers',
-      'getOneCbEdById'
-      ]),
+      'getOneCbEdField',
+      'fetchAssemblePlan'
+    ]),
+    unmount_clear() {
+      console.log('unmount_clear');
+    },
+    unmount_action() {
+      console.log('unmount_action');
+    },
     addWaybill() {
       this.showAddWaybill = true;
-      this.keyAddWaybill = random(1, 999)
+      this.keyAddWaybill = random(1, 999);
     },
-    toSetOrders(shipments, e) {
-      if(e.classList.item(1)) {
-        shipments.assemble.forEach(or => { this.assembles = this.assembles.filter(el => el.id != or.id)})
-        return e.classList.remove('checkbox_block_select')
-      }
-      e.classList.add('checkbox_block_select')
-      shipments.assemble.forEach(or => { 
-        this.fetchAssembleById(or.id).then(result => this.assembles.push(result))
-      })
+    toSetOrders(shipments) {
+      this.unmount_clear();
+      console.log(shipments);
     },
     returnBuyer(buyer_id) {
-      for(let buyer of this.allBuyer) {
-        if(buyer.id == buyer_id) return buyer.name
+      for(const buyer of this.allBuyer) {
+        if(buyer.id == buyer_id) return buyer.name;
       }
     },
-    openDocuments(id) {
-      this.getOneCbEdById(id).then(cb => {
-        if(cb.documents && cb.documents.length) {
-          this.keyWhenModalGenerateFileOpen = random(1, 999)
-          this.itemFiles = cb.documents
-        } else showMessage('', 'Документов нет', 'w', this)
-      })
+    percent(ass) {
+      const res = ass.kolvo_shipments * (1 / ass.kolvo_create);
+      return Number.isFinite(res) ? res : 0;
+    },
+    async openDocuments(id) {
+      const cb = await this.getOneCbEdField({fields: 'documents', id});
+      if (cb.documents && cb.documents.length) {
+        this.keyWhenModalGenerateFileOpen = random(1, 999);
+        this.itemFiles = cb.documents;
+      } else showMessage('', 'Документов нет', 'w', this);
     },
 	},
 	async mounted() {
     this.loader = true
-    await this.fetchAllShipmentsAssemble()
-    await this.fetchAllBuyers()
+    await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
+    await this.fetchAssemblePlan();
+    await this.fetchAllBuyers();
+    console.log(this.getAssembles);
     this.loader = false
 	}
 }

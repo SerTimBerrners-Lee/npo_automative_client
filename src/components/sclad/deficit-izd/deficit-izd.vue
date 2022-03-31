@@ -160,16 +160,17 @@
 </template>
 <script>
 import {random} from 'lodash';
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
 import { showMessage, comparison } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import DescriptionModal from '@/components/description-modal.vue';
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
-import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
-import StartProduction from '@/components/sclad/start-production-modal.vue';
-import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
-import NormTimeOperation from '@/components/sclad/norm-time-operation-modal.vue';
+import DatePicterRange from '@/components/date-picter-range';
+import DescriptionModal from '@/components/description-modal';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
+import ProductModalInfo from '@/components/baseproduct/product-modal';
+import StartProduction from '@/components/sclad/start-production-modal';
+import ShipmentList from '@/components/issueshipment/shipments-list-table';
+import NormTimeOperation from '@/components/sclad/norm-time-operation-modal';
+
 export default {
   data() {
     return {
@@ -250,111 +251,109 @@ export default {
     ]),
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo  > 0 ? 
-        0 : kol - izd.min_remaining - izd.shipments_kolvo
+        0 : kol - izd.min_remaining - izd.shipments_kolvo;
     },
     keySearch(v) {
-      this.searchProduct(v)
+      this.searchProduct(v);
     },
     unmount_clear() {
-      this.reverseMidlevareProduct()
+      this.reverseMidlevareProduct();
     },
     unmount_action() {
-      this.loader = true
+      this.loader = true;
     },
     showInformIzdel(productId) {
-      if(!productId) return false 
-      this.parametrs_product = productId
-      this.productModalKey = random(1, 999)
+      if(!productId) return false;
+      this.parametrs_product = productId;
+      this.productModalKey = random(1, 999);
     },
     toSetOrders(shipments) {
-      this.unmount_clear()
-      this.productToShipmentsSort([shipments.product])
-      this.loader = false
+      this.unmount_clear();
+      this.productToShipmentsSort([shipments.product]);
+      this.loader = false;
     },
     openDescription(description) {
-      this.showDescriptionModal = true
-      this.descriptionKey = random(1, 999)
-      this.description = description
+      this.showDescriptionModal = true;
+      this.descriptionKey = random(1, 999);
+      this.description = description;
     },
     normTimeOperation() {
       if(!this.select_izd)
-        return showMessage('', 'Для начала выберите Изделие', 'w', this)
+        return showMessage('', 'Для начала выберите Изделие', 'w', this);
       this.showNormTimeOperation = true;
-      this.normTimeOperationKey = random(1, 999)
+      this.normTimeOperationKey = random(1, 999);
     },
     returnShipmentsKolvo(shipments) {
-      if(!shipments || shipments.length == 0) return '-'
-      let end_date = shipments[0]?.number_order.split('от')[0] || '-'
+      if(!shipments || shipments.length == 0) return '-';
+      let end_date = shipments[0]?.number_order.split('от')[0] || '-';
       for(let ship1 of shipments) {
         for(let ship2 of shipments) {
           if(!ship1.number_order) continue;
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0]
+          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0];
         }
       }
-      return end_date
+      return end_date;
     },
     returnShipmentsDateModal(izd, type) {
-      let shipments = izd.shipments
+      const shipments = izd.shipments;
       if(izd.shipments == undefined) {
         this.getAllProductShipmentsById(izd.id).then(res => {
-          this.shipments = res.shipments
-          this.izdForSchipment = {izd, type}
-          this.shipmentKey = random(1, 999)
+          this.shipments = res.shipments;
+          this.izdForSchipment = {izd, type};
+          this.shipmentKey = random(1, 999);
         })
       }
-      if(shipments && shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this)
+      if(shipments && shipments.length == 0) return showMessage('', 'Нет Заказов', 'i', this);
       if(!shipments) return;
-      this.shipments = shipments
-      this.izdForSchipment = {izd, type}
-      this.shipmentKey = random(1, 999)
+      this.shipments = shipments;
+      this.izdForSchipment = {izd, type};
+      this.shipmentKey = random(1, 999);
     },
     getTimming(param, kol = 1) {
-      if(!param) return 0
+      if(!param) return 0;
       try {
-        let pars = JSON.parse(param)
+        const pars = JSON.parse(param);
         if(pars) 
-          return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2)
-      } catch(e) {
-        console.error(e)
-      }
+          return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2);
+      } catch(e) { console.error(e); }
     },
     setIzdels(izd) {
-      this.select_izd = izd
+      this.select_izd = izd;
     },
     alt(e) {
       if(!this.select_izd)
-        return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w', this)
-      this.select_izd.my_kolvo = e.innerText
+        return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w', this);
+      this.select_izd.my_kolvo = e.innerText;
     },
     changeDatePicterRange(val) {
-      console.log(val)
+      console.log(val);
     },
     toProduction(izd, e) {
-      e.classList.toggle('checkbox_block_select')
-      let check = true
+      e.classList.toggle('checkbox_block_select');
+      let check = true;
       for(let izdd of this.toProductionArr) {
         if(izdd.id == izd.id) {
-          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id)
-          check = false
+          this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
+          check = false;
         }
       }
-      if(check) this.toProductionArr.push(izd)
+      if(check) this.toProductionArr.push(izd);
     },
     start() {
       if(!this.toProductionArr.length)
-        return showMessage('', 'Для начала выберите Изделие', 'w', this)
+        return showMessage('', 'Для начала выберите Изделие', 'w', this);
       this.parametrs = {
         izd: this.toProductionArr,
         type: 'prod'
-      }
-      this.startProductionModalKey = random(1, 999)
+      };
+      this.startProductionModalKey = random(1, 999);
     },
   },
   async mounted() {
-    this.loader = true
-    await this.setchDeficitProducts()
-    await this.fetchAllShipments({sort: undefined, light: true})
-    this.loader = false
+    this.loader = true;
+    await this.setchDeficitProducts();
+    await this.fetchAllShipments({sort: undefined, light: true});
+    this.loader = false;
   }
 }
 </script>

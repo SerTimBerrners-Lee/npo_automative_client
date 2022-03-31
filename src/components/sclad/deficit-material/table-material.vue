@@ -130,8 +130,8 @@ import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
 import {getKolvoMaterial} from '@/js/edizm';
-import { mapGetters, mapMutations, mapActions } from 'vuex';
 import MaterialParentModal from './material-parent-modal';
+import { mapGetters, mapMutations, mapActions } from 'vuex';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
 
 export default {

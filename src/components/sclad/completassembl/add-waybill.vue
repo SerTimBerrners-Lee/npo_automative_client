@@ -114,6 +114,7 @@
 
 <script>
 import { dataFormat } from '@/js/';
+
 export default { 
   props: ['parametrs'],
   data() {

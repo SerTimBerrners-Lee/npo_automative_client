@@ -178,6 +178,7 @@ import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
 import TechProcess from '@/components/basedetal/tech-process-modal';
 import StartPraduction from '@/components/sclad/start-production-modal';
 import ShipmentList from '@/components/issueshipment/shipments-list-table';
+
 export default {
   data() {
     return {
