@@ -62,6 +62,7 @@
 import {random} from 'lodash';
 import { mapActions} from 'vuex';
 import { showMessage } from '@/js/';
+
 export default {
   props: ['parametrs'],
   data() {
@@ -87,19 +88,19 @@ export default {
       'fetchWorkingsCount'
     ]),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     change_date_order(date) {
-      this.date_order = date
+      this.date_order = date;
     },
     change_date_shipments(date) {
-      this.date_shipments = date
+      this.date_shipments = date;
     },
     start() {
       if(!this.$props.parametrs || !this.$props.parametrs.izd)
-        return showMessage('', 'Сначала выберите изделие', 'w', this)
+        return showMessage('', 'Сначала выберите изделие', 'w', this);
 
       const workers_data = {
         date_order: this.date_order,
@@ -112,19 +113,19 @@ export default {
 
       for(let komplect of this.komplect) {
         if(komplect.my_kolvo == 0) continue;
-        data['my_kolvo'] = komplect.my_kolvo
-        data['shipments_kolvo'] = komplect.shipments_kolvo
+        data['my_kolvo'] = komplect.my_kolvo;
+        data['shipments_kolvo'] = komplect.shipments_kolvo;
         if(this.$props.parametrs.type == 'cb' || this.$props.parametrs.type == 'prod') {
           working.push({
             ...data,
             cbed_id: komplect.id,
-          })
+          });
         }
         if(this.$props.parametrs.type == 'det') {
           working.push({
             ...data,
             detal_id: komplect.id,
-          })
+          });
         }
       }
 
@@ -136,20 +137,20 @@ export default {
     },
     endResult(res) {
       if(!res) return showMessage('', 'Произошла ошибка...', 'e', this);
-      this.destroyModalF()
-      return showMessage('', `Заказа №${this.number_order} отправлен в производство`, 's', this)
+      this.destroyModalF();
+      return showMessage('', `Заказа №${this.number_order} отправлен в производство`, 's', this);
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;' 
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
     if(this.$props.parametrs) {
-      this.komplect = this.$props.parametrs.izd
+      this.komplect = this.$props.parametrs.izd;
       for(let item of this.komplect) {
         if(!item.my_kolvo || item.my_kolvo < 1) 
-          item.my_kolvo = item.min_remaining
+          item.my_kolvo = item.min_remaining;
       }
     }
     // get number order 

@@ -58,8 +58,29 @@ function returnTypePosition(type) {
   }
 }
 
+function parseSpetification(obj) {
+  let materialList = [],
+    listPokDet = [],
+    listDetal = [],
+    listCbed = [];
+
+  try {
+    if(obj.materialList)
+      materialList = JSON.parse(obj.materialList);
+    if(obj.listPokDet)
+      listPokDet = JSON.parse(obj.listPokDet);
+    if(obj.listDetal)
+      listDetal = JSON.parse(obj.listDetal);
+    if(obj.listCbed)
+      listCbed = JSON.parse(obj.listCbed);
+  } catch(e) {console.error(e)}
+
+  return {materialList, listPokDet, listDetal, listCbed};
+}
+
 export {
   eSelectSpan,
   posToDeliveries,
-  returnTypePosition
+  returnTypePosition,
+  parseSpetification
 }

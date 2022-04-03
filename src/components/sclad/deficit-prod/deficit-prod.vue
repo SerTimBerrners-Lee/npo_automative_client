@@ -158,17 +158,18 @@
   </div>
 </template>
 <script>
-import {random} from 'lodash';
+import { random } from 'lodash';
 import Search from '@/components/search';
 import { showMessage, comparison } from '@/js/';
-import {mapGetters, mapActions, mapMutations} from 'vuex';
 import CbedModalInfo from '@/components/cbed/cbed-modal';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range';
 import DescriptionModal from '@/components/description-modal';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
 import StartProduction from '@/components/sclad/start-production-modal';
 import ShipmentList from '@/components/issueshipment/shipments-list-table';
 import NormTimeOperation from '@/components/sclad/norm-time-operation-modal';
+
 export default {
   data() {
     return {
@@ -227,10 +228,10 @@ export default {
   },
   watch: {
     selectEnumStatus: function(val) {
-      this.changeStatusDeficitCbed(val)
+      this.changeStatusDeficitCbed(val);
     },
     selectEnumDeficit: function(val) {
-      this.changeDeficitCbed({status: val, deficit: this.returnDificit})
+      this.changeDeficitCbed({status: val, deficit: this.returnDificit});
     }
   },
   methods: {
@@ -264,8 +265,8 @@ export default {
         return showMessage('', 'Для начала выберите СБ и заказ', 'w', this);
       this.parametrs = {
         izd: this.toProductionArr,
-        type: 'cb'
-      }
+        type: 'cbed'
+      };
       this.startProductionModalKey = random(1, 999);
     },
     openDescription(description) {

@@ -139,13 +139,15 @@
 </template>
 <script>
 import { random, isEmpty } from 'lodash';
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
+import NodeParent from '@/components/mathzag/table-node';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import NodeParent from '@/components/mathzag/table-node.vue';
-import MediaSlider from '@/components/filebase/media-slider.vue';
-import TableDocument from '@/components/filebase/table-document.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
-import TableSpetification from '@/components/cbed/table-sptification.vue';
+import MediaSlider from '@/components/filebase/media-slider';
+import { eSelectSpan, parseSpetification } from '@/js/methods';
+import TableDocument from '@/components/filebase/table-document';
+import TechProcess from '@/components/basedetal/tech-process-modal';
+import TableSpetification from '@/components/cbed/table-sptification';
+
 export default {
   data() {
     return {
@@ -195,101 +197,88 @@ export default {
       'filterProductToDate',
       'filterProductToMyObject'
     ]),
-    setProduct(product, e) {
-      this.show_node_modal = false
-      if(!product) return false
-      this.getAllProductById(product.id).then(res => {
-        if(!res) return false
-        this.selecteProduct = res
-        this.setOneProduct(res)
-        this.parseSpetification(res)
-      })
-      if(this.tr) 
-        this.tr.classList.remove('td-row-all')
-      this.tr = e
-      this.tr.classList.add('td-row-all')
+    async setProduct(product, e) {
+      this.show_node_modal = false;
+      if(!product) return false;
+      const res = await this.getAllProductById(product.id);
+      if(!res) return false;
+      this.selecteProduct = res;
+      this.setOneProduct(res);
+      this.parseSpetification(res);
+
+      this.tr = eSelectSpan(this.tr, e);
     },
     showModalNode() {
       this.show_node_modal = !this.show_node_modal
       this.key_node_modal = random(1, 999)
     },
     parseSpetification(obj) {
-      this.materialList = []
-      this.listPokDet = []
-      this.listDetal = []
-      this.listCbed = []
-      try {
-        if(obj.materialList)
-          this.materialList = JSON.parse(obj.materialList)
-        if(obj.listPokDet)
-          this.listPokDet = JSON.parse(obj.listPokDet)
-        if(obj.listDetal)
-          this.listDetal = JSON.parse(obj.listDetal)
-        if(obj.listCbed)
-          this.listCbed = JSON.parse(obj.listCbed)
-      } catch(e) {console.error(e)}
+      const res = parseSpetification(obj)
+      this.materialList = res.materialList;
+      this.listPokDet = res.listPokDet;
+      this.listDetal = res.listDetal;
+      this.listCbed = res.listCbed;
     },
     sortToAttention() {
-      this.filterToAttentionProduct()
+      this.filterToAttentionProduct();
     },
     sortToDate() {
-      this.filterProductToDate()
+      this.filterProductToDate();
     },
     sortToMyObject() {
-      this.filterProductToMyObject(this.getAuth.id)
+      this.filterProductToMyObject(this.getAuth.id);
     },
     editProduct() {
-      if(!this.selecteProduct)
-        return 0
+      if(!this.selecteProduct) return 0;
 
-      this.$router.push({path: '/product/edit/false'})
+      this.$router.push({path: '/product/edit/false'});
     }, 
     createProduct() {
-      this.$router.push('/createproduct')
+      this.$router.push('/createproduct');
     },
     createCopy() {
-      if(!this.selecteProduct)
-        return 0
-      this.$router.push({path: '/product/edit/true'})
+      if(!this.selecteProduct) return 0;
+
+      this.$router.push({path: '/product/edit/true'});
     },
     keySearch(v) {
-      this.searchProduct(v)
+      this.searchProduct(v);
     },
     deleteProduct() {
-      if(!this.selecteProduct)
-        return 0
-      this.fetchDeleteProduct(this.selecteProduct.id)
+      if(!this.selecteProduct) return 0;
+
+      this.fetchDeleteProduct(this.selecteProduct.id);
     }, 
     сolNotOperation(arr_one, arr_two) {
-      let counter = 0
-      for(let item of arr_one) {
-        for(let id of arr_two) {
-          if(item.id == id) counter++
+      let counter = 0;
+      for(const item of arr_one) {
+        for(const id of arr_two) {
+          if(item.id == id) counter++;
         } 
       }
-      return counter
+      return counter;
     },
     sortOperationProduct() {
-      this.sortByNonOperationProduct(this.productOperation)
+      this.sortByNonOperationProduct(this.productOperation);
     },
     setDocs(dc) {
-      this.itemFiles = dc
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(1, 999)
+      this.itemFiles = dc;
+      this.showFile = true;
+      this.keyWhenModalGenerateFileOpen = random(1, 999);
     },
     showTechProcess() {
-      if(isEmpty(this.selecteProduct)) return false
-      if(!this.selecteProduct.techProcesses) return false
-      this.techProcessID = this.selecteProduct.techProcesses.id
-      this.techProcessIsShow = true
-      this.techProcessKey = random(1, 999)
+      if(isEmpty(this.selecteProduct)) return false;
+      if(!this.selecteProduct.techProcesses) return false;
+      this.techProcessID = this.selecteProduct.techProcesses.id;
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
     },
   },
   async mounted() {
-    this.loader = true
-    await this.getAllProduct(true)
-    this.productOperation = await this.fetchAllProductOperation()
-    this.loader = false
+    this.loader = true;
+    await this.getAllProduct(true);
+    this.productOperation = await this.fetchAllProductOperation();
+    this.loader = false;
   }
 }
 </script>

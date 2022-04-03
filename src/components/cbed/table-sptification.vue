@@ -110,9 +110,10 @@
 	</div>
 </template>
 <script>
-import {random} from 'lodash';
-import ComplectModal from '@/components/baseproduct/complect-modal.vue';
-import MaterialInformation from '@/components/mathzag/material-information.vue';
+import { random } from 'lodash';
+import ComplectModal from '@/components/baseproduct/complect-modal';
+import MaterialInformation from '@/components/mathzag/material-information';
+
 export default {
 	props: ['listCbed', 'listDetal', 'listPokDet', 'materialList', 'izd', 'type_izd'],
 	data() {
@@ -129,28 +130,28 @@ export default {
 		}
 	},
 	beforeCreate() {
-    this.$options.components.DetalModal = require('@/components/basedetal/detal-modal.vue').default
-    this.$options.components.ModalCbed = require('@/components/cbed/cbed-modal.vue').default
+    this.$options.components.DetalModal = require('@/components/basedetal/detal-modal.vue').default;
+    this.$options.components.ModalCbed = require('@/components/cbed/cbed-modal.vue').default;
   },
 	components: {MaterialInformation, ComplectModal},
 	methods: {
 		openComplectModal() {
-      this.show_complect_modal = true
-      this.key_complect_modal = random(1, 999)
+      this.show_complect_modal = true;
+      this.key_complect_modal = random(1, 999);
     },
 		openCbed(id) {
-			if(!id) return false
-      this.cbedModalKey = random(1, 999)
-			this.parametrs_cbed = id
+			if(!id) return false;
+      this.cbedModalKey = random(1, 999);
+			this.parametrs_cbed = id;
 		}, 
 		openDetal(id) {
-			if(!id) return false
-			this.parametrs_detal = id,
-      this.detalModalKey = random(1, 999)
+			if(!id) return false;
+			this.parametrs_detal = id;
+      this.detalModalKey = random(1, 999);
 		},
 		openMaterial(id) {
-			this.material_key = random(1, 999)
-			this.material_id = id
+			this.material_key = random(1, 999);
+			this.material_id = id;
 		}
 	},
 }

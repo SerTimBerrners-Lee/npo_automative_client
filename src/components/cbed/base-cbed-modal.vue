@@ -156,10 +156,12 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
+import { eSelectSpan } from '@/js/methods';
+import CbedModalInfo from '@/components/cbed/cbed-modal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
+import ProductModalInfo from '@/components/baseproduct/product-modal';
+
 export default {
   props: ['getListCbed', 'listCbed', 'get_one'],
   data() {
@@ -182,13 +184,18 @@ export default {
   },
   computed: mapGetters([
       'allCbed', 
-      'allProduct']),
-  components: {Search, CbedModalInfo, ProductModalInfo},
+      'allProduct'
+    ]),
+  components: {
+    Search,
+    CbedModalInfo,
+    ProductModalInfo
+  },
   methods: {
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     ...mapActions([
       'getAllCbed', 
@@ -205,67 +212,58 @@ export default {
       'clearFilterCbedByProduct', 
       'setOneCbed'
     ]),
-    setCbed(cbed, e) {
-      if(this.tr_cb) 
-        this.tr_cb.classList.remove('td-row-all')
+    async setCbed(cbed, e) {
   
-      this.selectedCbed = cbed
+      this.selectedCbed = cbed;
 
-      this.getOneCbEdById(cbed.id).then(res => {
-        if(!res) return false
-        this.selectedCbed = res
-        this.setOneCbed(res)
-      })
+      const res = await this.getOneCbEdById(cbed.id);
+      if(!res) return false;
+      this.selectedCbed = res;
+      this.setOneCbed(res);
 
-      this.tr_cb = e
-      this.tr_cb.classList.add('td-row-all')
+      this.tr_cb = eSelectSpan(this.tr_cb, e);
     },
     infoModalCbed(cb) {
-      if(!cb) return false
-      this.parametrs_cbed = cb.id
-      this.cbedModalKey = random(1, 999)
+      if(!cb) return false;
+      this.parametrs_cbed = cb.id;
+      this.cbedModalKey = random(1, 999);
     },
-    setProduct(product, e) {
+    async setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
-          this.clearFilterCbedByProduct()
-          e.classList.remove('td-row-all')
-          this.selecteProduct = null
-          return
+          this.clearFilterCbedByProduct();
+          e.classList.remove('td-row-all');
+          this.selecteProduct = null;
+          return;
       }
-      this.selecteProduct = product
-      if(this.tr_product) 
-        this.tr_product.classList.remove('td-row-all')
+      this.selecteProduct = product;
   
-      this.getAllProductById(product.id).then(res => {
-        if(!res) return false
-        this.selecteProduct = res
-        this.getAllCbEdByProduct(res)
-      })
+      const res = await this.getAllProductById(product.id);
+      if(!res) return false;
+      this.selecteProduct = res;
+      this.getAllCbEdByProduct(res);
 
-      this.tr_product = e
-      this.tr_product.classList.add('td-row-all')
+      this.tr_product = eSelectSpan(this.tr_product, e);
     },
     infoModalProduct(product) {
-      if(!product) return false 
-      this.parametrs_product = product.id
-      this.productModalKey = random(1, 999)
+      if(!product) return false ;
+      this.parametrs_product = product.id;
+      this.productModalKey = random(1, 999);
     },
     keySearch(v) {
-      this.searchCbed(v)
+      this.searchCbed(v);
     },
     keySearchProduct(v) {
-      this.searchProduct(v)
+      this.searchProduct(v);
     },
     responsCbed() {
-      if(!this.selectedCbed)
-        return 0
+      if(!this.selectedCbed) return 0;
       
       if(this.$props.getListCbed) {
-        let add = true
+        let add = true;
         if(this.cbedList.length > 0) {
           for(let cb of this.cbedList) {
             if(cb.cb.id == this.selectedCbed.id)
-              add = false
+              add = false;
           }
         }
         if(add) {
@@ -279,37 +277,37 @@ export default {
             ez: 1
           });
         } 
-        return 0
+        return 0;
       }
-      this.$emit("responsCbed", this.selectedCbed)
-      this.destroyModalF()
+      this.$emit("responsCbed", this.selectedCbed);
+      this.destroyModalF();
     },
     returnCbedList() {
-      this.$emit("responsCbed", this.cbedList)
-      this.destroyModalF()
+      this.$emit("responsCbed", this.cbedList);
+      this.destroyModalF();
     },
     changeKolvo(val, cb) {
-      cb.kol = val.value
+      cb.kol = val.value;
     },
     changeArt(val, cb) {
-      cb.art = val.value
+      cb.art = val.value;
     },
     selecter(val, cb) {
-      cb.ez = val.value
+      cb.ez = val.value;
     },
     delCbed(id) {
-      this.cbedList = this.cbedList.filter(cb => cb.cb.id != id)
+      this.cbedList = this.cbedList.filter(cb => cb.cb.id != id);
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
-    this.getAllProduct(true)
-    this.getAllCbed(true)
+    this.getAllProduct(true);
+    this.getAllCbed(true);
     if(this.$props.listCbed)
-      this.cbedList = this.$props.listCbed
+      this.cbedList = this.$props.listCbed;
   }
 }
 </script>

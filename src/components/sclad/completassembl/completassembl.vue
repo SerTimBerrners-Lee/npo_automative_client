@@ -28,7 +28,11 @@
             <th>Комплектация </th>
             <th>Документы</th>
           </tr>
-          <tr v-for='ass of getAssembles' :key='ass'>
+          <tr 
+            v-for='ass of getAssembles'
+            :key='ass'
+            @click="e => setTr(ass, e.target.parentElement)"
+            class='td-row'>
             <td class='center'>{{ ass.number_order }}</td>
             <td class='center'>{{ ass.cbed.shipments.length || 'склад' }}</td>
             <td class='center'>{{ ass.cbed.articl }}</td>
@@ -36,22 +40,24 @@
             <td class='center'>{{ ass.kolvo_shipments }}</td>
             <td class='center'>{{ ass.kolvo_shipments }}</td>
             <td class='center'>{{ percent(ass) }}</td>
-            <td class='center'>{{ 0 }}</td>
             <td class='center'>
-              <img src="@/assets/img/link.jpg" @click='openDocuments(ass.cbed?.id)' class='link_img' atl='Показать' />
+              <img src="@/assets/img/link.jpg" @click='addWaybill("see")' class='link_img' atl='Показать' />
+            </td>
+            <td class='center'>
+              <img src="@/assets/img/link.jpg" @click='openDocuments(ass)' class='link_img' atl='Показать' />
             </td>
           </tr>
         </table>
+      <div class="btn-control" v-if='span'>
+        <button class="btn-small btn-add" @click='addWaybill()'>Создать накладную комплектации сборочного участка</button>
+      </div>
       </div> 
     </div>
-
-     <div class="btn-control">
-        <button class="btn-small btn-add" @click='addWaybill'>Создать накладную комплектации сборочного участка</button>
-      </div>
-
       <AddWaybill 
         v-if='showAddWaybill'
         :key='keyAddWaybill'
+        :type_open='type_open'
+        :cbed='selectedAss'
       />
       <OpensFile 
         :parametrs='itemFiles' 
@@ -69,10 +75,11 @@
 	</div>
 </template>
 <script>
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import AddWaybill from './add-waybill';
-import {mapGetters, mapActions} from 'vuex';
+import { eSelectSpan } from '@/js/methods';
+import { mapGetters, mapActions } from 'vuex';
 import OpensFile from '@/components/filebase/openfile';
 import ShipmentList from '@/components/issueshipment/shipments-list-table';
 
@@ -91,6 +98,9 @@ export default {
       message: '',
       type: '',
       keyInformTip: random(1, 999),
+      selectedAss: null,
+      span: null,
+      type_open: 'open'
 		}
 	},
 	components: {
@@ -108,7 +118,8 @@ export default {
       'fetchAllShipmentsAssemble',
       'fetchAllBuyers',
       'getOneCbEdField',
-      'fetchAssemblePlan'
+      'fetchAssemblePlan',
+      'getAllProductById'
     ]),
     unmount_clear() {
       console.log('unmount_clear');
@@ -116,9 +127,11 @@ export default {
     unmount_action() {
       console.log('unmount_action');
     },
-    addWaybill() {
+    addWaybill(to = 'add') {
       this.showAddWaybill = true;
       this.keyAddWaybill = random(1, 999);
+      console.log(to)
+      this.type_open = to;
     },
     toSetOrders(shipments) {
       this.unmount_clear();
@@ -133,13 +146,23 @@ export default {
       const res = ass.kolvo_shipments * (1 / ass.kolvo_create);
       return Number.isFinite(res) ? res : 0;
     },
-    async openDocuments(id) {
-      const cb = await this.getOneCbEdField({fields: 'documents', id});
+    async openDocuments(ass) {
+      if (!ass?.cbed) return false;
+      if (ass.type_izd !== 'cbed') return false;
+
+      const cb = ass.type_izd == 'prod' ? 
+        await this.getAllProductById(ass.cbed.id) :
+        await this.getOneCbEdField({fields: 'documents', id: ass.cbed.id});
+
       if (cb.documents && cb.documents.length) {
         this.keyWhenModalGenerateFileOpen = random(1, 999);
         this.itemFiles = cb.documents;
       } else showMessage('', 'Документов нет', 'w', this);
     },
+    setTr(ass, span) {
+      this.span = eSelectSpan(this.span, span);
+      this.selectedAss = ass;
+    }
 	},
 	async mounted() {
     this.loader = true

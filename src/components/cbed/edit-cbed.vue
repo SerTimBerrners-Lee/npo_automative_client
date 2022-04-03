@@ -247,16 +247,17 @@
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
 import { random, isEmpty } from 'lodash';
-import TableSpetification from './table-sptification.vue';
+import TableSpetification from './table-sptification';
+import NodeParent from '@/components/mathzag/table-node';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
-import NodeParent from '@/components/mathzag/table-node.vue';
-import MediaSlider from '@/components/filebase/media-slider.vue';
-import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
-import TableDocument from '@/components/filebase/table-document.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import MediaSlider from '@/components/filebase/media-slider';
+import BaseCbedModal from '@/components/cbed/base-cbed-modal';
+import TableDocument from '@/components/filebase/table-document';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import TechProcess from '@/components/basedetal/tech-process-modal';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material';
+
 export default {
   data() {
     return {

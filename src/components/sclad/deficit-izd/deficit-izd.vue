@@ -159,10 +159,10 @@
   </div>
 </template>
 <script>
-import {random} from 'lodash';
+import { random } from 'lodash';
 import Search from '@/components/search';
 import { showMessage, comparison } from '@/js/';
-import {mapGetters, mapActions, mapMutations} from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range';
 import DescriptionModal from '@/components/description-modal';
 import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
@@ -229,10 +229,10 @@ export default {
   },
   watch: {
     selectEnumStatus: function(val) {
-      this.changeStatusDeficitProduct(val)
+      this.changeStatusDeficitProduct(val);
     },
     selectEnumDeficit: function(val) {
-      this.changeKolDeficitProduct({status: val, deficit: this.returnDificit})
+      this.changeKolDeficitProduct({status: val, deficit: this.returnDificit});
     }
   },
   methods: {
@@ -299,7 +299,7 @@ export default {
       if(izd.shipments == undefined) {
         this.getAllProductShipmentsById(izd.id).then(res => {
           this.shipments = res.shipments;
-          this.izdForSchipment = {izd, type};
+          this.izdForSchipment = { izd, type };
           this.shipmentKey = random(1, 999);
         })
       }

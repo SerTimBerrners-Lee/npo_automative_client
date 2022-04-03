@@ -17,6 +17,15 @@
                 <th class='th_black'>Кол-во</th>
                 <th class='th_black'>% Комплектации</th>
               </tr>
+              <tr v-if='ass'>
+                <td class="center">{{ ass.number_order }}</td>
+                <td class="center">{{ ass.date_shipments }}</td>
+                <td class="center">{{ 'склад' }}</td>
+                <td class="center">{{ ass?.cbed?.articl }}</td>
+                <td class="center">{{ ass?.cbed?.name }}</td>
+                <td class="center">{{ ass.kolvo_shipments }}</td>
+                <td class="center">{{ 0 }}</td>
+              </tr>
             </table>
         </div>
 
@@ -45,6 +54,20 @@
                   <th>Кол-во</th>
                   <th></th>
                 </tr>
+                <tr v-for='cbed of listCbed' :key='cbed'>
+                  <td class='center'>{{ cbed.art }}</td>
+                  <td class='center'>{{ cbed.cb.name }}</td>
+                  <td class='center'>{{ returnEzName(cbed.ez) }}</td>
+                  <td class='center'>{{ cbed.kol }}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
               </table>
 
               <table>
@@ -68,6 +91,21 @@
                   <th>% комп лектации</th>
                   <th>Кол-во</th>
                   <th></th>
+                </tr>
+                <tr v-for='det of listDetal' :key='det'>
+                  <td class='center'>{{ det.art }}</td>
+                  <td class='center'>{{ det.det.name }}</td>
+                  <td class='center'>{{ returnEzName(det.ez) }}</td>
+                  <td class='center'>{{ det.kol }}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
                 </tr>
               </table>
 
@@ -99,11 +137,32 @@
                   <th></th>
                   <th></th>
                 </tr>
+                <tr v-for='mat of materialList' :key='mat'>
+                  <td class='center'>{{ mat.art }}</td>
+                  <td>{{ mat.mat.name }}</td>
+                  <td>{{ returnEzName(mat.ez) }}</td>
+                  <td>{{ mat.kol }}</td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                  <td></td>
+                </tr>
               </table>
             </div>
         </div>
 
-        <div class="btn-control out-btn-control">
+        <div class="btn-control out-btn-control" v-if='type_open != "see"'>
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status btn-black">Сформировать накладную</button>
         </div>
@@ -113,33 +172,80 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex';
 import { dataFormat } from '@/js/';
+import { returnEzName } from '@/js/edizm';
+import { parseSpetification } from '@/js/methods';
 
 export default { 
-  props: ['parametrs'],
+  props: {
+    cbed: {
+      type: Object
+    },
+    type_open: {
+      type: String,
+      default: "see" // "see", "add"
+    }
+  },
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'opacity: 1;',
+
+      ass: null,
+      izdels: null,
+
+      materialList: [],
+      listDetal: [],
+      listCbed: [],
+    }
+  },
+  methods: {
+    ...mapActions([
+      'getOneCbEdById',
+      'getAllProductById'
+    ]),
+    destroyModalF() {
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
+    },
+    dataReturn() {
+      return dataFormat();
+    },
+    returnEzName(ez) {
+      return returnEzName(ez);
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-      
-  },
-  methods: {
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-    },
-    dataReturn() {
-      return dataFormat()
-    }
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
+    if (!this.type_open || !this.cbed) return this.destroyModalF();
+    this.ass = this.cbed;
+
+    if (!this.ass.type_izd || this.ass.type_izd == 'cbed')
+      this.izdels = await this.getOneCbEdById(this.ass.cbed.id);
+    else
+      this.izdels = await this.getAllProductById(this.ass.cbed.id);
+
+    if (!this.izdels) return this.destroyModalF();
+
+    const res = parseSpetification(this.izdels);
+    this.materialList = res.materialList.concat(res.listPokDet);
+    this.listDetal = res.listDetal;
+    this.listCbed = res.listCbed;
+
+    console.log(res);
+
+
+    console.table(
+      this.materialList,
+      this.listDetal,
+      this.listCbed
+    );
   }
 }
 </script>
