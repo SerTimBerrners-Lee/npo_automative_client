@@ -89,6 +89,7 @@
 <script>
 import { random } from 'lodash';
 import { mapActions } from 'vuex';
+
 export default {
   props: ['izd', 'border_show', 'css', 'no_show_izd', 'no_show_cb', 'no_show_det', 'title'],
   data() {

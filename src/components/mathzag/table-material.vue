@@ -38,7 +38,8 @@
   </div> 
 </template>
 <script>
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
+
 export default {
   props: ['alltypeM', 'type', 'title', 'width', 'attention', 'hide_filter_responsibil'],
   data() {

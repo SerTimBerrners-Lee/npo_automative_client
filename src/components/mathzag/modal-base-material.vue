@@ -105,9 +105,11 @@
 </template>
 <script>
 import {random} from 'lodash';
+import { eSelectSpan } from '@/js/methods';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import MaterialInformation from '@/components/mathzag/material-information.vue';
+import TableMaterial from '@/components/mathzag/table-material';
+import MaterialInformation from '@/components/mathzag/material-information';
+
 export default {
   props: [
     'allMaterial', 
@@ -157,56 +159,51 @@ export default {
       'setOneTypeMMytation'
     ]), 
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
-    clickMat(mat, type) {
+    async clickMat(mat, type) {
       if(type == 'type') {
-        this.material = mat
-        this.setOneTypeMMytation(mat)
+        this.material = mat;
+        this.setOneTypeMMytation(mat);
         if(this.$props.instanMaterial == 2 || this.$props.instanMaterial == 3)
-          this.filterMatByPodType(mat.podMaterials)
+          this.filterMatByPodType(mat.podMaterials);
       }
 
-      if(type == 'podM') this.getOnePodType(mat.id)
+      if(type == 'podM') this.getOnePodType(mat.id);
       if(type == 'podPM') {
-        this.podPodMaterial = mat
-        this.fetchGetOnePPM(mat.id).then((material) => {
-          this.podPodMaterial = material
-        })
+        this.podPodMaterial = mat;
+        const material = await this.fetchGetOnePPM(mat.id);
+        this.podPodMaterial = material;
       }
     },
     instansMaterial(instans, span) {
-      if(!this.span)
-        this.span = (this.$refs.all)
-      if(span.classList.contains('active')) 
-        return 0  
-      this.span.classList.remove('active')
-      span.classList.add('active')
-      this.span = span
+      if(!this.span) this.span = (this.$refs.all);
+      if(span.classList.contains('active')) return 0;
 
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
+      this.span = eSelectSpan(this.span, span, 'active')
+
+      this.getInstansMaterial(instans);
+      this.instansLet = instans;
 
     },
     addMaterialToList() {
-      if(!this.podPodMaterial)
-        return 0;
+      if(!this.podPodMaterial) return 0;
       
-      let add = true
+      let add = true;
       if(this.materialList.length > 0) {
-        for(let mat of this.materialList) {
-          if(mat.mat.id == this.podPodMaterial.id)
-            add = false
+        for(const mat of this.materialList) {
+          if(mat.mat.id == this.podPodMaterial.id);
+            add = false;
         }
       }
-      let kolvo = []
-      let check = 0 
+      let kolvo = [];
+      let check = 0 ;
       let inx_end_ez;
       if(this.podPodMaterial.kolvo) {
         try {
-          let pars = JSON.parse(this.podPodMaterial.kolvo)
+          const pars = JSON.parse(this.podPodMaterial.kolvo)
           if(kolvo) {
             kolvo = {
               c1: pars.c1,
@@ -217,15 +214,15 @@ export default {
             }
             for(let kol in Object.values(kolvo)) {
               if(Object.values(kolvo)[kol]) {
-                inx_end_ez = kol
-                check++
+                inx_end_ez = kol;
+                check++;
               }
             }
           }
         } catch(e) {console.error(e)}
       }
       if(add) {
-        this.materialListId.push(this.podPodMaterial.id)
+        this.materialListId.push(this.podPodMaterial.id);
         this.materialList.push({ 
           art: '',
           mat: this.podPodMaterial,
@@ -235,80 +232,79 @@ export default {
       }
     },
     delMat(id) {
-      this.materialList = this.materialList.filter(mat => mat.mat.id != id)
-      this.materialListId = this.materialListId.filter(mat => mat != id)
+      this.materialList = this.materialList.filter(mat => mat.mat.id != id);
+      this.materialListId = this.materialListId.filter(mat => mat != id);
     },
     addMaterials() {
       for(let mat in this.materialList) {
         if(!Number(this.materialList[mat].ez)) {
-          let count = 1
+          let count = 1;
           for(let obj in this.materialList[mat].ez) {
             if(this.materialList[mat].ez[obj]) {
-              this.materialList[mat].ez = count
-              break
+              this.materialList[mat].ez = count;
+              break;
             }
-            count++
+            count++;
           } 
         }
       } 
-      this.destroyModalF()
+      this.destroyModalF();
       this.$emit('unmount_material', {
         materialListId: this.materialListId,
         materialList: this.materialList
-      })
+      });
     },
     returnOneMaterial() {
-      if(!this.podPodMaterial)
-        return 0
+      if(!this.podPodMaterial) return 0;
       this.$emit('unmount_material', {
         material: this.podPodMaterial
-      })
-      this.destroyModalF()
+      });
+      this.destroyModalF();
     },
     exit() {
       this.$emit('unmount_material', {
         material:  null
-      })
-      this.destroyModalF()
+      });
+      this.destroyModalF();
     },
     changeKolvo(val, mat) {
-      mat.kol = val.value
+      mat.kol = val.value;
     },
     changeArt(val, mat) {
-      mat.art = val.value
+      mat.art = val.value;
     },
     selecter(val, mat) {
-      mat.ez = val.value
+      mat.ez = val.value;
     },
     searchTypeM(val) {
-      this.searchTypeMutation(val)
+      this.searchTypeMutation(val);
     },
     searchPT(val) {
-      this.searchPTypeMutation(val)
+      this.searchPTypeMutation(val);
     },
     searchM(val) {
-      this.searchMaterialMutation(val)
+      this.searchMaterialMutation(val);
     },
     openMaterial(mat) {
-			this.material_key = random(1, 999)
-			this.material_id = mat.id
+			this.material_key = random(1, 999);
+			this.material_id = mat.id;
 		}
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-    this.toEmptyPPT()
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
+    this.toEmptyPPT();
 
-    await this.getAllTypeMaterial()
-    await this.getAllPodTypeMaterial()
+    await this.getAllTypeMaterial();
+    await this.getAllPodTypeMaterial();
     if(this.$props.instanMaterial) 
-      this.getInstansMaterial(this.$props.instanMaterial)
+      this.getInstansMaterial(this.$props.instanMaterial);
     if(this.$props.allMaterial) {
-      this.materialList = this.$props.allMaterial
+      this.materialList = this.$props.allMaterial;
       this.materialList.forEach((el) => {
         this.materialListId.push(el.mat.id)
-      })
+      });
     }
   }
 }

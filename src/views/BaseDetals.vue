@@ -191,11 +191,13 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
+import { eSelectSpan } from '@/js/methods';
+import CbedModalInfo from '@/components/cbed/cbed-modal';
+import DetalModal from '@/components/basedetal/detal-modal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
-import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
+import ProductModalInfo from '@/components/baseproduct/product-modal';
+
 export default {
   data() {
     return {
@@ -264,159 +266,138 @@ export default {
       this.parametrs_product = product.id
       this.productModalKey = random(1, 999)
     },
-    setDetals(detal, e) {
-      this.getOneDetal(detal.id).then(res => {
-        this.selectedDetal = res
-        this.addOneSelectDetal(res)
-      })
-      if(this.tr) 
-        this.tr.classList.remove('td-row-all')
-      
-      this.tr = e
-      this.tr.classList.add('td-row-all')
+    async setDetals(detal, e) {
+      const res = await this.getOneDetal(detal.id);
+      this.selectedDetal = res;
+      this.addOneSelectDetal(res);
+
+      this.tr = eSelectSpan(this.tr, e);
     },
     sortToAttention() {
-      this.filterToAttention()
+      this.filterToAttention();
     },
     sortToDate() {
-      this.filterDetalToDate()
+      this.filterDetalToDate();
     },
     sortToMyObject() {
-      this.filterDetalToMyObject(this.getAuth.id)
+      this.filterDetalToMyObject(this.getAuth.id);
     },
     infoDetal() {
-      if(!this.selectedDetal) return false
+      if(!this.selectedDetal) return false;
 
-      this.detalModalKey = random(1, 999)
-      this.parametrs_detal = this.selectedDetal.id
+      this.detalModalKey = random(1, 999);
+      this.parametrs_detal = this.selectedDetal.id;
     },
-    setCbed(cbed, e) {
+    async setCbed(cbed, e) {
       if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
-        this.clearFilterDetalByProduct()
-        e.classList.remove('td-row-all')
-        return this.selectedCbEd = null
+        this.clearFilterDetalByProduct();
+        e.classList.remove('td-row-all');
+        return this.selectedCbEd = null;
       }
-      
 
-      if(this.tr_cb) 
-        this.tr_cb.classList.remove('td-row-all')
+      const res = this.getOneCbEdById(cbed.id);
+      if(!res) return false;
 
-      this.getOneCbEdById(cbed.id).then(res => {
-        if(!res) return false
-        this.getOneCbEdBelongs(res.id).then(result => {
-          res.detals = result.detals
-          res.products = result.products
-          this.getAllDetalByProduct(res)
-          this.selectedCbEd = res
-          this.setOneCbed(res)  
-        })
-      })
+      const result = await this.getOneCbEdBelongs(res.id);
+      res.detals = result.detals;
+      res.products = result.products;
+      this.getAllDetalByProduct(res);
+      this.selectedCbEd = res;
+      this.setOneCbed(res);
 
-      this.tr_cb = e
-      this.tr_cb.classList.add('td-row-all')
+      this.tr_cb = eSelectSpan(this.tr_cb, e);
     },
-    setProduct(product, e) {
+    async setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
-        this.clearFilterCbedByProduct()
-        this.clearFilterDetalByProduct()
-        e.classList.remove('td-row-all')
-        this.selecteProduct = null
-        return
+        this.clearFilterCbedByProduct();
+        this.clearFilterDetalByProduct();
+        e.classList.remove('td-row-all');
+        this.selecteProduct = null;
+        return;
       }
 
-      this.getAllProductById(product.id).then(res => {
-        if(!res) return false
-        this.selecteProduct = res
-        this.setOneProduct(res)
-        this.getAllCbEdByProduct(res)
-        this.getAllDetalByProduct(res)
-      })
-      if(this.tr_product) 
-        this.tr_product.classList.remove('td-row-all')
+      const res = await this.getAllProductById(product.id);
+      if(!res) return false;
+      this.selecteProduct = res;
+      this.setOneProduct(res);
+      this.getAllCbEdByProduct(res);
+      this.getAllDetalByProduct(res);
 
-      this.tr_product = e
-      this.tr_product.classList.add('td-row-all')
+      this.tr_product = eSelectSpan(this.tr_product, e);
     }, 
     editDetal() {
-      if(!this.selectedDetal)
-        return 0
-      this.$router.push({path: '/detal/edit/false'})
+      if(!this.selectedDetal) return 0;
+      this.$router.push({path: '/detal/edit/false'});
     },
     createCopy() {
-      if(!this.selectedDetal)
-        return 0
-
-      this.$router.push({path: '/detal/edit/true'})
+      if(!this.selectedDetal) return 0;
+      this.$router.push({path: '/detal/edit/true'});
     },
     createProduct() {
-      this.$router.push('/createproduct')
+      this.$router.push('/createproduct');
     },
     createCopyProduct() {
-      if(!this.selecteProduct)
-        return 0
-      this.$router.push({path: '/product/edit/true'})
+      if(!this.selecteProduct) return 0;
+      this.$router.push({path: '/product/edit/true'});
     },
     editProduct() {
-      if(!this.selecteProduct)
-        return 0
-
-      this.$router.push({path: '/product/edit/false'})
+      if(!this.selecteProduct) return 0;
+      this.$router.push({path: '/product/edit/false'});
     }, 
     createCbed() {
-      this.$router.push({path: '/cbed/create'})
+      this.$router.push({path: '/cbed/create'});
     },
     createCopyCbed() {
-      if(!this.selectedCbEd)  return 0
-      this.$router.push({path: '/cbed/edit/true'})
+      if(!this.selectedCbEd) return 0;
+      this.$router.push({path: '/cbed/edit/true'});
     },
     editCbEd() {
-      if(!this.selectedCbEd)  return 0
-      this.$router.push({path: '/cbed/edit/false'})
+      if(!this.selectedCbEd) return 0;
+      this.$router.push({path: '/cbed/edit/false'});
     },
     keySearch(v) {
-      this.filterDetalToArticle(v)
+      this.filterDetalToArticle(v);
     },
     keySearchCb(v) {
-      this.searchCbed(v)
+      this.searchCbed(v);
     },
     keySearchProduct(v) {
-      this.searchProduct(v)
+      this.searchProduct(v);
     },
     deleteDetal() {
-      if(!this.selectedDetal)
-        return 0
-      this.deleteDetelyId(this.selectedDetal.id)
+      if(!this.selectedDetal) return 0;
+      this.deleteDetelyId(this.selectedDetal.id);
     },
     сolNotOperation(arr_one, arr_two) {
-      let counter = 0
-      for(let item of arr_one) {
-        for(let id of arr_two) {
-          if(item.id == id) counter++
+      let counter = 0;
+      for(const item of arr_one) {
+        for(const id of arr_two) {
+          if(item.id == id) counter++;
         } 
       }
-      return counter
+      return counter;
     },
     sortOperationProduct() {
-      this.sortByNonOperationProduct(this.productOperation)
+      this.sortByNonOperationProduct(this.productOperation);
     },
     sortOperationCbed() {
-      this.sortByNonOperationCbed(this.cbedOperation)
+      this.sortByNonOperationCbed(this.cbedOperation);
     },
     sortOperationDetal() {
-      this.sortByNonOperationDetal(this.detalOperation)
+      this.sortByNonOperationDetal(this.detalOperation);
     }
   },
   async mounted() {
-    this.loader = true
+    this.loader = true;
 
-    await this.getAllProduct(true)
-    await this.getAllCbed(true)
-    await this.getAllDetals(true)
-    this.productOperation = await this.fetchAllProductOperation()
-    this.cbedOperation = await this.fetchAllCbedOperation()
-    this.detalOperation = await this.fetchAllDetalOperation()
+    await this.getAllProduct(true);
+    await this.getAllCbed(true);
+    await this.getAllDetals(true);
+    this.productOperation = await this.fetchAllProductOperation();
+    this.cbedOperation = await this.fetchAllCbedOperation();
+    this.detalOperation = await this.fetchAllDetalOperation();
 
-    this.loader = false
+    this.loader = false;
   }
 }
 </script>

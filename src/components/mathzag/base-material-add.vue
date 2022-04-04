@@ -203,6 +203,7 @@ import TableMaterial from '@/components/mathzag/table-material';
 import MiniTableDocuments from '@/components/filebase/mini-table';
 import ListProvider from '@/components/baseprovider/list-provider';
 import BaseFileModal from '@/components/filebase/base-files-modal';
+
 export default {
   data() {
     return {
