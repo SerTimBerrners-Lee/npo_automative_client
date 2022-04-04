@@ -15,10 +15,10 @@ export default {
   },
   getters: {
     allDetal(state) { 
-      return state.detal
+      return state.detal;
     },
     getOneSelectDetal(state) {
-      return state.select_detal
+      return state.select_detal;
     }
   },
   actions: { 
@@ -32,59 +32,56 @@ export default {
         })  ,
         method :  'post',
         body   :  data
-      })
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      });
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      return result;
     },
     async deleteDetelyId(ctx, id) { 
-      if(!ctx.getters.getAuth)
-        return 0
+      if(!ctx.getters.getAuth) return 0;
 
       const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`, {
         headers: new Headers({
           'Authorization': ctx.getters.getAuth.id
         }),
         method :  'delete'
-      })
-      if(res.ok) {
-        ctx.commit('deleteDetalById', id)
-      }
+      });
+      if(!res.ok) return false;
+      ctx.commit('deleteDetalById', id);
     },
     async fetchUpdateDetal(ctx, data) {
-      if(!ctx.getters.getAuth)
-        return 0
+      if(!ctx.getters.getAuth) return 0;
+
       const res = await fetch(`${PATH_TO_SERVER}api/detal/update`, {
         headers: new Headers({
           'Authorization': ctx.getters.getAuth.id
         }), 
         method :  'post',
         body   :  data
-      })
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('fetchUpdateDetalMutation', result)
-        return result
-      }
+      });
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('fetchUpdateDetalMutation', result);
+      return result;
     },
     async getAllDetals(ctx, light=false) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/${light}`)
-      const result = await res.json()
-      ctx.commit('setDetalMutation', result)
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/${light}`);
+      const result = await res.json();
+      ctx.commit('setDetalMutation', result);
     },
     async getAllDetalsArticl() {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/articl`)
-      const result = await res.json()
-      return result
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/articl`);
+      const result = await res.json();
+      return result;
     },
     async getOneDetal(ctx, id)  {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/one/${id}`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('addOneSelectDetal', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/one/${id}`);
+      if(!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('addOneSelectDetal', result);
+      return result;
     },
     async fetchAddFilesForDetal(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/file`, {
@@ -94,19 +91,17 @@ export default {
         },
         method: 'post',
         body: JSON.stringify(data),
-      })
-      if(res.ok) 
-        return true
-      else  
-        return false
+      });
 
+      if(!res.ok) return false;
+      return true;
     },
   },
   mutations: {
     reverseMidlevareDetal(state) {
-      if(!state.middleware_detals.length) return false
-      state.detal = state.middleware_detals
-      state.middleware_detals = []
+      if(!state.middleware_detals.length) return false;
+      state.detal = state.middleware_detals;
+      state.middleware_detals = [];
     },
     detalToShipmentsSort(state, detal) {
       if(state.middleware_detals.length == 0) {

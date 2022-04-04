@@ -243,16 +243,17 @@
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
 import { random, isEmpty } from 'lodash';
+import NodeParent from '@/components/mathzag/table-node';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
-import NodeParent from '@/components/mathzag/table-node.vue';
-import MediaSlider from '@/components/filebase/media-slider.vue';
-import BaseCbedModal from '@/components/cbed/base-cbed-modal.vue';
-import TableDocument from '@/components/filebase/table-document.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-import TechProcess from '@/components/basedetal/tech-process-modal.vue';
-import BaseDetalModal from '@/components/basedetal/base-detal-modal.vue';
-import TableSpetification from '@/components/cbed/table-sptification.vue';
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import MediaSlider from '@/components/filebase/media-slider';
+import BaseCbedModal from '@/components/cbed/base-cbed-modal';
+import TableDocument from '@/components/filebase/table-document';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import TechProcess from '@/components/basedetal/tech-process-modal';
+import BaseDetalModal from '@/components/basedetal/base-detal-modal';
+import TableSpetification from '@/components/cbed/table-sptification';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material';
+
 export default {
   data() {
     return {
@@ -319,19 +320,16 @@ export default {
       loader: false
     }
   },
-  unmounted() {
-    this.deleteStorageData()
-  },
   watch: {
     'obj.articl': function (val, last_val) {
       if(!last_val) return false;
       for(let art of this.data_arr) {
 				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
-					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this)
+					return showMessage('', 'Объект с такими характеристиками уже существует', 'w', this);
 			}
     },
     'documentsData.length': function () {
-      this.table_document_key = random(1, 999)
+      this.table_document_key = random(1, 999);
     }
   },
   computed: mapGetters(['getUsers', 'getOneSelectProduct', 'getRoleAssets']),
@@ -356,26 +354,24 @@ export default {
     ...mapMutations(['delitPathNavigate']),
      unmount_tech_process(tp) {
       if(tp.id) {
-        this.techProcessID = tp.id
-        localStorage.setItem('tpID', this.techProcessID)
+        this.techProcessID = tp.id;
+        localStorage.setItem('tpID', this.techProcessID);
         if(tp.opers.length) {
           this.obj.parametrs[0].znach = 0
           tp.opers.forEach(op => {
             this.obj.parametrs[0].znach = 
-              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)) 
-          })
-          this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2)
+              Number(this.obj.parametrs[0].znach) + (Number(op.preTime) + Number(op.helperTime) + Number(op.mainTime)); 
+          });
+          this.obj.parametrs[0].znach = (this.obj.parametrs[0].znach / 60).toFixed(2);
         }
       }
     },
     unmount_filemodal(res) {
-      if(res) 
-        this.documentsData = res
+      if(res) this.documentsData = res;
     },
     file_unmount(e) { 
-      if(!e) 
-        return 0
-      this.formData = e.formData
+      if(!e) return 0;
+      this.formData = e.formData;
     },
     unmount_material(mat) {
       if(this.instanMaterial == 2) {
@@ -390,22 +386,22 @@ export default {
         return showMessage('', 'Наименование должно быть длинее или равно 2-м символам', 'w', this)
 
       if(!this.formData)
-        this.formData = new FormData()
+        this.formData = new FormData();
 
-      this.formData.append('techProcessID', this.techProcessID || null)
-      this.formData.append('name', this.obj.name)
-      this.formData.append('articl', this.obj.articl)
-      this.formData.append('responsible', this.obj.responsible)
-      this.formData.append('description', this.obj.description)
-      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
-      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
-      this.formData.append('fabricNumber', this.obj.fabricNumber)
-      this.formData.append('attention', this.attention)
+      this.formData.append('techProcessID', this.techProcessID || null);
+      this.formData.append('name', this.obj.name);
+      this.formData.append('articl', this.obj.articl);
+      this.formData.append('responsible', this.obj.responsible);
+      this.formData.append('description', this.obj.description);
+      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs));
+      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic));
+      this.formData.append('fabricNumber', this.obj.fabricNumber);
+      this.formData.append('attention', this.attention);
 
       if(this.listDetal.length)
-        this.formData.append('listDetal', JSON.stringify(this.listDetal))
+        this.formData.append('listDetal', JSON.stringify(this.listDetal));
       if(this.listCbed.length)
-        this.formData.append('listCbed', JSON.stringify(this.listCbed))
+        this.formData.append('listCbed', JSON.stringify(this.listCbed));
 
       for(let mat = 0; mat < this.listPokDet.length; mat++) {
         this.listPokDet[mat].mat = {
@@ -414,112 +410,112 @@ export default {
           kol: this.listPokDet[mat].mat.kolvo
         }
         if(mat == this.listPokDet.length - 1) {
-          this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
+          this.formData.append('listPokDet', JSON.stringify(this.listPokDet));
         }
       }
       
       for(let mat = 0; mat < this.materialList.length; mat++) {
-          this.materialList[mat].mat = {
+        this.materialList[mat].mat = {
           id: this.materialList[mat].mat.id,
           name: this.materialList[mat].mat.name,
           kol: this.materialList[mat].mat.kolvo
-          }
-          if(mat == this.materialList.length - 1) {
-            this.formData.append('materialList', JSON.stringify(this.materialList))
-          }
+        }
+        if(mat == this.materialList.length - 1) {
+          this.formData.append('materialList', JSON.stringify(this.materialList));
+        }
       }
 
       if(this.documentsData.length) {
-        let new_array = []
+        let new_array = [];
         for(let inx in this.documentsData) {
-          new_array.push(this.documentsData[inx].id)
+          new_array.push(this.documentsData[inx].id);
         }
-        this.formData.append('file_base', JSON.stringify(new_array))
+        this.formData.append('file_base', JSON.stringify(new_array));
       }
 
       if(this.$route.params.copy == 'false')  { 
-        this.formData.append('id', this.id)
-        showMessage('', 'Изделие усешно обновлена. Перенаправление на главную страницу...', 's', this)
-        this.updateProduct(this.formData)
+        this.formData.append('id', this.id);
+        showMessage('', 'Изделие усешно обновлена. Перенаправление на главную страницу...', 's', this);
+        this.updateProduct(this.formData);
       } else {
-        showMessage('', 'Изделие усешно создано. Перенаправление на главную страницу...', 's', this)
-        this.createNewProduct(this.formData)
+        showMessage('', 'Изделие усешно создано. Перенаправление на главную страницу...', 's', this);
+        this.createNewProduct(this.formData);
       }
 
       setTimeout(() =>  {
         this.$router.back()
         this.delitPathNavigate(this.$route.path)
-      }, 3000)
+      }, 3000);
       
     },
     changeSelected() {
       switch (this.select_model) {
         case '2':
           this.showCbed = true;
-          this.generateKeyCbed = random(1, 999)
+          this.generateKeyCbed = random(1, 999);
           break;
         case '3':
-          this.showBFM = true
-          this.generateKeyBFM = random(1, 999)
+          this.showBFM = true;
+          this.generateKeyBFM = random(1, 999);
           break;
         case '4':
-          this.instanMaterial = 2
-          this.listMaterials = this.listPokDet
-          this.modalMaterialKey = random(10, 999)
-          this.modalMaterialIsShow = true
+          this.instanMaterial = 2;
+          this.listMaterials = this.listPokDet;
+          this.modalMaterialKey = random(10, 999);
+          this.modalMaterialIsShow = true;
           break;
         case '5':
-          this.instanMaterial = 3
-          this.listMaterials = this.materialList
-          this.modalMaterialKey = random(10, 999)
-          this.modalMaterialIsShow = true
+          this.instanMaterial = 3;
+          this.listMaterials = this.materialList;
+          this.modalMaterialKey = random(10, 999);
+          this.modalMaterialIsShow = true;
           break;
       }
       this.select_model = 1;
     },
     responsDetal(detal) {
-      this.listDetal = detal
+      this.listDetal = detal;
     },
     addHaracteristic() {
-      this.obj.haracteriatic.push({name: '', ez: '', znach: ''})
+      this.obj.haracteriatic.push({name: '', ez: '', znach: ''});
     },
     addParametrs() {
-      this.obj.parametrs.push({name: '', ez: '', znach: ''})
+      this.obj.parametrs.push({name: '', ez: '', znach: ''});
     },
     removeHaracteristic() {
       if(this.selectHaracteristic.inx < 2) return false;
       if(this.selectHaracteristic) {
-        this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1)
-        this.selectHaracteristic = null
+        this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1);
+        this.selectHaracteristic = null;
       }
     },
     removeParametrs() {
       if(this.selectParametrs) {
-        this.obj.parametrs.splice(this.selectParametrs.inx, 1)
-        this.selectParametrs = null
+        this.obj.parametrs.splice(this.selectParametrs.inx, 1);
+        this.selectParametrs = null;
       }
     },
     changeHaracteristic(val, inst, inx) {
       if(inst == 'name')  
-        this.obj.haracteriatic[inx].name = val
+        this.obj.haracteriatic[inx].name = val;
       if(inst == 'ez')  
-        this.obj.haracteriatic[inx].ez = val
+        this.obj.haracteriatic[inx].ez = val;
       if(inst == 'znach')  {
-        this.obj.haracteriatic[inx].znach = val
+        this.obj.haracteriatic[inx].znach = val;
       }
     },
     changeParametrs(val, inst, inx) {
       if(inst == 'name')  
-        this.obj.parametrs[inx].name = val
+        this.obj.parametrs[inx].name = val;
       if(inst == 'ez')  
-        this.obj.parametrs[inx].ez = val
+        this.obj.parametrs[inx].ez = val;
       if(inst == 'znach')  {
-        this.obj.parametrs[inx].znach = val
+        this.obj.parametrs[inx].znach = val;
       }
     },
     showTechProcess() {
-      this.techProcessIsShow = true
-      this.techProcessKey = random(1, 12e8)
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
     },
 
     exit(){
@@ -527,55 +523,53 @@ export default {
       this.delitPathNavigate(this.$route.path);
     },
     responsCbed(res) {
-      this.listCbed = res 
+      this.listCbed = res;
     },
     updateForEdit() {
-      this.attention = this.getOneSelectProduct.attention
-      this.obj.name = this.getOneSelectProduct.name
-      this.obj.articl = this.getOneSelectProduct.articl
-      this.obj.responsible = this.getOneSelectProduct.user ? this.getOneSelectProduct.user.id :  null
-      this.obj.description = this.getOneSelectProduct.description
-      this.obj.parametrs = JSON.parse(this.getOneSelectProduct.parametrs)
-      this.obj.haracteriatic = JSON.parse(this.getOneSelectProduct.haracteriatic)
-      this.materialList = this.getOneSelectProduct.materialList ? JSON.parse(this.getOneSelectProduct.materialList) : []
-      this.listPokDet = this.getOneSelectProduct.listPokDet ? JSON.parse(this.getOneSelectProduct.listPokDet) : []
-      this.listDetal = this.getOneSelectProduct.listDetal ? JSON.parse(this.getOneSelectProduct.listDetal) : []
-      this.listCbed = this.getOneSelectProduct.listCbed ? JSON.parse(this.getOneSelectProduct.listCbed) : []
+      this.attention = this.getOneSelectProduct.attention;
+      this.obj.name = this.getOneSelectProduct.name;
+      this.obj.articl = this.getOneSelectProduct.articl;
+      this.obj.responsible = this.getOneSelectProduct.user ? this.getOneSelectProduct.user.id :  null;
+      this.obj.description = this.getOneSelectProduct.description;
+      this.obj.parametrs = JSON.parse(this.getOneSelectProduct.parametrs);
+      this.obj.haracteriatic = JSON.parse(this.getOneSelectProduct.haracteriatic);
+      this.materialList = this.getOneSelectProduct.materialList ? JSON.parse(this.getOneSelectProduct.materialList) : [];
+      this.listPokDet = this.getOneSelectProduct.listPokDet ? JSON.parse(this.getOneSelectProduct.listPokDet) : [];
+      this.listDetal = this.getOneSelectProduct.listDetal ? JSON.parse(this.getOneSelectProduct.listDetal) : [];
+      this.listCbed = this.getOneSelectProduct.listCbed ? JSON.parse(this.getOneSelectProduct.listCbed) : [];
       this.obj.fabricNumber = this.getOneSelectProduct.fabricNumber
 
       if(this.$route.params.copy == 'false')  {
-        this.documentsData = this.getOneSelectProduct.documents
+        this.documentsData = this.getOneSelectProduct.documents;
         this.getOneSelectProduct.documents.forEach(d => {
-            this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned})
-        })
-        this.randomDataMedia = random(10, 999) 
+          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned});
+        });
+        this.randomDataMedia = random(10, 999) ;
 
-        this.techProcessID = !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses.id : null
+        this.techProcessID = !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses.id : null;
 
-        this.id = this.getOneSelectProduct.id
+        this.id = this.getOneSelectProduct.id;
       }
     },
     addFileModal() {
-      this.fileModalKey = random(1, 999)
-      this.showModalFile = true
+      this.fileModalKey = random(1, 999);
+      this.showModalFile = true;
     },
     showModalNode() {
-      this.show_node_modal = !this.show_node_modal
-      this.key_node_modal = random(1, 999)
+      this.show_node_modal = !this.show_node_modal;
+      this.key_node_modal = random(1, 999);
     }
   },
   async mounted() {
-    if(isEmpty(this.getOneSelectProduct)) {
-      this.$router.back()
-      return 
-    } 
+    if(isEmpty(this.getOneSelectProduct))
+      return this.$router.back();
 
-    this.loader = true
-    await this.getAllUsers(true)
-    this.data_arr = await this.getAllArticlProduct()
-    this.loader = false
+    this.loader = true;
+    await this.getAllUsers(true);
+    this.data_arr = await this.getAllArticlProduct();
+    this.loader = false;
 
-    this.updateForEdit()
+    this.updateForEdit();
   }
 }
 </script>

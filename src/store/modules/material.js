@@ -30,28 +30,28 @@ export default {
   },
   getters: {
     alltypeM(state) {
-      return state.typeM
+      return state.typeM;
     },
     allPodTypeM(state) {
-      return state.podTypeM
+      return state.podTypeM;
     },
     getOnePodMaterial(state) {
-      return state.podMaterial
+      return state.podMaterial;
     },
     getOnePPT(state) {
-      return state.onePPT
+      return state.onePPT;
     },
     getLinkId(state) {
-      return state.linkId
+      return state.linkId;
     }
   },
   actions: { 
     async getAllTypeMaterial(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/settings/material`)
-      const result = await res.json()
+      const res =  await fetch(`${PATH_TO_SERVER}api/settings/material`);
+      const result = await res.json();
 
-      await ctx.commit("getTypeMaterial", result)
-      return result
+      await ctx.commit("getTypeMaterial", result);
+      return result;
     },
     async getOneTypeMaterial(ctx, _id) {
       const res =  await fetch(`${PATH_TO_SERVER}api/settings/materials/one/${_id}`);
@@ -61,11 +61,11 @@ export default {
       return result;
     },
     async getAllPodTypeMaterial(ctx, instans = 'all') {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${instans}`)
-      const result = await res.json()
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${instans}`);
+      const result = await res.json();
 
-      await ctx.commit('filterMatByPodType', result)
-      return result
+      await ctx.commit('filterMatByPodType', result);
+      return result;
     },
     async createTypeM(ctx, material) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/material`, {
@@ -77,10 +77,10 @@ export default {
         body: JSON.stringify({
           ...material
         })
-      })
+      });
       
-      const result = await res.json()
-      ctx.commit('addTypeMaterial', result)
+      const result = await res.json();
+      ctx.commit('addTypeMaterial', result);
     },
     async createPodType(ctx, pod_type) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype`, {
@@ -92,19 +92,19 @@ export default {
         body: JSON.stringify({
           ...pod_type
         })
-      })
-      
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('createPodType', result)
-      }
+      });
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('createPodType', result);
     },
     async removeMaterial(ctx, id) {
       const res =  await fetch(`${PATH_TO_SERVER}api/settings/material/${id}`, {
-          method: 'delete'
-        })
-        if(res.ok)
-          ctx.commit('deleteMaterial', id)
+        method: 'delete'
+      });
+      if(!res.ok) return false;
+
+      ctx.commit('deleteMaterial', id);
     },
     async updateTypeM(ctx, material) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/material/update`, {
@@ -118,8 +118,8 @@ export default {
         })
       });
 
-      const result = await res.json()
-      ctx.commit('updateMaterial', result)
+      const result = await res.json();
+      ctx.commit('updateMaterial', result);
     },
     async updatePodMaterial(ctx, podM) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/update`, {
@@ -133,108 +133,104 @@ export default {
         })
       });
 
-      const result = await res.json()
-      ctx.commit('updatePodMaterial', {result, matId: podM.parentId} )
+      const result = await res.json();
+      ctx.commit('updatePodMaterial', {result, matId: podM.parentId});
     },
     async deletePodType(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/${id}`, {
         method: 'delete'
-      })
-
-      if(res.ok)
-        ctx.commit('deletePodMaterial', id)
+      });
+      if(!res.ok) return false;
+      ctx.commit('deletePodMaterial', id)
     },
     async getOnePodType(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerialid/${id}`)
-      const result = await res.json()
-      
-      if(res.ok) {
-       ctx.commit('addOnePodType', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerialid/${id}`);
+      const result = await res.json();
+      if(!res.ok) return false;
+
+      ctx.commit('addOnePodType', result);
+      return result;
     },
     async createNewPodPodMaterial(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/`, {
         method: 'post',
         body: data
-      })
-      if(res.ok) {
-        ctx.commit('onePPTClear')
-        return true
-      } else return false
+      });
+      if(!res.ok) return false;
+
+      ctx.commit('onePPTClear');
+      return true;
     },
     async removePPM(ctx, id) {
       const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`, {
         method: 'delete'
-      })
-      if(res.ok)
-        ctx.dispatch('getAllTypeMaterial')
+      });
+      if(!res.ok) return false;
+      ctx.dispatch('getAllTypeMaterial');
     },
     async bannedPPM(ctx, id) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`)
-      if(res.ok) {
-        ctx.dispatch('getAllTypeMaterial')
-        ctx.commit('bannedPPM', id)
-      }
+      const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`);
+      if(!res.ok) return false;
+
+      ctx.dispatch('getAllTypeMaterial');
+      ctx.commit('bannedPPM', id);
     },
     async fetchGetOnePPM(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/get/${id}`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('addOnePPTyep', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/get/${id}`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('addOnePPTyep', result);
+      return result;
     },
     async fetchGetAllPPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('pushAllPPT', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype`);
+      if(!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('pushAllPPT', result);
+      return result;
     },
     async fetchPPMNoLight(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/podtypematerial`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('pushAllPPT', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/podtypematerial`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('pushAllPPT', result);
+      return result;
     },
     async fetchAllProviderMaterial(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('sortPPMtoParent', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('sortPPMtoParent', result);
+      return result;
     },
     async fetchAllProviderMaterialById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider/${id}`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('materialForProvider', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider/${id}`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('materialForProvider', result);
+      return result;
     },
     async fetchGetAllShipmentsPPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialshipment`)
-      if(res.ok) {
-        const result = await res.json()
-        let new_result = []
-        for(let obj of result) {
-          new_result.push({...obj.mat, dev: obj.dev})
-        }
-        ctx.commit('sortPPMtoParent', new_result)
-        return result
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialshipment`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      let new_result = [];
+      for(let obj of result) {
+        new_result.push({...obj.mat, dev: obj.dev});
       }
+      ctx.commit('sortPPMtoParent', new_result);
+      return result;
     },
     async attachFileToMaterial(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/files/${data.mat_id}/${data.file_id}`)
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/files/${data.mat_id}/${data.file_id}`);
+      if(!res.ok) return false;
+      const result = await res.json();
+      return result;
     },
   },
   mutations: { 

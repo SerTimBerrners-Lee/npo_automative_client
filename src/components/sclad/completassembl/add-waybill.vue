@@ -55,18 +55,18 @@
                   <th></th>
                 </tr>
                 <tr v-for='cbed of listCbed' :key='cbed'>
-                  <td class='center'>{{ cbed.art }}</td>
-                  <td class='center'>{{ cbed.cb.name }}</td>
-                  <td class='center'>{{ returnEzName(cbed.ez) }}</td>
-                  <td class='center'>{{ cbed.kol }}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td class='center'>{{ cbed.art }}</td> <!-- Артикул -->
+                  <td class='center'>{{ cbed.cb.name }}</td> <!-- Наименование -->
+                  <td class='center'>{{ returnEzName(cbed.ez) }}</td> <!-- ЕИ -->
+                  <td class='center'>{{ cbed.kol }}</td> <!-- Потребность на 1 сборку -->
+                  <td class='center'>{{ cbed.kol }}</td> <!-- Потребность итого -->
+                  <td class='center'>{{ 0 }}</td> <!-- Выдано -->
+                  <td class='center'>{{ cbed.kol }}</td> <!-- Осталось выдать -->
+                  <td class='center'>{{ cbed.cbed_kolvo }}</td> <!-- Осталось на складе -->
+                  <td class='center'>{{ '-' }}</td> <!-- Место на складе -->
+                  <td class='center'>{{ cbed.kol }}</td> <!-- Дефицит на выдачу -->
+                  <td class='center'>{{ 0 }}</td> <!-- % комп лектации -->
+                  <td class='center'>{{ 0 }}</td> <!-- Кол-во -->
                 </tr>
               </table>
 
@@ -93,19 +93,19 @@
                   <th></th>
                 </tr>
                 <tr v-for='det of listDetal' :key='det'>
-                  <td class='center'>{{ det.art }}</td>
-                  <td class='center'>{{ det.det.name }}</td>
-                  <td class='center'>{{ returnEzName(det.ez) }}</td>
-                  <td class='center'>{{ det.kol }}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td class='center'>{{ det.art }}</td> <!-- Артикул -->
+                  <td class='center'>{{ det.det.name }}</td> <!-- Наименование -->
+                  <td class='center'>{{ returnEzName(det.ez) }}</td> <!-- ЕИ -->
+                  <td class='center'>{{ det.kol }}</td> <!-- Потребность на 1 сборку -->
+                  <td class='center'>{{ det.kol }}</td> <!-- Потребность итого -->
+                  <td class='center'>{{ 0 }}</td> <!-- Выдано -->
+                  <td class='center'>{{ det.kol }}</td> <!-- Осталось выдать -->
+                  <td class='center'>{{ det.detal_kolvo }}</td> <!-- Осталось на складе -->
+                  <td class='center'>{{ '-' }}</td> <!-- Место на складе -->
+                  <td class='center'>{{ det.kol }}</td> <!-- Дефицит на выдачу -->
+                  <td class='center'>{{ 0 }}</td> <!-- % комп лектации -->
+                  <td class='center'>{{ 0 }}</td> <!-- Кол-во -->
+                  <td class='center'></td>
                 </tr>
               </table>
 
@@ -139,24 +139,24 @@
                 </tr>
                 <tr v-for='mat of materialList' :key='mat'>
                   <td class='center'>{{ mat.art }}</td>
-                  <td>{{ mat.mat.name }}</td>
-                  <td>{{ returnEzName(mat.ez) }}</td>
-                  <td>{{ mat.kol }}</td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
-                  <td></td>
+                  <td class='center'>{{ mat.mat.name }}</td>
+                  <td class='center'>{{ returnEzName(mat.ez) }}</td>
+                  <td class='center'>{{ mat.kol }}</td>
+                  <td class='center'>{{ mat.kol }}</td> <!-- Потребность итого -->
+                  <td class='center'>{{ 0 }}</td> <!-- Выдано -->
+                  <td class='center'>{{ mat.kol }}</td> <!-- Осталось выдать -->
+                  <td class='center'>{{ mat.material_kolvo }}</td> <!-- Осталось на складе -->
+                  <td class='center'>{{ '-' }}</td> <!-- Место на складе -->
+                  <td class='center'>{{ mat.kol }}</td> <!-- Дефицит на выдачу -->
+                  <td class='center'>{{ 0 }}</td> <!-- % комп лектации -->
+                  <td class='center'>{{ mat.kol }}</td> <!-- Кол-во -->
+                  <td class='center'>{{ '-' }}</td> <!-- Аналог -->
+                  <td class='center'>{{ '-' }}</td> <!-- Артикул аналога -->
+                  <td class='center'>{{ '-' }}</td> <!-- Наименование аналога -->
+                  <td class='center'>{{ 0 }}</td> <!-- Кол-во -->
+                  <td class='center'>{{ '-' }}</td> <!-- Место на складе -->
+                  <td class='center'></td>
+                  <td class='center'></td>
                 </tr>
               </table>
             </div>
@@ -204,7 +204,9 @@ export default {
   methods: {
     ...mapActions([
       'getOneCbEdById',
-      'getAllProductById'
+      'getAllProductById',
+      'getOneDetal',
+      'fetchGetOnePPM'
     ]),
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden';
@@ -238,14 +240,22 @@ export default {
     this.listDetal = res.listDetal;
     this.listCbed = res.listCbed;
 
-    console.log(res);
+    for (let item of this.materialList) {
+      const data = await this.fetchGetOnePPM(item.mat.id);
+      if (data) item = {...data, ...item};
+    }
 
+    for (let item of this.listDetal) {
+      const data = await this.getOneDetal(item.det.id);
+      console.log(data);
+      if (data) item = {...data, ...item};
+    }
 
-    console.table(
-      this.materialList,
-      this.listDetal,
-      this.listCbed
-    );
+    for (let item of this.listCbed) {
+      const data = await this.getOneCbEdById(item.cb.id);
+      console.log(data);
+      if (data) item = {...data, ...item};
+    }
   }
 }
 </script>

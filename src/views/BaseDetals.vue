@@ -295,10 +295,12 @@ export default {
         return this.selectedCbEd = null;
       }
 
-      const res = this.getOneCbEdById(cbed.id);
+      const res = await this.getOneCbEdById(cbed.id);
       if(!res) return false;
 
       const result = await this.getOneCbEdBelongs(res.id);
+      if (!result) return false;
+
       res.detals = result.detals;
       res.products = result.products;
       this.getAllDetalByProduct(res);
