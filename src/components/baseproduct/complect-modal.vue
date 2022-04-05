@@ -9,6 +9,9 @@
             <button class='btn-small' @click='printPage'>На печать</button>
           </h3>
           <div id='spec_table'>
+            <h3>Наименование: <strong>{{ parametrs.obj.name }}</strong></h3>
+            <h3>Артикул: <strong>{{ parametrs.obj.articl }}</strong></h3>
+            <hr />
             <h3 class='center'>Детали</h3>
             <table>
                 <tr>
@@ -143,7 +146,9 @@ import {checkedJsonList} from '@/components/issueshipment/js/index';
 import MaterialInformation from '@/components/mathzag/material-information';
 
 export default {
-  props: ['parametrs'],
+  props: {
+    parametrs: {}
+  },
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -198,7 +203,7 @@ export default {
         printable: 'spec_table',
         type: 'html',
         targetStyles: ['*'],
-        documentTitle: 'Комплектация для "' + this.$props?.parametrs?.obj?.name + '"' || '-',
+        documentTitle: 'Комплектация для "' + this.parametrs?.obj?.name + '"' || '-',
         ignoreElements: ['operation', 'doc', 'discription'],
         font_size: '10pt'
       });
@@ -267,13 +272,14 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
 
-		if(isEmpty(this.$props.parametrs)) return this.destroyModalF();
-    const obj = this.$props.parametrs.obj;
+		if(isEmpty(this.parametrs)) return this.destroyModalF();
+    const obj = this.parametrs.obj;
+    console.log(this.parametrs);
 
     this.loader = true;
 
-		if(obj && this.$props.parametrs.type == 'izd' || this.$props.parametrs.type == 'cbed') {
-      if(this.$props.parametrs.type == 'cbed') {
+		if(obj && this.parametrs.type == 'izd' || this.parametrs.type == 'cbed') {
+      if(this.parametrs.type == 'cbed') {
         // Получаем сборку 
         let izd_detals = await this.getOneCbEdField({fields: 'detals', id: obj.id});
         !izd_detals ? izd_detals = [] : izd_detals = izd_detals.detals;
@@ -298,7 +304,6 @@ table, .table_block {
 .table_block {
   flex-direction: column;
 }
-
 .content-modal-right-menu-hidden {
   animation: width-replace 1s 1 ease;
 }
