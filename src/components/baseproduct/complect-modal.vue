@@ -12,6 +12,24 @@
             <h3>Наименование: <strong>{{ parametrs.obj.name }}</strong></h3>
             <h3>Артикул: <strong>{{ parametrs.obj.articl }}</strong></h3>
             <hr />
+            <h3 class='center'>Сборочная единицы</h3>
+            <table>
+              <tr>
+                <th>№</th>
+                <th>Артикул</th>
+                <th>Наименование СБ</th>
+                <th>Кол-во</th>
+              </tr>
+              <tr 
+                v-for='(obj, inx) of izd_cbed_arr' 
+                :key='obj'
+                class='td-row'>
+                <td class='center'>{{ inx + 1 }}</td>
+                <td>{{ obj.obj.articl }}</td>
+                <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
+                <td class='center'> {{obj.kol}} </td>
+              </tr>
+            </table>
             <h3 class='center'>Детали</h3>
             <table>
                 <tr>
@@ -32,24 +50,6 @@
                 <td>{{ obj.obj.name }}</td>
                 <td> {{ obj?.obj?.zag?.name }} </td>
                 <td class='center'>{{ obj?.obj?.DxL }}</td>
-                <td class='center'> {{obj.kol}} </td>
-              </tr>
-            </table>
-            <h3 class='center'>Сборочная единицы</h3>
-            <table>
-              <tr>
-                <th>№</th>
-                <th>Артикул</th>
-                <th>Наименование СБ</th>
-                <th>Кол-во</th>
-              </tr>
-              <tr 
-                v-for='(obj, inx) of izd_cbed_arr' 
-                :key='obj'
-                class='td-row'>
-                <td class='center'>{{ inx + 1 }}</td>
-                <td>{{ obj.obj.articl }}</td>
-                <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
                 <td class='center'> {{obj.kol}} </td>
               </tr>
             </table>

@@ -14,7 +14,7 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 			const materials = await ctx.$store.dispatch('getOneCbEdField', {fields: 'materials', id: cb.cb.id});
 			if(!res) continue;
 			res.materials = materials.materials;
-			parserListIzd(res, cb.kol, ctx);
+			await parserListIzd(res, cb.kol, ctx);
 		} 
 	}
 
@@ -56,26 +56,25 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 					}
 					else checkedJsonList(res, ctx);
 				}
-				if(det == list_detals.length -1) {
+				if(det == list_detals.length -1) 
 					pushElement(izd.detals, list_detals, 'detal', ctx, recursive);
-				}
 			}
 		
 	}
 
 	// Проходим по материалам
 	if(izd.materials && izd.materials.length && izd.materialList) 
-		parseMaterialList(izd, izd.materialList, ctx, recursive)
+		parseMaterialList(izd, izd.materialList, ctx, recursive);
 	
 	if(izd.materials && izd.materials.length && izd.listPokDet) 
-		parseMaterialList(izd, izd.listPokDet, ctx, recursive)
+		parseMaterialList(izd, izd.listPokDet, ctx, recursive);
 	
 }
 
 function parseMaterialList(izd, materialJson, ctx, recursive) {
 	try {
-		const list_material = JSON.parse(materialJson)
-		pushElement(izd.materials, list_material, 'material', ctx, recursive)
+		const list_material = JSON.parse(materialJson);
+		pushElement(izd.materials, list_material, 'material', ctx, recursive);
 	} catch (e) {console.error(e)} 
 }
 /**
@@ -173,14 +172,14 @@ function checkDublecate(arr, res) {
 /**
  * Парсит комплектацию СБ или Д
 */
- function parserListIzd(res, kol, ctx) {
+async function parserListIzd(res, kol, ctx) {
 	try {
 		const cbeds = res.listCbed ? JSON.parse(res.listCbed) : [];
 		const detals = res.listDetal ? JSON.parse(res.listDetal) : [];
 		if(cbeds.length) {
 			for(let inx in cbeds) {
-				cbeds[inx] = cbeds[inx].cb;
-				cbeds[inx].articl = res?.articl || '';
+				const ress = await ctx.$store.dispatch('getOneCbEdById', cbeds[inx].cb.id);
+				if (ress) cbeds[inx] = ress;
 			}
 		}
 		if(detals.length) {
