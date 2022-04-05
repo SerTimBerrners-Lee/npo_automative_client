@@ -136,7 +136,7 @@
           v-if='selectedCbEd' 
           @click='editCbEd'>Полная информация</button>
         <div>
-          <h3>Спетификация Сборочной единицы</h3>
+          <h3>Спецификация Сборочной единицы</h3>
           <TableSpetification
             :listCbed='listCbed'
             :listDetal='listDetal'

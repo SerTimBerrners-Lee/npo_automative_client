@@ -20,7 +20,7 @@
             @click='$router.push({path: "/product/edit/false"})'
             class="btn">Полная информация</button>
           <div>
-						<h3>Спетификация Изделия</h3>
+						<h3>Спецификация Изделия</h3>
 						<TableSpetification
               :key='selecteProduct.id'
 							:listCbed='listCbed'

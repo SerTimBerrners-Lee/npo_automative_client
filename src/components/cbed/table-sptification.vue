@@ -106,7 +106,7 @@
 		style='width: 98%;'
 		v-if='izd' 
 		@click='openComplectModal'
-		class="btn">Полная спетификация</button>
+		class="btn">Полная спецификация</button>
 	</div>
 </template>
 <script>

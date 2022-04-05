@@ -5,7 +5,7 @@
       <div :style="hiddens" >
 
         <div class='table_block'>
-          <h3>Полная Спетификация
+          <h3>Полная Спецификация
             <button class='btn-small' @click='printPage'>На печать</button>
           </h3>
           <div id='spec_table'>

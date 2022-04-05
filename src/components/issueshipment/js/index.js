@@ -190,7 +190,7 @@ async function parserListIzd(res, kol, ctx) {
 		}
 		for(let i = 0; i < kol; i++) 
 			checkedJsonList({...res, cbeds, detals}, ctx, true);
-	} catch(e) {console.error(e)}		
+	} catch(e) {console.error(e)}
 }
 /**
  * Осуществляем проверку на дублирование

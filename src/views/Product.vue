@@ -85,7 +85,7 @@
           v-if='selectedCbEd' 
           @click='editProduct'>Полная информация</button>
         <div>
-          <h3>Спетификация Изделия</h3>
+          <h3>Спецификация Изделия</h3>
           <TableSpetification
             :listCbed='listCbed' 
             :listDetal='listDetal'

@@ -20,7 +20,7 @@
               v-if='selectedCbEd' 
               @click='$router.push({path: "/cbed/edit/false"})'>Полная информация</button>
             <div>
-              <h3>Спетификация Сборочной единицы</h3>
+              <h3>Спецификация Сборочной единицы</h3>
               <TableSpetification
                 :key='selectedCbEd.id + selectedCbEd'
                 :listCbed='listCbed'
