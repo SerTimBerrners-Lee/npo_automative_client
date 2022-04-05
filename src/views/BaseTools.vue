@@ -79,11 +79,12 @@
 </template>
 <script>
 import {isEmpty, random} from 'lodash';
-import OpensFile from '@/components/filebase/openfile.vue';
+import OpensFile from '@/components/filebase/openfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import MediaSlider from '@/components/filebase/media-slider.vue';
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import ShowProvider from '@/components/baseprovider/all-fields-provider.vue';
+import MediaSlider from '@/components/filebase/media-slider';
+import TableMaterial from '@/components/mathzag/table-material';
+import ShowProvider from '@/components/baseprovider/all-fields-provider';
+
 export default {
   data() {
     return {

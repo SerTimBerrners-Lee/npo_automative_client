@@ -79,7 +79,9 @@
         </div>
         <!-- Добавить файл из базы файлов -->
         <div>
-          <MiniTableDocuments :arrFileGet='[...arrFileGet, ...documents]' @unmount='setDocs'/>
+
+          <MiniTableDocuments :arrFileGet='[...arrFileGet, ...documents]' @unmount='setDocs' :key='new Data().getTime()'/>
+
           <div class="btn-control" style='margin-top: 50px;'>
             <button class="btn-small" @click='addFileModal'>Добавить файл из базы</button>
           </div>

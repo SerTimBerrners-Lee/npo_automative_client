@@ -178,12 +178,13 @@
 
 <script>
 import random from 'lodash';
-import OpensFile from '@/components/filebase/openfile.vue';
+import OpensFile from '@/components/filebase/openfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddOrder from '@/components/sclad/ordersuppliers/add-order.vue';
-import TableProvider from '@/components/baseprovider/table-provider.vue';
-import TableMaterial from '@/components/baseprovider/table-materila.vue';
-import TableMaterialFilter from '@/components/baseprovider/table-material-filter.vue';
+import AddOrder from '@/components/sclad/ordersuppliers/add-order';
+import TableProvider from '@/components/baseprovider/table-provider';
+import TableMaterial from '@/components/baseprovider/table-materila';
+import TableMaterialFilter from '@/components/baseprovider/table-material-filter';
+
 export default {
   data() {
     return {

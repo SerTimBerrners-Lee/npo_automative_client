@@ -111,11 +111,13 @@
         </div>
         <h3 class="link_h3" @click='showTechProcess' v-if='selecteProduct.techProcesses'>Технологический процес</h3>
         <div>
-        <span>Описание / Примечание</span>
-        <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
+          <span>Описание / Примечание</span>
+          <textarea maxlength='250' style="width: 90%; height: 120px;" cols="30" rows="10" :value='selecteProduct.description'> </textarea>
         </div>
+        
         <TableDocument v-if='selecteProduct.documents.length'
-          :documents='selecteProduct.documents'/>
+          :documents='selecteProduct.documents' :key='selecteProduct.id'/>
+
         <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
         <NodeParent
           v-if='selecteProduct && show_node_modal'

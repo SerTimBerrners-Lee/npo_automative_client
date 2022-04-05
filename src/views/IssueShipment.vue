@@ -48,6 +48,7 @@ import {mapActions, mapGetters} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range';
 import SortStatus from '@/components/issueshipment/sort-status';
 import TableShipments from '@/components/issueshipment/table-komplect';
+
 export default {
 	data() {
 		return {

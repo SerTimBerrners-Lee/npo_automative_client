@@ -70,8 +70,9 @@
 <script>
 import { dateIncrementHors } from '@/js/';
 import { mapGetters, mapActions} from 'vuex';
-import IssueForMe from '@/components/issue/issue-for-me.vue';
-import DatePicterRange from '@/components/date-picter-range.vue';
+import IssueForMe from '@/components/issue/issue-for-me';
+import DatePicterRange from '@/components/date-picter-range';
+
 export default {
   data() {
     return {
@@ -93,23 +94,23 @@ export default {
   methods: {
     ...mapActions(['fetchIssueList', 'getAllTypeOperations']),
     dateIncrementHors(date, hors) {
-      let dat = dateIncrementHors(date, hors)
-      return `${dat.day}.${dat.mount}.${dat.year}`
+      const dat = dateIncrementHors(date, hors);
+      return `${dat.day}.${dat.mount}.${dat.year}`;
     },
     incrementDay(date, hors) {
-      let dat = dateIncrementHors(date, hors)
-      return `${dat.iterationHors}`
+      const dat = dateIncrementHors(date, hors);
+      return `${dat.iterationHors}`;
     },
     changeDatePicterRange(val) {
-			console.log(val)
+			console.log(val);
 		}
   },
   async mounted() {
-    this.loader = true
+    this.loader = true;
     if(this.getAuth && this.getAuth.id) 
-      await this.fetchIssueList(this.getAuth.id)
-    await this.getAllTypeOperations()
-    this.loader = false
+      await this.fetchIssueList(this.getAuth.id);
+    await this.getAllTypeOperations();
+    this.loader = false;
   }
 }
 </script>

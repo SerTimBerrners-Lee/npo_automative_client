@@ -200,11 +200,13 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/search.vue';
+import Search from '@/components/search';
+import { eSelectSpan } from '@/js/methods';
+import CbedModalInfo from '@/components/cbed/cbed-modal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
-import ProductModalInfo from '@/components/baseproduct/product-modal.vue';
+import DetalModal from '@/components/basedetal/detal-modal';
+import ProductModalInfo from '@/components/baseproduct/product-modal';
+
 export default {
   props: ['getListDetal', 'listDetal', 'get_one'],
   data() {
@@ -234,9 +236,9 @@ export default {
   components: {DetalModal, Search, CbedModalInfo, ProductModalInfo},
   methods: {
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     ...mapActions(['getAllDetals', 
       'deleteDetelyId',
@@ -255,102 +257,87 @@ export default {
       'clearFilterCbedByProduct',
       'getAllCbEdByProduct',
     ]),
-    setDetals(detal, e) {
-      this.getOneDetal(detal.id).then(res => {
-        this.selectedDetal = res
-      })
-      if(this.tr) 
-        this.tr.classList.remove('td-row-all')
-      this.tr = e
-      this.tr.classList.add('td-row-all')
+    async setDetals(detal, e) {
+      const res = await this.getOneDetal(detal.id);
+      this.selectedDetal = res;
+
+      this.tr = eSelectSpan(this.tr, e);
     },
     infoDetal(detal) {
-      this.detalModalKey = random(1, 999)
-      this.parametrs_detal = detal.id
+      this.detalModalKey = random(1, 999);
+      this.parametrs_detal = detal.id;
     },
-    setCbed(cbed, e) {
+    async setCbed(cbed, e) {
       if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
-        this.clearFilterDetalByProduct()
-        e.classList.remove('td-row-all')
-        this.selectedCbEd = null
-        return
+        this.clearFilterDetalByProduct();
+        e.classList.remove('td-row-all');
+        this.selectedCbEd = null;
+        return;
       }
-      this.selectedCbEd = cbed
-      if(this.tr_cb) 
-        this.tr_cb.classList.remove('td-row-all')
+      this.selectedCbEd = cbed;
 
-      this.getOneCbEdById(cbed.id).then(res => {
-        if(!res) return false
-        this.selectedCbEd = res
-        this.getAllDetalByProduct(res)
-      })
+      const res = await this.getOneCbEdById(cbed.id);
+      if(!res) return false;
+      this.selectedCbEd = res;
+      this.getAllDetalByProduct(res);
   
-      this.tr_cb = e
-      this.tr_cb.classList.add('td-row-all')
+      this.tr_cb = eSelectSpan(this.tr_cb, e);
     },
     infoModalCbed(cb) {
-      if(!cb) return false
-      this.parametrs_cbed = cb.id
-      this.cbedModalKey = random(1, 999)
+      if(!cb) return false;
+      this.parametrs_cbed = cb.id;
+      this.cbedModalKey = random(1, 999);
     },
-    setProduct(product, e) {
+    async setProduct(product, e) {
       if(this.selecteProduct && this.selecteProduct.id == product.id) {
-        this.clearFilterCbedByProduct()
-        this.clearFilterDetalByProduct()
-        e.classList.remove('td-row-all')
-        this.selecteProduct = null
-        return
+        this.clearFilterCbedByProduct();
+        this.clearFilterDetalByProduct();
+        e.classList.remove('td-row-all');
+        this.selecteProduct = null;
+        return;
       }
+      this.selecteProduct = product;
 
-      this.selecteProduct = product
-        if(this.tr_product) 
-        this.tr_product.classList.remove('td-row-all')
+      const res = await this.getAllProductById(product.id);
+      if(!res) return false;
+      this.selecteProduct = res;
+      this.getAllCbEdByProduct(res);
+      this.getAllDetalByProduct(res);
 
-      this.getAllProductById(product.id).then(res => {
-        if(!res) return false
-        this.selecteProduct = res
-        this.getAllCbEdByProduct(res)
-        this.getAllDetalByProduct(res)
-      })
-
-      this.tr_product = e
-      this.tr_product.classList.add('td-row-all')
+      this.tr_product = eSelectSpan(this.tr_product, e);
     },
     infoModalProduct(product) {
-      if(!product) return false 
-      this.parametrs_product = product.id
-      this.productModalKey = random(1, 999)
+      if(!product) return false;
+      this.parametrs_product = product.id;
+      this.productModalKey = random(1, 999);
     },
     editDetal() {
-      if(!this.selectedDetal)
-        return 0
+      if(!this.selectedDetal) return 0;
 
-      this.$router.push("/detal/edit")
+      this.$router.push("/detal/edit");
     },
     keySearch(v) {
-      this.filterDetalToArticle(v)
+      this.filterDetalToArticle(v);
     },
     keySearchCb(v) {
-      this.searchCbed(v)
+      this.searchCbed(v);
     },
     keySearchProduct(v) {
-      this.searchProduct(v)
+      this.searchProduct(v);
     },
     deleteDetal() {
-      if(!this.selectedDetal)
-          return 0
-      this.deleteDetelyId(this.selectedDetal.id)
+      if(!this.selectedDetal) return 0;
+      this.deleteDetelyId(this.selectedDetal.id);
     },
     responsDetal() {
-      if(!this.selectedDetal)
-        return 0
+      if(!this.selectedDetal) return 0;
       
       if(this.$props.getListDetal) {
-        let add = true
+        let add = true;
         if(this.detalList.length > 0) {
-          for(let det of this.detalList) {
+          for(const det of this.detalList) {
             if(det.det.id == this.selectedDetal.id)
-              add = false
+              add = false;
           }
         }
         if(add) {
@@ -364,38 +351,38 @@ export default {
             ez: 1
           });
         }
-        return 0
+        return 0;
       }
-      this.$emit("responsDetal", this.selectedDetal)
-      this.destroyModalF()
+      this.$emit("responsDetal", this.selectedDetal);
+      this.destroyModalF();
     },
     returnDetalList() {
-      this.$emit("responsDetal", this.detalList)
-      this.destroyModalF()
+      this.$emit("responsDetal", this.detalList);
+      this.destroyModalF();
     },
     changeKolvo(val, det) {
-      det.kol = val.value
+      det.kol = val.value;
     },
     changeArt(val, det) {
-      det.art = val.value
+      det.art = val.value;
     },
     selecter(val, det) {
-      det.ez = val.value
+      det.ez = val.value;
     },
     delDet(id) {
-      this.detalList = this.detalList.filter(det => det.det.id != id)
+      this.detalList = this.detalList.filter(det => det.det.id != id);
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
     
-    this.getAllProduct(true)
-    this.getAllCbed(true)
-    this.getAllDetals(true)
+    this.getAllProduct(true);
+    this.getAllCbed(true);
+    this.getAllDetals(true);
     if(this.$props.listDetal)
-      this.detalList = this.$props.listDetal
+      this.detalList = this.$props.listDetal;
   }
 }
 </script>

@@ -2,16 +2,20 @@
 * Рекурсивно подсчитывает количество СБ и Д в изделии или СБ
 */
 async function checkedJsonList(izd, ctx, recursive = false) {
-	if(!ctx) return false
+	if(!ctx) return false;
 
+	// Проходим по списку сборок
 	if(izd.listCbed) {
-		const list_cbed = JSON.parse(izd.listCbed)
-		if(!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb)
-		pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive)
+		const list_cbed = JSON.parse(izd.listCbed);
+		if(!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb);
+		pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive);
 		for(let cb of list_cbed) {
 			const res = await ctx.$store.dispatch('getOneCbEdById', cb.cb.id);
+			const materials = await ctx.$store.dispatch('getOneCbEdField', {fields: 'materials', id: cb.cb.id});
+			if(!res) continue;
+			res.materials = materials.materials;
 			parserListIzd(res, cb.kol, ctx);
-		}
+		} 
 	}
 
 	// Проходим по деталям
@@ -84,30 +88,30 @@ function parseMaterialList(izd, materialJson, ctx, recursive) {
  * @returns 
  */
 function pushElement(elements, list_pars, type, ctx, recursive = false) {
-	if(!ctx) return false
+	if(!ctx) return false;
 	for(let element of elements) {
 		let kol = 1;
-		element.type = type
-		element.obj = {id: element.id, articl: element.articl}
+		element.type = type;
+		element.obj = { id: element.id, articl: element.articl };
 
-		for(let item of list_pars) {
+		for(const item of list_pars) {
 			let id;
 			switch(type) {
 				case 'cbed':
 					id = item.cb.id;
 					break;
 				case 'detal':
-					id = item.det.id
+					id = item.det.id;
 					break;
 				case 'material':
-					element.LEN = item.mat.LEN
-					element.MASS = item.mat.MASS
-					id = item.mat.id
+					element.LEN = item.mat.LEN;
+					element.MASS = item.mat.MASS;
+					id = item.mat.id;
 					break;
 			}
 			if(id == element.id) {
 				kol = Number(item.kol);
-				element.zag = item?.det?.zag
+				element.zag = item?.det?.zag;
 			}
 		}
 		
@@ -120,7 +124,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					if(element.LEN)	ctx.list_cbed_detal[iz].obj.LEN = (Number(ctx.list_cbed_detal[iz].obj.LEN) + Number(element.LEN));
 					if(element.MASS) ctx.list_cbed_detal[iz].obj.MASS = (Number(ctx.list_cbed_detal[iz].obj.MASS) + Number(element.MASS));
 				}
-				check = false
+				check = false;
 			}	
 		}
 
@@ -138,21 +142,21 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 		else {
 			if(type == 'material') {
 				const res = await ctx.$store.dispatch("fetchGetOnePPM", element.id);
-				element['podMaterial'] = res?.podMaterial || null
-				element['material'] = res?.material || null
+				element['podMaterial'] = res?.podMaterial || null;
+				element['material'] = res?.material || null;
 				const check_dublecate = checkDublecate(arr, element);
 				if(!check_dublecate)
 					arr.push({
 						type,
 						obj: {...element},
 						kol: Number(kol)
-					})
+					});
 			} else {
 				arr.push({
 					type,
 					obj: {...element},
 					kol: Number(kol)
-				})
+				});
 			}
 		}
 	}
@@ -163,7 +167,7 @@ function checkDublecate(arr, res) {
 		if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) 
 			return inx;
 	}
-	return null
+	return null;
 }
 
 /**
@@ -171,8 +175,8 @@ function checkDublecate(arr, res) {
 */
  function parserListIzd(res, kol, ctx) {
 	try {
-		let cbeds = res.listCbed ? JSON.parse(res.listCbed) : [];
-		let detals = res.listDetal ? JSON.parse(res.listDetal) : [];
+		const cbeds = res.listCbed ? JSON.parse(res.listCbed) : [];
+		const detals = res.listDetal ? JSON.parse(res.listDetal) : [];
 		if(cbeds.length) {
 			for(let inx in cbeds) {
 				cbeds[inx] = cbeds[inx].cb;
@@ -186,13 +190,12 @@ function checkDublecate(arr, res) {
 			}
 		}
 		for(let i = 0; i < kol; i++) 
-			checkedJsonList({...res, cbeds, detals}, ctx, true)
+			checkedJsonList({...res, cbeds, detals}, ctx, true);
 	} catch(e) {console.error(e)}		
 }
 /**
  * Осуществляем проверку на дублирование
 */
-
 
 export {
 	checkedJsonList

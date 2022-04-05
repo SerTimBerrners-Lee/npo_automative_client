@@ -54,7 +54,9 @@
 							style="width: 90%; height: 120px;" 
 							:value='selecteProduct.description'> </textarea>
 					</div>
-					<TableDocument :title='"Документы"'  :documents='selecteProduct.documents'/>
+          
+					<TableDocument :title='"Документы"' :documents='selecteProduct.documents' :key='selecteProduct.id' />
+
 					<h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес
             <span style='font-size:12px;'>
               ({{ selecteProduct && selecteProduct.techProcesses && selecteProduct.techProcesses.operations ? 

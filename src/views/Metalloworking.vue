@@ -139,14 +139,15 @@ import print from 'print-js';
 import {random} from 'lodash';
 import { showMessage } from '@/js/';
 import { returnShipmentsDate } from '@/js/operation';
+import OpensFile from '@/components/filebase/openfile';
 import {mapActions, mapGetters, mapMutations} from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
-import TbodyZag from '@/components/metalloworking/tablezag.vue';
-import DescriptionModal from '@/components/description-modal.vue';
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized.vue';
-import OperationModal from '@/components/sclad/workings-operations.vue';
-import ShipmentList from '@/components/issueshipment/shipments-list-table.vue';
-import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking.vue';
+import TbodyZag from '@/components/metalloworking/tablezag';
+import DescriptionModal from '@/components/description-modal';
+import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
+import OperationModal from '@/components/sclad/workings-operations';
+import ShipmentList from '@/components/issueshipment/shipments-list-table';
+import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking';
+
 export default {
 	data() {
 		return{

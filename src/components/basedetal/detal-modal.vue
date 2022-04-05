@@ -42,7 +42,7 @@
             <span style='font-weight: bold;'>{{ generateTime }}</span>
           </p>
         </div> 
-        <TableDocument :title='"Документы"' :documents='getOneSelectDetal.documents'/>
+        <TableDocument :title='"Документы"' :documents='getOneSelectDetal.documents' :key='getOneSelectDetal.id'/>
         <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес 
           <span style='font-size:12px;'>
             ({{ getOneSelectDetal && getOneSelectDetal.techProcesses && getOneSelectDetal.techProcesses.operations ? 
@@ -75,12 +75,13 @@
 </template>
 <script>
 import {isEmpty, random} from 'lodash';
-import TechProcess from './tech-process-modal.vue';
+import TechProcess from './tech-process-modal';
+import NodeParent from '@/components/mathzag/table-node';
 import {mapGetters, mapMutations, mapActions } from 'vuex';
-import NodeParent from '@/components/mathzag/table-node.vue';
-import MediaSlider from '@/components/filebase/media-slider.vue';
-import TableZag from '@/components/metalloworking/tablezag.vue';
-import TableDocument from '@/components/filebase/table-document.vue';
+import TableZag from '@/components/metalloworking/tablezag';
+import MediaSlider from '@/components/filebase/media-slider';
+import TableDocument from '@/components/filebase/table-document';
+
 export default {
   props: ['id'],
   data() {
@@ -123,9 +124,9 @@ export default {
     ...mapActions(['getOneDetal']),
     ...mapMutations(['addOneSelectDetal']),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     createTechProcess() {
       this.techProcessIsShow = true;
@@ -141,7 +142,7 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     isEmptyF(obj) {
-      return isEmpty(obj)
+      return isEmpty(obj);
     },
     async unmount_tech_process(tp) {
       await this.setDetal(this.$props.id);
@@ -152,17 +153,14 @@ export default {
         this.getOneSelectDetal.techProcesses.operations = tp.opers;
       }
 
-      if(tp.id) {
-        if(tp.opers.length) {
-        tp.opers.forEach(op => {
-          this.generateTime =  Number(op.preTime) + Number(op.helperTime)+ Number(op.mainTime)
-        })
-        }
-      }
+      if(!tp.id || !tp.opers.length) return false;
+      tp.opers.forEach(op => {
+        this.generateTime =  Number(op.preTime) + Number(op.helperTime)+ Number(op.mainTime)
+      });
     },
     showTechProcess() {
-      this.techProcessIsShow = true
-      this.techProcessKey = random(1, 999)
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
     },
     async setDetal(_id) {
       const getDetal = await this.getOneDetal(_id);
@@ -181,14 +179,15 @@ export default {
     
     this.getOneSelectDetal.materials.forEach(element => {
       if(element.id == this.getOneSelectDetal.mat_zag)
-        this.mat_zag = element
+        this.mat_zag = element;
     });
-    let prs = JSON.parse(this.getOneSelectDetal.parametrs)
+    const prs = JSON.parse(this.getOneSelectDetal.parametrs);
     this.generateTime = Number(prs.preTime.znach) + 
       Number(prs.helperTime.znach) + 
-      Number(prs.mainTime.znach)
+      Number(prs.mainTime.znach);
+
     if(this.getOneSelectDetal.techProcesses)
-      this.techProcessID = this.getOneSelectDetal.techProcesses.id
+      this.techProcessID = this.getOneSelectDetal.techProcesses.id;
   },
 }
 </script>

@@ -60,12 +60,13 @@
 <script>
 import { random }  from 'lodash';
 import { showMessage } from '@/js/';
-import Assign from '@/components/filebase/assign.vue';
-import AddFile from '@/components/filebase/addfile.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
+import Assign from '@/components/filebase/assign';
+import AddFile from '@/components/filebase/addfile';
+import OpensFile from '@/components/filebase/openfile';
+import NodeTable from '@/components/filebase/node-table';
+import FileWindow from '@/components/filebase/file-window';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import NodeTable from '@/components/filebase/node-table.vue';
-import FileWindow from '@/components/filebase/file-window.vue';
+
 export default {
   data() {
     return {

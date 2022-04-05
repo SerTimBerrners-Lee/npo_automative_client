@@ -198,6 +198,7 @@ import DetalModal from '@/components/basedetal/detal-modal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import ProductModalInfo from '@/components/baseproduct/product-modal';
 
+
 export default {
   data() {
     return {

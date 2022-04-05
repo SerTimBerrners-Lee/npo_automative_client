@@ -138,10 +138,11 @@
 </template>
 <script>
 import random from 'lodash';
-import OpensFile from '@/components/filebase/openfile.vue';
+import OpensFile from '@/components/filebase/openfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableBuyer from '@/components/basebuyer/table-buyer.vue';
-import DescriptionModal from '@/components/description-modal.vue';
+import TableBuyer from '@/components/basebuyer/table-buyer';
+import DescriptionModal from '@/components/description-modal';
+
 export default {
   data() {
     return {

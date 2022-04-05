@@ -51,7 +51,9 @@
               <h3>Описание / Примечание</h3>
               <textarea maxlength='250' style="width: 90%; height: 120px;" :value='selectedCbEd.description'> </textarea>
             </div>
-            <TableDocument :title='"Документы"'  :documents='selectedCbEd.documents'/>
+            
+            <TableDocument :title='"Документы"' :documents='selectedCbEd.documents' :key='selectedCbEd.id' />
+
             <h3 class="link_h3" @click='showTechProcess' v-if='techProcessID'>Технологический процес
               <span style='font-size:12px;'>
                 ({{ selectedCbEd && selectedCbEd.techProcesses && selectedCbEd.techProcesses.operations ? 

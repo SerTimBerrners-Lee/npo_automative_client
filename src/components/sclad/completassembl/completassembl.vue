@@ -169,7 +169,6 @@ export default {
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
     await this.fetchAssemblePlan();
     await this.fetchAllBuyers();
-    console.log(this.getAssembles);
     this.loader = false
 	}
 }

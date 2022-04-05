@@ -63,7 +63,8 @@
 </template>
 
 <script>
-import DatePicterRange from '@/components/date-picter-range.vue';
+import DatePicterRange from '@/components/date-picter-range';
+
 export default {
 	data() {
 		return{

@@ -166,6 +166,7 @@
         </div>
         <h3 class="link_h3" @click='showTechProcess' v-if='selectedCbEd.techProcesses'>Технологический процес</h3>
         <TableDocument v-if='selectedCbEd.documents.length'
+          :key='selectedCbEd.id'
           :documents='selectedCbEd.documents'/>
         <h3 class="link_h3" @click='showModalNode'>Принадлежность</h3>
         <NodeParent
