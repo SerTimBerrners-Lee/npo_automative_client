@@ -88,7 +88,7 @@
 </template>
 <script>
 import { random } from 'lodash';
-import { mapActions } from 'vuex';
+import { eSelectSpan } from '@/js/methods';
 
 export default {
   props: ['izd', 'border_show', 'css', 'no_show_izd', 'no_show_cb', 'no_show_det', 'title'],
@@ -114,27 +114,23 @@ export default {
     this.$options.components.ModalProduct = require('@/components/baseproduct/product-modal.vue').default;
   },
   methods: {
-    ...mapActions(['']),
     setDetals(detal, e) {
-      this.setTr(e)
-      this.parametrs_detal = detal.id
-			this.detalModalKey = random(1, 999)
+      this.setTr(e);
+      this.parametrs_detal = detal.id;
+			this.detalModalKey = random(1, 999);
     },
     setCbed(cbed, e) {
-      this.setTr(e)
-      this.cbedModalKey = random(1, 999)
-      this.parametrs_cbed = cbed.id
+      this.setTr(e);
+      this.cbedModalKey = random(1, 999);
+      this.parametrs_cbed = cbed.id;
     },
     setProduct(prod, e) {
-      this.setTr(e)
-      this.product_modal_key = random(1, 999)
-      this.parametrs_product = prod.id
+      this.setTr(e);
+      this.product_modal_key = random(1, 999);
+      this.parametrs_product = prod.id;
     },
     setTr(e) {
-      if(this.tr) 
-        this.tr.classList.remove('td-row-all')
-      this.tr = e
-      this.tr.classList.add('td-row-all')
+      this.tr = eSelectSpan(this.tr, e);
     },
   }
 }

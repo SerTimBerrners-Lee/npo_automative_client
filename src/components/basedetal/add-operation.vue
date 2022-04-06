@@ -215,14 +215,15 @@
 </div> 
 </template>
 <script>
+import PATH_TO_SERVER from '@/js/path';
 import {random, isEmpty } from 'lodash';
-import PATH_TO_SERVER from '@/js/path.js';
 import { mapActions, mapGetters } from 'vuex';
-import AddFile from '@/components/filebase/addfile.vue';
-import OpensFile from '@/components/filebase/openfile.vue';
-import MediaSlider from '@/components/filebase/media-slider.vue';
-import BaseTools from '@/components/instrument/modal-base-tool.vue';
-import BaseEquipment from '@/components/equipment/modal-base-equipment.vue';
+import AddFile from '@/components/filebase/addfile';
+import OpensFile from '@/components/filebase/openfile';
+import MediaSlider from '@/components/filebase/media-slider';
+import BaseTools from '@/components/instrument/modal-base-tool';
+import BaseEquipment from '@/components/equipment/modal-base-equipment';
+
 export default {
   props: ['operation'],
   data() {

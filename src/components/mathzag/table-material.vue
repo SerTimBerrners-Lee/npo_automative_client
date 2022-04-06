@@ -39,6 +39,7 @@
 </template>
 <script>
 import Search from '@/components/search';
+import { eSelectSpan } from '@/js/methods';
 
 export default {
   props: ['alltypeM', 'type', 'title', 'width', 'attention', 'hide_filter_responsibil'],
@@ -50,11 +51,7 @@ export default {
   components: {Search},
   methods: {
     active(e) {
-      if(this.element) 
-        this.element.classList.remove('td-row-all')
-          
-      this.element = e
-      this.element.classList.add('td-row-all')
+      this.element = eSelectSpan(this.element, e);
     },
     keySearch(key) {
       this.$emit('search', key)

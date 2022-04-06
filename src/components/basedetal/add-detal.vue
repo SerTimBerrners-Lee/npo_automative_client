@@ -149,11 +149,12 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import TechProcess from './tech-process-modal.vue';
-import HaracteristicZag from './haracteristic-zag.vue';
+import TechProcess from './tech-process-modal';
+import HaracteristicZag from './haracteristic-zag';
 import { mapActions, mapMutations, mapGetters } from 'vuex';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-import ModalBaseMaterial from '@/components/mathzag/modal-base-material.vue';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import ModalBaseMaterial from '@/components/mathzag/modal-base-material';
+
 export default {
   data() {
     return {

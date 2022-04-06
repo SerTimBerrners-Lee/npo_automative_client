@@ -152,7 +152,7 @@
               @unmount='file_unmount'/>
           </div>
           <div>
-            <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs' :key='new Data().getTime()'/>
+            <MiniTableDocuments :arrFileGet='arrFileGet' @unmount='setDocs' :key='new Date().getTime()'/>
             <div class="btn-control" style='width: 83%; margin-top: 50px;'>
               <button class="btn-small" @click='addFileModal'>Добавить из базы</button>
             </div>
