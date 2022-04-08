@@ -194,7 +194,7 @@ export default {
       let add = true;
       if(this.materialList.length > 0) {
         for(const mat of this.materialList) {
-          if(mat.mat.id == this.podPodMaterial.id);
+          if(mat.mat.id == this.podPodMaterial.id)
             add = false;
         }
       }
