@@ -32,20 +32,16 @@
     <div class="right_control">
       <h3>Потребности на план</h3>
       <div class="block">
-        <div class="type-operation" @click="$router.push('/issuetopull')">
-          Задачи на отгрузку 
-        </div>
-        <div class="type-operation" @click="$router.push('/defmatplan')">
-          Дефицит материалов на план (металлообработка)
-        </div>
-        <div class="type-operation" @click="$router.push('/defmatplanass')">
-          Дефицит материалов на план (сборка)
-        </div>
+        <div class="type-operation" @click="$router.push('/issuetopull')">Задачи на отгрузку</div>
+        <div class="type-operation" @click="$router.push('/defmatplan')">Дефицит материалов на план (металлообработка)</div>
+        <div class="type-operation" @click="$router.push('/defmatplanass')">Дефицит материалов на план (сборка)</div>
+
         <h3>Комплектация производства (зачистные и заготовительные операции</h3>
         <div class="small-width-div type-operation" @click="$router.push('/cuttingcircle')">Резка круга / профиля</div>
         <div class="small-width-div type-operation" @click="$router.push('/cuttinglist')">Резка листа</div>
-        <div class="type-operation" @click="$router.push('/completassembl')">
-          Комплектация сборок на план
+        <div class="direction_flex">
+          <div class="type-operation" @click="$router.push('/completassembl')">Комплектация сборок на план</div>
+          <div class="type-operation" @click="$router.push('/complectizd')">Комплектация Изделей на план</div>
         </div>
       </div>
     </div>
@@ -59,6 +55,9 @@
 }
 .main_container_sclad * {
   margin: 5px;
+}
+.direction_flex {
+  display: flex;
 }
 .left_control {
   width: 600px;

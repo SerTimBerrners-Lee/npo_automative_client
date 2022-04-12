@@ -36,17 +36,21 @@ export default {
 			modelAttribute: {
 				dot: true,
 			},
-      range: null
+      range: {
+        end: new Date(),
+        start: new Date()
+      }
 		}
 	},
   watch: {
     range: function(val) {
-      this.$emit('unmount', val)
+      console.log(this.range)
+      this.$emit('unmount', val);
     }
   },
   methods: {
     clearDate() {
-      this.range = null
+      this.range = null;
     }
   }
 }

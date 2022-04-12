@@ -6,6 +6,7 @@
         <h3> Добавить поставщика </h3>
         <h4>База поставщиков</h4>
         <TableProvider :allProvider='allProvider' @unmount='setProvider'/>
+        
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click="destroyModalF">Отменить</button>
           <button class="btn-status btn-black" @click="addProvider" >Добавить</button>
@@ -16,9 +17,12 @@
 </template>
 <script>
 import { mapGetters, mapActions} from 'vuex';
-import TableProvider from './table-provider.vue';
+import TableProvider from './table-provider';
+
 export default {
-  props: ['parametrs'],
+  props: {
+    parametrs: {}
+  },
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -31,25 +35,25 @@ export default {
   components: {TableProvider},
   methods: {
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     ...mapActions(['fetchGetProviders']),
     setProvider(prov) {
-      this.provider = prov
+      this.provider = prov;
     },
     addProvider() {
-      this.$emit('unmount', this.provider)
-      this.destroyModalF()
+      this.$emit('unmount', this.provider);
+      this.destroyModalF();
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
     
-    this.fetchGetProviders()
+    this.fetchGetProviders();
   },
 }
 </script>

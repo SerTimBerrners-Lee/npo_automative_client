@@ -86,6 +86,8 @@
 			v-if='parametrs_komplect'
 			:key='komplect_generate_key'
 			:parametrs='parametrs_komplect'
+      :change_complect='change_complect'
+      :is_change_komplit='true'
 		/>
     <InformFolder
       :message = 'message'
@@ -131,6 +133,8 @@ export default {
     shipments_id: {
       type: Number
     },
+    change_complect: {},
+    is_change_komplit: {}
   },
   data() {
     return {

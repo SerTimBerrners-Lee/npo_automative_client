@@ -16,7 +16,7 @@
 				<span>Выбрать изделие: </span>
 				<span 
 					v-if='select_product && !is_not_product' 
-					class='select_span_href'>{{ select_product.name }}</span>
+					class='select_span_href' @click='openIzd(select_product)'>{{ sliceName(select_product.name) }}</span>
 				<button 
 					class="btn-small btn-add" 
 					@click='selectProduct' 
@@ -116,7 +116,72 @@
 			</div>
 		</div>
 
+		<div id='tablebody' v-show='tablebody'>
+			<h4>Информация о заказе</h4> 
+			<table class='table_inform'>
+				<tr>
+					<th class='center'>Дата заказа</th>
+					<td class="center">{{ date_order }}</td>
+				</tr>
+				<tr>
+					<th class='center'>Дата отгрузки</th>
+					<td class="center">{{ date_shipments }}</td>
+				</tr>
+				<tr>
+					<th class='center'>Изделие</th>
+					<td class="center">{{ select_product?.name || 'Без Изделия' }}</td>
+				</tr>
+				<tr>
+					<th class='center'>Количество</th>
+					<td class="center">{{ kol }}</td>
+				</tr>
+				<tr>
+					<th class='center'>Бронь</th>
+					<td class="center">{{ bron ? 'есть' : 'нет' }}</td>
+				</tr>
+				<tr>
+					<th class='center'>Основание</th>
+					<td class="center">{{ base }}</td>
+				</tr>
+				<tr>
+					<th class='center'>Покупатель</th>
+					<td class="center">{{ getBuyerFilter(buyer) }}</td>
+				</tr>
+				<tr>
+					<th class='center'>Примечание</th>
+					<td class="center">{{ description }}</td>
+				</tr>
+				<tr v-if='documents && documents.length'>
+					<th class='center'>Документы</th>
+					<p v-for='(doc, idx) of documents' :key='doc' class='center'>
+						<span>{{ idx + 1}}. {{ doc.name }}</span>
+					</p>
+				</tr>
+			</table>
+			<h4>Комплектация заказа</h4>
+			<table>
+				<tr>
+					<th class='center'>№</th>
+					<th class='center'>Артикул</th>
+					<th class='center'>Наименование СБ или Детали</th>
+					<th class='center'>Кол-во</th>
+				</tr>
+				<tr v-for='(ko, inx) of list_cbed_detal' :key='inx'>
+					<td class="center">{{ inx + 1 }}</td>
+					<td class="center">{{ ko.obj.articl }}</td>
+					<td class="center">{{ ko.obj.name }}</td>
+					<td class="center">{{ ko.kol }}</td>
+				</tr>
+			</table>
+		</div>
+
 		<div class="btn-control out-btn-control">
+			<button 
+				class="btn-status" 
+				style="height: 0px;"
+				@click="printPage()">
+				Печать 
+			</button>
 			<button 
 				class="btn-status" 
 				style="height: 0px;"
@@ -136,6 +201,7 @@
 				Сохранить Заказ
 			</button>
 		</div>
+
 	<ProductList 
 		v-if='showProduct'
 		:key='keyProductModal'
@@ -147,6 +213,11 @@
 		:enum='"two"'
 		@responsDetal='responseDetalCb'
   />
+	<ProductModalInfo
+		:id='parametrs_product'
+		:key='productModalKey'
+		v-if='parametrs_product'
+	/>
 	<InformFolder  
 		:title='titleMessage'
 		:message = 'message'
@@ -190,19 +261,23 @@
 </template>
 
 <script>
-import {showMessage} from '@/js/';
-import {random, isEmpty} from 'lodash';
-import AddFile from '@/components/filebase/addfile.vue';
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import OpensFile from '@/components/filebase/openfile.vue';
-import DatePicterCustom from '@/components/date-picter.vue';
-import CbedModalInfo from '@/components/cbed/cbed-modal.vue';
-import BaseBuyer from '@/components/basebuyer/list-buyer.vue';
-import DetalModal from '@/components/basedetal/detal-modal.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
-import ProductList from '@/components/baseproduct/all-product-modal.vue';
-import TableShipments from '@/components/issueshipment/table-komplect.vue';
-import BaseProductModal from '@/components/baseproduct/base-product-all-modal.vue';
+import print from 'print-js';
+import { showMessage } from '@/js/';
+import { random, isEmpty } from 'lodash';
+import AddFile from '@/components/filebase/addfile';
+import { sliceName, eSelectSpan } from '@/js/methods';
+import OpensFile from '@/components/filebase/openfile';
+import DatePicterCustom from '@/components/date-picter';
+import CbedModalInfo from '@/components/cbed/cbed-modal';
+import BaseBuyer from '@/components/basebuyer/list-buyer';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import DetalModal from '@/components/basedetal/detal-modal';
+import BaseFileModal from '@/components/filebase/base-files-modal';
+import ProductList from '@/components/baseproduct/all-product-modal';
+import ProductModalInfo from '@/components/baseproduct/product-modal';
+import TableShipments from '@/components/issueshipment/table-komplect';
+import BaseProductModal from '@/components/baseproduct/base-product-all-modal';
+
 export default {
 	data() {
 		return{
@@ -249,19 +324,23 @@ export default {
 			list_cbed_detal: [],
 			list_hidden_cbed_detal: [],
 			is_not_product: false,
+			parametrs_product: false,
+			productModalKey: random(1, 999),
 
 			showModalFile: false,
       fileModalKey: random(1, 999),
-			selectedBaseProvesses: false
+			selectedBaseProvesses: false,
+
+			tablebody: false
 		}
 	},
 	watch: {
 		kol: function(znach) {
-			if(!this.select_product) return 0 
-			this.list_cbed_detal = []
-			this.list_hidden_cbed_detal = []
+			if(!this.select_product) return 0;
+			this.list_cbed_detal = [];
+			this.list_hidden_cbed_detal = [];
 			for(let inx = 0; inx < znach; inx++) {
-				this.checkedJsonList(this.select_product)
+				this.checkedJsonList(this.select_product);
 			}
 		},	
 	},
@@ -280,7 +359,8 @@ export default {
 			CbedModalInfo,
 			TableShipments,
 			BaseBuyer,
-			BaseFileModal
+			BaseFileModal,
+			ProductModalInfo
 	},
 	methods: {
 		...mapActions([
@@ -300,17 +380,17 @@ export default {
 			'filterToParentShipments',
 		]),
 		unmount_buyer(buyer) {
-			if(buyer) this.buyer = buyer.id
+			if(buyer) this.buyer = buyer.id;
 		},
 		unmount_base(e) {
-			if(!e) return false
-			const document = e.formData.getAll('document')[0]
-			this.baseFormData = new FormData
-			this.baseFormData.append('document', document)
-			this.base = document.name
+			if(!e) return false;
+			const document = e.formData.getAll('document')[0];
+			this.baseFormData = new FormData;
+			this.baseFormData.append('document', document);
+			this.base = document.name;
 			try {	
-				const docs = JSON.parse(e.formData.get('docs'))
-				this.baseFormData.append('docs', JSON.stringify(docs[0]))
+				const docs = JSON.parse(e.formData.get('docs'));
+				this.baseFormData.append('docs', JSON.stringify(docs[0]));
 			} catch(e) {console.error(e)}
 		},
 		file_unmount(e) {
@@ -324,32 +404,45 @@ export default {
 		},
 		unmount_filemodal(res) {
       if(res && !this.selectedBaseProvesses) {
-				res.forEach((doc) => this.documents.push(doc))
+				res.forEach((doc) => this.documents.push(doc));
 			} else if(this.selectedBaseProvesses) {
-				this.documents.push(res[0])
-				this.base = res[0].name
-				this.selectedBaseProvesses = false
+				this.documents.push(res[0]);
+				this.base = res[0].name;
+				this.selectedBaseProvesses = false;
 			}
     },
+		printPage() {
+			this.tablebody = true;
+      setTimeout(() => {
+				print({
+					printable: 'tablebody',
+					type: 'html',
+					targetStyles: ['*'],
+					documentTitle: 'Комплектация заказа',
+					font_size: '10pt'
+				});
+			})
+			setTimeout(() => this.tablebody = false, 4000);
+    },
 		addFileModal() {
-      this.fileModalKey = random(1, 999)
-      this.showModalFile = true
+      this.fileModalKey = random(1, 999);
+      this.showModalFile = true;
     },
 		addFileModalBase() {
-			this.addFileModal()
-			this.selectedBaseProvesses = true
+			this.addFileModal();
+			this.selectedBaseProvesses = true;
 		},
 		selectBuyer() {
 			this.showBuyer = true;
-			this.keyGenerateBuyer = random(1, 999)
+			this.keyGenerateBuyer = random(1, 999);
 		},
 		addNewPositionProduct() {
-			if(this.$route.params.edit != 'true') return showMessage('', 'Сначала сохраните заказ', 'w', this)
+			if(this.$route.params.edit != 'true') return showMessage('', 'Сначала сохраните заказ', 'w', this);
 			if(this.getOneShipments && this.getOneShipments.id) {
-				this.$router.push(`/addorder/false/${this.getOneShipments.id}`)
-				this.filterToParentShipments(this.getOneShipments.id)
+				this.$router.push(`/addorder/false/${this.getOneShipments.id}`);
+				this.filterToParentShipments(this.getOneShipments.id);
 			}
-			else return showMessage('', 'Выберите заказ к которому хотите присвоить изделие', 'w', this)
+			else return showMessage('', 'Выберите заказ к которому хотите присвоить изделие', 'w', this);
 		},
 		addDock(val, base = false) {
 			if(base && this.base) {
@@ -368,45 +461,47 @@ export default {
     },
 		addCbEdDetal() {
 			this.showModalDetalCb = true;
-			this.keyModalDetalCb = random(1, 999)
+			this.keyModalDetalCb = random(1, 999);
 		},
 		changeDatePicter(date) {
-			this.date_order = date
+			this.date_order = date;
 		},
 		changeDatePicterShipments(date) {
-			this.date_shipments = date
+			this.date_shipments = date;
 		},
 		selectProduct() {
-			this.kol = 1
-			this.showProduct = true,
-			this.keyProductModal = random(1, 999)
+			this.kol = 1;
+			this.showProduct = true;
+			this.keyProductModal = random(1, 999);
 		},
 		unmount_product(product) {
-			if(!product) return 0
-			this.list_cbed_detal = []
-			this.list_hidden_cbed_detal = []
+			if(!product) return 0;
+			this.list_cbed_detal = [];
+			this.list_hidden_cbed_detal = [];
 			
-			this.select_product = product
-			this.checkedJsonList(product)
+			this.select_product = product;
+			this.checkedJsonList(product);
 		},
 		setDocs(dc) {
-      this.itemFiles = dc
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      this.itemFiles = dc;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
-		checkedJsonList(izd, recursive = false) {
+		async checkedJsonList(izd, recursive = false) {
 			if(izd.listCbed) {
-				let list_cbed = JSON.parse(izd.listCbed)
+				const list_cbed = JSON.parse(izd.listCbed)
 				if(!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb)
 				this.pushElement(izd.cbeds, list_cbed, 'cbed', recursive)
-				for(let cb of list_cbed) {
-					this.getOneCbEdById(cb.cb.id).then(res => this.parserListIzd(res, cb.kol))
+				for(const cb of list_cbed) {
+					const res = await this.getOneCbEdById(cb.cb.id);
+					if (res) this.parserListIzd(res, cb.kol);
 				}
 			}
 			if(izd.detals && izd.detals.length && izd.listDetal) {
-				let list_detals = JSON.parse(izd.listDetal)
-				this.pushElement(izd.detals, list_detals, 'detal', recursive)
+				const list_detals = JSON.parse(izd.listDetal);
+				this.pushElement(izd.detals, list_detals, 'detal', recursive);
 				for(let det of list_detals ) {
-					this.getOneDetal(det.det.id).then(res => this.checkedJsonList(res)) 
+					const res = await this.getOneDetal(det.det.id);
+					if (res) this.checkedJsonList(res);
 				}
 			}
 		},
@@ -504,37 +599,34 @@ export default {
 		 */
 		checkDublecate(arr, res) {
 			for(let inx in arr) {
-				if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) return inx
+				if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) return inx;
 			}
-			return null
+			return null;
 		},	
 		// ТО DO: Изменение работает только для определенного элемента на детей оно не распростроняется!!!
 		editKolVo(inx, val) {
-			this.list_cbed_detal[inx].kol = Number(val)
+			this.list_cbed_detal[inx].kol = Number(val);
 		},
 		deleteCbEdDetal() {
 			if(this.select_tr_inx == null) return 0;
 
 			this.list_cbed_detal = this.list_cbed_detal.filter((_, inx) => 
 				inx != this.select_tr_inx
-			)
-			this.select_tr_inx = null
+			);
+			this.select_tr_inx = null;
 		},
 		selectTr(inx, e) {
 			if(this.select_tr_inx == inx && this.tr) {
-				this.tr.classList.remove('td-row-all')
-				return this.select_tr_inx = null
+				this.tr.classList.remove('td-row-all');
+				return this.select_tr_inx = null;
 			}
-			if(this.tr) 
-				this.tr.classList.remove('td-row-all')
-			this.tr = e
-			this.tr.classList.add('td-row-all')
 
-			this.select_tr_inx = inx
+			this.tr = eSelectSpan(this.tr, e);
+			this.select_tr_inx = inx;
 		},
 		save_order() {
 			if(!this.is_not_product && !this.select_product)
-					return showMessage('', 'Выберите Изделие', 'w', this)
+					return showMessage('', 'Выберите Изделие', 'w', this);
 			
 			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w', this)
 			this.loader = true
@@ -550,17 +642,14 @@ export default {
 				description: this.description,
 				list_cbed_detal: JSON.stringify(this.list_cbed_detal),
 				list_hidden_cbed_detal: JSON.stringify(this.list_hidden_cbed_detal)
-			} 
-
-			console.log(this.list_cbed_detal, 'this.list_cbed_detal')
-			console.log(this.list_hidden_cbed_detal, 'this.list_hidden_cbed_detal')
+			}
 
 			if(this.documentsData.length) {
 				let new_arr = []
-				for(let dat of this.documentsData) {
-					new_arr.push(dat.id)
+				for(const dat of this.documentsData) {
+					new_arr.push(dat.id);
 				}
-				data['documentsData'] = JSON.stringify(new_arr)
+				data['documentsData'] = JSON.stringify(new_arr);
 			}
 
 			if(this.select_product) {
@@ -570,10 +659,10 @@ export default {
 				}
 			}
 			if(this.baseFormData.get('document') && this.baseFormData.get('docs') ) {
-				this.formData.append('document', this.baseFormData.get('document'))
+				this.formData.append('document', this.baseFormData.get('document'));
 				try {
-					let pars = JSON.parse(this.baseFormData.get('docs')) 
-					this.formData.append('docs', JSON.stringify([pars]))
+					let pars = JSON.parse(this.baseFormData.get('docs')) ;
+					this.formData.append('docs', JSON.stringify([pars]));
 					
 				} catch(e) {console.error(e)}
 			}
@@ -588,67 +677,81 @@ export default {
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)
 				})
 			} else {
-				if(Number(this.$route.params.parent)) data['parent_id'] = Number(this.$route.params.parent)
-				this.formData.append('data', JSON.stringify(data))
+				if(Number(this.$route.params.parent)) data['parent_id'] = Number(this.$route.params.parent);
+				this.formData.append('data', JSON.stringify(data));
 				this.fetchCreateShipments(this.formData).then(res => {
-					this.loader = false
-					setTimeout(() => this.$router.push('/issueshipment'), 3000)
-					if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's', this)
-					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this)
+					this.loader = false;
+					setTimeout(() => this.$router.push('/issueshipment'), 3000);
+					if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's', this);
+					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this);
 				})
 			}
 		},
-		editVariable() {
-			this.date_order = this.getOneShipments.date_order
-			this.date_shipments = this.getOneShipments.date_shipments
-			this.kol = this.getOneShipments.kol
-			this.bron = this.getOneShipments.bron
-			this.base = this.getOneShipments.base
-			this.buyer = this.getOneShipments.buyer?.id
-			this.to_sklad = this.getOneShipments.to_sklad
+		getBuyerFilter(_id) {
+			if (!_id) return 'На Склад';
+			const buyer = this.allBuyer.filter(el => el.id == _id);
+			if (buyer && buyer.length) return buyer[0].name
+			return 'На Склад';
+		},
+		async editVariable() {
+			this.date_order = this.getOneShipments.date_order;
+			this.date_shipments = this.getOneShipments.date_shipments;
+			this.kol = this.getOneShipments.kol;
+			this.bron = this.getOneShipments.bron;
+			this.base = this.getOneShipments.base;
+			this.buyer = this.getOneShipments.buyer?.id;
+			this.to_sklad = this.getOneShipments.to_sklad;
 			if(this.getOneShipments.productId) {
-				this.getAllProductByIdLight(this.getOneShipments.productId)
-				.then(res => this.select_product = res)
-			} else this.is_not_product = true
-			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents
+				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
+				if (res) this.select_product = res;
+			} else this.is_not_product = true;
+			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents;
 			try {
 				if(this.getOneShipments.list_cbed_detal)
-					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal)
+					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal);
 				if(this.getOneShipments.list_hidden_cbed_detal)
-					this.list_hidden_cbed_detal = JSON.parse(this.getOneShipments.list_hidden_cbed_detal)
+					this.list_hidden_cbed_detal = JSON.parse(this.getOneShipments.list_hidden_cbed_detal);
 			} catch(e) {console.error(e)}
-			this.description = this.getOneShipments.description
+			this.description = this.getOneShipments.description;
 		},
 		showInformIzdel(id, type) {
 			if(type == 'cbed') {
 				if(id) {
-					this.parametrs_cbed = id
-					this.cbedModalKey = random(1, 999)
+					this.parametrs_cbed = id;
+					this.cbedModalKey = random(1, 999);
 				}
 			}
 			if(type == 'detal') {
 				if(id) {
-					this.parametrs_detal = id
-					this.detalModalKey = random(1, 999)
+					this.parametrs_detal = id;
+					this.detalModalKey = random(1, 999);
 				}
 			}
-		}
+		},
+		openIzd(izd) {
+			if (!izd || !izd.id) return false;
+			this.parametrs_product = izd.id;
+      this.productModalKey = random(1, 999);
+		},
+		sliceName(str) {
+			return sliceName(str, 32);
+		},
 	},
 	async mounted() {
-		this.fetchAllBuyers(true)
-		await this.fetchAllShipmentsTo()
+		this.fetchAllBuyers(true);
+		await this.fetchAllShipmentsTo();
 
-		this.list_cbed_detal = []
-		this.list_hidden_cbed_detal = []
+		this.list_cbed_detal = [];
+		this.list_hidden_cbed_detal = [];
 
 		if(this.$route.params.edit && this.$route.params.edit == 'true') {
-			if(isEmpty(this.getOneShipments)) return this.$router.back()
-			const shipments = await this.fetchAllShipmentsById({id: this.getOneShipments.id, light: true})
-			if(!shipments) return this.$router.back()
-			this.setOneShipment(shipments)
-			this.editVariable()
+			if(isEmpty(this.getOneShipments)) return this.$router.back();
+			const shipments = await this.fetchAllShipmentsById({id: this.getOneShipments.id, light: true});
+			if(!shipments) return this.$router.back();
+			this.setOneShipment(shipments);
+			this.editVariable();
 		} else 
-			if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent))
+			if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent));
 	}
 }
 </script>
@@ -699,5 +802,8 @@ textarea {
 .p_flex {
 	display: flex;
 	align-items: center;
+}
+.table_inform th {
+	width: 200px;
 }
 </style>

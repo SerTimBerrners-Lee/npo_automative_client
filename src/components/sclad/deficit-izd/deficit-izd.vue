@@ -145,7 +145,7 @@
       v-if='shipments.length'
       :key='shipmentKey'
     />
-     <ProductModalInfo
+    <ProductModalInfo
       :id='parametrs_product'
       :key='productModalKey'
       v-if='parametrs_product'
@@ -155,7 +155,7 @@
       :key='startProductionModalKey'
       :parametrs='parametrs'
     />
-    <Loader v-if='loader' :key='new Date().getTime()' />
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>

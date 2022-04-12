@@ -78,9 +78,19 @@ function parseSpetification(obj) {
   return {materialList, listPokDet, listDetal, listCbed};
 }
 
+function sliceName(str, len = 22) {
+  if (!str) return '-';
+  if (str.length > len) {
+    str = str.slice(0, 32);
+    str += '...';
+  }
+  return str;
+}
+
 export {
   eSelectSpan,
   posToDeliveries,
   returnTypePosition,
-  parseSpetification
+  parseSpetification,
+  sliceName
 }

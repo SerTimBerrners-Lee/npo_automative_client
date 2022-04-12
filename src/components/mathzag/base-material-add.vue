@@ -134,10 +134,14 @@
           <h3>Поставщики</h3>
           <table class="table_provider">
             <tr>
+              <th style='width: 30px'><unicon name="glass-tea" fill="#ee0942d0" width='15' /></th>
               <th>ИНН</th>
               <th>Наименование</th>
             </tr>
             <tr v-for='prov in providers' :key='prov'>
+              <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                <p class="checkbox_block_del" @click='delProvider(prov)'></p>
+              </td>
               <td>{{ prov.inn }}</td>
               <td>{{ prov.name }}</td>
             </tr>
@@ -434,6 +438,10 @@ export default {
           this.obj.name = this.obj.name + ' ' + mats.name;
         }
       }
+    },
+    delProvider(prov) {
+      this.providers = this.providers.filter(pro => pro.id != prov.id);
+      this.providersId = this.providersId.filter(el => el.id != prov.id);
     },
     updateInputSelect(mat) {
       if(mat.length) {

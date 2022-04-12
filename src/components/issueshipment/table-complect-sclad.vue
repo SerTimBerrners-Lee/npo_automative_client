@@ -85,6 +85,7 @@
 			:key='key_modal_shipments'
 			v-if='show_modal_shipments && selectShipments.id'
 			:id_shipments='selectShipments.id'
+			:shipment_sclad='shipment_sclad'
 			@unmount_shpment='unmount_shpment'
 		/>
 	</div>
@@ -102,7 +103,10 @@ import { mapMutations, mapGetters, mapActions } from 'vuex';
 import DescriptionModal from '@/components/description-modal';
 
 export default {
-	props: ['shipmentsArr'],
+	props: {
+		shipmentsArr: {},
+		shipment_sclad: {}
+	},
 	data() {
 		return {
 			selectShipments: null,

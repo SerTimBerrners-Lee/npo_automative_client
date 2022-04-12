@@ -19,6 +19,7 @@
 				<TableShipmentsSclad 
 					v-if='getShipments.length'
 					:shipmentsArr='getShipments'
+          :shipment_sclad='true'
 					@unmount='unmount_table_shipments'/>
       </div>
       <div class='btn-control'>
@@ -29,6 +30,7 @@
     <Shipment 
       v-if='showShipmentModal && select_shipments'
       :key='shipmentKey'
+      :is_change_komplit='true'
       :shipments_id='select_shipments.id'
       @unmount='unmount_sh_complit'
     />

@@ -33,18 +33,15 @@ export default {
 	},
 	watch: {
 		date: function(val) {
-			this.$emit('unmount', val)
+			this.$emit('unmount', val);
 		},
 		dateStart: function(val) {
-			this.date = val
+			this.date = val;
 		}
 	},
 	async mounted() {
-		if(this.$props.dateStart)
-			this.date = this.$props.dateStart
-		if(this.$props.dats == 'false') {
-			this.date = null
-		}
+		if(this.$props.dateStart) this.date = this.$props.dateStart;
+		if(this.$props.dats == 'false') this.date = null;
 	}
 }
 </script>

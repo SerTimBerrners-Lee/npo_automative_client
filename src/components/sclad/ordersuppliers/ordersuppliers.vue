@@ -200,12 +200,13 @@
 </template>
 <script>
 import {random} from 'lodash';
-import AddOrder from './add-order.vue';
-import WorkerModal from '../worker-modal.vue';
+import AddOrder from './add-order';
+import WorkerModal from '../worker-modal';
 import { comparison, showMessage } from '@/js/'; 
 import {mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
-import ShipmentsModal from '@/components/sclad/shipments-to-ized.vue';
+import DatePicterRange from '@/components/date-picter-range';
+import ShipmentsModal from '@/components/sclad/shipments-to-ized';
+
 export default {
 	data() {
 		return {

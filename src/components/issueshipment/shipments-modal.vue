@@ -12,44 +12,40 @@
 		<div class="block">
 			<p class='p_flex'>
 				<span>Дата заказа:</span>
-				<DatePicterCustom 
-					@unmount='changeDatePicter' 
+				<DatePicterCustom
 					:dateStart='date_order'
 					/>
-				<span>Выбрать изделие: </span>
+				<span>Выбранное изделие: </span>
 				<span 
 					v-if='select_product && !is_not_product' 
-					class='select_span_href'>{{ select_product.name }}</span>
+					class='select_span_href' @click='openIzd(select_product)'>{{ sliceName(select_product.name) }}</span>
 				<label for='is_not_product'>Заказ без изделия:</label>
-				<input id='is_not_product' type="checkbox" v-model='is_not_product'>
+				<input id='is_not_product' type="checkbox" v-model='is_not_product' disabled>
 				<span>Количество:</span>
-				<input type="number" min='1' v-model='kol' :disabled='is_not_product'>
+				<input type="number" min='1' v-model='kol' disabled>
 			</p>
 			<p class='p_flex'>
 				<span>Дата отгрузки:</span>
-				<DatePicterCustom 
-					@unmount='changeDatePicterShipments' 
+				<DatePicterCustom
 					:dateStart='date_shipments'
 				/>
 				<label for='bran'>Бронь:</label>
-				<input id='bran' type="checkbox" v-model='bron'>
+				<input id='bran' type="checkbox" v-model='bron' disabled>
 				<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
-				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)">
+				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)" disabled>
 				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
-				<span
-					class='hover'
-					@click='selectBuyer'>Покупатель:</span>
+				<span class='hover'>Покупатель:</span>
 				<select 
 					class="select-small" 
 					v-model='buyer'
-					:disabled='to_sklad'>
+					disabled>
 					<option v-for='buyer in allBuyer' 
 						:key='buyer'
 						:value="buyer.id">{{ buyer.name }}</option>
 				</select>
 				<span>
 					<label for='to_sklad'>На склад:</label>
-					<input id='to_sklad' type="checkbox" v-model='to_sklad'>
+					<input id='to_sklad' type="checkbox" v-model='to_sklad' disabled>
 				</span>
 			</p>
 		</div>
@@ -58,6 +54,9 @@
 				<h3>Комплектация изделия</h3>
 				<table>
 					<tr>
+						<th>
+							<unicon name="check" fill="royalblue" />
+						</th> 
 						<th>№</th>
 						<th>Артикул</th>
 						<th>Наименование СБ или детали</th>
@@ -67,9 +66,14 @@
 						v-for='(obj, inx) of list_cbed_detal' 
 						:key='obj'
 						class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
+						<td>
+							<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+								<p class="checkbox_block" @click='e => toSetShipments(obj, e.target)'></p>
+							</div>
+						</td>
 						<td class='center'>{{ inx + 1 }}</td>
-						<td>{{ obj.obj.articl }}</td>
-						<td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
+						<td>{{ obj.obj?.articl }}</td>
+						<td @click='showInformIzdel(obj.obj?.id, obj?.type)'>{{ obj.obj?.name }}</td>
 						<td class='center'>
 							<input 
 								type="text" 
@@ -83,7 +87,7 @@
 			<div width='300px;' class='flex_direction'>
 				<div>
 					<h3>Примечание</h3>
-					<textarea maxlength='250' v-model='description'></textarea>
+					<textarea maxlength='250' v-model='description' disabled></textarea>
 				</div>
 				<div class='file_content'>
 				<h3>Документы</h3>
@@ -98,6 +102,66 @@
 					</table>
 				</div>
 			</div>
+			</div>
+		</div>
+		<div v-if='shipment_sclad'>
+			<div class='table_block'>
+				<div>
+					<h3>Выбранные позиции для отгрузки</h3>
+					<table>
+						<tr>
+							<th>
+								<unicon name="glass-tea" fill="#ee0942d0" width='20' />
+							</th> 
+							<th>№</th>
+							<th>Артикул</th>
+							<th>Наименование СБ или детали</th>
+							<th>Кол-во</th>
+						</tr>
+						<tr 
+							v-for='(obj, inx) of selectedsCbEd' 
+							:key='obj'
+							class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
+							<td>
+								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+									<p class="checkbox_block_del" @click='e => toSetShipments(obj, e.target)'></p>
+								</div>
+							</td>
+							<td class='center'>{{ inx + 1 }}</td>
+							<td>{{ obj.obj?.articl }}</td>
+							<td @click='showInformIzdel(obj.obj?.id, obj?.type)'>{{ obj.obj?.name }}</td>
+							<td class='center'>
+								<input 
+									type="text" 
+									:value='obj.kol'
+									class='input_kol center' 
+									disabled>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div width='300px;' class='flex_direction'>
+					<div>
+						<h3>Примечание</h3>
+						<textarea maxlength='250' v-model='description' disabled></textarea>
+					</div>
+					<div class='file_content'>
+					<h3>Документы</h3>
+					<div v-if='documents.length'>
+						<table>
+							<tr>
+								<th>Файл</th>
+							</tr>
+							<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
+								<td>{{ fil.name }}</td>
+							</tr>
+						</table>
+					</div>
+				</div>
+				</div>
+			</div>
+			<div class='btn-control'>
+				<button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
 			</div>
 		</div>
 		<OpensFile 
@@ -121,6 +185,19 @@
 			:fileArrModal='documentsData'
 			@unmount='unmount_filemodal'
 		/>
+		<ProductModalInfo
+      :id='parametrs_product'
+      :key='productModalKey'
+      v-if='parametrs_product'
+    />
+		<Shipment 
+      v-if='showShipmentModal && getOneShipments'
+      :key='shipmentKey'
+      :shipments_id='getOneShipments.id'
+			:change_complect='selectedsCbEd'
+      :shipment_sclad='true'
+      @unmount='unmount_sh_complit'
+    />
 		<Loader v-if='loader' />
 		</div>
       
@@ -130,17 +207,24 @@
 </template>
 <script>
 import { random } from 'lodash';
-import { eSelectSpan } from '@/js/methods.js';
+import { eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/filebase/openfile';
 import DatePicterCustom from '@/components/date-picter';
 import CbedModalInfo from '@/components/cbed/cbed-modal';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import DetalModal from '@/components/basedetal/detal-modal';
 import BaseFileModal from '@/components/filebase/base-files-modal';
+import Shipment from '@/components/sclad/issuetopull/sh-comlit.modal';
+import ProductModalInfo from '@/components/baseproduct/product-modal';
 import TableShipments from '@/components/issueshipment/table-komplect';
 
 export default {
-  props: ['id_shipments'],
+  props: {
+		id_shipments: {},
+		shipment_sclad: {
+			type: Boolean
+		}
+	},
   data() {
     return {
       destroyModalLeft: 'left-block-modal',
@@ -175,27 +259,33 @@ export default {
 			select_product: null,
 			description: '',
 			list_cbed_detal: [],
-			list_hidden_cbed_detal: [],
 			is_not_product: false,
+
+			parametrs_product: false,
+			productModalKey: random(1, 999),
+
+			showShipmentModal: false,
+      shipmentKey: random(1, 999),
 
 			showModalFile: false,
       fileModalKey: random(1, 999),
-			selectedBaseProvesses: false
+			selectedBaseProvesses: false,
+			selectedsCbEd: [],
     }
   },
   watch: {
 		kol: function(znach) {
-			if(!this.select_product) return 0 
-			this.list_cbed_detal = []
+			if(!this.select_product) return 0;
+			this.list_cbed_detal = [];
 			for(let inx = 0; inx < znach; inx++) {
-				this.checkedJsonList(this.select_product)
+				this.checkedJsonList(this.select_product);
 			}
 		},	
 	},
 	computed: mapGetters([	
-		'allBuyer', 	
-		'getOneShipments', 	
-		'getShipments'	
+		'allBuyer',
+		'getOneShipments',
+		'getShipments'
 	]),
 	components: {
 		DatePicterCustom, 
@@ -203,7 +293,9 @@ export default {
 		DetalModal,
 		CbedModalInfo,
 		TableShipments,
-		BaseFileModal
+		BaseFileModal,
+		ProductModalInfo,
+		Shipment
 	},
 	methods: {
 		...mapActions([
@@ -220,11 +312,32 @@ export default {
 
 			this.$emit('unmount_shpment');
 		},
-		changeDatePicter(date) {
-			this.date_order = date;
+		async unmount_sh_complit() {
+      this.loader = true;
+      await this.fetchAllShipmentsTo();
+      this.loader = false;
+    },
+		toSetShipments(obj, el) {
+			el.classList.toggle('checkbox_block_select');
+			setTimeout(() => {
+				if (this.tr) this.tr.classList.remove('td-row-all');
+			});
+
+			let find = false;
+			for (const item of this.selectedsCbEd) {
+				if (item.obj.id == obj.obj.id && item.type == obj.type) find = true;
+			}
+
+			if (!find) {
+				this.list_cbed_detal = this.list_cbed_detal.filter(el => ((el.obj.id != obj.obj.id) && (el.type == obj.type)));
+				this.selectedsCbEd.push(obj);
+			} else {
+				this.list_cbed_detal.push(obj);
+				this.selectedsCbEd = this.selectedsCbEd.filter(el => ((el.obj.id != obj.obj.id) && (el.type == obj.type)));
+			}
 		},
-		changeDatePicterShipments(date) {
-			this.date_shipments = date;
+		editKolVo(inx, val) {
+			this.list_cbed_detal[inx].kol = Number(val);
 		},
 		setDocs(dc) {
       this.itemFiles = dc;
@@ -237,7 +350,7 @@ export default {
 			this.tr = eSelectSpan(this.tr, e);
 			this.select_tr_inx = inx;
 		},
-		editVariable() {
+		async editVariable() {
 			this.date_order = this.getOneShipments.date_order;
 			this.date_shipments = this.getOneShipments.date_shipments;
 			this.kol = this.getOneShipments.kol;
@@ -247,17 +360,17 @@ export default {
 			this.to_sklad = this.getOneShipments.to_sklad;
 			this.number_order = this.getOneShipments.number_order;
 			if(this.getOneShipments.productId) {
-				this.getAllProductByIdLight(this.getOneShipments.productId)
-				.then(res => this.select_product = res);
+				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
+				if (res) this.select_product = res;
 			} else this.is_not_product = true;
 
 			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents;
+			
 			try {
 				if(this.getOneShipments.list_cbed_detal)
 					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal);
-				if(this.getOneShipments.list_hidden_cbed_detal)
-					this.list_hidden_cbed_detal = JSON.parse(this.getOneShipments.list_hidden_cbed_detal);
 			} catch(e) {console.error(e)}
+
 			this.description = this.getOneShipments.description;
 		},
 		showInformIzdel(id, type) {
@@ -273,7 +386,19 @@ export default {
 					this.detalModalKey = random(1, 999);
 				}
 			}
-		}
+		},
+		sliceName(str) {
+			return sliceName(str, 32);
+		},
+		openIzd(izd) {
+			if (!izd || !izd.id) return false;
+			this.parametrs_product = izd.id;
+      this.productModalKey = random(1, 999);
+		},
+		openShipment() {
+      this.showShipmentModal = true;
+      this.shipmentKey = random(1, 999);
+    },
 	},
   async mounted() {
     this.destroyModalLeft = 'left-block-modal';
@@ -286,10 +411,9 @@ export default {
 		await this.fetchAllShipmentsTo();
 
 		this.list_cbed_detal = [];
-		this.list_hidden_cbed_detal = [];
 
-		if(!this.$props.id_shipments) return this.destroyModalF();
-		const result = await this.fetchAllShipmentsById({id: this.$props.id_shipments, light: true});
+		if(!this.id_shipments) return this.destroyModalF();
+		const result = await this.fetchAllShipmentsById({id: this.id_shipments, light: true});
 
 		if(!result) return this.destroyModalF();
 		this.setOneShipment(result);
@@ -337,15 +461,18 @@ label {
 	display: flex;
 	flex-direction: column;
 }
-.table_block div {
-	margin: 10px;
-}
 textarea {
 	height: 140px;
 }
 .p_flex {
 	display: flex;
 	align-items: center;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+}
+
+.p_flex>* {
+	margin-top: 5px;
 }
 .content-modal-right-menu-hidden {
   animation: width-replace 1s 1 ease;

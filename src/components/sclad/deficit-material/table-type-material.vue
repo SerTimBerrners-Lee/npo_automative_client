@@ -47,6 +47,7 @@
 <script>
 import { eSelectSpan } from '@/js/methods';
 import { mapGetters, mapMutations, mapActions } from 'vuex';
+
 export default {
   computed: mapGetters(['alltypeM', 'allPodTypeM']),
   methods: {

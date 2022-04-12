@@ -153,10 +153,11 @@
   </div>
 </template>
 <script scoped>
-import { returnSpanEz } from '@/js/edizm.js';
-import { eSelectSpan } from '@/js/methods.js';
-import { returnTypePosition } from '@/js/methods.js';
+import { returnSpanEz } from '@/js/edizm';
+import { eSelectSpan } from '@/js/methods';
+import { returnTypePosition } from '@/js/methods';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
+
 export default {
   props: ['parametrs'],
   data() {
