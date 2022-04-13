@@ -2,8 +2,8 @@
 	<div>
 		<h4 v-if='getOneShipments.parent_id'>Принадлежит к заказу</h4>	
 		<TableShipments  
-			v-if='getShipments.length && Number(this.$route.params.parent) || getOneShipments.parent_id'
-			:shipmentsArr='getShipments'
+			v-if='(getParentsShipments.length && Number(this.$route.params.parent)) || show_parent && (getParentsShipments.length)'
+			:shipmentsArr='getParentsShipments'
 			:no_set='true'/>
 
 		<div v-if='childrens.length'>
@@ -290,7 +290,8 @@ export default {
 			selectedBaseProvesses: false,
 
 			tablebody: false,
-			childrens: []
+			childrens: [],
+			show_parent: false
 		}
 	},
 	watch: {
@@ -306,7 +307,8 @@ export default {
 	computed: mapGetters([	
 		'allBuyer', 	
 		'getOneShipments', 	
-		'getShipments'	
+		'getShipments',
+		'getParentsShipments'	
 	]),
 	components: {
 			DatePicterCustom, 
@@ -701,7 +703,11 @@ export default {
 			this.setOneShipment(shipments);
 			this.editVariable();
 
-			if (shipments.parent_id) this.filterToParentShipments(Number(shipments.parent_id));
+			if (shipments.parent_id) {
+				this.show_parent = true;
+				this.filterToParentShipments(Number(shipments.parent_id));
+			}
+			
 			const childrens = await this.fetchIncludesFolderSh({ id: shipments.id, folder: 'childrens' });
 			if (childrens && childrens.childrens) this.childrens = childrens.childrens;
 

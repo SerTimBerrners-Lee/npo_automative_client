@@ -19,6 +19,9 @@ export default {
 		},
 		getOneShipments(state) {
 			return state.one_shipments;
+		},
+		getParentsShipments(state) {
+			return state.shipments_parents;
 		}
 	}, 
 	actions: {
@@ -170,8 +173,7 @@ export default {
 			state.shipments = state.shipments.filter(ship => ship.id != id);
 		},
 		filterToParentShipments(state, id) {
-			console.log('filterToParentShipments')
-			state.shipments = state.shipments.filter(ship => ship.id == id);
+			state.shipments_parents = state.shipments.filter(ship => ship.id == id);
 		},
 		filterShipmentsToStatus(state, value) {
 			if(state.variable_shipments.length == 0)

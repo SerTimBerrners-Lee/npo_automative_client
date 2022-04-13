@@ -5,10 +5,10 @@
     <div :style="hiddens" > 
 		<div>
 
-		<h4 v-if='getOneShipments.parent_id'>Принадлежит к заказу</h4>	
+		<h4 v-if='show_parent'>Принадлежит к заказу</h4>	
 		<TableShipments  
-			v-if='getShipments.length && Number(this.$route.params.parent) || getOneShipments.parent_id'
-			:shipmentsArr='getShipments'
+			v-if='getParentsShipments.length && show_parent'
+			:shipmentsArr='getParentsShipments'
 			:fixed_table='"fixed_table_10"'
 			:no_set='true'/>
 
@@ -118,7 +118,11 @@
 			</div>
 		</div>
 		
-		<PrintComplect v-if='tablebody' :shipments='getOneShipments' /> 
+		<PrintComplect
+			v-if='tablebody'
+			:shipments='getOneShipments'
+			:childrens='childrens'
+			:key='new Date().getTime()' /> 
 
 		<div v-if='shipment_sclad'>
 			<div class='table_block'>
@@ -278,6 +282,7 @@ export default {
 			tablebody: false,
 			loader: false,
 			childrens: [],
+			show_parent: false
     }
   },
   watch: {
@@ -292,7 +297,8 @@ export default {
 	computed: mapGetters([	
 		'allBuyer',
 		'getOneShipments',
-		'getShipments'
+		'getShipments',
+		'getParentsShipments'
 	]),
 	components: {
 		DatePicterCustom, 
@@ -313,7 +319,7 @@ export default {
 			'fetchAllShipmentsById',
 			'fetchIncludesFolderSh'
 		]),
-		...mapMutations(['setOneShipment']),
+		...mapMutations(['setOneShipment', 'filterToParentShipments']),
 		destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden';
       this.destroyModalRight = 'content-modal-right-menu-hidden';
@@ -432,7 +438,11 @@ export default {
 		if(!result) return this.destroyModalF();
 		this.setOneShipment(result);
 		this.editVariable();
-
+		if (result.parent_id) {
+			this.filterToParentShipments(result.parent_id);
+			this.show_parent = true;
+		}
+ 
 		const childrens = await this.fetchIncludesFolderSh({ id: result.id, folder: 'childrens' });
 		if (childrens && childrens.childrens) this.childrens = childrens.childrens;
 
