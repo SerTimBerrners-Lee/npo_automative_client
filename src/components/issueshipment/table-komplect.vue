@@ -218,4 +218,8 @@ export default {
 .osob * {
 	margin: 0px;
 }
+
+table th {
+	word-break: break-word;
+}
 </style>
