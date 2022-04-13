@@ -4,17 +4,30 @@
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 		<div>
+
+		<h4 v-if='getOneShipments.parent_id'>Принадлежит к заказу</h4>	
 		<TableShipments  
-			v-if='getShipments.length && Number(this.$route.params.parent)'
+			v-if='getShipments.length && Number(this.$route.params.parent) || getOneShipments.parent_id'
 			:shipmentsArr='getShipments'
-			@unmount='unmount_table_shipments'/>
+			:fixed_table='"fixed_table_10"'
+			:no_set='true'/>
+
+		<div v-if='childrens.length'>
+			<h4>Прикрепленные заказы</h4>
+			<TableShipments  
+				v-if='childrens.length'
+				:fixed_table='"fixed_table_10"'
+				:shipmentsArr='childrens'
+				:no_set='true'/>
+		</div>
+
 		<h3>Заказ {{number_order}}</h3>
 		<div class="block">
 			<p class='p_flex'>
 				<span>Дата заказа:</span>
 				<DatePicterCustom
 					:dateStart='date_order'
-					/>
+				/>
 				<span>Выбранное изделие: </span>
 				<span 
 					v-if='select_product && !is_not_product' 
@@ -104,6 +117,9 @@
 			</div>
 			</div>
 		</div>
+		
+		<PrintComplect v-if='tablebody' :shipments='getOneShipments' /> 
+
 		<div v-if='shipment_sclad'>
 			<div class='table_block'>
 				<div>
@@ -140,30 +156,14 @@
 						</tr>
 					</table>
 				</div>
-				<div width='300px;' class='flex_direction'>
-					<div>
-						<h3>Примечание</h3>
-						<textarea maxlength='250' v-model='description' disabled></textarea>
-					</div>
-					<div class='file_content'>
-					<h3>Документы</h3>
-					<div v-if='documents.length'>
-						<table>
-							<tr>
-								<th>Файл</th>
-							</tr>
-							<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
-								<td>{{ fil.name }}</td>
-							</tr>
-						</table>
-					</div>
-				</div>
-				</div>
 			</div>
 			<div class='btn-control'>
 				<button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
 			</div>
 		</div>
+		<div class='btn-control'>
+				<button class="btn-small btn-add" @click='printPage'>Печать</button>
+			</div>
 		<OpensFile 
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -198,7 +198,7 @@
       :shipment_sclad='true'
       @unmount='unmount_sh_complit'
     />
-		<Loader v-if='loader' />
+		<Loader v-if='loader' :description='"Загрузка Заказов"' />
 		</div>
       
     </div>
@@ -207,7 +207,10 @@
 </template>
 <script>
 import { random } from 'lodash';
-import { eSelectSpan, sliceName } from '@/js/methods';
+import PrintComplect from './print_complect';
+import { 	eSelectSpan,
+					sliceName,
+					getBuyerFilter } from '@/js/methods';
 import OpensFile from '@/components/filebase/openfile';
 import DatePicterCustom from '@/components/date-picter';
 import CbedModalInfo from '@/components/cbed/cbed-modal';
@@ -271,6 +274,10 @@ export default {
       fileModalKey: random(1, 999),
 			selectedBaseProvesses: false,
 			selectedsCbEd: [],
+
+			tablebody: false,
+			loader: false,
+			childrens: [],
     }
   },
   watch: {
@@ -295,14 +302,16 @@ export default {
 		TableShipments,
 		BaseFileModal,
 		ProductModalInfo,
-		Shipment
+		Shipment,
+		PrintComplect
 	},
 	methods: {
 		...mapActions([
 			'fetchAllBuyers',  
 			'getAllProductByIdLight',
 			'fetchAllShipmentsTo',
-			'fetchAllShipmentsById'
+			'fetchAllShipmentsById',
+			'fetchIncludesFolderSh'
 		]),
 		...mapMutations(['setOneShipment']),
 		destroyModalF() {
@@ -313,9 +322,14 @@ export default {
 			this.$emit('unmount_shpment');
 		},
 		async unmount_sh_complit() {
-      this.loader = true;
+			this.loader = true;
       await this.fetchAllShipmentsTo();
-      this.loader = false;
+			this.loader = false;
+		},
+		printPage() {
+			this.getOneShipments.buyer_name = getBuyerFilter(this.getOneShipments?.buyer?.id);
+			this.tablebody = true;
+			setTimeout(() => this.tablebody = false, 4000);
     },
 		toSetShipments(obj, el) {
 			el.classList.toggle('checkbox_block_select');
@@ -404,6 +418,7 @@ export default {
     this.destroyModalLeft = 'left-block-modal';
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
+		console.log('mounted')
 
 		this.loader = true;
 
@@ -418,6 +433,9 @@ export default {
 		if(!result) return this.destroyModalF();
 		this.setOneShipment(result);
 		this.editVariable();
+
+		const childrens = await this.fetchIncludesFolderSh({ id: result.id, folder: 'childrens' });
+		if (childrens && childrens.childrens) this.childrens = childrens.childrens;
 
 		this.loader = false;
   },

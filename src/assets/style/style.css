@@ -182,6 +182,7 @@ table td {
 
 table th {
 	font-size: 15px;
+  word-break: break-all;
 }
 
 .select_span_href {
@@ -652,7 +653,7 @@ textarea {
 @font-face {
   font-family: "CasperRegular";
   src: url("../fonts/CasperRegular/CasperRegular.eot");
-  src: url("../fonts/CasperRegular/CasperRegular.eot?#iefix")format("embedded-opentype"),
+  src: url("../fonts/CasperRegular/CasperRegular.eot?#iefix") format("embedded-opentype"),
   url("../fonts/CasperRegular/CasperRegular.woff") format("woff"),
   url("../fonts/CasperRegular/CasperRegular.ttf") format("truetype");
   font-style: normal;
@@ -662,7 +663,7 @@ textarea {
 @font-face {
   font-family: "CasperBold";
   src: url("../fonts/CasperBold/CasperBold.eot");
-  src: url("../fonts/CasperBold/CasperBold.eot?#iefix")format("embedded-opentype"),
+  src: url("../fonts/CasperBold/CasperBold.eot?#iefix") format("embedded-opentype"),
   url("../fonts/CasperBold/CasperBold.woff") format("woff"),
   url("../fonts/CasperBold/CasperBold.ttf") format("truetype");
   font-style: normal;
@@ -672,7 +673,7 @@ textarea {
 @font-face {
   font-family: "CasperItalic";
   src: url("../fonts/CasperItalic/CasperItalic.eot");
-  src: url("../fonts/CasperItalic/CasperItalic.eot?#iefix")format("embedded-opentype"),
+  src: url("../fonts/CasperItalic/CasperItalic.eot?#iefix") format("embedded-opentype"),
   url("../fonts/CasperItalic/CasperItalic.woff") format("woff"),
   url("../fonts/CasperItalic/CasperItalic.ttf") format("truetype");
   font-style: normal;
@@ -682,7 +683,7 @@ textarea {
 @font-face {
   font-family: "CasperBoldItalic";
   src: url("../fonts/CasperBoldItalic/CasperBoldItalic.eot");
-  src: url("../fonts/CasperBoldItalic/CasperBoldItalic.eot?#iefix")format("embedded-opentype"),
+  src: url("../fonts/CasperBoldItalic/CasperBoldItalic.eot?#iefix") format("embedded-opentype"),
   url("../fonts/CasperBoldItalic/CasperBoldItalic.woff") format("woff"),
   url("../fonts/CasperBoldItalic/CasperBoldItalic.ttf") format("truetype");
   font-style: normal;

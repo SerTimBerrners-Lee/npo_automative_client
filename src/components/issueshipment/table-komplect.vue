@@ -1,8 +1,8 @@
 <template>
 	<div class="table-scroll">
-		<table> 
-			<tr class='fixed_table_85'>
-				<th>Заказ</th>
+		<table>
+			<tr :class='fixed_table'>
+				<th>Заказ {{fixed_table}}</th>
 				<th>Артикул изделия</th>
 				<th>Наименование изделия</th>
 				<th style='width:100px; word-break: break-all;'>Комплектация/особенности заказа</th>
@@ -24,9 +24,9 @@
 				class='td-row'
 				@click='e => setShipments(shipments, e.target.parentElement)'
 				@dblclick="shipmentsModal">
-				<td>{{ shipments.number_order }}</td>
-				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
-				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
+				<td>{{ shipments.number_order }}</td> <!-- Заказ -->
+				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td> <!-- Артикул Изделия -->
+				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td> <!-- Наименование Изделия -->
 				<td class='center' @click='openComplectation(shipments.list_cbed_detal)' >
 					<img 
 						src="@/assets/img/link.jpg" 
@@ -34,22 +34,22 @@
 						atl='Показать'
 						v-if='shipments.list_cbed_detal' />
 					<p v-else>Нет комплектации</p>
-				</td>
-				<td class='center'>{{ shipments.kol }}</td>
-				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td>
-				<td class='center'>{{ shipments.difference }}</td>
+				</td> <!-- Комплектация -->
+				<td class='center'>{{ shipments.kol }}</td> <!-- Количество -->
+				<td class='center'>{{ dateDifference(shipments.date_order, shipments.date_shipments) }}</td> <!-- Кол-во Дней -->
+				<td class='center'>{{ shipments.difference }}</td> <!-- Осталось дней -->
 				<td style='width:50px; word-break: break-all;' class='center active'  
 					@click='openDocuments(shipments)' >
 					{{ shipments.base }}
-				</td>
-				<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td>
-				<td></td>
+				</td> <!-- Основание/Счет -->
+				<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td> <!-- Покупатель -->
+				<td></td> <!-- Готовность к отгрузки в % -->
 				<td v-if='shipments.status == enumShipments[0]' class='work_operation center'>{{ shipments.status }}</td>
 				<td v-if='shipments.status == enumShipments[1]' class='delete_operation center'>{{ shipments.status }}</td>
 				<td v-if='shipments.status == enumShipments[2]' class='work_operation center'>{{ shipments.status }}</td>
 				<td v-if='shipments.status == enumShipments[3]' class='success_operation center'>{{ shipments.status }}</td>
-				<td v-if='shipments.status == enumShipments[4]' class='delete_operation center'>{{ shipments.status }}</td>
-				<td>{{ shipments.date_shipments }}</td>
+				<td v-if='shipments.status == enumShipments[4]' class='delete_operation center'>{{ shipments.status }}</td> <!-- Статус -->
+				<td>{{ shipments.date_shipments }}</td> <!-- Дата отгрузки -->
 				<td></td>
 				<td></td>
 				<td></td>
@@ -99,8 +99,18 @@ import ShipmentsModal from './shipments-modal';
 import OpensFile from '@/components/filebase/openfile';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import DescriptionModal from '@/components/description-modal';
+
 export default {
-	props: ['shipmentsArr'],
+	props: {
+		shipmentsArr: {
+			type: Array
+		},
+		no_set: {},
+		fixed_table: {
+			type: String,
+			default: 'fixed_table_85'
+		}
+	},
 	data() {
 		return {
 			selectShipments: null,
@@ -146,16 +156,18 @@ export default {
 		...mapActions(['fetchDocumentsShipments']),
 		...mapMutations(['setOneShipment', 'pusshAddShipments']),
 		unmount_shpment() {
-			this.pusshAddShipments(this.arrShipmentsState)
+			this.pusshAddShipments(this.arrShipmentsState);
 		},	
 		shipmentsModal() {
 			if(this.selectShipments) {
-				this.arrShipmentsState = this.getShipments
-				this.key_modal_shipments = random(1, 999)
-				this.show_modal_shipments = true
+				this.arrShipmentsState = this.getShipments;
+				this.key_modal_shipments = random(1, 999);
+				this.show_modal_shipments = true;
 			}
 		},
 		setShipments(shipments, e) {
+			if (this.no_set) return false;
+
 			if(this.selectShipments && this.selectShipments.id == shipments.id) 
 				this.selectShipments = null;
 			this.tr = eSelectSpan(this.tr, e);
@@ -165,20 +177,20 @@ export default {
 			this.$emit('unmount', this.selectShipments);
 		},
 		openDescription(description) {
-      this.showDescriptionModal = true
-      this.descriptionKey = random(1, 999)
-      this.description = description
+      this.showDescriptionModal = true;
+      this.descriptionKey = random(1, 999);
+      this.description = description;
     },
 		dateIncrementHors(date, day) {
-      let dat = dateIncrementHors(date, day*24)
-      return `${dat.day}.${dat.mount}.${dat.year}`
+      const dat = dateIncrementHors(date, day*24);
+      return `${dat.day}.${dat.mount}.${dat.year}`;
     },
 		dateDifference(date1, date2) {
-			return dateDifference(date1, date2)
+			return dateDifference(date1, date2);
 		},
 		openComplectation(komplect) {
-			this.komplect_generate_key = random(1, 999)
-			this.parametrs_komplect = komplect
+			this.komplect_generate_key = random(1, 999);
+			this.parametrs_komplect = komplect;
 		},	
 		async openDocuments(shipments) {	
 			if(!shipments.id) return showMessage('', 'Документов нет', 'w', this);

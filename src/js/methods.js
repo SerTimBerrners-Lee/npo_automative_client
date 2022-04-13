@@ -1,7 +1,8 @@
 import { returnSpanEz } from './edizm';
+import store from '../store/';
 
 // Удаляет выделенный класс у переданного объекта и возвращает для нового
-function eSelectSpan(e_last, e_now, classs='td-row-all') {
+function eSelectSpan(e_last, e_now, classs = 'td-row-all') {
   if(e_last) e_last.classList.remove(classs);
   e_last = e_now;
   e_last.classList.add(classs);
@@ -87,10 +88,19 @@ function sliceName(str, len = 22) {
   return str;
 }
 
+function getBuyerFilter(_id) {
+  if (!_id) return 'На Склад';
+  
+  const buyer = store.getters.allBuyer.filter(el => el.id == _id);
+  if (buyer && buyer.length) return buyer[0].name;
+  return 'На Склад';
+}
+
 export {
   eSelectSpan,
   posToDeliveries,
   returnTypePosition,
   parseSpetification,
-  sliceName
+  sliceName,
+  getBuyerFilter
 }

@@ -19,9 +19,6 @@
 						class="btn-small">
 						Сбросить все фильтры
 					</button>
-					<button class="btn-small" @click='deleteF'>
-						Удалить
-					</button>
 					<button class="btn-small" @click='edit'>
 						Изменить
 					</button>
@@ -69,7 +66,6 @@ export default {
 	},
 	methods: {
 		...mapActions([ 
-			'fetchDeleteShipments',
 			'fetchAllShipmentsTo'
 		]),
 		unmount_table_shipments(select_shipemnts) {
@@ -83,10 +79,6 @@ export default {
 			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this);
 			this.$router.push({ path: "/addorder/true/false" });
 		},
-		deleteF() {
-			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this);
-			this.fetchDeleteShipments(this.selectShipments.id);
-		}
 	},
 	async mounted() {
 		this.loader = true

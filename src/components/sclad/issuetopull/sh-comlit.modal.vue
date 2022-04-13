@@ -5,14 +5,26 @@
     <div :style="hiddens" >
 			<h3>Отгрузка</h3>
 			<div class="block head_block">
-        <span>№ Заказа: </span>
-        <input type="text" v-model='number_order'>
-        <span>Заводской №: </span>
-        <input type="text" v-model='fabric_number'>
-        <span>Дата заказа: </span>
-        <input type="text" v-model='date_order'>
-        <span>Дата выполнения: </span>
-        <input type="text" v-model='date_shipments'>
+        <p>
+          <span>№ Заказа: </span>
+          <input type="text" v-model='number_order'>
+          <span>Заводской №: </span>
+          <input type="text" v-model='fabric_number'>
+          <span>Дата заказа: </span>
+          <input type="text" v-model='date_order'>
+        </p>
+        <span style='display: flex; align-items: center;'>
+          <span>Дата выполнения: </span>
+          <DatePicterCustom
+            :dateStart='date_create'
+          />
+        </span>
+        <p>
+          <span>Дата отгрузки: </span>
+          <input type="text" v-model='date_shipments'>
+          <span>Транспортная компания: </span>
+          <input type="text" v-model='transport'>
+        </p>
       </div>
 
       <div>
@@ -125,6 +137,7 @@ import { mapActions } from 'vuex';
 import { showMessage } from '@/js/';
 import AddFile from '@/components/filebase/addfile';
 import OpensFile from '@/components/filebase/openfile';
+import DatePicterCustom from '@/components/date-picter';
 import ModalUsersList from '@/components/users/modal-list-user';
 import KomplectModal from '@/components/issueshipment/komplect-modal';
 
@@ -172,14 +185,17 @@ export default {
       creater_user: '',
       typeOpen: '',
 
-      loader: false
+      loader: false,
+      date_create: new Date().toLocaleDateString("ru-RU"),
+      transport: '',
     }
   },
   components: { 
     KomplectModal,
     OpensFile,
     AddFile,
-    ModalUsersList
+    ModalUsersList,
+    DatePicterCustom
   },
   methods: {
     ...mapActions([
@@ -237,6 +253,8 @@ export default {
       this.formData.append('fabric_number', this.fabric_number);
       this.formData.append('description', this.description);
       this.formData.append('name_check', this.name_check);
+      this.formData.append('date_create', this.date_create);
+      this.formData.append('transport', this.transport);
       this.formData.append('shipments_id', this.shipments_id);
       this.formData.append('responsible_user_id', this.responsible_user.id || '');
       this.formData.append('creater_user_id', this.creater_user.id || '');
@@ -269,7 +287,7 @@ export default {
     this.loader = true;
 
     if(!this.shipments_id) return this.destroyModalF();
-    const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: false});
+    const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
     if(!result) return this.destroyModalF();
 
     this.shipments = result;

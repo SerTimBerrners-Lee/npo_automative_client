@@ -1,11 +1,20 @@
 <template>
 	<div>
+		<h4 v-if='getOneShipments.parent_id'>Принадлежит к заказу</h4>	
 		<TableShipments  
-			v-if='getShipments.length && Number(this.$route.params.parent)'
+			v-if='getShipments.length && Number(this.$route.params.parent) || getOneShipments.parent_id'
 			:shipmentsArr='getShipments'
-			@unmount='unmount_table_shipments'/>
+			:no_set='true'/>
 
-		<h3>Создать заказ</h3>
+		<div v-if='childrens.length'>
+			<h4>Прикрепленные заказы</h4>
+			<TableShipments  
+				v-if='childrens.length'
+				:shipmentsArr='childrens'
+				:no_set='true'/>
+		</div>
+
+		<h3>{{ $route.params?.edit == 'true' ? 'Изменить' : 'Создать'}} заказ</h3>
 		<div class="block">
 			<p class='p_flex'> 
 				<span>Дата заказа:</span>
@@ -116,64 +125,11 @@
 			</div>
 		</div>
 
-		<div id='tablebody' v-show='tablebody'>
-			<h4>Информация о заказе</h4> 
-			<table class='table_inform'>
-				<tr>
-					<th class='center'>Дата заказа</th>
-					<td class="center">{{ date_order }}</td>
-				</tr>
-				<tr>
-					<th class='center'>Дата отгрузки</th>
-					<td class="center">{{ date_shipments }}</td>
-				</tr>
-				<tr>
-					<th class='center'>Изделие</th>
-					<td class="center">{{ select_product?.name || 'Без Изделия' }}</td>
-				</tr>
-				<tr>
-					<th class='center'>Количество</th>
-					<td class="center">{{ kol }}</td>
-				</tr>
-				<tr>
-					<th class='center'>Бронь</th>
-					<td class="center">{{ bron ? 'есть' : 'нет' }}</td>
-				</tr>
-				<tr>
-					<th class='center'>Основание</th>
-					<td class="center">{{ base }}</td>
-				</tr>
-				<tr>
-					<th class='center'>Покупатель</th>
-					<td class="center">{{ getBuyerFilter(buyer) }}</td>
-				</tr>
-				<tr>
-					<th class='center'>Примечание</th>
-					<td class="center">{{ description }}</td>
-				</tr>
-				<tr v-if='documents && documents.length'>
-					<th class='center'>Документы</th>
-					<p v-for='(doc, idx) of documents' :key='doc' class='center'>
-						<span>{{ idx + 1}}. {{ doc.name }}</span>
-					</p>
-				</tr>
-			</table>
-			<h4>Комплектация заказа</h4>
-			<table>
-				<tr>
-					<th class='center'>№</th>
-					<th class='center'>Артикул</th>
-					<th class='center'>Наименование СБ или Детали</th>
-					<th class='center'>Кол-во</th>
-				</tr>
-				<tr v-for='(ko, inx) of list_cbed_detal' :key='inx'>
-					<td class="center">{{ inx + 1 }}</td>
-					<td class="center">{{ ko.obj.articl }}</td>
-					<td class="center">{{ ko.obj.name }}</td>
-					<td class="center">{{ ko.kol }}</td>
-				</tr>
-			</table>
-		</div>
+		<PrintComplect 
+			v-if='tablebody'
+			:shipments='getOneShipments'
+			:childrens='childrens'
+			:key='new Date().getTime()' /> 
 
 		<div class="btn-control out-btn-control">
 			<button 
@@ -261,11 +217,13 @@
 </template>
 
 <script>
-import print from 'print-js';
 import { showMessage } from '@/js/';
 import { random, isEmpty } from 'lodash';
+import { sliceName,
+				eSelectSpan, 
+				getBuyerFilter } from '@/js/methods';
+import PrintComplect from './print_complect';
 import AddFile from '@/components/filebase/addfile';
-import { sliceName, eSelectSpan } from '@/js/methods';
 import OpensFile from '@/components/filebase/openfile';
 import DatePicterCustom from '@/components/date-picter';
 import CbedModalInfo from '@/components/cbed/cbed-modal';
@@ -331,7 +289,8 @@ export default {
       fileModalKey: random(1, 999),
 			selectedBaseProvesses: false,
 
-			tablebody: false
+			tablebody: false,
+			childrens: []
 		}
 	},
 	watch: {
@@ -360,7 +319,11 @@ export default {
 			TableShipments,
 			BaseBuyer,
 			BaseFileModal,
-			ProductModalInfo
+			ProductModalInfo,
+			PrintComplect
+	},
+	updated() {
+		if (!this.getOneShipments) return false;
 	},
 	methods: {
 		...mapActions([
@@ -373,6 +336,7 @@ export default {
 			'getOneCbEdById',
 			'fetchAllShipmentsTo',
 			'fetchAllShipmentsById',
+			'fetchIncludesFolderSh'
 		]),
 		...mapMutations([
 			'setOneShipment',
@@ -399,7 +363,7 @@ export default {
 
 			for(let doc of e.formData.getAll('document')) {
 				this.docFiles.push(doc);
-				this.documents.push(doc);
+				this.documents.push(doc); 
 			}
 		},
 		unmount_filemodal(res) {
@@ -412,16 +376,8 @@ export default {
 			}
     },
 		printPage() {
+			this.getOneShipments.buyer_name = getBuyerFilter(this.getOneShipments?.buyer?.id);
 			this.tablebody = true;
-      setTimeout(() => {
-				print({
-					printable: 'tablebody',
-					type: 'html',
-					targetStyles: ['*'],
-					documentTitle: 'Комплектация заказа',
-					font_size: '10pt'
-				});
-			})
 			setTimeout(() => this.tablebody = false, 4000);
     },
 		addFileModal() {
@@ -645,7 +601,7 @@ export default {
 			}
 
 			if(this.documentsData.length) {
-				let new_arr = []
+				const new_arr = [];
 				for(const dat of this.documentsData) {
 					new_arr.push(dat.id);
 				}
@@ -686,12 +642,6 @@ export default {
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e', this);
 				})
 			}
-		},
-		getBuyerFilter(_id) {
-			if (!_id) return 'На Склад';
-			const buyer = this.allBuyer.filter(el => el.id == _id);
-			if (buyer && buyer.length) return buyer[0].name
-			return 'На Склад';
 		},
 		async editVariable() {
 			this.date_order = this.getOneShipments.date_order;
@@ -750,7 +700,12 @@ export default {
 			if(!shipments) return this.$router.back();
 			this.setOneShipment(shipments);
 			this.editVariable();
-		} else 
+
+			if (shipments.parent_id) this.filterToParentShipments(Number(shipments.parent_id));
+			const childrens = await this.fetchIncludesFolderSh({ id: shipments.id, folder: 'childrens' });
+			if (childrens && childrens.childrens) this.childrens = childrens.childrens;
+
+		} else
 			if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent));
 	}
 }
