@@ -17,13 +17,6 @@
       <span class='delit'
         @click='delPuth(nav)'><unicon name="minus-square-full" fill="red" width='16' /></span>
     </div>
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
   </div>
 </template>
 <script>
@@ -35,11 +28,6 @@ export default {
     return {
       span: null,
       toClick: false,
-
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
     }
   },
   computed:{
@@ -93,7 +81,7 @@ export default {
         let assets = await assetsFunction(to.path, this.getRoleAssets.assets)
         if(!assets) {
           next(false)
-          return showMessage('', 'Недостаточно Прав!', 'w', this)
+          return showMessage('', 'Недостаточно Прав!', 'w')
         } else next()
       }  else next()
 

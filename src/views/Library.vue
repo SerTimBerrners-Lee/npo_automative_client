@@ -76,13 +76,6 @@
       :type_open='type_open'
       :links='select_link'
     />
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
     <OpensFile 
       :parametrs='itemFiles' 
       v-if="itemFiles"
@@ -93,8 +86,8 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
-import OpensFile from '@/components/filebase/openfile';
-import AddFileLink from '@/components/library/add-file';
+import OpensFile from '@/components/FileBase/openfile';
+import AddFileLink from '@/components/Library/add-file';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
@@ -110,10 +103,6 @@ export default {
       itemFiles: null,
       keyWhenModalGenerateFileOpen: random(10, 999),
 
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
       type_open: 'create'
     }
   },
@@ -150,13 +139,13 @@ export default {
     },
     addFileLink() {
       if(!this.select_chapter)
-        return showMessage('', 'Выберите раздел', 'w', this)
+        return showMessage('', 'Выберите раздел', 'w')
       this.keyLinlFile = random(1, 999)
       this.showLinkFile = true
       this.type_open = 'create'
     },
     editFileLink() {
-      if(!this.select_link) return showMessage('', 'Сначала выберите что хотите отредактировать', 'w', this)
+      if(!this.select_link) return showMessage('', 'Сначала выберите что хотите отредактировать', 'w')
       this.keyLinlFile = random(1, 999)
       this.showLinkFile = true
       this.type_open = 'edit'
@@ -172,26 +161,28 @@ export default {
         return doc.split('.')[doc.split('.').length - 1].toUpperCase()
       }
     }, 
-    toBan() {
-      if(!this.select_link) return false
-      this.fetchToBanLinks(this.select_link.id).then(() => 
-        showMessage('', 'Успешно перенесено в архив', 's', this))
+    async toBan() {
+      if(!this.select_link) return false;
+      await this.fetchToBanLinks(this.select_link.id);
+
+      showMessage('', 'Успешно перенесено в архив', 's');
     },
     saveDocunment() {
-      if(!this.select_link) return false
-      if(!this.select_link.documents || !this.select_link.documents.length) return false
-      window.open(`${PATH_TO_SERVER+this.select_link.documents[0].path}`, '_blank').focus()
+      if(!this.select_link) return false;
+      if(!this.select_link.documents || !this.select_link.documents.length) return false;
+      window.open(`${PATH_TO_SERVER+this.select_link.documents[0].path}`, '_blank').focus();
     },
     isFavorites(link) {
-      if(!link.users || !link.users.length) return false
+      if(!link.users || !link.users.length) return false;
       for(let user of link.users) {
-        if(user.id == this.getAuth.id) return true
+        if(user.id == this.getAuth.id) return true;
       }
-      return false
+      return false;
     },
-    addToFavorites(link) {
-      if(!this.getAuth.id) return false
-      this.addLinkToFavorite({user_id: this.getAuth.id, links_id: link.id}).then(() => showMessage('', 'Избранное изменено!', 's', this))
+    async addToFavorites(link) {
+      if(!this.getAuth.id) return false;
+      await this.addLinkToFavorite({user_id: this.getAuth.id, links_id: link.id});
+      showMessage('', 'Избранное изменено!', 's');
     }
   },
   async mounted() { 

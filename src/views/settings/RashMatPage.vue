@@ -27,9 +27,10 @@
 </template>
 <script>
 import { random } from 'lodash';
+import addEditMat from '@/components/MathZag/addeditpokma';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import addEditMat from '@/components/mathzag/addeditpokma.vue';
-import TableMaterial from '@/components/mathzag/table-material.vue';
+import TableMaterial from '@/components/MathZag/table-material';
+
 export default {
   data() {
     return {

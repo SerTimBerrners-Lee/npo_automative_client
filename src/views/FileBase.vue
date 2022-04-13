@@ -38,12 +38,6 @@
         :file='itemFiles'
       />
     </div>
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      :key='keyInformTip'
-    />
     <AddFile 
       :parametrs='docFiles' 
       v-if="isChangeFolderFile" 
@@ -60,11 +54,11 @@
 <script>
 import { random }  from 'lodash';
 import { showMessage } from '@/js/';
-import Assign from '@/components/filebase/assign';
-import AddFile from '@/components/filebase/addfile';
-import OpensFile from '@/components/filebase/openfile';
-import NodeTable from '@/components/filebase/node-table';
-import FileWindow from '@/components/filebase/file-window';
+import Assign from '@/components/FileBase/assign';
+import AddFile from '@/components/FileBase/addfile';
+import OpensFile from '@/components/FileBase/openfile';
+import NodeTable from '@/components/FileBase/node-table';
+import FileWindow from '@/components/FileBase/file-window';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
@@ -72,10 +66,6 @@ export default {
     return {
       itemFiles: null,
       changeType: 'Изменить тип',
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: random(10, 999),
       typeDocs: ['МД', 'КД', 'ЧЖ', 'СД', 'DXF'],
       targetLink: null,
       nowType: 'all',
@@ -129,14 +119,14 @@ export default {
       }
     },
     editFile() {
-      if(!this.itemFiles) return showMessage('', 'Для начала выберите файл', 'w', this)
+      if(!this.itemFiles) return showMessage('', 'Для начала выберите файл', 'w');
       this.dbPushFile(this.itemFiles)
     },
     changeTypeF() {
       if(!this.itemFiles)
         return showMessage('', 'Вы не выбрали файл', 'w', this)
       if(this.itemFiles.type == this.changeType)
-        return showMessage('', 'Файлу уже присвоен выбранный вами Тип', 'w', this)
+        return showMessage('', 'Файлу уже присвоен выбранный вами Тип', 'w');
       this.typeDocs.forEach(type => {
         if(type == this.changeType) 
           this.checkedType({id: this.itemFiles.id, type: this.changeType})
@@ -148,10 +138,10 @@ export default {
     },
     changeBanned() {
       if(!this.itemFiles)
-        return showMessage('', 'Вы не выбрали файл', 'w', this)
+        return showMessage('', 'Вы не выбрали файл', 'w');
 
       this.bannedFiles(this.itemFiles).then(f => {
-        showMessage('', f.message, f.type, this)
+        showMessage('', f.message, f.type);
       })
     },
     unmount(res){
@@ -166,7 +156,7 @@ export default {
           this.pushFilesMutation(file)
         }
       }
-      showMessage('', res.message, res.type, this)
+      showMessage('', res.message, res.type);
     },
     exitModalAttach() {
       this.showMiniModal = false

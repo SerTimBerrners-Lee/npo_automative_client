@@ -20,13 +20,6 @@
         <button class="btn-small btn-add" @click='update'>Сохранить</button>
       </div>
     </div>
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
   </div>
 </template>
 
@@ -34,15 +27,11 @@
 import {mapGetters} from 'vuex';
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
+
 export default {
   data() {
     return{
       norm_hors: null,
-
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
     }
   },
   computed: mapGetters(['getRoleAssets']),
@@ -57,15 +46,14 @@ export default {
         body: JSON.stringify({
           znach: this.norm_hors.znach
         })
-      })
-      if(res.ok)
-        showMessage('', 'Значение успешно обновлено', 's', this)
-        else 
-          showMessage('', 'Произошла ошибка при обновлении значения', 'e', this)
+      });
+
+      if(res.ok) showMessage('', 'Значение успешно обновлено', 's');
+      else showMessage('', 'Произошла ошибка при обновлении значения', 'e');
     }
   },
   async mounted() {
-    const res = await fetch(`${PATH_TO_SERVER}api/settings/normhors`)
+    const res = await fetch(`${PATH_TO_SERVER}api/settings/normhors`);
     if(res.ok) {
       try {
         const result = await res.json()

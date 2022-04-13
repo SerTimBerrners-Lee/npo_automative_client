@@ -63,13 +63,6 @@
         </div>
       </div>
     </div>
-    <InformFolder 
-      :key="keyInformTip" 
-      :title='titleMessage' 
-      :message='message' 
-      :type='type' 
-      v-if='message' 
-    />
   </div>
 </template>
 <script>
@@ -87,16 +80,13 @@ export default {
       selectLogin: null,
       strTabels: "",
       flagsBlocingInput: false,
-
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
-
       password_flags: false
     }
   },
-  computed: mapGetters(['getUsers', 'getAuth']),
+  computed: mapGetters([
+    'getUsers',
+    'getAuth'
+  ]),
   methods: {
     ...mapActions(['getAllUsers', 'loginAuth', 'getUserById']),
     ...mapMutations(['setRoleAssets', 'updateAuth', 'unAuth']),
@@ -153,34 +143,35 @@ export default {
         }, 1500)
       }
     },
-    login() {
+    async login() {
       let password = this.$refs.input_password.value
       if(password < 2) 
         return 0
-      this.loginAuth({
+      const res = await this.loginAuth({
         login: this.selectLogin,
         password
-      }).then(res => {
-        if(res.type == 's')  {
-          if(this.getAuth && this.getAuth.id) {
-            this.getUserById(this.getAuth.id).then(user => {
-              if(!user) {
-                // Улаляем все что есть 
-                this.unAuth()
-                this.$emit('exit')
-                this.$router.push('/')
-              }
-              this.updateAuth(user)
-              if(user.role && user.role.assets) 
-                this.setRoleAssets({...user.role, assets: JSON.parse(user.role.assets)})
-            })
-          }
-          setTimeout(() => { 
-            this.$router.push('/')
-          }, 1000)
+      });
+
+      if(res.type != 's') return showMessage('', res.message, res.type);
+
+      if(this.getAuth && this.getAuth.id) {
+        const user = await this.getUserById(this.getAuth.id);
+        if(!user) {
+          // Улаляем все что есть 
+          this.unAuth()
+          this.$emit('exit')
+          this.$router.push('/')
         }
-        return showMessage('', res.message, res.type, this)
-      })
+        this.updateAuth(user)
+        if(user.role && user.role.assets) 
+          this.setRoleAssets({...user.role, assets: JSON.parse(user.role.assets)})
+      }
+
+      setTimeout(() => { 
+        this.$router.push('/')
+      }, 1000)
+
+      return showMessage('', res.message, res.type);
         
     }
   },

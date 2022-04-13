@@ -9,6 +9,7 @@ import edizm from './modules/edizm';
 import buyer from './modules/buyer';
 import sclad from './modules/sclad';
 import issue from './modules/issue';
+import global from './modules/global'
 import socket from './modules/socket';
 import moving from './modules/moving';
 import working from './modules/working';
@@ -55,7 +56,8 @@ export default createStore({
     moving,
     socket,
     techprocess,
-    working
+    working,
+    global
   }
 })
   

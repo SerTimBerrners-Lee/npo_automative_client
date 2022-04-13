@@ -59,10 +59,10 @@
 </template> 
 <script>
 import random from 'lodash';
-import OpensFile from '@/components/filebase/openfile';
-import TableNode from '@/components/mathzag/table-node';
+import OpensFile from '@/components/FileBase/openfile';
+import TableNode from '@/components/MathZag/table-node';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableMaterial from '@/components/mathzag/table-material';
+import TableMaterial from '@/components/MathZag/table-material';
 
 export default {
   data() {

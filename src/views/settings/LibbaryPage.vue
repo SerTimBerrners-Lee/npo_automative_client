@@ -36,7 +36,8 @@
 <script>
 import { random } from 'lodash';
 import {mapActions, mapGetters} from 'vuex';
-import AddEditModal from '@/components/library/add-edit.modal.vue';
+import AddEditModal from '@/components/Library/AddEditModal';
+
 export default {
   data() {
     return{

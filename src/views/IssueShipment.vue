@@ -28,32 +28,21 @@
 				</div>
 			</div>
 		</div>
-		<InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
 		<Loader v-if='loader' />
 	</div>
 </template> 
 <script>
-import {random} from 'lodash';
 import {showMessage} from '@/js/';
 import {mapActions, mapGetters} from 'vuex';
 import DatePicterRange from '@/components/date-picter-range';
-import SortStatus from '@/components/issueshipment/sort-status';
-import TableShipments from '@/components/issueshipment/table-komplect';
+import SortStatus from '@/components/IssueShipment/sort-status';
+import TableShipments from '@/components/IssueShipment/table-komplect';
 
 export default {
 	data() {
 		return {
 			selectShipments: null,
 			tr: null,
-			message: '',
-      type: '',
-      keyInformTip: random(1, 999),
 
 			loader: false,
 		}	
@@ -76,7 +65,7 @@ export default {
       console.log(val)
     },
 		edit() {
-			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w', this);
+			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w');
 			this.$router.push({ path: "/addorder/true/false" });
 		},
 	},

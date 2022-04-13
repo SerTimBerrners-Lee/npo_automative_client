@@ -23,25 +23,19 @@
       </div>
     </div>
     <AddRoles v-if="addPanel" :parametrs='parametrs' @unmount='unmountModalData' />
-    <InformFolder 
-      :title='titleMessage' 
-      :message='bodyMessage'
-      :type='typeMessage'
-      v-if='bodyMessage' />
   </div>
 </template>
 
 <script>
 import { isEmpty } from 'lodash';
+import { showMessage } from '@/js/';
 import { mapGetters, mapActions } from 'vuex';
-import AddRoles from '@/components/dolznuser/addroles.vue';
+import AddRoles from '@/components/DolznUser/addroles';
+
 export default {
   data() {
     return {
       role: Object,
-      titleMessage: String,
-      bodyMessage: String,
-      typeMessage: String,
       addPanel: false,
       parametrs: ''
     }
@@ -53,12 +47,12 @@ export default {
   methods: {
     ...mapActions(['fetchRoles', 'removeRole', 'createRole', 'editRoleById']),
     addRole() {
-      this.parametrs = { type: 'create'}
-      this.addPanel = true
+      this.parametrs = { type: 'create'};
+      this.addPanel = true;
     },
     editRole() {
       if (isEmpty(this.role)) {
-        return this.addMessageF('Ошибка', 'Выберите объект для редактирования', 'e')
+        return showMessage('Ошибка', 'Выберите объект для редактирования', 'e');
       }
       this.parametrs = { 
         type: 'edit',
@@ -66,49 +60,39 @@ export default {
         value: this.role.value,
         description: this.role.description
       }
-      this.addPanel = true
+      this.addPanel = true;
     },
     unmountModalData(param) {
       this.addPanel = false
-      if (isEmpty(param)) {
-        return 0
-      }
+      if (isEmpty(param)) return 0;
 
       if (param.type == 'create') {
         this.createRole(param).then(mes => {
           mes == 'error' ? 
-            this.addMessageF('Ошибка', 'Не удалось добавить роль', 'e') :
-              this.addMessageF('Успешно', 'Новая роль добавлена', 's')
+            showMessage('', 'Не удалось добавить роль', 'e') :
+              showMessage('', 'Новая роль добавлена', 's')
         })
       } else if (param.type == 'edit') {
         this.editRoleById(param).then(mes => {
           mes == 'error' ? 
-            this.addMessageF('Ошибка', 'Не удалось обновить роль', 'e') :
-            this.addMessageF('Успешно', 'Роль успешно обновлена', 's')
+            showMessage('', 'Не удалось обновить роль', 'e') :
+            showMessage('', 'Роль успешно обновлена', 's')
         })
-      } else if (param.type == 'error') {
-        this.addMessageF('Ошибка', param.message, 'e')
-      }
+      } else if (param.type == 'error')
+        showMessage('', param.message, 'e');
     },
     clickRole(role) {
-      this.role = role
+      this.role = role;
     },
     delitRole() {
-      if(isEmpty(this.role)){
-        return 0;
-      }
+      if(isEmpty(this.role)) return 0;
 
       this.removeRole(this.role.id).then(m => {
-        if(m == 'error') {
-          return this.addMessageF('Ошибка', "Не получилось удалить роль", 'e');
-        }
-        this.addMessageF('Успешно!', "Роль успешно удалена", 's')
+        if(m == 'error')
+          return showMessage('', "Не получилось удалить роль", 'e');
+      
+        showMessage('', "Роль успешно удалена", 's');
       })
-    },
-    addMessageF(title, body, type) {
-      this.titleMessage = title,
-      this.bodyMessage = body,
-      this.typeMessage = type 
     },
   },
   async mounted() {

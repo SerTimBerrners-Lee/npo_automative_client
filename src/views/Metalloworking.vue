@@ -111,13 +111,6 @@
       v-if="showOperationPathModal" 
       :key='keyOperationPathModal'
     />
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
     <OperationModal 
       :key='key_operation_m'
       v-if='show_operaiton_m && operation_stack.length'
@@ -136,17 +129,17 @@
 </template>
 <script>
 import print from 'print-js';
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { returnShipmentsDate } from '@/js/operation';
-import OpensFile from '@/components/filebase/openfile';
-import {mapActions, mapGetters, mapMutations} from 'vuex';
-import TbodyZag from '@/components/metalloworking/tablezag';
+import OpensFile from '@/components/FileBase/openfile';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import TbodyZag from '@/components/Metalloworking/tablezag';
 import DescriptionModal from '@/components/description-modal';
-import ShipmentsModal from  '@/components/sclad/shipments-to-ized';
-import OperationModal from '@/components/sclad/workings-operations';
-import ShipmentList from '@/components/issueshipment/shipments-list-table';
-import OperationPathModal from '@/components/metalloworking/operation-path-metaloworking';
+import ShipmentsModal from  '@/components/Sclad/shipments-to-ized';
+import OperationModal from '@/components/Sclad/workings-operations';
+import ShipmentList from '@/components/IssueShipment/shipments-list-table';
+import OperationPathModal from '@/components/Metalloworking/operation-path-metaloworking';
 
 export default {
 	data() {
@@ -161,9 +154,6 @@ export default {
       show_operaiton_m: false, 
       operation_stack: [],
 
-      message: '',
-      type: '',
-      keyInformTip: random(1, 999),
       shipments: [],
       shipmentKey: random(1, 999),
 
@@ -228,11 +218,11 @@ export default {
       return returnShipmentsDate(shipments, znach_return);
     },
     combackArchive() {
-      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w', this)
+      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w');
       this.fetchCombackMetallowork(this.selectMetalloworking.id).then(() => {
-        return showMessage('', 'Металлообработка возвращена из архива', 's', this)
+        return showMessage('', 'Металлообработка возвращена из архива', 's');
       }).catch(() => {
-        return showMessage('', 'Металлообработку не удалось вернуть из архива', 's', this)
+        return showMessage('', 'Металлообработку не удалось вернуть из архива', 's');
       })
     }, 
     showArchive() {
@@ -247,11 +237,10 @@ export default {
 
       this.selectMetalloworking = obj
     },
-    removeObject() {
-      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для удаления', 'w', this)
-      this.fetchMetalloworkingDelete(this.selectMetalloworking.id).then(() => {
-        return showMessage('', 'Статус Металлообработки изменен', 's', this)
-      })
+    async removeObject() {
+      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для удаления', 'w');
+      await this.fetchMetalloworkingDelete(this.selectMetalloworking.id);
+      return showMessage('', 'Статус Металлообработки изменен', 's');
     },
     printPage() {
       this.showZagParam = true;
@@ -262,42 +251,41 @@ export default {
         documentTitle: 'Металлообработка',
         ignoreElements: ['operation', 'doc', 'discription'],
         font_size: '10pt'
-      })
+      });
     },   
     toSetOrders(shipments) {
       if(shipments.detals && shipments.detals.length)
-        this.filterMetaloworkingByShipments(shipments.detals)
+        this.filterMetaloworkingByShipments(shipments.detals);
     },
     openOperationPath(metalowork) {
-      console.log(metalowork)
-      if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет Технологической операции!', 'w', this);
-      this.metaloworking_props = metalowork
-      this.keyOperationPathModal = random(1, 999)
-      this.showOperationPathModal = true
+      if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет Технологической операции!', 'w');
+      this.metaloworking_props = metalowork;
+      this.keyOperationPathModal = random(1, 999);
+      this.showOperationPathModal = true;
     },
     openDocuments(detal) {
       if(detal.documents && detal.documents.length) {
-        this.keyWhenModalGenerateFileOpen = random(1, 999)
-        this.itemFiles = detal.documents
-      } else showMessage('', 'Документов нет', 'w', this)
+        this.keyWhenModalGenerateFileOpen = random(1, 999);
+        this.itemFiles = detal.documents;
+      } else showMessage('', 'Документов нет', 'w');
     },
     openDescription(description) {
-      this.descriptionKey = random(1, 999)
-      this.description = description
+      this.descriptionKey = random(1, 999);
+      this.description = description;
     },
     openOperation() {
-      this.key_operation_m = random(1, 999)
-      this.show_operaiton_m = true
+      this.key_operation_m = random(1, 999);
+      this.show_operaiton_m = true;
     },
     returnShipmentsDateModal(izd) {
       const shipments = izd.shipments;
-      if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this);
+      if(!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
       this.shipmentKey = random(1, 999);
       this.izdForSchipment = {izd, type: 'detal'};
       this.shipments = shipments;
     },
     filterOperation() {
-      for(let metal of this.getMetaloworkings) {
+      for(const metal of this.getMetaloworkings) {
         if(!metal.tech_process || !metal.tech_process.operations) continue;
         for(let oper of metal.tech_process.operations) {
           for(let ot of this.getTypeOperations) {
@@ -328,24 +316,24 @@ export default {
       }
     },
     showAllTimers(metal) {
-      let count = 0
-      if(!metal.tech_process) return false
-      const operations = metal.tech_process.operations
-      if(!operations || operations.length == 0) return 
+      let count = 0;
+      if(!metal.tech_process) return false;
+      const operations = metal.tech_process.operations;
+      if(!operations || operations.length == 0) return;
 
       for(let operation of operations) {
-        count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * metal.kolvo_shipments) / 60
+        count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * metal.kolvo_shipments) / 60;
       }
-      return count.toFixed(2)
+      return count.toFixed(2);
     }
   },
 	async mounted() {
-    this.loader = true
-    await this.fetchAllShipmentsMetaloworking({sort: undefined, light: true})
-    await this.getAllTypeOperations()
-    await this.fetchMetaloworking()
-    this.filterOperation()
-    this.loader = false
+    this.loader = true;
+    await this.fetchAllShipmentsMetaloworking({sort: undefined, light: true});
+    await this.getAllTypeOperations();
+    await this.fetchMetaloworking();
+    this.filterOperation();
+    this.loader = false;
 	}
 }
 </script>

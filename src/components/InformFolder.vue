@@ -15,7 +15,11 @@
 </template>
 <script>
 export default {
-  props: ['title', 'message', 'type'],
+  props: {
+    title: {},
+    message: {},
+    type: {}
+  },
   data() {
     return {
       typeMessage: 'inform-message',
@@ -23,31 +27,31 @@ export default {
     }    
   },
   updated() {
-    setTimeout(() => this.messages.pop(), 7000)
+    setTimeout(() => this.messages.pop(), 7000);
   },
   methods: {
     destroyInformFolder(inx) {
-    let new_arr = []
+    const new_arr = [];
     for(let index in this.messages) 
-      if(index != inx) new_arr.push(this.messages[index])
-    this.messages = new_arr
+      if(index != inx) new_arr.push(this.messages[index]);
+    this.messages = new_arr;
     },
   },
   mounted() {
     if(!this.typeMessage || !this.message) return false
-    this.$props.type == 'w' ?
+    this.type == 'w' ?
       this.typeMessage = 'warning-message' :
-      this.$props.type == 'e' ?
+      this.type == 'e' ?
         this.typeMessage = 'error-message' :
-        this.$props.type == 's' ?
+        this.type == 's' ?
           this.typeMessage = 'success-message' :
-            this.typeMessage = 'inform-message'
+            this.typeMessage = 'inform-message';
     
     this.messages.push({
       typeMessage: this.typeMessage,
-      title: this.$props.title,
-      message: this.$props.message
-    })
+      title: this.title,
+      message: this.message
+    });
   }
 }
 </script>

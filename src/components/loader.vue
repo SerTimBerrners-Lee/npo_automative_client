@@ -75,18 +75,12 @@
     </div>
 
   </div>
-  <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
   </div>
 </template>
 
 <script>
 import { showMessage } from '@/js/';
+
 export default {
   props: {
     description: {
@@ -99,11 +93,6 @@ export default {
       time: 0,
       id_interval: null,
 
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
-
       description_append: '',
     }
   },
@@ -113,7 +102,7 @@ export default {
         showMessage('', `
           Загрузка данных превысило: <strong>${this.time} сек</strong>.
           Вы можете подождать либо уйти со страницы
-        `, 'w', this)
+        `, 'w')
       }
     }
   },

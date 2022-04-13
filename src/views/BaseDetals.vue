@@ -193,11 +193,10 @@
 import { random } from 'lodash';
 import Search from '@/components/search';
 import { eSelectSpan } from '@/js/methods';
-import CbedModalInfo from '@/components/cbed/cbed-modal';
-import DetalModal from '@/components/basedetal/detal-modal';
+import CbedModalInfo from '@/components/CbEd/cbed-modal';
+import DetalModal from '@/components/BaseDetal/detal-modal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import ProductModalInfo from '@/components/baseproduct/product-modal';
-
+import ProductModalInfo from '@/components/BaseProduct/product-modal';
 
 export default {
   data() {

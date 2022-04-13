@@ -42,8 +42,9 @@
 <script>
 import { random } from 'lodash';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableMaterial from '@/components/mathzag/table-material.vue';
-import addEditInventary from '@/components/inventary/add-edit-modal.vue';
+import TableMaterial from '@/components/MathZag/table-material';
+import addEditInventary from '@/components/Inventary/add-edit-modal';
+
 export default {
   data() {
     return{

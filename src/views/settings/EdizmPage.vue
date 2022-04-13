@@ -47,7 +47,8 @@
 
 import { random } from 'lodash';
 import { mapGetters, mapActions } from 'vuex';
-import addEdizm from '@/components/edizm/addedizm.vue';
+import addEdizm from '@/components/Edizm/addedizm.vue';
+
 export default {
   data() {
     return {

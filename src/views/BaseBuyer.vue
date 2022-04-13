@@ -138,9 +138,9 @@
 </template>
 <script>
 import random from 'lodash';
-import OpensFile from '@/components/filebase/openfile';
+import OpensFile from '@/components/FileBase/openfile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableBuyer from '@/components/basebuyer/table-buyer';
+import TableBuyer from '@/components/BaseBuyer/table-buyer';
 import DescriptionModal from '@/components/description-modal';
 
 export default {

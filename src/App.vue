@@ -1,5 +1,11 @@
 <template>
-  <div @click='alwas'>
+  <div @click='alwas'>    
+    <InformFolder  
+      :title='getTitleInform'
+      :message='getMessageInform'
+      :type='getTypeInform'
+      :key='getKeyInform' />
+      
     <div id="nav" v-if="getAuth">
         <HeadersNav @exit='exit' />
         <MenuItem />
@@ -11,6 +17,7 @@
     <div v-if="!getAuth" >
       <Authorization  />
     </div>
+
   </div>
 </template>
 <script>
@@ -20,14 +27,9 @@ import HeadersNav from '@/components/header-nav';
 import Authorization from '@/views/Authorization.vue';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import NavigationPanel from '@/components/navigation-panel';
+
 export default {
   name: 'App',
-  components: {
-    MenuItem,
-    HeadersNav,
-    NavigationPanel,
-    Authorization
-  },
   data() {
     return {
       avtorization: this.getAuth,
@@ -36,7 +38,19 @@ export default {
       id_inaction_interval: null,
     }
   },
-  computed: mapGetters(['getAuth']),
+  components: {
+    MenuItem,
+    HeadersNav,
+    NavigationPanel,
+    Authorization
+  },
+  computed: mapGetters([
+    'getAuth',
+    'getTitleInform',
+    'getMessageInform',
+    'getTypeInform',
+    'getKeyInform'
+  ]),
   methods: {
     ...mapActions([
       'getUserById', 
@@ -53,13 +67,15 @@ export default {
     },
     alwas() {
       if(this.id_inaction_interval)
-        clearInterval(this.id_inaction_interval)
+        clearInterval(this.id_inaction_interval);
+
       this.id_inaction_interval = setInterval(() => {
-          this.exit()
+        this.exit()
       }, 60000 * this.inaction);
     }
   },
   async mounted() {
+    console.log(this.getTitleInform, this.getMessageInform, this.getTypeInform, this.getKeyInform)
     // Токен обновляется после каждого обновления
     if(this.getAuth && this.getAuth.id) {
       const user = await this.getUserById(this.getAuth.id);

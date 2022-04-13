@@ -69,8 +69,8 @@
 
 <script>
 import { dateIncrementHors } from '@/js/';
-import { mapGetters, mapActions} from 'vuex';
-import IssueForMe from '@/components/issue/issue-for-me';
+import { mapGetters, mapActions } from 'vuex';
+import IssueForMe from '@/components/Issue/issue-for-me';
 import DatePicterRange from '@/components/date-picter-range';
 
 export default {
@@ -85,7 +85,7 @@ export default {
       loader: false
     }
   },
-  components: {DatePicterRange, IssueForMe},
+  components: { DatePicterRange, IssueForMe },
   computed: mapGetters([
     'getAuth',
     'getForMeIssue',
@@ -109,6 +109,7 @@ export default {
     this.loader = true;
     if(this.getAuth && this.getAuth.id) 
       await this.fetchIssueList(this.getAuth.id);
+
     await this.getAllTypeOperations();
     this.loader = false;
   }

@@ -1306,30 +1306,19 @@
           </div>
       </div>
     </div>
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
     <Loader v-if='loader' />
   </div>
 </template>
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
+import { mapActions, mapGetters } from 'vuex';
+
 export default {
   data() {
     return{
       select_model: 'Выбрать роль',
       selectRole: null,
       allChange: true,
-
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
 
       loader: false
     }
@@ -1357,8 +1346,8 @@ export default {
         id: this.selectRole.id,
         assets: this.selectRole.assets
       })).then(res => {
-        res ? showMessage('', 'Доступы обновлены, перезагрузите страницу чтобы изменения вступили в силу.', 's', this)
-        :   showMessage('', 'Неудалось обновить доступы для роли.', 'e', this)
+        res ? showMessage('', 'Доступы обновлены, перезагрузите страницу чтобы изменения вступили в силу.', 's')
+        :   showMessage('', 'Неудалось обновить доступы для роли.', 'e');
       })
     },
     allRasdel() {

@@ -71,28 +71,17 @@
     </div>
 
   </div>
-  <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
   </div>
 </template>
 
 <script>
 import { showMessage } from '@/js/';
+
 export default {
   data() {
     return {
       time: 0,
       id_interval: null,
-
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
     }
   },
   watch: {
@@ -101,24 +90,24 @@ export default {
         showMessage('', `
           Загрузка данных превысило: <strong>${this.time} сек</strong>.
           Вы можете подождать либо уйти со страницы
-        `, 'w', this)
+        `, 'w')
       }
     }
   },
   methods: {
     reload() {
-      document.location.reload()
+      document.location.reload();
     },
     reloadToHome() {
-      document.location.href = '/'
+      document.location.href = '/';
     }
   },
   beforeUnmount() {
     if(this.id_interval)
-      clearInterval(this.id_interval)
+      clearInterval(this.id_interval);
   },
   async mounted() {
-    this.id_interval = setInterval(() => this.time++, 1000)
+    this.id_interval = setInterval(() => this.time++, 1000);
   }
 }
 </script>

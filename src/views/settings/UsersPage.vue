@@ -154,22 +154,19 @@
       </div>
     </div>
     <Loader v-if='loader' />
-    <InformFolder v-if='message' :title='titleMessage' :message='message' :type='type'  :key='keyInformTip' />
   </div>
 </template>
 <script>
 import { showMessage } from '@/js/';
-import PATH_TO_SERVER from '@/js/path.js';
-import {  mapActions, mapGetters, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
+import PATH_TO_SERVER from '@/js/path';
+import { eSelectSpan } from '@/js/methods';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
+import DatePicterRange from '@/components/date-picter-range';
+
 export default {
   data() {
     return {
       knowGet: true,
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: '',
       initial: '',
       tabel: '',
       adress: '',
@@ -205,54 +202,48 @@ export default {
   methods: {
     ...mapActions(['getAllUsers', 'banUserById', 'getUserById']),
     ...mapMutations(['selectedUser']),
-    getUsersAllFolder(user, e = null) {
-      if(!e) return 
-      if(this.span) this.span.classList.remove('td-row-all')
-      this.span = e
-      this.span.classList.add('td-row-all')
+    async getUsersAllFolder(user, e = null) {
+      this.span = eSelectSpan(this.span, e)
 
-      this.getUserById(user.id).then(res => {
-        if(res) this.userShow(res)
-      })
+      const res = await this.getUserById(user.id);
+      if(res) this.userShow(res);
     },
     userShow(user) {
-      if(!user) return false
-      this.roles = user.role ? user.role.description : '' 
-      this.initial = user.initial
-      this.tabel = user.tabel
-      this.adress = user.adress
-      this.adressProps = user.adressProps
-      this.dateUnWork = user.dateUnWork
-      this.dateWork = user.dateWork
-      this.email = user.email
-      this.haracteristic = user.haracteristic
-      this.image = PATH_TO_SERVER + user.image
-      this.login = user.login
-      this.password = user.password
-      this.phone = user.phone
-      this.primetch = user.primetch
-      this.birthday = user.birthday
-      this.id = user.id
-      this.documents = user.documents 
-      this.selectedUser(user)
+      if(!user) return false;
+      this.roles = user.role ? user.role.description : '' ;
+      this.initial = user.initial;
+      this.tabel = user.tabel;
+      this.adress = user.adress;
+      this.adressProps = user.adressProps;
+      this.dateUnWork = user.dateUnWork;
+      this.dateWork = user.dateWork;
+      this.email = user.email;
+      this.haracteristic = user.haracteristic;
+      this.image = PATH_TO_SERVER + user.image;
+      this.login = user.login;
+      this.password = user.password;
+      this.phone = user.phone;
+      this.primetch = user.primetch;
+      this.birthday = user.birthday;
+      this.id = user.id;
+      this.documents = user.documents;
+      this.selectedUser(user);
     },
-    userBan() {
+    async userBan() {
       if(!this.id)
-        return showMessage('Ошибка', 'Пользователь не выбран', 'w', this)
+        return showMessage('Ошибка', 'Пользователь не выбран', 'w');
       if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone) 
-        return showMessage('', 'Недостаточно прав', 'w', this)
-      this.banUserById(this.id).then(mes => {
-        showMessage('', mes.message, mes.type, this)
-        if(mes.type == 's') 
-          this.getAllUsers(true)
-      })
+        return showMessage('', 'Недостаточно прав', 'w');
+
+      const mes = await this.banUserById(this.id);
+      showMessage('', mes.message, mes.type);
+      if(mes.type == 's') this.getAllUsers(true);
     },
     openNewWindow(url) {
-      window.open(PATH_TO_SERVER + url, '_blank')
+      window.open(PATH_TO_SERVER + url, '_blank');
     },
     editUser() {
-      if(!this.getSelectedUser) 
-        return 0
+      if(!this.getSelectedUser) return 0;
       
       if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
         this.$router.push({path: `/employee/edit/edit`})
@@ -260,22 +251,23 @@ export default {
         if(this.getAuth && this.getAuth.id == this.getSelectedUser.id)
           this.$router.push({path: `/employee/edit/edit`})
       else
-        return showMessage('', 'Недостаточно прав', 'w', this)
+        return showMessage('', 'Недостаточно прав', 'w');
     },
     addUser() {
       if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
-        this.$router.push({path: `/employee/edit/add`})
+        this.$router.push({path: `/employee/edit/add`});
     }
   },
   async mounted() {
-    this.loader = true
+    this.loader = true;
+
     await this.getAllUsers(true);
     if(this.getUsers.length) {
-      const user = await this.getUserById(this.getUsers[0].id)
-      this.userShow(user)
+      const user = await this.getUserById(this.getUsers[0].id);
+      this.userShow(user);
     }
 
-    this.loader = false
+    this.loader = false;
   }
 }
 </script> 

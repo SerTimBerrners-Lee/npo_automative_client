@@ -93,13 +93,6 @@
       v-if="showOperationPathModal" 
       :key='keyOperationPathModal'
     />
-    <InformFolder   
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
     <OperationModal 
       :key='key_operation_m'
       v-if='show_operaiton_m && operation_stack.length'
@@ -118,16 +111,16 @@
 
 <script>
 import print from 'print-js';
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { eSelectSpan } from '@/js/methods';
 import { showMessage, comparison } from '@/js/';
-import OpensFile from '@/components/filebase/openfile';
-import {mapActions, mapGetters, mapMutations} from 'vuex';
+import OpensFile from '@/components/FileBase/openfile';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/description-modal';
-import ShipmentsModal from '@/components/sclad/shipments-to-ized';
-import OperationModal from '@/components/sclad/workings-operations';
-import ShipmentList from '@/components/issueshipment/shipments-list-table';
-import OperationPathModal from '@/components/assembly/operation-path-modal';
+import ShipmentsModal from '@/components/Sclad/shipments-to-ized';
+import OperationModal from '@/components/Sclad/workings-operations';
+import ShipmentList from '@/components/IssueShipment/shipments-list-table';
+import OperationPathModal from '@/components/Assembly/operation-path-modal';
 
 export default {
 	data() {
@@ -137,10 +130,6 @@ export default {
       description: '',
       itemFiles: [],
       keyWhenModalGenerateFileOpen: random(1, 999),
-
-      message: '',
-      type: '',
-      keyInformTip: random(1, 999),
 
       operation_stack: [],
 
@@ -195,10 +184,10 @@ export default {
       'breackFIlterAssembl'
     ]),
     async combackArchive() {
-      if (!this.selectAssembly) return showMessage('', 'Выберите объект для изменения', 'w', this);
+      if (!this.selectAssembly) return showMessage('', 'Выберите объект для изменения', 'w');
       const res = await this.fetchCombackAssemble(this.selectAssembly.id);
-      if (res) return showMessage('', 'Сборка возвращена из архива', 's', this);
-      else return showMessage('', 'Сборку не удалось вернуть из архива', 's', this);
+      if (res) return showMessage('', 'Сборка возвращена из архива', 's');
+      else return showMessage('', 'Сборку не удалось вернуть из архива', 's');
     }, 
     showArchive() {
       this.isArchive = !this.isArchive;
@@ -209,10 +198,10 @@ export default {
       this.selectAssembly = obj;
     },
     async removeObject() {
-      if (!this.selectAssembly) return showMessage('', 'Выберите объект для удаления', 'w', this);
+      if (!this.selectAssembly) return showMessage('', 'Выберите объект для удаления', 'w');
       await this.fetchAssemblyDelete(this.selectAssembly.id);
 
-      return showMessage('', 'Статус Сборки изменен', 's', this);
+      return showMessage('', 'Статус Сборки изменен', 's');
     },
     printPage() {
       print({
@@ -240,7 +229,7 @@ export default {
       } else showMessage('', 'Документов нет', 'w', this);
     },
     openOperationPath(assemble) {
-      if(!assemble.tech_process || !assemble.tech_process.operations) return showMessage('', 'Нет Технологической операции! ', 'w', this);
+      if(!assemble.tech_process || !assemble.tech_process.operations) return showMessage('', 'Нет Технологической операции! ', 'w');
       this.assemble_props = assemble;
       this.keyOperationPathModal = random(1, 999);
       this.showOperationPathModal = true;
@@ -261,7 +250,7 @@ export default {
       return end_date;
     },
     returnShipmentsDateModal(shipments) {
-      if(!shipments || shipments.length == 0) return showMessage('', '', 'Нет заказов', this);
+      if(!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
       this.shipmentKey = random(1, 999);
       this.shipments = shipments;
     },

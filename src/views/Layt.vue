@@ -27,6 +27,11 @@ export default {
       click_plus: 0
     }
   },
+  watch: {
+    count: function(new_val, last_val) {
+      console.log('watch:', new_val, last_val);
+    }
+  },
   methods: {
     increment() {
       this.count++

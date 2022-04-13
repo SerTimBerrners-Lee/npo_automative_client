@@ -62,30 +62,19 @@
       </div>
     </div>
     <Loader v-if='loader' />
-    <InformFolder  
-      :title='titleMessage'
-      :message = 'message'
-      :type = 'type'
-      v-if='message'
-      :key='keyInformTip'
-    />
   </div>
 </template>
 
 <script>
 import { showMessage } from '@/js/';
-import {mapGetters, mapActions} from 'vuex';
 import PATH_TO_SERVER from '@/js/path.js';
+import { mapGetters, mapActions } from 'vuex';
+
 export default {
   data() {
     return{
       select_db: null,
       loader: false,
-
-      titleMessage: '',
-      message: '',
-      type: '',
-      keyInformTip: 0,
 
       inaction: 0
     }
@@ -100,48 +89,41 @@ export default {
       'fetchChangeInaction'
     ]),
     downloadDB() {
-      if(!this.select_db) return showMessage('', 'Резервная копия не выбрана', 's', this)
-      window.open(`${PATH_TO_SERVER}db/${this.select_db.name}`)
+      if(!this.select_db) return showMessage('', 'Резервная копия не выбрана', 's');
+      window.open(`${PATH_TO_SERVER}db/${this.select_db.name}`);
     },
     fetchAllDump() {
-      this.fetchDB().then(() => this.loader = false)
+      this.fetchDB().then(() => this.loader = false);
     },
-    pushNewDB() {
+    async pushNewDB() {
       this.loader = true
-      this.fetchAddDB().then(res => {
-        if(res)
-          showMessage('', 'Резервная копия успешно сгенерированна', 's', this)
-          else showMessage('', 'Произошла ошибка на сервере', 'e', this)
+      const res = await this.fetchAddDB();
+      if (res) showMessage('', 'Резервная копия успешно сгенерированна', 's');
+      else showMessage('', 'Произошла ошибка на сервере', 'e');
 
-        this.fetchAllDump()
-      })
+      this.fetchAllDump();
     },
     setDB(db) {
-      this.select_db = db
+      this.select_db = db;
     },
-    dropDB() {
-      if(!this.select_db)
-        return false; 
+    async dropDB() {
+      if(!this.select_db) return false; 
       
-      this.fetchDropDB(this.select_db.name).then(res => {
-        if(res)
-          showMessage('', 'Резервная копия успешно удалена', 's', this)
-        this.select_db = null
-      })
+      const res = await this.fetchDropDB(this.select_db.name)
+      if(res) showMessage('', 'Резервная копия успешно удалена', 's');
+      this.select_db = null;
     },
-    saveInaction() {
-      this.fetchChangeInaction(this.inaction).then(res => {
-        if(res) 
-          showMessage('', 'Часы бездействия успешно обновлены', 's', this)
-          else showMessage('', 'Произошла ошибка при обновлении часов', 'e', this)
-      })
+    async saveInaction() {
+      const res = await this.fetchChangeInaction(this.inaction);
+      if(res) showMessage('', 'Часы бездействия успешно обновлены', 's');
+      else showMessage('', 'Произошла ошибка при обновлении часов', 'e');
     }
   },
   async mounted() {
-    this.loader = true
-    const res = await this.fetchInactionHors()
-    if(res) this.inaction = res.inaction
-    this.fetchAllDump()
+    this.loader = true;
+    const res = await this.fetchInactionHors();
+    if(res) this.inaction = res.inaction;
+    this.fetchAllDump();
   }
 }
 </script>

@@ -146,7 +146,6 @@
       <button class="btn-status" @click="$router.push('/employee')">Отменить</button>
       <button class="btn-status btn-black" @click="saveData">Сохранить</button>
     </div>
-    <InformFolder :key="keyInformTip" :title='titleMessage' :message='message' :type='type' v-if='message' />
   <OpensFile 
     :parametrs='itemFiles' 
     v-if="showFile" 
@@ -161,23 +160,20 @@
   </div>
 </template>
 <script>
-import {isEmpty, random} from 'lodash';
-import PATH_TO_SERVER from '@/js/path.js';
+import PATH_TO_SERVER from '@/js/path';
+import { isEmpty, random } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import {photoPreloadUrl, showMessage} from '@/js/';
-import OpensFile from '@/components/filebase/openfile.vue';
-import DatePicterCustom from '@/components/date-picter.vue';
-import BaseFileModal from '@/components/filebase/base-files-modal.vue';
+import OpensFile from '@/components/FileBase/openfile';
+import DatePicterCustom from '@/components/date-picter';
+import BaseFileModal from '@/components/FileBase/base-files-modal';
+
 export default ({ 
   data() {
     return {
       docFiles: [],
       selectFiles: Object,
       editTableKontact: false,
-      titleMessage: '',
-      keyInformTip: 21, 
-      message: '',
-      type: '',
       urlImg: '',
       imgShow: false,
       fileFolder: null,
@@ -235,15 +231,15 @@ computed: {
     },
     saveData() {
       if(this.object.tabel.length > 4)
-        return showMessage('', 'Тебель не может быть больше 4-х символов', 'w', this)
+        return showMessage('', 'Тебель не может быть больше 4-х символов', 'w');
       if( this.object.password.length < 5)
-        return showMessage('', 'Пароль не может быть меньше 5 символов', 'w', this)
+        return showMessage('', 'Пароль не может быть меньше 5 символов', 'w');
       if(this.object.login.length < 3)
-        return showMessage('', 'Логин не может быть менее 3-х символов', 'w', this)
+        return showMessage('', 'Логин не может быть менее 3-х символов', 'w');
       if(!this.object.roles)
-        return showMessage('', 'Роль должна быть выбрана обязательно!', 'w', this)
+        return showMessage('', 'Роль должна быть выбрана обязательно!', 'w');
       if(!Number(this.object.tabel))
-        return showMessage('', 'Тебель должен быть числом', 'e', this)
+        return showMessage('', 'Тебель должен быть числом', 'e');
       this.saveContact()
 
       for (let dat in this.object) {
@@ -260,18 +256,18 @@ computed: {
         this.updateUser(this.formData).then(res => {
           setTimeout(() => this.$router.push('/employee'), 4000)
           if(res.ok)
-            return showMessage('', 'Данные переданны для обработки на сервер', 'w', this)
+            return showMessage('', 'Данные переданны для обработки на сервер', 'w');
           else 
-            return showMessage('', 'Произошла ошибка на сервере', 'e', this)
+            return showMessage('', 'Произошла ошибка на сервере', 'e');
         })
         return 0;
       }
 
       this.saveUser(this.formData).then(m => {
         if(m.type == 'error')
-          return showMessage('Ошибка', m.message, 'e', this)
+          return showMessage('Ошибка', m.message, 'e')
         if(m.type == 'success') {
-          showMessage('Успешно', 'Пользователь успешно создан', 's', this)
+          showMessage('Успешно', 'Пользователь успешно создан', 's');
           setTimeout(() => this.$router.push('/employee'), 1000)
         }
 
@@ -282,84 +278,84 @@ computed: {
       this.fileFolder = e.target.files[0]
       photoPreloadUrl(this.fileFolder,  res => {
         if(res && res.url) {
-          this.imgShow = true
-          this.urlImg = res.url
+          this.imgShow = true;
+          this.urlImg = res.url;
         }
       })
     },
     saveContact() {
-      this.object.adress = this.$refs.adress.textContent
-      this.object.adressProps = this.$refs.adressProps.textContent
-      this.object.phone = this.$refs.phone.textContent
-      this.object.email = this.$refs.email.textContent
+      this.object.adress = this.$refs.adress.textContent;
+      this.object.adressProps = this.$refs.adressProps.textContent;
+      this.object.phone = this.$refs.phone.textContent;
+      this.object.email = this.$refs.email.textContent;
     },
     editIsContac(isQ) {
       if(isQ) {
-        this.$refs.adress.textContent = this.object.adress
-        this.$refs.adressProps.textContent = this.object.adressProps
-        this.$refs.phone.textContent = this.object.phone
-        this.$refs.email.textContent = this.object.email
+        this.$refs.adress.textContent = this.object.adress;
+        this.$refs.adressProps.textContent = this.object.adressProps;
+        this.$refs.phone.textContent = this.object.phone;
+        this.$refs.email.textContent = this.object.email;
       }
     },
     delitFilesDoc(){
       if(this.itemFiles && this.docFiles.length) {
-        this.docFiles = this.docFiles.filter(f => f.id != this.itemFiles.id)
-        this.deleteFIleForUser({userId: this.id, fileId: this.itemFiles.id})
+        this.docFiles = this.docFiles.filter(f => f.id != this.itemFiles.id);
+        this.deleteFIleForUser({userId: this.id, fileId: this.itemFiles.id});
       }
     },
     bannedUser() {
       if(isEmpty(this.getSelectedUser)) 
         return 0
       this.banUserById(this.getSelectedUser.id).then(mes => {
-        showMessage('', mes.message, mes.type, this)
-        setTimeout(() => this.$router.push({path: `/employee`}), 1000)
+        showMessage('', mes.message, mes.type);
+        setTimeout(() => this.$router.push({path: `/employee`}), 1000);
       })
     },
     setDocs(dc) {
-      this.itemFiles = dc
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      this.itemFiles = dc;
+      if(isEmpty(this.itemFiles)) return 0;
+
+      this.showFile = true;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     addInBaseFile() {
-      this.fileModalKey = random(10, 999),
-      this.showModalFile = true 
+      this.fileModalKey = random(10, 999);
+      this.showModalFile = true;
     },
-    unmount_filemodal (fileArrModal) {
-      this.fileArrModal = fileArrModal
+    unmount_filemodal(fileArrModal) {
+      this.fileArrModal = fileArrModal;
     }
   },
   async mounted() {
-    this.fetchRoles()
+    this.fetchRoles();
     if(this.$route.params.title == 'edit') {
       if(isEmpty(this.getSelectedUser)) {
-        this.$router.push(`/employee/`)
-        return 0
+        this.$router.push(`/employee/`);
+        return 0;
       }
-      this.id = this.getSelectedUser.id
+      this.id = this.getSelectedUser.id;
       //Заполняем данные 
-      this.object.adress = this.getSelectedUser.adress
-      this.object.adressProps = this.getSelectedUser.adressProps
-      this.object.phone = this.getSelectedUser.phone
-      this.object.email = this.getSelectedUser.email
-      this.object.initial = this.getSelectedUser.initial
-      this.object.tabel = this.getSelectedUser.tabel
-      this.object.roles = this.getSelectedUser.role ? this.getSelectedUser.role.id : null
-      this.object.dateWork = this.getSelectedUser.dateWork
-      this.object.dateUnWork = this.getSelectedUser.dateUnWork
-      this.object.login = this.getSelectedUser.login
-      this.object.password = this.getSelectedUser.password
-      this.object.birthday = this.getSelectedUser.birthday
-      this.object.haracteristic = this.getSelectedUser.haracteristic
-      this.object.primetch = this.getSelectedUser.primetch
+      this.object.adress = this.getSelectedUser.adress;
+      this.object.adressProps = this.getSelectedUser.adressProps;
+      this.object.phone = this.getSelectedUser.phone;
+      this.object.email = this.getSelectedUser.email;
+      this.object.initial = this.getSelectedUser.initial;
+      this.object.tabel = this.getSelectedUser.tabel;
+      this.object.roles = this.getSelectedUser.role ? this.getSelectedUser.role.id : null;
+      this.object.dateWork = this.getSelectedUser.dateWork;
+      this.object.dateUnWork = this.getSelectedUser.dateUnWork;
+      this.object.login = this.getSelectedUser.login;
+      this.object.password = this.getSelectedUser.password;
+      this.object.birthday = this.getSelectedUser.birthday;
+      this.object.haracteristic = this.getSelectedUser.haracteristic;
+      this.object.primetch = this.getSelectedUser.primetch;
 
       if(this.getSelectedUser.image) {
-        this.imgShow = true
-        this.urlImg = PATH_TO_SERVER+this.getSelectedUser.image
+        this.imgShow = true;
+        this.urlImg = PATH_TO_SERVER+this.getSelectedUser.image;
       }
       if(this.getSelectedUser.documents && this.getSelectedUser.documents.length) 
-        this.docFiles = this.getSelectedUser.documents
+        this.docFiles = this.getSelectedUser.documents;
 
     }
   },
