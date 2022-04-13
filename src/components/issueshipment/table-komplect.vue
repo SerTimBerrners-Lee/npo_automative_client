@@ -2,7 +2,7 @@
 	<div class="table-scroll">
 		<table>
 			<tr :class='fixed_table'>
-				<th>Заказ {{fixed_table}}</th>
+				<th>Заказ</th>
 				<th>Артикул изделия</th>
 				<th>Наименование изделия</th>
 				<th style='width:100px; word-break: break-all;'>Комплектация/особенности заказа</th>
@@ -195,7 +195,6 @@ export default {
 		async openDocuments(shipments) {	
 			if(!shipments.id) return showMessage('', 'Документов нет', 'w', this);
 			const ships = await this.fetchDocumentsShipments(shipments.id);
-			console.log(ships);
 
 			if(ships.documents && ships.documents.length) {
 				for(let doc of ships.documents) {

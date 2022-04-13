@@ -21,7 +21,7 @@
 				:no_set='true'/>
 		</div>
 
-		<h3>Заказ {{number_order}}</h3>
+		<h3>Заказ</h3>
 		<div class="block">
 			<p class='p_flex'>
 				<span>Дата заказа:</span>
@@ -418,7 +418,6 @@ export default {
     this.destroyModalLeft = 'left-block-modal';
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
-		console.log('mounted')
 
 		this.loader = true;
 
