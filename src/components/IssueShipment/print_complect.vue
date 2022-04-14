@@ -28,7 +28,7 @@
       </tr>
       <tr>
         <th class='center'>Покупатель</th>
-        <td class="center">{{ shipments.buyer_name }}</td>
+        <td class="center" v-if='getBuyerFilter()'>{{ getBuyerFilter(shipments.buyerId) }}</td>
       </tr>
       <tr>
         <th class='center'>Примечание</th>
@@ -123,6 +123,8 @@
 
 <script>
 import print from 'print-js';
+import { mapActions } from 'vuex';
+import { getBuyerFilter } from '@/js/methods';
 
 export default {
   props: {
@@ -134,13 +136,25 @@ export default {
 
     }
   },
-  mounted() {
+  methods: {
+    ...mapActions(['fetchAllBuyers']),
+    getBuyerFilter(_id) {
+      return getBuyerFilter(_id);
+    }
+  },
+  async mounted() {
+    await this.fetchAllBuyers(true);
+
+    const emit = this.$emit;
     print({
       printable: 'tablebody',
       type: 'html',
       targetStyles: ['*'],
       documentTitle: 'Комплектация заказа',
-      font_size: '10pt'
+      font_size: '10pt',
+      onLoadingEnd() {
+        emit('unmount_print');
+      }
     });
   }
 }

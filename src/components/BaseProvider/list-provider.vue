@@ -5,7 +5,7 @@
       <div :style="hiddens">
         <h3> Добавить поставщика </h3>
         <h4>База поставщиков</h4>
-        <TableProvider :allProvider='allProvider' @unmount='setProvider'/>
+        <TableProvider :allProvider='allProvider' @unmount='unmount_provider'/>
         
         <div class="btn-control out-btn-control">
           <button class="btn-status" @click="destroyModalF">Отменить</button>
@@ -32,7 +32,7 @@ export default {
     }
   },
   computed: mapGetters(['allProvider']),
-  components: {TableProvider},
+  components: { TableProvider },
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden';
@@ -40,7 +40,7 @@ export default {
       this.hiddens = 'display: none;';
     },
     ...mapActions(['fetchGetProviders']),
-    setProvider(prov) {
+    unmount_provider(prov) {
       this.provider = prov;
     },
     addProvider() {
@@ -53,7 +53,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
     
-    this.fetchGetProviders();
+    await this.fetchGetProviders();
   },
 }
 </script>

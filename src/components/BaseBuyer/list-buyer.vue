@@ -22,6 +22,7 @@
 <script>
 import TableBuyer from './table-buyer.vue';
 import { mapGetters, mapActions} from 'vuex';
+
 export default {
   props: ['parametrs'],
   data() {
@@ -54,7 +55,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
     
-    this.fetchAllBuyers()
+    this.fetchAllBuyers(true)
   },
 }
 </script>

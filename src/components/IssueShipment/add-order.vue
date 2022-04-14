@@ -129,7 +129,7 @@
 			v-if='tablebody'
 			:shipments='getOneShipments'
 			:childrens='childrens'
-			:key='new Date().getTime()' /> 
+			@unmount_print='unmount_print' /> 
 
 		<div class="btn-control out-btn-control">
 			<button 
@@ -212,11 +212,9 @@
 <script>
 import { showMessage } from '@/js/';
 import { random, isEmpty } from 'lodash';
-import { sliceName,
-				eSelectSpan, 
-				getBuyerFilter } from '@/js/methods';
 import PrintComplect from './print_complect';
 import AddFile from '@/components/FileBase/addfile';
+import { sliceName, eSelectSpan } from '@/js/methods';
 import OpensFile from '@/components/FileBase/openfile';
 import DatePicterCustom from '@/components/date-picter';
 import CbedModalInfo from '@/components/CbEd/cbed-modal';
@@ -353,7 +351,7 @@ export default {
 			if(!e) return 0;
 			this.formData = e.formData;
 
-			for(let doc of e.formData.getAll('document')) {
+			for(const doc of e.formData.getAll('document')) {
 				this.docFiles.push(doc);
 				this.documents.push(doc); 
 			}
@@ -367,10 +365,11 @@ export default {
 				this.selectedBaseProvesses = false;
 			}
     },
+		unmount_print() {
+			this.tablebody = false;
+		},
 		printPage() {
-			this.getOneShipments.buyer_name = getBuyerFilter(this.getOneShipments?.buyer?.id);
 			this.tablebody = true;
-			setTimeout(() => this.tablebody = false, 4000);
     },
 		addFileModal() {
       this.fileModalKey = random(1, 999);
@@ -401,8 +400,8 @@ export default {
 			}
 
       val.files.forEach(f => {
-        this.docFiles.push(f)
-				this.documents.push(f)
+        this.docFiles.push(f);
+				this.documents.push(f);
       });
       this.keyWhenModalGenerate = random(10, 999);
       this.isChangeFolderFile = true;

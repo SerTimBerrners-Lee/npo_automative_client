@@ -7,6 +7,7 @@ export default {
 		shipments_parents: [],
 
 		variable_shipments: [],
+		buyer_sort_shipments: [],
 
 		one_shipments: {}
 	},
@@ -30,7 +31,7 @@ export default {
 				method: "post",
 				body: data
 			});
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 			return true;
 		},
 		async fetchCreateShComplit(ctx, data) {
@@ -39,7 +40,7 @@ export default {
 				body: data
 			});
 
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 			return true;
 		},
 		async fetchUpdateShipments(ctx, data) { 
@@ -52,7 +53,7 @@ export default {
 		},
 		async fetchAllShipments(ctx, {sort = "sort_sclad", light = false}) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/${light}`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			const result = await res.json();
 			ctx.commit('allShipments', {result, sort, ctx});
@@ -60,7 +61,7 @@ export default {
 		},
 		async fetchAllShipmentsTo(ctx) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/to/shipments/`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			const result = await res.json()
 			ctx.commit('allShipments', {result, undefined, ctx})
@@ -70,34 +71,34 @@ export default {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`, {
 				method: 'delete'
 			});
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			ctx.commit('deleteShipmentMutation', id);
 		},
 		async fetchIncludesFolderSh(ctx, data) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/getinclude/${data.id}/${data.folder}`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			const result = res.json();
 			return result;
 		},
 		async fetchAllShipmentsById(ctx, obj) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/light/${obj.id}/${obj.light}`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			const result = await res.json();
 			return result;
 		},
 		async fetchAllIzdToShipments(ctx, id) {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/one/izd/${id}/`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			const result = await res.json();
 			return result;
 		},
 		async fetchAllShipmentsAssemble(ctx, {sort = "sort_sclad", light = false}) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/assemble/${light}`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			const result = await res.json();
 			ctx.commit('allShipments', {result, sort, ctx});
@@ -105,7 +106,8 @@ export default {
 		},
 		async fetchAllShipmentsMetaloworking(ctx, {sort = "sort_sclad", light = false}) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/metaloworking/${light}`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
+
 			const result = await res.json();
 			ctx.commit('allShipments', {result, sort, ctx});
 			return result;
@@ -114,14 +116,14 @@ export default {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/sclad/${id}`, {
 				method: 'PUT'
 			});
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			ctx.commit('deletToListShipments', id);
 			return true;
 		},	
 		async fetchDocumentsShipments(ctx, id) {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/documents/${id}`);
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
 			const result = await res.json();
 			return result;
@@ -131,7 +133,7 @@ export default {
 		allShipments(state, {result, sort = 'sort_sclad', ctx}) {
 			state.shipments = [];
 			for(const ship of result) {
-				if(ship.date_shipments) 
+				if (ship.date_shipments) 
 					ship.difference = dateDifference(undefined, ship.date_shipments);
 				else ship.difference = 0;
 			}
@@ -139,13 +141,13 @@ export default {
 			ctx.commit('sortShipmentParams', sort);
 		},
 		sortShipmentParams(state, sort) {
-			if(!sort) return;
+			if (!sort) return;
 			// Сортируем все что заказано на склад идет в конец
 			const arr_var1 = [];
 			const arr_var2 = [];
-			if(sort == 'sort_sclad') {
+			if (sort == 'sort_sclad') {
 				for(const el of state.shipments) {
-					if(el.to_sklad && el.number_order) {
+					if (el.to_sklad && el.number_order) {
 						const char = el.number_order.split('');
 						char.unshift('C');
 						el.number_order = char.join('');
@@ -176,16 +178,31 @@ export default {
 			state.shipments_parents = state.shipments.filter(ship => ship.id == id);
 		},
 		filterShipmentsToStatus(state, value) {
-			if(state.variable_shipments.length == 0)
+			if (state.variable_shipments.length == 0)
 				state.variable_shipments = state.shipments;
 			state.shipments = state.variable_shipments;
-			if(value == 'Все') return false;
+			if (value == 'Все') return false;
 
 			state.shipments = state.shipments.filter((el) => {
-				if(value == 'Выполняется')
-					if(el.status == value || el.status == 'Просрочено')return el;
-				if(el.status == value)return el;
+				if (value == 'Выполняется')
+					if (el.status == value || el.status == 'Просрочено')return el;
+				if (el.status == value)return el;
 			});
+		},
+		filterShipmentsToBuyer(state, buyerId) {
+			if (!state.buyer_sort_shipments.length)
+				state.buyer_sort_shipments = state.shipments;
+			
+			state.shipments = state.buyer_sort_shipments.filter(el => el.buyerId == buyerId);
+		},
+		/**
+		 * Очищает все временные сорт state
+		 */
+		clearFilters(state) {
+			state.buyer_sort_shipments = [];
+			state.variable_shipments = [];
+			state.shipments_parents = [];
+			state.shipments_sclad = [];
 		}
 	}
 }

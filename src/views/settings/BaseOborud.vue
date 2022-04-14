@@ -98,7 +98,7 @@ export default {
       if(equipment == 'TYPE') 
       this.parametrs = { equipment, type }
   
-      this.keyModals = random(2, 1222)
+      this.keyModals = random(1, 999)
       this.showIs = true
     },
     edit(equipment, type = 'edit') {

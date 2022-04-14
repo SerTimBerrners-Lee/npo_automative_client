@@ -90,7 +90,7 @@ function sliceName(str, len = 22) {
 
 function getBuyerFilter(_id) {
   if (!_id) return 'На Склад';
-  
+
   const buyer = store.getters.allBuyer.filter(el => el.id == _id);
   if (buyer && buyer.length) return buyer[0].name;
   return 'На Склад';

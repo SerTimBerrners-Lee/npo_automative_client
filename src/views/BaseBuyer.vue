@@ -165,7 +165,11 @@ export default {
     }
   },
   computed: mapGetters(['allBuyer', 'allProduct']),
-  components: {OpensFile, DescriptionModal, TableBuyer},
+  components: {
+    OpensFile,
+    DescriptionModal,
+    TableBuyer
+  },
   methods: {
     ...mapActions([
       'fetchAllBuyers', 
@@ -178,62 +182,61 @@ export default {
       'filterBuyerToDate'
     ]),
     setBuyer(buyer) {
-      this.setBuyerState(buyer)
-      this.buyer = buyer
-      this.obj.name = buyer.name
-      this.obj.inn = buyer.inn
-      this.obj.cpp = buyer.cpp
-      this.obj.description = buyer.description
+      this.setBuyerState(buyer);
+      this.buyer = buyer;
+      this.obj.name = buyer.name;
+      this.obj.inn = buyer.inn;
+      this.obj.cpp = buyer.cpp;
+      this.obj.description = buyer.description;
       if(buyer.contacts) 
-        this.obj.contact = JSON.parse(buyer.contacts)
+        this.obj.contact = JSON.parse(buyer.contacts);
       
       if(buyer.rekvisit) 
-        this.obj.rekvisit = JSON.parse(buyer.rekvisit)
+        this.obj.rekvisit = JSON.parse(buyer.rekvisit);
       
       if(buyer.documents) 
-        this.obj.documents = buyer.documents
+        this.obj.documents = buyer.documents;
     },
     unmount_attention() {
-      this.filterToAttentionBuyer()
+      this.filterToAttentionBuyer();
     },
     sortToDate() {
-      this.filterBuyerToDate()
+      this.filterBuyerToDate();
     },
     clickDoc(files) {
       if(files) { 
-        this.itemFiles = files
-        this.keyWhenModalGenerateFileOpen = random(10, 1222)
+        this.itemFiles = files;
+        this.keyWhenModalGenerateFileOpen = random(10, 999);
       }
     },
     create() {
-      this.$router.push({path: '/buyer/create'})
+      this.$router.push({path: '/buyer/create'});
     },
     edit() {
-      if(!this.buyer)
-        return 0;
-      this.$router.push({path: '/buyer/edit'})
+      if(!this.buyer) return 0;
+      this.$router.push({path: '/buyer/edit'});
     },
     ban() {
-      if(!this.buyer.id)
-        return 0;
-      this.fetchBuyerBan(this.buyer.id)
+      if(!this.buyer.id) return 0;
+      this.fetchBuyerBan(this.buyer.id);
     },
     openDescription(description) {
-      this.descriptionKey = random(1, 999)
-      this.description = description
+      this.descriptionKey = random(1, 999);
+      this.description = description;
     },
     returnNameProduct(id) {
       for(let product of this.allProduct) {
-        if(product.id == id)
-          return product.name
+        if(product.id == id) return product.name;
       }
     }
   },
   async mounted() {
-    this.loader = true
-    await this.fetchAllBuyers()
-    await this.getAllProduct(true)
-    this.loader = false
+    this.loader = true;
+
+    await this.fetchAllBuyers();
+    await this.getAllProduct(true);
+
+    this.loader = false;
 }
 }
 </script>

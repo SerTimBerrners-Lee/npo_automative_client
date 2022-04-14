@@ -109,7 +109,7 @@
 			v-if='tablebody'
 			:shipments='getOneShipments'
 			:childrens='childrens'
-			:key='new Date().getTime()' /> 
+			@unmount_print='unmount_print' /> 
 
 		<div v-if='shipment_sclad'>
 			<TableShipments  
@@ -171,9 +171,7 @@
 <script>
 import { random } from 'lodash';
 import PrintComplect from './print_complect';
-import { 	eSelectSpan,
-					sliceName,
-					getBuyerFilter } from '@/js/methods';
+import { 	eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/FileBase/openfile';
 import DatePicterCustom from '@/components/date-picter';
 import CbedModalInfo from '@/components/CbEd/cbed-modal';
@@ -182,7 +180,6 @@ import DetalModal from '@/components/BaseDetal/detal-modal';
 import BaseFileModal from '@/components/FileBase/base-files-modal';
 import Shipment from '@/components/Sclad/issuetopull/sh-comlit.modal';
 import ProductModalInfo from '@/components/BaseProduct/product-modal';
-import TableShipments from '@/components/IssueShipment/table-komplect';
 
 export default {
   props: {
@@ -243,6 +240,9 @@ export default {
 			selected_sh: []
     }
   },
+	beforeCreate() {
+    this.$options.components.TableShipments = require('@/components/IssueShipment/table-komplect').default;
+  },
   watch: {
 		kol: function(znach) {
 			if(!this.select_product) return 0;
@@ -263,7 +263,6 @@ export default {
 		OpensFile,
 		DetalModal,
 		CbedModalInfo,
-		TableShipments,
 		BaseFileModal,
 		ProductModalInfo,
 		Shipment,
@@ -298,10 +297,11 @@ export default {
       await this.fetchAllShipmentsTo();
 			this.loader = false;
 		},
+		unmount_print() {
+			this.tablebody = false;
+		},
 		printPage() {
-			this.getOneShipments.buyer_name = getBuyerFilter(this.getOneShipments?.buyer?.id);
 			this.tablebody = true;
-			setTimeout(() => this.tablebody = false, 4000);
     },
 		setDocs(dc) {
       this.itemFiles = dc;
@@ -369,12 +369,10 @@ export default {
     this.destroyModalLeft = 'left-block-modal';
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
-
+		
 		this.loader = true;
 
 		await this.fetchAllBuyers(true);
-		await this.fetchAllShipmentsTo();
-
 		this.list_cbed_detal = [];
 
 		if(!this.id_shipments) return this.destroyModalF();

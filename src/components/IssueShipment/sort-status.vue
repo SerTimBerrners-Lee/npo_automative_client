@@ -30,7 +30,7 @@ export default {
   },
   watch: {
 		selectEnumShipments: function(val) {
-			this.filterShipmentsToStatus(val)
+			this.filterShipmentsToStatus(val);
 		}
 	},
   methods: {

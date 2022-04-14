@@ -3,7 +3,7 @@
     <div :class='destroyModalLeft' @click="destroyModalF"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens" >
-        <h3>Комплектация заказа</h3>
+        <h3>Комплектация заказа {{ shipments?.number_order }}</h3>
         <div>
           <table>
             <tr>
@@ -32,23 +32,29 @@
               </td>
             </tr>
           </table>
+
+          <PrintComplet :shipments='shipments' v-if='print_show' @unmount_print='unmount_print' />
+          <div class="btn-control">
+            <button class="btn-add btn-small" @click='printComplit'>Печать</button>
+          </div>
         </div>
       </div>
     </div>
     <DetalModal
-      :key='detalModalKey'
       v-if='parametrs_detal'
+      :key='detalModalKey'
       :id='parametrs_detal'
 		/>
 		<CbedModalInfo
+			v-if='parametrs_cbed'
 			:id='parametrs_cbed'
 			:key='cbedModalKey'
-			v-if='parametrs_cbed'
 		/>
   </div>
 </template>
 <script>
 import { random } from 'lodash';
+import PrintComplet from './print_complect';
 import CbedModalInfo from '@/components/CbEd/cbed-modal';
 import DetalModal from '@/components/BaseDetal/detal-modal';
 
@@ -56,7 +62,8 @@ export default {
   props: {
     parametrs: {},
     change_complect: {},
-    is_change_komplit: {}
+    is_change_komplit: {},
+    shipments: {}
   },
   data() {
     return {
@@ -69,17 +76,26 @@ export default {
 			cbedModalKey: random(1, 999),
 			parametrs_detal: null,
 			detalModalKey: random(1, 999),
+
+      print_show: false,
     }
   },
   components: {
     CbedModalInfo,
-    DetalModal
+    DetalModal,
+    PrintComplet
   },
   methods: {
     destroyModalF() {
 			this.destroyModalLeft = 'left-block-modal-hidden';
 			this.destroyModalRight = 'content-modal-right-menu-hidden';
 			this.hiddens = 'display: none;';
+    },
+    unmount_print() {
+			this.print_show = false;
+		},
+    printComplit() {
+			this.print_show = true;
     },
     openModal(id, type) {
 			if(type == 'cbed') {
@@ -96,7 +112,7 @@ export default {
 			}
 		},
     delitComplect(obj) {
-      this.komplect = this.komplect.filter(el => ((el.obj.id != obj.obj.id) && (el.type == obj.type)))
+      this.komplect = this.komplect.filter(el => ((el.obj.id != obj.obj.id) && (el.type == obj.type)));
     },
     changeKolIzd(inx, el) {
       this.komplect[inx].kol = Number(el.value);

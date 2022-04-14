@@ -3,7 +3,7 @@ export default {
     title_inform: '',
     message_inform: '',
     type_inform: '',
-    key_inform: 12,
+    key_inform: 999,
   },
   getters: {
     getTitleInform(state) {

@@ -101,12 +101,10 @@ export default {
   computed: mapGetters([
       'getShipments',
       'getAssembles',
-      'allBuyer'
     ]),
 	methods: {
     ...mapActions([
       'fetchAllShipmentsAssemble',
-      'fetchAllBuyers',
       'getOneCbEdField',
       'fetchAssemblePlan',
       'getAllProductById'
@@ -123,14 +121,8 @@ export default {
       console.log(to)
       this.type_open = to;
     },
-    toSetOrders(shipments) {
+    toSetOrders() {
       this.unmount_clear();
-      console.log(shipments);
-    },
-    returnBuyer(buyer_id) {
-      for(const buyer of this.allBuyer) {
-        if(buyer.id == buyer_id) return buyer.name;
-      }
     },
     percent(ass) {
       const res = ass.kolvo_shipments * (1 / ass.kolvo_create);
@@ -158,7 +150,6 @@ export default {
     this.loader = true
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
     await this.fetchAssemblePlan();
-    await this.fetchAllBuyers();
     this.loader = false
 	}
 }

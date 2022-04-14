@@ -32,7 +32,7 @@
 				<td>{{ shipments.number_order }}</td>
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
-				<td class='center' @click='openComplectation(shipments.list_cbed_detal)' >
+				<td class='center' @click='openComplectation(shipments)' >
 					<img 
 						src="@/assets/img/link.jpg" 
 						class='link_img' 
@@ -69,11 +69,12 @@
       :parametrs='itemFiles' 
       v-if="itemFiles.length" 
       :key='keyWhenModalGenerateFileOpen'
-      />
+		/>
 		<KomplectModal
 			v-if='parametrs_komplect'
 			:key='komplect_generate_key'
 			:parametrs='parametrs_komplect'
+			:shipments='selectShipments'
 		/>
 		<ShipmentsModal 
 			:key='key_modal_shipments'
@@ -165,6 +166,7 @@ export default {
     _select(shipments) {
       if(this.selectShipments && this.selectShipments.id == shipments.id);
 				this.selectShipments = null;
+
       this.selectShipments = shipments;
       this.$emit('unmount', this.selectShipments);
     },
@@ -180,9 +182,12 @@ export default {
 		dateDifference(date1, date2) {
 			return dateDifference(date1, date2);
 		},
-		openComplectation(komplect) {
+		openComplectation(sh) {
+			if (!sh.list_cbed_detal) return false;
+
 			this.komplect_generate_key = random(1, 999);
-			this.parametrs_komplect = komplect;
+			this.parametrs_komplect = sh.list_cbed_detal;
+			this.selectShipments = sh;
 		},	
 		async openDocuments(shipments) {	
 			if (!shipments.id) return showMessage('', 'Документов нет', 'w');

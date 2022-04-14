@@ -70,10 +70,10 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import { eSelectSpan } from '@/js/methods';
 import { mapGetters, mapActions } from 'vuex';
 import AddWaybill from '../completassembl/add-waybill';
 import OpensFile from '@/components/FileBase/openfile';
+import { eSelectSpan, getBuyerFilter } from '@/js/methods';
 import ShipmentList from '@/components/IssueShipment/shipments-list-table';
 
 export default {
@@ -101,15 +101,14 @@ export default {
   computed: mapGetters([
       'getShipments',
       'getAssembles',
-      'allBuyer'
     ]),
 	methods: {
     ...mapActions([
       'fetchAllShipmentsAssemble',
-      'fetchAllBuyers',
       'getOneCbEdField',
       'fetchAssemblePlan',
-      'getAllProductById'
+      'getAllProductById',
+      'fetchAllBuyers'
     ]),
     unmount_clear() {
       console.log('unmount_clear');
@@ -120,17 +119,14 @@ export default {
     addWaybill(to = 'add') {
       this.showAddWaybill = true;
       this.keyAddWaybill = random(1, 999);
-      console.log(to)
       this.type_open = to;
     },
     toSetOrders(shipments) {
       this.unmount_clear();
       console.log(shipments);
     },
-    returnBuyer(buyer_id) {
-      for(const buyer of this.allBuyer) {
-        if(buyer.id == buyer_id) return buyer.name;
-      }
+    returnBuyer(_id) {
+      return getBuyerFilter(_id);
     },
     percent(ass) {
       const res = ass.kolvo_shipments * (1 / ass.kolvo_create);
@@ -158,7 +154,7 @@ export default {
     this.loader = true
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
     await this.fetchAssemblePlan();
-    await this.fetchAllBuyers();
+    await this.fetchAllBuyers(true);
     this.loader = false
 	}
 }

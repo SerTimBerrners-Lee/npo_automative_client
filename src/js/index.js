@@ -12,7 +12,7 @@ const getReversDate = DAT =>  {
   return { date, time }
 }
 
-const showMessage = (title, message, type) => {
+const showMessage = (title, message, type = 'i') => {
   const commit = store.commit;
 
   commit('setTitleInform', title);

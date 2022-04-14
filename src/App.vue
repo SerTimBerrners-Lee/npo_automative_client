@@ -75,7 +75,6 @@ export default {
     }
   },
   async mounted() {
-    console.log(this.getTitleInform, this.getMessageInform, this.getTypeInform, this.getKeyInform)
     // Токен обновляется после каждого обновления
     if(this.getAuth && this.getAuth.id) {
       const user = await this.getUserById(this.getAuth.id);

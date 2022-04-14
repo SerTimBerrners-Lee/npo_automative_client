@@ -242,80 +242,78 @@ export default {
       'filterProviderToDate'
     ]),
     unmount_table_material(providers) {
-      this.filterByMaterial(providers)
+      this.filterByMaterial(providers);
     },
     unmount_attention() {
-      this.filterToAttentionProvider()
+      this.filterToAttentionProvider();
     },
     sortToDate() {
-      this.filterProviderToDate()
+      this.filterProviderToDate();
     },
     openDeliveries(deliv) {
-      this.param_deliv = deliv
-      this.keyDelivModal = random(1, 999)
+      this.param_deliv = deliv;
+      this.keyDelivModal = random(1, 999);
     },
     setProvider(provider) { 
-      if(!provider)
-        return false
-      this.setProviderState(provider)
+      if(!provider) return false;
+
+      this.setProviderState(provider);
       this.materials = provider.materials;
       if(this.materials.length) {
-        this.table_key = random(1, 999)
-        this.id_product = provider.id
-        this.is_empty = false
+        this.table_key = random(1, 999);
+        this.id_product = provider.id;
+        this.is_empty = false;
       } else {
-        this.is_empty = true
-        this.table_key = random(1, 999)
+        this.is_empty = true;
+        this.table_key = random(1, 999);
       }
       
-      this.provider = provider
-      this.obj.name = provider.name
-      this.obj.inn = provider.inn
-      this.obj.cpp = provider.cpp
-      this.obj.description = provider.description
+      this.provider = provider;
+      this.obj.name = provider.name;
+      this.obj.inn = provider.inn;
+      this.obj.cpp = provider.cpp;
+      this.obj.description = provider.description;
       if(provider.contacts) 
-        this.obj.contact = JSON.parse(provider.contacts)
+        this.obj.contact = JSON.parse(provider.contacts);
       
       if(provider.rekvisit) 
-        this.obj.rekvisit = JSON.parse(provider.rekvisit)
+        this.obj.rekvisit = JSON.parse(provider.rekvisit);
       
       if(provider.documents) 
-        this.obj.documents = provider.documents
+        this.obj.documents = provider.documents;
     },
     clickDoc(files) {
       if(files) { 
-        this.itemFiles = files
-        this.keyWhenModalGenerateFileOpen = random(10, 1222)
+        this.itemFiles = files;
+        this.keyWhenModalGenerateFileOpen = random(1, 999);
       }
     },
     banProvider() {
-      if(!this.provider.id)
-        return 0;
-      this.fetchProviderBan(this.provider.id)
+      if(!this.provider.id) return 0;
+      this.fetchProviderBan(this.provider.id);
     },
     editProvider() {
-      if(!this.provider)
-        return 0;
-      this.$router.push({path: '/baseprovider/addedit/edit'})
+      if(!this.provider) return 0;
+      this.$router.push({path: '/baseprovider/addedit/edit'});
     },
     clearFilterByNode() {
-      this.clearFilterProviders()
-      this.fetchAllProviderMaterial()
+      this.clearFilterProviders();
+      this.fetchAllProviderMaterial();
     },
     getDetals(order) {
       if(order.product) {
         try {
-          let prod = JSON.parse(order.product)
-          this.detals_order = prod
+          const prod = JSON.parse(order.product);
+          this.detals_order = prod;
         } catch (e) {console.error(e)}
       }
     },
   },
   async mounted() {
-    this.loader = true
-    this.clearCascheMaterial()
-    await this.fetchGetProviders()
-    this.loader = false
+    this.loader = true;
+    this.clearCascheMaterial();
+    await this.fetchGetProviders();
+    this.loader = false;
   }
 }
 </script>

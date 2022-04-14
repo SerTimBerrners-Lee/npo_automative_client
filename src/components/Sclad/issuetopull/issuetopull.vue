@@ -12,6 +12,7 @@
           <input id='z' type="checkbox">
         </div>
         <SortStatus />
+        <SortBuyer />
       </div>
     </div>
     <div>
@@ -23,7 +24,7 @@
 					@unmount='unmount_table_shipments'/>
       </div>
       <div class='btn-control'>
-        <button class="btn-small">Сбросить все фильтры</button>
+        <button class="btn-small" @click='clearFiltersF'>Сбросить все фильтры</button>
         <button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
       </div>
     </div>
@@ -42,7 +43,8 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import Shipment from './sh-comlit.modal';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
+import SortBuyer from '@/components/IssueShipment/SortBuyer';
 import DatePicterRange from '@/components/date-picter-range';
 import SortStatus from '@/components/IssueShipment/sort-status';
 import TableShipmentsSclad from '@/components/IssueShipment/table-complect-sclad';
@@ -62,11 +64,13 @@ export default {
     DatePicterRange,
     Shipment,
     TableShipmentsSclad,
-    SortStatus
+    SortStatus,
+    SortBuyer
   },
   computed: mapGetters(['getShipments']),
   methods: {
-    ...mapActions(['fetchAllShipments', 'fetchAllShipmentsTo']),
+    ...mapActions(['fetchAllShipmentsTo']),
+    ...mapMutations(['clearFilters']),
     unmount_table_shipments(sh) {
       this.select_shipments = sh;
     },
@@ -81,6 +85,10 @@ export default {
       this.loader = true;
       await this.fetchAllShipmentsTo();
       this.loader = false;
+    },
+    async clearFiltersF() {
+      this.clearFilters();
+      await this.unmount_sh_complit();
     },
     changeDatePicterRange(val) {
       console.log(val);

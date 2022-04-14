@@ -29,7 +29,7 @@
 				:key='shipments'
 				class='td-row'
 				@click='e => setShipments(shipments, e.target.parentElement)'
-				@dblclick="shipmentsModal">
+				@dblclick="openShipmentsModal(shipments)">
 				<td v-if='cheked_show'>
 					<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
 						<p class="checkbox_block" @click='responseShipments(shipments)'></p>
@@ -43,7 +43,7 @@
 				<td>{{ shipments.number_order }}</td> <!-- Заказ -->
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td> <!-- Артикул Изделия -->
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td> <!-- Наименование Изделия -->
-				<td class='center' @click='openComplectation(shipments.list_cbed_detal)' >
+				<td class='center' @click='openComplectation(shipments)' >
 					<img 
 						src="@/assets/img/link.jpg" 
 						class='link_img' 
@@ -88,12 +88,12 @@
 			v-if='parametrs_komplect'
 			:key='komplect_generate_key'
 			:parametrs='parametrs_komplect'
+			:shipments='selectShipments'
 		/>
 		<ShipmentsModal 
-			:key='key_modal_shipments'
 			v-if='show_modal_shipments && selectShipments.id'
+			:key='key_modal_shipments'
 			:id_shipments='selectShipments.id'
-			@unmount_shpment='unmount_shpment'
 		/>
 	</div>
 </template>
@@ -126,8 +126,6 @@ export default {
 		return {
 			selectShipments: null,
 			tr: null,
-
-			arrShipmentsState: [],
 
 			parametrs_komplect: null,
 			komplect_generate_key: random(1, 999),
@@ -162,16 +160,12 @@ export default {
 	computed: mapGetters(['getShipments']),
 	methods: {
 		...mapActions(['fetchDocumentsShipments']),
-		...mapMutations(['setOneShipment', 'pusshAddShipments']),
-		unmount_shpment() {
-			this.pusshAddShipments(this.arrShipmentsState);
-		},	
-		shipmentsModal() {
-			if(this.selectShipments) {
-				this.arrShipmentsState = this.getShipments;
-				this.key_modal_shipments = random(1, 999);
-				this.show_modal_shipments = true;
-			}
+		...mapMutations(['setOneShipment']),
+		openShipmentsModal(sh) {
+			this.selectShipments = sh;
+
+			this.key_modal_shipments = random(1, 999);
+			this.show_modal_shipments = true;
 		},
 		responseShipments(sh) {
 			this.$emit('unmount_sh', sh);
@@ -202,9 +196,12 @@ export default {
 		dateDifference(date1, date2) {
 			return dateDifference(date1, date2);
 		},
-		openComplectation(komplect) {
+		openComplectation(sh) {
+			if (!sh.list_cbed_detal) return false;
+
 			this.komplect_generate_key = random(1, 999);
-			this.parametrs_komplect = komplect;
+			this.parametrs_komplect = sh.list_cbed_detal;
+			this.selectShipments = sh;
 		},	
 		async openDocuments(shipments) {	
 			if(!shipments.id) return showMessage('', 'Документов нет', 'w');

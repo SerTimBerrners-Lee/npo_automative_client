@@ -28,7 +28,7 @@ export default {
     }
   },
   computed: mapGetters(['allBuyer']),
-  components: {TableBuyer},
+  components: { TableBuyer },
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden'
@@ -49,7 +49,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
     
-    this.fetchAllBuyers()
+    this.fetchAllBuyers(true)
   },
 }
 </script>

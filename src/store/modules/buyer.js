@@ -23,7 +23,7 @@ export default {
   },
   actions: { 
     async fetchAllBuyers(ctx, light = 'false') {
-      const res =  await fetch(`${PATH_TO_SERVER}api/buyer/light/${light}`);
+      const res = await fetch(`${PATH_TO_SERVER}api/buyer/light/${light}`);
       if(!res.ok) return false;
 
       const result = await res.json();
@@ -37,7 +37,7 @@ export default {
       });
       if(!res) return false;
 
-      ctx.dispatch('fetchAllBuyers')
+      ctx.dispatch('fetchAllBuyers');
     },
     async fetchBuyerBan(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/buyer/${id}`, {
@@ -45,7 +45,7 @@ export default {
       });
       if(!res.ok) return false;
 
-      ctx.commit('removeBuyer', id)
+      ctx.commit('removeBuyer', id);
     },
 
     async updateOneBuyer(ctx, data) {
@@ -55,7 +55,7 @@ export default {
       });
       if(!res.ok) return false;
 
-      ctx.dispatch('fetchAllBuyers')
+      ctx.dispatch('fetchAllBuyers');
     },
     async attachFileToBuyer(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/buyer/files/${data.buyer_id}/${data.file_id}`);

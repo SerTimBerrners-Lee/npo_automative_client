@@ -6,6 +6,7 @@
 				@unmount='changeDatePicterRange'  
 			/>
 			<SortStatus />
+			<SortBuyer />
 		</div>
 		<div>
 			<h3>Комлектация</h3>
@@ -16,7 +17,8 @@
 					@unmount='unmount_table_shipments'/>
 				<div class="btn-control">
 					<button 
-						class="btn-small">
+						class="btn-small"
+						@click='clearFiltersF'>
 						Сбросить все фильтры
 					</button>
 					<button class="btn-small" @click='edit'>
@@ -32,9 +34,10 @@
 	</div>
 </template> 
 <script>
-import {showMessage} from '@/js/';
-import {mapActions, mapGetters} from 'vuex';
+import { showMessage } from '@/js/';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/date-picter-range';
+import SortBuyer from '@/components/IssueShipment/SortBuyer';
 import SortStatus from '@/components/IssueShipment/sort-status';
 import TableShipments from '@/components/IssueShipment/table-komplect';
 
@@ -51,16 +54,24 @@ export default {
 	components: {
 		DatePicterRange,
 		TableShipments,
-		SortStatus
+		SortStatus,
+		SortBuyer
 	},
 	methods: {
-		...mapActions([ 
-			'fetchAllShipmentsTo'
-		]),
+		...mapActions(['fetchAllShipmentsTo']),
+		...mapMutations(['clearFilters']),
 		unmount_table_shipments(select_shipemnts) {
 			if(!select_shipemnts) return false;
 			this.selectShipments = select_shipemnts;
 		},
+		async clearFiltersF() {
+      this.loader = true;
+
+      this.clearFilters();
+      await this.fetchAllShipmentsTo();
+
+      this.loader = false;
+    },
 		changeDatePicterRange(val) {
       console.log(val)
     },
