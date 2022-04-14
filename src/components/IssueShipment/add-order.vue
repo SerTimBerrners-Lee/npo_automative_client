@@ -1,20 +1,20 @@
 <template>
 	<div>
-		<h4 v-if='getOneShipments.parent_id'>Принадлежит к заказу</h4>	
+		<h4 v-if='Number(this.$route.params.parent)'>Прикрепить к заказу</h4>	
 		<TableShipments  
-			v-if='(getParentsShipments.length && Number(this.$route.params.parent)) || show_parent && (getParentsShipments.length)'
+			v-if='(getParentsShipments.length && Number(this.$route.params.parent))'
 			:shipmentsArr='getParentsShipments'
 			:no_set='true'/>
 
 		<div v-if='childrens.length'>
-			<h4>Прикрепленные заказы</h4>
+			<h4>Остальные заказы</h4>
 			<TableShipments  
 				v-if='childrens.length'
 				:shipmentsArr='childrens'
-				:no_set='true'/>
+				:no_set='true' />
 		</div>
 
-		<h3>{{ $route.params?.edit == 'true' ? 'Изменить' : 'Создать'}} заказ</h3>
+		<h3>{{ $route.params?.edit == 'true' ? 'Изменить' : 'Создать'}} заказ {{ number_order }}</h3>
 		<div class="block">
 			<p class='p_flex'> 
 				<span>Дата заказа:</span>
@@ -274,13 +274,14 @@ export default {
 			parametrs_product: false,
 			productModalKey: random(1, 999),
 
+			number_order: null,
+
 			showModalFile: false,
       fileModalKey: random(1, 999),
 			selectedBaseProvesses: false,
 
 			tablebody: false,
-			childrens: [],
-			show_parent: false
+			childrens: []
 		}
 	},
 	watch: {
@@ -496,7 +497,7 @@ export default {
 									kol: Number(kol)
 								})
 						}
-					} else check = true
+					} else check = true;
 				}
 			}
 		},
@@ -505,22 +506,22 @@ export default {
 		 */
 		parserListIzd(res, kol) {
 			try {
-				const cbeds = res.listCbed ? JSON.parse(res.listCbed) : []
-				const detals = res.listDetal ? JSON.parse(res.listDetal) : []
+				const cbeds = res.listCbed ? JSON.parse(res.listCbed) : [];
+				const detals = res.listDetal ? JSON.parse(res.listDetal) : [];
 				if(cbeds.length) {
 					for(let inx in cbeds) {
-						cbeds[inx] = cbeds[inx].cb
-						if(res.articl) cbeds[inx].articl = res.articl
+						cbeds[inx] = cbeds[inx].cb;
+						if(res.articl) cbeds[inx].articl = res.articl;
 					}
 				}
 				if(detals.length) {
 					for(let inx in detals) {
-						detals[inx] = detals[inx].det
-						if(res.articl) detals[inx].articl = res.articl
+						detals[inx] = detals[inx].det;
+						if(res.articl) detals[inx].articl = res.articl;
 					}
 				}
 				for(let i = 0; i < kol; i++) 
-					this.checkedJsonList({...res, cbeds, detals}, true)
+					this.checkedJsonList({...res, cbeds, detals}, true);
 			} catch(e) {console.error(e)}
 		},
 		/**
@@ -642,6 +643,8 @@ export default {
 			this.base = this.getOneShipments.base;
 			this.buyer = this.getOneShipments.buyer?.id;
 			this.to_sklad = this.getOneShipments.to_sklad;
+			this.number_order = this.getOneShipments.number_order;
+
 			if(this.getOneShipments.productId) {
 				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
 				if (res) this.select_product = res;
@@ -692,16 +695,12 @@ export default {
 			this.setOneShipment(shipments);
 			this.editVariable();
 
-			if (shipments.parent_id) {
-				this.show_parent = true;
-				this.filterToParentShipments(Number(shipments.parent_id));
-			}
-			
-			const childrens = await this.fetchIncludesFolderSh({ id: shipments.id, folder: 'childrens' });
-			if (childrens && childrens.childrens) this.childrens = childrens.childrens;
+			const ship_id_for_children = shipments.parent_id || shipments.id;
 
-		} else
-			if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent));
+			const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
+			if (childrens && childrens.childrens) this.childrens = childrens.childrens.filter(el => el.id !== shipments.id);
+
+		} else if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent));
 	}
 }
 </script>

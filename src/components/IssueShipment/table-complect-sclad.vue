@@ -143,6 +143,7 @@ export default {
 		...mapActions(['fetchDocumentsShipments']),
 		...mapMutations(['pusshAddShipments']),
 		unmount_shpment() {
+			this.$emit('unmount');
 			this.pusshAddShipments(this.arrShipmentsState);
 		},	
 		shipmentsModal() {
@@ -162,7 +163,7 @@ export default {
       setTimeout(() => this.tr?.classList?.remove('td-row-all'), 0);
     },
     _select(shipments) {
-      if(this.selectShipments && this.selectShipments.id == shipments.id) ;
+      if(this.selectShipments && this.selectShipments.id == shipments.id);
 				this.selectShipments = null;
       this.selectShipments = shipments;
       this.$emit('unmount', this.selectShipments);

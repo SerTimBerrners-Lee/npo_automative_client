@@ -71,6 +71,35 @@
                 {{ responsible_user ? responsible_user?.initial : 'Выбрать' }}
               </td>
             </tr>
+
+            <tbody v-if='selected_sh && selected_sh.length'>
+              <tr v-for='sh of selected_sh' :key='sh'>
+                <td class='center'>{{ sh?.product?.name }}</td>
+                <td class='center' @click='openComplectation(sh.list_cbed_detal)' >
+                  <img 
+                    src="@/assets/img/link.jpg" 
+                    class='link_img' 
+                    atl='Показать'
+                    v-if='sh.list_cbed_detal' />
+                  <p v-else>Нет комплектации</p>
+                </td>
+                <td class='center'>{{ sh.kol }}</td>
+                <td style='width:50px; word-break: break-all;' class='click center active'  
+                  @click='openDocuments(sh)' >
+                  {{ sh.base }}
+                </td>
+                <td class='center'>{{ sh?.buyer?.name }}</td>
+                <td></td>
+                <td class='center'>{{ sh?.product?.fabricNumber }}</td>
+                <td class='center'>{{ sh.date_shipments }}</td>
+                <td class='center cursor' @click='selectUser("executor")'>
+                  {{ creater_user ? creater_user?.initial : 'Выбрать' }}
+                </td>
+                <td class='center cursor' @click='selectUser("controller")'>
+                  {{ responsible_user ? responsible_user?.initial : 'Выбрать' }}
+                </td>
+              </tr>
+            </tbody>
           </table>
         </div>
       </div>
@@ -140,7 +169,8 @@ export default {
       type: Number
     },
     change_complect: {},
-    is_change_komplit: {}
+    is_change_komplit: {},
+    selected_sh: {}
   },
   data() {
     return {
@@ -236,6 +266,15 @@ export default {
       this.keyModalUser = random(1, 999);
     },
     async save() {
+      await this.fetchSave();
+      if (!this.selected_sh || !this.selected_sh.length) return false;
+      
+      for(const item of this.selected_sh) {
+        this.formData = new FormData();
+        await this.fetchSave(item.id);
+      }
+    },
+    async fetchSave(sh_id = this.shipments_id) {
       this.formData.append('date_order', this.date_order.id);
       this.formData.append('number_order', this.number_order);
       this.formData.append('date_shipments', this.date_shipments);
@@ -244,13 +283,13 @@ export default {
       this.formData.append('name_check', this.name_check);
       this.formData.append('date_create', this.date_create);
       this.formData.append('transport', this.transport);
-      this.formData.append('shipments_id', this.shipments_id);
+      this.formData.append('shipments_id', sh_id);
       this.formData.append('responsible_user_id', this.responsible_user.id || '');
       this.formData.append('creater_user_id', this.creater_user.id || '');
 
       const saveResult = await this.fetchCreateShComplit(this.formData);
       if(saveResult) 
-        showMessage('', 'Отгрузка произошла успешно', 's');
+        showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
       else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
         
       return this.destroyModalF();

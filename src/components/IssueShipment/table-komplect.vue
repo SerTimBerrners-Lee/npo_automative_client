@@ -1,7 +1,13 @@
 <template>
-	<div class="table-scroll">
+	<div class="table-scroll" v-if='shipmentsArr.length'>
 		<table>
 			<tr :class='fixed_table'>
+				<th v-if='cheked_show'>
+					<unicon name="check" fill="royalblue" />
+				</th>
+				<th v-if='remove_show'>
+					<unicon name="glass-tea" fill="#ee0942d0" width='20' />
+				</th> 
 				<th>Заказ</th>
 				<th>Артикул изделия</th>
 				<th>Наименование изделия</th>
@@ -24,6 +30,16 @@
 				class='td-row'
 				@click='e => setShipments(shipments, e.target.parentElement)'
 				@dblclick="shipmentsModal">
+				<td v-if='cheked_show'>
+					<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+						<p class="checkbox_block" @click='responseShipments(shipments)'></p>
+					</div>
+				</td>
+				<td v-if='remove_show'>
+					<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+						<p class="checkbox_block_del" @click='removeShipments(shipments)'></p>
+					</div>
+				</td>
 				<td>{{ shipments.number_order }}</td> <!-- Заказ -->
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td> <!-- Артикул Изделия -->
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td> <!-- Наименование Изделия -->
@@ -102,7 +118,9 @@ export default {
 		fixed_table: {
 			type: String,
 			default: 'fixed_table_85'
-		}
+		},
+		cheked_show: {},
+		remove_show: {}
 	},
 	data() {
 		return {
@@ -154,6 +172,12 @@ export default {
 				this.key_modal_shipments = random(1, 999);
 				this.show_modal_shipments = true;
 			}
+		},
+		responseShipments(sh) {
+			this.$emit('unmount_sh', sh);
+		},
+		removeShipments(sh) {
+			this.$emit('unmount_sh_remove', sh);
 		},
 		setShipments(shipments, e) {
 			if (this.no_set) return false;

@@ -5,23 +5,18 @@
     <div :style="hiddens" > 
 		<div>
 
-		<h4 v-if='show_parent'>Принадлежит к заказу</h4>	
-		<TableShipments  
-			v-if='getParentsShipments.length && show_parent'
-			:shipmentsArr='getParentsShipments'
-			:fixed_table='"fixed_table_10"'
-			:no_set='true'/>
-
 		<div v-if='childrens.length'>
-			<h4>Прикрепленные заказы</h4>
+			<h4>Остальные заказы</h4>
 			<TableShipments  
 				v-if='childrens.length'
 				:fixed_table='"fixed_table_10"'
 				:shipmentsArr='childrens'
+				:cheked_show='true'
+				@unmount_sh='unmount_sh'
 				:no_set='true'/>
 		</div>
 
-		<h3>Заказ</h3>
+		<h3>Заказ {{ number_order }}</h3>
 		<div class="block">
 			<p class='p_flex'>
 				<span>Дата заказа:</span>
@@ -67,9 +62,6 @@
 				<h3>Комплектация изделия</h3>
 				<table>
 					<tr>
-						<th>
-							<unicon name="check" fill="royalblue" />
-						</th> 
 						<th>№</th>
 						<th>Артикул</th>
 						<th>Наименование СБ или детали</th>
@@ -79,11 +71,6 @@
 						v-for='(obj, inx) of list_cbed_detal' 
 						:key='obj'
 						class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
-						<td>
-							<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-								<p class="checkbox_block" @click='e => toSetShipments(obj, e.target)'></p>
-							</div>
-						</td>
 						<td class='center'>{{ inx + 1 }}</td>
 						<td>{{ obj.obj?.articl }}</td>
 						<td @click='showInformIzdel(obj.obj?.id, obj?.type)'>{{ obj.obj?.name }}</td>
@@ -91,8 +78,8 @@
 							<input 
 								type="text" 
 								:value='obj.kol'
-								class='input_kol center' 
-								@change="e => editKolVo(inx, e.target.value)">
+								class='input_kol center'
+								disabled>
 						</td>
 					</tr>
 				</table>
@@ -125,49 +112,22 @@
 			:key='new Date().getTime()' /> 
 
 		<div v-if='shipment_sclad'>
-			<div class='table_block'>
-				<div>
-					<h3>Выбранные позиции для отгрузки</h3>
-					<table>
-						<tr>
-							<th>
-								<unicon name="glass-tea" fill="#ee0942d0" width='20' />
-							</th> 
-							<th>№</th>
-							<th>Артикул</th>
-							<th>Наименование СБ или детали</th>
-							<th>Кол-во</th>
-						</tr>
-						<tr 
-							v-for='(obj, inx) of selectedsCbEd' 
-							:key='obj'
-							class='td-row' @click='e => selectTr(inx, e.target.parentElement)'>
-							<td>
-								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-									<p class="checkbox_block_del" @click='e => toSetShipments(obj, e.target)'></p>
-								</div>
-							</td>
-							<td class='center'>{{ inx + 1 }}</td>
-							<td>{{ obj.obj?.articl }}</td>
-							<td @click='showInformIzdel(obj.obj?.id, obj?.type)'>{{ obj.obj?.name }}</td>
-							<td class='center'>
-								<input 
-									type="text" 
-									:value='obj.kol'
-									class='input_kol center' 
-									disabled>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</div>
+			<TableShipments  
+				v-if='selected_sh.length'
+				:fixed_table='"fixed_table_10"'
+				:shipmentsArr='selected_sh'
+				:remove_show='true'
+				@unmount_sh_remove='unmount_sh_remove'
+				:no_set='true'/>
+
 			<div class='btn-control'>
 				<button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
 			</div>
 		</div>
 		<div class='btn-control'>
-				<button class="btn-small btn-add" @click='printPage'>Печать</button>
-			</div>
+			<button class="btn-small btn-add" @click='printPage' v-if='shipment_sclad'>Печать c выбранными</button>
+			<button class="btn-small btn-add" @click='printPage' v-else>Печать</button>
+		</div>
 		<OpensFile 
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -197,9 +157,8 @@
 		<Shipment 
       v-if='showShipmentModal && getOneShipments'
       :key='shipmentKey'
+			:selected_sh='selected_sh'
       :shipments_id='getOneShipments.id'
-			:change_complect='selectedsCbEd'
-      :shipment_sclad='true'
       @unmount='unmount_sh_complit'
     />
 		<Loader v-if='loader' :description='"Загрузка Заказов"' />
@@ -277,12 +236,11 @@ export default {
 			showModalFile: false,
       fileModalKey: random(1, 999),
 			selectedBaseProvesses: false,
-			selectedsCbEd: [],
 
 			tablebody: false,
 			loader: false,
 			childrens: [],
-			show_parent: false
+			selected_sh: []
     }
   },
   watch: {
@@ -327,6 +285,14 @@ export default {
 
 			this.$emit('unmount_shpment');
 		},
+		unmount_sh(sh) {
+			this.childrens = this.childrens.filter(el => el.id != sh.id);
+			this.selected_sh.push(sh);
+		},
+		unmount_sh_remove(sh) {
+			this.selected_sh = this.selected_sh.filter(el => el.id != sh.id);
+			this.childrens.push(sh);
+		},
 		async unmount_sh_complit() {
 			this.loader = true;
       await this.fetchAllShipmentsTo();
@@ -337,28 +303,6 @@ export default {
 			this.tablebody = true;
 			setTimeout(() => this.tablebody = false, 4000);
     },
-		toSetShipments(obj, el) {
-			el.classList.toggle('checkbox_block_select');
-			setTimeout(() => {
-				if (this.tr) this.tr.classList.remove('td-row-all');
-			});
-
-			let find = false;
-			for (const item of this.selectedsCbEd) {
-				if (item.obj.id == obj.obj.id && item.type == obj.type) find = true;
-			}
-
-			if (!find) {
-				this.list_cbed_detal = this.list_cbed_detal.filter(el => ((el.obj.id != obj.obj.id) && (el.type == obj.type)));
-				this.selectedsCbEd.push(obj);
-			} else {
-				this.list_cbed_detal.push(obj);
-				this.selectedsCbEd = this.selectedsCbEd.filter(el => ((el.obj.id != obj.obj.id) && (el.type == obj.type)));
-			}
-		},
-		editKolVo(inx, val) {
-			this.list_cbed_detal[inx].kol = Number(val);
-		},
 		setDocs(dc) {
       this.itemFiles = dc;
       this.keyWhenModalGenerateFileOpen = random(10, 999);
@@ -379,6 +323,7 @@ export default {
 			this.buyer = this.getOneShipments.buyer?.id;
 			this.to_sklad = this.getOneShipments.to_sklad;
 			this.number_order = this.getOneShipments.number_order;
+
 			if(this.getOneShipments.productId) {
 				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
 				if (res) this.select_product = res;
@@ -438,13 +383,11 @@ export default {
 		if(!result) return this.destroyModalF();
 		this.setOneShipment(result);
 		this.editVariable();
-		if (result.parent_id) {
-			this.filterToParentShipments(result.parent_id);
-			this.show_parent = true;
-		}
+
+		const ship_id_for_children = result.parent_id || result.id;
  
-		const childrens = await this.fetchIncludesFolderSh({ id: result.id, folder: 'childrens' });
-		if (childrens && childrens.childrens) this.childrens = childrens.childrens;
+		const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
+		if (childrens && childrens.childrens) this.childrens = childrens.childrens.filter(el => el.id != result.id);
 
 		this.loader = false;
   },
