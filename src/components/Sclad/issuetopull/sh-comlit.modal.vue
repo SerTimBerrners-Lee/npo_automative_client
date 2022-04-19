@@ -20,7 +20,7 @@
           />
         </span>
         <p>
-          <span>Дата отгрузки: </span>
+          <span>Дата отгрузки по договору: </span>
           <input type="text" v-model='date_shipments'>
           <span>Транспортная компания: </span>
           <input type="text" v-model='transport'>

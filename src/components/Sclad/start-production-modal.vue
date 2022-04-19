@@ -36,7 +36,7 @@
           </tr>
         </table>
       </div>
-      <div class="btn-control out-btn-control">
+      <div class="btn-control out-btn-control wh_25p">
         <button 
         class="btn-status"
         @click='destroyModalF'>
@@ -149,9 +149,6 @@ export default {
 </script>
 
 <style scoped>
-.out-btn-control {
-  width: 96%;
-}
 table{ 
   width: 100%;
   margin-bottom: 50px;

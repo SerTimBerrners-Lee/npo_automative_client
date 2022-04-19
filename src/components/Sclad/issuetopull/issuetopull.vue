@@ -23,7 +23,7 @@
           :shipment_sclad='true'
 					@unmount='unmount_table_shipments'/>
       </div>
-      <div class='btn-control'>
+      <div class='btn-control out-btn-control wh_70p'>
         <button class="btn-small" @click='clearFiltersF'>Сбросить все фильтры</button>
         <button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
       </div>

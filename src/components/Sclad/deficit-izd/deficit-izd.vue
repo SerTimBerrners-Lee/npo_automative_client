@@ -115,7 +115,7 @@
           </tr>
 
         </table>
-        <div class='btn-control'>
+        <div class='btn-control out-btn-control wh_70p'>
           <button class="btn-small" @click='normTimeOperation'>Норма времени по операциям</button>
           <button class="btn-small btn-add" @click='start'>Запустить в производство</button>
         </div>

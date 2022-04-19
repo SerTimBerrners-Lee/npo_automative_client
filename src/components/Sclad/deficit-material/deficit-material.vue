@@ -49,7 +49,7 @@
 				<TableMaterial :type_view='"def"' />
 
 			</div>
-				<div class='btn-control'>
+				<div class='btn-control out-btn-control wh_80p'>
 					<button class="btn-small" @click="exportExcel"> Выгрузка в Excel </button>
 					<button class="btn-small" @click='printPage'> Печать отчета </button>
 				</div>

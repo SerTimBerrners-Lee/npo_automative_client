@@ -267,7 +267,7 @@ html, html * {
 }
 
 ::-webkit-scrollbar{
-  width: 5px;
+  width: 8px;
 }
 
 ::-webkit-scrollbar-track{
@@ -576,8 +576,54 @@ textarea {
   padding: 10px;
   border: 1px solid #ececec;
   box-shadow: 2px 3px 4px 0px #0b0b0b;
+  position: fixed;
+  bottom: 10px;
+  background-color: white;
 }
 
+.wh_10p {
+  width: 10%; 
+}
+
+.wh_20p {
+  width: 20%; 
+}
+
+.wh_25p {
+  width: 25%; 
+}
+
+.wh_30p {
+  width: 30%; 
+}
+
+.wh_40p {
+  width: 40%; 
+}
+
+.wh_50p {
+  width: 50%; 
+}
+
+.wh_60p {
+  width: 60%; 
+}
+
+.wh_70p {
+  width: 70%; 
+}
+
+.wh_80p {
+  width: 80%; 
+}
+
+.wh_90p {
+  width: 90%; 
+}
+
+.wh_100p {
+  width: 100%; 
+}
 @keyframes width {
   from {
     width: 1vw;

@@ -159,7 +159,7 @@
           </div>
         </div>
 
-        <div class="btn-control out-btn-control">
+        <div class="btn-control out-btn-control wh_60p">
           <button class="btn-status" @click='destroyModalF'>Отменить</button>
           <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
           <button class="btn-status btn-black" 
@@ -535,7 +535,6 @@ textarea {
 }
 .out-btn-control {
   margin-top: 10px;
-  width: 98%;
 }
 .span-type-files {
   width: 100%;

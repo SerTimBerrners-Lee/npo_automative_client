@@ -15,7 +15,7 @@
 					v-if='getShipments.length'
 					:shipmentsArr='getShipments'
 					@unmount='unmount_table_shipments'/>
-				<div class="btn-control">
+				<div class="btn-control out-btn-control wh_80p">
 					<button 
 						class="btn-small"
 						@click='clearFiltersF'>
