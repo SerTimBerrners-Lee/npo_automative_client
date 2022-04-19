@@ -1,6 +1,7 @@
 import App from './App.vue';
 import store from './store';
 import router from './router';
+import workers from './workers';
 import { createApp } from 'vue';
 import Unicon from 'vue-unicons';
 import Loader from '@/components/loader.vue';
@@ -55,6 +56,7 @@ Unicon.add([
 createApp(App)
     .use(store)
     .use(router)
+    .use(workers)
     .use(SetupCalendar, {})
     .component('Loader', Loader)
     .component('MiniLoader', MiniLoader)

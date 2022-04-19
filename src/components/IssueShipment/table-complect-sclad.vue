@@ -14,7 +14,7 @@
 				<th>Осталось дней</th>
 				<th style='width:50px;'>Основание</th>
 				<th>Покупатель</th> 
-				<th>Готовность к отгрузки в %</th>
+				<th>Готовность к отгрузке в %</th>
 				<th>Статус</th>
 				<th>Дата отгрузки</th>
 				<th>Примечание</th>
@@ -48,7 +48,7 @@
 					{{ shipments.base }}
 				</td>
 				<td class='center'>{{ shipments.to_sklad ? 'Склад' : shipments.buyer ? shipments.buyer.name : 'нет'}}</td>
-				<td></td>
+				<td class='center'>0</td>
 				<td v-if='shipments.status == enumShipments[0]' class='work_operation center'>{{ shipments.status  }}</td>
 				<td v-if='shipments.status == enumShipments[1]' class='delete_operation center'>{{ shipments.status  }}</td>
 				<td v-if='shipments.status == enumShipments[2]' class='work_operation center'>{{ shipments.status  }}</td>
