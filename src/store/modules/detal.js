@@ -61,7 +61,7 @@ export default {
         body   :  data
       });
       if(!res.ok) return false;
-
+      
       const result = await res.json();
       ctx.commit('fetchUpdateDetalMutation', result);
       return result;

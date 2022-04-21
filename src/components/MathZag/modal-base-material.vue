@@ -82,7 +82,7 @@
             </tr>
           </table>
         </div>
-        <div class="btn-control out-btn-control">
+        <div class="btn-control out-btn-control wh_70p">
           <button class="btn-status" @click='destroyModalF' v-if='!getOneMaterial'>Отменить</button>
           <button 
             class="btn-status btn-black" 

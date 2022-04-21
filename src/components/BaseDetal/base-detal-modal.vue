@@ -171,7 +171,7 @@
             </div>
             </div>
 
-            <div class="btn-control out-btn-control"  v-if='!get_one'>
+            <div class="btn-control out-btn-control wh_60p"  v-if='!get_one'>
               <button 
                 class="btn-status btn-black" 
                 style="height: 0px;" 
@@ -411,7 +411,6 @@ td {
   text-align: center;
 }
 .btn-control {
-  width: 100%;
   flex-direction: column;
   align-items: flex-end;
 }

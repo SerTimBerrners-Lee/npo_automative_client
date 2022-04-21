@@ -324,13 +324,11 @@ export default {
         }
       }
     },
-    saveDetal() {
+    async saveDetal() {
       if (this.obj.diametr == '0' || this.obj.lengt == '0' || this.obj.height == '0' || this.obj.thickness == '0' || this.obj.wallThickness == '0' || this.obj.width == '0' || this.obj.areaCS == '0') {
         return showMessage('', 'Заполните все поля для характеристик заготовки', 'w');
       }
-
       if (this.obj.name.length < 3) return 0;
-
       if (!this.formData) this.formData = new FormData();
 
       this.formData.append('techProcessID', this.techProcessID || null);
@@ -379,31 +377,27 @@ export default {
             this.formData.append('materialList', JSON.stringify(this.materialList));
             if(this.$props.editAndCopt == 'true') {
               this.clearData();
-              this.createNewDetal(this.formData).then(res => {
-                if(res)
-                  showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's');
-              })
-              return 
+              const res = await this.createNewDetal(this.formData);
+              if(res)
+                showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's');
+              return
             }
-            this.fetchUpdateDetal(this.formData).then(res => {
-              if(res) 
-                showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's');
-            })
+            const res = await this.fetchUpdateDetal(this.formData);
+            if(res) 
+              showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's');
           }
         }
       } else {
         if(this.$props.editAndCopt == 'true') {
           this.clearData()
-          this.createNewDetal(this.formData).then(res => {
-            if(res)
-              showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's');
-          })
+          const res = await this.createNewDetal(this.formData);
+          if(res)
+            showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's');
           return 
         }
-        this.fetchUpdateDetal(this.formData).then(res => {
-          if(res) 
-            showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's');
-        })
+        const res = await this.fetchUpdateDetal(this.formData);
+        if(res) 
+          showMessage('', 'Деталь усешно обновлена. Перенаправление на главную страницу...', 's');
       }
 
       this.clearData();

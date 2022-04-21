@@ -27,7 +27,6 @@
 </div>
 </template>
 <script>
-import { random } from 'lodash';
 
 export default {
   props: ['parametrs'],
