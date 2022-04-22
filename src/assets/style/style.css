@@ -576,7 +576,7 @@ textarea {
   padding: 10px;
   border: 1px solid #ececec;
   box-shadow: 2px 3px 4px 0px #0b0b0b;
-  position: fixed;
+  position: sticky;
   bottom: 10px;
   background-color: white;
 }
