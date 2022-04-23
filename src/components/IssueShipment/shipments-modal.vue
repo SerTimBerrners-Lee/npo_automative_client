@@ -158,7 +158,6 @@
       v-if='showShipmentModal && getOneShipments'
       :key='shipmentKey'
 			:selected_sh='selected_sh'
-      :shipments_id='getOneShipments.id'
       @unmount='unmount_sh_complit'
     />
 		<Loader v-if='loader' :description='"Загрузка Заказов"' />
@@ -385,7 +384,8 @@ export default {
 		const ship_id_for_children = result.parent_id || result.id;
  
 		const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
-		if (childrens && childrens.childrens) this.childrens = childrens.childrens.filter(el => el.id != result.id);
+		if (childrens) this.childrens = childrens.childrens.filter(el => el.id != result.id);
+		this.childrens.push(result);
 
 		this.loader = false;
   },

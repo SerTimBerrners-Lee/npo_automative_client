@@ -61,7 +61,7 @@
                 {{ shipments.base }}
               </td>
               <td class='center'>{{ shipments?.buyer?.name }}</td>
-              <td></td>
+              <td class='center'>0</td> <!-- Потребность к отгрузке -->
               <td class='center'>{{ shipments?.product?.fabricNumber }}</td>
               <td class='center'>{{ shipments.date_shipments }}</td>
               <td class='center cursor' @click='selectUser("executor")'>
@@ -72,8 +72,8 @@
               </td>
             </tr>
 
-            <tbody v-if='selected_sh && selected_sh.length'>
-              <tr v-for='sh of selected_sh' :key='sh'>
+            <tbody v-if='childrens && childrens.length'>
+              <tr v-for='sh of childrens' :key='sh'>
                 <td class='center'>{{ sh?.product?.name }}</td>
                 <td class='center' @click='openComplectation(sh.list_cbed_detal)' >
                   <img 
@@ -89,7 +89,7 @@
                   {{ sh.base }}
                 </td>
                 <td class='center'>{{ sh?.buyer?.name }}</td>
-                <td></td>
+                <td class='center'>0</td> <!-- Потребность к отгрузке -->
                 <td class='center'>{{ sh?.product?.fabricNumber }}</td>
                 <td class='center'>{{ sh.date_shipments }}</td>
                 <td class='center cursor' @click='selectUser("executor")'>
@@ -109,12 +109,21 @@
         <textarea maxlength='250' v-model='description'></textarea>
       </div>
 
+      <div class="wh_50p">
+        <TableDocument 
+          v-if='documentsData.length' 
+          :title='""' 
+          :key='table_document_key'
+          :documents='documentsData'/>
+      </div>
+
       <div>
         <h3>Файлы</h3>
-        <div class="block">
-          <label class="btn-small btn_file" for="docsFileSelected">Добавить</label>
-          <input id="docsFileSelected" @change="e => addDock(e)" type="file" style="display:none;" required multiple>
-          <span class='active' @click='openFiles()'>{{ name_check }}</span>
+        <div style='height: 50px;'>
+          <FileLoader 
+            :typeGetFile='"getfile"'
+            @unmount='file_unmount'
+          />
         </div>
       </div>
 
@@ -161,6 +170,7 @@ import AddFile from '@/components/FileBase/addfile';
 import OpensFile from '@/components/FileBase/openfile';
 import DatePicterCustom from '@/components/date-picter';
 import ModalUsersList from '@/components/Users/modal-list-user';
+import TableDocument from '@/components/FileBase/table-document';
 import KomplectModal from '@/components/IssueShipment/komplect-modal';
 
 export default {
@@ -170,7 +180,7 @@ export default {
     },
     change_complect: {},
     is_change_komplit: {},
-    selected_sh: {}
+    selected_sh: []
   },
   data() {
     return {
@@ -207,6 +217,10 @@ export default {
       loader: false,
       date_create: new Date().toLocaleDateString("ru-RU"),
       transport: '',
+      childrens: [],
+      lastFormData: null,
+      documentsData: [],
+      table_document_key: random(10, 999),
     }
   },
   components: { 
@@ -214,7 +228,8 @@ export default {
     OpensFile,
     AddFile,
     ModalUsersList,
-    DatePicterCustom
+    DatePicterCustom,
+    TableDocument
   },
   methods: {
     ...mapActions([
@@ -228,6 +243,7 @@ export default {
 			this.hiddens = 'display: none;';
 
       this.$emit('unmount', this.shipments_id);
+      this.loader = false;
     },
     unmount_user_modal(data) {
       if(!data) return false;
@@ -235,6 +251,17 @@ export default {
       if(this.typeOpen == 'executor') this.creater_user = data;
       if(this.typeOpen == 'controller') this.responsible_user = data;
       this.typeOpen = '';
+    },
+    file_unmount(e) { 
+      if(!e) return 0;
+      this.formData = e.formData;
+      this.name_check = '';
+      this.lastFormData = this.formData;
+      this.table_document_key = random(1, 999);
+      for(const fd of this.formData.getAll('document')) {
+        this.documentsData.push(fd);
+        this.name_check += ` ${fd.name}`;
+      }
     },
     update() {
       this.date_order = this.shipments.date_order;
@@ -251,14 +278,6 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(1, 999);
       this.showModalFiles = true;
     },
-    addDock(val) {
-      val.target.files.forEach(f => {
-        this.docFiles.push(f);
-      });
-
-      this.keyWhenModalGenerate = random(10, 999);
-      this.isChangeFolderFile = true;
-    },
     selectUser(type) {
       this.typeOpen = type;
 
@@ -267,14 +286,24 @@ export default {
     },
     async save() {
       await this.fetchSave();
-      if (!this.selected_sh || !this.selected_sh.length) return false;
+      if (!this.childrens || !this.childrens.length) return false;
       
-      for(const item of this.selected_sh) {
+      for(const item of this.childrens) {
         this.formData = new FormData();
+        if (this.lastFormData) {
+          if (this.lastFormData.getAll('docs')) this.formData.append('docs', this.lastFormData.getAll('docs'));
+          if (this.lastFormData.getAll('document')) {
+            for (const file of this.lastFormData.getAll('document')) {
+              this.formData.append('document', file);
+            }
+          }
+        }
         await this.fetchSave(item.id);
       }
     },
-    async fetchSave(sh_id = this.shipments_id) {
+    async fetchSave(sh_id = this.shipments.id) {
+      if (!sh_id) return showMessage('', 'Выберите задачу, ошибка в ID', 'w');
+
       this.formData.append('date_order', this.date_order.id);
       this.formData.append('number_order', this.number_order);
       this.formData.append('date_shipments', this.date_shipments);
@@ -288,10 +317,9 @@ export default {
       this.formData.append('creater_user_id', this.creater_user.id || '');
 
       const saveResult = await this.fetchCreateShComplit(this.formData);
-      if(saveResult) 
-        showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
+      if(saveResult) showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
       else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
-        
+
       return this.destroyModalF();
     },
     async openDocuments(shipments) {	
@@ -314,13 +342,21 @@ export default {
     this.hiddens = 'opacity: 1;';
     this.loader = true;
 
-    if(!this.shipments_id) return this.destroyModalF();
-    const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
-    if(!result) return this.destroyModalF();
+    if (!this.shipments_id && !this.selected_sh.length) {
+      showMessage('', 'Выберите задачу на отгрузку', 'w');
+      return this.destroyModalF();
+    }
 
-    this.shipments = result;
+    if (!this.selected_sh.length) { // Если заказов нет и только один переданный
+      const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
+      if(!result) return this.destroyModalF();
+      this.shipments = result;
+    } else {
+      this.shipments = this.selected_sh[0];
+      this.childrens = this.selected_sh.filter(el => el.id !== this.shipments.id);
+    }
+    
     this.update();
-
     this.loader = false;
   },
 }
