@@ -128,6 +128,9 @@
 			<button class="btn-small btn-add" @click='printPage' v-if='shipment_sclad'>Печать c выбранными</button>
 			<button class="btn-small btn-add" @click='printPage' v-else>Печать</button>
 		</div>
+
+		<h3>Информация об отгрузки</h3>
+		<ShComplit :sh_complit_id='id_shipments' :ship='getOneShipments' />
 		<OpensFile 
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -169,6 +172,8 @@
 </template>
 <script>
 import { random } from 'lodash';
+import ShComplit from './ShComplit';
+import { showMessage } from '@/js/';
 import PrintComplect from './print_complect';
 import { 	eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/FileBase/openfile';
@@ -265,6 +270,7 @@ export default {
 		BaseFileModal,
 		ProductModalInfo,
 		Shipment,
+		ShComplit,
 		PrintComplect
 	},
 	methods: {
@@ -284,6 +290,9 @@ export default {
 			this.$emit('unmount_shpment');
 		},
 		unmount_sh(sh) {
+			console.log(sh.status);
+			if (sh.status === "Отгружено") return showMessage('', 'Задача уже отгружена!', 'w');
+
 			this.childrens = this.childrens.filter(el => el.id != sh.id);
 			this.selected_sh.push(sh);
 		},

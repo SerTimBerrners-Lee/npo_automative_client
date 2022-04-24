@@ -51,9 +51,8 @@
 				<td class='center'>0</td>
 				<td v-if='shipments.status == enumShipments[0]' class='work_operation center'>{{ shipments.status  }}</td>
 				<td v-if='shipments.status == enumShipments[1]' class='delete_operation center'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[2]' class='work_operation center'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[3]' class='success_operation center'>{{ shipments.status  }}</td>
-				<td v-if='shipments.status == enumShipments[4]' class='delete_operation center'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status  }}</td>
+				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status  }}</td>
 				<td>{{ shipments.date_shipments }}</td>
 				<td class='center'>
 					<img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
@@ -127,7 +126,6 @@ export default {
 			enumShipments: [				
 				'Заказано',
 				'Удалено',
-				'Выполняется',
 				'Отгружено',
 				'Просрочено'
 			],
@@ -146,7 +144,7 @@ export default {
 		unmount_shpment() {
 			this.$emit('unmount');
 			this.pusshAddShipments(this.arrShipmentsState);
-		},	
+		},
 		shipmentsModal() {
 			if(this.selectShipments) {
 				this.arrShipmentsState = this.getShipments;

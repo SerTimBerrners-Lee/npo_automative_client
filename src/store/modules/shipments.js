@@ -43,6 +43,12 @@ export default {
 			if (!res.ok) return false;
 			return true;
 		},
+		async fetchShComplit(ctx, id) {
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcomplite/${id}`);
+			if (!res.ok) return false;
+			const result = await res.json();
+			return result;
+		},
 		async fetchUpdateShipments(ctx, data) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {
 				method: "put",
@@ -184,8 +190,8 @@ export default {
 			if (value == 'Все') return false;
 
 			state.shipments = state.shipments.filter((el) => {
-				if (value == 'Выполняется')
-					if (el.status == value || el.status == 'Просрочено')return el;
+				if (value == 'Заказано')
+					if (el.status == value || el.status == 'Просрочено') return el;
 				if (el.status == value)return el;
 			});
 		},

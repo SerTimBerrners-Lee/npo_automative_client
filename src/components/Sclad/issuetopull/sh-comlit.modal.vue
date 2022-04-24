@@ -10,20 +10,34 @@
           <input type="text" v-model='number_order'>
           <span>Заводской №: </span>
           <input type="text" v-model='fabric_number'>
-          <span>Дата заказа: </span>
-          <input type="text" v-model='date_order'>
-        </p>
-        <span style='display: flex; align-items: center;'>
-          <span>Дата выполнения: </span>
-          <DatePicterCustom
-            :dateStart='date_create'
-          />
-        </span>
-        <p>
-          <span>Дата отгрузки по договору: </span>
-          <input type="text" v-model='date_shipments'>
+          <span style='display: flex; align-items: center; float: left;'>
+            <span>Дата заказа: </span>
+            <DatePicterCustom
+              :dateStart='date_order'
+            />
+          </span>
           <span>Транспортная компания: </span>
           <input type="text" v-model='transport'>
+        </p>
+        <p style="width: 100%;">
+          <span style='display: flex; align-items: center; float: left;'>
+            <span>Дата выполнения: </span>
+            <DatePicterCustom
+              :dateStart='date_create'
+            />
+          </span>
+          <span style='display: flex; align-items: center; float: left;'>
+            <span>Дата фактический отгрузки: </span>
+            <DatePicterCustom
+              :dateStart='date_shipments_fakt'
+            />
+          </span>
+          <span style='display: flex; align-items: center; '>
+            <span>Дата планируемой отгрузки: </span>
+            <DatePicterCustom
+              :dateStart='date_shipments'
+            />
+          </span>
         </p>
       </div>
 
@@ -137,7 +151,6 @@
 			:key='komplect_generate_key'
 			:parametrs='parametrs_komplect'
       :change_complect='change_complect'
-      :is_change_komplit='true'
 		/>
     <AddFile 
       :parametrs='docFiles' 
@@ -202,7 +215,7 @@ export default {
 
       shipments: null,
       
-      date_order: '',
+      date_order: new Date().toLocaleDateString("ru-RU"),
       number_order: '',
       date_shipments: '',
       fabric_number: '',
@@ -221,6 +234,7 @@ export default {
       lastFormData: null,
       documentsData: [],
       table_document_key: random(10, 999),
+      date_shipments_fakt: new Date().toLocaleDateString("ru-RU"),
     }
   },
   components: { 
@@ -307,6 +321,7 @@ export default {
       this.formData.append('date_order', this.date_order.id);
       this.formData.append('number_order', this.number_order);
       this.formData.append('date_shipments', this.date_shipments);
+      this.formData.append('date_shipments_fakt', this.date_shipments_fakt);
       this.formData.append('fabric_number', this.fabric_number);
       this.formData.append('description', this.description);
       this.formData.append('name_check', this.name_check);

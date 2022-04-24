@@ -62,9 +62,8 @@
 				<td class='center'>0</td> <!-- Готовность к отгрузки в % -->
 				<td v-if='shipments.status == enumShipments[0]' class='work_operation center'>{{ shipments.status }}</td>
 				<td v-if='shipments.status == enumShipments[1]' class='delete_operation center'>{{ shipments.status }}</td>
-				<td v-if='shipments.status == enumShipments[2]' class='work_operation center'>{{ shipments.status }}</td>
-				<td v-if='shipments.status == enumShipments[3]' class='success_operation center'>{{ shipments.status }}</td>
-				<td v-if='shipments.status == enumShipments[4]' class='delete_operation center'>{{ shipments.status }}</td> <!-- Статус -->
+				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status }}</td>
+				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status }}</td> <!-- Статус -->
 				<td>{{ shipments.date_shipments }}</td> <!-- Дата отгрузки -->
 				<td></td>
 				<td></td>
@@ -145,7 +144,6 @@ export default {
 			enumShipments: [				
 				'Заказано',
 				'Удалено',
-				'Выполняется',
 				'Отгружено',
 				'Просрочено'
 			],

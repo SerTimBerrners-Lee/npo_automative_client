@@ -21,7 +21,6 @@ export default {
 				'Все',				
 				'Заказано',
 				'Удалено',
-				'Выполняется',
 				'Отгружено',
 				'Просрочено'
 			],
@@ -37,7 +36,7 @@ export default {
     ...mapMutations(['filterShipmentsToStatus'])
   },
   mounted() {
-    this.selectEnumShipments = 'Выполняется';
+    this.selectEnumShipments = 'Заказано';
   }
 }
 </script>

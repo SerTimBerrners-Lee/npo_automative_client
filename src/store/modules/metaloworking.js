@@ -168,8 +168,6 @@ export default {
      
       if(val == 'В работе')
         state.metaloworkings = state.middleware_status.filter(m => (m.kolvo_shipments - returnKolvoCreate(m)) != 0 && !returnKolvoCreate(m))
-      if(val == 'Выполняется')
-        state.metaloworkings = state.middleware_status.filter(m => returnKolvoCreate(m) && returnKolvoCreate(m) != m.kolvo_shipments)
 
       if(val == 'Готово') 
         state.metaloworkings = state.middleware_status.filter(m => (m.kolvo_shipments - returnKolvoCreate(m)) < 1)

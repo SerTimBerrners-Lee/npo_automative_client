@@ -85,7 +85,7 @@ export default {
   props: {
     description: {
       type: String,
-      default: "Получениу данных"
+      default: "Получение данных"
     }
   },
   data() {
