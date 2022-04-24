@@ -1,5 +1,5 @@
 
-import {sortState} from '@/js/index';
+import { sortState } from '@/js/index';
 import PATH_TO_SERVER from '@/js/path.js';
 export default { 
   state: {
@@ -23,13 +23,12 @@ export default {
   },
   actions: { 
     async createNewDetal(ctx, data) {
-      if(!ctx.getters.getAuth)
-        return 0
+      if(!ctx.getters.getAuth) return 0;
 
       const res = await fetch(`${PATH_TO_SERVER}api/detal`, {
         headers: new Headers({
           'Authorization': ctx.getters.getAuth.id
-        })  ,
+        }),
         method :  'post',
         body   :  data
       });
@@ -68,6 +67,11 @@ export default {
     },
     async getAllDetals(ctx, light=false) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/${light}`);
+      const result = await res.json();
+      ctx.commit('setDetalMutation', result);
+    },
+    async fetchDetalsRemains(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/remains`);
       const result = await res.json();
       ctx.commit('setDetalMutation', result);
     },
@@ -110,7 +114,7 @@ export default {
       }
 
       for(const det of detal) {
-        let check = true
+        let check = true;
         for(const det_two of state.detal) {
           if(det_two.id == det.id) check = false;
         }
@@ -147,7 +151,7 @@ export default {
         String(detal.articl)
         .slice(0, String(str).length) == String(str) || 
         ((detal.name.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
-      )
+      );
     },
     deleteDetalById(state, id) {
       state.detal = state.detal.filter(detal => detal.id != id);
@@ -162,8 +166,8 @@ export default {
       state.detal = state.middleware_detals;
 
       const newDetals = [];
-      for(const det of state.detal){
-        for(let prod of product.detals) {
+      for (const det of state.detal) {
+        for (const prod of product.detals) {
           let pars = null;
           try {
             if(product.listDetal) 
@@ -187,13 +191,13 @@ export default {
       state.detal = state.middleware_detals.map(e => {
         if(e.kolvo_for_detal) e.kolvo_for_detal = 0;
         return e;
-      })
+      });
     },
     filterToAttention(state) {
       if(state.tmp_attention.length == 0)
         state.tmp_attention = state.detal;
       else {
-        state.detal = state.tmp_attention 
+        state.detal = state.tmp_attention;
         return state.tmp_attention  = [];
       }
       state.detal = state.detal.filter(detal => detal.attention);
@@ -216,7 +220,7 @@ export default {
       if(arr_operation.length == state.detal.length) 
         return state.detal = state.tmp_operation;
 
-      state.detal = []
+      state.detal = [];
       for(let id of arr_operation) {
         for(let item of state.tmp_operation) {
           if(item.id == id) state.detal.push(item);
@@ -225,9 +229,9 @@ export default {
     },
     changeStatusDeficitDetal(state, status) {
       if(state.middleware_detals.length < 1)
-        state.middleware_detals = state.detal
+        state.middleware_detals = state.detal;
 
-      state.detal = state.middleware_detals
+      state.detal = state.middleware_detals;
       if(status == 'Все') return false;
       state.detal = state.detal.filter(el => {
         if(status == "Не заказано" && el.metalloworking_kolvo < 1) return el;
@@ -236,14 +240,14 @@ export default {
     },
     changeDeficitDetal(state, props) {
       if(state.middleware_detals.length < 1)
-        state.middleware_detals = state.detal
+        state.middleware_detals = state.detal;
 
-      state.detal = state.middleware_detals
+      state.detal = state.middleware_detals;
       if(props.status == 'Все') return false; 
       state.detal = state.detal.filter(el => {
         if(props.status == "Общий" && props.deficit(el, el.detal_kolvo) < 0) return el;
         if(props.status == "По заказам покупателя" && el.shipments_kolvo > 0) return el;
-      })
+      });
 
       state.detal = state.detal.sort((a, b) => a - b);
     }

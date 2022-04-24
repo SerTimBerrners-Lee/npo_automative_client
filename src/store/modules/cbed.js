@@ -46,6 +46,15 @@ export default {
       return result;
     },
 
+    async fetchCbedRemains(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/remains`);
+      if (!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('addAllCbed', result);
+      return result;
+    },
+
     async getAllCbedArticl() {
       const res = await fetch(`${PATH_TO_SERVER}api/cbed/articl`);
       if (!res.ok) return false;

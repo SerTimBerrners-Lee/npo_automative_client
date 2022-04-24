@@ -1,150 +1,290 @@
 <template>
-	<div>
-		<h3>Остатки продукции, сборок и деталей на складе</h3>
-		<div class='block_cb_ed'>
+  <div>
+    <h3>Остатки продукции, сборок и деталей на складе</h3>
+    <div class='main'>
       <div class="main_table_control">
-        <div class="scroll-table" >
-          <table class="table-base-detal">
-            <tr>
-              <th colspan="3" scope="col">Изделие</th>
-            </tr>
-            <tr>
-              <th>Заводской номер</th>
-              <th>Артикул</th>
-              <th>Наименование</th>
-            </tr>
-            <tr>
-              <td colspan="3">
-                <Search 
-                  :placeholder="'Поиск по Артиклу'"
-                  @unmount='keySearchProduct' 
-                />
-              </td>
-            </tr>
-            <tr v-for='product in allProduct' 
-							:key='product'
-							class='td-row'
-							@click='e => setProduct(product, e.target.parentElement)'
-							>
-							<td>{{ product.fabricNumber }}</td>
-							<td>{{ product.articl }}</td>
-							<td>{{ product.name }}</td>
-            </tr>
-            <tr v-for="item in 40" :key="item">
-							<td></td>
-							<td></td>
-							<td></td>
-            </tr>
-          </table>
+        <div>
+          <div class="scroll-table" >
+            <table class="table-base-detal">
+              <tbody class='fixed_table_10'>
+                <tr>
+                  <th colspan="5" scope="col">Изделие</th>
+                </tr> 
+                <tr>
+                  <th>Заводской номер</th>
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                  <th>Остаток на складе</th>
+                  <th style='width: 50px;'>План. приход</th>
+                </tr> 
+              <tr>
+                <td colspan="5">
+                  <Search 
+                    :placeholder="'Поиск по Артиклу, Наименованию и Номеру'"
+                    @unmount='keySearchProduct' 
+                  />
+                </td>
+              </tr>
+              </tbody> 
+              <tr 
+                v-for='product in allProduct' 
+                :key='product'
+                class='td-row'
+                @click='e => setProduct(product, e.target.parentElement)'
+                @dblclick="infoModalProduct(product)"
+                >
+                <td>{{ product.fabricNumber }}</td>
+                <td>{{ product.articl }}</td>
+                <td>{{ product.name }}</td>
+                <td class="center">{{ product.product_kolvo }}</td>
+                <td class="center">{{ product.assemble_kolvo }}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
         </div>
-        <div class="scroll-table" >
-          <table class="table-base-cbed">
-            <tr>
-              <th colspan="6" scope="col">Сборочная единица (Тип СБ)</th>
-            </tr>
-            <tr>
-              <th>Артикул</th>
-              <th>Наименование</th>
-              <th style='width: 50px;'>Кол-во СБ на Изделие</th>
-              <th style='width: 50px;'>Остаток на складе</th>
-              <th style='width: 10px;'>Планируемый приход</th>
-            </tr>
-            <tr>
-              <td colspan="3">
-                <Search 
-                  :placeholder="'Поиск по Артиклу'"
-                  @unmount='keySearch' 
-                />
-              </td>
-            </tr>
+        <div>
+          <div class="scroll-table" >
+            <table class="table-base-detal">
+              <tbody class='fixed_table_10'>
+                <tr>
+                  <th colspan="5" scope="col">Сборочная единица (Тип СБ)</th>
+                </tr>
+                <tr>
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                  <th>Остаток на складе</th>
+                  <th>План. приход</th>
+                </tr>
+                <tr>
+                  <td colspan="5">
+                    <Search 
+                      :placeholder="'Поиск по Артиклу и Наименованию'"
+                      @unmount='keySearchCb' 
+                    />
+                  </td>
+                </tr>
+              </tbody>
               <tr v-for='cb in allCbed' 
                 :key='cb'
                 class='td-row'
-                @click='e => setCbed(cb, e.target.parentElement)'>
+                @click='e => setCbed(cb, e.target.parentElement)'
+                @dblclick="infoModalCbed(cb)">
                 <td>{{ cb.articl }}</td>
                 <td>{{ cb.name }}</td>
-                <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
-                <td class='center'>{{ cb.cbed_kolvo }}</td>
-                <td class='center'>{{ cb.assemble_kolvo }}</td>
-            </tr>
-            <tr v-for="item in 42" :key="item">
-              <td></td>
-              <td></td>
-              <td></td>
-            </tr>
-          </table>
+                <td class="center">{{ cb.cbed_kolvo  }}</td>
+                <td class="center">{{ cb.assemble_kolvo }}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+        <div>
+          <div class="scroll-table">
+            <table class="table-base-detal">
+              <tbody class='fixed_table_10'>
+                <tr>
+                  <th colspan="5" scope="col">Деталь (Тип Д)</th>
+                </tr>
+                <tr>
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                  <th>Остаток на складе</th>
+                  <th>План. приход</th>
+                </tr>
+                <tr>
+                  <td colspan="5">
+                    <Search
+                      :placeholder="'Поиск по Артиклу и Наименованию'"
+                      @unmount='keySearch'
+                    />
+                  </td>
+                </tr>
+              </tbody>
+              <tr 
+                v-for='detal in allDetal' 
+                :key='detal'
+                class='td-row'
+                @click='e => setDetals(detal, e.target.parentElement)'
+                @dblclick="infoDetal"
+                >
+                <td>{{ detal.articl }}</td>
+                <td>{{ detal.name }}
+                  <span class='exclamation_item' v-if='detal.attention'>!</span></td>
+                <td class="center">{{ detal.detal_kolvo }}</td>
+                <td class="center">{{ detal.metalloworking_kolvo }}</td>
+              </tr>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            </table>
+          </div>
         </div>
       </div>
     </div>
-
-	</div>
+    <DetalModal
+      :key='detalModalKey'
+      v-if='parametrs_detal'
+      :id='parametrs_detal'
+    />
+    <CbedModalInfo
+      :id='parametrs_cbed'
+      :key='cbedModalKey'
+      v-if='parametrs_cbed'
+    />
+    <ProductModalInfo
+      :id='parametrs_product'
+      :key='productModalKey'
+      v-if='parametrs_product'
+    />
+    <Loader v-if='loader' />
+  </div>
 </template>
-<script> 
+<script>
+import { random } from 'lodash';
 import Search from '@/components/search';
-import CbEdVue from '../../../views/CbEd';
+import { eSelectSpan } from '@/js/methods';
+import CbedModalInfo from '@/components/CbEd/cbed-modal';
+import DetalModal from '@/components/BaseDetal/detal-modal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+import ProductModalInfo from '@/components/BaseProduct/product-modal';
 
 export default {
-	data() {
-		return {
-			span: null,
-			instansLet: 0,
-
-			selectedCbEd: null,
+  data() {
+    return {
+      selectedCbEd: null,
       selecteProduct: null,
       tr_cb: null,
       tr_product: null,
-		}
-	},
-	components: {Search},
-	computed: mapGetters(['allCbed', 'allProduct']),
-	methods: {
-		...mapActions(['getAllCbed', 'deleteCbedById', 'getAllProduct']),
-    ...mapMutations([
-      'setOneCbed', 
-      'searchCbed', 
-      'searchProduct', 
-      'setOneProduct', 
-      'getAllCbEdByProduct',
-      'clearFilterCbedByProduct']),
-    setCbed(cbEd, e) {
-      console.log(cbEd)
-      this.selectedCbEd = CbEdVue
-			if(this.tr_cb) 
-				this.tr_cb.classList.remove('td-row-all')
-  
-      this.tr_cb = e
-      this.tr_cb.classList.add('td-row-all')
-      this.setOneCbed(this.selectedCbEd)
-    },
-    setProduct(product, e) {
-      if(this.selecteProduct && this.selecteProduct.id == product.id) {
-        this.clearFilterCbedByProduct()
-        e.classList.remove('td-row-all')
-        this.selecteProduct = null
-        return
-      }
-      this.selecteProduct = product
-      if(this.tr_product) 
-        this.tr_product.classList.remove('td-row-all')
-  
-      this.setOneProduct(product)
-      this.getAllCbEdByProduct(product)
 
-      this.tr_product = e
-      this.tr_product.classList.add('td-row-all')
+      selectedDetal: null,
+      tr: null,
+      detalModalKey: random(1, 999),
+      cbedModalKey: random(1, 999),
+      parametrs_cbed: null,
+      parametrs_detal: null,
+      parametrs_product: null,
+      productModalKey: random(1, 999),
+
+      loader: false
+    }
+  },
+  computed: mapGetters(['allDetal', 'allCbed', 'allProduct', 'getAuth']),
+  components: { DetalModal, Search, CbedModalInfo, ProductModalInfo },
+  methods: {
+    ...mapActions([
+      'fetchDetalsRemains', 
+      'fetchProductRemains', 
+      'fetchCbedRemains',
+      'getAllProductById',
+      'getOneCbEdById',
+      'getOneDetal',
+      'getOneCbEdBelongs'
+    ]),
+    ...mapMutations([
+      'filterDetalToArticle',
+      'clearFilterCbedByProduct',
+      'getAllCbEdByProduct',
+      'searchCbed',
+      'searchProduct',
+      'getAllDetalByProduct',
+      'clearFilterDetalByProduct',
+      'setOneProduct',
+      'setOneCbed',
+      'addOneSelectDetal',
+    ]),
+    infoModalCbed(cb) {
+      if(!cb) return false;
+      this.parametrs_cbed = cb.id;
+      this.cbedModalKey = random(1, 999);
+    },
+    infoModalProduct(product) {
+      if(!product) return false;
+      this.parametrs_product = product.id;
+      this.productModalKey = random(1, 999);
+    },
+    async setDetals(detal, e) {
+      const res = await this.getOneDetal(detal.id);
+      this.selectedDetal = res;
+      this.addOneSelectDetal(res);
+
+      this.tr = eSelectSpan(this.tr, e);
+    },
+    infoDetal() {
+      if(!this.selectedDetal) return false;
+
+      this.detalModalKey = random(1, 999);
+      this.parametrs_detal = this.selectedDetal.id;
+    },
+    async setCbed(cbed, e) {
+      console.log(cbed);
+      if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
+        this.clearFilterDetalByProduct();
+        e.classList.remove('td-row-all');
+        return this.selectedCbEd = null;
+      }
+
+      const res = await this.getOneCbEdById(cbed.id);
+      if(!res) return false;
+
+      const result = await this.getOneCbEdBelongs(res.id);
+      if (!result) return false;
+
+      res.detals = result.detals;
+      res.products = result.products;
+      this.getAllDetalByProduct(res);
+      this.selectedCbEd = res;
+      this.setOneCbed(res);
+
+      this.tr_cb = eSelectSpan(this.tr_cb, e);
+    },
+    async setProduct(product, e) {
+      if(this.selecteProduct && this.selecteProduct.id == product.id) {
+        this.clearFilterCbedByProduct();
+        this.clearFilterDetalByProduct();
+        e.classList.remove('td-row-all');
+        this.selecteProduct = null;
+        return;
+      }
+
+      const res = await this.getAllProductById(product.id);
+      if(!res) return false;
+      this.selecteProduct = res;
+      this.setOneProduct(res);
+      this.getAllCbEdByProduct(res);
+      this.getAllDetalByProduct(res);
+
+      this.tr_product = eSelectSpan(this.tr_product, e);
     },
     keySearch(v) {
-      this.searchCbed(v)
+      this.filterDetalToArticle(v);
+    },
+    keySearchCb(v) {
+      this.searchCbed(v);
     },
     keySearchProduct(v) {
-      this.searchProduct(v)
+      this.searchProduct(v);
     },
-	},
-	async mounted() {
-		this.getAllProduct()
-    this.getAllCbed()
-	}
+  },
+  async mounted() {
+    this.loader = true;
+
+    await this.fetchProductRemains(true);
+    await this.fetchCbedRemains(true);
+    await this.fetchDetalsRemains(true);
+
+    this.loader = false;
+  }
 }
 </script>
 
@@ -152,10 +292,6 @@ export default {
 .table-base-detal {
   float: left;
   width: 470px;
-}
-.table-base-cbed {
-  float: left;
-  width: 700px;
 }
 .main {
   width: fit-content;
@@ -167,11 +303,9 @@ td {
   height: 700px;
 }
 .tb-title {
-  height: 50px;
   text-align: center;
 }
 .btn-control {
-  width: 840px;
   flex-direction: column;
   align-items: flex-end;
 }
@@ -184,11 +318,5 @@ table {
 .main_table_control {
   display: flex;
 }
-.right_info_block {
-  width: 450px;
-  margin-top: 20px;
-}
-.main_cbed {
-  display: flex;
-}
+
 </style>

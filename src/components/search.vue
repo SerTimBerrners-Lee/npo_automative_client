@@ -7,7 +7,7 @@
           :placeholder="placeholder" 
           required
           v-model='input'
-          @keyup="e => key(e.target.value)"
+          @keyup.enter="e => key(e.target.value)"
           >
       </div>
       <div class="icon"  @click='key(input)'>
@@ -21,22 +21,20 @@ export default {
   props: ['placeholder', 'search_data'],
   data() {
     return {
-      input: ''
+      input: '',
     }
   },
   methods: {
     key(val) {
-      this.$emit('unmount', val)
+      this.$emit('unmount', val);
     }
   },
   async mounted() {
     if(this.$props.search_data)
-      this.input = this.$props.search_data
+      this.input = this.$props.search_data;
   }
 }
 </script>
-
-
 
 <style scoped>
   *

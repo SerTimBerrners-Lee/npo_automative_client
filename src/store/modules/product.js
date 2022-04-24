@@ -17,10 +17,10 @@ export default {
   },
   getters: {
     allProduct(state) {
-      return state.product
+      return state.product;
     },
     getOneSelectProduct(state) {
-      return state.select_product
+      return state.select_product;
     }  
   },
   actions: { 
@@ -39,6 +39,15 @@ export default {
 
     async getAllProduct(ctx, light=false) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/${light}`);
+      if(!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('addAllProduct', result);
+      return result;
+    },
+
+    async fetchProductRemains(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/remains`);
       if(!res.ok) return false;
 
       const result = await res.json();
