@@ -155,8 +155,8 @@
 import { random } from 'lodash';
 import Search from '@/components/search';
 import { showMessage, comparison } from '@/js/';
+import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range';
 import DescriptionModal from '@/components/description-modal';
 import ShipmentsModal from  '@/components/Sclad/shipments-to-ized';
 import ProductModalInfo from '@/components/BaseProduct/product-modal';

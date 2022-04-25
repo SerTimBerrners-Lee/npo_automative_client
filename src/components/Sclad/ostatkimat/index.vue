@@ -353,7 +353,7 @@
 <script> 
 import { getKolvoMaterial } from '@/js/edizm.js';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range.vue';
+import DatePicterRange from '@/components/DatePicterRange';
 
 export default {
 	data() {

@@ -26,7 +26,7 @@
 </template>
 
 <script>
-import DatePicterRange from '@/components/date-picter-range.vue';
+import DatePicterRange from '@/components/DatePicterRange';
 export default {
   props: [''],
   data() {

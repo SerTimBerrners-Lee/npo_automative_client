@@ -27,22 +27,65 @@
 				<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
 				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)" disabled>
 				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
-				<span class='hover'>Покупатель:</span>
-				<select 
-					class="select-small buyer_select" 
-					v-model='buyer'
-					disabled>
-					<option v-for='buyer in allBuyer' 
-						:key='buyer'
-						:value="buyer.id">{{ buyer.name }}</option>
-				</select>
+				
+				<span class='hover'>Покупатель: </span>
+				<span class='tooltip'>
+					<select 
+						class="select-small buyer_select" 
+						v-model='buyer'
+						disabled>
+						<option v-for='buyer in allBuyer' 
+							:key='buyer'
+							:value="buyer.id">{{ buyer.name }}</option>
+					</select>
+					<span class='tooltiptext'> {{ returnObj() }}</span>
+				</span>
+
 				<span>
 					<label for='to_sklad'>На склад:</label>
 					<input id='to_sklad' type="checkbox" v-model='to_sklad' disabled>
 				</span>
 			</p>
 		</div>
-		<div class='table_block'>
+
+		<div>
+			<div v-if='childrens.length && getOneShipments?.id'>
+				<h4>Позиции по Счету: </h4>
+				<TableShipments  
+					v-if='childrens.length'
+					:fixed_table='"fixed_table_10"'
+					:shipmentsArr='childrens'
+					:cheked_show='true'
+					:select_sh='getOneShipments?.id'
+					@unmount_dbclick='unmount_dbclick'
+					@unmount_sh='unmount_sh'
+					:return_dbclick='true'
+					:no_set='true' />
+			</div>
+			
+			<PrintComplect
+				v-if='tablebody'
+				:shipments='getOneShipments'
+				:childrens='selected_sh.length ? selected_sh.length : childrens'
+				@unmount_print='unmount_print' />
+
+			<div v-if='shipment_sclad'>
+				<h4>Выбранные на отгрузку	: </h4>
+				<TableShipments  
+					v-if='selected_sh.length'
+					:fixed_table='"fixed_table_10"'
+					:shipmentsArr='selected_sh'
+					:remove_show='true'
+					:return_dbclick='true'
+					@unmount_dbclick='unmount_dbclick'
+					:select_sh='getOneShipments?.id'
+					@unmount_sh_remove='unmount_sh_remove'
+					:no_set='true'/>
+			</div>
+
+		</div>
+
+		<div class='table_block' v-if='!shipment_sclad'>
 			<div>
 				<h3>Комплектация изделия</h3>
 				<table>
@@ -89,39 +132,8 @@
 			</div>
 			</div>
 		</div>
-		
-		<div v-if='childrens.length && getOneShipments?.id'>
-			<h4>Позиции по Счету: </h4>
-			<TableShipments  
-				v-if='childrens.length'
-				:fixed_table='"fixed_table_10"'
-				:shipmentsArr='childrens'
-				:cheked_show='true'
-				:select_sh='getOneShipments?.id'
-				@unmount_dbclick='unmount_dbclick'
-				@unmount_sh='unmount_sh'
-				:return_dbclick='true'
-				:no_set='true' />
-		</div>
-		
-		<PrintComplect
-			v-if='tablebody'
-			:shipments='getOneShipments'
-			:childrens='selected_sh.length ? selected_sh.length : childrens'
-			@unmount_print='unmount_print' /> 
 
 		<div v-if='shipment_sclad && getOneShipments?.id'>
-			<h4>Выбранные на отгрузку	: </h4>
-			<TableShipments  
-				v-if='selected_sh.length'
-				:fixed_table='"fixed_table_10"'
-				:shipmentsArr='selected_sh'
-				:remove_show='true'
-				:return_dbclick='true'
-				@unmount_dbclick='unmount_dbclick'
-				:select_sh='getOneShipments?.id'
-				@unmount_sh_remove='unmount_sh_remove'
-				:no_set='true'/>
 
 			<div class='btn-control'>
 				<button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
@@ -311,6 +323,12 @@ export default {
 		},
 		unmount_print() {
 			this.tablebody = false;
+		},
+		returnObj() {
+			if (!this.buyer) return 'нет';
+			const buyer = this.allBuyer.filter(e => e.id == this.buyer);
+			if (!buyer || !buyer.length) return 'нет';
+			return buyer[0]?.name || 'нет';
 		},
 		printPage() {
 			this.tablebody = true;

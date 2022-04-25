@@ -160,8 +160,8 @@
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
 import { eSelectSpan } from '@/js/methods';
+import DatePicterRange from '@/components/DatePicterRange';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range';
 
 export default {
   data() {

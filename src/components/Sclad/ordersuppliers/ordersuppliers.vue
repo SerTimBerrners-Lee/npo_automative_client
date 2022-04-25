@@ -196,8 +196,8 @@ import { random } from 'lodash';
 import AddOrder from './add-order';
 import WorkerModal from '../worker-modal';
 import { comparison, showMessage } from '@/js/'; 
+import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range';
 import ShipmentsModal from '@/components/Sclad/shipments-to-ized';
 
 export default {

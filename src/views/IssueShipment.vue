@@ -41,8 +41,8 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
+import DatePicterRange from '@/components/DatePicterRange';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import DatePicterRange from '@/components/date-picter-range';
 import SortBuyer from '@/components/IssueShipment/SortBuyer';
 import SortStatus from '@/components/IssueShipment/SortStatus';
 import TableShipments from '@/components/IssueShipment/table-komplect';

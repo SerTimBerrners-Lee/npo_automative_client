@@ -104,7 +104,7 @@ import { random } from 'lodash';
 import ComingModal from './coming-modal';
 import { mapGetters, mapActions } from 'vuex';
 import OpensFile from '@/components/FileBase/openfile';
-import DatePicterRange from '@/components/date-picter-range';
+import DatePicterRange from '@/components/DatePicterRange';
 import DescriptionModal from '@/components/description-modal';
 
 export default {

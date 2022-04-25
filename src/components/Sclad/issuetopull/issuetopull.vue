@@ -45,9 +45,9 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import Shipment from './sh-comlit.modal';
+import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import SortBuyer from '@/components/IssueShipment/SortBuyer';
-import DatePicterRange from '@/components/date-picter-range';
 import SortStatus from '@/components/IssueShipment/SortStatus';
 import TableShipmentsSclad from '@/components/IssueShipment/table-complect-sclad';
 

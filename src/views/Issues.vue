@@ -55,7 +55,7 @@ import { mapActions, mapGetters } from 'vuex';
 import IssueMy from '@/components/Issue/issue-my';
 import AddIssue from '@/components/Issue/add-issue';
 import IssueForMe from '@/components/Issue/issue-for-me';
-import DatePicterRange from '@/components/date-picter-range';
+import DatePicterRange from '@/components/DatePicterRange';
 import IssueController from '@/components/Issue/issue-controller';
 
 export default {

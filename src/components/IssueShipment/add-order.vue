@@ -43,14 +43,19 @@
 				<span
 					class='hover'
 					@click='selectBuyer'>Покупатель:</span>
-				<select 
-					class="select-small buyer_select" 
-					v-model='buyer'
-					:disabled='to_sklad'>
-					<option v-for='buyer in allBuyer' 
-						:key='buyer'
-						:value="buyer.id">{{ buyer.name }}</option>
-				</select>
+				
+				<span class="tooltip">
+					<select 
+						class="select-small buyer_select" 
+						v-model='buyer'
+						:disabled='to_sklad'>
+						<option v-for='buyer in allBuyer' 
+							:key='buyer'
+							:value="buyer.id">{{ buyer.name }}</option>
+					</select>
+					<span class='tooltiptext'> {{ returnObj() }}</span>
+				</span>
+
 				<span>
 					<label for='to_sklad'>На склад:</label>
 					<input id='to_sklad' type="checkbox" v-model='to_sklad'>
@@ -368,6 +373,12 @@ export default {
     },
 		unmount_print() {
 			this.tablebody = false;
+		},
+		returnObj() {
+			if (!this.buyer) return 'нет';
+			const buyer = this.allBuyer.filter(e => e.id == this.buyer);
+			if (!buyer || !buyer.length) return 'нет';
+			return buyer[0]?.name || 'нет';
 		},
 		printPage() {
 			this.tablebody = true;

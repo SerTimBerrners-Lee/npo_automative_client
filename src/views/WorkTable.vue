@@ -71,7 +71,7 @@
 import { dateIncrementHors } from '@/js/';
 import { mapGetters, mapActions } from 'vuex';
 import IssueForMe from '@/components/Issue/issue-for-me';
-import DatePicterRange from '@/components/date-picter-range';
+import DatePicterRange from '@/components/DatePicterRange';
 
 export default {
   data() {
