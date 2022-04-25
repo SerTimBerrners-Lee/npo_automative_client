@@ -1,6 +1,6 @@
 <template>
 	<div class="table-scroll" v-if='shipmentsArr.length'>
-		<table>
+		<table id='tableshipments'>
 			<tr :class='fixed_table'>
 				<th v-if='cheked_show'>
 					<unicon name="check" fill="royalblue" />
@@ -9,25 +9,25 @@
 					<unicon name="glass-tea" fill="#ee0942d0" width='20' />
 				</th> 
 				<th>Заказ</th>
-				<th>Артикул изделия</th>
-				<th>Наименование изделия</th>
-				<th style='width:100px; word-break: break-all;'>Комплектация/особенности заказа</th>
+				<th class='fix_size'>Артикул изделия</th>
+				<th class='fix_size'>Наименование изделия</th>
+				<th class='fix_size' id="complect">Комплектация/особенности заказа</th>
 				<th>Кол-во, шт.</th>
 				<th>Кол-во, дней</th>
 				<th>Осталось дней</th>
-				<th style='width:50px;'>Основание</th>
-				<th>Покупатель</th> 
-				<th>Готовность к отгрузке в %</th>
+				<th class='fix_size'>Основание</th>
+				<th class='fix_size'>Покупатель</th>
+				<th class='fix_size'>Готовность к отгрузке в %</th>
 				<th>Статус</th>
 				<th>Дата отгрузки</th>
 				<th>Н/Ч требуется</th>
 				<th>Н/Ч выполнено</th>
 				<th>Н/Ч осталось</th>
-				<th>Примечание</th>
+				<th class='fix_size'>Примечание</th>
 			</tr>
 			<tr v-for='shipments of shipmentsArr'
 				:key='shipments'
-				class='td-row'
+				:class='"td-row " + (shipments.id == select_sh ? "td-row-all" : "")'
 				@click='e => setShipments(shipments, e.target.parentElement)'
 				@dblclick="openShipmentsModal(shipments)">
 				<td v-if='cheked_show'>
@@ -43,7 +43,7 @@
 				<td>{{ shipments.number_order }}</td> <!-- Заказ -->
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td> <!-- Артикул Изделия -->
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td> <!-- Наименование Изделия -->
-				<td class='center' @click='openComplectation(shipments)' >
+				<td class='center' @click='openComplectation(shipments)' id="complect" >
 					<img 
 						src="@/assets/img/link.jpg" 
 						class='link_img' 
@@ -68,9 +68,10 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td class='center'>
+				<td class='center fix_size' v-if='!description_show'>
 					<img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
 				</td>
+				<td v-else>{{ shipments.description }}</td>
 			</tr>
 		</table>
 		<DescriptionModal 
@@ -97,6 +98,7 @@
 	</div>
 </template>
 <script>
+import print from 'print-js';
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
@@ -119,12 +121,19 @@ export default {
 			default: 'fixed_table_85'
 		},
 		cheked_show: {},
-		remove_show: {}
+		remove_show: {},
+		select_sh: {},
+		return_dbclick: {},
+		is_print: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
 			selectShipments: null,
 			tr: null,
+			description_show: false,
 
 			parametrs_komplect: null,
 			komplect_generate_key: random(1, 999),
@@ -149,6 +158,24 @@ export default {
 			],
 		}	
 	},
+	watch: {
+		is_print: function (val) {
+			if (!val) return false;
+			this.description_show = true;
+
+			setTimeout(() => {
+				print({
+					printable: 'tableshipments',
+					type: 'html',
+					targetStyles: ['*'],
+					documentTitle: 'Задачи на отгрузку',
+					ignoreElements: ['complect'],
+					font_size: '10pt',
+				});
+				this.description_show = false;
+			});
+		}
+	},
 	components: {
 		DescriptionModal, 
 		OpensFile,
@@ -160,10 +187,11 @@ export default {
 		...mapActions(['fetchDocumentsShipments']),
 		...mapMutations(['setOneShipment']),
 		openShipmentsModal(sh) {
+			if (this.return_dbclick) return this.$emit('unmount_dbclick', sh.id);
 			this.selectShipments = sh;
 
-			this.key_modal_shipments = random(1, 999);
-			this.show_modal_shipments = true;
+		this.key_modal_shipments = random(1, 999);
+		this.show_modal_shipments = true;
 		},
 		responseShipments(sh) {
 			this.$emit('unmount_sh', sh);
@@ -174,7 +202,7 @@ export default {
 		setShipments(shipments, e) {
 			if (this.no_set) return false;
 
-			if(this.selectShipments && this.selectShipments.id == shipments.id) 
+			if (this.selectShipments && this.selectShipments.id == shipments.id) 
 				this.selectShipments = null;
 			this.tr = eSelectSpan(this.tr, e);
 
@@ -201,20 +229,20 @@ export default {
 			this.parametrs_komplect = sh.list_cbed_detal;
 			this.selectShipments = sh;
 		},	
-		async openDocuments(shipments) {	
-			if(!shipments.id) return showMessage('', 'Документов нет', 'w');
+		async openDocuments(shipments) {
+			if (!shipments.id) return showMessage('', 'Документов нет', 'w');
 			const ships = await this.fetchDocumentsShipments(shipments.id);
 
-			if(ships.documents && ships.documents.length) {
-				for(let doc of ships.documents) {
-					if(doc.name == shipments.base) {
+			if (ships.documents && ships.documents.length) {
+				for (let doc of ships.documents) {
+					if (doc.name == shipments.base) {
 						this.keyWhenModalGenerateFileOpen = random(1, 999);
 						this.itemFiles = [doc];
 					}
 				}
 			} else showMessage('', 'Документов нет', 'w');
     },
-	},
+	}
 }
 </script>
 
@@ -226,6 +254,10 @@ export default {
 }
 .osob * {
 	margin: 0px;
+}
+.fix_size {
+	width: 100px;
+	word-break: break-all;
 }
 
 table th {

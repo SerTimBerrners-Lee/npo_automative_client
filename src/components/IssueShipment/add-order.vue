@@ -6,14 +6,6 @@
 			:shipmentsArr='getParentsShipments'
 			:no_set='true'/>
 
-		<div v-if='childrens.length'>
-			<h4>Остальные заказы</h4>
-			<TableShipments  
-				v-if='childrens.length'
-				:shipmentsArr='childrens'
-				:no_set='true' />
-		</div>
-
 		<h3>{{ $route.params?.edit == 'true' ? 'Изменить' : 'Создать'}} заказ {{ number_order }}</h3>
 		<div class="block">
 			<p class='p_flex'> 
@@ -52,7 +44,7 @@
 					class='hover'
 					@click='selectBuyer'>Покупатель:</span>
 				<select 
-					class="select-small" 
+					class="select-small buyer_select" 
 					v-model='buyer'
 					:disabled='to_sklad'>
 					<option v-for='buyer in allBuyer' 
@@ -123,6 +115,15 @@
 					</div>
 				</div>
 			</div>
+		</div>
+
+		<div v-if='childrens.length'>
+			<h4>Остальные заказы</h4>
+			<TableShipments  
+				v-if='childrens.length'
+				:shipmentsArr='childrens'
+				:select_sh='getOneShipments.id'
+				:no_set='true' />
 		</div>
 
 		<PrintComplect 
@@ -337,7 +338,7 @@ export default {
 			if(buyer) this.buyer = buyer.id;
 		},
 		unmount_base(e) {
-			if(!e) return false;
+			if (!e) return false;
 			const document = e.formData.getAll('document')[0];
 			this.baseFormData = new FormData;
 			this.baseFormData.append('document', document);
@@ -348,16 +349,16 @@ export default {
 			} catch(e) {console.error(e)}
 		},
 		file_unmount(e) {
-			if(!e) return 0;
+			if (!e) return 0;
 			this.formData = e.formData;
 
-			for(const doc of e.formData.getAll('document')) {
+			for (const doc of e.formData.getAll('document')) {
 				this.docFiles.push(doc);
 				this.documents.push(doc); 
 			}
 		},
 		unmount_filemodal(res) {
-      if(res && !this.selectedBaseProvesses) {
+      if (res && !this.selectedBaseProvesses) {
 				res.forEach((doc) => this.documents.push(doc));
 			} else if(this.selectedBaseProvesses) {
 				this.documents.push(res[0]);
@@ -384,19 +385,16 @@ export default {
 			this.keyGenerateBuyer = random(1, 999);
 		},
 		addNewPositionProduct() {
-			if(this.$route.params.edit != 'true') return showMessage('', 'Сначала сохраните заказ', 'w');
-			if(this.getOneShipments && this.getOneShipments.id) {
+			if (this.$route.params.edit != 'true') return showMessage('', 'Сначала сохраните заказ', 'w');
+			if (this.getOneShipments && this.getOneShipments.id) {
 				this.$router.push(`/addorder/false/${this.getOneShipments.id}`);
 				this.filterToParentShipments(this.getOneShipments.id);
-			}
-			else return showMessage('', 'Выберите заказ к которому хотите присвоить изделие', 'w');
+			} else return showMessage('', 'Выберите заказ к которому хотите присвоить изделие', 'w');
 		},
 		addDock(val, base = false) {
-			if(base && this.base) {
-				this.docFiles = this.docFiles
-					.filter(doc => doc.name != this.base.name);
-				this.documents = this.documents
-					.filter(doc => doc.name != this.base.name);
+			if (base && this.base) {
+				this.docFiles = this.docFiles.filter(doc => doc.name != this.base.name);
+				this.documents = this.documents.filter(doc => doc.name != this.base.name);
 			}
 
       val.files.forEach(f => {
@@ -422,7 +420,7 @@ export default {
 			this.keyProductModal = random(1, 999);
 		},
 		unmount_product(product) {
-			if(!product) return 0;
+			if (!product) return 0;
 			this.list_cbed_detal = [];
 			this.list_hidden_cbed_detal = [];
 			
@@ -434,28 +432,28 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
 		async checkedJsonList(izd, recursive = false) {
-			if(izd.listCbed) {
+			if (izd.listCbed) {
 				const list_cbed = JSON.parse(izd.listCbed)
-				if(!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb)
+				if (!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb)
 				this.pushElement(izd.cbeds, list_cbed, 'cbed', recursive)
-				for(const cb of list_cbed) {
+				for (const cb of list_cbed) {
 					const res = await this.getOneCbEdById(cb.cb.id);
 					if (res) this.parserListIzd(res, cb.kol);
 				}
 			}
-			if(izd.detals && izd.detals.length && izd.listDetal) {
+			if (izd.detals && izd.detals.length && izd.listDetal) {
 				const list_detals = JSON.parse(izd.listDetal);
 				this.pushElement(izd.detals, list_detals, 'detal', recursive);
-				for(let det of list_detals ) {
+				for (let det of list_detals ) {
 					const res = await this.getOneDetal(det.det.id);
 					if (res) this.checkedJsonList(res);
 				}
 			}
 		},
 		pushElement(elements, list_pars, type, recursive = false) {
-			for(let element of elements) {
+			for (const element of elements) {
 				let kol = 1;
-				for(let item of list_pars) {
+				for (const item of list_pars) {
 					let id;
 					switch(type) {
 						case 'cbed':
@@ -465,18 +463,18 @@ export default {
 							id = item.det.id
 							break;
 					}
-					if(id == element.id)
+					if (id == element.id)
 						kol = Number(item.kol)
 				}
-				if(type != 'mat')  {
+				if (type != 'mat')  {
 					let check = true
-					for(let iz = 0; iz < this.list_cbed_detal.length; iz++) {
-						if(element.id == this.list_cbed_detal[iz].obj.id && element.name == this.list_cbed_detal[iz].obj.name) {
+					for (let iz = 0; iz < this.list_cbed_detal.length; iz++) {
+						if (element.id == this.list_cbed_detal[iz].obj.id && element.name == this.list_cbed_detal[iz].obj.name) {
 							this.list_cbed_detal[iz].kol = Number(this.list_cbed_detal[iz].kol) + Number(kol)
 							check = false
 						}	
 					}
-					if(check) {
+					if (check) {
 						if(!recursive)
 							this.list_cbed_detal.push({
 								type,
@@ -487,7 +485,7 @@ export default {
 							element.obj = {id: element.id}
 							element.type = type
 							const check_dublecate = this.checkDublecate(this.list_hidden_cbed_detal, element)
-							if(check_dublecate != null) 
+							if (check_dublecate != null) 
 								this.list_hidden_cbed_detal[check_dublecate].kol = Number(this.list_hidden_cbed_detal[check_dublecate].kol) + Number(kol)
 							else 
 								this.list_hidden_cbed_detal.push({
@@ -507,19 +505,19 @@ export default {
 			try {
 				const cbeds = res.listCbed ? JSON.parse(res.listCbed) : [];
 				const detals = res.listDetal ? JSON.parse(res.listDetal) : [];
-				if(cbeds.length) {
-					for(let inx in cbeds) {
+				if (cbeds.length) {
+					for (let inx in cbeds) {
 						cbeds[inx] = cbeds[inx].cb;
-						if(res.articl) cbeds[inx].articl = res.articl;
+						if (res.articl) cbeds[inx].articl = res.articl;
 					}
 				}
-				if(detals.length) {
-					for(let inx in detals) {
+				if (detals.length) {
+					for (let inx in detals) {
 						detals[inx] = detals[inx].det;
 						if(res.articl) detals[inx].articl = res.articl;
 					}
 				}
-				for(let i = 0; i < kol; i++) 
+				for (let i = 0; i < kol; i++) 
 					this.checkedJsonList({...res, cbeds, detals}, true);
 			} catch(e) {console.error(e)}
 		},
@@ -527,11 +525,11 @@ export default {
 		 * Добавляем СБ или Д
 		 */
 		responseDetalCb(res) {
-			if(res && res.type == 'cbed') 
+			if (res && res.type == 'cbed') 
 				this.parserListIzd(res.obj, 1)
 		
 			const check_dublecate = this.checkDublecate(this.list_cbed_detal, res)
-			if(check_dublecate != null) {
+			if (check_dublecate != null) {
 				this.list_cbed_detal[check_dublecate].kol = Number(this.list_cbed_detal[check_dublecate].kol)
 				this.list_cbed_detal[check_dublecate].kol++
 			}
@@ -545,8 +543,8 @@ export default {
 		 * Осуществляем проверку на дублирование
 		 */
 		checkDublecate(arr, res) {
-			for(let inx in arr) {
-				if(arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) return inx;
+			for (let inx in arr) {
+				if (arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) return inx;
 			}
 			return null;
 		},	
@@ -555,7 +553,7 @@ export default {
 			this.list_cbed_detal[inx].kol = Number(val);
 		},
 		deleteCbEdDetal() {
-			if(this.select_tr_inx == null) return 0;
+			if (this.select_tr_inx == null) return 0;
 
 			this.list_cbed_detal = this.list_cbed_detal.filter((_, inx) => 
 				inx != this.select_tr_inx
@@ -563,7 +561,7 @@ export default {
 			this.select_tr_inx = null;
 		},
 		selectTr(inx, e) {
-			if(this.select_tr_inx == inx && this.tr) {
+			if (this.select_tr_inx == inx && this.tr) {
 				this.tr.classList.remove('td-row-all');
 				return this.select_tr_inx = null;
 			}
@@ -572,10 +570,10 @@ export default {
 			this.select_tr_inx = inx;
 		},
 		save_order() {
-			if(!this.is_not_product && !this.select_product)
+			if (!this.is_not_product && !this.select_product)
 					return showMessage('', 'Выберите Изделие', 'w');
 			
-			if(!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w')
+			if (!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w')
 			this.loader = true
 			const data = {
 				date_order: this.date_order,
@@ -591,9 +589,9 @@ export default {
 				list_hidden_cbed_detal: JSON.stringify(this.list_hidden_cbed_detal)
 			}
 
-			if(this.documentsData.length) {
+			if (this.documentsData.length) {
 				const new_arr = [];
-				for(const dat of this.documentsData) {
+				for (const dat of this.documentsData) {
 					new_arr.push(dat.id);
 				}
 				data['documentsData'] = JSON.stringify(new_arr);
@@ -605,7 +603,7 @@ export default {
 					name: this.select_product.name
 				}
 			}
-			if(this.baseFormData.get('document') && this.baseFormData.get('docs') ) {
+			if (this.baseFormData.get('document') && this.baseFormData.get('docs') ) {
 				this.formData.append('document', this.baseFormData.get('document'));
 				try {
 					let pars = JSON.parse(this.baseFormData.get('docs')) ;
@@ -614,7 +612,7 @@ export default {
 				} catch(e) {console.error(e)}
 			}
 			
-			if(this.$route.params.edit && this.$route.params.edit == 'true') {
+			if (this.$route.params.edit && this.$route.params.edit == 'true') {
 				data['id'] = this.getOneShipments.id
 				this.formData.append('data', JSON.stringify(data))
 				this.fetchUpdateShipments(this.formData).then( res => {
@@ -624,7 +622,7 @@ export default {
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e')
 				})
 			} else {
-				if(Number(this.$route.params.parent)) data['parent_id'] = Number(this.$route.params.parent);
+				if (Number(this.$route.params.parent)) data['parent_id'] = Number(this.$route.params.parent);
 				this.formData.append('data', JSON.stringify(data));
 				this.fetchCreateShipments(this.formData).then(res => {
 					this.loader = false;
@@ -644,28 +642,28 @@ export default {
 			this.to_sklad = this.getOneShipments.to_sklad;
 			this.number_order = this.getOneShipments.number_order;
 
-			if(this.getOneShipments.productId) {
+			if (this.getOneShipments.productId) {
 				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
 				if (res) this.select_product = res;
 			} else this.is_not_product = true;
 			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents;
 			try {
-				if(this.getOneShipments.list_cbed_detal)
+				if (this.getOneShipments.list_cbed_detal)
 					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal);
-				if(this.getOneShipments.list_hidden_cbed_detal)
+				if (this.getOneShipments.list_hidden_cbed_detal)
 					this.list_hidden_cbed_detal = JSON.parse(this.getOneShipments.list_hidden_cbed_detal);
 			} catch(e) {console.error(e)}
 			this.description = this.getOneShipments.description;
 		},
 		showInformIzdel(id, type) {
-			if(type == 'cbed') {
-				if(id) {
+			if (type == 'cbed') {
+				if (id) {
 					this.parametrs_cbed = id;
 					this.cbedModalKey = random(1, 999);
 				}
 			}
-			if(type == 'detal') {
-				if(id) {
+			if (type == 'detal') {
+				if (id) {
 					this.parametrs_detal = id;
 					this.detalModalKey = random(1, 999);
 				}
@@ -687,23 +685,27 @@ export default {
 		this.list_cbed_detal = [];
 		this.list_hidden_cbed_detal = [];
 
-		if(this.$route.params.edit && this.$route.params.edit == 'true') {
-			if(isEmpty(this.getOneShipments)) return this.$router.back();
+		if (this.$route.params.edit && this.$route.params.edit == 'true') {
+			if (isEmpty(this.getOneShipments)) return this.$router.back();
 			const shipments = await this.fetchAllShipmentsById({id: this.getOneShipments.id, light: true});
-			if(!shipments) return this.$router.back();
+			if (!shipments) return this.$router.back();
 			this.setOneShipment(shipments);
 			this.editVariable();
 
 			const ship_id_for_children = shipments.parent_id || shipments.id;
 
 			const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
-			if (childrens && childrens.childrens) this.childrens = childrens.childrens.filter(el => el.id !== shipments.id);
+			if (childrens) this.childrens = childrens.childrens.filter(el => el.id != shipments.id);
+			this.childrens.push(shipments);
 
-		} else if(Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent));
+		} else if (Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent));
 	}
 }
 </script>
 <style scoped>
+.buyer_select {
+	width: fit-content;
+}
 .file_content {
 	width: 500px;
 	padding: 40px;

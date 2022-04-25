@@ -5,24 +5,11 @@
     <div :style="hiddens" > 
 		<div>
 
-		<div v-if='childrens.length'>
-			<h4>Остальные заказы</h4>
-			<TableShipments  
-				v-if='childrens.length'
-				:fixed_table='"fixed_table_10"'
-				:shipmentsArr='childrens'
-				:cheked_show='true'
-				@unmount_sh='unmount_sh'
-				:no_set='true'/>
-		</div>
-
 		<h3>Заказ {{ number_order }}</h3>
 		<div class="block">
 			<p class='p_flex'>
 				<span>Дата заказа:</span>
-				<DatePicterCustom
-					:dateStart='date_order'
-				/>
+				<DatePicterCustom :dateStart='date_order' />
 				<span>Выбранное изделие: </span>
 				<span 
 					v-if='select_product && !is_not_product' 
@@ -34,9 +21,7 @@
 			</p>
 			<p class='p_flex'>
 				<span>Дата отгрузки:</span>
-				<DatePicterCustom
-					:dateStart='date_shipments'
-				/>
+				<DatePicterCustom :dateStart='date_shipments' />
 				<label for='bran'>Бронь:</label>
 				<input id='bran' type="checkbox" v-model='bron' disabled>
 				<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
@@ -44,7 +29,7 @@
 				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
 				<span class='hover'>Покупатель:</span>
 				<select 
-					class="select-small" 
+					class="select-small buyer_select" 
 					v-model='buyer'
 					disabled>
 					<option v-for='buyer in allBuyer' 
@@ -105,18 +90,36 @@
 			</div>
 		</div>
 		
+		<div v-if='childrens.length && getOneShipments?.id'>
+			<h4>Позиции по Счету: </h4>
+			<TableShipments  
+				v-if='childrens.length'
+				:fixed_table='"fixed_table_10"'
+				:shipmentsArr='childrens'
+				:cheked_show='true'
+				:select_sh='getOneShipments?.id'
+				@unmount_dbclick='unmount_dbclick'
+				@unmount_sh='unmount_sh'
+				:return_dbclick='true'
+				:no_set='true' />
+		</div>
+		
 		<PrintComplect
 			v-if='tablebody'
 			:shipments='getOneShipments'
-			:childrens='childrens'
+			:childrens='selected_sh.length ? selected_sh.length : childrens'
 			@unmount_print='unmount_print' /> 
 
-		<div v-if='shipment_sclad'>
+		<div v-if='shipment_sclad && getOneShipments?.id'>
+			<h4>Выбранные на отгрузку	: </h4>
 			<TableShipments  
 				v-if='selected_sh.length'
 				:fixed_table='"fixed_table_10"'
 				:shipmentsArr='selected_sh'
 				:remove_show='true'
+				:return_dbclick='true'
+				@unmount_dbclick='unmount_dbclick'
+				:select_sh='getOneShipments?.id'
 				@unmount_sh_remove='unmount_sh_remove'
 				:no_set='true'/>
 
@@ -197,7 +200,6 @@ export default {
       destroyModalLeft: 'left-block-modal',
       destroyModalRight: 'content-modal-right-menu',
       hiddens: 'display: none;',
-
 			keyWhenModalGenerate: random(1, 999),
 			keyWhenModalGenerateFileOpen: random(1, 999),
 
@@ -289,8 +291,10 @@ export default {
 
 			this.$emit('unmount_shpment');
 		},
+		unmount_dbclick(id) {
+			this.beforeCreateF(id);
+		},
 		unmount_sh(sh) {
-			console.log(sh.status);
 			if (sh.status === "Отгружено") return showMessage('', 'Задача уже отгружена!', 'w');
 
 			this.childrens = this.childrens.filter(el => el.id != sh.id);
@@ -372,36 +376,43 @@ export default {
       this.showShipmentModal = true;
       this.shipmentKey = random(1, 999);
     },
+		async beforeCreateF(id) {
+			this.loader = true;
+			this.list_cbed_detal = [];
+
+			const result = await this.fetchAllShipmentsById({id, light: true});
+
+			if(!result) return this.destroyModalF();
+			this.setOneShipment(result);
+			this.editVariable();
+
+			const ship_id_for_children = result.parent_id || result.id;
+	
+			const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
+			if (childrens) this.childrens = childrens.childrens.filter(el => el.id != result.id);
+			this.childrens.push(result);
+
+			this.loader = false;
+		},
 	},
   async mounted() {
     this.destroyModalLeft = 'left-block-modal';
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
 		
-		this.loader = true;
-
 		await this.fetchAllBuyers(true);
-		this.list_cbed_detal = [];
 
 		if(!this.id_shipments) return this.destroyModalF();
-		const result = await this.fetchAllShipmentsById({id: this.id_shipments, light: true});
-
-		if(!result) return this.destroyModalF();
-		this.setOneShipment(result);
-		this.editVariable();
-
-		const ship_id_for_children = result.parent_id || result.id;
- 
-		const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
-		if (childrens) this.childrens = childrens.childrens.filter(el => el.id != result.id);
-		this.childrens.push(result);
-
-		this.loader = false;
+		await this.beforeCreateF(this.id_shipments);
+		
   },
 }
 </script>
 
 <style scoped>
+.buyer_select {
+	width: fit-content;
+}
 .flex_direction {
 	display: flex;
 }

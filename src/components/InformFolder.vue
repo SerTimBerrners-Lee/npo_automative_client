@@ -38,7 +38,7 @@ export default {
     },
   },
   mounted() {
-    if(!this.typeMessage || !this.message) return false
+    if(!this.typeMessage || !this.message) return false;
     this.type == 'w' ?
       this.typeMessage = 'warning-message' :
       this.type == 'e' ?

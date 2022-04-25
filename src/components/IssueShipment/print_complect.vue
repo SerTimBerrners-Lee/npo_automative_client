@@ -27,6 +27,10 @@
         <td class="center">{{ shipments.base }}</td>
       </tr>
       <tr>
+        <th class='center'>Статус</th>
+        <td class="center">{{ shipments.status }}</td>
+      </tr>
+      <tr>
         <th class='center'>Покупатель</th>
         <td class="center" v-if='getBuyerFilter()'>{{ getBuyerFilter(shipments.buyerId) }}</td>
       </tr>

@@ -3,7 +3,7 @@
     <p>
       <button 
         class="btn-small"
-        @click='openBuyerModal'>Выбрать Поставщика: </button>
+        @click='openBuyerModal'>Выбрать Покупателя: </button>
       <span>{{ set_buyer? sliceName(set_buyer.name) : 'все' }}</span>
     </p>
     <BuyerModal 

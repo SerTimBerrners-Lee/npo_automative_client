@@ -11,19 +11,21 @@
           <label for='z'>Не учитывать "На склад"</label>
           <input id='z' type="checkbox">
         </div>
-        <SortStatus />
-        <SortBuyer />
+        <SortStatus :key='status_sort_key' />
+        <SortBuyer :key='sort_buyer_key'/>
       </div>
     </div>
     <div>
       <div style='width: fit-content;'>
-				<TableShipmentsSclad 
+				<TableShipmentsSclad
+          :is_print='is_print'
 					v-if='getShipments.length'
 					:shipmentsArr='getShipments'
           :shipment_sclad='true'
 					@unmount='unmount_table_shipments'/>
       </div>
       <div class='btn-control out-btn-control wh_70p'>
+        <button class="btn-small" @click='printPage'> Печать </button>
         <button class="btn-small" @click='clearFiltersF'>Сбросить все фильтры</button>
         <button class="btn-small btn-add" @click='openShipment'>Отгрузить</button>
       </div>
@@ -46,7 +48,7 @@ import Shipment from './sh-comlit.modal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import SortBuyer from '@/components/IssueShipment/SortBuyer';
 import DatePicterRange from '@/components/date-picter-range';
-import SortStatus from '@/components/IssueShipment/sort-status';
+import SortStatus from '@/components/IssueShipment/SortStatus';
 import TableShipmentsSclad from '@/components/IssueShipment/table-complect-sclad';
 
 export default {
@@ -58,6 +60,9 @@ export default {
       loader: false,
 
 			tr: null,
+      is_print: false,
+      sort_buyer_key: random(1, 999),
+      status_sort_key: random(1, 999),
     }
   },
   components: {
@@ -81,12 +86,18 @@ export default {
       this.showShipmentModal = true;
       this.shipmentKey = random(1, 999);
     },
+    printPage() {
+			this.is_print = true;
+			setTimeout(() => this.is_print = false);
+		},
     async unmount_sh_complit() {
       this.loader = true;
       await this.fetchAllShipmentsTo();
+      this.status_sort_key = random(1, 999);
       this.loader = false;
     },
     async clearFiltersF() {
+      this.sort_buyer_key = random(1, 999);
       this.clearFilters();
       await this.unmount_sh_complit();
     },
@@ -97,6 +108,7 @@ export default {
   async mounted() {
     this.loader = true;
     await this.fetchAllShipmentsTo();
+    this.status_sort_key = random(1, 999);
     this.loader = false;
   }
 }

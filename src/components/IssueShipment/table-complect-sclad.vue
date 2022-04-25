@@ -1,6 +1,6 @@
 <template>
 	<div class="table-scroll">
-		<table> 
+		<table id='tableshipments'> 
 			<tr class='fixed_table_85'>
         <th style='cursor: pointer;'>
           <unicon name="check" fill="royalblue" />
@@ -17,7 +17,7 @@
 				<th>Готовность к отгрузке в %</th>
 				<th>Статус</th>
 				<th>Дата отгрузки</th>
-				<th>Примечание</th>
+				<th id="complect">Примечание</th>
 			</tr>
 			<tr v-for='shipments of shipmentsArr'
 				:key='shipments'
@@ -32,7 +32,7 @@
 				<td>{{ shipments.number_order }}</td>
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
-				<td class='center' @click='openComplectation(shipments)' >
+				<td class='center' @click='openComplectation(shipments)' id="complect">
 					<img 
 						src="@/assets/img/link.jpg" 
 						class='link_img' 
@@ -54,9 +54,10 @@
 				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status  }}</td>
 				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status  }}</td>
 				<td>{{ shipments.date_shipments }}</td>
-				<td class='center'>
+				<td class='center fix_size' v-if='!description_show'>
 					<img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
 				</td>
+				<td v-else>{{ shipments.description }}</td>
 			</tr>
 		</table>
 		<DescriptionModal 
@@ -85,6 +86,7 @@
 	</div>
 </template>
 <script>
+import print from 'print-js';
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
@@ -99,12 +101,17 @@ import DescriptionModal from '@/components/description-modal';
 export default {
 	props: {
 		shipmentsArr: {},
-		shipment_sclad: {}
+		shipment_sclad: {},
+		is_print: {
+			type: Boolean,
+			default: false
+		}
 	},
 	data() {
 		return {
 			selectShipments: null,
 			tr: null,
+			description_show: false,
 
 			arrShipmentsState: [],
 
@@ -130,6 +137,24 @@ export default {
 				'Просрочено'
 			],
 		}	
+	},
+	watch: {
+		is_print: function (val) {
+			if (!val) return false;
+			this.description_show = true;
+
+			setTimeout(() => {
+				print({
+					printable: 'tableshipments',
+					type: 'html',
+					targetStyles: ['*'],
+					documentTitle: 'Задачи на отгрузку',
+					ignoreElements: ['complect'],
+					font_size: '10pt',
+				});
+				this.description_show = false;
+			});
+		}
 	},
 	components: {
 		DescriptionModal, 
