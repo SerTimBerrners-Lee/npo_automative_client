@@ -710,7 +710,7 @@ export default {
 			this.childrens.push(shipments);
 
 		} else if (Number(this.$route.params.parent)) this.filterToParentShipments(Number(this.$route.params.parent));
-	}
+	},
 }
 </script>
 <style scoped>
