@@ -86,8 +86,8 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
-import OpensFile from '@/components/FileBase/openfile';
-import AddFileLink from '@/components/Library/add-file';
+import OpensFile from '@/components/FileBase/OpenFile';
+import AddFileLink from '@/components/Library/AddFile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {

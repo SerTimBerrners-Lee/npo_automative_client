@@ -30,7 +30,7 @@
 import { isEmpty } from 'lodash';
 import { showMessage } from '@/js/';
 import { mapGetters, mapActions } from 'vuex';
-import AddRoles from '@/components/DolznUser/addroles';
+import AddRoles from '@/components/DolznUser/AddRoles';
 
 export default {
   data() {

@@ -52,11 +52,11 @@
 import {random} from 'lodash';
 import { dateIncrementHors } from '@/js/';
 import { mapActions, mapGetters } from 'vuex'; 
-import IssueMy from '@/components/Issue/issue-my';
-import AddIssue from '@/components/Issue/add-issue';
-import IssueForMe from '@/components/Issue/issue-for-me';
+import IssueMy from '@/components/Issue/IssueMy';
+import AddIssue from '@/components/Issue/AddIssue';
+import IssueForMe from '@/components/Issue/IssueForMe';
 import DatePicterRange from '@/components/DatePicterRange';
-import IssueController from '@/components/Issue/issue-controller';
+import IssueController from '@/components/Issue/IssueController';
 
 export default {
 	data() {

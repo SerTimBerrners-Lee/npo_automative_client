@@ -75,16 +75,16 @@
 import { random } from 'lodash';
 import { mapActions } from 'vuex';
 import { showMessage } from '@/js/';
-import BaseCbedModal from '@/components/CbEd/base-cbed-modal';
-import BaseTools from '@/components/Instrument/modal-base-tool';
-import ListBuyer from '@/components/BaseBuyer/base-buyer-modal';
-import ModalUsersList from '@/components/Users/modal-list-user';
-import ListProvider from '@/components/BaseProvider/list-provider';
-import BaseDetalModal from '@/components/BaseDetal/base-detal-modal';
-import BaseInventary from '@/components/Inventary/modal-base-inventary';
-import BaseEquipment from '@/components/Equipment/modal-base-equipment';
-import ModalBaseMaterial from '@/components/MathZag/modal-base-material';
-import BaseProductModal from '@/components/BaseProduct/all-product-modal';
+import BaseCbedModal from '@/components/CbEd/BaseCbedModal';
+import BaseTools from '@/components/Instrument/ModalBaseTool';
+import ListBuyer from '@/components/BaseBuyer/BaseBuyerModal';
+import ModalUsersList from '@/components/Users/ModalListUser';
+import BaseDetalModal from '@/components/BaseDetal/BaseDetalModal';
+import ListProvider from '@/components/BaseProvider/ListProvider';
+import BaseInventary from '@/components/Inventary/ModalBaseInventary';
+import BaseEquipment from '@/components/Equipment/ModalBaseEquipment';
+import ModalBaseMaterial from '@/components/MathZag/ModalBaseMaterial';
+import BaseProductModal from '@/components/BaseProduct/AllProductModal';
 
 export default {
 	props: ['itemFiles'],

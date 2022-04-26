@@ -22,11 +22,11 @@
 </template>
 <script>
 import '@/assets/style/style.css';
-import MenuItem from '@/components/menu-left';
-import HeadersNav from '@/components/header-nav';
-import Authorization from '@/views/Authorization.vue';
+import MenuItem from '@/components/MenuLeft';
+import HeadersNav from '@/components/HeaderNav';
+import Authorization from '@/views/Authorization';
+import NavigationPanel from '@/components/NavigationPanel';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import NavigationPanel from '@/components/navigation-panel';
 
 export default {
   name: 'App',

@@ -44,12 +44,12 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import Shipment from './sh-comlit.modal';
+import Shipment from './ShComlit.modal';
 import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import SortBuyer from '@/components/IssueShipment/SortBuyer';
 import SortStatus from '@/components/IssueShipment/SortStatus';
-import TableShipmentsSclad from '@/components/IssueShipment/table-complect-sclad';
+import TableShipmentsSclad from '@/components/IssueShipment/TableComplectSclad';
 
 export default {
   data() {

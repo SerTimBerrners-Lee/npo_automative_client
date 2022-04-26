@@ -18,7 +18,7 @@
 import { random } from 'lodash';
 import { mapMutations } from 'vuex';
 import { sliceName } from '@/js/methods';
-import BuyerModal from '@/components/BaseBuyer/list-buyer';
+import BuyerModal from '@/components/BaseBuyer/ListBuyer';
 
 export default {
   data() {

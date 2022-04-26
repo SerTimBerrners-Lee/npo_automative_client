@@ -152,12 +152,12 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/search';
+import Search from '@/components/Search';
 import { eSelectSpan } from '@/js/methods';
-import CbedModalInfo from '@/components/CbEd/cbed-modal';
-import DetalModal from '@/components/BaseDetal/detal-modal';
+import CbedModalInfo from '@/components/CbEd/CbedModal';
+import DetalModal from '@/components/BaseDetal/DetalModal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import ProductModalInfo from '@/components/BaseProduct/product-modal';
+import ProductModalInfo from '@/components/BaseProduct/ProductModal';
 
 export default {
   data() {

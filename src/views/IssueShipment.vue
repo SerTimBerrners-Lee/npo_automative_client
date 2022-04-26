@@ -45,7 +45,7 @@ import DatePicterRange from '@/components/DatePicterRange';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import SortBuyer from '@/components/IssueShipment/SortBuyer';
 import SortStatus from '@/components/IssueShipment/SortStatus';
-import TableShipments from '@/components/IssueShipment/table-komplect';
+import TableShipments from '@/components/IssueShipment/TableKomplect';
 
 export default {
 	data() {

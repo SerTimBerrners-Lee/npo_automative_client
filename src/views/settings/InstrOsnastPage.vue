@@ -34,8 +34,8 @@
 <script>
 import { random } from 'lodash';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableMaterial from '@/components/MathZag/table-material';
-import addEditInstruent from '@/components/Instrument/add-edit-instrument';
+import TableMaterial from '@/components/MathZag/TableMaterial';
+import addEditInstruent from '@/components/Instrument/AddEditInstrument';
 
 export default {
   data() {

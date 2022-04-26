@@ -71,10 +71,10 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { mapGetters, mapActions } from 'vuex';
-import AddWaybill from '../completassembl/add-waybill';
-import OpensFile from '@/components/FileBase/openfile';
+import AddWaybill from '../completassembl/AddWaybill';
+import OpensFile from '@/components/FileBase/OpenFile';
 import { eSelectSpan, getBuyerFilter } from '@/js/methods';
-import ShipmentList from '@/components/IssueShipment/shipments-list-table';
+import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
 
 export default {
 	data() {

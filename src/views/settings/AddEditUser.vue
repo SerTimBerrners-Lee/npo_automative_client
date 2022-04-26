@@ -164,9 +164,9 @@ import PATH_TO_SERVER from '@/js/path';
 import { isEmpty, random } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import {photoPreloadUrl, showMessage} from '@/js/';
-import OpensFile from '@/components/FileBase/openfile';
-import DatePicterCustom from '@/components/date-picter';
-import BaseFileModal from '@/components/FileBase/base-files-modal';
+import OpensFile from '@/components/FileBase/OpenFile';
+import DatePicterCustom from '@/components/DatePicter';
+import BaseFileModal from '@/components/FileBase/BaseFilesModal';
 
 export default ({ 
   data() {
