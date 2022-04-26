@@ -197,8 +197,8 @@ import CbedModalInfo from '@/components/CbEd/CbedModal';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import BaseFileModal from '@/components/FileBase/BaseFilesModal';
+import Shipment from '@/components/Sclad/IssueToPull/ShComlitModal';
 import ProductModalInfo from '@/components/BaseProduct/ProductModal';
-import Shipment from '@/components/Sclad/issuetopull/ShComlit.modal';
 
 export default {
   props: {

@@ -180,7 +180,7 @@
 import random from 'lodash';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import AddOrder from '@/components/Sclad/ordersuppliers/AddOrder';
+import AddOrder from '@/components/Sclad/OrderSuppliers/AddOrder';
 import TableMaterial from '@/components/BaseProvider/TableMaterila';
 import TableProvider from '@/components/BaseProvider/TableProvider';
 import TableMaterialFilter from '@/components/BaseProvider/TableMaterialFilter';

@@ -31,7 +31,7 @@
 </template>
 <script>
 import { random } from 'lodash';
-import addEditMat from '@/components/MathZag/AddEditPokma';
+import addEditMat from '@/components/MathZag/AddEditPokMat';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import TableMaterial from '@/components/MathZag/TableMaterial';
 

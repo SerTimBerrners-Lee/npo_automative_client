@@ -26,8 +26,8 @@
 </template>
 <script> 
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import TableMaterial from '../deficit-material/TableMaterial';
-import TableTypeMaterial from '../deficit-material/TableTypeMaterial';
+import TableMaterial from '../DeficitMaterial/TableMaterial';
+import TableTypeMaterial from '../DeficitMaterial/TableTypeMaterial';
 import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
 export default {
 	data() {

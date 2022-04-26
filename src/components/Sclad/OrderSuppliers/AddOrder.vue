@@ -169,16 +169,16 @@
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
 import AddFile from '@/components/FileBase/AddFile';
-import { returnSpanEz, returnEzName } from '@/js/edizm';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
+import { returnSpanEz, returnEzName } from '@/js/edizm';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import { posToDeliveries, returnTypePosition } from '@/js/methods';
 import ProviderList from '@/components/BaseProvider/AllFieldsProvider';
-import AddPosition from '@/components/Sclad/comingtosclad/NewPosition';
-import TableMaterial from '@/components/Sclad/deficit-material/TableMaterial';
+import AddPosition from '@/components/Sclad/ComingToSclad/NewPosition';
+import TableMaterial from '@/components/Sclad/DeficitMaterial/TableMaterial';
 import TableMaterialFilter from '@/components/BaseProvider/TableMaterialFilter';
-import TableTypeMaterial from '@/components/Sclad/deficit-material/TableTypeMaterial';
+import TableTypeMaterial from '@/components/Sclad/DeficitMaterial/TableTypeMaterial';
 
 export default {
   props: ['parametrs', 'order_parametr', 'only_view'],

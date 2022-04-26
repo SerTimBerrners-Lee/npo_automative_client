@@ -49,7 +49,6 @@ export default {
   },
   methods: {
     searchParams(det) {
-      console.log(det);
 			if(!det) return false;
 
 			if(!det?.lengt && !det?.width && 

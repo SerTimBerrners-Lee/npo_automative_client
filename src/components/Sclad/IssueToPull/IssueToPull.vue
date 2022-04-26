@@ -44,7 +44,7 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import Shipment from './ShComlit.modal';
+import Shipment from './ShComlitModal';
 import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import SortBuyer from '@/components/IssueShipment/SortBuyer';

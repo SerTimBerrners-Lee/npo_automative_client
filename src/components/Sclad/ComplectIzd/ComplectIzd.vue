@@ -71,7 +71,7 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { mapGetters, mapActions } from 'vuex';
-import AddWaybill from '../completassembl/AddWaybill';
+import AddWaybill from '../CompletAssembl/AddWaybill';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { eSelectSpan, getBuyerFilter } from '@/js/methods';
 import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
