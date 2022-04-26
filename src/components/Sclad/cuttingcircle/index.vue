@@ -99,7 +99,7 @@
 
 <script> 
 import { mapGetters, mapActions } from 'vuex';
-import OpPgMetalloworking from '@/components/Metalloworking/table-operation.vue';
+import OpPgMetalloworking from '@/components/Metalloworking/TableOperation';
 export default {
 	data() {
 		return {

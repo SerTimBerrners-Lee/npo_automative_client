@@ -114,13 +114,13 @@ import print from 'print-js';
 import { random } from 'lodash';
 import { eSelectSpan } from '@/js/methods';
 import { showMessage, comparison } from '@/js/';
-import OpensFile from '@/components/FileBase/openfile';
+import OpensFile from '@/components/FileBase/OpenFile';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
-import DescriptionModal from '@/components/description-modal';
-import ShipmentsModal from '@/components/Sclad/shipments-to-ized';
+import DescriptionModal from '@/components/DescriptionModal';
+import ShipmentsModal from '@/components/Sclad/ShipmentsToIzed';
 import OperationModal from '@/components/Sclad/workings-operations';
-import ShipmentList from '@/components/IssueShipment/shipments-list-table';
-import OperationPathModal from '@/components/Assembly/operation-path-modal';
+import OperationPathModal from '@/components/Assembly/OperationPathModal';
+import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
 
 export default {
 	data() {

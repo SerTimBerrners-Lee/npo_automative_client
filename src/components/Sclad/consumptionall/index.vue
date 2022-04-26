@@ -44,7 +44,7 @@
 </template>
 
 <script> 
-import Graph from './graph.vue';
+import Graph from './Graph';
 import { random } from 'lodash';
 export default {
 	data() {

@@ -54,11 +54,11 @@
 <script>
 import { random }  from 'lodash';
 import { showMessage } from '@/js/';
-import Assign from '@/components/FileBase/assign';
-import AddFile from '@/components/FileBase/addfile';
-import OpensFile from '@/components/FileBase/openfile';
-import NodeTable from '@/components/FileBase/node-table';
-import FileWindow from '@/components/FileBase/file-window';
+import Assign from '@/components/FileBase/Assign';
+import AddFile from '@/components/FileBase/AddFile';
+import OpensFile from '@/components/FileBase/OpenFile';
+import NodeTable from '@/components/FileBase/NodeTable';
+import FileWindow from '@/components/FileBase/FileWindow';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {

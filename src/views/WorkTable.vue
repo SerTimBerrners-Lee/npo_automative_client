@@ -70,7 +70,7 @@
 <script>
 import { dateIncrementHors } from '@/js/';
 import { mapGetters, mapActions } from 'vuex';
-import IssueForMe from '@/components/Issue/issue-for-me';
+import IssueForMe from '@/components/Issue/IssueForMe';
 import DatePicterRange from '@/components/DatePicterRange';
 
 export default {

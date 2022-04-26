@@ -70,11 +70,11 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import AddWaybill from './add-waybill';
+import AddWaybill from './AddWaybill';
 import { eSelectSpan } from '@/js/methods';
 import { mapGetters, mapActions } from 'vuex';
-import OpensFile from '@/components/FileBase/openfile';
-import ShipmentList from '@/components/IssueShipment/shipments-list-table';
+import OpensFile from '@/components/FileBase/OpenFile';
+import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
 
 export default {
 	data() {

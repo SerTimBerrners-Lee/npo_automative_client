@@ -193,12 +193,12 @@
 </template>
 <script>
 import { random } from 'lodash';
-import AddOrder from './add-order';
+import AddOrder from './AddOrder';
 import WorkerModal from '../worker-modal';
 import { comparison, showMessage } from '@/js/'; 
 import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import ShipmentsModal from '@/components/Sclad/shipments-to-ized';
+import ShipmentsModal from '@/components/Sclad/ShipmentsToIzed';
 
 export default {
 	data() {

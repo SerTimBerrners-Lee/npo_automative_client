@@ -81,7 +81,7 @@
 </template>
 <script>
 import {random} from 'lodash';
-import AddMovind from './add-moving-modal';
+import AddMovind from './AddMovingModal';
 import {mapGetters, mapActions} from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
 export default {

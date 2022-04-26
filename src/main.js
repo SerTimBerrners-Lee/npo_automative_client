@@ -4,12 +4,12 @@ import router from './router';
 import workers from './workers';
 import { createApp } from 'vue';
 import Unicon from 'vue-unicons';
-import Loader from '@/components/loader.vue';
-import MiniLoader from '@/components/mini-loader.vue';
-import QuickFilter from '@/components/quick-filter.vue';
-import FileLoader from '@/components/drag-drop-file.vue';
-import InformFolder from '@/components/InformFolder.vue';
-import MiniNavigation from '@/components/mini-navigation.vue';
+import Loader from '@/components/Loader';
+import MiniLoader from '@/components/MiniLoader';
+import FileLoader from '@/components/DragDropFile';
+import QuickFilter from '@/components/QuickFilter';
+import InformFolder from '@/components/InformFolder';
+import MiniNavigation from '@/components/MiniNavigation';
 import { SetupCalendar, Calendar, DatePicker } from 'v-calendar';
 import {
     uniImport,

@@ -67,7 +67,7 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { mapActions, mapMutations} from 'vuex';
-import TreatmentEdit from '@/components/Sclad/edit-treatment';
+import TreatmentEdit from '@/components/Sclad/EditTreatment';
 
 export default {
   props: {

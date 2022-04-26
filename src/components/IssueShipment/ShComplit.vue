@@ -94,9 +94,9 @@
 import { random } from 'lodash';
 import { mapActions } from 'vuex';
 import { showMessage } from '@/js/';
-import OpensFile from '@/components/FileBase/openfile';
-import TableDocument from '@/components/FileBase/table-document';
-import KomplectModal from '@/components/IssueShipment/komplect-modal';
+import OpensFile from '@/components/FileBase/OpenFile';
+import TableDocument from '@/components/FileBase/TableDocument';
+import KomplectModal from '@/components/IssueShipment/KomplectModal';
 
 export default {
   props: {

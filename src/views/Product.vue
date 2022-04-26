@@ -141,14 +141,14 @@
 </template>
 <script>
 import { random, isEmpty } from 'lodash';
-import Search from '@/components/search';
-import NodeParent from '@/components/MathZag/table-node';
+import Search from '@/components/Search';
+import NodeParent from '@/components/MathZag/TableNode';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
-import MediaSlider from '@/components/FileBase/media-slider';
+import MediaSlider from '@/components/FileBase/MediaSlider';
 import { eSelectSpan, parseSpetification } from '@/js/methods';
-import TableDocument from '@/components/FileBase/table-document';
-import TechProcess from '@/components/BaseDetal/tech-process-modal';
-import TableSpetification from '@/components/CbEd/table-sptification';
+import TableDocument from '@/components/FileBase/TableDocument';
+import TechProcess from '@/components/BaseDetal/TechProcessModal';
+import TableSpetification from '@/components/CbEd/TableSptification';
 
 export default {
   data() {

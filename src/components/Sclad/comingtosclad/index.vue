@@ -101,11 +101,11 @@
 </template>
 <script>
 import { random } from 'lodash';
-import ComingModal from './coming-modal';
+import ComingModal from './ComingModal';
 import { mapGetters, mapActions } from 'vuex';
-import OpensFile from '@/components/FileBase/openfile';
+import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterRange from '@/components/DatePicterRange';
-import DescriptionModal from '@/components/description-modal';
+import DescriptionModal from '@/components/DescriptionModal';
 
 export default {
 	data() {

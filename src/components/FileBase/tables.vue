@@ -45,7 +45,7 @@
 
 <script>
 import { getReversDate } from '@/js/';
-import Search from '@/components/search.vue';
+import Search from '@/components/Search';
 export default {
   props: ['documents', 'search_data'],
   data() {

@@ -41,7 +41,7 @@ export default {
       if(this.$props.is_type == 'cb')
         this.$router.push({path: `/assembly/operation-assemble/${oper.id}/${oper.name}`})
       if(this.$props.is_type == 'det')
-        this.$router.push({path: `/metalloworking/operation-metall/${oper.id}/${oper.name}`})
+        this.$router.push({path: `/metalloworking/OperationMetall/${oper.id}/${oper.name}`})
     }
 
   },
