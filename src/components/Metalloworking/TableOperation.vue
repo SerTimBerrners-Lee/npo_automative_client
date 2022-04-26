@@ -275,7 +275,6 @@ export default {
 			return returnShipmentsDate(shipments, znach_return);
     },
 		toSetOrders(shipments) {
-			console.log(shipments);
       if(shipments.detals && shipments.detals.length)
         this.filterMetaloworkingByShipments(shipments.detals)
     },

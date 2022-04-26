@@ -236,7 +236,7 @@ export default {
     }
   }, 
   methods: {
-    ...mapActions(['setchDeficitDeficit', 'fetchAllShipments']),
+    ...mapActions(['setchDeficitDeficit', 'fetchAllShipmentsNoStatus']),
     ...mapMutations([
       'filterDetalToArticle',
       'detalToShipmentsSort',
@@ -291,7 +291,7 @@ export default {
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select');
       let check = true;
-      for(let izdd of this.toProductionArr) {
+      for(const izdd of this.toProductionArr) {
         if(izdd.id == izd.id) {
           this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
           check = false;
@@ -349,7 +349,7 @@ export default {
     this.loader = true;
     this.reverseMidlevareDetal();
     await this.setchDeficitDeficit();
-    await this.fetchAllShipments({sort: undefined, light: true});
+    await this.fetchAllShipmentsNoStatus();
     this.loader = false;
   }
 }

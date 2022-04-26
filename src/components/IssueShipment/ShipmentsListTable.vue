@@ -4,7 +4,7 @@
 			<th colspan="3" class='hide_td' @click="show_is = !show_is">
 				{{ show_is ? 'Скрыть' : 'Показать' }} Задачи на отгрузку</th>
       <th @click='clearFilter' class='hide_td'>
-				Сбросить все фильтры
+				Сбросить все фильтры 324
 			</th>
 		</tr>
 		<div class="table-scroll float_block" v-if='show_is'>
@@ -13,7 +13,7 @@
 				<tr> 
 					<th><unicon name="check" fill="royalblue" /></th> 
 					<th>Заказ покупателя из задач на отгрузку</th>
-					<th>Дата отгру	зки покупателю</th>
+					<th>Дата отгрузки покупателю</th>
 				</tr>
 				<tr v-for='order of getShipments' :key='order'>
 					<td>
@@ -37,9 +37,10 @@
 </template>
 <script>
 import {random} from 'lodash';
+import { eSelectSpan } from '@/js/methods';
 import {mapMutations, mapActions} from 'vuex';
-import { eSelectSpan } from '@/js/methods.js';
 import ShipmentsModal from './ShipmentsModal';
+
 export default {
 	props: ['getShipments'],
 	data() {
@@ -72,26 +73,25 @@ export default {
 			this.ship_id = id;
 			this.key_modal_shipments = random(1, 999);
 		},
-		toSetOrders(shipments, e) {
+		async toSetOrders(shipments, e) {
 			this.$emit('unmount_action');
 
-      if(this.span_ship) {
+      if (this.span_ship) {
         this.breackFIlterMetal();
 				this.breackFIlterAssembl();
       }
       this.span_ship = eSelectSpan(this.span_ship, e, 'checkbox_block_select');
 
-			this.fetchAllIzdToShipments(shipments.id).then(res => {
-				this.$emit('unmount_set', res)
-			});
+			const res = await this.fetchAllIzdToShipments(shipments.id);
+			this.$emit('unmount_set', res);
     },
 		clearFilter() {
-      if(this.span_ship) {
+      if (this.span_ship) {
         this.span_ship.classList.remove('checkbox_block_select');
         this.span_ship = null;
       }
 			
-			if(!this.$props.getShipments || !this.$props.getShipments.length) return false;
+			if (!this.$props.getShipments || !this.$props.getShipments.length) return false;
 			this.breackFIlterMetal();
 			this.breackFIlterAssembl();
 

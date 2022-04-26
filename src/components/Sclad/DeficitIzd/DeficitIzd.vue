@@ -227,7 +227,7 @@ export default {
   methods: {
     ...mapActions([
       'setchDeficitProducts', 
-      'fetchAllShipments',
+      'fetchAllShipmentsNoStatus',
       'getAllProductShipmentsById'
     ]),
     ...mapMutations([
@@ -341,7 +341,7 @@ export default {
   async mounted() {
     this.loader = true;
     await this.setchDeficitProducts();
-    await this.fetchAllShipments({sort: undefined, light: true});
+    await this.fetchAllShipmentsNoStatus();
     this.loader = false;
   }
 }

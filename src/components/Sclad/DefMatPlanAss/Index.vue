@@ -41,7 +41,7 @@ export default {
 		ShipmentList
 	},
 	methods: {
-		...mapActions(['fetchAllShipments', 'fetchMaterialToShipments']),
+		...mapActions(['fetchAllShipmentsNoStatus', 'fetchMaterialToShipments']),
 		...mapMutations(['reverseMidlevareProduct', 'reverseMidlevareCbed', 'unsetSortMaterial']),
 		async toSetOrders(shipments) {
       this.unmount_clear();
@@ -55,7 +55,7 @@ export default {
     },
 	}, 
 	async mounted() {
-		await this.fetchAllShipments({sort: undefined, light: true});
+		await this.fetchAllShipmentsNoStatus();
 	}
 }
 </script>

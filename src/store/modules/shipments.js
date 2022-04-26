@@ -65,6 +65,14 @@ export default {
 			ctx.commit('allShipments', {result, sort, ctx});
 			return result;
 		},
+		async fetchAllShipmentsNoStatus(ctx, status = 2) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/status/${status}`);
+			if (!res.ok) return false;
+
+			const result = await res.json();
+			ctx.commit('allShipments', {result, undefined, ctx});
+			return result;
+		},
 		async fetchAllShipmentsTo(ctx) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/to/shipments/`);
 			if (!res.ok) return false;
@@ -115,7 +123,7 @@ export default {
 			if (!res.ok) return false;
 
 			const result = await res.json();
-			ctx.commit('allShipments', {result, sort, ctx});
+			ctx.commit('allShipments', { result, sort, ctx });
 			return result;
 		},
 		async fetchChangeToSclad(ctx, id) { 

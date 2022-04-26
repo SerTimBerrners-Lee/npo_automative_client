@@ -226,7 +226,7 @@ export default {
   methods: {
     ...mapActions([
       'setchDeficitCbed',
-      'fetchAllShipments'
+      'fetchAllShipmentsNoStatus'
     ]),
     ...mapMutations([
       'searchCbed',
@@ -339,7 +339,7 @@ export default {
     this.loader = true;
     this.reverseMidlevareCbed();
     await this.setchDeficitCbed();
-    await this.fetchAllShipments({sort: undefined, light: true});
+    await this.fetchAllShipmentsNoStatus();
     this.loader = false;
   }
 }
