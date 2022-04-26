@@ -64,18 +64,31 @@
       </div>
     </div>
 
+
+  <div class="wh_50p">
     <div>
       <h3>Примечание</h3>
       <textarea maxlength='250' v-model='description'></textarea>
     </div>
+    <TableDocument 
+      v-if='documentsData.length' 
+      :title='""' 
+      :key='table_document_key'
+      :documents='documentsData'/>
 
-    <div class="wh_50p">
-      <TableDocument 
-        v-if='documentsData.length' 
-        :title='""' 
-        :key='table_document_key'
-        :documents='documentsData'/>
+      <div style='margin-bottom: 50px;'>
+        <h3>Добавить файлы</h3>
+        <div style='height: 50px;'>
+          <FileLoader 
+            :typeGetFile='"getfile"'
+            @unmount='file_unmount'
+          />
+        </div>
+      </div>
+    <div class="btn-control" style='margin-top: 50px;' v-if='btn_update'>
+      <button class="btn-small" @click='updateShComplite'>Внести изменения</button>
     </div>
+  </div>
   <KomplectModal
     v-if='parametrs_komplect'
     :key='komplect_generate_key'
@@ -136,6 +149,7 @@ export default {
       responsible_user: '',
       creater_user: '',
       typeOpen: '',
+      btn_update: true,
 
       date_create: new Date().toLocaleDateString("ru-RU"),
       transport: '',
@@ -154,8 +168,18 @@ export default {
   methods: {
     ...mapActions([
       'fetchShComplit',
-      'fetchDocumentsShipments'
+      'fetchDocumentsShipments',
+      'fetchCreateShUpdate'
     ]),
+    file_unmount(e) { 
+      if(!e) return 0;
+
+      this.formData = e.formData;
+      for (const item of this.formData.getAll('document')) {
+        this.documentsData.push(item)
+      } 
+      this.table_document_key = random(1, 999);
+    },
     update(complite) {
       this.date_order = complite.date_order;
       this.number_order = complite.number_order;
@@ -174,6 +198,15 @@ export default {
       console.log('openFiles')
       this.keyWhenModalGenerateFileOpen = random(1, 999);
       this.showModalFiles = true;
+    },
+    async updateShComplite() {
+      if (!this.sh_complit_id) return false;
+      this.formData.append('id', this.sh_complit_id);
+      this.formData.append('description', this.description);
+
+      await this.fetchCreateShUpdate(this.formData);
+      showMessage('', 'Отгрузка изменена', 's');
+      this.btn_update = false;
     },
     async openDocuments(shipments) {	
 			if(!shipments.id) return showMessage('', 'Документов нет', 'w');

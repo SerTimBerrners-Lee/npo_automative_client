@@ -43,6 +43,15 @@ export default {
 			if (!res.ok) return false;
 			return true;
 		},
+		async fetchCreateShUpdate(ctx, data) {
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcheckupdate`, {
+				method: "post",
+				body: data
+			});
+
+			if (!res.ok) return false;
+			return true;
+		},
 		async fetchShComplit(ctx, id) {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcomplite/${id}`);
 			if (!res.ok) return false;

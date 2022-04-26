@@ -213,8 +213,7 @@ export default {
     ...mapActions(['createNewDetal', 'getAllUsers', 'getAllDetalsArticl']),
     ...mapMutations(['delitPathNavigate']),
     unmount_filemodal(res) {
-      if(res) 
-        this.documentsData = res
+      if(res) this.documentsData = res;
     },
     unmount_har_zam(obj) {
       this.obj.DxL = obj.DxL;

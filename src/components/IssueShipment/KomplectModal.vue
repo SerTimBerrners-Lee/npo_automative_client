@@ -130,7 +130,7 @@ export default {
 
     try {
       this.komplect = JSON.parse(complect);
-    } catch(e) { 
+    } catch(e) {
       console.error(e);
       return this.destroyModalF();
     }
