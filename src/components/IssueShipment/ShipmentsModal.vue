@@ -146,7 +146,7 @@
 		</div>
 
 		<h3>Информация об отгрузки</h3>
-		<ShComplit :sh_complit_id='id_shipments' :ship='getOneShipments' />
+		<ShComplit v-if='sh_complit_id' :sh_complit_id='sh_complit_id' :ship='getOneShipments' />
 		<OpensFile 
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -191,7 +191,7 @@ import { random } from 'lodash';
 import ShComplit from './ShComplit';
 import { showMessage } from '@/js/';
 import PrintComplect from './PrintComplect';
-import { 	eSelectSpan, sliceName } from '@/js/methods';
+import { eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
@@ -256,7 +256,8 @@ export default {
 			tablebody: false,
 			loader: false,
 			childrens: [],
-			selected_sh: []
+			selected_sh: [],
+			sh_complit_id: null
     }
   },
 	beforeCreate() {
@@ -354,6 +355,8 @@ export default {
 			this.buyer = this.getOneShipments.buyer?.id;
 			this.to_sklad = this.getOneShipments.to_sklad;
 			this.number_order = this.getOneShipments.number_order;
+			this.sh_complit_id = this.getOneShipments.sh_complit_id;
+			console.log(this.getOneShipments);
 
 			if(this.getOneShipments.productId) {
 				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
@@ -421,7 +424,7 @@ export default {
 		
 		await this.fetchAllBuyers(true);
 
-		if(!this.id_shipments) return this.destroyModalF();
+		if (!this.id_shipments) return this.destroyModalF();
 		await this.beforeCreateF(this.id_shipments);
 		
   },

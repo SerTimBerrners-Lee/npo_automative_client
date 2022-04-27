@@ -66,7 +66,7 @@
 				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status }}</td>
 				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status }}</td> <!-- Статус -->
 				<td>{{ shipments.date_shipments }}</td> <!-- Дата отгрузки -->
-				<td>{{ shipemnts?.sh_complit?.date_shipments_fakt }}</td> <!-- Дата ФАКТ отгрузки -->
+				<td>{{ shipments?.sh_complit?.date_shipments_fakt }}</td> <!-- Дата ФАКТ отгрузки -->
 				<td></td>
 				<td></td>
 				<td></td>
