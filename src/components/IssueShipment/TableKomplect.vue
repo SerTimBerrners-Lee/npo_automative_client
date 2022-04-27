@@ -20,6 +20,7 @@
 				<th class='fix_size'>Готовность к отгрузке в %</th>
 				<th>Статус</th>
 				<th>Дата отгрузки</th>
+				<th>Дата Факт. отгрузки</th>
 				<th>Н/Ч требуется</th>
 				<th>Н/Ч выполнено</th>
 				<th>Н/Ч осталось</th>
@@ -65,6 +66,7 @@
 				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status }}</td>
 				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status }}</td> <!-- Статус -->
 				<td>{{ shipments.date_shipments }}</td> <!-- Дата отгрузки -->
+				<td>{{ shipemnts?.sh_complit?.date_shipments_fakt }}</td> <!-- Дата ФАКТ отгрузки -->
 				<td></td>
 				<td></td>
 				<td></td>
@@ -242,7 +244,7 @@ export default {
 				}
 			} else showMessage('', 'Документов нет', 'w');
     },
-	}
+	},
 }
 </script>
 

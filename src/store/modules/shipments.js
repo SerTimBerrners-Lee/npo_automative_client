@@ -86,9 +86,9 @@ export default {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/to/shipments/`);
 			if (!res.ok) return false;
 
-			const result = await res.json()
-			ctx.commit('allShipments', {result, undefined, ctx})
-			return result
+			const result = await res.json();
+			ctx.commit('allShipments', {result, undefined, ctx});
+			return result;
 		},
 		async fetchDeleteShipments(ctx, id) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`, {

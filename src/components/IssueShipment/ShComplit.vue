@@ -10,9 +10,8 @@
         <span><strong>Транспортная компания: </strong> {{ transport || '-' }} </span>
       </p>
       <p style="width: 100%;">
-        <span><strong>Дата выполнения: </strong> {{ date_create || '-' }} </span>
-        <span><strong>Дата фактический отгрузки: </strong> {{ date_shipments_fakt || '-' }} </span>
         <span><strong>Дата планируемой отгрузки: </strong> {{ date_shipments || '-' }} </span>
+        <span><strong>Дата фактический отгрузки: </strong> {{ date_shipments_fakt || '-' }} </span>
       </p>
     </div>
 

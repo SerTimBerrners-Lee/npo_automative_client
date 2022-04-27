@@ -17,6 +17,7 @@
 				<th>Готовность к отгрузке в %</th>
 				<th>Статус</th>
 				<th>Дата отгрузки</th>
+				<th>Дата Факт. отгрузки</th>
 				<th id="complect">Примечание</th>
 			</tr>
 			<tr v-for='shipments of shipmentsArr'
@@ -54,6 +55,7 @@
 				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status  }}</td>
 				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status  }}</td>
 				<td>{{ shipments.date_shipments }}</td>
+				<td>{{ shipemnts?.sh_complit?.date_shipments_fakt }}</td>
 				<td class='center fix_size' v-if='!description_show'>
 					<img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
 				</td>
