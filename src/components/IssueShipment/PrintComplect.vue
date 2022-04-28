@@ -93,7 +93,7 @@ import { getBuyerFilter } from '@/js/methods';
 export default {
   props: {
     shipments: {},
-    childrens: {}
+    childrens: []
   },
   data() {
     return {
@@ -105,16 +105,35 @@ export default {
     ...mapActions(['fetchAllBuyers']),
     getBuyerFilter(_id) {
       return getBuyerFilter(_id);
+    },
+    printInit() {
+      const emit = this.$emit;
+      setTimeout(() => {
+        print({
+          printable: 'tablebody',
+          type: 'html',
+          targetStyles: ['*'],
+          documentTitle: 'Комплектация заказа',
+          font_size: '10pt',
+          onLoadingEnd() {
+            emit('unmount_print');
+          }
+        });
+      })
     }
   },
   async mounted() {
     await this.fetchAllBuyers(true);
+    if (!this.childrens || !this.childrens.length) {
+      this.shipment = this.shipments; 
+      return this.printInit();
+    }
     
     let findParent = false;
     for (const item of this.childrens) {
       if (!item.parent_id) {
         findParent = true;
-        this.childrens_arr.push(this.shipments)
+        this.childrens_arr.push(this.shipments);
         this.shipment = item;
         continue;
       }
@@ -122,18 +141,7 @@ export default {
     }
 
     if (!findParent) this.shipment = this.shipments; 
-
-    const emit = this.$emit;
-    print({
-      printable: 'tablebody',
-      type: 'html',
-      targetStyles: ['*'],
-      documentTitle: 'Комплектация заказа',
-      font_size: '10pt',
-      onLoadingEnd() {
-        emit('unmount_print');
-      }
-    });
+    this.printInit();
   }
 }
 </script>

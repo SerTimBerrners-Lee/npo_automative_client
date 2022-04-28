@@ -222,11 +222,9 @@ export default {
     },
   },
   async mounted() {
-    console.log("sh_complit_id", this.sh_complit_id)
     if (!this.sh_complit_id) return false;
     const complite = await this.fetchShComplit(this.sh_complit_id);
     this.shipments = complite;
-    console.log(this.shipments);
     this.update(complite);
   },
 }

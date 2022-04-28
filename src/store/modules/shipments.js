@@ -1,4 +1,4 @@
-import { dateDifference } from '@/js/';
+import { differencesShipments } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
 export default {
 	state: {
@@ -153,17 +153,10 @@ export default {
 		}
 	},
 	mutations: {
-		allShipments(state, {result, sort = 'sort_sclad', ctx}) {
-			state.shipments = [];
-			for(const ship of result) {
-				if (ship.date_shipments) 
-					ship.difference = dateDifference(undefined, ship.date_shipments);
-				else ship.difference = 0;
-			}
-			state.shipments = result.sort((a, b) => a.difference - b.difference);
+		allShipments(state, { result, sort = 'sort_sclad', ctx = undefined }) {
+			state.shipments = differencesShipments(result);
 
-
-			ctx.commit('sortShipmentParams', sort);
+			if (ctx) ctx.commit('sortShipmentParams', sort);
 		},
 		sortShipmentParams(state, sort) {
 			if (!sort) return;
