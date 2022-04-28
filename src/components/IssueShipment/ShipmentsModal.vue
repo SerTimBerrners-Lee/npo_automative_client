@@ -113,25 +113,25 @@
 					</tr>
 				</table>
 			</div>
-			<div width='300px;' class='flex_direction'>
-				<div>
-					<h3>Примечание</h3>
-					<textarea maxlength='250' v-model='description' disabled></textarea>
-				</div>
-				<div class='file_content'>
-				<h3>Документы</h3>
-				<div v-if='documents.length'>
-					<table>
-						<tr>
-							<th>Файл</th>
-						</tr>
-						<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
-							<td>{{ fil.name }}</td>
-						</tr>
-					</table>
-				</div>
+		</div>
+		<div width='300px;' class='flex_direction'>
+			<div>
+				<h3>Примечание</h3>
+				<textarea maxlength='250' v-model='description' disabled></textarea>
 			</div>
+			<div class='file_content'>
+			<h3>Документы</h3>
+			<div v-if='documents.length'>
+				<table>
+					<tr>
+						<th>Файл</th>
+					</tr>
+					<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
+						<td>{{ fil.name }}</td>
+					</tr>
+				</table>
 			</div>
+		</div>
 		</div>
 
 		<div v-if='shipment_sclad && getOneShipments?.id'>
