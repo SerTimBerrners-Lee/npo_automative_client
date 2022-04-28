@@ -222,10 +222,14 @@ export default {
     },
   },
   async mounted() {
-    if (!this.sh_complit_id) return false;
-    const complite = await this.fetchShComplit(this.sh_complit_id);
-    this.shipments = complite;
-    this.update(complite);
+    try {
+      if (!this.sh_complit_id) return false;
+      const complite = await this.fetchShComplit(this.sh_complit_id);
+      this.shipments = complite;
+      this.update(complite);
+    } catch (err) {
+      console.error(err);
+    }
   },
 }
 </script>

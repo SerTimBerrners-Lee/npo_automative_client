@@ -351,21 +351,23 @@ export default {
     this.hiddens = 'opacity: 1;';
     this.loader = true;
 
-    if (!this.shipments_id && !this.selected_sh.length) {
-      showMessage('', 'Выберите задачу на отгрузку', 'w');
-      return this.destroyModalF();
-    }
+    try {
+      if (!this.shipments_id && !this.selected_sh.length) {
+        showMessage('', 'Выберите задачу на отгрузку', 'w');
+        return this.destroyModalF();
+      }
 
-    if (!this.selected_sh.length) { // Если заказов нет и только один переданный
-      const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
-      if(!result) return this.destroyModalF();
-      this.shipments = result;
-    } else {
-      this.shipments = this.selected_sh[0];
-      this.childrens = this.selected_sh.filter(el => el.id !== this.shipments.id);
-    }
-    
-    this.update();
+      if (!this.selected_sh || !this.selected_sh.length) { // Если заказов нет и только один переданный
+        const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
+        if(!result) return this.destroyModalF();
+        this.shipments = result;
+      } else {
+        this.shipments = this.selected_sh[0];
+        this.childrens = this.selected_sh.filter(el => el.id !== this.shipments.id);
+      }
+      
+      this.update();
+    } catch (err) { console.error(err, 'shcomplitModal') }
     this.loader = false;
   },
 }

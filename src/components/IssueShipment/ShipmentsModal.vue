@@ -66,8 +66,8 @@
 			<PrintComplect
 				v-if='tablebody'
 				:shipments='getOneShipments'
-				:key='selected_sh.length'
-				:childrens='selected_sh.length ? selected_sh : childrens'
+				:key='selected_sh?.length || 250'
+				:childrens='selected_sh?.length ? selected_sh : childrens'
 				@unmount_print='unmount_print' />
 
 			<div v-if='shipment_sclad'>
