@@ -49,7 +49,7 @@
 		</div>
 
 		<div>
-			<div v-if='childrens.length && getOneShipments?.id'>
+			<div v-if='childrens && childrens.length && getOneShipments?.id'>
 				<h4>Позиции по Счету: </h4>
 				<TableShipments  
 					v-if='childrens.length'
@@ -73,7 +73,7 @@
 			<div v-if='shipment_sclad'>
 				<h4>Выбранные на отгрузку	: </h4>
 				<TableShipments  
-					v-if='selected_sh.length'
+					v-if='selected_sh && selected_sh.length'
 					:fixed_table='"fixed_table_10"'
 					:shipmentsArr='selected_sh'
 					:remove_show='true'
@@ -121,7 +121,7 @@
 			</div>
 			<div class='file_content'>
 			<h3>Документы</h3>
-			<div v-if='documents.length'>
+			<div v-if='documents && documents.length'>
 				<table>
 					<tr>
 						<th>Файл</th>
@@ -323,7 +323,7 @@ export default {
       await this.fetchAllShipmentsTo();
 			this.loader = false;
 		},
-		unmount_print() {
+		unmount_print() {navigator
 			this.tablebody = false;
 		},
 		returnObj() {
@@ -400,23 +400,26 @@ export default {
     },
 		async beforeCreateF(id) {
 			this.loader = true;
-			this.list_cbed_detal = [];
+			try {
+				this.list_cbed_detal = [];
 
-			const result = await this.fetchAllShipmentsById({id, light: true});
+				const result = await this.fetchAllShipmentsById({id, light: true});
 
-			if(!result) return this.destroyModalF();
-			this.setOneShipment(result);
-			this.editVariable();
+				if(!result) return this.destroyModalF();
+				this.setOneShipment(result);
+				this.editVariable();
 
-			const ship_id_for_children = result.parent_id || result.id;
-	
-			const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
-			if (childrens) {
-				const child = childrens.childrens.filter(el => el.id != result.id);
-				this.childrens = differencesShipments(child);
-			}
-			const res = differencesShipments([result]);
-			this.childrens.push(res[0]);
+				const ship_id_for_children = result.parent_id || result.id;
+		
+				const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
+				if (childrens) {
+					const child = childrens.childrens.filter(el => el.id != result.id);
+					this.childrens = differencesShipments(child);
+				}
+				const res = differencesShipments([result]);
+				this.childrens.push(res[0]);
+
+			} catch (err) { console.error(err, 'shipments modal beforeCreateF'); }
 
 			this.loader = false;
 		},
@@ -426,10 +429,13 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
 		
-		await this.fetchAllBuyers(true);
+		try {
+			await this.fetchAllBuyers(true);
 
-		if (!this.id_shipments) return this.destroyModalF();
-		await this.beforeCreateF(this.id_shipments);
+			if (!this.id_shipments) return this.destroyModalF();
+			await this.beforeCreateF(this.id_shipments);
+
+		} catch (err) { console.error(err, 'shipments modal mounted') }
 		
   },
 }

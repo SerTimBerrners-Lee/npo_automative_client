@@ -123,25 +123,27 @@ export default {
     }
   },
   async mounted() {
-    await this.fetchAllBuyers(true);
-    if (!this.childrens || !this.childrens.length) {
-      this.shipment = this.shipments; 
-      return this.printInit();
-    }
-    
-    let findParent = false;
-    for (const item of this.childrens) {
-      if (!item.parent_id) {
-        findParent = true;
-        this.childrens_arr.push(this.shipments);
-        this.shipment = item;
-        continue;
+    try {
+      await this.fetchAllBuyers(true);
+      if (!this.childrens || !this.childrens.length) {
+        this.shipment = this.shipments; 
+        return this.printInit();
       }
-      this.childrens_arr.push(item);
-    }
+      
+      let findParent = false;
+      for (const item of this.childrens) {
+        if (!item.parent_id) {
+          findParent = true;
+          this.childrens_arr.push(this.shipments);
+          this.shipment = item;
+          continue;
+        }
+        this.childrens_arr.push(item);
+      }
 
-    if (!findParent) this.shipment = this.shipments; 
-    this.printInit();
+      if (!findParent) this.shipment = this.shipments; 
+      this.printInit();
+    } catch (err) { console.log(err, 'printComplect') }
   }
 }
 </script>

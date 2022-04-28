@@ -1,5 +1,5 @@
 <template>
-	<div class="table-scroll" v-if='shipmentsArr.length'>
+	<div class="table-scroll" v-if='shipmentsArr && shipmentsArr.length'>
 		<table id='tableshipments'>
 			<tr :class='fixed_table'>
 				<th v-if='cheked_show'>
@@ -114,9 +114,7 @@ import DescriptionModal from '@/components/DescriptionModal';
 
 export default {
 	props: {
-		shipmentsArr: {
-			type: Array
-		},
+		shipmentsArr: [],
 		no_set: {},
 		fixed_table: {
 			type: String,
