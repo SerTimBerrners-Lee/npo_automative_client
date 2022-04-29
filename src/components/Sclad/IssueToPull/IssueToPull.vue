@@ -96,6 +96,7 @@ export default {
       this.loader = true;
       await this.fetchAllShipmentsTo();
       this.status_sort_key = random(1, 999);
+      console.log(this.status_sort_key)
       this.loader = false;
     },
     async clearFiltersF() {

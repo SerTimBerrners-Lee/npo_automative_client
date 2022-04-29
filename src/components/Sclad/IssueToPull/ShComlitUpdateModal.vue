@@ -3,7 +3,7 @@
   <div :class='destroyModalLeft' @click="destroyModalF"></div>
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
-			<h3>Отгрузка</h3>
+			<h3>Изменить Отгрузку</h3>
 			<div class="block head_block">
         <p>
           <span>№ Заказа: </span>
@@ -20,7 +20,7 @@
           <input type="text" v-model='transport'>
         </p>
         <p style="width: 100%;">
-          <span style='display: flex; align-items: center; '>
+          <span style='display: flex; align-items: center; float: left;'>
             <span>Дата планируемой отгрузки: </span>
             <DatePicterCustom
               :dateStart='date_shipments'
@@ -70,7 +70,7 @@
               </td>
               <td class='center'>{{ shipments?.buyer?.name }}</td>
               <td class='center'>0</td> <!-- Потребность к отгрузке -->
-              <td class='center'>{{ shipments?.product?.fabricNumber }}</td>
+              <td class='center'>{{ complit.fabric_number }}</td>
               <td class='center'>{{ shipments.date_shipments }}</td>
               <td class='center cursor' @click='selectUser("executor")'>
                 {{ creater_user ? creater_user?.initial : 'Выбрать' }}
@@ -79,35 +79,7 @@
                 {{ responsible_user ? responsible_user?.initial : 'Выбрать' }}
               </td>
             </tr>
-
-            <tbody v-if='childrens && childrens.length'>
-              <tr v-for='sh of childrens' :key='sh'>
-                <td class='center'>{{ sh?.product?.name }}</td>
-                <td class='center' @click='openComplectation(sh.list_cbed_detal)' >
-                  <img 
-                    src="@/assets/img/link.jpg" 
-                    class='link_img' 
-                    atl='Показать'
-                    v-if='sh.list_cbed_detal' />
-                  <p v-else>Нет комплектации</p>
-                </td>
-                <td class='center'>{{ sh.kol }}</td>
-                <td style='width:50px; word-break: break-all;' class='click center active'  
-                  @click='openDocuments(sh)' >
-                  {{ sh.base }}
-                </td>
-                <td class='center'>{{ sh?.buyer?.name }}</td>
-                <td class='center'>0</td> <!-- Потребность к отгрузке -->
-                <td class='center'>{{ sh?.product?.fabricNumber }}</td>
-                <td class='center'>{{ sh.date_shipments }}</td>
-                <td class='center cursor' @click='selectUser("executor")'>
-                  {{ creater_user ? creater_user?.initial : 'Выбрать' }}
-                </td>
-                <td class='center cursor' @click='selectUser("controller")'>
-                  {{ responsible_user ? responsible_user?.initial : 'Выбрать' }}
-                </td>
-              </tr>
-            </tbody>
+            
           </table>
         </div>
       </div>
@@ -137,7 +109,7 @@
 
       <div class="btn-control out-btn-control">
         <button class="btn-status" @click='destroyModalF'>Отменить</button>
-        <button class="btn-status btn-black" @click='save'>Отгрузить</button>
+        <button class="btn-status btn-black" @click='save'>Внести изменения в отгрузку</button>
       </div>
     </div>
     <KomplectModal
@@ -182,12 +154,7 @@ import KomplectModal from '@/components/IssueShipment/KomplectModal';
 
 export default {
   props: {
-    shipments_id: {
-      type: Number
-    },
-    change_complect: {},
-    is_change_komplit: {},
-    selected_sh: []
+    complit: {}
   },
   data() {
     return {
@@ -273,10 +240,19 @@ export default {
       }
     },
     update() {
-      this.date_order = this.shipments.date_order;
-      this.number_order = this.shipments.number_order;
-      this.date_shipments = this.shipments.date_shipments;
-      this.fabric_number = this.shipments?.product?.fabricNumber;
+      this.date_order = this.complit.date_order;
+      this.number_order = this.complit.number_order;
+      this.date_shipments = this.complit.date_shipments;
+      this.fabric_number = this.complit?.product?.fabricNumber;
+      this.date_shipments_fakt = this.complit.date_shipments_fakt;
+      this.transport = this.complit.transport;
+      this.shipments = this.complit.shipments;
+
+      //this.creater_user = this.complit.creater_user_id;
+      //this.responsible_user = this.complit.responsible_user_id;
+
+      this.description = this.complit.description;
+      this.documentsData = this.complit.documents;
     },
     openComplectation(komplect) {
 			this.komplect_generate_key = random(1, 999);
@@ -294,21 +270,22 @@ export default {
       this.keyModalUser = random(1, 999);
     },
     async save() {
-      await this.fetchSave();
-      if (!this.childrens || !this.childrens.length)return false;
+      return showMessage('', 'Отгрузка изменена', '');
+      // await this.fetchSave();
+      // if (!this.childrens || !this.childrens.length)return false;
       
-      for (const item of this.childrens) {
-        this.formData = new FormData();
-        if (this.lastFormData) {
-          if (this.lastFormData.getAll('docs')) this.formData.append('docs', this.lastFormData.getAll('docs'));
-          if (this.lastFormData.getAll('document')) {
-            for (const file of this.lastFormData.getAll('document')) {
-              this.formData.append('document', file);
-            }
-          }
-        }
-        await this.fetchSave(item.id);
-      }
+      // for (const item of this.childrens) {
+      //   this.formData = new FormData();
+      //   if (this.lastFormData) {
+      //     if (this.lastFormData.getAll('docs')) this.formData.append('docs', this.lastFormData.getAll('docs'));
+      //     if (this.lastFormData.getAll('document')) {
+      //       for (const file of this.lastFormData.getAll('document')) {
+      //         this.formData.append('document', file);
+      //       }
+      //     }
+      //   }
+      //   await this.fetchSave(item.id);
+      // }
     },
     async fetchSave(sh_id = this.shipments.id) {
       if (!sh_id) return showMessage('', 'Выберите задачу, ошибка в ID', 'w');
@@ -341,8 +318,8 @@ export default {
 			const ships = await this.fetchDocumentsShipments(shipments.id);
 
 			if(ships.documents && ships.documents.length) {
-				for(const doc of ships.documents) {
-					if(doc.name == shipments.base) {
+				for (const doc of ships.documents) {
+					if (doc.name == shipments.base) {
 						this.keyWhenModalGenerateFileOpen = random(1, 999);
 						this.itemFiles = [doc];
 					}
@@ -356,23 +333,9 @@ export default {
     this.hiddens = 'opacity: 1;';
     this.loader = true;
 
-    try {
-      if (!this.shipments_id && !this.selected_sh.length) {
-        showMessage('', 'Выберите задачу на отгрузку', 'w');
-        return this.destroyModalF();
-      }
-
-      if (!this.selected_sh || !this.selected_sh.length) { // Если заказов нет и только один переданный
-        const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
-        if(!result) return this.destroyModalF();
-        this.shipments = result;
-      } else {
-        this.shipments = this.selected_sh[0];
-        this.childrens = this.selected_sh.filter(el => el.id !== this.shipments.id);
-      }
-      
-      this.update();
-    } catch (err) { console.error(err, 'shcomplitModal') }
+    if (!this.complit) return this.destroyModalF();
+    this.update();
+   
     this.loader = false;
   },
 }

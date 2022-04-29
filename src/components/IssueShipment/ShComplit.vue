@@ -166,7 +166,7 @@ export default {
   },
   methods: {
     ...mapActions([
-      'fetchShComplit',
+      'fetchShComplitById',
       'fetchDocumentsShipments',
       'fetchCreateShUpdate'
     ]),
@@ -224,7 +224,7 @@ export default {
   async mounted() {
     try {
       if (!this.sh_complit_id) return false;
-      const complite = await this.fetchShComplit(this.sh_complit_id);
+      const complite = await this.fetchShComplitById(this.sh_complit_id);
       this.shipments = complite;
       this.update(complite);
     } catch (err) {

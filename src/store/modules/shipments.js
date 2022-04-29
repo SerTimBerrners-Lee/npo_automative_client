@@ -5,6 +5,8 @@ export default {
 		shipments: [],
 		shipments_sclad: [],
 		shipments_parents: [],
+		
+		sh_complits: [],
 
 		variable_shipments: [],
 		buyer_sort_shipments: [],
@@ -23,6 +25,9 @@ export default {
 		},
 		getParentsShipments(state) {
 			return state.shipments_parents;
+		},
+		getShComplits(state) {
+			return state.sh_complits;
 		}
 	}, 
 	actions: {
@@ -52,10 +57,17 @@ export default {
 			if (!res.ok) return false;
 			return true;
 		},
-		async fetchShComplit(ctx, id) {
+		async fetchShComplitById(ctx, id) {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcomplite/${id}`);
 			if (!res.ok) return false;
 			const result = await res.json();
+			return result;
+		},
+		async fetchShComplit(ctx) {
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcheck`);
+			if (!res.ok) return false;
+			const result = await res.json();
+			ctx.commit('allShComplit', result);
 			return result;
 		},
 		async fetchUpdateShipments(ctx, data) { 
@@ -213,6 +225,11 @@ export default {
 			
 			state.shipments = state.buyer_sort_shipments.filter(el => el.buyerId == buyerId);
 		},
+		setStatusShipments(state, sh_id) {
+			for (const item of state.shipments) {
+				if (item.id === sh_id) item.status = 'Отгружено'
+			}
+		},
 		/**
 		 * Очищает все временные сорт state
 		 */
@@ -221,6 +238,12 @@ export default {
 			state.variable_shipments = [];
 			state.shipments_parents = [];
 			state.shipments_sclad = [];
+		},
+		/**
+		 * Получаем все отметки о выполнении
+		*/
+		allShComplit(state, results) {
+			state.sh_complits = results;
 		}
 	}
 }

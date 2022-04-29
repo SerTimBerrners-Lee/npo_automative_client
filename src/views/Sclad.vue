@@ -18,6 +18,7 @@
             <div class="type-operation" @click="$router.push('/ostatolmat')">Остатки материалов на складе</div>
             <div class="type-operation" @click="$router.push('/ordersuppliers')">Заказаны у поставщиков</div>
             <div class="type-operation" @click="$router.push('/ordertoway')">Заказано / в пути</div>
+            <div class="type-operation" @click="$router.push('/ordercomplit')">Отгруженные заказы</div>
           </div>
         </div>
        </div> 

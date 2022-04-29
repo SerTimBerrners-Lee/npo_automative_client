@@ -24,7 +24,7 @@
 								</div>
 							</td>
               <td style='width: 10%;' 
-                @click="openModal(izd.obj.id, izd.type)"><b>{{ inx + 1 + '. ' }}</b> {{ izd.obj.articl }}</td>
+                @click="openModal(izd.obj.id, izd.type)">{{ izd.obj.articl }}</td>
               <td style='width: 99%;' 
                 @click="openModal(izd.obj.id, izd.type)">{{ izd.obj.name }}</td>
               <td class='center'>
@@ -128,7 +128,7 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
 
-		if(!this.parametrs) return this.destroyModalF();
+		if (!this.parametrs) return this.destroyModalF();
 		const complect = this.parametrs;
 
     if (this.change_complect) return this.komplect = this.change_complect;

@@ -1,4 +1,6 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router';
+
+// Views
 import WorkTable from '@/views/WorkTable';
 import settings from '@/views/Settings';
 import UsersPage from '@/views/settings/UsersPage.vue';
@@ -37,6 +39,7 @@ import Issues from '@/views/Issues';
 import Layot from '@/views/Layt';
 import BaseInventary from '@/views/BaseInventary';
 
+// Components
 import AddMaterialBase from '@/components/MathZag/BaseMaterialAdd';
 import AddEditBaseProvider from '@/components/BaseProvider/AddEdit';
 import AddBaseInstrument from '@/components/Instrument/BaseInstrumentAdd';
@@ -52,11 +55,16 @@ import EditProduct from '@/components/BaseProduct/EditProduct';
 import CreateBuyer from '@/components/BaseBuyer/AddBuyer';
 import EditBuyer from '@/components/BaseBuyer/EditBuyer';
 import NotFound from '@/components/NotFound';
+import AddOrder from '@/components/IssueShipment/AddOrder';
+import OparationDetalAssembly from '@/components/Assembly/OperationAssemble';
+import OparationDetalMetalloworking from '@/components/Metalloworking/OperationMetall';
+import BaseInventaryEdit from '@/components/Inventary/AddEdit';
+
+// Sclad
 import DefcitDetal from '@/components/Sclad/DeficitDetal/DeficitDetal';
 import DeficitMaterial from '@/components/Sclad/DeficitMaterial/DeficitMaterial';
 import DeficitProd from '@/components/Sclad/DeficitProd/DeficitProd';
 import DeficitIzd from '@/components/Sclad/DeficitIzd/DeficitIzd';
-import AddOrder from '@/components/IssueShipment/AddOrder';
 import OrderSuppliers from '@/components/Sclad/OrderSuppliers/OrderSuppliers';
 import CompletAssembl from '@/components/Sclad/CompletAssembl/CompletAssembl';
 import CompletIzd from '@/components/Sclad/ComplectIzd/ComplectIzd';
@@ -73,9 +81,7 @@ import ConsumptionAll from '@/components/Sclad/ConsumptionAll/Index';
 import ConsumptionSclad from '@/components/Sclad/ConsumptionSclad/Index';
 import ComingSclad from '@/components/Sclad/ComingToSclad/Index';
 import ScladTrash from '@/components/Sclad/ScladTrash/Index';
-import OparationDetalAssembly from '@/components/Assembly/OperationAssemble';
-import OparationDetalMetalloworking from '@/components/Metalloworking/OperationMetall';
-import BaseInventaryEdit from '@/components/Inventary/AddEdit';
+import OrderComplite from '@/components/Sclad/OrderComplit/Index';
 
 const routes = [ 
   {
@@ -475,7 +481,12 @@ const routes = [
     name: 'База Данных',
     component: SaveBaseData
   },
-  { 
+  {
+    path: '/ordercomplit',
+    name: 'Отгруженные заказы',
+    component: OrderComplite
+  },
+  {
     path: "/:catchAll(.*)", 
     name: 'Страница не найдена', 
     component: NotFound, 
