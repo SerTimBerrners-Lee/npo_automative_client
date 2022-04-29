@@ -1,46 +1,46 @@
 <template>
-  <div id='tablebody' v-if='shipments'>
+  <div id='tablebody' v-if='shipment'>
     <h1>Информация о заказе</h1> 
     <table class='table_inform'>
       <tr>
         <th class='center'>Дата заказа</th>
-        <td class="center">{{ shipments.date_order }}</td>
+        <td class="center">{{ shipment.date_order }}</td>
       </tr>
       <tr>
         <th class='center'>Дата отгрузки</th>
-        <td class="center">{{ shipments.date_shipments }}</td>
+        <td class="center">{{ shipment.date_shipments }}</td>
       </tr>
       <tr>
         <th class='center'>Изделие</th>
-        <td class="center">{{ shipments.select_product?.name || 'Без Изделия' }}</td>
+        <td class="center">{{ shipment.select_product?.name || 'Без Изделия' }}</td>
       </tr>
       <tr>
         <th class='center'>Количество</th>
-        <td class="center">{{ shipments.kol }}</td>
+        <td class="center">{{ shipment.kol }}</td>
       </tr>
       <tr>
         <th class='center'>Бронь</th>
-        <td class="center">{{ shipments.bron ? 'есть' : 'нет' }}</td>
+        <td class="center">{{ shipment.bron ? 'есть' : 'нет' }}</td>
       </tr>
       <tr>
         <th class='center'>Основание</th>
-        <td class="center">{{ shipments.base }}</td>
+        <td class="center">{{ shipment.base }}</td>
       </tr>
       <tr>
         <th class='center'>Статус</th>
-        <td class="center">{{ shipments.status }}</td>
+        <td class="center">{{ shipment.status }}</td>
       </tr>
       <tr>
         <th class='center'>Покупатель</th>
-        <td class="center" v-if='getBuyerFilter()'>{{ getBuyerFilter(shipments.buyerId) }}</td>
+        <td class="center" v-if='getBuyerFilter()'>{{ getBuyerFilter(shipment.buyerId) }}</td>
       </tr>
       <tr>
         <th class='center'>Примечание</th>
-        <td class="center">{{ shipments.description }}</td>
+        <td class="center">{{ shipment.description }}</td>
       </tr>
-      <tr v-if='shipments.documents && shipments.documents.length'>
+      <tr v-if='shipment.documents && shipment.documents.length'>
         <th class='center'>Документы</th>
-        <p v-for='(doc, idx) of shipments.documents' :key='doc' class='center'>
+        <p v-for='(doc, idx) of shipment.documents' :key='doc' class='center'>
           <span>{{ idx + 1}}. {{ doc.name }}</span>
         </p>
       </tr>
@@ -63,49 +63,9 @@
 
     <div v-if='childrens && childrens.length'>
       <h1>Прикрепленные заказы</h1>
-      <div v-for='child of childrens' :key='child'>
+      <div v-for='child of childrens_arr' :key='child'>
         <h4>Информация о заказе {{ child.number_order }}</h4> 
-        <table class='table_inform'>
-          <tr>
-            <th class='center'>Дата заказа</th>
-            <td class="center">{{ child.date_order }}</td>
-          </tr>
-          <tr>
-            <th class='center'>Дата отгрузки</th>
-            <td class="center">{{ child.date_shipments }}</td>
-          </tr>
-          <tr>
-            <th class='center'>Изделие</th>
-            <td class="center">{{ child.select_product?.name || 'Без Изделия' }}</td>
-          </tr>
-          <tr>
-            <th class='center'>Количество</th>
-            <td class="center">{{ child.kol }}</td>
-          </tr>
-          <tr>
-            <th class='center'>Бронь</th>
-            <td class="center">{{ child.bron ? 'есть' : 'нет' }}</td>
-          </tr>
-          <tr>
-            <th class='center'>Основание</th>
-            <td class="center">{{ child.base }}</td>
-          </tr>
-          <tr>
-            <th class='center'>Покупатель</th>
-            <td class="center">{{ child?.buyer?.name || 'На склад'}}</td>
-          </tr>
-          <tr>
-            <th class='center'>Примечание</th>
-            <td class="center">{{ child.description }}</td>
-          </tr>
-          <tr v-if='child.documents && child.documents.length'>
-            <th class='center'>Документы</th>
-            <p v-for='(doc, idx) of child.documents' :key='doc' class='center'>
-              <span>{{ idx + 1}}. {{ doc.name }}</span>
-            </p>
-          </tr>
-        </table>
-        <h4>Комплектация заказа для заказа {{ }}</h4>
+        <h4>Комплектация заказа для заказа {{ child.number_order }}</h4>
         <table>
           <tr>
             <th class='center'>№</th>
@@ -133,33 +93,57 @@ import { getBuyerFilter } from '@/js/methods';
 export default {
   props: {
     shipments: {},
-    childrens: {}
+    childrens: []
   },
   data() {
     return {
-
+      childrens_arr: [],
+      shipment: null,
     }
   },
   methods: {
     ...mapActions(['fetchAllBuyers']),
     getBuyerFilter(_id) {
       return getBuyerFilter(_id);
+    },
+    printInit() {
+      const emit = this.$emit;
+      setTimeout(() => {
+        print({
+          printable: 'tablebody',
+          type: 'html',
+          targetStyles: ['*'],
+          documentTitle: 'Комплектация заказа',
+          font_size: '10pt',
+          onLoadingEnd() {
+            emit('unmount_print');
+          }
+        });
+      })
     }
   },
   async mounted() {
-    await this.fetchAllBuyers(true);
-
-    const emit = this.$emit;
-    print({
-      printable: 'tablebody',
-      type: 'html',
-      targetStyles: ['*'],
-      documentTitle: 'Комплектация заказа',
-      font_size: '10pt',
-      onLoadingEnd() {
-        emit('unmount_print');
+    try {
+      await this.fetchAllBuyers(true);
+      if (!this.childrens || !this.childrens.length) {
+        this.shipment = this.shipments; 
+        return this.printInit();
       }
-    });
+      
+      let findParent = false;
+      for (const item of this.childrens) {
+        if (!item.parent_id) {
+          findParent = true;
+          this.childrens_arr.push(this.shipments);
+          this.shipment = item;
+          continue;
+        }
+        this.childrens_arr.push(item);
+      }
+
+      if (!findParent) this.shipment = this.shipments; 
+      this.printInit();
+    } catch (err) { console.log(err, 'printComplect') }
   }
 }
 </script>

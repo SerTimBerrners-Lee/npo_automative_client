@@ -194,6 +194,16 @@ const sortState = (arr, operation) => {
   return operation == '<' ? '>' : '<';
 }
 
+const differencesShipments = (noSortArr) => {
+  for(const ship of noSortArr) {
+    if (ship.date_shipments) 
+      ship.difference = dateDifference(undefined, ship.date_shipments);
+    else ship.difference = 0;
+  }
+  const arr = noSortArr.sort((a, b) => a.difference - b.difference);
+  return arr;
+}
+
 export  {
   getReversDate,
   showMessage,
@@ -203,5 +213,6 @@ export  {
   dateIncrementHors,
   comparison,
   dateDifference,
+  differencesShipments,
   sortState
 }

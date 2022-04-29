@@ -11,6 +11,7 @@
               <th v-if='change_complect || is_change_komplit'>
 								<unicon name="glass-tea" fill="#ee0942d0" width='20' />
 							</th> 
+              <th>Артикул</th>
               <th>Наименование</th>
               <th>Кол-во</th>
             </tr>
@@ -22,6 +23,8 @@
 									<p class="checkbox_block_del" @click='delitComplect(izd)'></p>
 								</div>
 							</td>
+              <td style='width: 10%;' 
+                @click="openModal(izd.obj.id, izd.type)"><b>{{ inx + 1 + '. ' }}</b> {{ izd.obj.articl }}</td>
               <td style='width: 99%;' 
                 @click="openModal(izd.obj.id, izd.type)">{{ izd.obj.name }}</td>
               <td class='center'>

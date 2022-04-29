@@ -16,7 +16,8 @@
 				<th>Покупатель</th> 
 				<th>Готовность к отгрузке в %</th>
 				<th>Статус</th>
-				<th>Дата отгрузки</th>
+				<th>Дата План. отгрузки</th>
+				<th>Дата Факт. отгрузки</th>
 				<th id="complect">Примечание</th>
 			</tr>
 			<tr v-for='shipments of shipmentsArr'
@@ -54,6 +55,7 @@
 				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status  }}</td>
 				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status  }}</td>
 				<td>{{ shipments.date_shipments }}</td>
+				<td>{{ shipments?.sh_complit?.date_shipments_fakt }}</td>
 				<td class='center fix_size' v-if='!description_show'>
 					<img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
 				</td>
@@ -101,7 +103,7 @@ import DescriptionModal from '@/components/DescriptionModal';
 
 export default {
 	props: {
-		shipmentsArr: {},
+		shipmentsArr: [],
 		shipment_sclad: {},
 		is_print: {
 			type: Boolean,
@@ -215,7 +217,7 @@ export default {
 			this.komplect_generate_key = random(1, 999);
 			this.parametrs_komplect = sh.list_cbed_detal;
 			this.selectShipments = sh;
-		},	
+		},
 		async openDocuments(shipments) {	
 			if (!shipments.id) return showMessage('', 'Документов нет', 'w');
 			const ships = await this.fetchDocumentsShipments(shipments.id);

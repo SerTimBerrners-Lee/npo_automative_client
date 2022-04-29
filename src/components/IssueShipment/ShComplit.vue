@@ -10,9 +10,8 @@
         <span><strong>Транспортная компания: </strong> {{ transport || '-' }} </span>
       </p>
       <p style="width: 100%;">
-        <span><strong>Дата выполнения: </strong> {{ date_create || '-' }} </span>
-        <span><strong>Дата фактический отгрузки: </strong> {{ date_shipments_fakt || '-' }} </span>
         <span><strong>Дата планируемой отгрузки: </strong> {{ date_shipments || '-' }} </span>
+        <span><strong>Дата фактический отгрузки: </strong> {{ date_shipments_fakt || '-' }} </span>
       </p>
     </div>
 
@@ -223,12 +222,14 @@ export default {
     },
   },
   async mounted() {
-    console.log(this.sh_complit_id)
-    if (!this.sh_complit_id) return false;
-    const complite = await this.fetchShComplit(this.sh_complit_id);
-    this.shipments = complite;
-    console.log(this.shipments);
-    this.update(complite);
+    try {
+      if (!this.sh_complit_id) return false;
+      const complite = await this.fetchShComplit(this.sh_complit_id);
+      this.shipments = complite;
+      this.update(complite);
+    } catch (err) {
+      console.error(err);
+    }
   },
 }
 </script>

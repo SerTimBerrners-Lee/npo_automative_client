@@ -1,5 +1,5 @@
 <template>
-	<div class="table-scroll" v-if='shipmentsArr.length'>
+	<div class="table-scroll" v-if='shipmentsArr && shipmentsArr.length'>
 		<table id='tableshipments'>
 			<tr :class='fixed_table'>
 				<th v-if='cheked_show'>
@@ -19,7 +19,8 @@
 				<th class='fix_size'>Покупатель</th>
 				<th class='fix_size'>Готовность к отгрузке в %</th>
 				<th>Статус</th>
-				<th>Дата отгрузки</th>
+				<th>Дата План. отгрузки</th>
+				<th>Дата Факт. отгрузки</th>
 				<th>Н/Ч требуется</th>
 				<th>Н/Ч выполнено</th>
 				<th>Н/Ч осталось</th>
@@ -65,6 +66,7 @@
 				<td v-if='shipments.status == enumShipments[2]' class='success_operation center'>{{ shipments.status }}</td>
 				<td v-if='shipments.status == enumShipments[3]' class='delete_operation center'>{{ shipments.status }}</td> <!-- Статус -->
 				<td>{{ shipments.date_shipments }}</td> <!-- Дата отгрузки -->
+				<td>{{ shipments?.sh_complit?.date_shipments_fakt }}</td> <!-- Дата ФАКТ отгрузки -->
 				<td></td>
 				<td></td>
 				<td></td>
@@ -112,9 +114,7 @@ import DescriptionModal from '@/components/DescriptionModal';
 
 export default {
 	props: {
-		shipmentsArr: {
-			type: Array
-		},
+		shipmentsArr: [],
 		no_set: {},
 		fixed_table: {
 			type: String,
@@ -242,7 +242,7 @@ export default {
 				}
 			} else showMessage('', 'Документов нет', 'w');
     },
-	}
+	},
 }
 </script>
 

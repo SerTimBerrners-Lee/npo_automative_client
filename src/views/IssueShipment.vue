@@ -96,10 +96,10 @@ export default {
 		},
 	},
 	async mounted() {
-		this.loader = true
-		await this.fetchAllShipmentsTo()
+		this.loader = true;
+		await this.fetchAllShipmentsTo();
 		this.status_sort_key = random(1, 999);
-		this.loader = false
+		this.loader = false;
 	}
 }
 </script>

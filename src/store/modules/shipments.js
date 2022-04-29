@@ -1,4 +1,4 @@
-import { dateDifference } from '@/js/';
+import { differencesShipments } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
 export default {
 	state: {
@@ -86,9 +86,9 @@ export default {
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/to/shipments/`);
 			if (!res.ok) return false;
 
-			const result = await res.json()
-			ctx.commit('allShipments', {result, undefined, ctx})
-			return result
+			const result = await res.json();
+			ctx.commit('allShipments', {result, undefined, ctx});
+			return result;
 		},
 		async fetchDeleteShipments(ctx, id) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`, {
@@ -154,15 +154,10 @@ export default {
 		}
 	},
 	mutations: {
-		allShipments(state, {result, sort = 'sort_sclad', ctx}) {
-			state.shipments = [];
-			for(const ship of result) {
-				if (ship.date_shipments) 
-					ship.difference = dateDifference(undefined, ship.date_shipments);
-				else ship.difference = 0;
-			}
-			state.shipments = result.sort((a, b) => a.difference - b.difference);
-			ctx.commit('sortShipmentParams', sort);
+		allShipments(state, { result, sort = 'sort_sclad', ctx = undefined }) {
+			state.shipments = differencesShipments(result);
+
+			if (ctx) ctx.commit('sortShipmentParams', sort);
 		},
 		sortShipmentParams(state, sort) {
 			if (!sort) return;

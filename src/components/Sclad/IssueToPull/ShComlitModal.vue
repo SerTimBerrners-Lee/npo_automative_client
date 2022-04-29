@@ -20,22 +20,16 @@
           <input type="text" v-model='transport'>
         </p>
         <p style="width: 100%;">
-          <span style='display: flex; align-items: center; float: left;'>
-            <span>Дата выполнения: </span>
+          <span style='display: flex; align-items: center; '>
+            <span>Дата планируемой отгрузки: </span>
             <DatePicterCustom
-              :dateStart='date_create'
+              :dateStart='date_shipments'
             />
           </span>
           <span style='display: flex; align-items: center; float: left;'>
             <span>Дата фактический отгрузки: </span>
             <DatePicterCustom
               :dateStart='date_shipments_fakt'
-            />
-          </span>
-          <span style='display: flex; align-items: center; '>
-            <span>Дата планируемой отгрузки: </span>
-            <DatePicterCustom
-              :dateStart='date_shipments'
             />
           </span>
         </p>
@@ -217,7 +211,7 @@ export default {
       
       date_order: new Date().toLocaleDateString("ru-RU"),
       number_order: '',
-      date_shipments: '',
+      date_shipments: new Date().toLocaleDateString("ru-RU"),
       fabric_number: '',
       description: '',
       
@@ -318,7 +312,7 @@ export default {
     async fetchSave(sh_id = this.shipments.id) {
       if (!sh_id) return showMessage('', 'Выберите задачу, ошибка в ID', 'w');
 
-      this.formData.append('date_order', this.date_order.id);
+      this.formData.append('date_order', this.date_order);
       this.formData.append('number_order', this.number_order);
       this.formData.append('date_shipments', this.date_shipments);
       this.formData.append('date_shipments_fakt', this.date_shipments_fakt);
@@ -358,22 +352,23 @@ export default {
     this.hiddens = 'opacity: 1;';
     this.loader = true;
 
-    if (!this.shipments_id && !this.selected_sh || this.selected_sh?.length) {
-      showMessage('', 'Выберите задачу на отгрузку', 'w');
-      return this.destroyModalF();
-    }
+    try {
+      if (!this.shipments_id && !this.selected_sh.length) {
+        showMessage('', 'Выберите задачу на отгрузку', 'w');
+        return this.destroyModalF();
+      }
 
-    if (!this.selected_sh || !this.selected_sh?.length) { // Если заказов нет и только один переданный
-      const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
-      if(!result) return this.destroyModalF();
-      this.shipments = result;
-    } else {
-      this.shipments = this.selected_sh[0];
-      this.childrens = this.selected_sh.filter(el => el.id !== this.shipments.id);
-    }
-
-    
-    this.update();
+      if (!this.selected_sh || !this.selected_sh.length) { // Если заказов нет и только один переданный
+        const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
+        if(!result) return this.destroyModalF();
+        this.shipments = result;
+      } else {
+        this.shipments = this.selected_sh[0];
+        this.childrens = this.selected_sh.filter(el => el.id !== this.shipments.id);
+      }
+      
+      this.update();
+    } catch (err) { console.error(err, 'shcomplitModal') }
     this.loader = false;
   },
 }

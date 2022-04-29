@@ -49,7 +49,7 @@
 		</div>
 
 		<div>
-			<div v-if='childrens.length && getOneShipments?.id'>
+			<div v-if='childrens && childrens.length && getOneShipments?.id'>
 				<h4>Позиции по Счету: </h4>
 				<TableShipments  
 					v-if='childrens.length'
@@ -66,13 +66,14 @@
 			<PrintComplect
 				v-if='tablebody'
 				:shipments='getOneShipments'
-				:childrens='selected_sh.length ? selected_sh.length : childrens'
+				:key='selected_sh?.length || 250'
+				:childrens='selected_sh?.length ? selected_sh : childrens'
 				@unmount_print='unmount_print' />
 
 			<div v-if='shipment_sclad'>
 				<h4>Выбранные на отгрузку	: </h4>
 				<TableShipments  
-					v-if='selected_sh.length'
+					v-if='selected_sh && selected_sh.length'
 					:fixed_table='"fixed_table_10"'
 					:shipmentsArr='selected_sh'
 					:remove_show='true'
@@ -112,25 +113,25 @@
 					</tr>
 				</table>
 			</div>
-			<div width='300px;' class='flex_direction'>
-				<div>
-					<h3>Примечание</h3>
-					<textarea maxlength='250' v-model='description' disabled></textarea>
-				</div>
-				<div class='file_content'>
-				<h3>Документы</h3>
-				<div v-if='documents.length'>
-					<table>
-						<tr>
-							<th>Файл</th>
-						</tr>
-						<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
-							<td>{{ fil.name }}</td>
-						</tr>
-					</table>
-				</div>
+		</div>
+		<div width='300px;' class='flex_direction'>
+			<div>
+				<h3>Примечание</h3>
+				<textarea maxlength='250' v-model='description' disabled></textarea>
 			</div>
+			<div class='file_content'>
+			<h3>Документы</h3>
+			<div v-if='documents && documents.length'>
+				<table>
+					<tr>
+						<th>Файл</th>
+					</tr>
+					<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
+						<td>{{ fil.name }}</td>
+					</tr>
+				</table>
 			</div>
+		</div>
 		</div>
 
 		<div v-if='shipment_sclad && getOneShipments?.id'>
@@ -145,7 +146,7 @@
 		</div>
 
 		<h3>Информация об отгрузки</h3>
-		<ShComplit :sh_complit_id='id_shipments' :ship='getOneShipments' />
+		<ShComplit v-if='sh_complit_id' :sh_complit_id='sh_complit_id' :ship='getOneShipments' />
 		<OpensFile 
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -188,12 +189,12 @@
 <script>
 import { random } from 'lodash';
 import ShComplit from './ShComplit';
-import { showMessage } from '@/js/';
 import PrintComplect from './PrintComplect';
-import { 	eSelectSpan, sliceName } from '@/js/methods';
+import { eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
+import { showMessage, differencesShipments } from '@/js/';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import BaseFileModal from '@/components/FileBase/BaseFilesModal';
@@ -255,7 +256,8 @@ export default {
 			tablebody: false,
 			loader: false,
 			childrens: [],
-			selected_sh: []
+			selected_sh: [],
+			sh_complit_id: null
     }
   },
 	beforeCreate() {
@@ -322,7 +324,7 @@ export default {
       await this.fetchAllShipmentsTo();
 			this.loader = false;
 		},
-		unmount_print() {
+		unmount_print() {navigator
 			this.tablebody = false;
 		},
 		returnObj() {
@@ -354,6 +356,8 @@ export default {
 			this.buyer = this.getOneShipments.buyer?.id;
 			this.to_sklad = this.getOneShipments.to_sklad;
 			this.number_order = this.getOneShipments.number_order;
+			this.sh_complit_id = this.getOneShipments.sh_complit_id;
+			console.log(this.getOneShipments);
 
 			if(this.getOneShipments.productId) {
 				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
@@ -397,19 +401,26 @@ export default {
     },
 		async beforeCreateF(id) {
 			this.loader = true;
-			this.list_cbed_detal = [];
+			try {
+				this.list_cbed_detal = [];
 
-			const result = await this.fetchAllShipmentsById({id, light: true});
+				const result = await this.fetchAllShipmentsById({id, light: true});
 
-			if(!result) return this.destroyModalF();
-			this.setOneShipment(result);
-			this.editVariable();
+				if(!result) return this.destroyModalF();
+				this.setOneShipment(result);
+				this.editVariable();
 
-			const ship_id_for_children = result.parent_id || result.id;
-	
-			const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
-			if (childrens) this.childrens = childrens.childrens.filter(el => el.id != result.id);
-			this.childrens.push(result);
+				const ship_id_for_children = result.parent_id || result.id;
+		
+				const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
+				if (childrens) {
+					const child = childrens.childrens.filter(el => el.id != result.id);
+					this.childrens = differencesShipments(child);
+				}
+				const res = differencesShipments([result]);
+				this.childrens.push(res[0]);
+
+			} catch (err) { console.error(err, 'shipments modal beforeCreateF'); }
 
 			this.loader = false;
 		},
@@ -419,10 +430,13 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
 		
-		await this.fetchAllBuyers(true);
+		try {
+			await this.fetchAllBuyers(true);
 
-		if(!this.id_shipments) return this.destroyModalF();
-		await this.beforeCreateF(this.id_shipments);
+			if (!this.id_shipments) return this.destroyModalF();
+			await this.beforeCreateF(this.id_shipments);
+
+		} catch (err) { console.error(err, 'shipments modal mounted') }
 		
   },
 }
@@ -490,10 +504,10 @@ textarea {
 .content-modal-right-menu {
   animation: width 1s 1 ease;
   height: 100vh;
-  width: 70%;
+  width: 90%;
 }
 .left-block-modal {
-  width: 30%;
+  width: 10%;
   height: 10000px;
   animation: width-right 1s 1 ease;
 }
@@ -508,7 +522,7 @@ textarea {
     width: 1%;
   }
   to {
-    width: 70%;
+    width: 90%;
   }
 }
 @keyframes width-right {
@@ -516,7 +530,7 @@ textarea {
     width: 0%;
   }
   to {
-    width: 30%;
+    width: 10%;
   }
 }
 @keyframes hidden-content {
@@ -535,7 +549,7 @@ textarea {
 }
 @keyframes width-replace {
   from {
-    width: 30vw;
+    width: 10vw;
   }
   to {
     width: 00vw;
@@ -543,7 +557,7 @@ textarea {
 }
 @keyframes width-right-replace {
   from {
-    width: 70vw;
+    width: 90vw;
   }
   to {
     width: 0vw;
