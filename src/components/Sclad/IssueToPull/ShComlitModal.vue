@@ -296,7 +296,7 @@ export default {
       await this.fetchSave();
       if (!this.childrens || !this.childrens.length)return false;
       
-      for(const item of this.childrens) {
+      for (const item of this.childrens) {
         this.formData = new FormData();
         if (this.lastFormData) {
           if (this.lastFormData.getAll('docs')) this.formData.append('docs', this.lastFormData.getAll('docs'));
@@ -328,7 +328,6 @@ export default {
       const saveResult = await this.fetchCreateShComplit(this.formData);
       if(saveResult) showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
       else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
-      await this.fetchAllShipmentsById(sh_id); // При получении обновляем задачу в стейте
 
       return this.destroyModalF();
     },

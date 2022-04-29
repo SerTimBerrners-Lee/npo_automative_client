@@ -19,6 +19,7 @@
       <div style='width: fit-content;'>
 				<TableShipmentsSclad
           :is_print='is_print'
+          :key='status_sort_key'
 					v-if='getShipments.length'
 					:shipmentsArr='getShipments'
           :shipment_sclad='true'
