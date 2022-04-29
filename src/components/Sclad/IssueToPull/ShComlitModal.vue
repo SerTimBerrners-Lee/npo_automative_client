@@ -256,7 +256,7 @@ export default {
 			this.destroyModalRight = 'content-modal-right-menu-hidden';
 			this.hiddens = 'display: none;';
 
-      this.$emit('unmount', this.shipments_id);
+      this.$emit('unmount');
       this.loader = false;
     },
     unmount_user_modal(data) {
@@ -272,7 +272,7 @@ export default {
       this.name_check = '';
       this.lastFormData = this.formData;
       this.table_document_key = random(1, 999);
-      for(const fd of this.formData.getAll('document')) {
+      for (const fd of this.formData.getAll('document')) {
         this.documentsData.push(fd);
         this.name_check += ` ${fd.name}`;
       }
@@ -300,7 +300,7 @@ export default {
     },
     async save() {
       await this.fetchSave();
-      if (!this.childrens || !this.childrens.length) return false;
+      if (!this.childrens || !this.childrens.length)return false;
       
       for(const item of this.childrens) {
         this.formData = new FormData();
@@ -334,6 +334,7 @@ export default {
       const saveResult = await this.fetchCreateShComplit(this.formData);
       if(saveResult) showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
       else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
+      await this.fetchAllShipmentsById(sh_id); // При получении обновляем задачу в стейте
 
       return this.destroyModalF();
     },
@@ -357,12 +358,12 @@ export default {
     this.hiddens = 'opacity: 1;';
     this.loader = true;
 
-    if (!this.shipments_id && !this.selected_sh.length) {
+    if (!this.shipments_id && !this.selected_sh || this.selected_sh?.length) {
       showMessage('', 'Выберите задачу на отгрузку', 'w');
       return this.destroyModalF();
     }
 
-    if (!this.selected_sh.length) { // Если заказов нет и только один переданный
+    if (!this.selected_sh || !this.selected_sh?.length) { // Если заказов нет и только один переданный
       const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
       if(!result) return this.destroyModalF();
       this.shipments = result;
@@ -370,6 +371,7 @@ export default {
       this.shipments = this.selected_sh[0];
       this.childrens = this.selected_sh.filter(el => el.id !== this.shipments.id);
     }
+
     
     this.update();
     this.loader = false;

@@ -22,6 +22,7 @@
 					v-if='getShipments.length'
 					:shipmentsArr='getShipments'
           :shipment_sclad='true'
+          @unmount_sh_complit='unmount_sh_complit'
 					@unmount='unmount_table_shipments'/>
       </div>
       <div class='btn-control out-btn-control wh_70p'>

@@ -81,6 +81,7 @@
 			v-if='show_modal_shipments && selectShipments.id'
 			:id_shipments='selectShipments.id'
 			:shipment_sclad='shipment_sclad'
+			@unmount_sh_complit='unmount_sh_complit'
 			@unmount_shpment='unmount_shpment'
 		/>
 	</div>
@@ -164,11 +165,14 @@ export default {
 	},
 	computed: mapGetters(['getShipments']),
 	methods: {
-		...mapActions(['fetchDocumentsShipments']),
+		...mapActions(['fetchDocumentsShipments', 'fetchAllShipmentsTo']),
 		...mapMutations(['pusshAddShipments']),
-		unmount_shpment() {
+		async unmount_shpment() {
 			this.$emit('unmount');
 			this.pusshAddShipments(this.arrShipmentsState);
+		},
+		unmount_sh_complit() {
+			this.$emit('unmount_sh_complit');
 		},
 		shipmentsModal() {
 			if(this.selectShipments) {

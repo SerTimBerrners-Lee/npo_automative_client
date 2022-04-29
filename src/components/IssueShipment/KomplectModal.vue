@@ -7,6 +7,7 @@
         <div>
           <table>
             <tr>
+              <th>№</th>
               <th v-if='change_complect || is_change_komplit'>
 								<unicon name="glass-tea" fill="#ee0942d0" width='20' />
 							</th> 
@@ -15,13 +16,14 @@
             </tr>
             <tr v-for='(izd, inx) of komplect' :key='izd'
               class='td-row'>
+              <td class='center'>{{ inx + 1 }}</td>
               <td v-if='change_complect || is_change_komplit'>
 								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
 									<p class="checkbox_block_del" @click='delitComplect(izd)'></p>
 								</div>
 							</td>
               <td style='width: 99%;' 
-                @click="openModal(izd.obj.id, izd.type)"><b>{{ inx + 1 + '. ' }}</b> {{ izd.obj.name }}</td>
+                @click="openModal(izd.obj.id, izd.type)">{{ izd.obj.name }}</td>
               <td class='center'>
                 <input 
                   v-if='change_complect || is_change_komplit'

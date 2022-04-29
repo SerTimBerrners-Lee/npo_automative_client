@@ -108,8 +108,9 @@ export default {
 		async fetchAllShipmentsById(ctx, obj) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments/light/${obj.id}/${obj.light}`);
 			if (!res.ok) return false;
-
+			
 			const result = await res.json();
+			ctx.commit('updateShipmentsById', result);
 			return result;
 		},
 		async fetchAllIzdToShipments(ctx, id) {
@@ -199,6 +200,10 @@ export default {
 		},
 		filterToParentShipments(state, id) {
 			state.shipments_parents = state.shipments.filter(ship => ship.id == id);
+		},
+		updateShipmentsById(state, result) {
+			state.shipments = state.shipments.filter(ship => ship.id != result.id);
+			state.shipments.push(result);
 		},
 		filterShipmentsToStatus(state, value) {
 			if (state.variable_shipments.length == 0)

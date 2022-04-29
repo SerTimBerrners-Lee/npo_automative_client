@@ -318,6 +318,7 @@ export default {
 		},
 		async unmount_sh_complit() {
 			this.loader = true;
+			this.$emit('unmount_sh_complit');
       await this.fetchAllShipmentsTo();
 			this.loader = false;
 		},
