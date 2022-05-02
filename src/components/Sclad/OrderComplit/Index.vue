@@ -110,8 +110,10 @@ export default {
   computed: mapGetters(['getShComplits']),
   methods: {
     ...mapActions(['fetchShComplit']),
-    unmount_complit_modal() {
-      console.log('unmount_complit_modal')
+    async unmount_complit_modal() {
+      this.loader = true;
+      await this.fetchShComplit();
+      this.loader = false;
     },
     changeDatePicterRange(val) {
       console.log(val);

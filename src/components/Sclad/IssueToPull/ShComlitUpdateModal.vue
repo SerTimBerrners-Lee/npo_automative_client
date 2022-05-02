@@ -109,7 +109,7 @@
 
       <div class="btn-control out-btn-control">
         <button class="btn-status" @click='destroyModalF'>Отменить</button>
-        <button class="btn-status btn-black" @click='save'>Внести изменения в отгрузку</button>
+        <button class="btn-status btn-black" @click='fetchUpdate'>Внести изменения в отгрузку</button>
       </div>
     </div>
     <KomplectModal
@@ -210,7 +210,7 @@ export default {
     ...mapActions([
       'fetchAllShipmentsById',
       'fetchDocumentsShipments',
-      'fetchCreateShComplit',
+      'fetchCreateShUpdate',
     ]),
     ...mapMutations(['setStatusShipments']),
     destroyModalF() {
@@ -228,7 +228,7 @@ export default {
       if(this.typeOpen == 'controller') this.responsible_user = data;
       this.typeOpen = '';
     },
-    file_unmount(e) { 
+    file_unmount(e) {
       if(!e) return 0;
       this.formData = e.formData;
       this.name_check = '';
@@ -258,8 +258,7 @@ export default {
 			this.komplect_generate_key = random(1, 999);
 			this.parametrs_komplect = komplect;
 		},
-    openFiles() { 
-      console.log('openFiles')
+    openFiles() {
       this.keyWhenModalGenerateFileOpen = random(1, 999);
       this.showModalFiles = true;
     },
@@ -269,51 +268,19 @@ export default {
       this.showModalUser = true;
       this.keyModalUser = random(1, 999);
     },
-    async save() {
-      return showMessage('', 'Отгрузка изменена', '');
-      // await this.fetchSave();
-      // if (!this.childrens || !this.childrens.length)return false;
-      
-      // for (const item of this.childrens) {
-      //   this.formData = new FormData();
-      //   if (this.lastFormData) {
-      //     if (this.lastFormData.getAll('docs')) this.formData.append('docs', this.lastFormData.getAll('docs'));
-      //     if (this.lastFormData.getAll('document')) {
-      //       for (const file of this.lastFormData.getAll('document')) {
-      //         this.formData.append('document', file);
-      //       }
-      //     }
-      //   }
-      //   await this.fetchSave(item.id);
-      // }
-    },
-    async fetchSave(sh_id = this.shipments.id) {
+    async fetchUpdate(sh_id = this.shipments.id) {
       if (!sh_id) return showMessage('', 'Выберите задачу, ошибка в ID', 'w');
 
-      this.formData.append('date_order', this.date_order);
-      this.formData.append('number_order', this.number_order);
-      this.formData.append('date_shipments', this.date_shipments);
-      this.formData.append('date_shipments_fakt', this.date_shipments_fakt);
-      this.formData.append('fabric_number', this.fabric_number);
+      this.formData.append('id', this.complit.id);
       this.formData.append('description', this.description);
-      this.formData.append('name_check', this.name_check);
-      this.formData.append('date_create', this.date_create);
-      this.formData.append('transport', this.transport);
-      this.formData.append('shipments_id', sh_id);
-      this.formData.append('responsible_user_id', this.responsible_user.id || '');
-      this.formData.append('creater_user_id', this.creater_user.id || '');
 
-
-      const saveResult = await this.fetchCreateShComplit(this.formData);
-      if(saveResult) {
-        this.setStatusShipments(sh_id);
-        showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
-      }
+      const updateResult = await this.fetchCreateShUpdate(this.formData);
+      if(updateResult) showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
       else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
 
       return this.destroyModalF();
     },
-    async openDocuments(shipments) {	
+    async openDocuments(shipments) {
 			if(!shipments.id) return showMessage('', 'Документов нет', 'w');
 			const ships = await this.fetchDocumentsShipments(shipments.id);
 
@@ -335,7 +302,7 @@ export default {
 
     if (!this.complit) return this.destroyModalF();
     this.update();
-   
+
     this.loader = false;
   },
 }

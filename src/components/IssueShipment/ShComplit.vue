@@ -13,93 +13,48 @@
         <span><strong>Дата планируемой отгрузки: </strong> {{ date_shipments || '-' }} </span>
         <span><strong>Дата фактический отгрузки: </strong> {{ date_shipments_fakt || '-' }} </span>
       </p>
+      <p style="width: 100%;">
+        <span><strong>ФИО сборщика: </strong> {{ creater_user ? creater_user?.initial : 'Не выбран' }} </span>
+        <span><strong>ФИО контроль: </strong> {{ responsible_user ? responsible_user?.initial : 'Не выбран' }} </span>
+      </p>
     </div>
 
-    <div>
-      <h3>Комплектация</h3>
-      <div class="table-scroll">
-        <table v-if='ship'>
-          <tr>
-            <th>Наименование изделия</th>
-            <th>Комплектация, особенности заказа</th>
-            <th>Кол-во</th>
-            <th>Основание</th>
-            <th>Покупатель</th>
-            <th>Потребность к отгрузке</th>
-            <th>Заводской №</th>
-            <th>Дата отгрузки</th>
-            <th>ФИО сборщика</th>
-            <th>ФИО контроль</th>
-            <!-- Выбор сотрудника - контроль отгрузки  -->
-            <!-- Создается промежуточная модель отгрузки  -->
-          </tr>
-          <tr>
-            <td class='center'>{{ ship?.product?.name }}</td>
-            <td class='center' @click='openComplectation(ship.list_cbed_detal)' >
-              <img 
-                src="@/assets/img/link.jpg" 
-                class='link_img' 
-                atl='Показать'
-                v-if='ship.list_cbed_detal' />
-              <p v-else>Нет комплектации</p>
-            </td>
-            <td class='center'>{{ ship.kol }}</td>
-            <td style='width:50px; word-break: break-all;' class='click center active'  
-              @click='openDocuments(ship)' >
-              {{ ship.base }}
-            </td>
-            <td class='center'>{{ ship?.buyer?.name }}</td>
-            <td class='center'>0</td> <!-- Потребность к отгрузке -->
-            <td class='center'>{{ ship?.product?.fabricNumber }}</td>
-            <td class='center'>{{ ship.date_shipments }}</td>
-            <td class='center cursor'>
-              {{ creater_user ? creater_user?.initial : 'Не выбран' }}
-            </td>
-            <td class='center cursor'>
-              {{ responsible_user ? responsible_user?.initial : 'Не выбран' }}
-            </td>
-          </tr>
-        </table>
+    <div class="wh_50p">
+      <div>
+        <h3>Примечание</h3>
+        <textarea maxlength='250' v-model='description'></textarea>
       </div>
-    </div>
+      <TableDocument 
+        v-if='documentsData.length' 
+        :title='""' 
+        :key='table_document_key'
+        :documents='documentsData'/>
 
-
-  <div class="wh_50p">
-    <div>
-      <h3>Примечание</h3>
-      <textarea maxlength='250' v-model='description'></textarea>
-    </div>
-    <TableDocument 
-      v-if='documentsData.length' 
-      :title='""' 
-      :key='table_document_key'
-      :documents='documentsData'/>
-
-      <div style='margin-bottom: 50px;'>
-        <h3>Добавить файлы</h3>
-        <div style='height: 50px;'>
-          <FileLoader 
-            :typeGetFile='"getfile"'
-            @unmount='file_unmount'
-          />
+        <div style='margin-bottom: 50px;'>
+          <h3>Добавить файлы</h3>
+          <div style='height: 50px;'>
+            <FileLoader 
+              :typeGetFile='"getfile"'
+              @unmount='file_unmount'
+            />
+          </div>
         </div>
+      <div class="btn-control" style='margin-top: 50px;' v-if='btn_update'>
+        <button class="btn-small" @click='updateShComplite'>Внести изменения</button>
       </div>
-    <div class="btn-control" style='margin-top: 50px;' v-if='btn_update'>
-      <button class="btn-small" @click='updateShComplite'>Внести изменения</button>
     </div>
+    <KomplectModal
+      v-if='parametrs_komplect'
+      :key='komplect_generate_key'
+      :parametrs='parametrs_komplect'
+      :change_complect='change_complect'
+    />
+    <OpensFile 
+      :parametrs='docFiles' 
+      v-if="showModalFiles" 
+      :key='keyWhenModalGenerateFileOpen'
+    />
   </div>
-  <KomplectModal
-    v-if='parametrs_komplect'
-    :key='komplect_generate_key'
-    :parametrs='parametrs_komplect'
-    :change_complect='change_complect'
-  />
-  <OpensFile 
-    :parametrs='docFiles' 
-    v-if="showModalFiles" 
-    :key='keyWhenModalGenerateFileOpen'
-  />
-</div>
 </template>
 
 <script>
@@ -171,7 +126,7 @@ export default {
       'fetchCreateShUpdate'
     ]),
     file_unmount(e) { 
-      if(!e) return 0;
+      if (!e) return 0;
 
       this.formData = e.formData;
       for (const item of this.formData.getAll('document')) {
@@ -208,12 +163,12 @@ export default {
       this.btn_update = false;
     },
     async openDocuments(shipments) {	
-			if(!shipments.id) return showMessage('', 'Документов нет', 'w');
+			if (!shipments.id) return showMessage('', 'Документов нет', 'w');
 			const ships = await this.fetchDocumentsShipments(shipments.id);
 
-			if(ships.documents && ships.documents.length) {
-				for(const doc of ships.documents) {
-					if(doc.name == shipments.base) {
+			if (ships.documents && ships.documents.length) {
+				for (const doc of ships.documents) {
+					if (doc.name == shipments.base) {
 						this.keyWhenModalGenerateFileOpen = random(1, 999);
 						this.itemFiles = [doc];
 					}

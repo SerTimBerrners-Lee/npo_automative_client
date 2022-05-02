@@ -49,7 +49,7 @@
 		</div>
 
 		<div>
-			<div v-if='childrens && childrens.length && getOneShipments?.id'>
+			<div v-if='childrens && childrens.length && getOneShipments?.id' id='tablebody'>
 				<h4>Позиции по Счету: </h4>
 				<TableShipments  
 					v-if='childrens.length'
@@ -60,17 +60,12 @@
 					@unmount_dbclick='unmount_dbclick'
 					@unmount_sh='unmount_sh'
 					:return_dbclick='true'
-					:no_set='true' />
+					:no_set='true'
+				/>
+				<ComplectIzd :show='print_click' :list_cbed_detal='list_cbed_detal' />
 			</div>
-			
-			<PrintComplect
-				v-if='tablebody'
-				:shipments='getOneShipments'
-				:key='selected_sh?.length || 250'
-				:childrens='selected_sh?.length ? selected_sh : childrens'
-				@unmount_print='unmount_print' />
 
-			<div v-if='shipment_sclad'>
+			<div v-if='shipment_sclad' id='tablebody_select'>
 				<h4>Выбранные на отгрузку	: </h4>
 				<TableShipments  
 					v-if='selected_sh && selected_sh.length'
@@ -81,7 +76,9 @@
 					@unmount_dbclick='unmount_dbclick'
 					:select_sh='getOneShipments?.id'
 					@unmount_sh_remove='unmount_sh_remove'
-					:no_set='true'/>
+					:no_set='true'
+				/>
+				<ComplectIzd :show='print_click' :list_cbed_detal='list_cbed_detal' />
 			</div>
 
 		</div>
@@ -141,8 +138,8 @@
 			</div>
 		</div>
 		<div class='btn-control'>
-			<button class="btn-small btn-add" @click='printPage' v-if='shipment_sclad'>Печать c выбранными</button>
-			<button class="btn-small btn-add" @click='printPage' v-else>Печать</button>
+			<button class="btn-small btn-add" @click='printPage("tablebody_select")' v-if='shipment_sclad'>Печать c выбранными</button>
+			<button class="btn-small btn-add" @click='printPage("tablebody")' v-else>Печать</button>
 		</div>
 
 		<h3>Информация об отгрузки</h3>
@@ -187,9 +184,10 @@
 </div>
 </template>
 <script>
+import print from 'print-js';
 import { random } from 'lodash';
 import ShComplit from './ShComplit';
-import PrintComplect from './PrintComplect';
+import ComplectIzd from './ComplectIzd';
 import { eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
@@ -253,11 +251,11 @@ export default {
       fileModalKey: random(1, 999),
 			selectedBaseProvesses: false,
 
-			tablebody: false,
 			loader: false,
 			childrens: [],
 			selected_sh: [],
-			sh_complit_id: null
+			sh_complit_id: null,
+			print_click: false,
     }
   },
 	beforeCreate() {
@@ -287,7 +285,7 @@ export default {
 		ProductModalInfo,
 		Shipment,
 		ShComplit,
-		PrintComplect
+		ComplectIzd,
 	},
 	methods: {
 		...mapActions([
@@ -310,6 +308,7 @@ export default {
 		},
 		unmount_sh(sh) {
 			if (sh.status === "Отгружено") return showMessage('', 'Задача уже отгружена!', 'w');
+			console.log('unmount_sh')
 
 			this.childrens = this.childrens.filter(el => el.id != sh.id);
 			this.selected_sh.push(sh);
@@ -324,17 +323,26 @@ export default {
       await this.fetchAllShipmentsTo();
 			this.loader = false;
 		},
-		unmount_print() {navigator
-			this.tablebody = false;
-		},
 		returnObj() {
 			if (!this.buyer) return 'нет';
 			const buyer = this.allBuyer.filter(e => e.id == this.buyer);
 			if (!buyer || !buyer.length) return 'нет';
 			return buyer[0]?.name || 'нет';
 		},
-		printPage() {
-			this.tablebody = true;
+		printPage(id_name) {
+			this.print_click = true;
+			setTimeout(() => {
+				print({
+					printable: id_name,
+					type: 'html',
+					targetStyles: ['*'],
+					documentTitle: 'Комплектация заказа',
+					ignoreElements: ['complect', 'check', 'description'],
+					font_size: '10pt',
+					maxWidth: '10%'
+				});
+			})
+			setTimeout(() => this.print_click = false, 1000);
     },
 		setDocs(dc) {
       this.itemFiles = dc;

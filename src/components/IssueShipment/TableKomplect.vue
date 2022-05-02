@@ -2,10 +2,10 @@
 	<div class="table-scroll" v-if='shipmentsArr && shipmentsArr.length'>
 		<table id='tableshipments'>
 			<tr :class='fixed_table'>
-				<th v-if='cheked_show'>
+				<th v-if='cheked_show' id="check">
 					<unicon name="check" fill="royalblue" />
 				</th>
-				<th v-if='remove_show'>
+				<th v-if='remove_show' id="check">
 					<unicon name="glass-tea" fill="#ee0942d0" width='20' />
 				</th> 
 				<th>Заказ</th>
@@ -24,19 +24,19 @@
 				<th>Н/Ч требуется</th>
 				<th>Н/Ч выполнено</th>
 				<th>Н/Ч осталось</th>
-				<th class='fix_size'>Примечание</th>
+				<th class='fix_size' id="description">Примечание</th>
 			</tr>
 			<tr v-for='shipments of shipmentsArr'
 				:key='shipments'
 				:class='"td-row " + (shipments.id == select_sh ? "td-row-all" : "")'
 				@click='e => setShipments(shipments, e.target.parentElement)'
 				@dblclick="openShipmentsModal(shipments)">
-				<td v-if='cheked_show'>
+				<td v-if='cheked_show' id="check">
 					<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
 						<p class="checkbox_block" @click='responseShipments(shipments)'></p>
 					</div>
 				</td>
-				<td v-if='remove_show'>
+				<td v-if='remove_show' id="check">
 					<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
 						<p class="checkbox_block_del" @click='removeShipments(shipments)'></p>
 					</div>
@@ -70,10 +70,10 @@
 				<td></td>
 				<td></td>
 				<td></td>
-				<td class='center fix_size' v-if='!description_show'>
+				<td class='center fix_size' v-if='!description_show' id="description">
 					<img src="@/assets/img/link.jpg" @click='openDescription(shipments.description)' class='link_img' atl='Показать' />
 				</td>
-				<td v-else>{{ shipments.description }}</td>
+				<td v-else id="description">{{ shipments.description }}</td>
 			</tr>
 		</table>
 		<DescriptionModal 
