@@ -1,5 +1,6 @@
-import { differencesShipments } from '@/js/';
 import PATH_TO_SERVER from '@/js/path.js';
+import { differencesShipments, comparison } from '@/js/';
+
 export default {
 	state: {
 		shipments: [],
@@ -10,6 +11,7 @@ export default {
 
 		variable_shipments: [],
 		buyer_sort_shipments: [],
+		date_sort_shipments: [],
 
 		one_shipments: {}
 	},
@@ -253,6 +255,17 @@ export default {
 		},
 		deleteComplit(state, id) {
 			state.sh_complits = state.sh_complits.filter(el => el.id !== id);
+		},
+		filterShipmentsData(state, range) {
+			if (!state.buyer_sort_shipments.length)
+				state.buyer_sort_shipments = state.shipments;
+
+			const start = new Date(range.start).toLocaleDateString('ru-RU');
+			const end = new Date(range.end).toLocaleDateString('ru-RU');
+			state.shipments = state.buyer_sort_shipments.filter((el) => {
+				if (comparison(start, el.date_order, '<') && comparison(end, el.date_order, '>'))
+					return el;
+			});
 		}
 	}
 }

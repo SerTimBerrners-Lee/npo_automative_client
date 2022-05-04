@@ -44,7 +44,6 @@ export default {
 	},
   watch: {
     range: function(val) {
-      console.log(this.range)
       this.$emit('unmount', val);
     }
   },
@@ -52,6 +51,9 @@ export default {
     clearDate() {
       this.range = null;
     }
+  },
+  mounted() {
+    this.$emit('unmount', this.range);
   }
 }
 </script>

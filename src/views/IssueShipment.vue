@@ -57,6 +57,7 @@ export default {
 			status_sort_key: random(1, 999),
 
 			loader: false,
+			date_sort_range: null,
 		}	
 	},
 	computed: mapGetters(['getShipments']),
@@ -68,7 +69,7 @@ export default {
 	},
 	methods: {
 		...mapActions(['fetchAllShipmentsTo']),
-		...mapMutations(['clearFilters']),
+		...mapMutations(['clearFilters', 'filterShipmentsData']),
 		unmount_table_shipments(select_shipemnts) {
 			if(!select_shipemnts) return false;
 			this.selectShipments = select_shipemnts;
@@ -88,7 +89,8 @@ export default {
 			setTimeout(() => this.is_print = false);
 		},
 		changeDatePicterRange(val) {
-      console.log(val)
+			this.date_sort_range = val;
+      this.filterShipmentsData(val);
     },
 		edit() {
 			if(!this.selectShipments) return showMessage('', 'Выберите задачу', 'w');
@@ -98,6 +100,7 @@ export default {
 	async mounted() {
 		this.loader = true;
 		await this.fetchAllShipmentsTo();
+		if (this.date_sort_range) this.changeDatePicterRange(this.date_sort_range);
 		this.status_sort_key = random(1, 999);
 		this.loader = false;
 	}

@@ -35,29 +35,27 @@ const photoPreloadUrl = (input, cb, checkTypes = false) => {
   if(!input || !input.name) return 0;
 
   let typeFile = input.name.split('.')[input.name.split('.').length - 1].toLowerCase();
-  if (typeFile.indexOf('_archive_v', 1) != -1) typeFile = typeFile.split('_archive_v')[0]
+  if (typeFile.indexOf('_archive_v', 1) != -1) typeFile = typeFile.split('_archive_v')[0];
 
   let type;
-  for(let imgType of imgArr) {
-    if(typeFile == imgType)
-      type = 'img'
+  for (const imgType of imgArr) {
+    if (typeFile == imgType) type = 'img';
   }
-  for(let movi of moviArr) {
-    if(movi == typeFile)
-      type = 'movi'
+  for (const movi of moviArr) {
+    if (movi == typeFile) type = 'movi';
   }
 
   if (type != 'img' && type != 'movi') 
-    return cb({ type: 'doc', typename: typeFile })
+    return cb({ type: 'doc', typename: typeFile });
   
   if (type == 'img' && checkTypes)
-    return cb({ type: 'img', typename: typeFile })
+    return cb({ type: 'img', typename: typeFile });
   if (type == 'movi' && checkTypes)
-    return cb({type, typename: typeFile})
+    return cb({type, typename: typeFile});
   if (type == 'movi')
-    return cb({type, typename: typeFile})
+    return cb({type, typename: typeFile});
 
-  const reader = new FileReader()
+  const reader = new FileReader();
   reader.onload = function(e){
     if(e && e.target && e.target.result)
       return cb({ type, url: e.target.result})
@@ -78,11 +76,11 @@ const dataFormat = () => {
 }
 
 const timeFormat = () => {
-  let dat =  new Date()
-  let Hours = addNull(String(dat.getHours()))
-  let Minute = addNull(String(dat.getMinutes()))
+  let dat =  new Date();
+  let Hours = addNull(String(dat.getHours()));
+  let Minute = addNull(String(dat.getMinutes()));
   let splitTime= `${Hours}:${Minute}`;
-  return splitTime
+  return splitTime;
 }
 
 const dateIncrementHors = (date, hors) =>  {
