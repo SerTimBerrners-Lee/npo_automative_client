@@ -70,6 +70,12 @@ export default {
 			ctx.commit('allShComplit', result);
 			return result;
 		},
+		async fetchCombackComplit(ctx, id) {
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/combackcomplit/${id}`);
+			if (!res.ok) return false;
+			ctx.commit('deleteComplit', id);
+			return true;
+		},
 		async fetchUpdateShipments(ctx, data) { 
 			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {
 				method: "put",
@@ -244,6 +250,9 @@ export default {
 		*/
 		allShComplit(state, results) {
 			state.sh_complits = results;
+		},
+		deleteComplit(state, id) {
+			state.sh_complits = state.sh_complits.filter(el => el.id !== id);
 		}
 	}
 }

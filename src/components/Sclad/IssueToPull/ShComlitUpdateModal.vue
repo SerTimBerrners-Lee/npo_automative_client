@@ -109,6 +109,7 @@
 
       <div class="btn-control out-btn-control">
         <button class="btn-status" @click='destroyModalF'>Отменить</button>
+        <button class="btn-status" @click='combackComplit'>Отменить отгрузку</button>
         <button class="btn-status btn-black" @click='fetchUpdate'>Внести изменения в отгрузку</button>
       </div>
     </div>
@@ -211,6 +212,7 @@ export default {
       'fetchAllShipmentsById',
       'fetchDocumentsShipments',
       'fetchCreateShUpdate',
+      'fetchCombackComplit'
     ]),
     ...mapMutations(['setStatusShipments']),
     destroyModalF() {
@@ -253,6 +255,14 @@ export default {
 
       this.description = this.complit.description;
       this.documentsData = this.complit.documents;
+    },
+    async combackComplit() {
+      if (!this.complit.id) return showMessage('', 'Нет отгрузки', 'w');
+      const result = await this.fetchCombackComplit(this.complit.id);
+      if (result) showMessage('', 'Статус Задачи на загрузку изменен.', 's');
+      else showMessage('', 'Не удалось поменять статус', 'e');
+
+      return this.destroyModalF();
     },
     openComplectation(komplect) {
 			this.komplect_generate_key = random(1, 999);
