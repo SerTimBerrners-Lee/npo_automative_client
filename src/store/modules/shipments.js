@@ -246,6 +246,7 @@ export default {
 			state.variable_shipments = [];
 			state.shipments_parents = [];
 			state.shipments_sclad = [];
+			state.date_sort_shipments = [];
 		},
 		/**
 		 * Получаем все отметки о выполнении
@@ -257,13 +258,13 @@ export default {
 			state.sh_complits = state.sh_complits.filter(el => el.id !== id);
 		},
 		filterShipmentsData(state, range) {
-			if (!state.buyer_sort_shipments.length)
-				state.buyer_sort_shipments = state.shipments;
+			if (!state.date_sort_shipments.length)
+				state.date_sort_shipments = state.shipments;
 
 			const start = new Date(range.start).toLocaleDateString('ru-RU');
 			const end = new Date(range.end).toLocaleDateString('ru-RU');
-			state.shipments = state.buyer_sort_shipments.filter((el) => {
-				if (comparison(start, el.date_order, '<') && comparison(end, el.date_order, '>'))
+			state.shipments = state.date_sort_shipments.filter((el) => {
+				if (comparison(start, el.date_order, '<=') && comparison(end, el.date_order, '>='))
 					return el;
 			});
 		}

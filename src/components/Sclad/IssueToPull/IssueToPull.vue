@@ -65,7 +65,6 @@ export default {
       is_print: false,
       sort_buyer_key: random(1, 999),
       status_sort_key: random(1, 999),
-      date_sort_range: null,
     }
   },
   components: {
@@ -106,14 +105,12 @@ export default {
       await this.unmount_sh_complit();
     },
     changeDatePicterRange(val) {
-      this.date_sort_range = val;
       this.filterShipmentsData(val);
     } 
   },
   async mounted() {
     this.loader = true;
     await this.fetchAllShipmentsTo();
-    if (this.date_sort_range) this.changeDatePicterRange(this.date_sort_range);
     this.status_sort_key = random(1, 999);
     this.loader = false;
   }

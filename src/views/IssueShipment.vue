@@ -57,7 +57,6 @@ export default {
 			status_sort_key: random(1, 999),
 
 			loader: false,
-			date_sort_range: null,
 		}	
 	},
 	computed: mapGetters(['getShipments']),
@@ -89,7 +88,6 @@ export default {
 			setTimeout(() => this.is_print = false);
 		},
 		changeDatePicterRange(val) {
-			this.date_sort_range = val;
       this.filterShipmentsData(val);
     },
 		edit() {
@@ -100,7 +98,6 @@ export default {
 	async mounted() {
 		this.loader = true;
 		await this.fetchAllShipmentsTo();
-		if (this.date_sort_range) this.changeDatePicterRange(this.date_sort_range);
 		this.status_sort_key = random(1, 999);
 		this.loader = false;
 	}
