@@ -170,7 +170,7 @@ export default {
 					type: 'html',
 					targetStyles: ['*'],
 					documentTitle: 'Задачи на отгрузку',
-					ignoreElements: ['complect'],
+					ignoreElements: ['complect', 'check'],
 					font_size: '10pt',
 				});
 				this.description_show = false;

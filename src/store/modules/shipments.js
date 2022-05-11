@@ -8,6 +8,7 @@ export default {
 		shipments_parents: [],
 		
 		sh_complits: [],
+		date_sort_shcomplit: [],
 
 		variable_shipments: [],
 		buyer_sort_shipments: [],
@@ -258,6 +259,19 @@ export default {
 		},
 		deleteComplit(state, id) {
 			state.sh_complits = state.sh_complits.filter(el => el.id !== id);
+		},
+		filterShComplitData(state, range) {
+			if (!state.date_sort_shcomplit.length)
+				state.date_sort_shcomplit = state.sh_complits;
+
+			const start = new Date(range.start).toLocaleDateString('ru-RU');
+			const end = new Date(range.end).toLocaleDateString('ru-RU');
+			state.sh_complits = state.date_sort_shcomplit.filter((el) => {
+				if (el.date_order && 
+						comparison(start, el.date_order, '<=') &&
+						comparison(end, el.date_order, '>='))
+					return el;
+			});
 		},
 		filterShipmentsData(state, range) {
 			if (!state.date_sort_shipments.length)

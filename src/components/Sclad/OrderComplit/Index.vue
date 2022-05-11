@@ -73,7 +73,7 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
 import DescriptionModal from '@/components/DescriptionModal';
 import KomplectModal from '@/components/IssueShipment/KomplectModal';
@@ -110,13 +110,14 @@ export default {
   computed: mapGetters(['getShComplits']),
   methods: {
     ...mapActions(['fetchShComplit']),
+    ...mapMutations(['filterShComplitData']),
     async unmount_complit_modal() {
       this.loader = true;
       await this.fetchShComplit();
       this.loader = false;
     },
     changeDatePicterRange(val) {
-      console.log(val);
+      this.filterShComplitData(val);
     },
     openDescription(description) {
       this.showDescriptionModal = true;
@@ -142,7 +143,7 @@ export default {
     }
   },
   async mounted() {
-    this.loader = true;
+    this.loader = true; 
     await this.fetchShComplit();
     this.loader = false;
   }

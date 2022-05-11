@@ -2,13 +2,13 @@
 	<div class="table-scroll">
 		<table id='tableshipments'> 
 			<tr class='fixed_table_85'>
-        <th style='cursor: pointer;'>
+        <th style='cursor: pointer;' id="check">
           <unicon name="check" fill="royalblue" />
         </th> 
 				<th>Заказ</th>
 				<th>Артикул изделия</th>
 				<th>Наименование изделия</th>
-				<th style='width:100px; word-break: break-all;'>Комплектация/особенности заказа</th>
+				<th style='width:100px; word-break: break-all;' id="complect">Комплектация/особенности заказа</th>
 				<th>Кол-во, шт.</th>
 				<th>Кол-во, дней</th>
 				<th>Осталось дней</th>
@@ -18,14 +18,14 @@
 				<th>Статус</th>
 				<th>Дата План. отгрузки</th>
 				<th>Дата Факт. отгрузки</th>
-				<th id="complect">Примечание</th>
+				<th>Примечание</th>
 			</tr>
 			<tr v-for='shipments of shipmentsArr'
 				:key='shipments'
 				class='td-row'
 				@click='e => toSelect(shipments, e.target.parentElement)'
 				@dblclick="shipmentsModal">
-        <td>
+        <td id="check">
           <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
             <p class="checkbox_block" @click='e => toSetShipments(shipments, e.target)'></p>
           </div>
@@ -153,7 +153,7 @@ export default {
 					type: 'html',
 					targetStyles: ['*'],
 					documentTitle: 'Задачи на отгрузку',
-					ignoreElements: ['complect'],
+					ignoreElements: ['complect', 'check'],
 					font_size: '10pt',
 				});
 				this.description_show = false;
