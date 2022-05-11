@@ -1,5 +1,5 @@
 import PATH_TO_SERVER from '@/js/path.js';
-import { differencesShipments, comparison } from '@/js/';
+import { differencesShipments, comparison, shipmentsNull } from '@/js/';
 
 export default {
 	state: {
@@ -175,8 +175,10 @@ export default {
 	mutations: {
 		allShipments(state, { result, sort = 'sort_sclad', ctx = undefined }) {
 			state.shipments = differencesShipments(result);
-
-			if (ctx) ctx.commit('sortShipmentParams', sort);
+			if (ctx) {
+				shipmentsNull(state.shipments);
+				ctx.commit('sortShipmentParams', sort);
+			}
 		},
 		sortShipmentParams(state, sort) {
 			if (!sort) return;
@@ -235,7 +237,7 @@ export default {
 		},
 		setStatusShipments(state, sh_id) {
 			for (const item of state.shipments) {
-				if (item.id === sh_id) item.status = 'Отгружено'
+				if (item.id === sh_id) item.status = 'Отгружено';
 			}
 		},
 		/**

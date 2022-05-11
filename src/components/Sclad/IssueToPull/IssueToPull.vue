@@ -82,7 +82,7 @@ export default {
       this.select_shipments = sh;
     },
     openShipment() {
-      if(!this.select_shipments || !this.select_shipments.id) 
+      if(!this.select_shipments || !this.select_shipments.id)
         return showMessage('', 'Для начала выберите задачу', 'w');
       
       this.showShipmentModal = true;
@@ -96,7 +96,6 @@ export default {
       this.loader = true;
       await this.fetchAllShipmentsTo();
       this.status_sort_key = random(1, 999);
-      console.log(this.status_sort_key)
       this.loader = false;
     },
     async clearFiltersF() {

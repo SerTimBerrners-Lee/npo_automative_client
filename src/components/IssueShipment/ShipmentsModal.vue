@@ -51,7 +51,7 @@
 		<div>
 			<div v-if='childrens && childrens.length && getOneShipments?.id' id='tablebody'>
 				<h4>Позиции по Счету: </h4>
-				<TableShipments  
+				<TableShipments
 					v-if='childrens.length'
 					:fixed_table='"fixed_table_10"'
 					:shipmentsArr='childrens'

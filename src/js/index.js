@@ -202,6 +202,25 @@ const differencesShipments = (noSortArr) => {
   return arr;
 }
 
+const shipmentsNull = (data) => {
+  for (const item of data) {
+    if (!item.number_order) continue;
+    shipmentsNullOne(item.number_order);
+  }
+}
+
+const shipmentsNullOne = (item) => {
+  if (!item) return item;
+  const str = item.split('от');
+  if (!str.length || str.length != 2) return item;
+
+  if (str[0].indexOf('/', 0) === -1) {
+    str[0] += ' /0 ';
+    item = str[0] + str[1];
+  }
+  return item;
+}
+
 export  {
   getReversDate,
   showMessage,
@@ -212,5 +231,7 @@ export  {
   comparison,
   dateDifference,
   differencesShipments,
-  sortState
+  sortState,
+  shipmentsNull,
+  shipmentsNullOne
 }

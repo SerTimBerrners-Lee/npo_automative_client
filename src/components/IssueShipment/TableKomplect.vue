@@ -41,7 +41,7 @@
 						<p class="checkbox_block_del" @click='removeShipments(shipments)'></p>
 					</div>
 				</td>
-				<td>{{ shipments.number_order }}</td> <!-- Заказ -->
+				<td>{{ shipmentsNullOne(shipments.number_order) }}</td> <!-- Заказ -->
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td> <!-- Артикул Изделия -->
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td> <!-- Наименование Изделия -->
 				<td class='center' @click='openComplectation(shipments)' id="complect" >
@@ -104,6 +104,7 @@ import print from 'print-js';
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
+import { shipmentsNullOne } from '@/js/';
 import { dateIncrementHors } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
 import KomplectModal from './KomplectModal';
@@ -186,6 +187,9 @@ export default {
 	methods: {
 		...mapActions(['fetchDocumentsShipments']),
 		...mapMutations(['setOneShipment']),
+		shipmentsNullOne(sh) {
+			return shipmentsNullOne(sh);
+		},
 		openShipmentsModal(sh) {
 			if (this.return_dbclick) return this.$emit('unmount_dbclick', sh.id);
 			this.selectShipments = sh;

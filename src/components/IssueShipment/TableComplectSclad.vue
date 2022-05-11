@@ -30,7 +30,7 @@
             <p class="checkbox_block" @click='e => toSetShipments(shipments, e.target)'></p>
           </div>
         </td>
-				<td>{{ shipments.number_order }}</td>
+				<td>{{ shipmentsNullOne(shipments.number_order) }}</td>
 				<td>{{ shipments.product ? shipments.product.articl : 'Нет Изделия' }}</td>
 				<td>{{ shipments.product ? shipments.product.name : 'Нет Изделия' }}</td>
 				<td class='center' @click='openComplectation(shipments)' id="complect">
@@ -93,6 +93,7 @@ import print from 'print-js';
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { dateDifference } from '@/js/';
+import { shipmentsNullOne } from '@/js/';
 import { dateIncrementHors } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
 import KomplectModal from './KomplectModal';
@@ -182,6 +183,9 @@ export default {
 				this.key_modal_shipments = random(1, 999);
 				this.show_modal_shipments = true;
 			}
+		},
+		shipmentsNullOne(sh) {
+			return shipmentsNullOne(sh);
 		},
 		toSelect(shipments, e) {
       this.tr = eSelectSpan(this.tr, e);
