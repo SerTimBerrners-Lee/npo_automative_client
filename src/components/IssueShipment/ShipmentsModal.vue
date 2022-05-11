@@ -142,7 +142,7 @@
 			<button class="btn-small btn-add" @click='printPage("tablebody")' v-else>Печать</button>
 		</div>
 
-		<h3>Информация об отгрузки</h3>
+		<h3>Информация об отгрузке</h3>
 		<ShComplit v-if='sh_complit_id' :sh_complit_id='sh_complit_id' :ship='getOneShipments' />
 		<OpensFile 
 			:parametrs='itemFiles' 
