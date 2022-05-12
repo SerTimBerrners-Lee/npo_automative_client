@@ -134,7 +134,6 @@
 		<PrintComplect 
 			v-if='tablebody'
 			:shipments='getOneShipments'
-			:childrens='childrens'
 			@unmount_print='unmount_print' /> 
 
 		<div class="btn-control out-btn-control">

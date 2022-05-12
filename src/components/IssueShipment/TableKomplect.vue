@@ -107,15 +107,16 @@ import { dateDifference } from '@/js/';
 import { shipmentsNullOne } from '@/js/';
 import { dateIncrementHors } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
-import KomplectModal from './KomplectModal';
-import ShipmentsModal from './ShipmentsModal';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapMutations, mapGetters, mapActions } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 
 export default {
 	props: {
-		shipmentsArr: [],
+		shipmentsArr: {
+			type: Array,
+			default: () =>  []
+		},
 		no_set: {},
 		fixed_table: {
 			type: String,
@@ -180,9 +181,11 @@ export default {
 	components: {
 		DescriptionModal, 
 		OpensFile,
-		KomplectModal,
-		ShipmentsModal
 	},
+	beforeCreate() {
+    this.$options.components.ShipmentsModal = require('@/components/IssueShipment/ShipmentsModal').default;
+		this.$options.components.KomplectModal = require('@/components/IssueShipment/KomplectModal').default;
+  },
 	computed: mapGetters(['getShipments']),
 	methods: {
 		...mapActions(['fetchDocumentsShipments']),

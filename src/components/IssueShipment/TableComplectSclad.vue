@@ -104,7 +104,10 @@ import DescriptionModal from '@/components/DescriptionModal';
 
 export default {
 	props: {
-		shipmentsArr: [],
+		shipmentsArr: {
+			type: Array,
+			default: () =>  []
+		},
 		shipment_sclad: {},
 		is_print: {
 			type: Boolean,

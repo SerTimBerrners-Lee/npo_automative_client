@@ -5,82 +5,86 @@
     <div :style="hiddens" > 
 		<div>
 
-		<h3>Заказ {{ number_order }}</h3>
-		<div class="block">
-			<p class='p_flex'>
-				<span>Дата заказа:</span>
-				<DatePicterCustom :dateStart='date_order' />
-				<span>Выбранное изделие: </span>
-				<span 
-					v-if='select_product && !is_not_product' 
-					class='select_span_href' @click='openIzd(select_product)'>{{ sliceName(select_product.name) }}</span>
-				<label for='is_not_product'>Заказ без изделия:</label>
-				<input id='is_not_product' type="checkbox" v-model='is_not_product' disabled>
-				<span>Количество:</span>
-				<input type="number" min='1' v-model='kol' disabled>
-			</p>
-			<p class='p_flex'>
-				<span>Дата отгрузки:</span>
-				<DatePicterCustom :dateStart='date_shipments' />
-				<label for='bran'>Бронь:</label>
-				<input id='bran' type="checkbox" v-model='bron' disabled>
-				<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
-				<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)" disabled>
-				<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
-				
-				<span class='hover'>Покупатель: </span>
-				<span class='tooltip'>
-					<select 
-						class="select-small buyer_select" 
-						v-model='buyer'
-						disabled>
-						<option v-for='buyer in allBuyer' 
-							:key='buyer'
-							:value="buyer.id">{{ buyer.name }}</option>
-					</select>
-					<span class='tooltiptext'> {{ returnObj() }}</span>
-				</span>
+		<div id='tablebody'>
+			<h3>Заказ {{ number_order }}</h3>
+			<div class="block">
+				<p class='p_flex'>
+					<span>Дата заказа:</span>
+					<DatePicterCustom :dateStart='date_order' />
+					<span>Выбранное изделие: </span>
+					<span 
+						v-if='select_product && !is_not_product' 
+						class='select_span_href' @click='openIzd(select_product)'>{{ sliceName(select_product.name) }}</span>
+					<label for='is_not_product'>Заказ без изделия:</label>
+					<input id='is_not_product' type="checkbox" v-model='is_not_product' disabled>
+					<span>Количество:</span>
+					<input type="number" min='1' v-model='kol' disabled>
+				</p>
+				<p class='p_flex'>
+					<span>Дата отгрузки:</span>
+					<DatePicterCustom :dateStart='date_shipments' />
+					<label for='bran'>Бронь:</label>
+					<input id='bran' type="checkbox" v-model='bron' disabled>
+					<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
+					<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)" disabled>
+					<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
+					
+					<span class='hover'>Покупатель: </span>
+					<span class='tooltip'>
+						<select 
+							class="select-small buyer_select" 
+							v-model='buyer'
+							disabled>
+							<option v-for='buyer in allBuyer' 
+								:key='buyer'
+								:value="buyer.id">{{ buyer.name }}</option>
+						</select>
+						<span class='tooltiptext'> {{ returnObj() }}</span>
+					</span>
 
-				<span>
-					<label for='to_sklad'>На склад:</label>
-					<input id='to_sklad' type="checkbox" v-model='to_sklad' disabled>
-				</span>
-			</p>
-		</div>
-
-		<div>
-			<div v-if='childrens && childrens.length && getOneShipments?.id' id='tablebody'>
-				<h4>Позиции по Счету: </h4>
-				<TableShipments
-					v-if='childrens.length'
-					:fixed_table='"fixed_table_10"'
-					:shipmentsArr='childrens'
-					:cheked_show='true'
-					:select_sh='getOneShipments?.id'
-					@unmount_dbclick='unmount_dbclick'
-					@unmount_sh='unmount_sh'
-					:return_dbclick='true'
-					:no_set='true'
-				/>
-				<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
+					<span>
+						<label for='to_sklad'>На склад:</label>
+						<input id='to_sklad' type="checkbox" v-model='to_sklad' disabled>
+					</span>
+				</p>
 			</div>
 
-			<div v-if='shipment_sclad' id='tablebody_select'>
-				<h4>Выбранные на отгрузку	: </h4>
-				<TableShipments  
-					v-if='selected_sh && selected_sh.length'
-					:fixed_table='"fixed_table_10"'
-					:shipmentsArr='selected_sh'
-					:remove_show='true'
-					:return_dbclick='true'
-					@unmount_dbclick='unmount_dbclick'
-					:select_sh='getOneShipments?.id'
-					@unmount_sh_remove='unmount_sh_remove'
-					:no_set='true'
-				/>
-				<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
-			</div>
+			<div>
+				<div v-if='childrens && childrens.length && getOneShipments?.id'>
+					<h4>Позиции по Счету: </h4>
+					<TableShipments
+						v-if='childrens.length'
+						:fixed_table='"fixed_table_10"'
+						:shipmentsArr='childrens'
+						:cheked_show='true'
+						:select_sh='getOneShipments?.id'
+						@unmount_dbclick='unmount_dbclick'
+						@unmount_sh='unmount_sh'
+						:return_dbclick='true'
+						:no_set='true'
+					/>
+					<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
+				</div>
 
+				<div v-if='shipment_sclad' id='tablebody_select'>
+					<div v-if='selected_sh && selected_sh.length'>
+						<h4>Выбранные на отгрузку	: </h4>
+						<TableShipments
+							:fixed_table='"fixed_table_10"'
+							:shipmentsArr='selected_sh'
+							:remove_show='true'
+							:return_dbclick='true'
+							@unmount_dbclick='unmount_dbclick'
+							:select_sh='getOneShipments?.id'
+							@unmount_sh_remove='unmount_sh_remove'
+							:no_set='true'
+						/>
+					</div>
+					<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
+				</div>
+
+			</div>
+		
 		</div>
 
 		<div class='table_block' v-if='!shipment_sclad'>
@@ -186,15 +190,17 @@
 <script>
 import print from 'print-js';
 import { random } from 'lodash';
+import { showMessage } from '@/js/';
 import ShComplit from './ShComplit';
 import ComplectIzd from './ComplectIzd';
+import MixModal from '@/mixins/mixmodal';
+import MixShipments from '@/mixins/shipments';
+import { mapActions, mapGetters } from 'vuex';
 import { eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
-import { showMessage, differencesShipments } from '@/js/';
 import DetalModal from '@/components/BaseDetal/DetalModal';
-import { mapActions, mapGetters, mapMutations } from 'vuex';
 import BaseFileModal from '@/components/FileBase/BaseFilesModal';
 import Shipment from '@/components/Sclad/IssueToPull/ShComlitModal';
 import ProductModalInfo from '@/components/BaseProduct/ProductModal';
@@ -208,9 +214,6 @@ export default {
 	},
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
 			keyWhenModalGenerate: random(1, 999),
 			keyWhenModalGenerateFileOpen: random(1, 999),
 
@@ -238,7 +241,6 @@ export default {
 			to_sklad: false,
 			select_product: null,
 			description: '',
-			list_cbed_detal: [],
 			is_not_product: false,
 
 			parametrs_product: false,
@@ -252,7 +254,6 @@ export default {
 			selectedBaseProvesses: false,
 
 			loader: false,
-			childrens: [],
 			selected_sh: [],
 			sh_complit_id: null,
 			print_click: false,
@@ -270,11 +271,10 @@ export default {
 			}
 		},	
 	},
+	mixins: [MixShipments, MixModal],
 	computed: mapGetters([	
 		'allBuyer',
-		'getOneShipments',
-		'getShipments',
-		'getParentsShipments'
+		'getOneShipments'
 	]),
 	components: {
 		DatePicterCustom, 
@@ -292,19 +292,10 @@ export default {
 			'fetchAllBuyers',  
 			'getAllProductByIdLight',
 			'fetchAllShipmentsTo',
-			'fetchAllShipmentsById',
-			'fetchIncludesFolderSh'
 		]),
-		...mapMutations(['setOneShipment', 'filterToParentShipments']),
-		destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-
-			this.$emit('unmount_shpment');
-		},
 		unmount_dbclick(id) {
-			this.beforeCreateF(id);
+			this.childrenSord(id);
+			this.editVariable();
 		},
 		unmount_sh(sh) {
 			if (sh.status === "Отгружено") return showMessage('', 'Задача уже отгружена!', 'w');
@@ -364,7 +355,6 @@ export default {
 			this.to_sklad = this.getOneShipments.to_sklad;
 			this.number_order = this.getOneShipments.number_order;
 			this.sh_complit_id = this.getOneShipments.sh_complit_id;
-			console.log(this.getOneShipments);
 
 			if(this.getOneShipments.productId) {
 				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
@@ -406,44 +396,20 @@ export default {
       this.showShipmentModal = true;
       this.shipmentKey = random(1, 999);
     },
-		async beforeCreateF(id) {
-			this.loader = true;
-			try {
-				this.list_cbed_detal = [];
-
-				const result = await this.fetchAllShipmentsById({id, light: true});
-
-				if(!result) return this.destroyModalF();
-				this.setOneShipment(result);
-				this.editVariable();
-
-				const ship_id_for_children = result.parent_id || result.id;
-		
-				const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
-				if (childrens) {
-					const child = childrens.childrens.filter(el => el.id != result.id);
-					this.childrens = differencesShipments(child);
-				}
-				const res = differencesShipments([result]);
-				this.childrens.push(res[0]);
-
-			} catch (err) { console.error(err, 'shipments modal beforeCreateF'); }
-
-			this.loader = false;
-		},
 	},
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-		
+		this.loader = true;
+
 		try {
 			await this.fetchAllBuyers(true);
 
-			if (!this.id_shipments) return this.destroyModalF();
-			await this.beforeCreateF(this.id_shipments);
+			if (!this.id_shipments) return this.destroyModalF('unmount_shpment');
+			await this.childrenSord(this.id_shipments);
+			this.editVariable();
 
 		} catch (err) { console.error(err, 'shipments modal mounted') }
+
+		this.loader = false;
 		
   },
 }

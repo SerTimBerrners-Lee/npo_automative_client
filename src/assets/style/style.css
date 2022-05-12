@@ -760,3 +760,63 @@ textarea {
   font-size: 16px;
   cursor: pointer;
 }
+
+.content-modal-right-menu_100 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 100%;
+}
+
+.content-modal-right-menu_90 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 90%;
+}
+
+.content-modal-right-menu_80 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 80%;
+}
+
+.content-modal-right-menu_70 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 70%;
+}
+
+.content-modal-right-menu_60 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 60%;
+}
+
+.content-modal-right-menu_50 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 50%;
+}
+
+.content-modal-right-menu_40 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 40%;
+}
+
+.content-modal-right-menu_30 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 30%;
+}
+
+.content-modal-right-menu_20 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 20%;
+}
+
+.content-modal-right-menu_10 {
+  animation: width 1s 1 ease;
+  height: 100vh;
+  width: 10%;
+}

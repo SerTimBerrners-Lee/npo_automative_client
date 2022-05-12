@@ -59,7 +59,8 @@
 </template>
 <script>
 import { random } from 'lodash';
-import PrintComplet from './PrintComplect';
+import MixModal from '@/mixins/mixmodal';
+import PrintComplet from './PrintComplect'; 
 import CbedModalInfo from '@/components/CbEd/CbedModal';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 
@@ -72,10 +73,6 @@ export default {
   },
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
-
       komplect: [],
       parametrs_cbed: null,
 			cbedModalKey: random(1, 999),
@@ -90,18 +87,15 @@ export default {
     DetalModal,
     PrintComplet
   },
+  mixins: [MixModal],
   methods: {
-    destroyModalF() {
-			this.destroyModalLeft = 'left-block-modal-hidden';
-			this.destroyModalRight = 'content-modal-right-menu-hidden';
-			this.hiddens = 'display: none;';
-    },
     unmount_print() {
-      console.log('unmount_print')
-			// this.print_show = false;
+			this.print_show = false;
+      this.destroyModalRight = 'content-modal-right-menu';
 		},
     printComplit() {
 			this.print_show = true;
+      this.destroyModalRight = 'content-modal-right-menu_90';
     },
     openModal(id, type) {
 			if(type == 'cbed') {
@@ -125,10 +119,6 @@ export default {
     }
   },
   mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-
 		if (!this.parametrs) return this.destroyModalF();
 		const complect = this.parametrs;
 
