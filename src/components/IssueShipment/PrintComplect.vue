@@ -1,5 +1,5 @@
 <template>
-  <div id='tablebody' v-if='shipment'>
+  <div id='tablebody2' v-if='shipment'>
     <h1>Информация о заказе</h1> 
     <table class='table_inform'>
       <tr>
@@ -110,7 +110,7 @@ export default {
       const emit = this.$emit;
       setTimeout(() => {
         print({
-          printable: 'tablebody',
+          printable: 'tablebody2',
           type: 'html',
           targetStyles: ['*'],
           documentTitle: 'Комплектация заказа',

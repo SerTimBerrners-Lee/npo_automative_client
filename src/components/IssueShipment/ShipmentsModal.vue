@@ -62,7 +62,7 @@
 					:return_dbclick='true'
 					:no_set='true'
 				/>
-				<ComplectIzd :show='print_click' :list_cbed_detal='list_cbed_detal' />
+				<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
 			</div>
 
 			<div v-if='shipment_sclad' id='tablebody_select'>
@@ -78,7 +78,7 @@
 					@unmount_sh_remove='unmount_sh_remove'
 					:no_set='true'
 				/>
-				<ComplectIzd :show='print_click' :list_cbed_detal='list_cbed_detal' />
+				<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
 			</div>
 
 		</div>
@@ -139,7 +139,7 @@
 		</div>
 		<div class='btn-control'>
 			<button class="btn-small btn-add" @click='printPage("tablebody_select")' v-if='shipment_sclad'>Печать c выбранными</button>
-			<button class="btn-small btn-add" @click='printPage("tablebody")' v-else>Печать</button>
+			<button class="btn-small btn-add" @click='printPage("tablebody")'>Печать</button>
 		</div>
 
 		<h3>Информация об отгрузке</h3>
@@ -308,7 +308,6 @@ export default {
 		},
 		unmount_sh(sh) {
 			if (sh.status === "Отгружено") return showMessage('', 'Задача уже отгружена!', 'w');
-			console.log('unmount_sh')
 
 			this.childrens = this.childrens.filter(el => el.id != sh.id);
 			this.selected_sh.push(sh);

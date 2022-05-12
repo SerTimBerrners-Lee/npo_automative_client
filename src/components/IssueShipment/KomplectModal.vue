@@ -97,7 +97,8 @@ export default {
 			this.hiddens = 'display: none;';
     },
     unmount_print() {
-			this.print_show = false;
+      console.log('unmount_print')
+			// this.print_show = false;
 		},
     printComplit() {
 			this.print_show = true;
