@@ -3,7 +3,6 @@
 */
 async function checkedJsonList(izd, ctx, recursive = false) {
 	if (!ctx) return false;
-	if (!izd.listCbed && !izd.listDeta && !izd.materialList && !izd.listPokDet) return false;
 
 	// Проходим по списку сборок
 	if (izd.listCbed) {
