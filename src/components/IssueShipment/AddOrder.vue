@@ -28,7 +28,7 @@
 				<input type="number" min='1' v-model='kol' :disabled='is_not_product'>
 			</p>
 			<p class='p_flex'>
-				<span>Дата отгрузки:</span>
+				<span>Дата План. отгрузки:</span>
 				<DatePicterCustom 
 					@unmount='changeDatePicterShipments' 
 					:dateStart='date_shipments'

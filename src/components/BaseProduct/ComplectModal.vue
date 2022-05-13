@@ -1,6 +1,6 @@
 <template>
   <div class="right-menu-modal">
-    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalLeft' @click="destroyModalF('unmount')"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens" >
 
@@ -135,13 +135,14 @@
 		v-if='material_id'
 		:id='material_id'
 	/>
-  <Loader v-if='loader' />
+  <Loader v-if='loader' :key='loader_key' />
   </div>
 </template>
 <script>
 import print from 'print-js';
 import { mapActions } from 'vuex';
 import { isEmpty, random } from 'lodash';
+import MixModal from '@/mixins/mixmodal';
 import { checkedJsonList } from '@/components/IssueShipment/js/index';
 import MaterialInformation from '@/components/MathZag/MaterialInformation';
 
@@ -151,9 +152,6 @@ export default {
   },
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
       list_cbed_detal: [],
       list_hidden_cbed_detal: [],
       list_material: [],
@@ -172,12 +170,13 @@ export default {
       },
       izd_cbed_arr: [],
       izd_detal_arr: [],
-
+      loader_key: random(1, 999)
     }
   },
   components: {
     MaterialInformation
   },
+  mixins: [MixModal],
   beforeCreate() {
     this.$options.components.DetalModal = require('@/components/BaseDetal/DetalModal').default;
     this.$options.components.CbedModalInfo = require('@/components/CbEd/CbedModal').default;
@@ -192,12 +191,6 @@ export default {
   },
   methods: {
     ...mapActions(['fetchGetOnePPM', 'getOneCbEdField']),
-    destroyModalF() {
-			this.destroyModalLeft = 'left-block-modal-hidden';
-			this.destroyModalRight = 'content-modal-right-menu-hidden';
-			this.hiddens = 'display: none;';
-			this.$emit('unmount');
-    },
     printPage() {
       print({
         printable: 'spec_table',
@@ -268,13 +261,8 @@ export default {
 		},
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-
-		if(isEmpty(this.parametrs)) return this.destroyModalF();
+		if(isEmpty(this.parametrs)) return this.destroyModalF('unmount');
     const obj = this.parametrs.obj;
-    console.log(this.parametrs);
 
     this.loader = true;
 
@@ -290,9 +278,11 @@ export default {
         await checkedJsonList(obj, this);
       }
       else await checkedJsonList(obj, this);
+      console.log('await checkedJsonList');
     }
 
     this.loader = false;
+    this.loader_key = random(1, 999);
   },
 }
 </script>

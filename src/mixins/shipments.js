@@ -1,3 +1,4 @@
+import { sliceName } from '@/js/methods';
 import { differencesShipments } from '@/js/';
 import { mapActions, mapMutations, mapGetters} from 'vuex';
 
@@ -10,9 +11,14 @@ export default {
   },
 	computed: mapGetters([
 		'getOneShipments',
+		'allBuyer'
 	]),
   methods: {
-    ...mapActions(['fetchAllShipmentsById', 'fetchIncludesFolderSh']),
+    ...mapActions([
+			'fetchAllShipmentsById',
+			'fetchIncludesFolderSh',
+			'getAllProductByIdLight'
+		]),
     ...mapMutations(['setOneShipment']),
     async childrenSord(id) {
       try {
@@ -35,6 +41,18 @@ export default {
 				this.childrens.push(res[0]);
 
 			} catch (err) { console.error(err, 'shipments modal beforeCreateF'); }
-    }
-  }
+    },
+		returnObj() {
+			if (!this.buyer) return 'нет';
+			const buyer = this.allBuyer.filter(e => e.id == this.buyer);
+			if (!buyer || !buyer.length) return 'нет';
+			return buyer[0]?.name || 'нет';
+		},
+		sliceName(str) {
+			return sliceName(str, 32);
+		},
+  },
+	async mouned() {
+		await this.fetchAllBuyers(true);
+	}
 }

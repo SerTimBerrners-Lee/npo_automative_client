@@ -21,7 +21,7 @@
 					<input type="number" min='1' v-model='kol' disabled>
 				</p>
 				<p class='p_flex'>
-					<span>Дата отгрузки:</span>
+					<span>Дата План. отгрузки:</span>
 					<DatePicterCustom :dateStart='date_shipments' />
 					<label for='bran'>Бронь:</label>
 					<input id='bran' type="checkbox" v-model='bron' disabled>
@@ -194,9 +194,9 @@ import { showMessage } from '@/js/';
 import ShComplit from './ShComplit';
 import ComplectIzd from './ComplectIzd';
 import MixModal from '@/mixins/mixmodal';
+import { eSelectSpan } from '@/js/methods';
 import MixShipments from '@/mixins/shipments';
 import { mapActions, mapGetters } from 'vuex';
-import { eSelectSpan, sliceName } from '@/js/methods';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
@@ -288,11 +288,7 @@ export default {
 		ComplectIzd,
 	},
 	methods: {
-		...mapActions([
-			'fetchAllBuyers',  
-			'getAllProductByIdLight',
-			'fetchAllShipmentsTo',
-		]),
+		...mapActions(['fetchAllBuyers', 'fetchAllShipmentsTo']),
 		unmount_dbclick(id) {
 			this.childrenSord(id);
 			this.editVariable();
@@ -312,12 +308,6 @@ export default {
 			this.$emit('unmount_sh_complit');
       await this.fetchAllShipmentsTo();
 			this.loader = false;
-		},
-		returnObj() {
-			if (!this.buyer) return 'нет';
-			const buyer = this.allBuyer.filter(e => e.id == this.buyer);
-			if (!buyer || !buyer.length) return 'нет';
-			return buyer[0]?.name || 'нет';
 		},
 		printPage(id_name) {
 			this.print_click = true;
@@ -384,9 +374,6 @@ export default {
 				}
 			}
 		},
-		sliceName(str) {
-			return sliceName(str, 32);
-		},
 		openIzd(izd) {
 			if (!izd || !izd.id) return false;
 			this.parametrs_product = izd.id;
@@ -401,8 +388,6 @@ export default {
 		this.loader = true;
 
 		try {
-			await this.fetchAllBuyers(true);
-
 			if (!this.id_shipments) return this.destroyModalF('unmount_shpment');
 			await this.childrenSord(this.id_shipments);
 			this.editVariable();
