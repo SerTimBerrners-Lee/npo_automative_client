@@ -98,25 +98,25 @@
             </tr>
           
             <tr v-if='material && material.wallThickness &&  JSON.parse(material.wallThickness).znach == "permanent" || this.obj.wallThickness_input'>
-              <td>Толщина стенки (S)</td>
+              <td>Толщина стенки (ТС)</td>
               <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.wallThickness_input'></td>
             </tr>
 
             <tr v-if='material && material.outsideDiametr && JSON.parse(material.outsideDiametr).znach == "permanent" || this.obj.outsideDiametr_input'>
-              <td>Наружный Диаметр (D)</td>
+              <td>Наружный Диаметр (НД)</td>
                 <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.outsideDiametr_input'></td>
             </tr>
            
             <tr v-if='material && material.thickness && JSON.parse(material.thickness).znach == "permanent" || this.obj.thickness_input'>
-              <td>Толщина </td>
+              <td>Толщина (Т)</td>
               <td>мм (миллиметр)</td>
               <td><input type="text" class="select-small" v-model.trim='obj.thickness_input'></td>
             </tr>
 
             <tr v-if='material && material.areaCrossSectional && JSON.parse(material.areaCrossSectional).znach == "permanent" || this.obj.areaCrossSectional_input'>
-              <td>Площадь сечения (A) </td>
+              <td>Площадь сечения (ПС) </td>
               <td>
                 метр. кв.
               </td>
@@ -124,7 +124,7 @@
             </tr>
 
             <tr v-if='podMaterial && podMaterial.density && JSON.parse(podMaterial.density).znach || this.obj.density_input'>
-              <td>Плотность </td>
+              <td>Плотность (П)</td>
               <td>
                 кг/м.куб.
               </td>

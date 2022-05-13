@@ -62,7 +62,7 @@
 				<td class='td_link center' @click='getMaterialForDetal("zam")' v-text='mat_zag_zam.name || mat_zag_zam' ></td>
 			</tr>
 			<tr v-if="obj.diametr != null && obj.diametr !== ''">
-				<td>Диаметр</td>
+				<td>Диаметр (НД)</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
@@ -74,7 +74,7 @@
 				</td>
 			</tr>
 			<tr v-if='obj.lengt != null && obj.lengt !== ""'>
-				<td>Длина</td>
+				<td>Длина (Д)</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
@@ -86,7 +86,7 @@
 				</td>
 			</tr>
 			<tr v-if='obj.height != null && obj.height !== ""'>
-				<td>Высота</td>
+				<td>Высота (В)</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
@@ -98,7 +98,7 @@
 				</td>
 			</tr>
 			<tr v-if='obj.thickness != null && obj.thickness !== ""'>
-				<td>Толщина</td>
+				<td>Толщина (Т)</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
@@ -110,7 +110,7 @@
 				</td>
 			</tr>
 			<tr v-if='obj.wallThickness != null && obj.wallThickness !== ""'>
-				<td>Толщина стенки</td>
+				<td>Толщина стенки (ТС)</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
@@ -122,7 +122,7 @@
 				</td>
 			</tr>
 			<tr v-if='obj.width != null && obj.width !== ""'>
-				<td>Ширина</td>
+				<td>Ширина (Ш)</td>
 				<td class='center'>мм</td>
 				<td class='center'>
 					<input type="text"
@@ -134,7 +134,7 @@
 				</td>
 			</tr>
 			<tr v-if='obj.areaCS != null && obj.areaCS !== ""'>
-				<td>Площадь сечения</td>
+				<td>Площадь сечения (ПС)</td>
 				<td class='center'>м.кв</td>
 				<td class='center'>
 					<input type="text"

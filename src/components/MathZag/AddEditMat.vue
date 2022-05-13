@@ -19,7 +19,7 @@
             <th>Значение</th>
           </tr>
           <tr>
-            <td  @click='obj.length_permanent = ""'>Длина (L)</td>
+            <td  @click='obj.length_permanent = ""'>Длина (Д)</td>
             <td>мм</td>
             <td class="input_znach">
               <p>
@@ -33,7 +33,7 @@
             </td>
           </tr>
           <tr>
-            <td  @click='obj.width_permanent = ""'>Ширина (A)</td>
+            <td  @click='obj.width_permanent = ""'>Ширина (Ш)</td>
             <td>мм</td>
             <td class="input_znach" >
               <p>
@@ -47,7 +47,7 @@
             </td>
           </tr>
           <tr>
-            <td @click='obj.height_permanent = ""'>Высота (B)</td>
+            <td @click='obj.height_permanent = ""'>Высота (В)</td>
             <td>мм</td>
             <td class="input_znach">
               <p>
@@ -61,7 +61,7 @@
             </td>
           </tr>
           <tr>
-            <td @click='obj.wallThickness_permanent = ""'>Толщина стенки (С)</td>
+            <td @click='obj.wallThickness_permanent = ""'>Толщина стенки (ТС)</td>
             <td>мм</td>
             <td class="input_znach">
               <p>
@@ -75,7 +75,7 @@
             </td>
           </tr>
           <tr>
-            <td @click='obj.outsideDiametr_permanent = ""'>Наружный Диаметр (D)</td>
+            <td @click='obj.outsideDiametr_permanent = ""'>Наружный Диаметр (НД)</td>
             <td>мм</td>
             <td class="input_znach">
               <p>
@@ -89,7 +89,7 @@
             </td>
           </tr>
           <tr>
-            <td @click='obj.thickness_permanent = ""'>Толщина (H) </td>
+            <td @click='obj.thickness_permanent = ""'>Толщина (Т) </td>
             <td>мм</td>
             <td class="input_znach">
               <p>
@@ -103,7 +103,7 @@
             </td>
           </tr>
           <tr>
-            <td @click='obj.areaCrossSectional_permanent = ""'>Площадь сечения (S)</td>
+            <td @click='obj.areaCrossSectional_permanent = ""'>Площадь сечения (ПС)</td>
             <td>м.кв</td>
             <td class="input_znach">
               <p>
