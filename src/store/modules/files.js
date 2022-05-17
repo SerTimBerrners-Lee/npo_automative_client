@@ -11,42 +11,48 @@ export default {
   },
   getters: {
     allFiles(state) {
-      return state.noBanFiles.reverse()
+      return state.noBanFiles.reverse();
     },
     banFiles(state) {
-      return state.banFiles.reverse()
+      return state.banFiles.reverse();
     }
   },
   actions: { 
     async fetchFiles(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents`)
-      if(!res.ok) return false
-      const result = await res.json()
+      const res = await fetch(`${PATH_TO_SERVER}api/documents`);
+      if(!res.ok) return false;
+      const result = await res.json();
       ctx.commit('updateFiles', result);
       ctx.commit('getNoBanFiles');
     },
 
     async fetchBannedFiles(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/banned/all/${ctx.state.banFiles.length}`)
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/banned/all/${ctx.state.banFiles.length}`);
       if(!res.ok) return false;
-      const result = await res.json()
+      const result = await res.json();
       if(result?.length)
-        ctx.commit('getBannedFiles', result)
+        ctx.commit('getBannedFiles', result);
+    },
+
+    async fetchAvaChange(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/avachanges/${id}`);
+      if (!res.ok) return false;
+      return true;
     },
 
     async fetchFilesNames() {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/names`)
-      return await res.json()
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/names`);
+      return await res.json();
     },
 
     async pushDocuments(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/documents/add`, {
         method: 'post',
         body: data
-      })
+      });
       if(res.ok ) {
-        const respons = await res.json()
-        return respons
+        const respons = await res.json();
+        return respons;
       } 
     },
 
@@ -54,19 +60,19 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/documents/` + docs.id, {
         method: 'delete',
       })
-      const result = await res.json()
-      if(res.ok) {
-        let awar = await ctx.commit('banFiles', result)
-        return { re: awar, type: 's', message: 'Файл успешно изменен'}
-      }
-      return { type: 'e', message: 'Произошла ошика при изменении'}
+      const result = await res.json();
+      if(!res.ok) return { type: 'e', message: 'Произошла ошика при изменении'}
+
+      const re = await ctx.commit('banFiles', result);
+      return { re, type: 's', message: 'Файл успешно изменен'}
     },
 
     async fetchFileById(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/documents/${id}`)
       const result = await res.json()
-      if(res.ok) 
-        return result
+      if(!res.ok) return false;
+
+      return result;
     },
 
     async checkedType(ctx, {id, type}) {
@@ -82,12 +88,10 @@ export default {
         })
       });
 
-      if(res.ok) {
-        ctx.dispatch('fetchFiles')
-        return { type: 's', message: 'Тип успешно изменен'}
-      }
-      
-      return { type: 'e', message: 'Произошла ошика при изменении типа файла'}
+      if(!res.ok) return { type: 'e', message: 'Произошла ошика при изменении типа файла'}
+
+      ctx.dispatch('fetchFiles');
+      return { type: 's', message: 'Тип успешно изменен'}
     },
 
     async updateDataFile(ctx, data) {
@@ -98,12 +102,10 @@ export default {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify(data)
-      })
+      });
 
-      if(res.ok) 
-        return true
-        else 
-          return false
+      if(!res.ok) return false;
+      return true;
     },
 
     async setDetalForFile(ctx, data) {
@@ -118,35 +120,35 @@ export default {
   },
   mutations: {
     updateFiles(state, files) {
-      state.files = files
+      state.files = files;
     },
     banFiles(state, docs){
       if(docs.banned) {
-        state.banFiles.push(docs)
-        state.noBanFiles = state.noBanFiles.filter(f => f.id != docs.id)
+        state.banFiles.push(docs);
+        state.noBanFiles = state.noBanFiles.filter(f => f.id != docs.id);
       } else {
-        state.noBanFiles.push(docs)
-        state.banFiles = state.banFiles.filter(f => f.id != docs.id)
+        state.noBanFiles.push(docs);
+        state.banFiles = state.banFiles.filter(f => f.id != docs.id);
       }
     },
     pushFilesMutation(state, file) {
-      state.files.push(file)
-      state.noBanFiles.push(file)
+      state.files.push(file);
+      state.noBanFiles.push(file);
     },
     getNoBanFiles(state) {
-      state.noBanFiles = state.files.filter(f => !f.banned)
+      state.noBanFiles = state.files.filter(f => !f.banned);
     },
     getBannedFiles(state, files = []){
       if(files.length == 0)
-        state.banFiles = state.files.filter(f => f.banned)
+        state.banFiles = state.files.filter(f => f.banned);
       if(files.length)
-        state.banFiles = files.filter(f => f.banned)
+        state.banFiles = files.filter(f => f.banned);
     },
     searchToFiles(state, str) {
       if(!state.filterFiles.length)
-        state.filterFiles = state.noBanFiles
+        state.filterFiles = state.noBanFiles;
       
-      state.noBanFiles = state.filterFiles
+      state.noBanFiles = state.filterFiles;
 
       state.noBanFiles = state.noBanFiles.filter(file => 
         file.name.slice(0, str.length).toLowerCase() == str.toLowerCase()
@@ -154,9 +156,9 @@ export default {
     },
     searchToBanFiles(state, str) {
       if(!state.filterBanFiles.length)
-        state.filterBanFiles = state.banFiles
+        state.filterBanFiles = state.banFiles;
       
-      state.banFiles = state.filterBanFiles
+      state.banFiles = state.filterBanFiles;
 
       state.banFiles = state.banFiles.filter(file => 
         file.name.slice(0, str.length).toLowerCase() == str.toLowerCase()

@@ -48,14 +48,20 @@
                     <p v-if='!returnZnachName(file.name)'>
                       <label for='newVersion' class='newVersion_label'>Новая версия</label>
                       <input 
-                        type="checkbox" 
-                        id='newVersion' 
+                        type="checkbox"
+                        id='newVersion'
                         :value='file.newVersion'
                         @click='e=>fileRead(!file.newVersion, "newVersion", index)'>
                     </p>
                 </div>
                 <p>
                   <span>Версия: </span><input type="text" disabled placeholder="1" @change='e=>fileRead(e.target.value, "VersionDocument", index)'>
+                  <span>
+                    <label class='label'>Главный: </label>
+                    <span>
+                      <input type="checkbox" @change='e => fileRead(!file.ava, "ava", index)'>
+                    </span>
+                  </span>
                 </p>
                 <p class="right-menu-p">
                   <span>Примечание: </span><input type="text" placeholder="Описание файла" @change='e=>fileRead(e.target.value, "DescriptionDocument", index)'>
@@ -76,6 +82,7 @@
 <script>
 import { mapActions } from 'vuex';
 import { photoPreloadUrl } from '@/js/';
+
 export default {
   props: ['parametrs', 'typeGetFile'],
   data() {
@@ -96,97 +103,97 @@ export default {
   methods: {
     ...mapActions(['pushDocuments', 'fetchFilesNames']),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-      this.$emit('unmount', null)
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
+      this.$emit('unmount', null);
     },
-    addFiles(getFormData = 'pushfile') {
-      const formData = new FormData()
-      const dataArr = []
-      for(let doc of this.arrItemsFile) {
-        formData.append('document', doc)
+    async addFiles(getFormData = 'pushfile') {
+      const formData = new FormData();
+      const dataArr = [];
+      for (const doc of this.arrItemsFile) {
+        formData.append('document', doc);
         dataArr.push({
           type: doc.TypeDocument,
           version: doc.VersionDocument,
           description: doc.DescriptionDocument,
           name: doc.NameDocument,
           nameInstans: '',
-          newVersion: doc.newVersion
-        })
+          newVersion: doc.newVersion,
+          ava: false
+        });
       }
-      formData.append('docs', JSON.stringify(dataArr))
+      formData.append('docs', JSON.stringify(dataArr));
 
       if(getFormData == 'getfile') {
         this.$emit('unmount', {
           formData
         })
-        this.destroyModalF()
-        return 0
+        this.destroyModalF();
+        return 0;
       }
 
-      this.pushDocuments(formData).then((res) => {
-        this.$emit('unmount', {
-          files: res,
-          type: 'w',
-          message: 'Файлы переданы на сервер для обработки'
-        })
-      })
-      this.destroyModalF()
+      const res = await this.pushDocuments(formData);
+      this.$emit('unmount', {
+        files: res,
+        type: 'w',
+        message: 'Файлы переданы на сервер для обработки'
+      });
+      this.destroyModalF();
     },
     fileRead(val, folder, index) {
-      this.arrItemsFile[index][folder] = val
+      this.arrItemsFile[index][folder] = val;
     },
     returnZnachName(file_name) {
-      for(let name of this.data_names) {
-        if(name.name?.toLocaleLowerCase() == file_name.toLocaleLowerCase()) return false
+      for (const name of this.data_names) {
+        if(name.name?.toLocaleLowerCase() == file_name.toLocaleLowerCase()) return false;
       }
-      return  true 
+      return true;
     },
     returnNamesExist(file_name) {
       const arr_names = []
-      for(let name of this.data_names) {
-        if(name.name == file_name) arr_names.push(name.name)
+      for(const name of this.data_names) {
+        if(name.name == file_name) arr_names.push(name.name);
       }
-      return arr_names
+      return arr_names;
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
     if(this.parametrs.type == 'create') {
       return 0;
     } else  {
-      this.titleapp = 'Редактирование'
-      this.inputs = this.parametrs.description
-      this.inputs_short = this.parametrs.value 
+      this.titleapp = 'Редактирование';
+      this.inputs = this.parametrs.description;
+      this.inputs_short = this.parametrs.value;
     }
-    let arr = this.$props.parametrs
+    const arr = this.$props.parametrs;
     arr.forEach((doc, index) => {
       photoPreloadUrl(doc, (res) => {
         if (res.type == 'img') {
-          arr[index].TypeDocument = ''
-          arr[index].VersionDocument = 1
-          arr[index].DescriptionDocument = ''
-          arr[index].url = res.url 
-          arr[index].NameDocument = ''
-          arr[index].newVersion = false
-          arr[index].typefile = res.type
-          this.arrItemsFile.push(...[arr[index]])
+          arr[index].TypeDocument = '';
+          arr[index].VersionDocument = 1;
+          arr[index].DescriptionDocument = '';
+          arr[index].url = res.url ;
+          arr[index].NameDocument = '';
+          arr[index].newVersion = false;
+          arr[index].typefile = res.type;
+          this.arrItemsFile.push(...[arr[index]]);
         } else { 
-          arr[index].TypeDocument = ''
-          arr[index].VersionDocument = 1
-          arr[index].DescriptionDocument = ''
-          arr[index].NameDocument = ''
-          arr[index].typename = res.typename
-          arr[index].newVersion = false
-          arr[index].typefile = res.type
-          this.arrItemsFile.push(...[arr[index]])
+          arr[index].TypeDocument = '';
+          arr[index].VersionDocument = 1;
+          arr[index].DescriptionDocument = '';
+          arr[index].NameDocument = '';
+          arr[index].typename = res.typename;
+          arr[index].newVersion = false;
+          arr[index].typefile = res.type;
+          this.arrItemsFile.push(...[arr[index]]);
         }
       }) 
     });
-    this.data_names = await this.fetchFilesNames()
+    this.data_names = await this.fetchFilesNames();
   },
 }
 </script>

@@ -216,7 +216,7 @@
 </template>
 <script>
 import PATH_TO_SERVER from '@/js/path';
-import {random, isEmpty } from 'lodash';
+import { random, isEmpty } from 'lodash';
 import { mapActions, mapGetters } from 'vuex';
 import AddFile from '@/components/FileBase/AddFile';
 import OpensFile from '@/components/FileBase/OpenFile';
@@ -269,118 +269,118 @@ export default {
   components: {AddFile, MediaSlider, BaseTools, BaseEquipment, OpensFile},
   methods: {
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
     },
     ...mapActions(['createOperation', 'updateOperation', 'fetchOneOperationById', 'getAllTypeOperations']),
     saveOperation() {
       if(!this.formData)
-        this.formData = new FormData()
+        this.formData = new FormData();
 
-      this.formData.append('name', this.name)
-      this.formData.append('preTime', this.preTime)
-      this.formData.append('helperTime', this.helperTime)
-      this.formData.append('mainTime', this.mainTime)
+      this.formData.append('name', this.name);
+      this.formData.append('preTime', this.preTime);
+      this.formData.append('helperTime', this.helperTime);
+      this.formData.append('mainTime', this.mainTime);
       this.formData.append('generalCountTime', 
         Number(this.preTime) + 
         Number(this.helperTime) +
-        Number(this.mainTime))
-      this.formData.append('description', this.description)
+        Number(this.mainTime));
+      this.formData.append('description', this.description);
       this.formData.append('instrumentList',
         this.instrumentList.length ? 
-          JSON.stringify(this.instrumentList) : null)
+          JSON.stringify(this.instrumentList) : null);
       this.formData.append('instrumentMerList',
         this.instrumentMerList.length ?
-          JSON.stringify(this.instrumentMerList) : null)
+          JSON.stringify(this.instrumentMerList) : null);
       this.formData.append('instrumentOsnList',
         this.instrumentOsnList.length ? 
-          JSON.stringify(this.instrumentOsnList) : null)
+          JSON.stringify(this.instrumentOsnList) : null);
       this.formData.append('eqList',
         this.eqList.length ? 
-          JSON.stringify(this.eqList) : null)
+          JSON.stringify(this.eqList) : null);
+
       if(this.$props.operation && this.id) {
-        this.formData.append('id', this.id)
-        this.updateOperation(this.formData)
-        this.destroyModalF()
-        this.$emit('unmount')
+        this.formData.append('id', this.id);
+        this.updateOperation(this.formData);
+        this.destroyModalF();
+        this.$emit('unmount');
       } else {
-        this.createOperation(this.formData)
-        this.destroyModalF()
-        this.$emit('unmount')
+        this.createOperation(this.formData);
+        this.destroyModalF();
+        this.$emit('unmount');
       }
       
 
     },
     addDock(val) {
       val.target.files.forEach(f => {
-        this.docFiles.push(f)
+        this.docFiles.push(f);
       })
-      this.keyWhenModalGenerate = random(10, 999)
-      this.isChangeFolderFile = true
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
     file_unmount(e) { 
-      if(!e) return 0
-      this.formData = e.formData
-      let all = this.formData.getAll("document")
+      if(!e) return 0;
+      this.formData = e.formData;
+      let all = this.formData.getAll("document");
       if(all) 
         all.forEach(f => {
-          this.dataMedia.push({name: f.name, path: f.url, banned: f.banned})
-          this.randomDataMedia = random(10, 999)
+          this.dataMedia.push({...f, path: f.url});
+          this.randomDataMedia = random(10, 999);
         })
     },
     addInstrument(t = 'ins') {
       if(t == 'mer') {
-        this.metInstrumentKey = random(1, 999)
-        this.instrumentMerIsShow = true
+        this.metInstrumentKey = random(1, 999);
+        this.instrumentMerIsShow = true;
       }
         
       if(t == 'ins') {
-        this.instrumentKey = random(10, 999)
-        this.instrumentIsShow = true
+        this.instrumentKey = random(10, 999);
+        this.instrumentIsShow = true;
       }
 
       if(t == 'osn') {
-        this.osnInstrumentKey = random(10, 999)
-        this.instrumentOsnIsShow = true
+        this.osnInstrumentKey = random(10, 999);
+        this.instrumentOsnIsShow = true;
       }
     },
     addEquipment() {
-      this.eqIsShow = true
-      this.eqKey = random(10, 999)
+      this.eqIsShow = true;
+      this.eqKey = random(10, 999);
     },
     unmount_instrument(inst) {
-      this.instrumentList = []
-      inst.instrumentList.forEach(e => this.instrumentList.push( {id: e.id, name: e.name}))
+      this.instrumentList = [];
+      inst.instrumentList.forEach(e => this.instrumentList.push( {id: e.id, name: e.name}));
      
       this.instrumentIsShow = false
     },
     unmount_instrument_mer(inst) {
-      this.instrumentMerList = []
-      inst.instrumentList.forEach(e => this.instrumentMerList.push({id: e.id, name: e.name}))
-      this.instrumentMerIsShow = false
+      this.instrumentMerList = [];
+      inst.instrumentList.forEach(e => this.instrumentMerList.push({id: e.id, name: e.name}));
+      this.instrumentMerIsShow = false;
     },
     unmount_instrument_osn(inst) {
-      this.instrumentOsnList = []
-      inst.instrumentList.forEach(e => this.instrumentOsnList.push({id: e.id, name: e.name}))
-      this.instrumentOsnIsShow = false
+      this.instrumentOsnList = [];
+      inst.instrumentList.forEach(e => this.instrumentOsnList.push({id: e.id, name: e.name}));
+      this.instrumentOsnIsShow = false;
     },
     unmount_eq(eq) {
       this.eqList = []
-      eq.equipmentList.forEach(e => this.eqList.push({id: e.id, name: e.name}))
-      this.eqIsShow = false
+      eq.equipmentList.forEach(e => this.eqList.push({id: e.id, name: e.name}));
+      this.eqIsShow = false;
     },
     changeGenTime(e){
-      console.log(e)
+      console.log(e);
     },
     setDocs(dc) {
-      this.itemFiles = dc
+      this.itemFiles = dc;
     },
     openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      if(isEmpty(this.itemFiles)) return 0;
+      this.showFile = true;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
   },
   async mounted() {
@@ -392,37 +392,33 @@ export default {
     
     if(this.$props.operation) {
       // Если есть операция показываем ее для редактирования ()
-      let op = this.$props.operation
-      this.id = op.id
-      this.name = op.name
-      this.preTime = op.preTime
-      this.helperTime = op.helperTime
-      this.mainTime = op.mainTime
+      const op = this.$props.operation;
+      this.id = op.id;
+      this.name = op.name;
+      this.preTime = op.preTime;
+      this.helperTime = op.helperTime;
+      this.mainTime = op.mainTime;
       this.generalCountTime =
         (Number(this.preTime) + 
         Number(this.helperTime) +
         Number(this.mainTime))
-      this.description = op.description
+      this.description = op.description;
 
       if(op.instrumentList)
-        this.instrumentList = JSON.parse(op.instrumentList)
+        this.instrumentList = JSON.parse(op.instrumentList);
       if(op.instrumentMerList)
-        this.instrumentMerList = JSON.parse(op.instrumentMerList)
+        this.instrumentMerList = JSON.parse(op.instrumentMerList);
 
       if(op.instrumentOsnList)
-          this.instrumentOsnList = JSON.parse(op.instrumentOsnList)
-      if(op.eqList)
-          this.eqList = JSON.parse(op.eqList) 
+        this.instrumentOsnList = JSON.parse(op.instrumentOsnList);
+      if(op.eqList) this.eqList = JSON.parse(op.eqList);
 
       // получать полностью всю операцию для отрисовки документов  
-      this.fetchOneOperationById(op.id).then(res => {
-        this.documentsOperationList = res.documents
-        res.documents.forEach(d => 
-          this.dataMedia.push({path : PATH_TO_SERVER+d.path, name: d.name, banned: d.banned})
-        )
+      const res = await this.fetchOneOperationById(op.id);
+      this.documentsOperationList = res.documents
+      res.documents.forEach(d => this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path}))
 
-        this.randomDataMedia = random(10, 999)
-      })
+      this.randomDataMedia = random(10, 999)
 
     }
   }

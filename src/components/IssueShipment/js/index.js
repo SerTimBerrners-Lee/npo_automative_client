@@ -1,4 +1,7 @@
+import PATH_TO_SERVER from '@/js/path';
+
 /* main 
+* Сюда попадает очередное ИЗДЕЛИЕ
 * Рекурсивно подсчитывает количество СБ и Д в изделии или СБ
 */
 async function checkedJsonList(izd, ctx, recursive = false) {
@@ -15,7 +18,7 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 			if (!res) continue;
 			res.materials = materials.materials;
 			await parserListIzd(res, cb.kol, ctx);
-		} 
+		}
 	}
 
 	// Проходим по деталям
@@ -42,7 +45,7 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 							MASS = Number(res?.massZag || 0);
 						}
 					}
-					if (mat_true) { 
+					if (mat_true) {
 						let parse_str;
 						if (res.materialList) {
 							parse_str = JSON.parse(res.materialList);
@@ -50,13 +53,13 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 							parse_str = JSON.stringify(parse_str);
 						} else
 							parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name, LEN, MASS}, kol: 1}]);
-					
+
 						mat_true = false;
 						checkedJsonList({...res, materialList: parse_str}, ctx);
 					}
 					else checkedJsonList(res, ctx);
 				}
-				if (det == list_detals.length -1) 
+				if (det == list_detals.length -1)
 					pushElement(izd.detals, list_detals, 'detal', ctx, recursive);
 			}
 	}
@@ -144,6 +147,17 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 		const check_dublecate = checkDublecate(arr, element);
 		if(check_dublecate != null)	arr[check_dublecate].kol += Number(kol);
 		else {
+			let ava_path;
+			if (type == 'detal'|| type == 'cbed') {
+				if (type == 'detal') {
+					ava_path = await ctx.$store.dispatch('fetchDetalAva', element.id);
+				}
+				if (type == 'cbed') {
+					ava_path = await ctx.$store.dispatch('fetchCbedAva', element.id);
+				}
+			}
+			if (ava_path && ava_path.path) ava_path = `${PATH_TO_SERVER}${ava_path.path}`;
+
 			if(type == 'material') {
 				const res = await ctx.$store.dispatch("fetchGetOnePPM", element.id);
 				element['podMaterial'] = res?.podMaterial || null;
@@ -153,14 +167,16 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					arr.push({
 						type,
 						obj: {...element},
-						kol: Number(kol)
+						kol: Number(kol),
+						ava_path,
 					});
 				}
 			} else {
 				arr.push({
 					type,
 					obj: {...element},
-					kol: Number(kol)
+					kol: Number(kol),
+					ava_path,
 				});
 			}
 		}
@@ -176,6 +192,7 @@ function checkDublecate(arr, res) {
 }
 
 /**
+ * Сюда попадает изделие с сборками и деталями
  * Парсит комплектацию СБ или Д
 */
 async function parserListIzd(res, kol, ctx) {

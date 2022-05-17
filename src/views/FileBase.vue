@@ -85,7 +85,7 @@ export default {
       'getRoleAssets'
     ]),
   },
-  components: {AddFile, OpensFile, NodeTable, Assign, FileWindow},
+  components: { AddFile, OpensFile, NodeTable, Assign, FileWindow },
   methods: {
     ...mapActions([
       'bannedFiles', 
@@ -95,6 +95,20 @@ export default {
     ...mapMutations([
       'pushFilesMutation'
     ]),
+    unmount(res){
+      if(!res) {
+        this.docFiles = []
+        this.itemFiles = null,
+        this.showModalOpenFile = false
+        return 0;
+      }
+      if(res.files && res.files.length) {
+        for(const file of res.files) {
+          this.pushFilesMutation(file)
+        }
+      }
+      showMessage('', res.message, res.type);
+    },
     changeEnv(env) {
       if(!env) return false;
       this.nowType = env.nowType
@@ -143,20 +157,6 @@ export default {
       this.bannedFiles(this.itemFiles).then(f => {
         showMessage('', f.message, f.type);
       })
-    },
-    unmount(res){
-      if(!res) {
-        this.docFiles = []
-        this.itemFiles = null,
-        this.showModalOpenFile = false
-        return 0;
-      }
-      if(res.files && res.files.length) {
-        for(let file of res.files) {
-          this.pushFilesMutation(file)
-        }
-      }
-      showMessage('', res.message, res.type);
     },
     exitModalAttach() {
       this.showMiniModal = false

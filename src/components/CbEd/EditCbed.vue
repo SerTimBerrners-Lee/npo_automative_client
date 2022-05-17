@@ -522,9 +522,7 @@ export default {
 
       if(this.$route.params.copy == 'false')  {
         this.documentsData = this.getOneSelectCbEd.documents;
-        this.getOneSelectCbEd.documents.forEach(d => {
-            this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned});
-        })
+        this.getOneSelectCbEd.documents.forEach(d => this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path}))
         this.randomDataMedia = random(10, 999);
         this.id = this.getOneSelectCbEd.id;
 

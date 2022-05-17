@@ -530,10 +530,8 @@ export default {
 
       if(this.$route.params.copy == 'false')  {
         this.documentsData = this.getOneSelectProduct.documents;
-        this.getOneSelectProduct.documents.forEach(d => {
-          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned});
-        });
-        this.randomDataMedia = random(10, 999) ;
+        this.getOneSelectProduct.documents.forEach(d => this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path}));
+        this.randomDataMedia = random(10, 999);
 
         this.techProcessID = !isEmpty(this.getOneSelectProduct.techProcesses) ? this.getOneSelectProduct.techProcesses.id : null;
 

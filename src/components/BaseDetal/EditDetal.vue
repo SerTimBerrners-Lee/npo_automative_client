@@ -136,7 +136,7 @@
           <MediaSlider 
             v-if='dataMedia' 
             :static='true' 
-            :data='dataMedia' 
+            :data='dataMedia'
             :key='randomDataMedia'
             :width='"width: 30%;"'
             :width_main='"width: 97%;"'
@@ -479,9 +479,7 @@ export default {
     this.id = this.getOneSelectDetal.id;
 
     this.documentsData = this.getOneSelectDetal.documents;
-    this.getOneSelectDetal.documents.forEach(d => {
-      this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned});
-    })
+    this.getOneSelectDetal.documents.forEach(d => this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path}));
     this.randomDataMedia = random(10, 999);
     this.show_harater_zag = true;
 

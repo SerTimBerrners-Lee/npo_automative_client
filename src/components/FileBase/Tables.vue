@@ -24,6 +24,7 @@
       @click="e => propEvent(file, e.target.parentElement)"
       @dblclick="dbEvent(file)"
       :class='file.banned ? "del_background" : ""'
+      :style='file.ava ? "background: orange;" :""'
       >
       <td class='center' style="width: 10px">{{ inx + 1 }}</td>
       <td style="width: 10px">{{ file.type }}</td>
@@ -46,6 +47,8 @@
 <script>
 import { getReversDate } from '@/js/';
 import Search from '@/components/Search';
+import { eSelectSpan } from '@/js/methods';
+
 export default {
   props: ['documents', 'search_data'],
   data() {
@@ -56,21 +59,18 @@ export default {
   components: {Search},
   methods: {
     getDateRevers(date) {
-      return getReversDate(date).date
+      return getReversDate(date).date;
     },
     propEvent(file, e) {
-      if(this.td)
-          this.td.classList.remove('td-row-all')
-      this.td = e
-      this.td.classList.add('td-row-all')
+      this.td = eSelectSpan(this.td, e);
 
-      this.$emit('pushFile', file)
+      this.$emit('pushFile', file);
     },
     dbEvent(file) {
-      this.$emit('dbPushFile', file)
+      this.$emit('dbPushFile', file);
     },
     keySearch(str) {
-      this.$emit('keySearch', str)
+      this.$emit('keySearch', str);
     }
   }
 }

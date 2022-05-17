@@ -4,7 +4,7 @@
     <div :class='destroyModalRight'>
       <div :style="hiddens">
         <h3>Карточка файла</h3>
-        <div class="block"> 
+        <div class="block" v-if='file.length'> 
           <div >
             <h4>Библиотека документов </h4>
             <div>
@@ -82,6 +82,12 @@
                     </span>
                   </p>
                   <p><b>Тип: </b><span> {{ this.file[file_increment] ? this.file[file_increment].type : '' }}</span></p>
+                  <p @click="changeAvaFile(this.file[file_increment])">
+                    <label class='label'>Главный: </label>
+                    <span>
+                      <input type="checkbox" v-model="this.file[file_increment].ava">
+                    </span>
+                  </p>
                   <h4>Принадлежность</h4>
                   <span></span>
                 </div>
@@ -166,20 +172,30 @@ export default {
     ...mapActions([
       'pushDocuments', 
       'getAllUsers', 
-      'updateDataFile'
+      'updateDataFile',
+      'fetchAvaChange'
     ]),
     destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-      this.$emit('unmount', null)
+      this.destroyModalLeft = 'left-block-modal-hidden';
+      this.destroyModalRight = 'content-modal-right-menu-hidden';
+      this.hiddens = 'display: none;';
+      this.$emit('unmount', null);
+    },
+    async changeAvaFile(file) {
+      file.ava = !file.ava;
+      this.$emit('unmount_ava', {id: file.id, ava: file.ava})
+      if (!file || !file.id) return showMessage('', 'Файл не передан для отправки на сервер', 'e');
+      const result = await this.fetchAvaChange(file.id);
+      if (result) return showMessage('', 'Файл Изменен на основной', 's');
+      return showMessage('', 'Произошла ошибка при изменении Файла', 'e');
+
     },
     nextFile(){
       if(this.file_increment == this.file.length - 1) 
-        this.file_increment = 0
-      else this.file_increment++
+        this.file_increment = 0;
+      else this.file_increment++;
       
-      this.showDocs(this.file[this.file_increment])
+      this.showDocs(this.file[this.file_increment]);
     },
     showDocs(file) {
       if(!file) 
@@ -211,25 +227,25 @@ export default {
         printable: image, 
         type: tp == 'pdf' ? 'pdf' : 'image',
         imageStyle: 'max-height: 95vh; margin-bottom: 10px;'
-      })
+      });
     },
     printAllDoc() {
-			if(!this.file.length) return showMessage('', 'Нет документов', 'w');
-			let array_img = []
-			for(let doc of this.file) {
+			if (!this.file.length) return showMessage('', 'Нет документов', 'w');
+			const array_img = []
+			for (const doc of this.file) {
 				photoPreloadUrl({name: doc.path}, res => {
-					if(res.type == 'img') array_img.push(`${PATH_TO_SERVER}${doc.path}`)
+					if (res.type == 'img') array_img.push(`${PATH_TO_SERVER}${doc.path}`)
 				}, true)
 			}
 
-			if(!array_img.length) return showMessage('', 'Нет объектов для печати', 'w');
+			if (!array_img.length) return showMessage('', 'Нет объектов для печати', 'w');
 			print({
 				printable: array_img, 
 				type: 'image',
 				imageStyle: 'max-height: 95vh; margin-bottom: 10px;'
 			})
 		},
-    update() {
+    async update() {
       const data = {
         name: this.name,
         version: this.version,
@@ -238,21 +254,20 @@ export default {
         id: this.id,
         description: this.description
       }
-      this.updateDataFile(data).then(res => {
-        if(res) {
-          setTimeout(() => {
-            this.destroyModalF()
-            this.$emit('unmount', {
-              message: 'Документ успено обновлен',
-              type: 's'
-            })
-          }, 1000)
-        } else
-            this.$emit('unmount', {
-              message: 'Произошла ошибка при обновлении документа',
-              type: 'e'
-            })
-      })
+      const res = await this.updateDataFile(data);
+      if(res) {
+        setTimeout(() => {
+          this.destroyModalF()
+          this.$emit('unmount', {
+            message: 'Документ успено обновлен',
+            type: 's'
+          })
+        }, 1000)
+      } else
+          this.$emit('unmount', {
+            message: 'Произошла ошибка при обновлении документа',
+            type: 'e'
+          })
     },
   },
   async mounted() {
@@ -260,32 +275,32 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-    this.getAllUsers(true)
-    if(this.parametrs.type == 'create') {
-      return 0;
-    }
+    this.getAllUsers(true);
+    if(this.parametrs.type == 'create') return 0;
+
     if(this.parametrs.type_open_modal == 'edit') {
-      this.titleapp = 'Редактирование'
-      this.type_document = this.parametrs.type
-      this.description = this.parametrs.description
-      this.responsible_user_id = this.parametrs.responsible_user_id
-      this.name = this.parametrs.name
-      this.version = this.parametrs.version
-      this.id = this.parametrs.id
-    } 
+      this.titleapp = 'Редактирование';
+      this.type_document = this.parametrs.type;
+      this.description = this.parametrs.description;
+      this.responsible_user_id = this.parametrs.responsible_user_id;
+      this.name = this.parametrs.name;
+      this.version = this.parametrs.version;
+      this.id = this.parametrs.id;
+    }
     if(this.$props.parametrs && this.$props.parametrs.responsible_user_id) {
-      for(let user of this.getUsers) {
+      for(const user of this.getUsers) {
         if(user.id == this.$props.parametrs.responsible_user_id) {
-          this.responsible_name = user.login
+          this.responsible_name = user.login;
         }
       }
     }
 
-    let file = this.$props.parametrs
-    if(isArray(file)) this.file = file
-    else this.file.push(file)
+    const file = this.$props.parametrs;
+    if(isArray(file)) this.file = file;
+    else this.file.push(file);
 
-    this.showDocs(this.file[0])
+    this.showDocs(this.file[0]);
+    console.log(this.file)
       
   },
 }

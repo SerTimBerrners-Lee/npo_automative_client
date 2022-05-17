@@ -323,7 +323,7 @@ export default {
         issue.documents.forEach(file => {
           this.secontDocuments.push(file)
           photoPreloadUrl(file, (res) => {
-            if(res.type == 'img') 
+            if(res.type == 'img')
               this.docFilesPreload.push({ url: PATH_TO_SERVER + file.path, type: res.type})
             }, true)
         })

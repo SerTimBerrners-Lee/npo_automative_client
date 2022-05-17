@@ -12,10 +12,12 @@
             <h3>Наименование: <strong>{{ parametrs.obj.name }}</strong></h3>
             <h3>Артикул: <strong>{{ parametrs.obj.articl }}</strong></h3>
             <hr />
+
             <h3 class='center'>Сборочная единицы</h3>
             <table>
               <tr>
                 <th>№</th>
+                <th>Фото</th>
                 <th>Артикул</th>
                 <th>Наименование СБ</th>
                 <th>Кол-во</th>
@@ -25,15 +27,21 @@
                 :key='obj'
                 class='td-row'>
                 <td class='center'>{{ inx + 1 }}</td>
+                <td class='center'>
+                  <span v-if='!obj.ava_path'>нет</span>
+                  <img class='img_preload' v-else :src="obj.ava_path">
+                </td>
                 <td>{{ obj.obj.articl }}</td>
                 <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
                 <td class='center'> {{obj.kol}} </td>
               </tr>
             </table>
+
             <h3 class='center'>Детали</h3>
             <table>
                 <tr>
                 <th>№</th>
+                <th>Фото</th>
                 <th>Артикул</th>
                 <th>Наименование Детали</th>
                 <th>Материал Заготовки</th>
@@ -46,13 +54,20 @@
                 class='td-row'
                 @click='showInformIzdel(obj.obj.id, obj.type)'>
                 <td class='center'>{{ inx + 1 }}</td>
+                <td class='center'>
+                  <span v-if='!obj.ava_path'>нет</span>
+                  <img class='img_preload' v-else :src="obj.ava_path">
+                </td>
                 <td>{{ obj.obj.articl }}</td>
                 <td>{{ obj.obj.name }}</td>
                 <td> {{ obj?.obj?.zag?.name }} </td>
-                <td class='center'>{{ obj?.obj?.DxL }}</td>
+                <td class='center'>
+                  <TableZag :detal='obj.obj.zag' :format='"json"' :key='obj.obj.id' />
+                </td>
                 <td class='center'> {{obj.kol}} </td>
               </tr>
             </table>
+
             <h3 class='center'>Материалы для деталей</h3>
             <table>
               <tr>
@@ -143,6 +158,7 @@ import print from 'print-js';
 import { mapActions } from 'vuex';
 import { isEmpty, random } from 'lodash';
 import MixModal from '@/mixins/mixmodal';
+import TableZag from '@/components/Metalloworking/TableZag';
 import { checkedJsonList } from '@/components/IssueShipment/js/index';
 import MaterialInformation from '@/components/MathZag/MaterialInformation';
 
@@ -174,7 +190,8 @@ export default {
     }
   },
   components: {
-    MaterialInformation
+    MaterialInformation,
+    TableZag
   },
   mixins: [MixModal],
   beforeCreate() {
@@ -278,8 +295,9 @@ export default {
         await checkedJsonList(obj, this);
       }
       else await checkedJsonList(obj, this);
-      console.log('await checkedJsonList');
     }
+
+    console.log(this.izd_detal_arr)
 
     this.loader = false;
     this.loader_key = random(1, 999);
@@ -294,19 +312,17 @@ table, .table_block {
 .table_block {
   flex-direction: column;
 }
-.content-modal-right-menu-hidden {
-  animation: width-replace 1s 1 ease;
-}
-.content-modal-right-menu-hidden>div {
-  animation: hidden-content-replace 1s 1 ease;
+.img_preload {
+  max-width: 120px;
+  max-height: 120px;
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
   height: 100vh;
-  width: 50%;
+  width: 60%;
 }
 .left-block-modal {
-  width: 50%;
+  width: 40%;
   height: 10000px;
   animation: width-right 1s 1 ease;
 }
@@ -321,7 +337,7 @@ table, .table_block {
     width: 1%;
   }
   to {
-    width: 50%;
+    width: 60%;
   }
 }
 @keyframes width-right {
@@ -329,48 +345,7 @@ table, .table_block {
     width: 0%;
   }
   to {
-    width: 50%;
-  }
-}
-@keyframes hidden-content {
-  from {
-    opacity: 0;
-  }
-  80% {
-    opacity: 0;
-  }
-  90% {
-    opacity: 0.5;
-  }
-  to {
-    opacity: 1;
-  }
-}
-@keyframes width-replace {
-  from {
-    width: 50vw;
-  }
-  to {
-    width: 00vw;
-  }
-}
-@keyframes width-right-replace {
-  from {
-    width: 50vw;
-  }
-  to {
-    width: 0vw;
-  }
-}
-@keyframes hidden-content-replace {
-  from {
-    opacity: 1;
-  }
-  20% {
-    opacity: 0;
-  }
-  to {
-    opacity: 0;
+    width: 40%;
   }
 }
 </style>

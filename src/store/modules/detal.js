@@ -1,6 +1,7 @@
 
 import { sortState } from '@/js/index';
 import PATH_TO_SERVER from '@/js/path.js';
+
 export default { 
   state: {
     detal: [],
@@ -65,7 +66,13 @@ export default {
       ctx.commit('fetchUpdateDetalMutation', result);
       return result;
     },
-    async getAllDetals(ctx, light=false) {
+    async fetchDetalAva(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/ava/${id}`);
+      if (!res.ok) return false;
+      const result = await res.json();
+      return result;
+    },
+    async getAllDetals(ctx, light = false) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/${light}`);
       const result = await res.json();
       ctx.commit('setDetalMutation', result);

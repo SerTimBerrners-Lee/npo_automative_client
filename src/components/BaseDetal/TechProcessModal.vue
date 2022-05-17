@@ -363,7 +363,7 @@ export default {
         }, true)
       }
       this.documentsData.forEach(d => {
-        this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned})
+        this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path})
       })
     }
 
@@ -389,7 +389,7 @@ export default {
         }
 
         this.documentsData.forEach(d => {
-          this.dataMedia.push({path: PATH_TO_SERVER+d.path, name: d.name, banned: d.banned});
+          this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path});
         });
         this.randomDataMedia = random(10, 999);
       }).catch(() => {

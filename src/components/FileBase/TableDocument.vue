@@ -12,16 +12,21 @@
 				<tr class="td-row" 
 					v-for='(doc, inx) in sort_documents' 
 					:key='doc' 
-					@click='e => setDocs(doc, e.target)'
+					@click='e => setDocs(doc, e.target.parentElement)'
 					@dblclick='openDocs(doc)'>
-					<td class='center'>{{ inx + 1 }}</td>
-					<td>{{ doc.name }}</td>
+					<td class='center' :style='doc.ava ? "background: orange;" :""'>
+						{{ inx + 1 }}
+					</td>
+					<td :style='doc.ava ? "background: orange;" :""'>
+						{{ doc.name }}
+					</td>
 				</tr>
 			</table>
 			<OpensFile 
 				:parametrs='itemFiles' 
 				v-if="showModalFiles" 
 				:key='keyWhenModalGenerateFileOpen'
+				@unmount_ava='unmount_ava'
 			/>
 		</div>
 		<div class="btn-control">
@@ -64,8 +69,14 @@ export default {
 				this.sort_documents = this.white_documents
 		}
 	},
-	components: {OpensFile},
+	components: { OpensFile },
 	methods: {
+		unmount_ava(doc) {
+			this.sort_documents = this.sort_documents.map(el => {
+				if (el.id == doc.id) el.ava = doc.ava;
+				return el;
+			});
+		},
 		setDocs(dc, e) {
 			this.span_select = eSelectSpan(this.span_select, e);
 			this.itemFiles = dc;

@@ -2,6 +2,7 @@
     <div :style='width_main'>
       <div class="slider_main">
         <div class='img_content' v-if='files.length'>
+
           <div class="left_button" @click='swapMedia("l")'>&#8592;</div>
           <div class="img_folder" :style='width' v-if="file">
             <img v-if='file.type == "img"' 
@@ -16,8 +17,8 @@
             </video>
           </div>
           <div class="right_button"  @click='swapMedia("r")'>&#8594;</div>
-        </div>
 
+        </div>
       </div>
     </div>
 </template>
@@ -25,7 +26,8 @@
 <script>
 import { isEmpty } from 'lodash';
 import {photoPreloadUrl} from '@/js/';
-import PATH_TO_SERVER from '@/js/path.js';
+import PATH_TO_SERVER from '@/js/path';
+
 export default {
   // data = {name, path, (banned*)}
   props: ['data', 'width', 'static', 'width_main'],
@@ -39,49 +41,59 @@ export default {
   methods: {
     swapMedia(ate = 'r') {
       if(isEmpty(this.file)) {
-        this.fPoz = 0
-        this.file = this.files[this.fPoz]
-        return 0
+        this.fPoz = 0;
+        this.file = this.files[this.fPoz];
+        return 0;
       }
       if(ate == 'r' && this.fPoz + 1 <= this.files.length -1) {
-        this.fPoz++
-        this.file = this.files[this.fPoz]
+        this.fPoz++;
+        this.file = this.files[this.fPoz];
       } 
       if(ate == 'l' && this.fPoz - 1 >= 0) {
-        this.fPoz--
-        this.file = this.files[this.fPoz]
+        this.fPoz--;
+        this.file = this.files[this.fPoz];
       } 
     },
     sizeImg(img) {
-      img.parentElement.classList.toggle('all_size_block')
+      img.parentElement.classList.toggle('all_size_block');
       if(img.parentElement.classList.contains('all_size_block'))
-        img.parentElement.style = "width: 100%"
+        img.parentElement.style = "width: 100%";
       else
-        img.parentElement.style = this.$props.width
-      img.classList.toggle('all_size_img')
+        img.parentElement.style = this.$props.width;
+      img.classList.toggle('all_size_img');
     }
   },
   async mounted() {
-    if(!this.$props.data)
-      return 0
+    if (!this.$props.data) return 0;
 
     // Принимает параметры name, path, (banned*)
-    let i= 0
-    for(let file of this.$props.data) {
-      i++
-      if(file?.banned) continue
-      if(file?.path?.indexOf('_archive_', 1) != -1) continue
-      
+    let ava;
+    for (const file of this.$props.data) {
+      if (file?.banned) continue;
+      if (file?.path?.indexOf('_archive_', 1) != -1) continue;
+
       photoPreloadUrl(file, res => {
-        if(res.type == 'movi' || res.type == 'img') 
+        if(res.type == 'movi' || res.type == 'img') {
           if(this.$props.static)
-            this.files.push({ path: file.path, type: res.type})
+            this.files.push({ path: file.path, type: res.type, name: file.name });
           else
-            this.files.push({ path: PATH_TO_SERVER + file.path, type: res.type})
-        if(i >= this.$props.data.length - 1)
-          this.swapMedia()
-      }, true)
+            this.files.push({ path: PATH_TO_SERVER + file.path, type: res.type, name: file.name });
+
+          if (file.ava) ava = file;
+        }
+      }, true);
     }
+
+    if (ava) {
+      let findItem;
+      this.files = this.files.filter(el => {
+        if (el.name == ava.name) findItem = el;
+        return el.name !== ava.name;
+      });
+      this.files.unshift(findItem);
+    }
+
+    this.swapMedia('l')
   }
 }
 </script>

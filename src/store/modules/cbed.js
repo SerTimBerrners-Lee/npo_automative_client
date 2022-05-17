@@ -62,6 +62,13 @@ export default {
       return await res.json();
     },
 
+    async fetchCbedAva(ctx, id) {
+      const res = await fetch(`${PATH_TO_SERVER}api/cbed/ava/${id}`);
+      if (!res.ok) return false;
+      const result = await res.json();
+      return result;
+    },
+
     async getOneCbEdField(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/cbed/field/${data.fields}/${data.id}`);
       if (!res.ok) return false;

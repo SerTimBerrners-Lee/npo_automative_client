@@ -10,6 +10,7 @@
         class='td-row'
         @click='element => select(doc, element.target)'
         @dblclick="openFiles(doc)"
+        :style='doc.ava ? "background: orange;" :""'
         >
         <td>{{ doc.name }}</td>
       </tr>
@@ -20,7 +21,7 @@
       :key='keyWhenModalGenerateFileOpen'
     />
   </div>
-</template>
+</template> 
 
 
 <script>
