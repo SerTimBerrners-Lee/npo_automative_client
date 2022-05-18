@@ -4,7 +4,7 @@
 			<th colspan="3" class='hide_td' @click="show_is = !show_is">
 				{{ show_is ? 'Скрыть' : 'Показать' }} Задачи на отгрузку</th>
       <th @click='clearFilter' class='hide_td'>
-				Сбросить все фильтры 324
+				Сбросить все фильтры
 			</th>
 		</tr>
 		<div class="table-scroll float_block" v-if='show_is'>
@@ -15,7 +15,15 @@
 					<th>Заказ покупателя из задач на отгрузку</th>
 					<th>Дата отгрузки покупателю</th>
 				</tr>
-				<tr v-for='order of getShipments' :key='order'>
+				<tr>
+					<th colspan="3">
+						<Search 
+							:placeholder="'Поиск по Номеру заказа'"
+							@unmount='keySearch'
+						/>
+					</th>
+				</tr>
+				<tr v-for='order of getShipments' :key='order' class='tooltip' @mouseover="tooltipInfo(order)">
 					<td>
 						<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
 							<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
@@ -23,6 +31,20 @@
 					</td>
 					<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
 					<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
+					<td class='tooltiptext'>
+						<MiniLoader v-if='!shipments_info'/>
+						<table v-else>
+							<tr>
+								<th>Изделие</th>
+								<th>Поставщик</th>
+							</tr>
+							<tr>
+								<td>{{ shipments_info?.product?.name || 'нет изделия' }}</td>
+								<td>{{ shipments_info?.buyer?.name || 'нет поставщика' }}</td>
+							</tr>
+						</table>
+
+					</td>
 				</tr>
 			</tbody>
 		</table>
@@ -36,9 +58,9 @@
 	</div>
 </template>
 <script>
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { eSelectSpan } from '@/js/methods';
-import {mapMutations, mapActions} from 'vuex';
+import { mapMutations, mapActions } from 'vuex';
 import ShipmentsModal from './ShipmentsModal';
 
 export default {
@@ -51,23 +73,39 @@ export default {
 			ship_id: null,
 
 			varShipment: [],
-
 			show_is: true,
+			shipments_info: null,
 		}
 	},
-	components: {
-		ShipmentsModal
-	},
+	components: { ShipmentsModal },
 	methods: {
-		...mapActions(['fetchAllShipmentsById', 'fetchAllIzdToShipments']),
+		...mapActions([
+			'fetchAllShipmentsById',
+			'fetchAllIzdToShipments',
+			'fetchIncludesFolderSh'
+		]),
 		...mapMutations([
       'filterAssemblByShipments',
       'breackFIlterAssembl',
 			'breackFIlterMetal',
 			'pusshAddShipments',
+			'searchShipments'
     ]),
 		unmount_shpment() {
 			this.pusshAddShipments(this.varShipment);
+		},
+		keySearch(str) {
+      this.searchShipments(str);
+    },
+		async tooltipInfo(order) {
+			this.shipments_info = null;
+			const res = await this.fetchIncludesFolderSh({
+				id: order.id,
+				includes: ['product', 'buyer']
+			});
+			if (res) this.shipments_info = res;
+
+			console.log(res)
 		},
 		openShipments(id) {
 			this.ship_id = id;

@@ -704,7 +704,7 @@ export default {
 
 			const ship_id_for_children = shipments.parent_id || shipments.id;
 
-			const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
+			const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, includes: ['childrens'] });
 			if (childrens) this.childrens = childrens.childrens.filter(el => el.id != shipments.id);
 			this.childrens.push(shipments);
 

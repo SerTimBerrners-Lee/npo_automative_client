@@ -16,7 +16,6 @@
 		<div class='body_container'>
 			<div class='shipments_block'>
 				<ShipmentList
-				v-if='getShipments.length'
 				@unmount_set='toSetOrders'
 				:getShipments='getShipments'/>
 			</div>

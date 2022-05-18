@@ -38,7 +38,6 @@
   </div> 
 </template>
 <script>
-import Search from '@/components/Search';
 import { eSelectSpan } from '@/js/methods';
 
 export default {
@@ -48,7 +47,6 @@ export default {
       element: null
     }
   },
-  components: {Search},
   methods: {
     active(e) {
       this.element = eSelectSpan(this.element, e);

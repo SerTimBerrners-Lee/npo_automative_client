@@ -5,7 +5,6 @@
     <div class='table_block'>
       <div style='width: 400px;'>
 				<ShipmentList
-					v-if='getShipments.length'
 					@unmount_set='toSetOrders'
 					@unmount_clear='unmount_clear'
 					:getShipments='getShipments'/>

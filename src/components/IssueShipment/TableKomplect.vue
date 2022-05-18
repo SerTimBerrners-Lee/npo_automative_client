@@ -1,5 +1,5 @@
 <template>
-	<div class="table-scroll" v-if='shipmentsArr && shipmentsArr.length'>
+	<div class="table-scroll">
 		<table id='tableshipments'>
 			<tr :class='fixed_table'>
 				<th v-if='cheked_show' id="check">
@@ -14,7 +14,7 @@
 				<th class='fix_size' id="complect">Комплектация/особенности заказа</th>
 				<th>Кол-во, шт.</th>
 				<th>Кол-во, дней</th>
-				<th>Осталось дней</th>
+				<th>Осталось дней</th> 
 				<th class='fix_size'>Основание</th>
 				<th class='fix_size'>Покупатель</th>
 				<th class='fix_size'>Готовность к отгрузке в %</th>
@@ -25,6 +25,15 @@
 				<th>Н/Ч выполнено</th>
 				<th>Н/Ч осталось</th>
 				<th class='fix_size' id="description">Примечание</th>
+			</tr>
+			<tr>
+				<th colspan="4">
+					<Search 
+						:placeholder="'Поиск по Номеру заказа'"
+						@unmount='keySearch'
+					/>
+				</th>
+				<th colspan="13"></th>
 			</tr>
 			<tr v-for='shipments of shipmentsArr'
 				:key='shipments'
@@ -189,7 +198,10 @@ export default {
 	computed: mapGetters(['getShipments']),
 	methods: {
 		...mapActions(['fetchDocumentsShipments']),
-		...mapMutations(['setOneShipment']),
+		...mapMutations(['setOneShipment', 'searchShipments']),
+		keySearch(str) {
+      this.searchShipments(str);
+    },
 		shipmentsNullOne(sh) {
 			return shipmentsNullOne(sh);
 		},

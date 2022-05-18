@@ -65,9 +65,9 @@
   <MiniLoader v-if='loader' />
 </template>
 <script>
-import Search from '@/components/Search.vue';
 import { eSelectSpan } from '@/js/methods.js';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
+
 export default {
   props: ['id_product', 'is_empty'],
   data() {
@@ -83,7 +83,6 @@ export default {
     'getMaterialTProvider', 
     'getMaterialPTProvider'
   ]),
-  components: {Search},
   methods: {
     ...mapActions(['fetchAllProviderMaterialById']),
     ...mapMutations([

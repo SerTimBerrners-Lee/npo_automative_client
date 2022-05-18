@@ -13,6 +13,7 @@ export default {
 		variable_shipments: [],
 		buyer_sort_shipments: [],
 		date_sort_shipments: [],
+		str_sort_shipments: [],
 
 		one_shipments: {}
 	},
@@ -120,7 +121,29 @@ export default {
 			ctx.commit('deleteShipmentMutation', id);
 		},
 		async fetchIncludesFolderSh(ctx, data) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/getinclude/${data.id}/${data.folder}`);
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/getinclude/${data.id}/`, {
+				method: 'post',
+				headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+				body: JSON.stringify(data)
+			});
+			if (!res.ok) return false;
+
+			const result = res.json();
+			return result;
+		},
+		// getattribute
+		async fetchIncludesAttributesSh(ctx, data) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/shipments/getattribute/${data.id}/`, {
+				method: 'post',
+				headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+				body: JSON.stringify(data)
+			});
 			if (!res.ok) return false;
 
 			const result = res.json();
@@ -283,6 +306,16 @@ export default {
 				if (comparison(start, el.date_order, '<=') && comparison(end, el.date_order, '>='))
 					return el;
 			});
+		},
+		searchShipments(state, str) {
+			if(!state.str_sort_shipments.length)
+				state.str_sort_shipments = state.shipments;
+			
+			state.shipments = state.str_sort_shipments;
+			state.shipments = state.shipments.filter(el => 
+        el.number_order.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+        ((el.number_order.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
+      );
 		}
 	}
 }

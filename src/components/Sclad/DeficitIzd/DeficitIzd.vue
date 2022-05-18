@@ -33,7 +33,6 @@
     <div class='table_block'>
       <div style='width: 400px;'> 
         <ShipmentList
-          v-if='getShipments.length'
           @unmount_set='toSetOrders'
           @unmount_clear='unmount_clear'
           @unmount_action='unmount_action'
@@ -153,7 +152,6 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/Search';
 import { showMessage, comparison } from '@/js/';
 import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -212,7 +210,6 @@ export default {
     DescriptionModal, 
     NormTimeOperation, 
     ShipmentsModal,
-    Search,
     ShipmentList,
     StartProduction
   },

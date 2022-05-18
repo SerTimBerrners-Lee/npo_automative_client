@@ -37,7 +37,7 @@
 </template>
 <script>
 import {mapMutations} from 'vuex';
-import Search from '@/components/Search';
+
 export default {
 	props: ['allProvider', 'attention', 'hide_filter_responsibil'],
 	data() {
@@ -45,7 +45,6 @@ export default {
 			span_provider: null
 		}
 	},
-	components: {Search},
 	methods: {
 		...mapMutations(['searchProviderMutations']),
 		setProvider(proviedr, e) {

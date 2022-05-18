@@ -200,7 +200,6 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/Search';
 import { eSelectSpan } from '@/js/methods';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -233,7 +232,7 @@ export default {
     }
   },
   computed: mapGetters(['allDetal',  'allCbed', 'allProduct']),
-  components: {DetalModal, Search, CbedModalInfo, ProductModalInfo},
+  components: {DetalModal, CbedModalInfo, ProductModalInfo},
   methods: {
     destroyModalF() {
       this.destroyModalLeft = 'left-block-modal-hidden';

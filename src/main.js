@@ -5,6 +5,7 @@ import workers from './workers';
 import { createApp } from 'vue';
 import Unicon from 'vue-unicons';
 import Loader from '@/components/Loader';
+import Search from '@/components/Search';
 import MiniLoader from '@/components/MiniLoader';
 import FileLoader from '@/components/DragDropFile';
 import QuickFilter from '@/components/QuickFilter';
@@ -59,6 +60,7 @@ createApp(App)
     .use(workers)
     .use(SetupCalendar, {})
     .component('Loader', Loader)
+    .component('Search', Search)
     .component('MiniLoader', MiniLoader)
     .component('Calendar', Calendar)
     .component('DatePicker', DatePicker)

@@ -64,7 +64,6 @@
   </div>    
 </template>
 <script>
-import Search from '@/components/Search';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 export default {
   props: ['return'],
@@ -74,7 +73,6 @@ export default {
     }
   },
   computed: mapGetters(['alltypeM', 'allPodTypeM', 'getOnePodMaterial']),
-  components: {Search},
   methods: {
     ...mapActions(['fetchAllProviderMaterial']),
     ...mapMutations([

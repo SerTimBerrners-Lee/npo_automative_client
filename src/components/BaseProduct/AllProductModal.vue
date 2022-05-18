@@ -56,7 +56,6 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/Search';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import ProductModalInfo from '@/components/BaseProduct/ProductModal';
 
@@ -75,7 +74,7 @@ export default {
 			tr: null,
     }
   },
-  components: {Search, ProductModalInfo},
+  components: {ProductModalInfo},
   computed: mapGetters(['allProduct']),
 	methods: {
 		...mapActions([

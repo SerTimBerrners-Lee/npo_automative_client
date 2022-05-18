@@ -3,7 +3,6 @@
 		<h3>Комплектация изделий на план</h3>
     <div class='table_block'>
       <ShipmentList
-        v-if='getShipments.length'
         @unmount_set='toSetOrders'
         @unmount_clear='unmount_clear'
         @unmount_action='unmount_action'

@@ -33,7 +33,6 @@
     <div class='table_block'>
       <div style='width: 400px;'> 
         <ShipmentList
-          v-if='getShipments.length'
           @unmount_set='toSetOrders'
           @unmount_clear='unmount_clear'
           :getShipments='getShipments'/>
@@ -152,7 +151,6 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/Search';
 import { showMessage, comparison } from '@/js/';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
 import DatePicterRange from '@/components/DatePicterRange';
@@ -212,7 +210,6 @@ export default {
     NormTimeOperation,
     ShipmentsModal,
     CbedModalInfo,
-    Search,
     ShipmentList
   },
   watch: {

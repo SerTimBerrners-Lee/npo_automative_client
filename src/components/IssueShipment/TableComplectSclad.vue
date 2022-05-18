@@ -20,6 +20,15 @@
 				<th>Дата Факт. отгрузки</th>
 				<th>Примечание</th>
 			</tr>
+			<tr>
+				<th colspan="4">
+					<Search 
+						:placeholder="'Поиск по Номеру заказа'"
+						@unmount='keySearch'
+					/>
+				</th>
+				<th colspan="13"></th>
+			</tr>
 			<tr v-for='shipments of shipmentsArr'
 				:key='shipments'
 				class='td-row'
@@ -172,7 +181,7 @@ export default {
 	computed: mapGetters(['getShipments']),
 	methods: {
 		...mapActions(['fetchDocumentsShipments', 'fetchAllShipmentsTo']),
-		...mapMutations(['pusshAddShipments']),
+		...mapMutations(['pusshAddShipments', 'searchShipments']),
 		async unmount_shpment() {
 			this.$emit('unmount');
 			this.pusshAddShipments(this.arrShipmentsState);
@@ -180,6 +189,9 @@ export default {
 		unmount_sh_complit() {
 			this.$emit('unmount_sh_complit');
 		},
+		keySearch(str) {
+      this.searchShipments(str);
+    },
 		shipmentsModal() {
 			if(this.selectShipments) {
 				this.arrShipmentsState = this.getShipments;

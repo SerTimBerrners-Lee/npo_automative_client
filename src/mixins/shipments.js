@@ -32,7 +32,7 @@ export default {
 
 				const ship_id_for_children = result.parent_id || result.id;
 		
-				const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, folder: 'childrens' });
+				const childrens = await this.fetchIncludesFolderSh({ id: ship_id_for_children, includes: ['childrens'] });
 				if (childrens) {
 					const child = childrens.childrens.filter(el => el.id != result.id);
 					this.childrens = differencesShipments(child);

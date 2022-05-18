@@ -141,7 +141,6 @@
 </template>
 <script>
 import { random, isEmpty } from 'lodash';
-import Search from '@/components/Search';
 import NodeParent from '@/components/MathZag/TableNode';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import MediaSlider from '@/components/FileBase/MediaSlider';
@@ -177,7 +176,6 @@ export default {
   },
   computed: mapGetters(['allProduct', 'getAuth']),
   components: {
-    Search, 
     TableDocument, 
     MediaSlider, 
     TechProcess, 

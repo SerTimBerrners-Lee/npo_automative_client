@@ -11,8 +11,7 @@
 		<div>
 			<h3>Комлектация</h3>
 			<div style='width: fit-content;'>
-				<TableShipments  
-					v-if='getShipments.length'
+				<TableShipments
 					:is_print='is_print'
 					:shipmentsArr='getShipments'
 					@unmount='unmount_table_shipments'/>

@@ -46,7 +46,6 @@
 
 <script>
 import { getReversDate } from '@/js/';
-import Search from '@/components/Search';
 import { eSelectSpan } from '@/js/methods';
 
 export default {
@@ -56,7 +55,6 @@ export default {
       td: null
     }
   },
-  components: {Search},
   methods: {
     getDateRevers(date) {
       return getReversDate(date).date;

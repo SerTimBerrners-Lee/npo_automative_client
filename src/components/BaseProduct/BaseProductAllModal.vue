@@ -206,7 +206,6 @@
 </template>
 <script>
 import { random } from 'lodash';
-import Search from '@/components/Search';
 import { eSelectSpan } from '@/js/methods';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
 import DetalModal from '@/components/BaseDetal/DetalModal';
@@ -242,7 +241,6 @@ export default {
   computed: mapGetters(['allDetal',  'allCbed', 'allProduct']),
   components: {
 		DetalModal,
-		Search,
 		CbedModalInfo,
 		ProductModalInfo
 	},

@@ -20,7 +20,6 @@
 				<TableShipmentsSclad
           :is_print='is_print'
           :key='status_sort_key'
-					v-if='getShipments.length'
 					:shipmentsArr='getShipments'
           :shipment_sclad='true'
           @unmount_sh_complit='unmount_sh_complit'
