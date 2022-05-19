@@ -17,7 +17,7 @@
             <table>
               <tr>
                 <th>№</th>
-                <th v-if='!is_print'>Фото</th>
+                <th>Фото</th>
                 <th>Артикул</th>
                 <th>Наименование СБ</th>
                 <th>Кол-во</th>
@@ -27,7 +27,7 @@
                 :key='obj'
                 class='td-row'>
                 <td class='center'>{{ inx + 1 }}</td>
-                <td class='center' v-if='!is_print'>
+                <td class='center'>
                   <span v-if='!obj.ava_path'>нет</span>
                   <img class='img_preload' v-else :src="obj.ava_path">
                 </td>
@@ -42,7 +42,7 @@
                 <tr>
                 <th>№</th>
                 <th>Фото</th>
-                <th v-if='!is_print'>Артикул</th>
+                <th>Артикул</th>
                 <th>Наименование Детали</th>
                 <th>Материал Заготовки</th>
                 <th>Размер заготовки</th>
@@ -54,7 +54,7 @@
                 class='td-row'
                 @click='showInformIzdel(obj.obj.id, obj.type)'>
                 <td class='center'>{{ inx + 1 }}</td>
-                <td class='center' v-if='!is_print'>
+                <td class='center'>
                   <span v-if='!obj.ava_path'>нет</span>
                   <img class='img_preload' v-else :src="obj.ava_path">
                 </td>
@@ -187,7 +187,6 @@ export default {
       izd_cbed_arr: [],
       izd_detal_arr: [],
       loader_key: random(1, 999),
-      is_print: false,
     }
   },
   components: {
@@ -210,17 +209,12 @@ export default {
   methods: {
     ...mapActions(['fetchGetOnePPM', 'getOneCbEdField']),
     printPage() {
-      this.is_print = true;
       print({
         printable: 'spec_table',
         type: 'html',
         targetStyles: ['*'],
         documentTitle: 'Комплектация для "' + this.parametrs?.obj?.name + '"' || '-',
         font_size: '10pt',
-        onLoadingEnd(thisprinty = this.is_print) {
-          thisprinty = false;
-          return thisprinty;
-        }
       });
     },
     concatArrs() {
