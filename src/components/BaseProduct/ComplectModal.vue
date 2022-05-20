@@ -314,8 +314,8 @@ table, .table_block {
   flex-direction: column;
 }
 .img_preload {
-  max-width: 120px;
-  max-height: 120px;
+  max-width: 100px;
+  max-height: 100px;
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
