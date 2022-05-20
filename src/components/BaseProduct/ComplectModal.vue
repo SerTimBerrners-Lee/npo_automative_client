@@ -29,7 +29,8 @@
                 <td class='center'>{{ inx + 1 }}</td>
                 <td class='center'>
                   <span v-if='!obj.ava_path'>нет</span>
-                  <img class='img_preload' v-else :src="obj.ava_path">
+                  <img class='img_preload' v-else-if="typeof obj.ava_path == stirng" :src="obj.ava_path">
+                  <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">
                 </td>
                 <td>{{ obj.obj.articl }}</td>
                 <td @click='showInformIzdel(obj.obj.id, obj.type)'>{{ obj.obj.name }}</td>
@@ -56,13 +57,14 @@
                 <td class='center'>{{ inx + 1 }}</td>
                 <td class='center'>
                   <span v-if='!obj.ava_path'>нет</span>
-                  <img class='img_preload' v-else :src="obj.ava_path">
+                  <img class='img_preload' v-else-if="typeof obj.ava_path == stirng" :src="obj.ava_path">
+                  <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">                  
                 </td>
                 <td>{{ obj.obj.articl }}</td>
                 <td>{{ obj.obj.name }}</td>
                 <td> {{ obj?.obj?.zag?.name }} </td>
                 <td class='center'>
-                  <TableZag :detal='obj.obj.zag' :format='"json"' :key='obj.obj.id' />
+                  <TableZag :detal='obj.obj' :key='obj.obj.id' />
                 </td>
                 <td class='center'> {{obj.kol}} </td>
               </tr>
@@ -295,7 +297,7 @@ export default {
       }
       else await checkedJsonList(obj, this);
     }
-
+ 
     console.log(this.izd_detal_arr)
 
     this.loader = false;

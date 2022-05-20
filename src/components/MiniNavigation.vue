@@ -13,6 +13,8 @@
 </template>
 
 <script>
+import { eSelectSpan } from '@/js/methods';
+
 export default {
 	props: ['arrData'],
 	data() {
@@ -22,15 +24,12 @@ export default {
 	},
 	methods: {
 		clcikSpan(number, e) {
-			if(this.span) this.span.classList.remove('td-row-all')
-			this.span = e
-			this.span.classList.add('td-row-all')
-
-			this.$emit('unmount', number)
+			this.span = eSelectSpan(this.span, e);
+			this.$emit('unmount', number);
 		}
 	},
 	mounted() {
-		this.clcikSpan(1, this.$refs.one)
+		this.clcikSpan(1, this.$refs.one);
 	}
 }
 </script>

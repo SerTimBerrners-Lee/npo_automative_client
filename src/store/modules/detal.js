@@ -22,7 +22,21 @@ export default {
       return state.select_detal;
     }
   },
-  actions: { 
+  actions: {
+    async fetchIncludesAttributesDetal(ctx, data) { 
+			const res = await fetch(`${PATH_TO_SERVER}api/detal/getattribute/${data.id}/`, {
+				method: 'post',
+				headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+				body: JSON.stringify(data)
+			});
+			if (!res.ok) return false;
+
+			const result = res.json();
+			return result;
+		},
     async createNewDetal(ctx, data) {
       if(!ctx.getters.getAuth) return 0;
 
@@ -65,7 +79,7 @@ export default {
       const result = await res.json();
       ctx.commit('fetchUpdateDetalMutation', result);
       return result;
-    },
+    }, 
     async fetchDetalAva(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/ava/${id}`);
       if (!res.ok) return false;

@@ -36,7 +36,7 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 					let material_find;
 					let LEN = 0;
 					let MASS = 0;
-					for (let material of res.materials) {
+					for (const material of res.materials) {
 						if (material.id == res.mat_zag) {
 							mat_true = true;
 							material_find = material;
@@ -151,6 +151,11 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 			if (type == 'detal'|| type == 'cbed') {
 				if (type == 'detal') {
 					ava_path = await ctx.$store.dispatch('fetchDetalAva', element.id);
+					const detalFolder = await ctx.$store.dispatch('fetchIncludesAttributesDetal', {
+						id: element.id,
+						attributes: ['lengt', 'width', 'height', 'wallThickness', 'diametr', 'thickness', 'areaCS']
+					});
+					if (detalFolder) Object.assign(element, detalFolder);
 				}
 				if (type == 'cbed') {
 					ava_path = await ctx.$store.dispatch('fetchCbedAva', element.id);

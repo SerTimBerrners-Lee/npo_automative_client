@@ -67,7 +67,7 @@
 </template>
 <script>
 import { showMessage } from '@/js/';
-import { mapGetters, mapActions, mapMutations }from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
   name: 'Authorization',
