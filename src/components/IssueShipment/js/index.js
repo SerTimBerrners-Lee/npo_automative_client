@@ -161,7 +161,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					ava_path = await ctx.$store.dispatch('fetchCbedAva', element.id);
 				}
 			}
-			if (ava_path && ava_path.path) ava_path = `${PATH_TO_SERVER}${ava_path.path}`;
+			if (ava_path) ava_path = `${ava_path?.path ? PATH_TO_SERVER+ava_path.path : ''}`;
 
 			if(type == 'material') {
 				const res = await ctx.$store.dispatch("fetchGetOnePPM", element.id);

@@ -28,8 +28,7 @@
                 class='td-row'>
                 <td class='center'>{{ inx + 1 }}</td>
                 <td class='center'>
-                  <span v-if='!obj.ava_path'>нет</span>
-                  <img class='img_preload' v-else-if="typeof obj.ava_path == stirng" :src="obj.ava_path">
+                  <img class='img_preload' v-if="obj.ava_path" :src="obj.ava_path">
                   <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">
                 </td>
                 <td>{{ obj.obj.articl }}</td>
@@ -56,9 +55,8 @@
                 @click='showInformIzdel(obj.obj.id, obj.type)'>
                 <td class='center'>{{ inx + 1 }}</td>
                 <td class='center'>
-                  <span v-if='!obj.ava_path'>нет</span>
-                  <img class='img_preload' v-else-if="typeof obj.ava_path == stirng" :src="obj.ava_path">
-                  <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">                  
+                  <img class='img_preload' v-if="obj.ava_path" :src="obj.ava_path">
+                  <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">                 
                 </td>
                 <td>{{ obj.obj.articl }}</td>
                 <td>{{ obj.obj.name }}</td>
