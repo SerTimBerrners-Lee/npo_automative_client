@@ -209,7 +209,7 @@ export default {
     toSetShipments(shipments, e) {
       e.classList.toggle('checkbox_block_select');
       this._select(shipments);
-      setTimeout(() => this.tr?.classList?.remove('td-row-all'), 0);
+      setTimeout(() => this.tr?.classList.remove('td-row-all'), 0);
     },
     _select(shipments) {
       if(this.selectShipments && this.selectShipments.id == shipments.id);
@@ -237,7 +237,7 @@ export default {
 			this.parametrs_komplect = sh.list_cbed_detal;
 			this.selectShipments = sh;
 		},
-		async openDocuments(shipments) {	
+		async openDocuments(shipments) {
 			if (!shipments.id) return showMessage('', 'Документов нет', 'w');
 			const ships = await this.fetchDocumentsShipments(shipments.id);
 

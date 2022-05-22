@@ -167,10 +167,6 @@ h4 {
   width: 100%;
   height: 300px;
 }
-.scroll-table {
-  width: 98%;
-  height: 78vh;
-}
 .out-btn-control {
   margin-top: 10px;
 }

@@ -8,30 +8,30 @@
         <p>
           <span>№ Заказа: </span>
           <input type="text" v-model='number_order'>
-          <span>Заводской №: </span>
-          <input type="text" v-model='fabric_number'>
           <span style='display: flex; align-items: center; float: left;'>
             <span>Дата заказа: </span>
             <DatePicterCustom
               :dateStart='date_order'
             />
           </span>
-          <span>Транспортная компания: </span>
-          <input type="text" v-model='transport'>
-        </p>
-        <p style="width: 100%;">
-          <span style='display: flex; align-items: center; '>
+          <span style='display: flex; align-items: center; float: left;'>
             <span>Дата планируемой отгрузки: </span>
             <DatePicterCustom
               :dateStart='date_shipments'
             />
           </span>
+        </p>
+        <p style="width: 100%;">
+          <span>Заводской №: </span>
+          <input type="text" v-model='fabric_number'>
           <span style='display: flex; align-items: center; float: left;'>
             <span>Дата фактический отгрузки: </span>
             <DatePicterCustom
               :dateStart='date_shipments_fakt'
             />
           </span>
+          <span>Транспортная компания: </span>
+          <input type="text" v-model='transport'>
         </p>
       </div>
 
@@ -246,12 +246,12 @@ export default {
       'fetchCreateShComplit',
     ]),
     ...mapMutations(['setStatusShipments']),
-    destroyModalF() {
+    destroyModalF(is_true = false) {
 			this.destroyModalLeft = 'left-block-modal-hidden';
 			this.destroyModalRight = 'content-modal-right-menu-hidden';
 			this.hiddens = 'display: none;';
 
-      this.$emit('unmount');
+      this.$emit('unmount', is_true);
       this.loader = false;
     },
     unmount_user_modal(data) {
@@ -334,7 +334,7 @@ export default {
       }
       else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
 
-      return this.destroyModalF();
+      return this.destroyModalF(true);
     },
     async openDocuments(shipments) {	
 			if(!shipments.id) return showMessage('', 'Документов нет', 'w');
@@ -381,6 +381,10 @@ export default {
 <style scoped>
 .head_block * {
   margin: 5px;
+}
+.head_block>p {
+  display: flex;
+  align-items: center;
 }
 .head_block {
   height: 90px;

@@ -101,10 +101,6 @@ export default {
     float: left;
     height: 190px;
   }
-  .scroll-table {
-    width: 98%;
-    height: 78vh;
-  }
   .out-btn-control {
     margin-top: 10px;
   }

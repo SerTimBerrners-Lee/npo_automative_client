@@ -15,6 +15,9 @@
 import { mapMutations } from 'vuex';
 
 export default {
+  props: {
+    status_on: {}
+  },
   data() {
     return {
       enumShipments: [
@@ -30,13 +33,14 @@ export default {
   watch: {
 		selectEnumShipments: function(val) {
 			this.filterShipmentsToStatus(val);
-		}
+		},
 	},
   methods: {
     ...mapMutations(['filterShipmentsToStatus'])
   },
   mounted() {
     this.selectEnumShipments = 'Заказано';
+    if (this.status_on) this.selectEnumShipments = this.status_on;
   }
 }
 </script>

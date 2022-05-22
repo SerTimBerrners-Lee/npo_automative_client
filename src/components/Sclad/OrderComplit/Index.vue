@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Отгруженные задачи</h3>
+    <h3>Отгруженные задачи <label style="color:black;">(всего: {{ getShComplits.length }})</label></h3>
     <div>
       <div class="block header_block">
        <DatePicterRange 
@@ -11,16 +11,26 @@
     <div>
       <div style='width: fit-content;'>
 				<table>
-          <tr>
-            <th>№</th>
-            <th>Дата факт. отгрузки</th>
-            <th class='fix_size'>Покупатель</th>
-            <th>№ Заказа и дата</th>
-            <th class='fix_size'>Артикул Изделия</th>
-            <th class='fix_size'>Наименование Изделия</th>
-            <th class='fix_size'>Комплектация</th>
-            <th>Примечание</th>
-          </tr>
+          <tbody class='fixed_table_85'>
+            <tr>
+              <th>№</th>
+              <th>Дата факт. отгрузки</th>
+              <th class='fix_size'>Покупатель</th>
+              <th>№ Заказа и дата</th>
+              <th class='fix_size'>Артикул Изделия</th>
+              <th class='fix_size'>Наименование Изделия</th>
+              <th class='fix_size'>Комплектация</th>
+              <th>Примечание</th>
+            </tr>
+            <tr>
+              <th colspan="8">
+                <Search 
+                  :placeholder="'Поиск по Номеру заказа'"
+                  @unmount='keySearch'
+                />
+              </th>
+            </tr>
+          </tbody>
           <tr 
             v-for="(sh_complit, inx) of getShComplits"
             :key="sh_complit"
@@ -110,7 +120,7 @@ export default {
   computed: mapGetters(['getShComplits']),
   methods: {
     ...mapActions(['fetchShComplit']),
-    ...mapMutations(['filterShComplitData']),
+    ...mapMutations(['filterShComplitData', 'searchComplitSh']),
     async unmount_complit_modal() {
       this.loader = true;
       await this.fetchShComplit();
@@ -118,6 +128,9 @@ export default {
     },
     changeDatePicterRange(val) {
       this.filterShComplitData(val);
+    },
+    keySearch(str) {
+      this.searchComplitSh(str);
     },
     openDescription(description) {
       this.showDescriptionModal = true;

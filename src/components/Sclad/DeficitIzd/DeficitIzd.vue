@@ -78,40 +78,42 @@
               </td>
             </tr>
           </tbody>
-          <tr v-for='(product, inx) of allProduct' :key='product' 
-            class='td-row'
-            @click='setIzdels(product)'>
-            <td class='center'>{{ inx+1 }}</td>
-            <td>
-              <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-                <p class="checkbox_block" @click='e => toProduction(product, e.target)'></p>
-              </div>
-            </td>
-            <td class='center'>{{ product.fabricNumber }}</td>
-            <td class='center'>{{ product.articl }}</td>
-            <td class='center' @dblclick="showInformIzdel(product.id)">{{ product.name }}</td>
-            <td class='center' @click='returnShipmentsDateModal(product, "product")'>
-              <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
-            </td>
-            <td class='center min_width-100' style='color: red;'>{{ returnDificit(product, product.product_kolvo) }}</td> <!-- Дефицит -->
-            <td class='center min_width-100' style='color: red;'>{{ -product.shipments_kolvo }}</td> <!-- Дефицит по Заказам покупател  -->
-            <td class='center min_width-100'>{{ product.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
-            <td class='center min_width-100'>{{ product.product_kolvo }}</td> <!-- Остаток -->
-            <td class='center min_width-100'>{{ product?.min_remaining }}</td> <!-- Минимальный остаток -->
-            <td class='center min_width-100'>{{ product?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
-            <td class='center min_width-100'></td> <!-- Норма времени на одну -->
-            <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ product?.my_kolvo || product.min_remaining * 3  }}</td> 
-            <td class='center min_width-100'>
-            </td> <!-- Общая норма времени -->
-            <td class='center min_width-100'>{{ product.assemble_kolvo }}</td>  <!-- Заказано на производстве -->
-            <td class='center min_width-100'>{{ product.product_kolvo + product.assemble_kolvo - product.shipments_kolvo }}</td>  <!-- Реальный остаток с уч. отгрузок -->
-            <td class='center min_width-100'>{{  }}</td>  <!-- Ур. комплектации -->
-            <td v-if='product.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
-            <td v-else class='center min_width-100 work_operation'>Не заказано</td>
-            <td class='center min_width-100'>
-              <img src="@/assets/img/link.jpg" @click='openDescription(product.description)' class='link_img' atl='Показать' />
-            </td>
-          </tr>
+          <tbody>
+            <tr v-for='(product, inx) of allProduct' :key='product' 
+              class='td-row'
+              @click='setIzdels(product)'>
+              <td class='center'>{{ inx+1 }}</td>
+              <td>
+                <div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                  <p class="checkbox_block" @click='e => toProduction(product, e.target)'></p>
+                </div>
+              </td>
+              <td class='center'>{{ product.fabricNumber }}</td>
+              <td class='center'>{{ product.articl }}</td>
+              <td class='center' @dblclick="showInformIzdel(product.id)">{{ product.name }}</td>
+              <td class='center' @click='returnShipmentsDateModal(product, "product")'>
+                <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
+              </td>
+              <td class='center min_width-100' style='color: red;'>{{ returnDificit(product, product.product_kolvo) }}</td> <!-- Дефицит -->
+              <td class='center min_width-100' style='color: red;'>{{ -product.shipments_kolvo }}</td> <!-- Дефицит по Заказам покупател  -->
+              <td class='center min_width-100'>{{ product.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+              <td class='center min_width-100'>{{ product.product_kolvo }}</td> <!-- Остаток -->
+              <td class='center min_width-100'>{{ product?.min_remaining }}</td> <!-- Минимальный остаток -->
+              <td class='center min_width-100'>{{ product?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
+              <td class='center min_width-100'></td> <!-- Норма времени на одну -->
+              <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ product?.my_kolvo || product.min_remaining * 3  }}</td> 
+              <td class='center min_width-100'>
+              </td> <!-- Общая норма времени -->
+              <td class='center min_width-100'>{{ product.assemble_kolvo }}</td>  <!-- Заказано на производстве -->
+              <td class='center min_width-100'>{{ product.product_kolvo + product.assemble_kolvo - product.shipments_kolvo }}</td>  <!-- Реальный остаток с уч. отгрузок -->
+              <td class='center min_width-100'>{{  }}</td>  <!-- Ур. комплектации -->
+              <td v-if='product.assemble_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
+              <td v-else class='center min_width-100 work_operation'>Не заказано</td>
+              <td class='center min_width-100'>
+                <img src="@/assets/img/link.jpg" @click='openDescription(product.description)' class='link_img' atl='Показать' />
+              </td>
+            </tr>
+          </tbody>
 
         </table>
         <div class='btn-control out-btn-control wh_70p'>

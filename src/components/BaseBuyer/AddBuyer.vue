@@ -261,8 +261,4 @@ textarea {
 .material_post_table {
   width: 100%;
 }
-.scroll-table{
-  width: 100%;
-  height: 450px;
-}
 </style>

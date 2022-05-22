@@ -1,61 +1,63 @@
 <template>
-	<div>
-		<tr> 
-			<th colspan="3" class='hide_td' @click="show_is = !show_is">
-				{{ show_is ? 'Скрыть' : 'Показать' }} Задачи на отгрузку</th>
-      <th @click='clearFilter' class='hide_td'>
-				Сбросить все фильтры
-			</th>
-		</tr>
-		<div class="table-scroll float_block" v-if='show_is'>
-		<table class='float_block'>
-			<tbody>
-				<tr> 
-					<th><unicon name="check" fill="royalblue" /></th> 
-					<th>Заказ покупателя из задач на отгрузку</th>
-					<th>Дата отгрузки покупателю</th>
-				</tr>
-				<tr>
-					<th colspan="3">
-						<Search 
-							:placeholder="'Поиск по Номеру заказа'"
-							@unmount='keySearch'
-						/>
-					</th>
-				</tr>
-				<tr v-for='order of getShipments' :key='order' class='tooltip' @mouseover="tooltipInfo(order)">
-					<td>
-						<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-							<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
-						</div>
-					</td>
-					<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
-					<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
-					<td class='tooltiptext'>
-						<MiniLoader v-if='!shipments_info'/>
-						<table v-else>
-							<tr>
-								<th>Изделие</th>
-								<th>Поставщик</th>
-							</tr>
-							<tr>
-								<td>{{ shipments_info?.product?.name || 'нет изделия' }}</td>
-								<td>{{ shipments_info?.buyer?.name || 'нет поставщика' }}</td>
-							</tr>
-						</table>
-
-					</td>
-				</tr>
-			</tbody>
+	<div class='main'>
+		<div class='main_container '>
+			<tr> 
+				<th colspan="3" class='hide_td' @click="show_is = !show_is" style='width: 150px; height: 20px;'>
+					{{ show_is ? 'Скрыть' : 'Показать' }} Задачи на отгрузку</th>
+				<th @click='clearFilter' class='hide_td' style='width: 150px; height: 20px;'>
+					Сбросить все фильтры
+				</th>
+			</tr>
+			<div class="scroll_right" v-if='show_is'>
+				<table>
+					<tbody>
+						<tr> 
+							<th><unicon name="check" fill="royalblue" /></th> 
+							<th>Заказ покупателя из задач на отгрузку</th>
+							<th>Дата отгрузки покупателю</th>
+						</tr> 
+						<tr>
+							<th colspan="3">
+								<Search 
+									:placeholder="'Поиск по Номеру заказа'"
+									@unmount='keySearch'
+								/>
+							</th>
+						</tr>
+						<tr v-for='order of getShipments' :key='order' class='tooltip' @mouseover="tooltipInfo(order)" @mouseleave="mouseLeave">
+							<td>
+								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+									<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
+								</div>
+							</td>
+							<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
+							<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<td class='tooltiptext' v-if='miniData'>
+		<MiniLoader v-if='!shipments_info'/>
+		<table v-else>
+			<tr>
+				<th>Изделие</th>
+				<th>Поставщик</th>
+			</tr>
+			<tr>
+				<td>{{ shipments_info?.product?.name || 'нет изделия' }}</td>
+				<td>{{ shipments_info?.buyer?.name || 'нет поставщика' }}</td>
+			</tr>
 		</table>
-		<ShipmentsModal 
-			:key='key_modal_shipments'
-			v-if='ship_id'
-			:id_shipments='ship_id'
-			@unmount_shpment='unmount_shpment'
-		/>
-	</div>
-	</div>
+
+	</td>
+	<ShipmentsModal 
+		:key='key_modal_shipments'
+		v-if='ship_id'
+		:id_shipments='ship_id'
+		@unmount_shpment='unmount_shpment'
+	/>
 </template>
 <script>
 import { random } from 'lodash';
@@ -75,6 +77,7 @@ export default {
 			varShipment: [],
 			show_is: true,
 			shipments_info: null,
+			miniData: false,
 		}
 	},
 	components: { ShipmentsModal },
@@ -94,10 +97,14 @@ export default {
 		unmount_shpment() {
 			this.pusshAddShipments(this.varShipment);
 		},
+		mouseLeave() {
+			this.miniData = false;
+		},
 		keySearch(str) {
       this.searchShipments(str);
     },
 		async tooltipInfo(order) {
+			this.miniData = true;
 			this.shipments_info = null;
 			const res = await this.fetchIncludesFolderSh({
 				id: order.id,
@@ -122,6 +129,7 @@ export default {
 
 			const res = await this.fetchAllIzdToShipments(shipments.id);
 			this.$emit('unmount_set', res);
+			if (shipments.number_order) this.keySearch(shipments.number_order);
     },
 		clearFilter() {
       if (this.span_ship) {
@@ -132,6 +140,7 @@ export default {
 			if (!this.$props.getShipments || !this.$props.getShipments.length) return false;
 			this.breackFIlterMetal();
 			this.breackFIlterAssembl();
+			this.keySearch('');
 
 			this.$emit('unmount_clear');
     },
@@ -143,11 +152,12 @@ export default {
 </script>
 
 <style scoped>
-.float_block {
+.main {
+	top: 85px;
 	position: sticky;
-  top: 85px;
-	z-index: 2;
-	max-width: 300px;
+}
+.main_container {
+	width: 300px;
 }
 .float_btn {
 	position: fixed;
@@ -156,10 +166,18 @@ export default {
 .botton {
 	position: absolute;
 }
+.scroll_right {
+	height: 75vh;
+}
 .hide_td {
 	cursor: pointer;
 	font-size: 10px;
 	padding: 1px !important;
 	user-select: none;
+}
+
+.tooltiptext {
+	position: fixed;
+	top: 100px;
 }
 </style>

@@ -60,8 +60,9 @@
 						:select_sh='getOneShipments?.id'
 						@unmount_dbclick='unmount_dbclick'
 						@unmount_sh='unmount_sh'
-						:return_dbclick='true'
+						:return_dbclick='true' 
 						:no_set='true'
+						:is_search="false"
 					/>
 					<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
 				</div>
@@ -78,6 +79,7 @@
 							:select_sh='getOneShipments?.id'
 							@unmount_sh_remove='unmount_sh_remove'
 							:no_set='true'
+							:is_search="false"
 						/>
 					</div>
 					<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
@@ -148,7 +150,7 @@
 
 		<h3>Информация об отгрузке</h3>
 		<ShComplit v-if='sh_complit_id' :sh_complit_id='sh_complit_id' :ship='getOneShipments' />
-		<OpensFile 
+		<OpensFile
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
 			:key='keyWhenModalGenerateFileOpen'
@@ -303,10 +305,13 @@ export default {
 			this.selected_sh = this.selected_sh.filter(el => el.id != sh.id);
 			this.childrens.push(sh);
 		},
-		async unmount_sh_complit() {
+		async unmount_sh_complit(is_true) {
 			this.loader = true;
-			this.$emit('unmount_sh_complit');
-      await this.fetchAllShipmentsTo();
+			if (is_true) {
+				for (const item of this.selected_sh) {
+					item.status = 'Отгружено';
+				}
+			} else this.$emit('unmount_sh_complit');
 			this.loader = false;
 		},
 		printPage(id_name) {

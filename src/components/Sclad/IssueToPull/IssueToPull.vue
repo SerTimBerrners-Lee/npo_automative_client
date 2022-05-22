@@ -11,7 +11,7 @@
           <label for='z'>Не учитывать "На склад"</label>
           <input id='z' type="checkbox">
         </div>
-        <SortStatus :key='status_sort_key' />
+        <SortStatus :status_on='status' :key='status_sort_key' />
         <SortBuyer :key='sort_buyer_key'/>
       </div>
     </div>
@@ -64,6 +64,7 @@ export default {
       is_print: false,
       sort_buyer_key: random(1, 999),
       status_sort_key: random(1, 999),
+      status: '',
     }
   },
   components: {
@@ -94,6 +95,7 @@ export default {
     async unmount_sh_complit() {
       this.loader = true;
       await this.fetchAllShipmentsTo();
+      this.status = 'Отгружено';
       this.status_sort_key = random(1, 999);
       this.loader = false;
     },

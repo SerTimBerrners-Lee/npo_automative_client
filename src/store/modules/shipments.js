@@ -9,6 +9,7 @@ export default {
 		
 		sh_complits: [],
 		date_sort_shcomplit: [],
+		str_sort_complit: [],
 
 		variable_shipments: [],
 		buyer_sort_shipments: [],
@@ -316,6 +317,25 @@ export default {
         el.number_order.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
         ((el.number_order.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
       );
+		},
+		searchComplitSh(state, str) {
+			if(!state.str_sort_complit.length)
+				state.str_sort_complit = state.sh_complits;
+			
+			state.sh_complits = state.str_sort_complit;
+			state.sh_complits = state.sh_complits.filter(el => {
+				const prod = el?.shipments?.product?.articl;
+				if (prod && el.number_complit) {
+					console.log(el.number_complit)
+					return (prod.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+					((prod.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)) || 
+					(el.number_complit.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+					((el.number_complit.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1))
+				} else if(el.number_complit) return (el.number_complit.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+					((el.number_complit.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1));
+					else return (el.number_order.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+					((el.number_order.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1));
+			});
 		}
 	}
 }

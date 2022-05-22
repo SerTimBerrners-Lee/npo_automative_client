@@ -26,7 +26,7 @@
 				<th>Н/Ч осталось</th>
 				<th class='fix_size' id="description">Примечание</th>
 			</tr>
-			<tr>
+			<tr v-if="is_search">
 				<th colspan="4">
 					<Search 
 						:placeholder="'Поиск по Номеру заказа'"
@@ -138,6 +138,10 @@ export default {
 		is_print: {
 			type: Boolean,
 			default: false
+		},
+		is_search: {
+			type: Boolean,
+			default: true
 		}
 	},
 	data() {

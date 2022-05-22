@@ -224,6 +224,18 @@ table th {
   z-index: 999;
 }
 
+.tooltiptext {
+  position: absolute;
+  z-index: 999;
+  background-color: #464646;
+  color: #fff;
+  text-align: center;
+  border-radius: 3px;
+  padding: 5px 5px;
+  margin: 10px;
+  border-left: 3px solid rgba(61, 150, 34, 0.788);
+}
+
 .tooltip:hover .tooltiptext {
   visibility: visible;
 }
@@ -338,6 +350,12 @@ html, html * {
   overflow: auto;
   direction: ltr;
   width: max-content;
+}
+
+.scroll_right {
+  overflow: auto;
+  overflow-x: hidden;
+  direction: ltr;
 }
 
 .link_h3 {
