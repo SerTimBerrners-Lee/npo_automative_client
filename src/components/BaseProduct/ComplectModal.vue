@@ -169,7 +169,6 @@ export default {
   data() {
     return {
       list_cbed_detal: [],
-      list_hidden_cbed_detal: [],
       list_material: [],
 
       parametrs_cbed: null,
@@ -202,9 +201,6 @@ export default {
     'list_cbed_detal.length': function() {
       this.concatArrs();
     },
-    'list_hidden_cbed_detal.length': function() {
-      this.concatArrs();
-    }
   },
   methods: {
     ...mapActions(['fetchGetOnePPM', 'getOneCbEdField']),
@@ -218,8 +214,8 @@ export default {
       });
     },
     concatArrs() {
-      this.izd_cbed_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "cbed");
-      this.izd_detal_arr = this.list_cbed_detal.concat(this.list_hidden_cbed_detal).filter(el => el.type == "detal");
+      this.izd_cbed_arr = this.list_cbed_detal.filter(el => el.type == "cbed");
+      this.izd_detal_arr = this.list_cbed_detal.filter(el => el.type == "detal");
       this.funConcatMaterial();
     },
     funConcatMaterial() {
@@ -227,7 +223,7 @@ export default {
       this.material_arr.two = [];
       this.material_arr.free = [];
       
-      for(let item of this.list_cbed_detal.concat(this.list_hidden_cbed_detal)) {
+      for(let item of this.list_cbed_detal) {
         if(item.type != 'material') continue
         switch(item?.obj?.material?.instansMaterial || 3) {
           case '1':
@@ -295,8 +291,6 @@ export default {
       }
       else await checkedJsonList(obj, this);
     }
- 
-    console.log(this.izd_detal_arr)
 
     this.loader = false;
     this.loader_key = random(1, 999);

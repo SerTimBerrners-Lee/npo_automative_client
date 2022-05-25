@@ -11,7 +11,7 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 	if (izd.listCbed) {
 		const list_cbed = JSON.parse(izd.listCbed);
 		if (!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb);
-		pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive);
+		await pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive);
 		for (const cb of list_cbed) {
 			const res = await ctx.$store.dispatch('getOneCbEdById', cb.cb.id);
 			const materials = await ctx.$store.dispatch('getOneCbEdField', {fields: 'materials', id: cb.cb.id});
@@ -55,28 +55,28 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 							parse_str = JSON.stringify([{art: 1, mat: {id: material_find.id, name: material_find.name, LEN, MASS}, kol: 1}]);
 
 						mat_true = false;
-						checkedJsonList({...res, materialList: parse_str}, ctx);
+						await checkedJsonList({...res, materialList: parse_str}, ctx);
 					}
-					else checkedJsonList(res, ctx);
+					else await checkedJsonList(res, ctx);
 				}
 				if (det == list_detals.length -1)
-					pushElement(izd.detals, list_detals, 'detal', ctx, recursive);
+					await pushElement(izd.detals, list_detals, 'detal', ctx, recursive);
 			}
 	}
 
 	// Проходим по материалам
 	if (izd.materials && izd.materials.length && izd.materialList)
-		parseMaterialList(izd, izd.materialList, ctx, recursive);
+		await parseMaterialList(izd, izd.materialList, ctx, recursive);
 	
 	if (izd.materials && izd.materials.length && izd.listPokDet)
-		parseMaterialList(izd, izd.listPokDet, ctx, recursive);
+		await parseMaterialList(izd, izd.listPokDet, ctx, recursive);
 	
 }
 
-function parseMaterialList(izd, materialJson, ctx, recursive) {
+async function parseMaterialList(izd, materialJson, ctx, recursive) {
 	try {
 		const list_material = JSON.parse(materialJson);
-		pushElement(izd.materials, list_material, 'material', ctx, recursive);
+		await pushElement(izd.materials, list_material, 'material', ctx, recursive);
 	} catch (e) {console.error(e)} 
 }
 /**
@@ -88,10 +88,11 @@ function parseMaterialList(izd, materialJson, ctx, recursive) {
  * @param {*} recursive 
  * @returns 
  */
-function pushElement(elements, list_pars, type, ctx, recursive = false) {
+async function pushElement(elements, list_pars, type, ctx, recursive = false) {
 	if (!ctx) return false;
 	// Проходим по массиву полных объектов
 	for (const element of elements) {
+		// if (element.name == 'Ролик') console.log(element, 'element')
 		let kol = 1;
 		let find = false;
 		element.type = type;
@@ -125,6 +126,7 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 		// Проверяем на повторение в основном массиве
 		let check = true;
 		const cDubl = checkDublecate(ctx.list_cbed_detal, element);
+		
 		if(cDubl !== null) {
 			ctx.list_cbed_detal[cDubl].kol += Number(kol);
 			if(type == 'material') {
@@ -134,18 +136,16 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 			check = false;
 		}
 
-		if(check) {
-			if(!recursive || type == 'material') 
-				chechAndAddElement(ctx.list_cbed_detal, element, kol, type, ctx);
-			else 
-				chechAndAddElement(ctx.list_hidden_cbed_detal, element, kol, type, ctx);
-		}
+		if(check)
+			await chechAndAddElement(ctx.list_cbed_detal, element, kol, type, ctx);
+
+		console.log(recursive);
 	}
 
 	// Проверка и добавление элемента
 	async function chechAndAddElement(arr, element, kol, type, ctx) {
 		const check_dublecate = checkDublecate(arr, element);
-		if(check_dublecate != null)	arr[check_dublecate].kol += Number(kol);
+		if (check_dublecate) arr[check_dublecate].kol += Number(kol);
 		else {
 			let ava_path;
 			if (type == 'detal'|| type == 'cbed') {
@@ -157,9 +157,9 @@ function pushElement(elements, list_pars, type, ctx, recursive = false) {
 					});
 					if (detalFolder) Object.assign(element, detalFolder);
 				}
-				if (type == 'cbed') {
+
+				if (type == 'cbed')
 					ava_path = await ctx.$store.dispatch('fetchCbedAva', element.id);
-				}
 			}
 			if (ava_path) ava_path = `${ava_path?.path ? PATH_TO_SERVER+ava_path.path : ''}`;
 
@@ -213,11 +213,11 @@ async function parserListIzd(res, kol, ctx) {
 		if (detals.length) {
 			for (let inx in detals) {
 				detals[inx] = detals[inx].det;
-				detals[inx].articl = res?.articl || '';
+				detals[inx].articl = res.articl || '';
 			}
 		}
 		for (let i = 0; i < kol; i++) 
-			checkedJsonList({...res, cbeds, detals}, ctx, true);
+			await checkedJsonList({...res, cbeds, detals}, ctx, true);
 	} catch(e) {console.error(e)}
 }
 /**
