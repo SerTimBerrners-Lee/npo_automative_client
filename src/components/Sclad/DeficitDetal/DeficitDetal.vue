@@ -130,6 +130,7 @@
       v-if='parametrs'
       :key='startProductionModalKey'
       :parametrs='parametrs'
+      @unmount="unmount_start_production"
     />
     <DescriptionModal 
       v-if='showDescriptionModal'
@@ -244,11 +245,15 @@ export default {
     unmount_clear() {
       this.reverseMidlevareDetal()
     },
+    unmount_start_production(data) {
+      if (!data) return;
+      this.toProductionArr.forEach(el => el.metalloworking_kolvo++);
+    },
     returnZnachCPU(detal) {
-      if(!detal?.techProcesses?.operations?.length) return 'нет';
+      if (!detal?.techProcesses?.operations?.length) return 'нет';
       const op = detal.techProcesses.operations;
-      for(let item of op) {
-        if(item?.typeOperation?.cpu) return 'да';
+      for (const item of op) {
+        if (item?.typeOperation?.cpu) return 'да';
       }
       return 'нет';
     },
@@ -264,20 +269,20 @@ export default {
       this.filterDetalToArticle(v);
     },
     unmount_sh_list(res) {
-      if(res) this.fetchAllShipmentsSclad(true);
+      if (res) this.fetchAllShipmentsSclad(true);
     },
     unmount_tech_process() {
       this.techProcessID = null;
     },
     returnShipmentsDateModal(izd) {
       const shipments = izd.shipments;
-      if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i');
+      if (!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i');
       this.shipments = shipments;
       this.izdForSchipment = {izd, type: 'detal'};
       this.shipmentKey = random(1, 999);
     },
     start() {
-      if(!this.toProductionArr.length)
+      if (!this.toProductionArr.length)
         return showMessage('', 'Для начала выберите Д и заказ', 'w');
       this.parametrs = {
         izd: this.toProductionArr,
@@ -288,7 +293,7 @@ export default {
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select');
       let check = true;
-      for(const izdd of this.toProductionArr) {
+      for (const izdd of this.toProductionArr) {
         if(izdd.id == izd.id) {
           this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
           check = false;
@@ -300,7 +305,7 @@ export default {
       this.select_izd = izd;
     },
     selectAllItem() {
-      if(this.toProductionArr.length < this.allDetal.length) {
+      if (this.toProductionArr.length < this.allDetal.length) {
         this.toProductionArr = this.allDetal;
         document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'));
       } else {
@@ -309,10 +314,10 @@ export default {
       }
     },
     getTimming(param, kol = 1) {
-      if(!param) return 0;
+      if (!param) return 0;
       try {
         let pars = JSON.parse(param);
-        if(pars) 
+        if (pars) 
           return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2);
       } catch(e) {
         console.error(e);
@@ -324,12 +329,12 @@ export default {
       this.description = description;
     },
     alt(e) {
-      if(!this.select_izd)
+      if (!this.select_izd)
         return showMessage('', 'Для начала выберите Деталь, иначе данные не сохранятся!', 'w');
       this.select_izd.my_kolvo = Number(e.innerText);
     },
     showInformIzdel(id) {
-      if(!id) return false;
+      if (!id) return false;
       this.parametrs_detal = id;
       this.detalModalKey = random(1, 999);
 		},
@@ -337,7 +342,7 @@ export default {
       console.log(val);
     },
     showTechProcess(detal) {
-      if(!detal.techProcesses) return showMessage('', 'Нет Технологического процесса', 'w');
+      if (!detal.techProcesses) return showMessage('', 'Нет Технологического процесса', 'w');
       this.techProcessID = detal.techProcesses.id;
       this.techProcessKey = random(1, 999);
     },

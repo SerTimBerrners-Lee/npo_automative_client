@@ -7,12 +7,12 @@ export default {
     }
   },
   methods: {
-    destroyModalF(emit = '') {
+    destroyModalF(emit = '', params) {
       this.destroyModalLeft = 'left-block-modal-hidden';
       this.destroyModalRight = 'content-modal-right-menu-hidden';
       this.hiddens = 'display: none;';
 
-			this.$emit(emit);
+			this.$emit(emit, params);
 		},
   },
   mounted () {

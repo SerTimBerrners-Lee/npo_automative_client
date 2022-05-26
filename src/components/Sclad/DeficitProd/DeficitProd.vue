@@ -123,6 +123,7 @@
       v-if='parametrs'
       :key='startProductionModalKey'
       :parametrs='parametrs'
+      @unmount="unmount_start_production"
     />
     <DescriptionModal 
       v-if='showDescriptionModal'
@@ -232,6 +233,10 @@ export default {
       'changeStatusDeficitCbed',
       'changeDeficitCbed'
     ]),
+    unmount_start_production(data) {
+      if (!data) return;
+      this.toProductionArr.forEach(el => el.assemble_kolvo++);
+    },
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo > 0 ? 
         0 : kol - izd.min_remaining - izd.shipments_kolvo;

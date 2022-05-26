@@ -4,9 +4,10 @@
     <div>
       <div class="block header_block">
        <DatePicterRange 
-          @unmount='changeDatePicterRange'  
+          @unmount='changeDatePicterRange'
+          v-if='!loader'
         />
-      </div>
+      </div> 
     </div>
     <div>
       <div style='width: fit-content;'>

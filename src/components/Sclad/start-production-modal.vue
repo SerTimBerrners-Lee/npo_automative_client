@@ -36,7 +36,7 @@
           </tr>
         </table>
       </div>
-      <div class="btn-control out-btn-control wh_25p">
+      <div class="btn-control out-btn-control wh_80p">
         <button 
         class="btn-status"
         @click='destroyModalF'>
@@ -54,6 +54,7 @@
 <script>
 import { mapActions} from 'vuex';
 import { showMessage } from '@/js/';
+import MixModal from '@/mixins/mixmodal';
 
 export default {
   props: ['parametrs'],
@@ -70,16 +71,12 @@ export default {
       komplect: []
     }
   },
+  mixins: [MixModal],
   methods: {
     ...mapActions([
       'fetchCreateWorking',
       'fetchWorkingsCount'
     ]),
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-    },
     change_date_order(date) {
       this.date_order = date;
     },
@@ -99,17 +96,17 @@ export default {
       const data = {};
       const working = [];
 
-      for(let komplect of this.komplect) {
-        if(komplect.my_kolvo == 0) continue;
+      for (const komplect of this.komplect) {
+        if (komplect.my_kolvo == 0) continue;
         data['my_kolvo'] = komplect.my_kolvo;
         data['shipments_kolvo'] = komplect.shipments_kolvo;
-        if(this.$props.parametrs.type == 'cb' || this.$props.parametrs.type == 'prod') {
+        if (this.$props.parametrs.type == 'cb' || this.$props.parametrs.type == 'prod') {
           working.push({
             ...data,
             cbed_id: komplect.id,
           });
         }
-        if(this.$props.parametrs.type == 'det') {
+        if (this.$props.parametrs.type == 'det') {
           working.push({
             ...data,
             detal_id: komplect.id,
@@ -117,27 +114,23 @@ export default {
         }
       }
 
-      if(!working.length) 
+      if (!working.length) 
         return showMessage('', 'Комплектация не определена', 'w');
 
       this.fetchCreateWorking({ workers_complect: working, workers_data})
         .then(res => this.endResult(res));
     },
     endResult(res) {
-      if(!res) return showMessage('', 'Произошла ошибка...', 'e');
-      this.destroyModalF();
+      if (!res) return showMessage('', 'Произошла ошибка...', 'e');
+      this.destroyModalF('unmount', true);
       return showMessage('', `Заказа №${this.number_order} отправлен в производство`, 's');
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-
-    if(this.$props.parametrs) {
+    if (this.$props.parametrs) {
       this.komplect = this.$props.parametrs.izd;
-      for(let item of this.komplect) {
-        if(!item.my_kolvo || item.my_kolvo < 1) 
+      for (const item of this.komplect) {
+        if (!item.my_kolvo || item.my_kolvo < 1) 
           item.my_kolvo = item.min_remaining;
       }
     }

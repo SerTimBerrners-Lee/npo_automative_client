@@ -4,14 +4,14 @@ import PATH_TO_SERVER from '@/js/path';
 * Сюда попадает очередное ИЗДЕЛИЕ
 * Рекурсивно подсчитывает количество СБ и Д в изделии или СБ
 */
-async function checkedJsonList(izd, ctx, recursive = false) {
+async function checkedJsonList(izd, ctx) {
 	if (!ctx) return false;
 
 	// Проходим по списку сборок
 	if (izd.listCbed) {
 		const list_cbed = JSON.parse(izd.listCbed);
 		if (!izd.cbeds) izd.cbeds = list_cbed.map(el => el.cb);
-		await pushElement(izd.cbeds, list_cbed, 'cbed', ctx, recursive);
+		await pushElement(izd.cbeds, list_cbed, 'cbed', ctx);
 		for (const cb of list_cbed) {
 			const res = await ctx.$store.dispatch('getOneCbEdById', cb.cb.id);
 			const materials = await ctx.$store.dispatch('getOneCbEdField', {fields: 'materials', id: cb.cb.id});
@@ -60,23 +60,23 @@ async function checkedJsonList(izd, ctx, recursive = false) {
 					else await checkedJsonList(res, ctx);
 				}
 				if (det == list_detals.length -1)
-					await pushElement(izd.detals, list_detals, 'detal', ctx, recursive);
+					await pushElement(izd.detals, list_detals, 'detal', ctx);
 			}
 	}
 
 	// Проходим по материалам
 	if (izd.materials && izd.materials.length && izd.materialList)
-		await parseMaterialList(izd, izd.materialList, ctx, recursive);
+		await parseMaterialList(izd, izd.materialList, ctx);
 	
 	if (izd.materials && izd.materials.length && izd.listPokDet)
-		await parseMaterialList(izd, izd.listPokDet, ctx, recursive);
+		await parseMaterialList(izd, izd.listPokDet, ctx);
 	
 }
 
-async function parseMaterialList(izd, materialJson, ctx, recursive) {
+async function parseMaterialList(izd, materialJson, ctx) {
 	try {
 		const list_material = JSON.parse(materialJson);
-		await pushElement(izd.materials, list_material, 'material', ctx, recursive);
+		await pushElement(izd.materials, list_material, 'material', ctx);
 	} catch (e) {console.error(e)} 
 }
 /**
@@ -84,15 +84,13 @@ async function parseMaterialList(izd, materialJson, ctx, recursive) {
  * @param {} elements 
  * @param {*} list_pars 
  * @param {*} type 
- * @param {*} ctx 
- * @param {*} recursive 
+ * @param {*} ctx
  * @returns 
  */
-async function pushElement(elements, list_pars, type, ctx, recursive = false) {
+async function pushElement(elements, list_pars, type, ctx) {
 	if (!ctx) return false;
 	// Проходим по массиву полных объектов
 	for (const element of elements) {
-		// if (element.name == 'Ролик') console.log(element, 'element')
 		let kol = 1;
 		let find = false;
 		element.type = type;
@@ -138,8 +136,6 @@ async function pushElement(elements, list_pars, type, ctx, recursive = false) {
 
 		if(check)
 			await chechAndAddElement(ctx.list_cbed_detal, element, kol, type, ctx);
-
-		console.log(recursive);
 	}
 
 	// Проверка и добавление элемента
@@ -217,7 +213,7 @@ async function parserListIzd(res, kol, ctx) {
 			}
 		}
 		for (let i = 0; i < kol; i++) 
-			await checkedJsonList({...res, cbeds, detals}, ctx, true);
+			await checkedJsonList({...res, cbeds, detals}, ctx);
 	} catch(e) {console.error(e)}
 }
 /**

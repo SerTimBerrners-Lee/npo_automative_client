@@ -148,6 +148,7 @@
       v-if='parametrs'
       :key='startProductionModalKey'
       :parametrs='parametrs'
+      @unmount="unmount_start_production"
     />
     <Loader v-if='loader' />
   </div>
@@ -237,6 +238,11 @@ export default {
       'productToShipmentsSort',
       'changeKolDeficitProduct'
     ]),
+    // Меняем параметры с учетом заказа
+    unmount_start_production(data) {
+      if (!data) return;
+      this.toProductionArr.forEach(el => el.assemble_kolvo++);
+    },
     returnDificit(izd, kol) {
       return kol - izd.min_remaining - izd.shipments_kolvo  > 0 ? 
         0 : kol - izd.min_remaining - izd.shipments_kolvo;
@@ -251,7 +257,7 @@ export default {
       this.loader = true;
     },
     showInformIzdel(productId) {
-      if(!productId) return false;
+      if (!productId) return false;
       this.parametrs_product = productId;
       this.productModalKey = random(1, 999);
     },
@@ -266,7 +272,7 @@ export default {
       this.description = description;
     },
     normTimeOperation() {
-      if(!this.select_izd)
+      if (!this.select_izd)
         return showMessage('', 'Для начала выберите Изделие', 'w');
       this.showNormTimeOperation = true;
       this.normTimeOperationKey = random(1, 999);
@@ -274,10 +280,10 @@ export default {
     returnShipmentsKolvo(shipments) {
       if(!shipments || shipments.length == 0) return '-';
       let end_date = shipments[0]?.number_order.split('от')[0] || '-';
-      for(let ship1 of shipments) {
-        for(let ship2 of shipments) {
-          if(!ship1.number_order) continue;
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0];
+      for (const ship1 of shipments) {
+        for (const ship2 of shipments) {
+          if (!ship1.number_order) continue;
+          if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0];
         }
       }
       return end_date;
@@ -319,7 +325,7 @@ export default {
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select');
       let check = true;
-      for(let izdd of this.toProductionArr) {
+      for(const izdd of this.toProductionArr) {
         if(izdd.id == izd.id) {
           this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
           check = false;
