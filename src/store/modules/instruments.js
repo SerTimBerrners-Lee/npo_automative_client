@@ -19,19 +19,19 @@ export default {
   },
   getters: {
     allTInstrument(state) {
-      return state.TInstrument
+      return state.TInstrument;
     },
     allPTInstrument(state) {
-      return state.PTInstrument
+      return state.PTInstrument;
     },
     allPPTInstrument(state) {
-      return state.PPTInstrument
+      return state.PPTInstrument;
     },
     getOneNameInstrument(state) {
-      return state.nameInstrument
+      return state.nameInstrument;
     },
     getLinkIdInstrument(state) {
-      return state.linkId
+      return state.linkId;
     },
   },
   actions: { 
@@ -52,18 +52,19 @@ export default {
         })
       })
 
-      if(res.ok) {
-        const result = await res.json()
-        ctx.dispatch('fetchAllInstruments')
-        ctx.commit('addOneTInstrument', result)
-      }
+      if (!res.ok) return false;
+
+      const result = await res.json();
+      ctx.dispatch('fetchAllInstruments');
+      ctx.commit('addOneTInstrument', result);
     },
     async removeTInstrument(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/${id}`, {
         method: 'delete'
-      })
-      if(res.ok)
-        ctx.commit('removeTInstrument', id)
+      });
+      
+      if (!res.ok) return false;
+      ctx.commit('removeTInstrument', id)
     },
     async updateTInstrument(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/update`, {
@@ -76,8 +77,9 @@ export default {
           ...data
         })
       })
-      if(res.ok) 
-        ctx.dispatch('fetchAllInstruments')
+      
+      if (!res.ok) return false;
+      ctx.dispatch('fetchAllInstruments')
     },
     async addNewPTInstrument(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt`, {
@@ -89,20 +91,20 @@ export default {
         body: JSON.stringify({
           ...data
         })
-      })
+      });
 
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('addOnePTInstrument', result)
-      }
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('addOnePTInstrument', result);
     },
     async removePTInstrument(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`, {
         method: 'delete'
-      })
-      if(res.ok)
-        ctx.commit('removePTInstrument', id)
-        ctx.dispatch('fetchAllInstruments')
+      });
+
+      if (!res.ok) return false
+      ctx.commit('removePTInstrument', id)
+      ctx.dispatch('fetchAllInstruments')
     },
     async updatePTInstryment(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/update`, {
@@ -114,84 +116,90 @@ export default {
         body: JSON.stringify({
           ...data
         })
-      })
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('updatePTInstrument', result)
-        ctx.dispatch('fetchAllInstruments')
-      }
+      });
+
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('updatePTInstrument', result);
+      ctx.dispatch('fetchAllInstruments');
     },
     async getAllPTInstances(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`)
-      const result = await res.json()
-      ctx.commit('getAllName', result)
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`);
+      const result = await res.json();
+      ctx.commit('getAllName', result);
     },
 
     async getPTInstrumentList(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/`)
-      const result = await res.json()
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/`);
+      const result = await res.json();
 
-      ctx.commit('pushPTInstrumentList', result)
+      ctx.commit('pushPTInstrumentList', result);
     },
     async addNameInstrument(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`, {
         method: 'post',
         body: data
-      })
+      });
 
-      if(res.ok) {
-        const result = await res.json()
-        ctx.dispatch('fetchAllInstruments')
-        ctx.dispatch('getAllNameInstrument')
-        return result
-      }
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.dispatch('fetchAllInstruments');
+      ctx.dispatch('getAllNameInstrument');
+      return result;
     },
     async fetchOneNameInstrument(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/name/${id}`)
-      const result = await res.json()
-      ctx.commit('addOneNameInstrument', result)
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/name/${id}`);
+      const result = await res.json();
+      ctx.commit('addOneNameInstrument', result);
     },
     async removeFileInstrument(ctx, id) {
       await fetch(`${PATH_TO_SERVER}api/instrument/file/${id}`, {
         method: 'delete'
-      })
+      });
     },
     async updateNameInstrument(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/update`, {
         method: 'post',
         body: data
-      })
+      });
 
-      if(res.ok) {
-        const result = await res.json()
-        return result 
-      }
+      if (!res.ok) return false;
+      const result = await res.json();
+      return result;
     },
     async banNameInstrument(ctx, id) {
       await fetch(`${PATH_TO_SERVER}api/instrument/ban/${id}`, {
         method: 'delete'
-      })
-      ctx.commit('hideNameInstrument', id)    
+      });
+      ctx.commit('hideNameInstrument', id);
     },
     async getAllNameInstrument(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`)
-      const result = await res.json()
-      ctx.commit('pushAllNameInstrument', result)
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`);
+
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('pushAllNameInstrument', result);
+    },
+    async getAllNameInstrumentArchive(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/archive/`);
+
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('pushAllNameInstrument', result);
     },
     async attachFileToInstrument(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/files/${data.instr_id}/${data.file_id}`)
-      if(res.ok) {
-        const result = await res.json()
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/files/${data.instr_id}/${data.file_id}`);
+      if (!res.ok) return false;
+      const result = await res.json();
+      return result;
     },
     async fetchGetAllDeficitInsrument(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/instrumentdeficit`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('sortInstrumentToParent', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/instrument/instrumentdeficit`);
+
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('sortInstrumentToParent', result);
+      return result;
     },
   },
   mutations: { 
@@ -235,10 +243,10 @@ export default {
 
     },
     pushAllNameInstrument(state, data) {
-      state.PPTInstrument = data.filter(el => !el.ban)
+      state.PPTInstrument = data;
     },
     pushPTInstrumentList(state, data) {
-      state.PTInstrument = data
+      state.PTInstrument = data;
     },
     hideNameInstrument(state, id) {
       state.PPTInstrument = state.PPTInstrument.filter(inst => inst.id != id)
@@ -365,11 +373,10 @@ export default {
     },
     searchNameInst(state, inst) {
       if(!state.searchNameInst.length) 
-        state.searchNameInst =  state.PPTInstrument
+        state.searchNameInst =  state.PPTInstrument;
 
-      state.PPTInstrument = state.searchNameInst
-      if(!inst) 
-        return
+      state.PPTInstrument = state.searchNameInst;
+      if(!inst) return;
 
       state.PPTInstrument = state.PPTInstrument
         .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())

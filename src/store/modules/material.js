@@ -190,6 +190,14 @@ export default {
       ctx.commit('pushAllPPT', result);
       return result;
     },
+    async fetchGetArchivePPM(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/archive/`);
+      if(!res.ok) return false;
+      const result = await res.json();
+      
+      ctx.commit('pushAllPPT', result);
+      return result;
+    },
     async fetchPPMNoLight(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/podtypematerial`);
       if(!res.ok) return false;
@@ -419,20 +427,20 @@ export default {
      * @param {*} mat 
      */
     filterByNameMaterialPodMat(state, mat) {
-      if(state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial
-      if(state.statePodMaterialTime.length == 0) state.statePodMaterialTime = state.podTypeM
+      if (state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial;
+      if (state.statePodMaterialTime.length == 0) state.statePodMaterialTime = state.podTypeM;
 
-      state.podMaterial = mat.podPodMaterials
-      state.podTypeM = []
-      for(let name_m of mat.podPodMaterials) {
+      state.podMaterial = mat.podPodMaterials;
+      state.podTypeM = [];
+      for (let name_m of mat.podPodMaterials) {
         if(!name_m.podMaterial) continue
-        for(let pm of state.statePodMaterialTime) {
-          if(pm.id == name_m.podMaterial.id) {
+        for (const pm of state.statePodMaterialTime) {
+          if (pm.id == name_m.podMaterial.id) {
             let check = true
-            for(let pm_two of state.podTypeM) {
-              if(pm_two.id == pm.id) check = false
+            for (const pm_two of state.podTypeM) {
+              if (pm_two.id == pm.id) check = false
             }
-            if(check) {
+            if (check) {
               state.podTypeM.push(pm)
               continue
             } else check = false
@@ -441,15 +449,15 @@ export default {
       }
     },
     filterByNameMaterialById(state, mat) {
-      if(!mat.podPodMaterials && !mat.podPodMaterials.length) return []
-      if(!state.searchMaterial.length)
-        state.searchMaterial = state.podMaterial
+      if (!mat.podPodMaterials && !mat.podPodMaterials.length) return [];
+      if (!state.searchMaterial.length)
+        state.searchMaterial = state.podMaterial;
       let new_arr = state.searchMaterial.map(e => {
-        for(let podm of mat.podPodMaterials) {
-          if(podm.id == e.id) return e
+        for (const podm of mat.podPodMaterials) {
+          if (podm.id == e.id) return e
         }
       })
-      state.podMaterial = new_arr.filter(e => e)
+      state.podMaterial = new_arr.filter(e => e);
     },
     pushAllPPT(state, data) {
       state.podMaterial = data
@@ -459,52 +467,49 @@ export default {
         state.searchTypeM =  state.typeM
 
       state.typeM = state.searchTypeM
-      if(!tm) 
-        return
+      if (!tm) return;
 
       state.typeM = state.typeM
         .filter(t => ((t.name.toLowerCase()).indexOf(tm.toLowerCase(), 0) != -1))
     },
     searchPTypeMutation(state, tm) {
-      if(!state.searchPTypeM.length) 
-        state.searchPTypeM = state.podTypeM
-      state.podTypeM = state.searchPTypeM
-      if(!tm)  
-        return
+      if (!state.searchPTypeM.length) 
+        state.searchPTypeM = state.podTypeM;
+      state.podTypeM = state.searchPTypeM;
+      if (!tm) return;
           
       state.podTypeM = state.podTypeM
         .filter(t => ((t.name.toLowerCase()).indexOf(tm.toLowerCase(), 0) != -1))
     },
     searchMaterialMutation(state, tm) {
       if(!state.searchMaterial.length) 
-        state.searchMaterial = state.podMaterial
+        state.searchMaterial = state.podMaterial;
 
-      state.podMaterial = state.searchMaterial
-      if(!tm) 
-        return
+      state.podMaterial = state.searchMaterial;
+      if (!tm) return;
       state.podMaterial = state.podMaterial
         .filter(t => ((t.name.toLowerCase()).indexOf(tm.toLowerCase(), 0) != -1))
     },
     clearCascheMaterial(state) {
-      state.typeM = []
-      state.instansTypeM = []
-      state.podTypeM = []
-      state.instansPodTypeM = []
-      state.podMaterial = []
-      state.stateMaterialTime = []
+      state.typeM = [];
+      state.instansTypeM = [];
+      state.podTypeM = [];
+      state.instansPodTypeM = [];
+      state.podMaterial = [];
+      state.stateMaterialTime = [];
       state.onePPT = {}
     },
     filterToAttentionMat(state) {
-      if(state.tmp_attention.length == 0)
-        state.tmp_attention = state.podMaterial
+      if (state.tmp_attention.length == 0)
+        state.tmp_attention = state.podMaterial;
       else {
-        state.podMaterial = state.tmp_attention 
-        return state.tmp_attention  = []
+        state.podMaterial = state.tmp_attention;
+        return state.tmp_attention  = [];
       }
-      state.podMaterial = state.podMaterial.filter(detal => detal.attention)
+      state.podMaterial = state.podMaterial.filter(detal => detal.attention);
     },
     filterMaterialToDate(state) {
-      state.date_is = sortState(state.podMaterial, state.date_is)
+      state.date_is = sortState(state.podMaterial, state.date_is);
     },
     /**
      * 
@@ -512,14 +517,14 @@ export default {
      * @param {{status: 'order', val}} params 
      */
     filterMaterialStatus(state, params) {
-      if(state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial
-      state.podMaterial = state.stateMaterialTime
-      if(params.status == 'all') return null
+      if(state.stateMaterialTime.length == 0) state.stateMaterialTime = state.podMaterial;
+      state.podMaterial = state.stateMaterialTime;
+      if(params.status == 'all') return null;
      
       if(params.val == 'yes')
-        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries_kolvo > 0)
+        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries_kolvo > 0);
       if(params.val == 'no')
-        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries_kolvo <= 0)
+        state.podMaterial = state.stateMaterialTime.filter(m => m.deliveries_kolvo <= 0);
 
       if(params.val == 'def') {
         state.podMaterial = state.stateMaterialTime.filter(m => (m.material_kolvo - m.min_remaining+m.shipments_kolvo) < 0)
@@ -539,7 +544,7 @@ export default {
       }
     },
     setOneTypeMMytation(state, typeM) {
-      state.setOneTypeM = typeM
+      state.setOneTypeM = typeM;
     },
     // Кладем 
     setDeficitToPlan(state, mats) {

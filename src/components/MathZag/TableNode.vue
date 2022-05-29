@@ -10,7 +10,8 @@
             <th>Артикул </th>
             <th>Наименование</th>
           </tr>
-           <tr v-for="product in izd.products" :key="product" class="td-row"
+           <tr v-for="product in izd.products" :key="product"
+            :class='product.ban ? "del_background td-row" : "td-row"'
             @click='e => setProduct(product, e.target.parentElement)'>
             <td>{{ product.articl }}</td>
             <td>{{ product.name }}</td>
@@ -31,7 +32,7 @@
           </tr>
           <tr v-for="cbed in izd.cbeds || izd.cbed" :key="cbed" 
             @click='e => setCbed(cbed, e.target.parentElement)'
-            class="td-row">
+            :class='cbed.ban ? "del_background td-row" : "td-row"'>
             <td>{{ cbed.articl }}</td>
             <td>{{ cbed.name }}</td>
           </tr>
@@ -51,7 +52,7 @@
           </tr>
           <tr v-for='detal in izd.detals' 
             :key="detal"
-            class="td-row"
+            :class='detal.ban ? "del_background td-row" : "td-row"'
             @click='e => setDetals(detal, e.target.parentElement)'
           >
             <td>{{ detal.articl }}</td>

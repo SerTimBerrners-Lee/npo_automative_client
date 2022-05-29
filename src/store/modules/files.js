@@ -20,17 +20,24 @@ export default {
   actions: { 
     async fetchFiles(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/documents`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('updateFiles', result);
       ctx.commit('getNoBanFiles');
     },
 
+    async fetchFilesArchive(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/archive`);
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('addBannedFile', result);
+    },
+
     async fetchBannedFiles(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/documents/banned/all/${ctx.state.banFiles.length}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       const result = await res.json();
-      if(result?.length)
+      if (result?.length)
         ctx.commit('getBannedFiles', result);
     },
 
@@ -50,28 +57,27 @@ export default {
         method: 'post',
         body: data
       });
-      if(res.ok ) {
-        const respons = await res.json();
-        return respons;
-      } 
+      if (!res.ok) return false;
+      const respons = await res.json();
+      return respons;
     },
 
     async bannedFiles(ctx, docs) {
       const res = await fetch(`${PATH_TO_SERVER}api/documents/` + docs.id, {
         method: 'delete',
-      })
+      });
       const result = await res.json();
-      if(!res.ok) return { type: 'e', message: 'Произошла ошика при изменении'}
+      if (!res.ok) return { type: 'e', message: 'Произошла ошика при изменении'}
 
       const re = await ctx.commit('banFiles', result);
       return { re, type: 's', message: 'Файл успешно изменен'}
     },
 
     async fetchFileById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/${id}`)
-      const result = await res.json()
-      if(!res.ok) return false;
+      const res = await fetch(`${PATH_TO_SERVER}api/documents/${id}`);
 
+      const result = await res.json();
+      if (!res.ok) return false;
       return result;
     },
 
@@ -88,7 +94,7 @@ export default {
         })
       });
 
-      if(!res.ok) return { type: 'e', message: 'Произошла ошика при изменении типа файла'}
+      if (!res.ok) return { type: 'e', message: 'Произошла ошика при изменении типа файла'}
 
       ctx.dispatch('fetchFiles');
       return { type: 's', message: 'Тип успешно изменен'}
@@ -104,7 +110,7 @@ export default {
         body: JSON.stringify(data)
       });
 
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       return true;
     },
 
@@ -115,7 +121,7 @@ export default {
         },
         method: 'PUT',
         body: JSON.stringify(data)
-      })
+      });
     },
   },
   mutations: {
@@ -143,6 +149,9 @@ export default {
         state.banFiles = state.files.filter(f => f.banned);
       if(files.length)
         state.banFiles = files.filter(f => f.banned);
+    },
+    addBannedFile(state, files) {
+      state.banFiles = files;
     },
     searchToFiles(state, str) {
       if(!state.filterFiles.length)

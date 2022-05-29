@@ -52,7 +52,15 @@ export default {
   actions: { 
     async fetchGetProviders(ctx) {
       const res =  await fetch(`${PATH_TO_SERVER}api/provider`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit("setAllProvider", result);
+      return result;
+    },
+    async fetchGetProvidersArchive(ctx) {
+      const res =  await fetch(`${PATH_TO_SERVER}api/provider/archive/`);
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit("setAllProvider", result);
@@ -63,13 +71,13 @@ export default {
         method: 'POST',
         body:   provider
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       ctx.dispatch('fetchGetProviders');
     },
     async fetchProviderBan(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/provider/ban/${id}`)
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       ctx.commit('removeProvider', id);
     },
@@ -78,12 +86,12 @@ export default {
         method: 'POST',
         body:   data
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       return true;
     },
     async fetchGetDeliveries(ctx) {
       const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveried`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit("setAllDeliveries", result);
@@ -94,12 +102,12 @@ export default {
         method: 'POST',
         body:   data
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       return true;
     },
     async fetchGetDeliveriesCaming(ctx) {
       const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveriedcoming`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       
       const result = await res.json();
       ctx.commit("setAllDeliveries", result);
@@ -110,14 +118,14 @@ export default {
         method: 'POST',
         body:   data
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
     },
     async fetchWaybill(ctx) {
       const res =  await fetch(`${PATH_TO_SERVER}api/provider/waylbil`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit("setAllWaybill", result);
@@ -125,7 +133,7 @@ export default {
     },
     async fetchAllProviderMaterialById(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider/${id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('materialForProvider', result);
@@ -133,7 +141,7 @@ export default {
     },
     async attachFileToProvider(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/provider/files/${data.provider_id}/${data.file_id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
@@ -147,7 +155,7 @@ export default {
       state.deliveries = result;
     },
     setAllProvider(state, result) {
-      state.providers = result.filter(provider => !provider.ban);
+      state.providers = result;
     },
     removeProvider(state, id) {
       state.providers = state.providers.filter(provider => provider.id != id);

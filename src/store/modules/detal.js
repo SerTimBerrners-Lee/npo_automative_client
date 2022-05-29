@@ -86,6 +86,13 @@ export default {
       const result = await res.json();
       return result;
     },
+    async getAllDetalsArchive(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/detal/archive/`);
+      const result = await res.json();
+      ctx.commit('setDetalMutation', result);
+
+      return result;
+    },
     async getAllDetals(ctx, light = false) {
       const res = await fetch(`${PATH_TO_SERVER}api/detal/${light}`);
       const result = await res.json();

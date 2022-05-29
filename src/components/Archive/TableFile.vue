@@ -2,6 +2,9 @@
   <table>
     <tbody class='fixed_table_10'>
       <tr>
+        <td colspan="5" style='font-size: 12px' class='center'>Всего: {{ banFiles.length }}</td>
+      </tr>
+      <tr>
         <th>№</th>
         <th>Тип</th>
         <th>Наименование</th>
@@ -12,17 +15,15 @@
         <td colspan="5">
           <Search 
             :placeholder="'Поиск по Наименованию'"
-            @unmount='keySearch' 
-            :search_data='search_data'
+            @unmount='keySearch'
           />
         </td>
       </tr>
     </tbody>
-    <tr v-for="(file, inx) in documents" 
+    <tr v-for="(file, inx) in banFiles" 
       :key="file" 
       class="td-row" 
-      @click="e => propEvent(file, e.target.parentElement)"
-      @dblclick="dbEvent(file)"
+      @click="e => setObject(file, e.target.parentElement)"
       :class='file.banned ? "del_background" : ""'
       :style='file.ava ? "background: orange;" :""'
       >
@@ -43,39 +44,34 @@
     </tr>
   </table>
 </template>
-
 <script>
 import { getReversDate } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
-  props: ['documents', 'search_data'],
   data() {
     return {
-      td: null
+      selected: null,
+      tr: null,
     }
   },
+  computed: mapGetters(['banFiles']),
   methods: {
+    ...mapActions(['']),
+    ...mapMutations(['searchToBanFiles']),
     getDateRevers(date) {
       return getReversDate(date).date;
     },
-    propEvent(file, e) {
-      this.td = eSelectSpan(this.td, e);
+    async setObject(file, e) {
+      this.selected = file;
 
-      this.$emit('pushFile', file);
-    },
-    dbEvent(file) {
-      this.$emit('dbPushFile', file);
+      this.tr = eSelectSpan(this.tr, e);
     },
     keySearch(str) {
-      this.$emit('keySearch', str);
+      this.searchToBanFiles(str);
     }
   }
 }
+
 </script>
-<style scoped>
-table {
-  user-select: none;
-  width: 890px;
-}
-</style>

@@ -222,7 +222,7 @@ export default {
     }
   },
   computed: mapGetters(['allDetal', 'allCbed', 'allProduct', 'getAuth']),
-  components: {DetalModal, CbedModalInfo, ProductModalInfo},
+  components: { DetalModal, CbedModalInfo, ProductModalInfo },
   methods: {
     ...mapActions([
       'getAllDetals', 

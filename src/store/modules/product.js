@@ -31,7 +31,7 @@ export default {
         method :  'post',
         body   :  data
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
@@ -39,7 +39,16 @@ export default {
 
     async getAllProduct(ctx, light=false) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/${light}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('addAllProduct', result);
+      return result;
+    },
+
+    async getAllProductArchive(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/product/archive/`);
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('addAllProduct', result);
@@ -48,7 +57,7 @@ export default {
 
     async fetchProductRemains(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/remains`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('addAllProduct', result);
@@ -57,40 +66,40 @@ export default {
 
     async getAllArticlProduct() {
       const res = await fetch(`${PATH_TO_SERVER}api/product/articl`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
 
     async getAllProductByIdLight(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/light/${id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
 
     async getAllProductById(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/one/${id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
 
     async getAllProductShipmentsById(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/shipments/${id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       return await res.json();
     },
 
     async updateProduct(ctx, data) {
-      if(!ctx.getters.getAuth) return 0;
+      if (!ctx.getters.getAuth) return 0;
 
       const res = await fetch(`${PATH_TO_SERVER}api/product/update`, {
         method :  'post',
         body   :  data
       });
 
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('updateProductMutation', result);
       return result;
@@ -98,7 +107,7 @@ export default {
 
     async fetchDeleteProduct(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/${id}`, {method : 'delete'});
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('deleteProductById', id);
@@ -107,14 +116,14 @@ export default {
 
     async attachFileToProduct(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/product/files/${data.product_id}/${data.file_id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
     },    
     async fetchAllProductOperation() {
       const res = await fetch(`${PATH_TO_SERVER}api/product/operation`);
-      if(!res.ok) return [];
+      if (!res.ok) return [];
       const result = await res.json();
       return result;
     }

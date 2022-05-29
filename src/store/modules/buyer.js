@@ -24,7 +24,15 @@ export default {
   actions: { 
     async fetchAllBuyers(ctx, light = 'false') {
       const res = await fetch(`${PATH_TO_SERVER}api/buyer/light/${light}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit("setAllBuyer", result);
+      return result;
+    },
+    async fetchAllBuyersArchive(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/buyer/archive`);
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit("setAllBuyer", result);
@@ -35,7 +43,7 @@ export default {
         method: 'POST',
         body:   buyer
       });
-      if(!res) return false;
+      if (!res) return false;
 
       ctx.dispatch('fetchAllBuyers');
     },
@@ -43,7 +51,7 @@ export default {
       const res = await fetch(`${PATH_TO_SERVER}api/buyer/${id}`, {
         method: 'delete'
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       ctx.commit('removeBuyer', id);
     },
@@ -53,13 +61,13 @@ export default {
         method: 'POST',
         body:   data
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       ctx.dispatch('fetchAllBuyers');
     },
     async attachFileToBuyer(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/buyer/files/${data.buyer_id}/${data.file_id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
@@ -67,7 +75,7 @@ export default {
   },
   mutations: {
     setAllBuyer(state, result) {
-      state.buyer = result.filter(buyer => !buyer.ban);
+      state.buyer = result;
     },
     removeBuyer(state, id) {
       state.buyer = state.buyer.filter(buyer => buyer.id != id);

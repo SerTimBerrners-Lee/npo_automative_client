@@ -30,7 +30,8 @@ import {
     uniStar,
     uniExclamation,
     uniAlignCenterV,
-    uniOkta
+    uniOkta,
+    uniBooks
 } from 'vue-unicons/dist/icons';
 
 Unicon.add([
@@ -51,7 +52,8 @@ Unicon.add([
     uniPlay,
     uniTrash,
     uniSearchAlt, 
-    uniCheck
+    uniCheck,
+    uniBooks
 ])
 
 createApp(App)

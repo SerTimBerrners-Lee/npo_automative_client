@@ -176,7 +176,7 @@ export default {
     }
   },
   updated() {
-    if(isEmpty(this.equipment))
+    if (isEmpty(this.equipment))
       this.$router.push('/baseequipment')
   },
   computed: mapGetters([
@@ -194,7 +194,7 @@ export default {
       'updateEquipment', 
       'removeFileEquipment',
       'getAllUsers', 
-      'creqteEquipment',
+      'createEquipment',
       'fetchOneEquipment'
     ]),
     ...mapMutations([
@@ -203,19 +203,19 @@ export default {
       'delitPathNavigate',
     ]),
     saveEquipment() {
-      if(this.$route.params.copy == 'false' && !this.obj.id)
+      if (this.$route.params.copy == 'false' && !this.obj.id)
         return 0
-      if(this.$route.params.copy != 'false' &&  !this.equipmentPT)
+      if (this.$route.params.copy != 'false' &&  !this.equipmentPT)
         return showMessage('', 'Выберите Подтип', 'w');
-      if( this.$route.params.copy != 'false' && !this.equipmentT)
+      if (this.$route.params.copy != 'false' && !this.equipmentT)
         return showMessage('', 'Выберите тип', 'w');
-      if(this.obj.name.length < 3)
+      if (this.obj.name.length < 3)
         return showMessage('', 'Наименование должно быть длинее 3-символов', 'w');
       
-      if(!this.formData) 
+      if (!this.formData) 
         this.formData = new FormData()
       
-      if(this.providersId)
+      if (this.providersId)
         this.providersId = JSON.stringify(this.providersId)
 
       this.formData.append('name', this.obj.name)
@@ -230,107 +230,103 @@ export default {
         this.formData.append('id', this.obj.id)
         this.updateEquipment(this.formData) 
       } else {
-        if(!this.equipmentPT && !this.equipmentT)
-          return 0
-        this.formData.append('parentId', this.equipmentPT.id)
-        this.formData.append('rootParentId', this.equipmentT.id)
+        if(!this.equipmentPT && !this.equipmentT) return 0;
+        this.formData.append('parentId', this.equipmentPT.id);
+        this.formData.append('rootParentId', this.equipmentT.id);
 
-        this.creqteEquipment(this.formData)
+        this.createEquipment(this.formData);
       }
 
-      this.exit()
+      this.exit();
     },
     addInstrument() {
-      this.instrumentKey = random(10, 999)
-      this.instrumentIsShow = true
+      this.instrumentKey = random(10, 999);
+      this.instrumentIsShow = true;
     },
     removeFile() {
-      if(isEmpty(this.itemFiles))
-        return 0
+      if (isEmpty(this.itemFiles)) return 0;
     },
     pushProvider(provider) { 
-      if(!provider)
-        return 0
-      this.providers.push(provider)
-      this.providersId.push({id: provider.id})
+      if (!provider) return 0;
+      this.providers.push(provider);
+      this.providersId.push({id: provider.id});
     },
     addProvider() {
-      this.showProvider = true
-      this.keyWhenModalListProvider = random(10, 999)
+      this.showProvider = true;
+      this.keyWhenModalListProvider = random(10, 999);
     },
     setDocs(dc) {
-      this.itemFiles = dc
+      this.itemFiles = dc;
     },
     openDock() {
-      if(isEmpty(this.itemFiles)) return 0
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      if (isEmpty(this.itemFiles)) return 0;
+      this.showFile = true;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     checkedUpdate() {
-      if(isEmpty(this.equipment)) 
-        return this.$router.push('/baseequipment')
+      if (isEmpty(this.equipment))
+        return this.$router.push('/baseequipment');
                           
-      if(this.equipment.nameInstrument)
-        this.listInstrument = this.equipment.nameInstrument
+      if (this.equipment.nameInstrument)
+        this.listInstrument = this.equipment.nameInstrument;
 
-      if(this.$route.params.copy == 'false') {
-        this.obj.parentId = this.equipment.equipmentPTypeId
-        this.filterAllEquipmentById({type: this.equipment.rootParentId, pType: this.equipment.equipmentPTypeId})
+      if (this.$route.params.copy == 'false') {
+        this.obj.parentId = this.equipment.equipmentPTypeId;
+        this.filterAllEquipmentById({type: this.equipment.rootParentId, pType: this.equipment.equipmentPTypeId});
       }
 
-      this.obj.id = this.equipment.id
-      this.obj.name = this.equipment.name
-      this.obj.deliveryTime = this.equipment.deliveryTime
-      this.obj.invNymber = this.equipment.invNymber
-      this.obj.description = this.equipment.description
-      this.documents = this.equipment.documents
-      this.providers = this.equipment.providers
-      this.attention = this.equipment.attention
+      this.obj.id = this.equipment.id;
+      this.obj.name = this.equipment.name;
+      this.obj.deliveryTime = this.equipment.deliveryTime;
+      this.obj.invNymber = this.equipment.invNymber;
+      this.obj.description = this.equipment.description;
+      this.documents = this.equipment.documents;
+      this.providers = this.equipment.providers;
+      this.attention = this.equipment.attention;
       this.providers.forEach(provider => {
         this.providersId.push({id: provider.id})
-      })
+      });
       
-      if(this.equipment.user) {
-        this.obj.responsible = this.equipment.user.id
-      }
+      if(this.equipment.user)
+        this.obj.responsible = this.equipment.user.id;
     },
     clickEquipment(eq) {
-      this.equipmentT = eq
-      this.filterAllPTEquipment(eq)
+      this.equipmentT = eq;
+      this.filterAllPTEquipment(eq);
     },
     clickEquipmentPT(eq) {
-      this.equipmentPT = eq
+      this.equipmentPT = eq;
     },
     addDock(val) { 
       val.target.files.forEach(f => {
-          this.docFiles.push(f)
-      })
-      this.keyWhenModalGenerate = random(10, 999)
-      this.isChangeFolderFile = true
+        this.docFiles.push(f);
+      });
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
     file_unmount(e) { 
-      if(!e) return 0
-      this.formData = e.formData
+      if (!e) return 0;
+      this.formData = e.formData;
     },
     unmount_instrument(instruement) {
-      this.obj.instrumentIdList = instruement.instrumentListId
-      this.listInstrument = instruement.instrumentList
+      this.obj.instrumentIdList = instruement.instrumentListId;
+      this.listInstrument = instruement.instrumentList;
     },
     exit() {
-      this.$router.push('/baseequipment')
-      this.delitPathNavigate(this.$route.path)
+      this.$router.push('/baseequipment');
+      this.delitPathNavigate(this.$route.path);
     }
   },
   async mounted() {
     if(!this.$route.params.id) 
-        return this.$router.push('/baseequipment')
+        return this.$router.push('/baseequipment');
 
-    this.loader = true
-    await this.fetchOneEquipment(this.$route.params.id)
-    await this.getAllEdizm()
-    await this.checkedUpdate()
-    await this.getAllUsers(true)
-    this.loader = false
+    this.loader = true;
+    await this.fetchOneEquipment(this.$route.params.id);
+    await this.getAllEdizm();
+    await this.checkedUpdate();
+    await this.getAllUsers(true);
+    this.loader = false;
   }
 }
 </script>

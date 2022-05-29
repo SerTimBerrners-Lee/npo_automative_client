@@ -164,7 +164,7 @@ export default {
       'fetchAllEquipmentType', 
       'getAllEquipmentPType',
       'getAllEdizm', 
-      'creqteEquipment',
+      'createEquipment',
       'getAllUsers'
       ]),
     ...mapMutations([ 
@@ -211,7 +211,7 @@ export default {
       this.formData.append('instrumentIdList', JSON.stringify(this.obj.instrumentIdList))
       this.formData.append('rootParentId', this.equipmentT.id)
       this.formData.append('attention', this.attention)
-      this.creqteEquipment(this.formData)
+      this.createEquipment(this.formData)
       this.exit()
     },
     clickEquipment(eq) {

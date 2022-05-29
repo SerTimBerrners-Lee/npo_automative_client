@@ -89,6 +89,10 @@
         <img src="@/assets/img/img21.png" alt="" class="icon-li">
         <span class="text-item">Рекламация</span>
       </li>
+      <li class="item-lu" @click="$router.push('/archive')">
+        <unicon name="books" fill="white" class="icon-li" width="20" style='padding-left: 3px;' />
+        <span class="text-item">Архив</span>
+      </li>
     </ul>
   </div>
 </template>

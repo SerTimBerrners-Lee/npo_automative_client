@@ -38,6 +38,7 @@ import ResultWork from "@/views/ResultWork";
 import Issues from '@/views/Issues';
 import Layot from '@/views/Layt';
 import BaseInventary from '@/views/BaseInventary';
+import Archive from '@/views/Archive';
 
 // Components
 import AddMaterialBase from '@/components/MathZag/BaseMaterialAdd';
@@ -99,6 +100,11 @@ const routes = [
     path: '/inventary',
     name: 'База Техники и Инвентаря',
     component: BaseInventary
+  },
+  {
+    path: '/archive',
+    name: 'Архив',
+    component: Archive
   },
   {
     path: '/metalloworking/operation-metall/:operation/:name_operation',

@@ -18,16 +18,16 @@ export default {
   },
   getters: {
     getTInventary(state) {
-      return state.inventaryT
+      return state.inventaryT;
     },
     getPTInventary(state) {
-      return state.inventaryPT
+      return state.inventaryPT;
     },
     getInventary(state) {
-      return state.inventary
+      return state.inventary;
     },
     getOneInventary(state) {
-      return state.nameInventary
+      return state.nameInventary;
     },
   },
   actions: { 
@@ -140,12 +140,18 @@ export default {
       }
     },
     async fetchAllNameInventary(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/`)
-      if(res.ok) {
-        const result = await res.json()
-        ctx.commit('addAllInventary', result)
-        return result
-      }
+      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/`);
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('addAllInventary', result);
+      return result;
+    },
+    async fetchAllNameInventaryArchive(ctx) {
+      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/archive/`);
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('addAllInventary', result);
+      return result;
     },
     async createNewInventary(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/`, {
@@ -224,79 +230,76 @@ export default {
       state.inventary = state.instansInventary
     },
     searchTInventary(state, inst) {
-      if(!state.searchTypeInv.length) 
+      if (!state.searchTypeInv.length) 
         state.searchTypeInv =  state.inventaryT
 
       state.inventaryT = state.searchTypeInv
-      if(!inst) 
-        return
+      if (!inst) return;
 
       state.inventaryT = state.inventaryT
         .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
     },
     searchPTInventary(state, inst) {
-      if(!state.searchPTypeInv.length) 
+      if (!state.searchPTypeInv.length) 
         state.searchPTypeInv =  state.inventaryPT
 
       state.inventaryPT = state.searchPTypeInv
-      if(!inst) 
-        return
+      if (!inst) return;
 
       state.inventaryPT = state.inventaryPT
-        .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
+        .filter(t => (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
     },
     searchInventary(state, inst) {
-      if(!state.searchInventary.length) 
-        state.searchInventary =  state.inventary
+      if (!state.searchInventary.length) 
+        state.searchInventary =  state.inventary;
 
-      state.inventary = state.searchInventary
-      if(!inst) 
-        return
+      state.inventary = state.searchInventary;
+      if (!inst) return;
 
       state.inventary = state.inventary
-        .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase())
+        .filter(t =>  (t.name.slice(0, inst.length).toLowerCase()) == inst.toLowerCase());
     },
     addOneInventaryMytation(state, result) {
-      state.nameInventary = result
+      state.nameInventary = result;
     },
     addAllInventary(state, inventary) {
-      state.inventary = inventary.filter(inv => !inv.ban)
+      state.inventary = inventary;
     },
     filterByTypeInventary(state, id) {
-      state.searchTypeInv = state.inventaryT
-      state.inventaryT = state.inventaryT.filter(inv => inv.id == id)
+      state.searchTypeInv = state.inventaryT;
+      state.inventaryT = state.inventaryT.filter(inv => inv.id == id);
     },
     filterByPTypeInventary(state, id) {
-      state.searchPTypeInv = state.inventaryPT
-      state.inventaryPT = state.inventaryPT.filter(inv => inv.id == id)
+      state.searchPTypeInv = state.inventaryPT;
+      state.inventaryPT = state.inventaryPT.filter(inv => inv.id == id);
     },
     clearFilterTypeInventary(state) {
-      state.inventaryT = state.searchTypeInv
+      state.inventaryT = state.searchTypeInv;
     },
     clearFilterPTypeInventary(state) {
-      state.inventaryPT = state.searchPTypeInv
+      state.inventaryPT = state.searchPTypeInv;
     },
     banInventaryMutation(state, id) {
-      state.inventary = state.inventary.filter(inv => inv.id != id)
+      state.inventary = state.inventary.filter(inv => inv.id != id);
     },
     filterNameInventaryByPT(state, inventary) {
-      if(state.instansInventary.length == 0)
-        state.instansInventary = state.inventary
-      state.inventary = inventary.filter(inv => !inv.ban)
+      if (state.instansInventary.length == 0)
+        state.instansInventary = state.inventary;
+      state.inventary = inventary.filter(inv => !inv.ban);
     },
     filterToAttentionInventary(state) {
-      if(state.tmp_attention.length == 0)
-        state.tmp_attention = state.inventary
+      if (state.tmp_attention.length == 0)
+        state.tmp_attention = state.inventary;
       else {
-        state.inventary = state.tmp_attention 
-        return state.tmp_attention  = []
+        state.inventary = state.tmp_attention;
+        return state.tmp_attention  = [];
       }
-      state.inventary = state.inventary.filter(detal => detal.attention)
+      state.inventary = state.inventary.filter(detal => detal.attention);
     },
     clearCascheInventary(state) {
-      state.inventary = []
-      state.inventaryT = []
-      state.inventaryPT = []
+      state.inventary = [];
+      state.inventaryT = [];
+      state.inventaryPT = [];
     },
   }
 }
