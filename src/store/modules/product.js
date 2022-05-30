@@ -51,6 +51,7 @@ export default {
       if (!res.ok) return false;
 
       const result = await res.json();
+      console.log(result)
       ctx.commit('addAllProduct', result);
       return result;
     },
@@ -130,7 +131,7 @@ export default {
   },
   mutations: {
     addAllProduct(state, products) {
-      state.product = products.filter(prod => !prod.ban)
+      state.product = products;
     },
     updateProductMutation(state, result) {
       for(let inx in state.product) {

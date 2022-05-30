@@ -168,7 +168,7 @@ export default {
       state.cbed.push(cbed);
     },
     addAllCbed(state, cbed) {
-      state.cbed = cbed.filter(cb => !cb.ban);
+      state.cbed = cbed;
     },
     updateCbedMutation(state, cbed) {
       for(let inx in state.cbed) {

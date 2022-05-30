@@ -166,7 +166,7 @@ export default {
       state.select_detal = detal;
     },
     setDetalMutation(state, data) {
-      state.detal = data.filter(detal => !detal.ban);
+      state.detal = data;
     },
     filterDetalToArticle(state, str) {
       if(!str) state.detal = state.filterDetal;
