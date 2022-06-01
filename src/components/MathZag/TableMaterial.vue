@@ -52,7 +52,7 @@ export default {
       this.element = eSelectSpan(this.element, e);
     },
     keySearch(key) {
-      this.$emit('search', key)
+      this.$emit('search', String(key))
     }
   },
 }

@@ -266,7 +266,7 @@ export default {
       this.detalToShipmentsSort(shipments.detals);
     },
     keySearch(v) {
-      this.filterDetalToArticle(v);
+      this.filterDetalToArticle(String(v));
     },
     unmount_sh_list(res) {
       if (res) this.fetchAllShipmentsSclad(true);

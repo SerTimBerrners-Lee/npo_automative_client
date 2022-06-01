@@ -190,7 +190,7 @@ export default {
 			this.$emit('unmount_sh_complit');
 		},
 		keySearch(str) {
-      this.searchShipments(str);
+      this.searchShipments(String(str));
     },
 		shipmentsModal() {
 			if(this.selectShipments) {

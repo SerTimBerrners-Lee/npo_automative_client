@@ -56,7 +56,7 @@ export default {
       this.tr = eSelectSpan(this.tr, e);
     },
     keySearch(str) {
-      this.searchProviderMutations(str);
+      this.searchProviderMutations(String(str));
     }
   }
 }

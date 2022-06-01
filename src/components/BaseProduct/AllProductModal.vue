@@ -89,38 +89,38 @@ export default {
     },
 
 		setProduct(product, e) {	
-      this.selecteProduct = product
-      if(this.tr) 
-        this.tr.classList.remove('td-row-all')
+      this.selecteProduct = product;
+      if (this.tr) 
+        this.tr.classList.remove('td-row-all');
 
 			this.getAllProductById(product.id).then(res => {
-        if(!res) return false
-        this.selecteProduct = res
+        if (!res) return false;
+        this.selecteProduct = res;
       })
 
       this.tr = e
       this.tr.classList.add('td-row-all')
     },
 		infoModalProduct(product) {
-      if(!product) return false 
-      this.parametrs_product = product.id
-      this.productModalKey = random(1, 999)
+      if(!product) return false;
+      this.parametrs_product = product.id;
+      this.productModalKey = random(1, 999);
     },
 		keySearch(v) {
-      this.searchProduct(v)
+      this.searchProduct(String(v));
     },
 		responseProduct() {
-			if(!this.selecteProduct) 	return 0;
-			this.destroyModalF()
-			this.$emit('unmount', this.selecteProduct)
+			if (!this.selecteProduct) 	return 0;
+			this.destroyModalF();
+			this.$emit('unmount', this.selecteProduct);
 		}
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;' 
+    this.destroyModalLeft = 'left-block-modal';
+    this.destroyModalRight = 'content-modal-right-menu';
+    this.hiddens = 'opacity: 1;';
 
-		this.getAllProduct(true)
+		this.getAllProduct(true);
 
   },
 

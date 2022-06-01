@@ -58,7 +58,7 @@ export default {
       this.tr = eSelectSpan(this.tr, e);
     },
     keySearch(str) {
-      this.searchCbed(str);
+      this.searchCbed(String(str));
     }
   }
 }

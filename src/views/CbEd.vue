@@ -350,10 +350,10 @@ export default {
       this.$router.push({path: '/product/edit/false'});
     }, 
     keySearch(v) {
-      this.searchCbed(v);
+      this.searchCbed(String(v));
     },
     keySearchProduct(v) {
-      this.searchProduct(v);
+      this.searchProduct(String(v));
     },
     deleteCbEd() { 
       if(!this.selectedCbEd) return 0;

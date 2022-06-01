@@ -59,7 +59,7 @@ export default {
       this.tr = eSelectSpan(this.tr, e);
     },
     keySearch(str) {
-      this.searchMaterialMutation(str);
+      this.searchMaterialMutation(String(str));
     }
   }
 }

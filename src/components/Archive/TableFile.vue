@@ -69,7 +69,7 @@ export default {
       this.tr = eSelectSpan(this.tr, e);
     },
     keySearch(str) {
-      this.searchToBanFiles(str);
+      this.searchToBanFiles(String(str));
     }
   }
 }

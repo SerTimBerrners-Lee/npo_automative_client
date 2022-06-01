@@ -101,7 +101,7 @@ export default {
 			this.miniData = false;
 		},
 		keySearch(str) {
-      this.searchShipments(str);
+      this.searchShipments(String(str));
     },
 		async tooltipInfo(order) {
 			this.miniData = true;

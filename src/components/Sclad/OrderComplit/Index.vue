@@ -131,7 +131,7 @@ export default {
       this.filterShComplitData(val);
     },
     keySearch(str) {
-      this.searchComplitSh(str);
+      this.searchComplitSh(String(str));
     },
     openDescription(description) {
       this.showDescriptionModal = true;

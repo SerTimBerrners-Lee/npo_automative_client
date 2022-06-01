@@ -266,13 +266,13 @@ export default {
       this.tr_product = eSelectSpan(this.tr_product, e);
     },
     keySearch(v) {
-      this.filterDetalToArticle(v);
+      this.filterDetalToArticle(String(v));
     },
     keySearchCb(v) {
-      this.searchCbed(v);
+      this.searchCbed(String(v));
     },
     keySearchProduct(v) {
-      this.searchProduct(v);
+      this.searchProduct(String(v));
     },
   },
   async mounted() {

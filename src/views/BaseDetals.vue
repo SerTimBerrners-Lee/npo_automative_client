@@ -357,13 +357,13 @@ export default {
       this.$router.push({path: '/cbed/edit/false'});
     },
     keySearch(v) {
-      this.filterDetalToArticle(v);
+      this.filterDetalToArticle(String(v));
     },
     keySearchCb(v) {
-      this.searchCbed(v);
+      this.searchCbed(String(v));
     },
     keySearchProduct(v) {
-      this.searchProduct(v);
+      this.searchProduct(String(v));
     },
     deleteDetal() {
       if(!this.selectedDetal) return 0;

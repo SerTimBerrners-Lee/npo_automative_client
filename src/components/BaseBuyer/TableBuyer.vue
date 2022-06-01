@@ -54,7 +54,7 @@ export default {
 			this.$emit('unmount', buyer)
 		},
 		keySearch(key) {
-			this.searchBuyerMutations(key)
+			this.searchBuyerMutations(String(str))
     }
 	}
 }

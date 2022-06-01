@@ -199,9 +199,9 @@ export default {
     ]),
     async setProduct(product, e) {
       this.show_node_modal = false;
-      if(!product) return false;
+      if (!product) return false;
       const res = await this.getAllProductById(product.id);
-      if(!res) return false;
+      if (!res) return false;
       this.selecteProduct = res;
       this.setOneProduct(res);
       this.parseSpetification(res);
@@ -229,7 +229,7 @@ export default {
       this.filterProductToMyObject(this.getAuth.id);
     },
     editProduct() {
-      if(!this.selecteProduct) return 0;
+      if (!this.selecteProduct) return 0;
 
       this.$router.push({path: '/product/edit/false'});
     }, 
@@ -237,23 +237,23 @@ export default {
       this.$router.push('/createproduct');
     },
     createCopy() {
-      if(!this.selecteProduct) return 0;
+      if (!this.selecteProduct) return 0;
 
       this.$router.push({path: '/product/edit/true'});
     },
     keySearch(v) {
-      this.searchProduct(v);
+      this.searchProduct(String(v));
     },
     deleteProduct() {
-      if(!this.selecteProduct) return 0;
+      if (!this.selecteProduct) return 0;
 
       this.fetchDeleteProduct(this.selecteProduct.id);
     }, 
     сolNotOperation(arr_one, arr_two) {
       let counter = 0;
-      for(const item of arr_one) {
-        for(const id of arr_two) {
-          if(item.id == id) counter++;
+      for (const item of arr_one) {
+        for (const id of arr_two) {
+          if (item.id == id) counter++;
         } 
       }
       return counter;
@@ -267,8 +267,8 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(1, 999);
     },
     showTechProcess() {
-      if(isEmpty(this.selecteProduct)) return false;
-      if(!this.selecteProduct.techProcesses) return false;
+      if (isEmpty(this.selecteProduct)) return false;
+      if (!this.selecteProduct.techProcesses) return false;
       this.techProcessID = this.selecteProduct.techProcesses.id;
       this.techProcessIsShow = true;
       this.techProcessKey = random(1, 999);

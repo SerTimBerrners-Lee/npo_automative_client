@@ -288,7 +288,7 @@ export default {
       this.cbedModalKey = random(1, 999);
     },
     async setProduct(product, e) {
-      if(this.selecteProduct && this.selecteProduct.id == product.id) {
+      if (this.selecteProduct && this.selecteProduct.id == product.id) {
         this.clearFilterCbedByProduct();
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');
@@ -298,7 +298,7 @@ export default {
       this.selecteProduct = product;
 
       const res = await this.getAllProductById(product.id);
-      if(!res) return false;
+      if (!res) return false;
       this.selecteProduct = res;
       this.getAllCbEdByProduct(res);
       this.getAllDetalByProduct(res);
@@ -306,40 +306,40 @@ export default {
       this.tr_product = eSelectSpan(this.tr_product, e);
     },
     infoModalProduct(product) {
-      if(!product) return false;
+      if (!product) return false;
       this.parametrs_product = product.id;
       this.productModalKey = random(1, 999);
     },
     editDetal() {
-      if(!this.selectedDetal) return 0;
+      if (!this.selectedDetal) return 0;
 
       this.$router.push("/detal/edit");
     },
     keySearch(v) {
-      this.filterDetalToArticle(v);
+      this.filterDetalToArticle(String(v));
     },
     keySearchCb(v) {
-      this.searchCbed(v);
+      this.searchCbed(String(v));
     },
     keySearchProduct(v) {
-      this.searchProduct(v);
+      this.searchProduct(String(v));
     },
     deleteDetal() {
-      if(!this.selectedDetal) return 0;
+      if (!this.selectedDetal) return 0;
       this.deleteDetelyId(this.selectedDetal.id);
     },
     responsDetal() {
-      if(!this.selectedDetal) return 0;
+      if (!this.selectedDetal) return 0;
       
-      if(this.$props.getListDetal) {
+      if (this.$props.getListDetal) {
         let add = true;
-        if(this.detalList.length > 0) {
-          for(const det of this.detalList) {
-            if(det.det.id == this.selectedDetal.id)
+        if (this.detalList.length > 0) {
+          for (const det of this.detalList) {
+            if (det.det.id == this.selectedDetal.id)
               add = false;
           }
         }
-        if(add) {
+        if (add) {
           this.detalList.push({ 
             art: this.selectedDetal.articl,
             det: {
@@ -380,7 +380,7 @@ export default {
     this.getAllProduct(true);
     this.getAllCbed(true);
     this.getAllDetals(true);
-    if(this.$props.listDetal)
+    if (this.$props.listDetal)
       this.detalList = this.$props.listDetal;
   }
 }

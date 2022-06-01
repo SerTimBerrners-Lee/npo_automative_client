@@ -68,7 +68,7 @@ export default {
       this.$emit('dbPushFile', file);
     },
     keySearch(str) {
-      this.$emit('keySearch', str);
+      this.$emit('keySearch', String(str));
     }
   }
 }

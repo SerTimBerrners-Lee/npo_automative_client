@@ -137,7 +137,7 @@ export default {
     },
     keySearch(str) {
       if(this.nowType == 'all')
-        this.searchToFiles(str)
+        this.searchToFiles(String(str))
       if(!this.searchToArr.length ) {
         this.searchToArr = this.arrFileGet
         this.searchFileType = this.nowFileType

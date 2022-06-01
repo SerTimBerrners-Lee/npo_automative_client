@@ -55,7 +55,7 @@ export default {
 			this.$emit('unmount', proviedr)
 		},
 		keySearch(key) {
-			this.searchProviderMutations(key)
+			this.searchProviderMutations(String(key))
     }
 	}
 }

@@ -204,7 +204,7 @@ export default {
 		...mapActions(['fetchDocumentsShipments']),
 		...mapMutations(['setOneShipment', 'searchShipments']),
 		keySearch(str) {
-      this.searchShipments(str);
+      this.searchShipments(String(str));
     },
 		shipmentsNullOne(sh) {
 			return shipmentsNullOne(sh);

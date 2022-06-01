@@ -242,7 +242,7 @@ export default {
         0 : kol - izd.min_remaining - izd.shipments_kolvo;
     },
     keySearchCb(v) {
-      this.searchCbed(v);
+      this.searchCbed(String(v));
     },
     unmount_clear() {
       this.reverseMidlevareCbed();

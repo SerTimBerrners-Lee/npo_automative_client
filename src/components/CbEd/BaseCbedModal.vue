@@ -221,12 +221,12 @@ export default {
       this.tr_cb = eSelectSpan(this.tr_cb, e);
     },
     infoModalCbed(cb) {
-      if(!cb) return false;
+      if (!cb) return false;
       this.parametrs_cbed = cb.id;
       this.cbedModalKey = random(1, 999);
     },
     async setProduct(product, e) {
-      if(this.selecteProduct && this.selecteProduct.id == product.id) {
+      if (this.selecteProduct && this.selecteProduct.id == product.id) {
           this.clearFilterCbedByProduct();
           e.classList.remove('td-row-all');
           this.selecteProduct = null;
@@ -235,35 +235,35 @@ export default {
       this.selecteProduct = product;
   
       const res = await this.getAllProductById(product.id);
-      if(!res) return false;
+      if (!res) return false;
       this.selecteProduct = res;
       this.getAllCbEdByProduct(res);
 
       this.tr_product = eSelectSpan(this.tr_product, e);
     },
     infoModalProduct(product) {
-      if(!product) return false ;
+      if (!product) return false ;
       this.parametrs_product = product.id;
       this.productModalKey = random(1, 999);
     },
     keySearch(v) {
-      this.searchCbed(v);
+      this.searchCbed(String(v));
     },
     keySearchProduct(v) {
-      this.searchProduct(v);
+      this.searchProduct(String(v));
     },
     responsCbed() {
-      if(!this.selectedCbed) return 0;
+      if (!this.selectedCbed) return 0;
       
-      if(this.$props.getListCbed) {
+      if (this.$props.getListCbed) {
         let add = true;
-        if(this.cbedList.length > 0) {
-          for(let cb of this.cbedList) {
-            if(cb.cb.id == this.selectedCbed.id)
+        if (this.cbedList.length > 0) {
+          for (let cb of this.cbedList) {
+            if (cb.cb.id == this.selectedCbed.id)
               add = false;
           }
         }
-        if(add) {
+        if (add) {
           this.cbedList.push({ 
             art: this.selectedCbed.articl,
             cb: {
@@ -303,7 +303,7 @@ export default {
 
     this.getAllProduct(true);
     this.getAllCbed(true);
-    if(this.$props.listCbed)
+    if (this.$props.listCbed)
       this.cbedList = this.$props.listCbed;
   }
 }

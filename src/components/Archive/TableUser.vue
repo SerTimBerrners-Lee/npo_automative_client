@@ -59,7 +59,7 @@ export default {
       this.tr = eSelectSpan(this.tr, e);
     },
     keySearch(str) {
-      this.searchUser(str);
+      this.searchUser(String(str));
     }
   }
 }
