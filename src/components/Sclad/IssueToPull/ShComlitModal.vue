@@ -294,23 +294,11 @@ export default {
       this.keyModalUser = random(1, 999);
     },
     async save() {
-      await this.fetchSave();
-      if (!this.childrens || !this.childrens.length)return false;
-      
-      for (const item of this.childrens) {
-        this.formData = new FormData();
-        if (this.lastFormData) {
-          if (this.lastFormData.getAll('docs')) this.formData.append('docs', this.lastFormData.getAll('docs'));
-          if (this.lastFormData.getAll('document')) {
-            for (const file of this.lastFormData.getAll('document')) {
-              this.formData.append('document', file);
-            }
-          }
-        }
-        await this.fetchSave(item.id);
-      }
+      const child = this.childrens.map(el => ({ id: el.id }));
+      child.push({ id: this.shipments.id })
+      await this.fetchSave(child);
     },
-    async fetchSave(sh_id = this.shipments.id) {
+    async fetchSave(child = [], sh_id = this.shipments.id) {
       if (!sh_id) return showMessage('', 'Выберите задачу, ошибка в ID', 'w');
 
       this.formData.append('date_order', this.date_order);
@@ -325,6 +313,7 @@ export default {
       this.formData.append('shipments_id', sh_id);
       this.formData.append('responsible_user_id', this.responsible_user.id || '');
       this.formData.append('creater_user_id', this.creater_user.id || '');
+      this.formData.append('childrens', JSON.stringify(child))
 
 
       const saveResult = await this.fetchCreateShComplit(this.formData);
@@ -364,7 +353,7 @@ export default {
 
       if (!this.selected_sh || !this.selected_sh.length) { // Если заказов нет и только один переданный
         const result = await this.fetchAllShipmentsById({id: this.shipments_id, light: true});
-        if(!result) return this.destroyModalF();
+        if (!result) return this.destroyModalF();
         this.shipments = result;
       } else {
         this.shipments = this.selected_sh[0];
