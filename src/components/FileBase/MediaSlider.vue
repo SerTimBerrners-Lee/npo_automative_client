@@ -40,16 +40,16 @@ export default {
   },
   methods: {
     swapMedia(ate = 'r') {
-      if(isEmpty(this.file)) {
+      if (isEmpty(this.file)) {
         this.fPoz = 0;
         this.file = this.files[this.fPoz];
         return 0;
       }
-      if(ate == 'r' && this.fPoz + 1 <= this.files.length -1) {
+      if (ate == 'r' && this.fPoz + 1 <= this.files.length -1) {
         this.fPoz++;
         this.file = this.files[this.fPoz];
       } 
-      if(ate == 'l' && this.fPoz - 1 >= 0) {
+      if (ate == 'l' && this.fPoz - 1 >= 0) {
         this.fPoz--;
         this.file = this.files[this.fPoz];
       } 
@@ -73,8 +73,8 @@ export default {
       if (file?.path?.indexOf('_archive_', 1) != -1) continue;
 
       photoPreloadUrl(file, res => {
-        if(res.type == 'movi' || res.type == 'img') {
-          if(this.$props.static)
+        if (res.type == 'movi' || res.type == 'img') {
+          if (this.$props.static)
             this.files.push({ path: file.path, type: res.type, name: file.name });
           else
             this.files.push({ path: PATH_TO_SERVER + file.path, type: res.type, name: file.name });

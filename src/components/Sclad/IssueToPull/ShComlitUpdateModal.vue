@@ -8,37 +8,37 @@
         <p>
           <span>№ Заказа: </span>
           <input type="text" v-model='number_order'>
-          <span>Заводской №: </span>
-          <input type="text" v-model='fabric_number'>
           <span style='display: flex; align-items: center; float: left;'>
             <span>Дата заказа: </span>
             <DatePicterCustom
               :dateStart='date_order'
             />
           </span>
-          <span>Транспортная компания: </span>
-          <input type="text" v-model='transport'>
-        </p>
-        <p style="width: 100%;">
           <span style='display: flex; align-items: center; float: left;'>
             <span>Дата планируемой отгрузки: </span>
             <DatePicterCustom
               :dateStart='date_shipments'
             />
           </span>
+        </p>
+        <p style="width: 100%;">
+          <span>Заводской №: </span>
+          <input type="text" v-model='fabric_number'>
           <span style='display: flex; align-items: center; float: left;'>
             <span>Дата фактический отгрузки: </span>
             <DatePicterCustom
               :dateStart='date_shipments_fakt'
             />
           </span>
+          <span>Транспортная компания: </span>
+          <input type="text" v-model='transport'>
         </p>
       </div>
 
       <div>
         <h3>Комплектация</h3>
         <div class="table-scroll">
-          <table v-if='shipments'>
+          <table>
             <tr>
               <th>Наименование изделия</th>
               <th>Комплектация, особенности заказа</th>
@@ -53,25 +53,25 @@
               <!-- Выбор сотрудника - контроль отгрузки  -->
               <!-- Создается промежуточная модель отгрузки  -->
             </tr>
-            <tr>
-              <td class='center'>{{ shipments?.product?.name }}</td>
-              <td class='center' @click='openComplectation(shipments.list_cbed_detal)' >
+            <tr v-for='sh of childrens' :key='sh'>
+              <td class='center'>{{ sh?.product?.name }}</td>
+              <td class='center' @click='openComplectation(sh.list_cbed_detal)' >
                 <img 
                   src="@/assets/img/link.jpg" 
                   class='link_img' 
                   atl='Показать'
-                  v-if='shipments.list_cbed_detal' />
+                  v-if='sh.list_cbed_detal' />
                 <p v-else>Нет комплектации</p>
               </td>
-              <td class='center'>{{ shipments.kol }}</td>
+              <td class='center'>{{ sh.kol }}</td>
               <td style='width:50px; word-break: break-all;' class='click center active'  
-                @click='openDocuments(shipments)' >
-                {{ shipments.base }}
+                @click='openDocuments(sh)' >
+                {{ sh.base }}
               </td>
-              <td class='center'>{{ shipments?.buyer?.name }}</td>
+              <td class='center'>{{ sh?.buyer?.name }}</td>
               <td class='center'>0</td> <!-- Потребность к отгрузке -->
-              <td class='center'>{{ complit.fabric_number }}</td>
-              <td class='center'>{{ shipments.date_shipments }}</td>
+              <td class='center'>{{ sh?.product?.fabricNumber }}</td>
+              <td class='center'>{{ sh.date_shipments }}</td>
               <td class='center cursor' @click='selectUser("executor")'>
                 {{ creater_user ? creater_user?.initial : 'Выбрать' }}
               </td>
@@ -175,7 +175,7 @@ export default {
       showModalUser: false, 
       keyModalUser: random(1, 999),
 
-      shipments: null,
+      childrens: [],
       
       date_order: new Date().toLocaleDateString("ru-RU"),
       number_order: '',
@@ -190,9 +190,7 @@ export default {
       typeOpen: '',
 
       loader: false,
-      date_create: new Date().toLocaleDateString("ru-RU"),
       transport: '',
-      childrens: [],
       lastFormData: null,
       documentsData: [],
       table_document_key: random(10, 999),
@@ -224,14 +222,14 @@ export default {
       this.loader = false;
     },
     unmount_user_modal(data) {
-      if(!data) return false;
+      if (!data) return false;
 
-      if(this.typeOpen == 'executor') this.creater_user = data;
-      if(this.typeOpen == 'controller') this.responsible_user = data;
+      if (this.typeOpen == 'executor') this.creater_user = data;
+      if (this.typeOpen == 'controller') this.responsible_user = data;
       this.typeOpen = '';
     },
     file_unmount(e) {
-      if(!e) return 0;
+      if (!e) return 0;
       this.formData = e.formData;
       this.name_check = '';
       this.lastFormData = this.formData;
@@ -248,7 +246,8 @@ export default {
       this.fabric_number = this.complit?.product?.fabricNumber;
       this.date_shipments_fakt = this.complit.date_shipments_fakt;
       this.transport = this.complit.transport;
-      this.shipments = this.complit.shipments;
+
+      this.childrens = this.complit.shipments;
 
       //this.creater_user = this.complit.creater_user_id;
       //this.responsible_user = this.complit.responsible_user_id;
@@ -278,23 +277,22 @@ export default {
       this.showModalUser = true;
       this.keyModalUser = random(1, 999);
     },
-    async fetchUpdate(sh_id = this.shipments.id) {
-      if (!sh_id) return showMessage('', 'Выберите задачу, ошибка в ID', 'w');
+    async fetchUpdate() {
 
       this.formData.append('id', this.complit.id);
       this.formData.append('description', this.description);
 
       const updateResult = await this.fetchCreateShUpdate(this.formData);
-      if(updateResult) showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
-      else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
+      if (updateResult) showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
+      else showMessage('', 'Произошла ошибка при Отгрузке!', 'e');
 
       return this.destroyModalF();
     },
     async openDocuments(shipments) {
-			if(!shipments.id) return showMessage('', 'Документов нет', 'w');
+			if (!shipments.id) return showMessage('', 'Документов нет', 'w');
 			const ships = await this.fetchDocumentsShipments(shipments.id);
 
-			if(ships.documents && ships.documents.length) {
+			if (ships.documents && ships.documents.length) {
 				for (const doc of ships.documents) {
 					if (doc.name == shipments.base) {
 						this.keyWhenModalGenerateFileOpen = random(1, 999);
@@ -321,6 +319,10 @@ export default {
 <style scoped>
 .head_block * {
   margin: 5px;
+}
+.head_block>p {
+  display: flex;
+  align-items: center;
 }
 .head_block {
   height: 90px;

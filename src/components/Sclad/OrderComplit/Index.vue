@@ -10,7 +10,7 @@
       </div> 
     </div>
     <div>
-      <div style='width: fit-content;'>
+      <div class='pretable'>
 				<table>
           <tbody class='fixed_table_85'>
             <tr>
@@ -40,10 +40,10 @@
             @dblclick="openComplitModal(sh_complit)">
             <td class='center'>{{ inx + 1 }}</td>
             <td class='center'>{{ sh_complit.date_shipments_fakt }}</td>
-            <td class='center fix_size'>{{ sh_complit?.shipments?.buyer?.name || 'На склад' }}</td>
+            <td class='center fix_size'>{{ getBuyer(sh_complit?.shipments) }}</td>
             <td class='center'>{{ sh_complit.number_complit }}</td>
-            <td class='center fix_size'>{{ sh_complit?.shipments?.product?.articl }}</td>
-            <td class='center fix_size'>{{ sh_complit?.shipments?.product?.name }}</td>
+            <td class='center fix_size'>{{ getProduct(sh_complit?.shipments)?.articl }}</td>
+            <td class='center fix_size'>{{ getProduct(sh_complit?.shipments)?.name }}</td>
             <td class='center fix_size' @click='openComplectation(sh_complit?.shipments)' id="complect" >
               <img 
                 src="@/assets/img/link.jpg" 
@@ -118,7 +118,9 @@ export default {
     KomplectModal,
     Shipment
   },
-  computed: mapGetters(['getShComplits']),
+  computed: {
+    ...mapGetters(['getShComplits']),
+  },
   methods: {
     ...mapActions(['fetchShComplit']),
     ...mapMutations(['filterShComplitData', 'searchComplitSh']),
@@ -127,8 +129,19 @@ export default {
       await this.fetchShComplit();
       this.loader = false;
     },
-    changeDatePicterRange(val) {
-      this.filterShComplitData(val);
+    getBuyer(ship = []) {
+      if (!ship.length) return 'На склад';
+      return ship[0]?.buyer?.name || 'На склад';
+    },
+    getProduct(ship = []) {
+      if (!ship.length) return '-';
+      return {
+        name: ship[0]?.product?.name || '-',
+        articl: ship[0]?.product?.articl || '-'
+      }
+    },
+    changeDatePicterRange() {
+      //this.filterShComplitData(val);
     },
     keySearch(str) {
       this.searchComplitSh(String(str));
@@ -140,6 +153,7 @@ export default {
     },
     setComplit(complit, e) {
       this.selected_complit = complit;
+      console.log(complit);
       this.tr = eSelectSpan(this.tr, e);
     },
     openComplectation(sh) {
@@ -191,5 +205,11 @@ export default {
 .fix_size {
 	width: 100px;
 	word-break: break-all;
+}
+.pretable {
+  width: 1100px;
+}
+.pretable>table {
+  width: 1100px;
 }
 </style>

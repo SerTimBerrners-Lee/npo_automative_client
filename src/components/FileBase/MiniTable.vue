@@ -23,7 +23,6 @@
   </div>
 </template> 
 
-
 <script>
 import { random } from 'lodash';
 import { eSelectSpan } from '@/js/methods';

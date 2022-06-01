@@ -321,7 +321,7 @@ export default {
         this.setStatusShipments(sh_id);
         showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
       }
-      else showMessage('', 'Произошла ошибка при Отгрузки!', 'e');
+      else showMessage('', 'Произошла ошибка при Отгрузке!', 'e');
 
       return this.destroyModalF(true);
     },
