@@ -1,10 +1,9 @@
 <template>
 	<div v-if='documents && documents.length'>
 		<div 
-			class='scroll-table' 
-			style='width:100%'>
+			class='scroll-table'>
 			<h3>{{ title }}</h3>
-			<table style="width: 100%;">
+			<table>
 				<tr>
 					<th>№</th>
 					<th>Файл</th>
@@ -126,3 +125,14 @@ export default {
 	}
 }
 </script>
+
+<style>
+.scroll-table {
+	width: 100%;
+	height: fit-content;
+}
+.scroll-table>table { 
+	width: 100%;
+	height: fit-content;
+}
+</style>

@@ -3,58 +3,67 @@
   <div :class='destroyModalLeft' @click="destroyModalF"></div>
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
-			<h3>Изменить Отгрузку</h3>
+			<h3>Информация об Отгрузке</h3>
 			<div class="block head_block">
         <p>
-          <span>№ Заказа: </span>
-          <input type="text" v-model='number_order'>
-          <span style='display: flex; align-items: center; float: left;'>
-            <span>Дата заказа: </span>
-            <DatePicterCustom
-              :dateStart='date_order'
-            />
-          </span>
-          <span style='display: flex; align-items: center; float: left;'>
-            <span>Дата планируемой отгрузки: </span>
-            <DatePicterCustom
-              :dateStart='date_shipments'
-            />
-          </span>
-        </p>
-        <p style="width: 100%;">
-          <span>Заводской №: </span>
-          <input type="text" v-model='fabric_number'>
           <span style='display: flex; align-items: center; float: left;'>
             <span>Дата фактический отгрузки: </span>
             <DatePicterCustom
               :dateStart='date_shipments_fakt'
             />
           </span>
+          <span>№ Отгрузки: </span>
+          <input type="text" v-model='number_complit'>
           <span>Транспортная компания: </span>
           <input type="text" v-model='transport'>
         </p>
       </div>
 
+      <div class="flex_direction">
+        <div>
+          <h3>Примечание</h3>
+          <textarea maxlength='250' v-model='description'></textarea>
+        </div>
+
+        <div class="wh_50p">
+          <h3>Файлы</h3>
+          <TableDocument 
+            v-if='documentsData.length' 
+            :title='""' 
+            :key='table_document_key'
+            :documents='documentsData' />
+        </div>
+      </div>
+
+      <div class='file_div'>
+        <FileLoader 
+          :typeGetFile='"getfile"'
+          @unmount='file_unmount'
+        />
+      </div>
+
       <div>
-        <h3>Комплектация</h3>
+        <h3>Информация об отгруженном товаре</h3>
         <div class="table-scroll">
           <table>
             <tr>
+              <th>№ Заказа/подзаказа</th>
+              <th>Артикул заказа/подзаказа</th>
+              <th>Наименование заказа/подзаказа</th>
               <th>Наименование изделия</th>
-              <th>Комплектация, особенности заказа</th>
               <th>Кол-во</th>
-              <th>Основание</th>
-              <th>Покупатель</th>
-              <th>Потребность к отгрузке</th>
-              <th>Заводской №</th>
-              <th>Дата отгрузки</th>
+              <th>Комплектация</th>
+              <th>Заводской номер</th>
+              <th>Дата факт. отгрузки</th>
               <th>ФИО сборщика</th>
               <th>ФИО контроль</th>
-              <!-- Выбор сотрудника - контроль отгрузки  -->
-              <!-- Создается промежуточная модель отгрузки  -->
             </tr>
-            <tr v-for='sh of childrens' :key='sh'>
-              <td class='center'>{{ sh?.product?.name }}</td>
+            <tr v-for='sh of child' :key='sh'>
+              <td class="center">{{ sh.number_order }}</td> <!-- № Заказа/подзаказа -->
+              <td class="center">{{ sh?.product?.articl }}</td> <!-- Артикул заказа/подзаказа -->
+              <td class="center">{{ sh.base }}</td> <!-- Наименование заказа/подзаказа -->
+              <td class='center'>{{ sh?.product?.name }}</td> <!-- Наименование изделия -->
+              <td class='center'>{{ sh.kol }}</td> <!-- Кол-во -->
               <td class='center' @click='openComplectation(sh.list_cbed_detal)' >
                 <img 
                   src="@/assets/img/link.jpg" 
@@ -62,22 +71,15 @@
                   atl='Показать'
                   v-if='sh.list_cbed_detal' />
                 <p v-else>Нет комплектации</p>
-              </td>
-              <td class='center'>{{ sh.kol }}</td>
-              <td style='width:50px; word-break: break-all;' class='click center active'  
-                @click='openDocuments(sh)' >
-                {{ sh.base }}
-              </td>
-              <td class='center'>{{ sh?.buyer?.name }}</td>
-              <td class='center'>0</td> <!-- Потребность к отгрузке -->
-              <td class='center'>{{ sh?.product?.fabricNumber }}</td>
-              <td class='center'>{{ sh.date_shipments }}</td>
+              </td> <!-- Комплектация -->
+              <td class='center'>{{ sh?.product?.fabricNumber }}</td> <!-- Заводской номер -->
+              <td class='center'>{{ date_shipments_fakt }}</td> <!-- Дата факт. отгрузки -->
               <td class='center cursor' @click='selectUser("executor")'>
                 {{ creater_user ? creater_user?.initial : 'Выбрать' }}
-              </td>
+              </td> <!-- ФИО сборщика -->
               <td class='center cursor' @click='selectUser("controller")'>
                 {{ responsible_user ? responsible_user?.initial : 'Выбрать' }}
-              </td>
+              </td> <!-- ФИО контроль -->
             </tr>
             
           </table>
@@ -85,25 +87,46 @@
       </div>
 
       <div>
-        <h3>Примечание</h3>
-        <textarea maxlength='250' v-model='description'></textarea>
+        <h3>Информация о Заказе</h3>
+
+        <ShipmentsHeader />
+
+        <div v-if='childrens && childrens.length && getOneShipments?.id'>
+					<h4>Позиции по Счету: </h4>
+					<TableShipments
+						v-if='childrens.length'
+						:fixed_table='"fixed_table_10"'
+						:shipmentsArr='childrens'
+						:cheked_show='true'
+						:select_sh='getOneShipments?.id'
+						@unmount_dbclick='unmount_dbclick'
+						@unmount_sh='unmount_sh'
+						:return_dbclick='true' 
+						:no_set='true'
+						:is_search="false"
+					/>
+					<ComplectIzd v-if='print_click' :list_cbed_detal='list_cbed_detal' />
+				</div>
       </div>
 
-      <div class="wh_50p">
-        <TableDocument 
-          v-if='documentsData.length' 
-          :title='""' 
-          :key='table_document_key'
-          :documents='documentsData'/>
-      </div>
 
-      <div>
-        <h3>Файлы</h3>
-        <div style='height: 50px;'>
-          <FileLoader 
-            :typeGetFile='"getfile"'
-            @unmount='file_unmount'
-          />
+      <div width='300px;' class='flex_direction'>
+        <div>
+          <h3>Примечание</h3>
+          <textarea maxlength='250' v-model='description' disabled></textarea>
+        </div>
+        <div class='file_content'>
+        <h3>Документы</h3>
+        <div v-if='this.getOneShipments.documents && this.getOneShipments.documents.length'>
+          <table>
+            <tr>
+              <th>Файл</th>
+            </tr>
+            <tr v-for='fil of this.getOneShipments.documents' :key='fil' class='td-row' @click='setDocs(fil)'>
+              <td>{{ fil.name }}</td>
+            </tr>
+          </table>
+        </div>
         </div>
       </div>
 
@@ -145,6 +168,8 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
+import MixModal from '@/mixins/mixmodal';
+import MixShipments from '@/mixins/shipments';
 import { mapActions, mapMutations } from 'vuex';
 import AddFile from '@/components/FileBase/AddFile';
 import OpensFile from '@/components/FileBase/OpenFile';
@@ -152,6 +177,7 @@ import DatePicterCustom from '@/components/DatePicter';
 import ModalUsersList from '@/components/Users/ModalListUser';
 import TableDocument from '@/components/FileBase/TableDocument';
 import KomplectModal from '@/components/IssueShipment/KomplectModal';
+import ShipmentsHeader from '@/components/IssueShipment/ShipmentsHeader';
 
 export default {
   props: {
@@ -159,10 +185,6 @@ export default {
   },
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
-
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -175,12 +197,10 @@ export default {
       showModalUser: false, 
       keyModalUser: random(1, 999),
 
-      childrens: [],
-      
-      date_order: new Date().toLocaleDateString("ru-RU"),
-      number_order: '',
+      child: [],
+
+      number_complit: '',
       date_shipments: new Date().toLocaleDateString("ru-RU"),
-      fabric_number: '',
       description: '',
       
       name_check: '',
@@ -203,7 +223,12 @@ export default {
     AddFile,
     ModalUsersList,
     DatePicterCustom,
-    TableDocument
+    TableDocument,
+    ShipmentsHeader
+  },
+  mixins: [MixModal, MixShipments],
+  beforeCreate() {
+    this.$options.components.TableShipments = require('@/components/IssueShipment/TableKomplect').default;
   },
   methods: {
     ...mapActions([
@@ -213,14 +238,6 @@ export default {
       'fetchCombackComplit'
     ]),
     ...mapMutations(['setStatusShipments']),
-    destroyModalF() {
-			this.destroyModalLeft = 'left-block-modal-hidden';
-			this.destroyModalRight = 'content-modal-right-menu-hidden';
-			this.hiddens = 'display: none;';
-
-      this.$emit('unmount');
-      this.loader = false;
-    },
     unmount_user_modal(data) {
       if (!data) return false;
 
@@ -239,15 +256,23 @@ export default {
         this.name_check += ` ${fd.name}`;
       }
     },
-    update() {
-      this.date_order = this.complit.date_order;
-      this.number_order = this.complit.number_order;
+    async update() {
       this.date_shipments = this.complit.date_shipments;
-      this.fabric_number = this.complit?.product?.fabricNumber;
       this.date_shipments_fakt = this.complit.date_shipments_fakt;
       this.transport = this.complit.transport;
+      this.number_complit = this.complit.number_complit
 
-      this.childrens = this.complit.shipments;
+      this.child = this.complit.shipments;
+
+      let find = null;
+      for (const item of this.child) {
+        if (!item.parent_id) find = item;
+      }
+
+      if (find)
+        await this.childrenSord(find.id);
+      else if (this.child.length) 
+        await this.childrenSord(this.child[0].id);
 
       //this.creater_user = this.complit.creater_user_id;
       //this.responsible_user = this.complit.responsible_user_id;
@@ -283,7 +308,7 @@ export default {
       this.formData.append('description', this.description);
 
       const updateResult = await this.fetchCreateShUpdate(this.formData);
-      if (updateResult) showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
+      if (updateResult) showMessage('', 'Обновление произошло успешно ' + this.number_complit, 's');
       else showMessage('', 'Произошла ошибка при Отгрузке!', 'e');
 
       return this.destroyModalF();
@@ -303,13 +328,9 @@ export default {
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
     this.loader = true;
-
     if (!this.complit) return this.destroyModalF();
-    this.update();
+    await this.update();
 
     this.loader = false;
   },
@@ -317,6 +338,13 @@ export default {
 </script>
 
 <style scoped>
+.flex_direction {
+	display: flex;
+}
+.flex_direction>div {
+  width: 40%;
+  margin: 10px;
+}
 .head_block * {
   margin: 5px;
 }
@@ -324,11 +352,11 @@ export default {
   display: flex;
   align-items: center;
 }
-.head_block {
-  height: 90px;
-}
 .head_block input {
   width: 90px;
+}
+.file_div>div {
+  margin: 0px;
 }
 table{ 
   width: 100%;
@@ -349,10 +377,10 @@ textarea {
 }
 .content-modal-right-menu {
   animation: width 1s 1 ease;
-  width: 60vw;
+  width: 70vw;
 }
 .left-block-modal {
-  width: 40vw;
+  width: 30vw;
   animation: width-right 1s 1 ease;
 }
 .left-block-modal-hidden {
@@ -366,7 +394,7 @@ textarea {
     width: 1vw;
   }
   to {
-    width: 60vw;
+    width: 70vw;
   }
 }
 @keyframes width-right {
@@ -374,7 +402,7 @@ textarea {
     width: 0vw;
   }
   to {
-    width: 40vw;
+    width: 30vw;
   }
 }
 @keyframes hidden-content {
@@ -393,7 +421,7 @@ textarea {
 }
 @keyframes width-replace {
   from {
-    width: 60vw;
+    width: 70vw;
   }
   to {
     width: 00vw;
@@ -401,7 +429,7 @@ textarea {
 }
 @keyframes width-right-replace {
   from {
-    width: 40vw;
+    width: 30vw;
   }
   to {
     width: 0vw;

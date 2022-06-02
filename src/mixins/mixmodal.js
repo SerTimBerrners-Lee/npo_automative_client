@@ -13,6 +13,7 @@ export default {
       this.hiddens = 'display: none;';
 
 			this.$emit(emit, params);
+      this.loader = false;
 		},
   },
   mounted () {

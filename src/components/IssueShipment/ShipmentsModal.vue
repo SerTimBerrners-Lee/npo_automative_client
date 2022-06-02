@@ -5,50 +5,9 @@
     <div :style="hiddens" > 
 		<div>
 
+		<ShipmentsHeader />
+
 		<div id='tablebody'>
-			<h3>Заказ {{ number_order }}</h3>
-			<div class="block">
-				<p class='p_flex'>
-					<span>Дата заказа:</span>
-					<DatePicterCustom :dateStart='date_order' />
-					<span>Выбранное изделие: </span>
-					<span 
-						v-if='select_product && !is_not_product' 
-						class='select_span_href' @click='openIzd(select_product)'>{{ sliceName(select_product.name) }}</span>
-					<label for='is_not_product'>Заказ без изделия:</label>
-					<input id='is_not_product' type="checkbox" v-model='is_not_product' disabled>
-					<span>Количество:</span>
-					<input type="number" min='1' v-model='kol' disabled>
-				</p>
-				<p class='p_flex'>
-					<span>Дата План. отгрузки:</span>
-					<DatePicterCustom :dateStart='date_shipments' />
-					<label for='bran'>Бронь:</label>
-					<input id='bran' type="checkbox" v-model='bron' disabled>
-					<label for='file_folder' class='hover' v-if='!to_sklad'>Основание:</label>
-					<input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)" disabled>
-					<span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ base }}</span>
-					
-					<span class='hover'>Покупатель: </span>
-					<span class='tooltip'>
-						<select 
-							class="select-small buyer_select" 
-							v-model='buyer'
-							disabled>
-							<option v-for='buyer in allBuyer' 
-								:key='buyer'
-								:value="buyer.id">{{ buyer.name }}</option>
-						</select>
-						<span class='tooltiptext'> {{ returnObj() }}</span>
-					</span>
-
-					<span>
-						<label for='to_sklad'>На склад:</label>
-						<input id='to_sklad' type="checkbox" v-model='to_sklad' disabled>
-					</span>
-				</p>
-			</div>
-
 			<div>
 				<div v-if='childrens && childrens.length && getOneShipments?.id'>
 					<h4>Позиции по Счету: </h4>
@@ -120,16 +79,16 @@
 		<div width='300px;' class='flex_direction'>
 			<div>
 				<h3>Примечание</h3>
-				<textarea maxlength='250' v-model='description' disabled></textarea>
+				<textarea maxlength='250' v-model='getOneShipments.description' disabled></textarea>
 			</div>
 			<div class='file_content'>
 			<h3>Документы</h3>
-			<div v-if='documents && documents.length'>
+			<div v-if='this.getOneShipments.documents && this.getOneShipments.documents.length'>
 				<table>
 					<tr>
 						<th>Файл</th>
 					</tr>
-					<tr v-for='fil of documents' :key='fil' class='td-row' @click='setDocs(fil)'>
+					<tr v-for='fil of this.getOneShipments.documents' :key='fil' class='td-row' @click='setDocs(fil)'>
 						<td>{{ fil.name }}</td>
 					</tr>
 				</table>
@@ -149,7 +108,7 @@
 		</div>
 
 		<h3>Информация об отгрузке</h3>
-		<ShComplit v-if='sh_complit_id' :sh_complit_id='sh_complit_id' :ship='getOneShipments' />
+		<ShComplit v-if='sh_complit_id' :sh_complit_id='getOneShipments.sh_complit_id' :ship='getOneShipments' />
 		<OpensFile
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -171,11 +130,6 @@
 			:fileArrModal='documentsData'
 			@unmount='unmount_filemodal'
 		/>
-		<ProductModalInfo
-      :id='parametrs_product'
-      :key='productModalKey'
-      v-if='parametrs_product'
-    />
 		<Shipment 
       v-if='showShipmentModal && getOneShipments'
       :key='shipmentKey'
@@ -200,12 +154,11 @@ import { eSelectSpan } from '@/js/methods';
 import MixShipments from '@/mixins/shipments';
 import { mapActions, mapGetters } from 'vuex';
 import OpensFile from '@/components/FileBase/OpenFile';
-import DatePicterCustom from '@/components/DatePicter';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 import BaseFileModal from '@/components/FileBase/BaseFilesModal';
 import Shipment from '@/components/Sclad/IssueToPull/ShComlitModal';
-import ProductModalInfo from '@/components/BaseProduct/ProductModal';
+import ShipmentsHeader from '@/components/IssueShipment/ShipmentsHeader';
 
 export default {
   props: {
@@ -219,13 +172,10 @@ export default {
 			keyWhenModalGenerate: random(1, 999),
 			keyWhenModalGenerateFileOpen: random(1, 999),
 
-			number_order: 0,
-
 			select_tr_inx: null,
 			tr: null,
 			formData: new FormData,
 			baseFormData: new FormData,
-			documents: [],
 			itemFiles: null,
 
 			detalModalKey: random(1, 999),
@@ -233,20 +183,8 @@ export default {
 			parametrs_cbed: null,
 			cbedModalKey: random(1, 999),
 			documentsData: [],
-			
-			date_order: new Date().toLocaleDateString("ru-RU"),
-			date_shipments: new Date().toLocaleDateString("ru-RU"),
-			kol: 1,
-			bron: false,
-			base: '',
-			buyer: 0,
-			to_sklad: false,
-			select_product: null,
-			description: '',
-			is_not_product: false,
 
-			parametrs_product: false,
-			productModalKey: random(1, 999),
+			is_not_product: false,
 
 			showShipmentModal: false,
       shipmentKey: random(1, 999),
@@ -257,37 +195,23 @@ export default {
 
 			loader: false,
 			selected_sh: [],
-			sh_complit_id: null,
 			print_click: false,
     }
   },
 	beforeCreate() {
     this.$options.components.TableShipments = require('@/components/IssueShipment/TableKomplect').default;
   },
-  watch: {
-		kol: function(znach) {
-			if(!this.select_product) return 0;
-			this.list_cbed_detal = [];
-			for(let inx = 0; inx < znach; inx++) {
-				this.checkedJsonList(this.select_product);
-			}
-		},	
-	},
 	mixins: [MixShipments, MixModal],
-	computed: mapGetters([	
-		'allBuyer',
-		'getOneShipments'
-	]),
+	computed: mapGetters(['getOneShipments']),
 	components: {
-		DatePicterCustom, 
 		OpensFile,
 		DetalModal,
 		CbedModalInfo,
 		BaseFileModal,
-		ProductModalInfo,
 		Shipment,
 		ShComplit,
 		ComplectIzd,
+		ShipmentsHeader
 	},
 	methods: {
 		...mapActions(['fetchAllBuyers', 'fetchAllShipmentsTo']),
@@ -297,13 +221,13 @@ export default {
 		},
 		unmount_sh(sh) {
 			if (sh.status === "Отгружено") return showMessage('', 'Задача уже отгружена!', 'w');
-
-			this.childrens = this.childrens.filter(el => el.id != sh.id);
+			for (const item of this.selected_sh) {
+				if (item.id == sh.id) return showMessage('', 'Задача уже выбранная', 'w');
+			}
 			this.selected_sh.push(sh);
 		},
 		unmount_sh_remove(sh) {
 			this.selected_sh = this.selected_sh.filter(el => el.id != sh.id);
-			this.childrens.push(sh);
 		},
 		async unmount_sh_complit(is_true) {
 			this.loader = true;
@@ -334,36 +258,11 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
 		selectTr(inx, e) {
-			if(this.select_tr_inx == inx && this.tr) 
+			if (this.select_tr_inx == inx && this.tr) 
 				return this.select_tr_inx = null;
 
 			this.tr = eSelectSpan(this.tr, e);
 			this.select_tr_inx = inx;
-		},
-		async editVariable() {
-			this.date_order = this.getOneShipments.date_order;
-			this.date_shipments = this.getOneShipments.date_shipments;
-			this.kol = this.getOneShipments.kol;
-			this.bron = this.getOneShipments.bron;
-			this.base = this.getOneShipments.base;
-			this.buyer = this.getOneShipments.buyer?.id;
-			this.to_sklad = this.getOneShipments.to_sklad;
-			this.number_order = this.getOneShipments.number_order;
-			this.sh_complit_id = this.getOneShipments.sh_complit_id;
-
-			if(this.getOneShipments.productId) {
-				const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
-				if (res) this.select_product = res;
-			} else this.is_not_product = true;
-
-			if(this.getOneShipments.documents) this.documents = this.getOneShipments.documents;
-			
-			try {
-				if(this.getOneShipments.list_cbed_detal)
-					this.list_cbed_detal = JSON.parse(this.getOneShipments.list_cbed_detal);
-			} catch(e) {console.error(e)}
-
-			this.description = this.getOneShipments.description;
 		},
 		showInformIzdel(id, type) {
 			if(type == 'cbed') {
@@ -372,17 +271,12 @@ export default {
 					this.cbedModalKey = random(1, 999);
 				}
 			}
-			if(type == 'detal') {
-				if(id) {
+			if (type == 'detal') {
+				if (id) {
 					this.parametrs_detal = id;
 					this.detalModalKey = random(1, 999);
 				}
 			}
-		},
-		openIzd(izd) {
-			if (!izd || !izd.id) return false;
-			this.parametrs_product = izd.id;
-      this.productModalKey = random(1, 999);
 		},
 		openShipment() {
       this.showShipmentModal = true;
@@ -409,9 +303,6 @@ export default {
 .buyer_select {
 	width: fit-content;
 }
-.flex_direction {
-	display: flex;
-}
 .file_content {
 	width: 500px;
 	padding: 40px;
@@ -432,19 +323,7 @@ label {
 	cursor: pointer;
 	user-select: none;
 }
-.input_kol {
-	width: 20px;
-}
-.block p * {
-	margin-left: 5px;
-}
-.block p input[type='text'], .block p input[type='number'] {
-	width: 60px;
-}
-.table_block {
-	display: flex;
-	flex-direction: column;
-}
+
 textarea {
 	height: 140px;
 }
