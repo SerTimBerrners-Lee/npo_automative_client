@@ -192,10 +192,10 @@ const sortState = (arr, operation) => {
   return operation == '<' ? '>' : '<';
 }
 
-const differencesShipments = (noSortArr) => {
+const differencesShipments = (noSortArr, field = 'date_shipments') => {
   for(const ship of noSortArr) {
-    if (ship.date_shipments) 
-      ship.difference = dateDifference(undefined, ship.date_shipments);
+    if (ship[field]) 
+      ship.difference = dateDifference(undefined, ship[field]);
     else ship.difference = 0;
   }
   const arr = noSortArr.sort((a, b) => a.difference - b.difference);

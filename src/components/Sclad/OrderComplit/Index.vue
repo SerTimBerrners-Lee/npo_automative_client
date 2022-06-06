@@ -140,8 +140,8 @@ export default {
         articl: ship[0]?.product?.articl || '-'
       }
     },
-    changeDatePicterRange() {
-      //this.filterShComplitData(val);
+    changeDatePicterRange(val) {
+      this.filterShComplitData(val);
     },
     keySearch(str) {
       this.searchComplitSh(String(str));

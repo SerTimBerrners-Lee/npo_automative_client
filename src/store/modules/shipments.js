@@ -207,7 +207,6 @@ export default {
 		},
 		sortShipmentParams(state, sort) {
 			if (!sort) return;
-			// Сортируем все что заказано на склад идет в конец
 			const arr_var1 = [];
 			const arr_var2 = [];
 			if (sort == 'sort_sclad') {
@@ -279,7 +278,7 @@ export default {
 		 * Получаем все отметки о выполнении
 		*/
 		allShComplit(state, results) {
-			state.sh_complits = results;
+			state.sh_complits = differencesShipments(results, 'date_shipments_fakt').reverse();
 		},
 		deleteComplit(state, id) {
 			state.sh_complits = state.sh_complits.filter(el => el.id !== id);
@@ -292,8 +291,8 @@ export default {
 			const end = new Date(range.end).toLocaleDateString('ru-RU');
 			state.sh_complits = state.date_sort_shcomplit.filter((el) => {
 				if (el.date_order && 
-						comparison(start, el.date_order, '<=') &&
-						comparison(end, el.date_order, '>='))
+						comparison(start, el.date_shipments_fakt, '<=') &&
+						comparison(end, el.date_shipments_fakt, '>='))
 					return el;
 			});
 		},
@@ -326,13 +325,14 @@ export default {
 			state.sh_complits = state.sh_complits.filter(el => {
 				const prod = el?.shipments?.product?.articl;
 				if (prod && el.number_complit) {
-					console.log(el.number_complit)
-					return (prod.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
-					((prod.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)) || 
-					(el.number_complit.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
-					((el.number_complit.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1))
-				} else if(el.number_complit) return (el.number_complit.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
-					((el.number_complit.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1));
+					return (
+						prod.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+						prod.toLowerCase().indexOf(str.toLowerCase(), 0) != -1) || 
+						(el.number_complit.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+						el.number_complit.toLowerCase().indexOf(str.toLowerCase(), 0) != -1)
+				} else if(el.number_complit) 
+						return (el.number_complit.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
+							el.number_complit.toLowerCase().indexOf(str.toLowerCase(), 0) != -1);
 					else return (el.number_order.slice(0, str.length).toLowerCase() == str.toLowerCase() ||
 					((el.number_order.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1));
 			});
