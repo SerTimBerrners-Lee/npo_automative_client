@@ -1,6 +1,6 @@
 <template>
   <div class="right-menu-modal">
-    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalLeft' @click="destroyModalF('unmount')"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
         <h3> Добавить поставщика </h3>
@@ -8,7 +8,7 @@
         <TableProvider :allProvider='allProvider' @unmount='unmount_provider'/>
         
         <div class="btn-control out-btn-control">
-          <button class="btn-status" @click="destroyModalF">Отменить</button>
+          <button class="btn-status" @click="destroyModalF('unmount')">Отменить</button>
           <button class="btn-status btn-black" @click="addProvider" >Добавить</button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 <template>
 <div class="right-menu-modal">
-  <div :class='destroyModalLeft' @click="destroyModalF"></div>
+  <div :class='destroyModalLeft' @click="destroyModalF()"></div>
   <div :class='destroyModalRight'>
     <div :style="hiddens" >
 			<h3>Информация об Отгрузке</h3>
@@ -131,7 +131,7 @@
       </div>
 
       <div class="btn-control out-btn-control">
-        <button class="btn-status" @click='destroyModalF'>Отменить</button>
+        <button class="btn-status" @click='destroyModalF()'>Отменить</button>
         <button class="btn-status" @click='combackComplit'>Отменить отгрузку</button>
         <button class="btn-status btn-black" @click='fetchUpdate'>Внести изменения в отгрузку</button>
       </div>

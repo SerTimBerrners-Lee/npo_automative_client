@@ -1,6 +1,6 @@
 <template>
   <div class="right-menu-modal informat">
-    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalLeft' @click="destroyModalF('unmount')"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens" > 
 

@@ -1,6 +1,6 @@
 <template>
   <div class="right-menu-modal">
-    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalLeft' @click="destroyModalF('unmount')"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
         <h3>{{ is_type == 'cb' ? "Сборочные единицы" : 'Детали' }} по операциям</h3>

@@ -23,11 +23,11 @@
         <input id='file_folder' type="file" hidden @change="e => addDock(e.target, true)" disabled>
         <span class='active' style='margin-left: 20px; margin-right: 20px;'>{{ getOneShipments.base }}</span>
         
-        <span class='hover'>Покупатель: </span>
-        <span class='tooltip'>
+        <span class='hover'>Покупатель:</span>
+        <span class='tooltip' v-if='buyer'>
           <select 
             class="select-small buyer_select" 
-            v-model='getOneShipments.buyer'
+            v-model='buyer'
             disabled>
             <option v-for='buyer in allBuyer' 
               :key='buyer'
@@ -63,6 +63,7 @@ export default {
     return {
       select_product: null,
       is_not_product: false,
+      buyer: null,
 
       productModalKey: random(1, 999),
       parametrs_product: null,
@@ -76,6 +77,7 @@ export default {
   methods: {
     openIzd(izd) {
 			if (!izd || !izd.id) return false;
+
 			this.parametrs_product = izd.id;
       this.productModalKey = random(1, 999);
 		},
@@ -83,8 +85,11 @@ export default {
   async mounted() {
     if (this.getOneShipments.productId) {
       const res = await this.getAllProductByIdLight(this.getOneShipments.productId);
-      if (res) this.select_product = res;
+      this.select_product = res;
     } else this.is_not_product = true;
+
+    if (this.getOneShipments?.buyer?.id)
+      this.buyer = this.getOneShipments.buyer.id;
   }
 }
 </script>

@@ -6,7 +6,8 @@ export default {
   data() {
     return {
       list_cbed_detal: [],
-      childrens: []
+      childrens: [],
+			buyer: null,
     }
   },
 	computed: mapGetters([
@@ -17,7 +18,8 @@ export default {
     ...mapActions([
 			'fetchAllShipmentsById',
 			'fetchIncludesFolderSh',
-			'getAllProductByIdLight'
+			'getAllProductByIdLight',
+			'fetchAllBuyers'
 		]),
     ...mapMutations(['setOneShipment']),
     async childrenSord(id) {
@@ -52,7 +54,7 @@ export default {
 			return sliceName(str, 32);
 		},
   },
-	async mouned() {
+	async mounted() {
 		await this.fetchAllBuyers(true);
 	}
 }

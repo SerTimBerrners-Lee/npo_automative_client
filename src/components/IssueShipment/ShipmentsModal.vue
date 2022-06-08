@@ -1,6 +1,6 @@
 <template>
 <div class="right-menu-modal informat">
-  <div :class='destroyModalLeft' @click="destroyModalF"></div>
+  <div :class='destroyModalLeft' @click="destroyModalF('unmount_shpment')"></div>
   <div :class='destroyModalRight'>
     <div :style="hiddens" > 
 		<div>
@@ -108,7 +108,7 @@
 		</div>
 
 		<h3>Информация об отгрузке</h3>
-		<ShComplit v-if='sh_complit_id' :sh_complit_id='getOneShipments.sh_complit_id' :ship='getOneShipments' />
+		<ShComplit v-if='getOneShipments.sh_complit_id' :sh_complit_id='getOneShipments.sh_complit_id' :ship='getOneShipments' />
 		<OpensFile
 			:parametrs='itemFiles' 
 			v-if="itemFiles" 
@@ -217,7 +217,6 @@ export default {
 		...mapActions(['fetchAllBuyers', 'fetchAllShipmentsTo']),
 		unmount_dbclick(id) {
 			this.childrenSord(id);
-			this.editVariable();
 		},
 		unmount_sh(sh) {
 			if (sh.status === "Отгружено") return showMessage('', 'Задача уже отгружена!', 'w');
@@ -289,7 +288,6 @@ export default {
 		try {
 			if (!this.id_shipments) return this.destroyModalF('unmount_shpment');
 			await this.childrenSord(this.id_shipments);
-			this.editVariable();
 
 		} catch (err) { console.error(err, 'shipments modal mounted') }
 

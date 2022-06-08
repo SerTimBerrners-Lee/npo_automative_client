@@ -14,17 +14,18 @@
 				<table>
           <tbody class='fixed_table_85'>
             <tr>
-              <th>№</th>
-              <th>Дата факт. отгрузки</th>
+              <th class='fix_size' style="width: 20px;">№</th>
+              <th class='fix_size'>Дата факт. отгрузки</th>
+              <th class='fix_size'>Номер Отгрузки</th>
               <th class='fix_size'>Покупатель</th>
-              <th>№ Заказа и дата</th>
+              <th class='fix_size'>Номер и дата заказа</th>
               <th class='fix_size'>Артикул Изделия</th>
               <th class='fix_size'>Наименование Изделия</th>
               <th class='fix_size'>Комплектация</th>
-              <th>Примечание</th>
+              <th class='fix_size'>Примечание</th>
             </tr>
             <tr>
-              <th colspan="8">
+              <th colspan="9">
                 <Search 
                   :placeholder="'Поиск по Номеру заказа'"
                   @unmount='keySearch'
@@ -40,8 +41,9 @@
             @dblclick="openComplitModal(sh_complit)">
             <td class='center'>{{ inx + 1 }}</td>
             <td class='center'>{{ sh_complit.date_shipments_fakt }}</td>
-            <td class='center fix_size'>{{ getBuyer(sh_complit?.shipments) }}</td>
             <td class='center'>{{ sh_complit.number_complit }}</td>
+            <td class='center fix_size'>{{ getBuyer(sh_complit?.shipments) }}</td>
+            <td class='center fix_size'>{{ getNumberShipments(sh_complit?.shipments) }}</td>
             <td class='center fix_size'>{{ getProduct(sh_complit?.shipments)?.articl }}</td>
             <td class='center fix_size'>{{ getProduct(sh_complit?.shipments)?.name }}</td>
             <td class='center fix_size' @click='openComplectation(sh_complit?.shipments)' id="complect" >
@@ -132,6 +134,13 @@ export default {
     getBuyer(ship = []) {
       if (!ship.length) return 'На склад';
       return ship[0]?.buyer?.name || 'На склад';
+    },
+    getNumberShipments(ship = []) {
+      if (!ship.length) return 'Нет заказа';
+      for (const item of ship) {
+        if (item.number_order) return item.number_order;
+      }
+      return 'Нет номера';
     },
     getProduct(ship = []) {
       if (!ship.length) return '-';

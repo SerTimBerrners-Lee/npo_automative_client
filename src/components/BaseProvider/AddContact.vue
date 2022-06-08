@@ -1,6 +1,6 @@
 <template>
   <div class="right-menu-modal">
-    <div :class='destroyModalLeft' @click="destroyModalF"></div>
+    <div :class='destroyModalLeft' @click="destroyModalF('unmount')"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
         <h3>Создать контакт </h3>
@@ -15,7 +15,7 @@
           </p>
         </div>
         <div class="btn-control out-btn-control">
-          <button class="btn-status" @click="destroyModalF">Отменить</button>
+          <button class="btn-status" @click="destroyModalF('unmount')">Отменить</button>
           <button class="btn-status btn-black" @click="addContact" >Добавить контакт</button>
         </div>
       </div>
