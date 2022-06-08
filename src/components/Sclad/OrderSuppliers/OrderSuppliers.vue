@@ -194,7 +194,7 @@
 <script>
 import { random } from 'lodash';
 import AddOrder from './AddOrder';
-import WorkerModal from '../worker-modal';
+import WorkerModal from '../WorkerModal';
 import { comparison, showMessage } from '@/js/'; 
 import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';

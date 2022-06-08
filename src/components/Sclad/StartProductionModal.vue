@@ -27,7 +27,7 @@
             <th>Кол-во</th>
           </tr>
           <tr v-for='izd of komplect' :key='izd'>
-            <td class='center' v-if='parametrs.type == "cb"'>СБ</td>
+            <td class='center' v-if='parametrs.type == "cbed"'>СБ</td>
             <td class='center' v-if='parametrs.type == "det"'>Д</td>
             <td class='center' v-if='parametrs.type == "prod"'>И</td>
             <td>{{ izd.articl }}</td>
@@ -100,7 +100,7 @@ export default {
         if (komplect.my_kolvo == 0) continue;
         data['my_kolvo'] = komplect.my_kolvo;
         data['shipments_kolvo'] = komplect.shipments_kolvo;
-        if (this.$props.parametrs.type == 'cb' || this.$props.parametrs.type == 'prod') {
+        if (this.$props.parametrs.type == 'cbed' || this.$props.parametrs.type == 'prod') {
           working.push({
             ...data,
             cbed_id: komplect.id,
@@ -134,6 +134,7 @@ export default {
           item.my_kolvo = item.min_remaining;
       }
     }
+    console.log(this.$props.parametrs)
     // get number order 
     const count = await this.fetchWorkingsCount() || new Date().getTime();
     this.number_order = this.date_order.slice(this.date_order.length-2) + "-" + (count.count + 1);

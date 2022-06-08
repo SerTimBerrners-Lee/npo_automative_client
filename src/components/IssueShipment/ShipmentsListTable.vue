@@ -111,8 +111,6 @@ export default {
 				includes: ['product', 'buyer']
 			});
 			if (res) this.shipments_info = res;
-
-			console.log(res)
 		},
 		openShipments(id) {
 			this.ship_id = id;

@@ -136,7 +136,7 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import TbodyZag from '@/components/Metalloworking/TableZag';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
-import OperationModal from '@/components/Sclad/workings-operations';
+import OperationModal from '@/components/Sclad/WorkingsOperations';
 import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
 import OperationPathModal from '@/components/Metalloworking/OperationPathMetaloworking';
 

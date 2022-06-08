@@ -158,7 +158,7 @@ import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
-import StartProduction from '@/components/Sclad/start-production-modal';
+import StartProduction from '@/components/Sclad/StartProductionModal';
 import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
 import NormTimeOperation from '@/components/Sclad/NormTimeOperationModal';
 

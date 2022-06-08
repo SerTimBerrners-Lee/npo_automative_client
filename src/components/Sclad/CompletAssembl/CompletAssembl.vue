@@ -143,13 +143,14 @@ export default {
     setTr(ass, span) {
       this.span = eSelectSpan(this.span, span);
       this.selectedAss = ass;
+      console.log(ass.type_izd);
     }
 	},
 	async mounted() {
-    this.loader = true
+    this.loader = true;
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
-    await this.fetchAssemblePlan();
-    this.loader = false
+    await this.fetchAssemblePlan('cbed');
+    this.loader = false;
 	}
 }
 </script>

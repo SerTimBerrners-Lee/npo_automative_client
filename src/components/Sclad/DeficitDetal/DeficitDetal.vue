@@ -166,9 +166,9 @@ import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 import DescriptionModal from '@/components/DescriptionModal';
-import TechProcess from '@/components/BaseDetal/TechProcessModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
-import StartPraduction from '@/components/Sclad/start-production-modal';
+import TechProcess from '@/components/BaseDetal/TechProcessModal';
+import StartPraduction from '@/components/Sclad/StartProductionModal';
 import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
 
 export default {

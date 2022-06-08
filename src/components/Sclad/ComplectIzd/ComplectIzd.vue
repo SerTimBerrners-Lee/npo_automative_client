@@ -13,7 +13,7 @@
         <table>
           <tr>
             <th colspan="2"></th>
-            <th colspan="2">Сборочная единица</th>
+            <th colspan="2">Изделие</th>
             <th colspan="5"></th>
           </tr>
           <tr>
@@ -120,9 +120,8 @@ export default {
       this.keyAddWaybill = random(1, 999);
       this.type_open = to;
     },
-    toSetOrders(shipments) {
+    toSetOrders() {
       this.unmount_clear();
-      console.log(shipments);
     },
     returnBuyer(_id) {
       return getBuyerFilter(_id);
@@ -147,14 +146,15 @@ export default {
     setTr(ass, span) {
       this.span = eSelectSpan(this.span, span);
       this.selectedAss = ass;
+      console.log(ass.type_izd);
     }
 	},
 	async mounted() {
-    this.loader = true
+    this.loader = true;
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
-    await this.fetchAssemblePlan();
+    await this.fetchAssemblePlan('prod');
     await this.fetchAllBuyers(true);
-    this.loader = false
+    this.loader = false;
 	}
 }
 </script>

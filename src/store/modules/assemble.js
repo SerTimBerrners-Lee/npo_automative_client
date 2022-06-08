@@ -18,8 +18,8 @@ export default {
       const result = await res.json();
       ctx.commit('allAssemble', result);
     },
-    async fetchAssemblePlan(ctx) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble/asstoplan`);
+    async fetchAssemblePlan(ctx, type = 'all') { 
+      const res = await fetch(`${PATH_TO_SERVER}api/assemble/asstoplan/${type}`);
 			if (!res.ok) return false;
 
       const result = await res.json();

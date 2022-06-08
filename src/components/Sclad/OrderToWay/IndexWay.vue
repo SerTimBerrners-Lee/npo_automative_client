@@ -149,7 +149,7 @@
 
 <script>
 import { random } from 'lodash';
-import WorkerModal from '../worker-modal';
+import WorkerModal from '../WorkerModal';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
