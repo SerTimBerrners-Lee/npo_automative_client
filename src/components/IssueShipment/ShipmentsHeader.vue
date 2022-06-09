@@ -77,7 +77,6 @@ export default {
     pretterNumberOrder() {
       if (!this.getOneShipments || !this.getOneShipments.number_order) return '';
       let str = this.getOneShipments.number_order.split('/');
-      console.log(str)
       if (str.length == 2) 
         str = str[0].concat([str[1].substring(2)]);
       else str = str[0];
