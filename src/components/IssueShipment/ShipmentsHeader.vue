@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Заказ {{ getOneShipments.number_order }}</h3>
+    <h3>Заказ {{ pretterNumberOrder }}</h3>
     <div class="block">
       <p class='p_flex'>
         <span>Дата заказа:</span>
@@ -72,6 +72,18 @@ export default {
   components: {
     DatePicterCustom,
     ProductModalInfo
+  },
+  computed: {
+    pretterNumberOrder() {
+      if (!this.getOneShipments || !this.getOneShipments.number_order) return '';
+      let str = this.getOneShipments.number_order.split('/');
+      console.log(str)
+      if (str.length == 2) 
+        str = str[0].concat([str[1].substring(2)]);
+      else str = str[0];
+      
+      return str;
+    },
   },
   mixins: [MixShipments],
   methods: {
