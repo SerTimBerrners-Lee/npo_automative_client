@@ -43,7 +43,7 @@
 		</div> 
  
 		<div style='width: max-content;'>
-			<div class="scroll-table table_material " style='height: 100%;'>
+			<div class="scroll-table table_material">
 
 				<TableTypeMaterial />
 				<TableMaterial :type_view='"def"' />
@@ -130,6 +130,7 @@ export default {
 <style scoped>
 .table_material {
 	display: flex;
+	width: fit-content;
 } 
 table {
 	height: fit-content;
