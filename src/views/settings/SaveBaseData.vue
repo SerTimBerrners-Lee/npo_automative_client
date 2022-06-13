@@ -149,6 +149,7 @@ tr {
 }
 .main_db div {
   margin: 10px;
+  height: fit-content;
 }
 #db_save {
   margin-top: 20px; 
@@ -211,6 +212,10 @@ tr {
 }
 .db-date-block {
   margin-top: 25px;
+  height: 400px;
+  padding-right: 25px;
+  overflow: hidden;
+  overflow-y: auto;
 }
 .g1>div div{
   box-shadow: 5px -1px 5px -2px #00C9FF;
