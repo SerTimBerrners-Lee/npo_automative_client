@@ -250,8 +250,11 @@ export default {
     keySearch(v) {
       this.searchProduct(String(v));
     },
-    unmount_clear() {
+    async unmount_clear() {
+      this.loader = true;
       this.reverseMidlevareProduct();
+      await this.fetchAllShipmentsNoStatus();
+      this.loader = false;
     },
     unmount_action() {
       this.loader = true;
@@ -262,7 +265,7 @@ export default {
       this.productModalKey = random(1, 999);
     },
     toSetOrders(shipments) {
-      this.unmount_clear();
+      this.reverseMidlevareProduct();
       this.productToShipmentsSort([shipments.product]);
       this.loader = false;
     },
@@ -278,7 +281,7 @@ export default {
       this.normTimeOperationKey = random(1, 999);
     },
     returnShipmentsKolvo(shipments) {
-      if(!shipments || shipments.length == 0) return '-';
+      if (!shipments || shipments.length == 0) return '-';
       let end_date = shipments[0]?.number_order.split('от')[0] || '-';
       for (const ship1 of shipments) {
         for (const ship2 of shipments) {
@@ -290,24 +293,24 @@ export default {
     },
     returnShipmentsDateModal(izd, type) {
       const shipments = izd.shipments;
-      if(izd.shipments == undefined) {
+      if (izd.shipments == undefined) {
         this.getAllProductShipmentsById(izd.id).then(res => {
           this.shipments = res.shipments;
           this.izdForSchipment = { izd, type };
           this.shipmentKey = random(1, 999);
         })
       }
-      if(shipments && shipments.length == 0) return showMessage('', 'Нет Заказов', 'i');
-      if(!shipments) return;
+      if (shipments && shipments.length == 0) return showMessage('', 'Нет Заказов', 'i');
+      if (!shipments) return;
       this.shipments = shipments;
       this.izdForSchipment = {izd, type};
       this.shipmentKey = random(1, 999);
     },
     getTimming(param, kol = 1) {
-      if(!param) return 0;
+      if (!param) return 0;
       try {
         const pars = JSON.parse(param);
-        if(pars) 
+        if (pars) 
           return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2);
       } catch(e) { console.error(e); }
     },
@@ -315,7 +318,7 @@ export default {
       this.select_izd = izd;
     },
     alt(e) {
-      if(!this.select_izd)
+      if (!this.select_izd)
         return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w');
       this.select_izd.my_kolvo = e.innerText;
     },
@@ -325,16 +328,16 @@ export default {
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select');
       let check = true;
-      for(const izdd of this.toProductionArr) {
-        if(izdd.id == izd.id) {
+      for (const izdd of this.toProductionArr) {
+        if (izdd.id == izd.id) {
           this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
           check = false;
         }
       }
-      if(check) this.toProductionArr.push(izd);
+      if (check) this.toProductionArr.push(izd);
     },
     start() {
-      if(!this.toProductionArr.length)
+      if (!this.toProductionArr.length)
         return showMessage('', 'Для начала выберите Изделие', 'w');
       this.parametrs = {
         izd: this.toProductionArr,

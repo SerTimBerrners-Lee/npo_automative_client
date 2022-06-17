@@ -244,15 +244,18 @@ export default {
     keySearchCb(v) {
       this.searchCbed(String(v));
     },
-    unmount_clear() {
+    async unmount_clear() {
+      this.loader = true;
       this.reverseMidlevareCbed();
+      await this.fetchAllShipmentsNoStatus();
+      this.loader = false;
     },
     toSetOrders(shipments) {
-      this.unmount_clear();
+      this.reverseMidlevareCbed();
       this.cbedToShipmentsSort(shipments.cbeds);
     },
     start() {
-      if(!this.toProductionArr.length)
+      if (!this.toProductionArr.length)
         return showMessage('', 'Для начала выберите СБ и заказ', 'w');
       this.parametrs = {
         izd: this.toProductionArr,
@@ -266,31 +269,31 @@ export default {
       this.description = description;
     },
     normTimeOperation() {
-      if(!this.select_izd)
+      if (!this.select_izd)
         return showMessage('', 'Для начала выберите СБ', 'w');
       this.showNormTimeOperation = true;
       this.normTimeOperationKey = random(1, 999);
     },
     returnShipmentsKolvo(shipments) {
-      if(!shipments || shipments.length == 0) return '-'
+      if (!shipments || shipments.length == 0) return '-'
       let end_date = shipments[0]?.number_order.split('от')[0] || '-'
-      for(let ship1 of shipments) {
-        for(let ship2 of shipments) {
-          if(!ship1.number_order) continue;
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0];
+      for (const ship1 of shipments) {
+        for (const ship2 of shipments) {
+          if (!ship1.number_order) continue;
+          if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = ship1.number_order.split('от')[0];
         }
       }
       return end_date;
     },
     returnShipmentsDateModal(izd, type) {
       const shipments = izd.shipments;
-      if(!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i')
+      if (!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i')
       this.shipments = shipments;
       this.izdForSchipment = {izd, type};
       this.shipmentKey = random(1, 999);
     },
     getTimming(param, kol = 1) {
-      if(!param) return 0;
+      if (!param) return 0;
       try {
         const pars = JSON.parse(param);
         if(pars) 
@@ -300,19 +303,19 @@ export default {
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select');
       let check = true;
-      for(let izdd of this.toProductionArr) {
+      for (const izdd of this.toProductionArr) {
         if(izdd.id == izd.id) {
           this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
           check = false;
         }
       }
-      if(check) this.toProductionArr.push(izd);
+      if (check) this.toProductionArr.push(izd);
     },
     setIzdels(izd) {
       this.select_izd = izd;
     },
     alt(e) {
-      if(!this.select_izd)
+      if (!this.select_izd)
         return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w');
       this.select_izd.my_kolvo = e.innerText;
     },
@@ -320,7 +323,7 @@ export default {
       console.log(val);
     },
     selectAllItem() {
-      if(this.toProductionArr.length < this.allCbed.length) {
+      if (this.toProductionArr.length < this.allCbed.length) {
         this.toProductionArr = this.allCbed;
         document.getElementsByClassName('checkbox_block').forEach(el => el.classList.add('checkbox_block_select'));
       } else {

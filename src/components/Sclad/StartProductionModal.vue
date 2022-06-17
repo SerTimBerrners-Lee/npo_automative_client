@@ -24,15 +24,23 @@
             <th>Тип</th>
             <th>Артикул</th>
             <th>Наименование</th>
-            <th>Кол-во</th>
+            <th>Кол-во по заказам покупателя</th>
+            <th>Рекомендация к заказу</th>
+            <th>Свое кол-во</th>
           </tr>
-          <tr v-for='izd of komplect' :key='izd'>
+          <tr v-for='(izd, idx) of komplect' :key='idx'>
             <td class='center' v-if='parametrs.type == "cbed"'>СБ</td>
             <td class='center' v-if='parametrs.type == "det"'>Д</td>
             <td class='center' v-if='parametrs.type == "prod"'>И</td>
             <td>{{ izd.articl }}</td>
             <td>{{ izd.name }}</td>
-            <td class='center'>{{ izd.my_kolvo }}</td>
+            <td class='center'>{{ izd.shipments_kolvo }}</td>
+            <td class='center'>{{ izd.min_remaining * 3 }}</td>
+            <td class='center input__td'>
+              <input 
+                type="number" 
+                v-model="izd.my_kolvo"
+                @change="e => changeKolvo(idx, e.target.value)"></td>
           </tr>
         </table>
       </div>
@@ -82,6 +90,10 @@ export default {
     },
     change_date_shipments(date) {
       this.date_shipments = date;
+    },
+    changeKolvo(idx, value) {
+      const val = Number(val) > 0 || 1;
+      this.komplect[idx].my_kolvo = value;
     },
     start() {
       if(!this.$props.parametrs || !this.$props.parametrs.izd)
@@ -134,8 +146,6 @@ export default {
           item.my_kolvo = item.min_remaining;
       }
     }
-    console.log(this.$props.parametrs)
-    // get number order 
     const count = await this.fetchWorkingsCount() || new Date().getTime();
     this.number_order = this.date_order.slice(this.date_order.length-2) + "-" + (count.count + 1);
   },
@@ -163,5 +173,8 @@ table{
 }
 textarea {
   height: 130px;
+}
+.input__td>input {
+  width: 45px;
 }
 </style>

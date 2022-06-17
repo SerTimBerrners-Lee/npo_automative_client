@@ -12,7 +12,7 @@ export default {
   actions: {
     async fetchDeficit(ctx) { 
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit`);
-      if(!res.ok) return false; 
+      if (!res.ok) return false; 
       
       const result = await res.json();
       ctx.commit('setDeficit', result);
@@ -30,52 +30,52 @@ export default {
     },
     async setchDeficitCbed(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/cbed`)
-      if(!res.ok) return false
+      if (!res.ok) return false
 
       const result = await res.json()
-      let cbeds = []
-      if(result.length) {
-        for(let inx in result) {
-          result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['cbed_kolvo']
-          if(result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0) 
-            cbeds.push(result[inx])
+      const cbeds = []
+      if (result.length) {
+        for (let inx in result) {
+          result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['cbed_kolvo'];
+          if (result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0)
+            cbeds.push(result[inx]);
         }
       }
       ctx.commit('addAllCbed', cbeds)
       return result 
     },
     async setchDeficitDeficit(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/detal`)
-      if(!res.ok) return false
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/detal`);
+      if (!res.ok) return false;
 
-      const result = await res.json()
-      let detals = []
-      if(result.length) {
-        for(let inx in result) {
+      const result = await res.json();
+      const detals = [];
+      if (result.length) {
+        for (let inx in result) {
           result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['detal_kolvo']
-          if(result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0) 
-            detals.push(result[inx])
+          if (result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0)
+            detals.push(result[inx]);
         }
       }
-      ctx.commit('setDetalMutation', detals)
-      return result
+      ctx.commit('setDetalMutation', detals);
+      return result;
     },
     async setchDeficitProducts(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/product`)
-      if(!res.ok) return false;
-      const result = await res.json()
+      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/product`);
+      if (!res.ok) return false;
+      const result = await res.json();
 
-      let products = []
-      if(result.length) {
-        for(let inx in result) {
+      const products = []
+      if (result.length) {
+        for (let inx in result) {
           result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['product_kolvo']
-          if(result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0) 
-            products.push(result[inx])
+          if (result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0) 
+            products.push(result[inx]);
         }
       }
       
-      ctx.commit('addAllProduct', products)
-      return result 
+      ctx.commit('addAllProduct', products);
+      return result;
     },
     async fetchGetAllDeficitPPM(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit`);
@@ -92,7 +92,7 @@ export default {
      */
     async fetchMaterialToShipments(ctx, data) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit/shipments/${data.id}/${data.type}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('unsetSortMaterial');
@@ -101,14 +101,14 @@ export default {
     },
     async getShipmentsForOneMaterial(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialonecshipments/${id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
     },
     async fetchMatRemParent(ctx, id) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialparents/${id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
@@ -116,7 +116,7 @@ export default {
     // Marks
     async fetchMarksByOperation(ctx, _id) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/marks/byoperation/${_id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;
@@ -129,9 +129,9 @@ export default {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({...data})
-      })
-      if(res.ok) return true
-      return false
+      });
+      if (res.ok) return true;
+      return false;
     },
   },
   mutations: {

@@ -40,7 +40,7 @@
           <table>
             <tbody class='fixed_table_85'>
               <tr>
-                <th colspan="5" class='min_width-100'>Детали для сборок из комплектации</th>
+                <th colspan="6" class='min_width-100'>Детали для сборок из комплектации</th>
                 <th rowspan="3" class='min_width-120'>Дефицит</th>
                 <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
                 <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
@@ -56,6 +56,7 @@
                 <th rowspan="3" class='min_width-120'>Заказано на производстве</th> 
                 <th rowspan="3" class='min_width-120'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th> <!-- остаток с учетом -->
                 <th rowspan="3" class='min_width-100'>Статус</th>
+                <th rowspan="3" class='min_width-100'>Готовность</th>
                 <th rowspan="3" class='min_width-100'>Техпроцесс</th>
                 <th rowspan="3" class='min_width-100'>Примечание</th> 
               </tr>
@@ -66,11 +67,12 @@
                 </th> 
                 <th>Артикул</th>
                 <th>Наименование</th>
-                <th>Принадлежность</th>
+                <th>Дата планируемой отгрузки</th>
+                <th style='word-break: break-all;'>Принадлежность</th>
               </tr>
               <tr>
                 <td colspan='1'>Поиск: </td>
-                <td colspan="4">
+                <td colspan="5">
                   <Search 
                     :placeholder="'Поиск по Артиклу и Наименованию'"
                     @unmount='keySearch' 
@@ -89,6 +91,7 @@
               </td>
               <td class='center'>{{ detal.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>
+              <td class='center'>{{ firstDateShipments(detal.shipments) }}</td>
               <td class='center' @click='returnShipmentsDateModal(detal)'>
                 <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
               </td>
@@ -100,9 +103,9 @@
               <td class='center'>{{ detal?.min_remaining }}</td> <!-- Минимальный остаток -->
               <td class='center'>{{ detal?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
               <td class='center'>{{ returnZnachCPU(detal) }}</td> <!-- ЧПУ --->
-              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).preTime.znach : ''}}</td> <!-- Норма времени (подготовительное) -->
-              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).helperTime.znach : '' }}</td><!-- Норма времени (вспомогательное) -->
-              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).mainTime.znach : ''}}</td><!-- Норма времени (основное) -->
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).preTime.znach || 0 : 0 }}</td> <!-- Норма времени (подготовительное) -->
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).helperTime.znach || 0 : 0 }}</td><!-- Норма времени (вспомогательное) -->
+              <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).mainTime.znach || 0 : 0 }}</td><!-- Норма времени (основное) -->
               <td class='center'>{{ getTimming(detal.parametrs, detal.shipments_kolvo) }}</td><!-- Норма времени (общее на парт.) -->
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>
                   {{ detal?.my_kolvo || detal.min_remaining * 3  }}
@@ -111,6 +114,7 @@
               <td class='center'>{{ detal.detal_kolvo + detal.metalloworking_kolvo - detal.shipments_kolvo }}</td> <!-- Реальный остаток с учетом -->
               <td v-if='detal.metalloworking_kolvo > 0' class='center min_width-100 success_operation'>Заказано</td>
               <td v-else class='center min_width-100 work_operation'>Не заказано</td> <!-- Статус -->
+              <td class='center min_width-100 work_operation'>0 %</td> <!-- Готовность -->
               <td class='center'>
                 <img src="@/assets/img/link.jpg" @click='showTechProcess(detal)' class='link_img' atl='Показать' />
               </td><!-- Техпроцесс -->
@@ -161,7 +165,7 @@
 
 <script>
 import {random} from 'lodash';
-import { showMessage } from '@/js/';
+import { showMessage, differencesShipments } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
 import DetalModal from '@/components/BaseDetal/DetalModal';
@@ -242,8 +246,11 @@ export default {
       'changeStatusDeficitDetal',
       'changeDeficitDetal',
     ]),
-    unmount_clear() {
-      this.reverseMidlevareDetal()
+    async unmount_clear() {
+      this.loader = true;
+      this.reverseMidlevareDetal();
+      await this.fetchAllShipmentsNoStatus();
+      this.loader = false;
     },
     unmount_start_production(data) {
       if (!data) return;
@@ -262,7 +269,7 @@ export default {
         0 : kol - izd.min_remaining - izd.shipments_kolvo;
     },
     toSetOrders(shipments) {
-      this.unmount_clear()
+      this.reverseMidlevareDetal();
       this.detalToShipmentsSort(shipments.detals);
     },
     keySearch(v) {
@@ -273,6 +280,11 @@ export default {
     },
     unmount_tech_process() {
       this.techProcessID = null;
+    },
+    firstDateShipments(ship = []) {
+      if (!ship.length) return '-';
+      const sort = differencesShipments(ship);
+      return sort[0]?.date_shipments || '-';
     },
     returnShipmentsDateModal(izd) {
       const shipments = izd.shipments;
@@ -291,15 +303,16 @@ export default {
       this.startProductionModalKey = random(1, 999);
     },
     toProduction(izd, e) {
+      console.log(izd);
       e.classList.toggle('checkbox_block_select');
       let check = true;
       for (const izdd of this.toProductionArr) {
-        if(izdd.id == izd.id) {
+        if (izdd.id == izd.id) {
           this.toProductionArr = this.toProductionArr.filter(iz => iz.id != izd.id);
           check = false;
         }
       }
-      if(check) this.toProductionArr.push(izd);
+      if (check) this.toProductionArr.push(izd);
     },
     setIzdels(izd) {
       this.select_izd = izd;

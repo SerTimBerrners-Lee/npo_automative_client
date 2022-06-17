@@ -39,82 +39,68 @@
 <script>
 import { random } from 'lodash';
 import { comparison } from '@/js/';
+import MixModal from '@/mixins/mixmodal';
 import ShipmentsModal from '@/components/IssueShipment/ShipmentsModal';
 
 export default {
   props: ['shipments', 'izd'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
-
       shipments_arr: [],
 
       key_modal_shipments: random(1, 999),
       shipments_id: null
     }
   },
-  components: {ShipmentsModal},
+  components: { ShipmentsModal },
+  mixins: [MixModal],
   methods: {
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-    },
     openShipments(id) {
-      this.key_modal_shipments = random(1, 999)
-      this.shipments_id = id
+      this.key_modal_shipments = random(1, 999);
+      this.shipments_id = id;
     },
     returnCountIzd(item, izd, type) {
-      if(type == 'product') return item.kol || 0
-      if(type == 'material') return item.shipments_material || 0
+      if (type == 'product') return item.kol || 0;
+      if (type == 'material') return item.shipments_material || 0;
       try {
         let count = 0;
-        const list = JSON.parse(item.list_cbed_detal)
-        const listTwo = JSON.parse(item.list_hidden_cbed_detal)
-        const arr = [].concat(list, listTwo)
-        for(const obj of arr) {
-          if(obj.type == type && obj.obj.id == izd.id) count += Number(obj.kol)  
+        const list = JSON.parse(item.list_cbed_detal);
+        const listTwo = JSON.parse(item.list_hidden_cbed_detal);
+        const arr = [].concat(list, listTwo);
+        for (const obj of arr) {
+          if (obj.type == type && obj.obj.id == izd.id) count += Number(obj.kol)  ;
         }
         return count;
       } catch (err) {console.error(err)}
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;' 
+    const izd = this.$props.izd;
 
-    const izd = this.$props.izd
-
-    console.log(this.$props.shipments)
-    console.log(izd);
-
-    if(this.$props.shipments) {
-      this.shipments_arr = this.$props.shipments
-      if(izd && izd.izd) {
-        for(const item in this.shipments_arr) {
-          this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type)
+    if (this.$props.shipments) {
+      this.shipments_arr = this.$props.shipments;
+      if (izd && izd.izd) {
+        for (const item in this.shipments_arr) {
+          this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
         }
       }
     }
 
     let variables;
-    for(let ship1 in this.shipments_arr) {
-      for(let ship2 in this.shipments_arr) {
-        if(comparison(this.shipments_arr[ship1].date_shipments, 
+    for (let ship1 in this.shipments_arr) {
+      for (let ship2 in this.shipments_arr) {
+        if (comparison(this.shipments_arr[ship1].date_shipments, 
           this.shipments_arr[ship2].date_shipments, '<')) {
-            variables = this.shipments_arr[ship1]
-            this.shipments_arr[ship1] = this.shipments_arr[ship2]
-            this.shipments_arr[ship2] = variables
+            variables = this.shipments_arr[ship1];
+            this.shipments_arr[ship1] = this.shipments_arr[ship2];
+            this.shipments_arr[ship2] = variables;
           }
       }
 
-      if(this.shipments_arr[ship1].to_sklad && this.shipments_arr[ship1].number_order.indexOf('C') == -1) {
-        let char = this.shipments_arr[ship1].number_order.split('')
-        char.unshift('C')
-        this.shipments_arr[ship1].number_order = char.join('')
+      if (this.shipments_arr[ship1].to_sklad && this.shipments_arr[ship1].number_order.indexOf('C') == -1) {
+        const char = this.shipments_arr[ship1].number_order.split('');
+        char.unshift('C');
+        this.shipments_arr[ship1].number_order = char.join('');
       }
     }
   },

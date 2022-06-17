@@ -238,32 +238,32 @@ export default {
       this.show_operaiton_m = true;
     }, 
     returnShipmentsKolvo(shipments, znach_return = 1) {
-      if(!shipments || shipments.length == 0) return '-';
+      if (!shipments || shipments.length == 0) return '-';
       let end_date = shipments[0]?.date_shipments || '-';
       if(znach_return == 2) end_date = shipments[0]?.number_order || '-';
-      for(const ship1 of shipments) {
-        for(const ship2 of shipments) {
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order;
+      for (const ship1 of shipments) {
+        for (const ship2 of shipments) {
+          if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order;
         }
       }
       return end_date;
     },
     returnShipmentsDateModal(shipments) {
-      if(!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
+      if (!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
       this.shipmentKey = random(1, 999);
       this.shipments = shipments;
     },
     filterOperation() {
-      for(const ass of this.getAssembles) {
-        if(!ass.tech_process || !ass.tech_process.operations) continue;
-        for(const oper of ass.tech_process.operations) {
-          for(const ot of this.getTypeOperations) {
-            if(oper.name == ot.id) {
+      for (const ass of this.getAssembles) {
+        if (!ass.tech_process || !ass.tech_process.operations) continue;
+        for (const oper of ass.tech_process.operations) {
+          for (const ot of this.getTypeOperations) {
+            if (oper.name == ot.id) {
               let check = true;
-              for(let os of this.operation_stack) {
-                if(os.id == ot.id) check = false;
+              for (const os of this.operation_stack) {
+                if (os.id == ot.id) check = false;
               }
-              if(check) {
+              if (check) {
                 this.operation_stack.push(ot);
               } else check = true;
             }
@@ -273,10 +273,10 @@ export default {
       this.operationFilter();
     },
     operationFilter() {
-      if(!this.operation_stack.length) return false;
-      for(let inx in this.operation_stack) {
-        for(let j in this.operation_stack) {
-          if(this.operation_stack[inx].id < this.operation_stack[j].id) {
+      if (!this.operation_stack.length) return false;
+      for (let inx in this.operation_stack) {
+        for (let j in this.operation_stack) {
+          if (this.operation_stack[inx].id < this.operation_stack[j].id) {
             let variabl = this.operation_stack[inx];
             this.operation_stack[inx] = this.operation_stack[j];
             this.operation_stack[j] = variabl;
@@ -286,11 +286,11 @@ export default {
     },
     showAllTimers(ass) {
       let count = 0;
-      if(!ass.tech_process) return false;
+      if (!ass.tech_process) return false;
       const operations = ass.tech_process.operations;
-      if(!operations || operations.length == 0) return;
+      if (!operations || operations.length == 0) return;
 
-      for(let operation of operations) {
+      for (const operation of operations) {
         count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * ass.kolvo_shipments) / 60;
       }
       return count.toFixed(2);

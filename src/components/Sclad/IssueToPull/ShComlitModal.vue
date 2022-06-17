@@ -255,14 +255,14 @@ export default {
       this.loader = false;
     },
     unmount_user_modal(data) {
-      if(!data) return false;
+      if (!data) return false;
 
-      if(this.typeOpen == 'executor') this.creater_user = data;
-      if(this.typeOpen == 'controller') this.responsible_user = data;
+      if (this.typeOpen == 'executor') this.creater_user = data;
+      if (this.typeOpen == 'controller') this.responsible_user = data;
       this.typeOpen = '';
     },
     file_unmount(e) { 
-      if(!e) return 0;
+      if (!e) return 0;
       this.formData = e.formData;
       this.name_check = '';
       this.lastFormData = this.formData;
@@ -317,7 +317,7 @@ export default {
 
 
       const saveResult = await this.fetchCreateShComplit(this.formData);
-      if(saveResult) {
+      if (saveResult) {
         this.setStatusShipments(sh_id);
         showMessage('', 'Отгрузка произошла успешно ' + this.number_order, 's');
       }
@@ -326,12 +326,12 @@ export default {
       return this.destroyModalF(true);
     },
     async openDocuments(shipments) {	
-			if(!shipments.id) return showMessage('', 'Документов нет', 'w');
+			if (!shipments.id) return showMessage('', 'Документов нет', 'w');
 			const ships = await this.fetchDocumentsShipments(shipments.id);
 
-			if(ships.documents && ships.documents.length) {
-				for(const doc of ships.documents) {
-					if(doc.name == shipments.base) {
+			if (ships.documents && ships.documents.length) {
+				for (const doc of ships.documents) {
+					if (doc.name == shipments.base) {
 						this.keyWhenModalGenerateFileOpen = random(1, 999);
 						this.itemFiles = [doc];
 					}
