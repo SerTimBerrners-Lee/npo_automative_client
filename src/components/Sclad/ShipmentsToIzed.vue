@@ -15,6 +15,7 @@
 					<tr>
 						<th>№ Заказа</th>
 						<th>Дата Заказа</th>
+            <th>Планируемая дата отгрузки</th> 
             <th>Кол-во Изделий на Заказ</th>
 					</tr>
           <tr v-for='shipment of shipments_arr' :key="shipment" 
@@ -22,6 +23,7 @@
             @click="openShipments(shipment.id)">
             <td>{{ shipment.number_order }}</td>
             <td class='center'>{{ shipment.date_order }}</td>
+            <td class='center'>{{ shipment.date_shipments }}</td>
             <td class='center'>{{ shipment.kolvoIzd}}</td>
           </tr>
 				</table>
