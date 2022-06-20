@@ -48,23 +48,23 @@
                 <th rowspan="3" class='min_width-120'>Минимальный остаток</th>
                 <th rowspan="3" class='min_width-120'>Рекомендуемый остаток</th>
                 <th rowspan="3" class='min_width-100'>ЧПУ</th>
-                <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th> 
-                <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th> 
-                <th rowspan="3" class='min_width-100'>Норма времени (основное), ч</th> 
-                <th rowspan="3" class='min_width-100'>Норма времени (общее на парт.), ч</th> 
+                <th rowspan="3" class='min_width-100'>Норма времени (подготовительное), ч</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (вспомогательное), ч</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (основное), ч</th>
+                <th rowspan="3" class='min_width-100'>Норма времени (общее на парт.), ч</th>
                 <th rowspan="3" class='min_width-100'>СВОЕ кол-во (по ум. = рекомендуемому. кол-ву)</th>
-                <th rowspan="3" class='min_width-120'>Заказано на производстве</th> 
+                <th rowspan="3" class='min_width-120'>Заказано на производстве</th>
                 <th rowspan="3" class='min_width-120'>Реальный остаток с учетом планируемых отгрузок и планируемого производства</th> <!-- остаток с учетом -->
                 <th rowspan="3" class='min_width-100'>Статус</th>
                 <th rowspan="3" class='min_width-100'>Готовность</th>
                 <th rowspan="3" class='min_width-100'>Техпроцесс</th>
-                <th rowspan="3" class='min_width-100'>Примечание</th> 
+                <th rowspan="3" class='min_width-100'>Примечание</th>
               </tr>
               <tr>
                 <th class='center'>№</th>
                 <th @click='selectAllItem' style='cursor: pointer;'>
                   <unicon name="check" fill="royalblue" />
-                </th> 
+                </th>
                 <th>Артикул</th>
                 <th>Наименование</th>
                 <th>Дата планируемой отгрузки</th>
@@ -73,9 +73,9 @@
               <tr>
                 <td colspan='1'>Поиск: </td>
                 <td colspan="5">
-                  <Search 
+                  <Search
                     :placeholder="'Поиск по Артиклу и Наименованию'"
-                    @unmount='keySearch' 
+                    @unmount='keySearch'
                   />
                 </td>
               </tr>
@@ -130,13 +130,13 @@
         </div>
       </div>
     </div>
-    <StartPraduction 
+    <StartPraduction
       v-if='parametrs'
       :key='startProductionModalKey'
       :parametrs='parametrs'
       @unmount="unmount_start_production"
     />
-    <DescriptionModal 
+    <DescriptionModal
       v-if='showDescriptionModal'
       :key='descriptionKey'
       :parametrs='description'
@@ -146,13 +146,13 @@
       v-if='parametrs_detal'
       :id='parametrs_detal'
     />
-    <ShipmentsModal 
+    <ShipmentsModal
       :shipments='shipments'
       :izd='izdForSchipment'
       v-if='shipments.length'
       :key='shipmentKey'
     />
-    <TechProcess 
+    <TechProcess
       v-if='techProcessID'
       :key='techProcessKey'
       @unmount='unmount_tech_process'
@@ -164,7 +164,7 @@
 </template>
 
 <script>
-import {random} from 'lodash';
+import { random } from 'lodash';
 import { showMessage, differencesShipments } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
@@ -329,7 +329,7 @@ export default {
     getTimming(param, kol = 1) {
       if (!param) return 0;
       try {
-        let pars = JSON.parse(param);
+        const pars = JSON.parse(param);
         if (pars) 
           return (Number(pars.preTime.znach) + ((Number(pars.helperTime.znach) + Number(pars.mainTime.znach)) * kol)).toFixed(2);
       } catch(e) {

@@ -82,7 +82,7 @@
                 <tr
                   v-for='mat of obj.material' 
                   :key='mat'
-                  class='td-row'
+                  class='td-row' 
                   @click='openMaterial(mat.obj.id)'>
                   <td>{{ mat.obj?.name }}</td>
                   <td class="center">{{ mat?.obj?.MASS?.toFixed(3) }}</td>

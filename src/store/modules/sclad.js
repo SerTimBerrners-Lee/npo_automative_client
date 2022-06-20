@@ -1,4 +1,5 @@
 import PATH_TO_SERVER from '@/js/path.js';
+import { differencesShipments } from '@/js/';
 
 export default {
   state: {
@@ -26,7 +27,7 @@ export default {
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({...data})
-      })
+      });
     },
     async setchDeficitCbed(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/cbed`)
@@ -41,8 +42,8 @@ export default {
             cbeds.push(result[inx]);
         }
       }
-      ctx.commit('addAllCbed', cbeds)
-      return result 
+      ctx.commit('addAllCbed', cbeds);
+      return result;
     },
     async setchDeficitDeficit(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/detal`);
@@ -55,17 +56,24 @@ export default {
           result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['detal_kolvo']
           if (result[inx]['min_remaining'] > 0 || result[inx]['shipments_kolvo'] > 0)
             detals.push(result[inx]);
+          if (!result[inx].shipments || !result[inx].shipments.length) result[inx].date_shipments = '01.01.1999';
+          else {
+            const ships = differencesShipments(result[inx].shipments);
+            result[inx].date_shipments = ships[0]?.date_shipments || '01.01.1999';
+          }
         }
       }
-      ctx.commit('setDetalMutation', detals);
-      return result;
+
+      const sortDate = differencesShipments(result).reverse();
+      ctx.commit('setDetalMutation', sortDate);
+      return sortDate;
     },
     async setchDeficitProducts(ctx) {
       const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/product`);
       if (!res.ok) return false;
       const result = await res.json();
 
-      const products = []
+      const products = [];
       if (result.length) {
         for (let inx in result) {
           result[inx]['my_kolvo'] = (result[inx]['min_remaining'] * 3) + result[inx]['shipments_kolvo'] - result[inx]['product_kolvo']

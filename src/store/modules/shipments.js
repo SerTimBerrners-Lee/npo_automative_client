@@ -308,7 +308,7 @@ export default {
 			});
 		},
 		searchShipments(state, str) {
-			if(!state.str_sort_shipments.length)
+			if (!state.str_sort_shipments.length)
 				state.str_sort_shipments = state.shipments;
 			
 			state.shipments = state.str_sort_shipments;
@@ -318,7 +318,7 @@ export default {
       );
 		},
 		searchComplitSh(state, str) {
-			if(!state.str_sort_complit.length)
+			if (!state.str_sort_complit.length)
 				state.str_sort_complit = state.sh_complits;
 			
 			state.sh_complits = state.str_sort_complit;

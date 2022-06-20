@@ -41,7 +41,7 @@ async function checkedJsonList(izd, ctx) {
 							mat_true = true;
 							material_find = material;
 							list_detals[det].det.zag = material;
-							LEN = res.DxL.split('x')[1] ? (Number(res.DxL.split('x')[1]) / 1000) : 0;
+							LEN = (Number(res.lengt) / 1000) || 0;
 							MASS = Number(res?.massZag || 0);
 						}
 					}
