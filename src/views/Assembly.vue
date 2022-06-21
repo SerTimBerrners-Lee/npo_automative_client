@@ -18,7 +18,7 @@
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tr class='fixed_table_85'>
-            <th>Дата готовности</th>
+            <th>Дата план. отгрузки</th>
             <th>Заказ склада</th>
             <th>№ Заказа</th>
             <th>Сборочная единица</th>

@@ -94,46 +94,45 @@ export default {
 	methods: {
 		...mapActions(['getAllUsers']),
 		returnStatus(oper) {
-      let creater = this.returnKolvoCreate(oper)
-      if(creater)
-        return 1
-      else return 0
+      const creater = this.returnKolvoCreate(oper);
+			if (creater >= this.$props.izdeles.kolvo_shipments) return 1
+      else return 0;
     },
     openDescription(des) {
-      this.descriptionKey = random(1, 999)
-      this.show_des = true
-      this.description = des
+      this.descriptionKey = random(1, 999);
+      this.show_des = true;
+      this.description = des;
     },
     worksHors(operation, kolvo_all = 1) {
-      return worksHors(operation, kolvo_all)
+      return worksHors(operation, kolvo_all);
     },
     workingForMarks(operation, marks) {
-     return workingForMarks(operation, marks)
+     return workingForMarks(operation, marks);
     },
     returnKolvoBefore(oper) {
-      let create = this.returnKolvoCreate(oper)
-      return this.$props.izdeles.kolvo_shipments - create < 0 ? 0 : this.$props.izdeles.kolvo_shipments - create
+      const create = this.returnKolvoCreate(oper);
+      return this.$props.izdeles.kolvo_shipments - create < 0 ? 0 : this.$props.izdeles.kolvo_shipments - create;
     },
     returnKolvoCreate(oper) {
-      if(!oper.marks || !oper.marks.length) return 0
+      if (!oper.marks || !oper.marks.length) return 0
       let kol = 0
-      for(let mark of oper.marks) {
+      for (const mark of oper.marks) {
         kol = kol + mark.kol
       }
-      return kol
+      return kol;
     },
     returnUser(user_id) {
-      for(let user of  this.getUsers) {
-        if(user.id == user_id) 
+      for (const user of  this.getUsers) {
+        if (user.id == user_id) 
           return user.login
       }
     }
 	},
 	async mounted() {
-		if(!this.$props.tp) return 0
+		if (!this.$props.tp) return 0
 
-    this.operation_list = this.$props.tp.operations
-		await this.getAllUsers(true)
+    this.operation_list = this.$props.tp.operations;
+		await this.getAllUsers(true);
 	}
 }
 </script>

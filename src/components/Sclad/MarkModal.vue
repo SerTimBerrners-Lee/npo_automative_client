@@ -1,6 +1,6 @@
 <template>
   <div class="right-menu-modal">
-    <div :class='destroyModalLeft' @click="destroyModalF('unmount')"></div>
+    <div :class='destroyModalLeft' @click="destroyModalF('unmount', 'closed')"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens" >
 				<h3>Отметка о выполнении</h3>
@@ -70,6 +70,7 @@
 </template>
 <script>
 import { showMessage } from '@/js';
+import MixModal from '@/mixins/mixmodal';
 import { mapActions, mapGetters } from 'vuex';
 import DatePicterCustom from '@/components/DatePicter';
 import { afterAndBeforeOperation, returnKolvoCreate } from '@/js/operation';
@@ -78,9 +79,6 @@ export default {
   props: ['parametrs', 'type_izd'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
 			loader: false,
 
 			obj_name: null,
@@ -89,7 +87,7 @@ export default {
 			obj_curent: '',
 			obj_after: '',
 			obj_kolvo_create_in_operation: 0,
-			obj_kolvo_all: 0, 
+			obj_kolvo_all: 0,
 			min_det: 1,
 			assemble_id: null,
 			metaloworking_id: null,
@@ -99,29 +97,23 @@ export default {
 			kol: 1,
 			date: new Date().toLocaleDateString("ru-RU"),
 			operation_id: null
-			
     }
   },
 	computed: mapGetters(['getUsers', 'getTypeOperations']),
 	components: {DatePicterCustom},
+	mixins: [MixModal],
   methods: {
 		...mapActions([
-			'getAllUsers', 
+			'getAllUsers',
 			'getAllTypeOperations',
 			'fetchCreateMarks'
 		]),
-    destroyModalF() {
-			this.destroyModalLeft = 'left-block-modal-hidden';
-			this.destroyModalRight = 'content-modal-right-menu-hidden';
-			this.hiddens = 'display: none;';
-			this.$emit('unmount', 'closed');
-    },
 		change_date_picter(date) {
 			this.date = date;
 		},
 		async save() {
-			if(!this.min_det) return showMessage('', 'Вы выполнили все', 'w');
-			let data = {
+			if (!this.min_det) return showMessage('', 'Вы выполнили все', 'w');
+			const data = {
 				date_build: this.date,
 				kol: this.kol,
 				description: this.description,
@@ -138,43 +130,39 @@ export default {
 		showOperationStep(obj) {
 			this.obj_curent = `${obj.name}. ${obj.full_name}`;
 			const res = afterAndBeforeOperation(obj.tech_process, obj.operation_id);
-			if(res) {
-				if(res.before)
-					if(res.before.id != obj.name)
+			if (res) {
+				if (res.before)
+					if (res.before.id != obj.name)
 						this.obj_before =  `${res.before.name}. ${res.before.full_name}`;
-				if(res.after) 
-					if(res.after.id != obj.operation_id )
+				if (res.after) 
+					if (res.after.id != obj.operation_id)
 						this.obj_after = `${res.after.name}. ${res.after.full_name}`;
 			}
 		}
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
 		this.loader = true;
 		await this.getAllUsers(true);
 		await this.getAllTypeOperations();
 
-		if(this.$props.parametrs) {
+		if (this.$props.parametrs) {
 			const izd = this.$props.parametrs;
-			if(this.$props.type_izd == 'cb') {
+			if (this.$props.type_izd == 'cb') {
 				this.obj_name = izd.cbed.name;
 				this.assemble_id = izd.id;
-			} else  {
+			} else {
 				this.obj_name = izd.detal.name;
 				this.metaloworking_id = izd.id;
 			}
 
-			this.obj_max_det = izd.kolvo_shipments - returnKolvoCreate(izd) ;
+			this.obj_max_det = izd.kolvo_shipments - returnKolvoCreate(izd);
 			this.obj_kolvo_create_in_operation = returnKolvoCreate(izd);
 			this.obj_kolvo_all = izd.kolvo_shipments;
 			this.operation_id = izd.operation_id;
 			this.showOperationStep(izd);
 			
-			if(this.obj_max_det <=0) this.min_det = 0;
+			if (this.obj_max_det <=0) this.min_det = 0;
 		}
-		
 		this.loader = false;
   },
 }

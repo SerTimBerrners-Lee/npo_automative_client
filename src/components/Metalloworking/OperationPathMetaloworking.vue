@@ -43,8 +43,8 @@
 							<td class='center'>{{ metaloworking.detal ? metaloworking.detal.DxL : '' }}</td>
               <td class='center'>{{ metaloworking.detal ? metaloworking.detal.massZag : '' }}</td> 
 							<td class='center'>{{ mass_detal }}</td>
-							<td class='center'>{{ metaloworking.detal ? Number(metaloworking.detal.trash) * metaloworking.kolvo_shipments : ''}}</td>
-							<td class='center'>{{ metaloworking.detal ? Number(metaloworking.detal.trash) * metaloworking.kolvo_shipments : '' }}</td>
+							<td class='center'>{{ metaloworking.detal ? (Number(metaloworking.detal.trash) * metaloworking.kolvo_shipments)?.toFixed(3) : ''}}</td>
+							<td class='center'>{{ metaloworking.detal ? (Number(metaloworking.detal.trash) * metaloworking.kolvo_shipments)?.toFixed(3) : '' }}</td>
 						</tr>
 					</table>
         </div>

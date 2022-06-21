@@ -91,7 +91,7 @@
               </td>
               <td class='center'>{{ detal.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(detal.id)">{{ detal.name }}</td>
-              <td class='center'>{{ firstDateShipments(detal.shipments) }}</td>
+              <td class='center'>{{ detal.date_shipments }}</td>
               <td class='center' @click='returnShipmentsDateModal(detal)'>
                 <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
               </td>
@@ -165,7 +165,7 @@
 
 <script>
 import { random } from 'lodash';
-import { showMessage, differencesShipments } from '@/js/';
+import { showMessage } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
 import DetalModal from '@/components/BaseDetal/DetalModal';
@@ -280,11 +280,6 @@ export default {
     },
     unmount_tech_process() {
       this.techProcessID = null;
-    },
-    firstDateShipments(ship = []) {
-      if (!ship.length) return '-';
-      const sort = differencesShipments(ship);
-      return sort[0]?.date_shipments || '-';
     },
     returnShipmentsDateModal(izd) {
       const shipments = izd.shipments;

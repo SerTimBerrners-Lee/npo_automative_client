@@ -20,35 +20,21 @@
   </div> 
 </template>
 <script>
+import MixModal from '@/mixins/mixmodal';
+
 export default {
   props: ['parametrs', 'is_type'],
   data() {
-    return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',
-
-    }
+    return {}
   },
-  components: {},
+  mixins: [MixModal],
   methods: {
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-    },
     showOperation(oper) {
-      if(this.$props.is_type == 'cb')
-        this.$router.push({path: `/assembly/operation-assemble/${oper.id}/${oper.name}`})
-      if(this.$props.is_type == 'det')
-        this.$router.push({path: `/metalloworking/OperationMetall/${oper.id}/${oper.name}`})
+      if (this.$props.is_type == 'cb')
+        this.$router.push({path: `/assembly/operation-assemble/${oper.id}/${oper.name}`});
+      if (this.$props.is_type == 'det')
+        this.$router.push({path: `/metalloworking/operation-metall/${oper.id}/${oper.name}`});
     }
-
-  },
-  async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
   }
 }
 </script>

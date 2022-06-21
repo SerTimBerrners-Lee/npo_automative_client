@@ -14,34 +14,34 @@ import { comparison } from './index';
  */
 
 export function afterAndBeforeOperation(tp, operation_id, type = 'all') {
-	if(!tp.operations.length) return false
+	if (!tp.operations.length) return false
 	
-	let beforeOperation = null
-	let afterOperation = null
-	let currentOperation = null
-	let last = true
-	for(let operation of tp.operations) {
-		if(operation.id != operation_id && last)
-			beforeOperation = operation
-		if(operation.id == operation_id && last) {
-			currentOperation = operation
-			last = false
+	let beforeOperation = null;
+	let afterOperation = null;
+	let currentOperation = null;
+	let last = true;
+	for (const operation of tp.operations) {
+		if (operation.id != operation_id && last)
+			beforeOperation = operation;
+		if (operation.id == operation_id && last) {
+			currentOperation = operation;
+			last = false;
 		}
-		if(operation.id != operation_id && !last) {
-			afterOperation = operation
+		if (operation.id != operation_id && !last) {
+			afterOperation = operation;
 			break;
 		}
 	}
 
-	if(!beforeOperation)
+	if (!beforeOperation)
 		beforeOperation = {name: '', full_name: 'Нет'}
-	if(!afterOperation)
-		afterOperation = {name: '', full_name: 'Эта последняя'}
+	if (!afterOperation)
+		afterOperation = {name: '', full_name: 'Нет'}
 
-	if(type == 'before')
-		return beforeOperation
-	else if(type == 'after')
-		return afterOperation
+	if (type == 'before')
+		return beforeOperation;
+	else if (type == 'after')
+		return afterOperation;
 	else 
 		return {
 			before: beforeOperation,

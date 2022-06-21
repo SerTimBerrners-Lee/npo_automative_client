@@ -12,10 +12,10 @@ function eSelectSpan(e_last, e_now, classs = 'td-row-all') {
 
 // Возвращает объект с позицией на заказ
 function posToDeliveries(position, position_list) {
-  if(!position) return false;
+  if (!position) return false;
 
-  for(const item of position_list) {
-    if(item.id == position.id && item.type == position.type) return false;
+  for (const item of position_list) {
+    if (item.id == position.id && item.type == position.type) return false;
   }
   
   try {
@@ -43,9 +43,9 @@ function returnTypePosition(type) {
     ['Инвентарь', 'Инв.']
   ];
   
-  if(!type) return arr_type[0];
+  if (!type) return arr_type[0];
 
-  switch(type) {
+  switch (type) {
     case 'mat':
       return arr_type[0];
     case 'tools':

@@ -1,6 +1,6 @@
 <template>
 	<div >
-		<h3>Операция {{ name_operaiton }} </h3>
+		<h3>Операция {{ name_operaiton }}</h3>
 
 		
 		<TableOperation 
@@ -13,6 +13,7 @@
 
 <script>
 import TableOperation from './TableOperation';
+
 export default {
 	data() {
 		return {

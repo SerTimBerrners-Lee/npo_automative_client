@@ -24,7 +24,7 @@
         <table id='tablebody'>
           <tr class='fixed_table_85'>
             <th>№</th>
-            <th>Дата готовности</th>
+            <th>Дата план. отгрузки</th>
             <th>Заказ склада</th>
             <th>№ Заказа</th>
             <th>Деталь</th>
@@ -40,7 +40,6 @@
             <th>Материал</th>
             <th id='operation'>Операции</th>
             <th>Готовность</th>
-            <th>Статус</th>
             <th id='doc'>Документы</th>
             <th>Время на изг-е, ч</th>
             <th>Отходы (стружка), кг</th>
@@ -68,11 +67,10 @@
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
-            <td>{{  }}</td>
-            <td v-if='metalowork.status == enumStatus[0]' class='work_operation'>{{ metalowork.status  }}</td>
-            <td v-if='metalowork.status == enumStatus[1]' class='success_operation'>{{ metalowork.status  }}</td>
-            <td v-if='metalowork.status == enumStatus[2]' class='delete_operation'>{{ metalowork.status  }}</td>
-            <td v-if='metalowork.status == enumStatus[3]' class='delete_operation'>{{ metalowork.status  }}</td>
+            <td :class='returnStatus(metalowork.status) + " tooltip center"'>
+              <span>{{ precentWorks(metalowork) }}</span>
+              <span class="tooltiptext">{{ metalowork.status }}</span>
+            </td>
             <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
             </td>
@@ -130,6 +128,7 @@
 import print from 'print-js';
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
+import { eSelectSpan } from '@/js/methods';
 import { returnShipmentsDate } from '@/js/operation';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
@@ -213,6 +212,25 @@ export default {
       'breackFIlterMetal',
       'sortMatallZag'
     ]),
+    returnStatus(status) {
+      if (status == this.enumStatus[0]) return 'work_operation';
+      if (status == this.enumStatus[1]) return 'success_operation';
+      return 'delete_operation';
+    },
+    precentWorks(metal) {
+      const tp = metal.tech_process;
+      if (!tp || !tp.operations || !tp.operations.length) return '0%';
+      let kolDetalComplit = 0;
+      for (const item of tp.operations) {
+        if (!item?.marks.length) continue;
+        for (const mark of item.marks) {
+          kolDetalComplit += mark.kol;
+        }
+      }
+      const kolDetalForOpetaion = tp.operations.length * metal.kolvo_shipments;
+      const precent = kolDetalComplit * 100 / kolDetalForOpetaion;
+      return precent.toFixed(0) + '%';
+    },
     returnShipmentsKolvo(shipments, znach_return = 1) {
       return returnShipmentsDate(shipments, znach_return);
     },
@@ -229,12 +247,9 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
-      if(this.span) this.span.classList.remove('td-row-all')
-
-      this.span = e
-      this.span.classList.add('td-row-all')
-
-      this.selectMetalloworking = obj
+      console.log(obj);
+      this.span = eSelectSpan(this.span, e);
+      this.selectMetalloworking = obj;
     },
     async removeObject() {
       if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для удаления', 'w');

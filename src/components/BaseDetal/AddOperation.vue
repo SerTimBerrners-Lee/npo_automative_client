@@ -391,7 +391,6 @@ export default {
     this.getAllTypeOperations()
     
     if(this.$props.operation) {
-      // Если есть операция показываем ее для редактирования ()
       const op = this.$props.operation;
       this.id = op.id;
       this.name = op.name;

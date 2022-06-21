@@ -42,8 +42,8 @@
 						<th>Сделано, шт</th>
 						<th>Осталось, шт</th>
 
-						<th class='th_showZagParam' @click='showNormTime = !showNormTime'>
-							<p v-if='!showNormTime' class='showZagParam tooltip'>>
+						<th class='th_showZagParam' v-if='!showNormTime' @click='showNormTime = !showNormTime'>
+							<p class='showZagParam tooltip'>>
 								<span class='tooltiptext'>Показать Норма времени</span>
 							</p>
 						</th>
@@ -61,59 +61,60 @@
 						<th id='mark'>Отметка</th>
 					</tr>
 					<tr 
-						v-for='(meatl, inx) of getMetaloworkings'
-						:key='meatl'
+						v-for='(metal, inx) of getMetaloworkings'
+						:key='metal'
 						>
 						<td class='center'>{{ inx + 1 }}</td>
-						<td>{{ meatl.detal ? meatl.detal.articl : 'Нет детали'}}</td>
+						<td>{{ metal.detal ? metal.detal.articl : 'Нет детали'}}</td>
 						<td
 							class='td-row' 
-							@click='openDetal(meatl.detal)'>{{  meatl.detal ? meatl.detal.name : 'Нет детали' }}</td>
-						<td class='center'>{{ meatl.kolvo_shipments }}</td>
+							@click='openDetal(metal.detal)'>{{  metal.detal ? metal.detal.name : 'Нет детали' }}</td>
+						<td class='center'>{{ metal.kolvo_shipments }}</td>
 						<td class='center link_img'>
-							{{ returnDateShipments(meatl?.detal?.shipments) }}
+							{{ returnDateShipments(metal?.detal?.shipments) }}
 						</td> <!-- Дата готовности -->
 						<td class='center'>
-								<img src="@/assets/img/link.jpg" v-if='meatl.detal' @click='returnShipmentsKolvo(meatl.detal)' class='link_img' atl='Показать' />
-							</td>
+							<img src="@/assets/img/link.jpg" v-if='metal.detal' @click='returnShipmentsKolvo(metal.detal)' class='link_img' atl='Показать' />
+						</td>
 						<td class='center' id='parent'>
-							<img src="@/assets/img/link.jpg"  v-if='meatl.detal' @click='showParents(meatl.detal)' class='link_img' atl='Показать' />
+							<img src="@/assets/img/link.jpg"  v-if='metal.detal' @click='showParents(metal.detal)' class='link_img' atl='Показать' />
 						</td> <!-- Принадлежность --> 
 						<td class='params_td' v-if='showZagParam'>
-							<TbodyZag :detal='meatl.detal' />
+							<TbodyZag :detal='metal.detal' />
 						</td>
 						<td v-else></td>
-						<td>{{ meatl?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
-						<td :class='statusBeforeOperation(meatl, showOperation(meatl,  "before")) ? "center hover success_operation" : "center hover work_operation"'>
+						<td>{{ metal?.detal?.mat_za_obj?.name || 'Нет заготовки' }}</td> <!-- Материал --> 
+						<td :class='statusBeforeOperation(metal, showOperation(metal,  "before")) ? "center hover success_operation" : "center hover work_operation"'>
 							<p class='last_column'>
-								<span>{{ showOperation(meatl,  "before") }}</span>
-								<span v-if='showOperation(meatl,  "before") != "Нет"'>Готово: {{ beforeOperationCount(meatl) }}</span>
+								<span @click='openOperation(metal,  "before")'>{{ showOperation(metal,  "before") }}</span>
+								<span v-if='showOperation(metal,  "before") != "Нет"'>Готово: {{ beforeOperationCount(metal) }}</span>
 							</p>
 						</td> <!-- Пред. операция --> 
-						<td v-if='meatl.kolvo_shipments - returnKolvoCreate(meatl) == 0' class='success_operation center'>{{ 
-							returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
-						<td v-else-if='returnKolvoCreate(meatl) > 0' class='process_operation center'>{{ 
-							returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td><!-- Статус --> 
+						<td v-if='metal.kolvo_shipments - returnKolvoCreate(metal) == 0' class='success_operation center'>{{ 
+							returnStatus(metal.kolvo_shipments, returnKolvoCreate(metal))}}</td>
+						<td v-else-if='returnKolvoCreate(metal) > 0' class='process_operation center'>{{ 
+							returnStatus(metal.kolvo_shipments, returnKolvoCreate(metal))}}</td><!-- Статус --> 
 						<td v-else class='work_operation center'>{{ 
-							returnStatus(meatl.kolvo_shipments, returnKolvoCreate(meatl))}}</td>
-						<td class='center'>{{ returnKolvoCreate(meatl) }}</td> <!-- Сделано шт. --> 
-						<td class='center'>{{ returnFloor(meatl.kolvo_shipments - returnKolvoCreate(meatl)) }}</td> <!-- Осталось шт. -->
+							returnStatus(metal.kolvo_shipments, returnKolvoCreate(metal))}}</td>
+						<td class='center'>{{ returnKolvoCreate(metal) }}</td> <!-- Сделано шт. --> 
+						<td class='center'>{{ returnFloor(metal.kolvo_shipments - returnKolvoCreate(metal)) }}</td> <!-- Осталось шт. -->
 						<td v-if='!showNormTime'></td>
-						<td class='center' v-if='showNormTime'>{{ getTime(meatl).pt }}</td>
-						<td class='center' v-if='showNormTime'>{{ getTime(meatl).ht }}</td>
-						<td class='center' v-if='showNormTime'>{{ getTime(meatl).mt }}</td>
-						<td class='center'>{{ manyIzdTime(meatl, meatl.kolvo_shipments)	}}</td>
-						<td class='center'>{{ returnDateExist(meatl) }}</td> <!-- Дата исполнения --> 
-						<td class='center'>{{ responsible(meatl) }}</td> <!-- Исполнитель --> 
-						<td class='center'> {{ workingForMarks(meatl, meatl.marks) }} </td>
-						<td class='center hover success_operation'>{{ showOperation(meatl,  "after") }}</td>
+						<td class='center' v-if='showNormTime'>{{ getTime(metal).pt }}</td>
+						<td class='center' v-if='showNormTime'>{{ getTime(metal).ht }}</td>
+						<td class='center' v-if='showNormTime'>{{ getTime(metal).mt }}</td>
+						<td class='center'>{{ manyIzdTime(metal, metal.kolvo_shipments)	}}</td>
+						<td class='center'>{{ returnDateExist(metal) }}</td> <!-- Дата исполнения --> 
+						<td class='center'>{{ responsible(metal) }}</td> <!-- Исполнитель --> 
+						<td class='center'> {{ workingForMarks(metal, metal.marks) }} </td>
+						<td class='center hover success_operation'
+							@click='openOperation(metal,  "after")'>{{ showOperation(metal,  "after") }}</td>
 						<td class='center' id='doc'>
-							<img src="@/assets/img/link.jpg" @click='openDocuments(meatl.operation_id)' class='link_img' atl='Показать' />
+							<img src="@/assets/img/link.jpg" @click='openDocuments(metal.operation_id)' class='link_img' atl='Показать' />
 						</td>
 						<td class='center' id='discription'>
-							<img src="@/assets/img/link.jpg" @click='openDescription(meatl.description)' class='link_img' atl='Показать' />
+							<img src="@/assets/img/link.jpg" @click='openDescription(metal.description)' class='link_img' atl='Показать' />
 						</td>
-						<td class='center hover' @click='addMark(meatl)' id='mark'>
+						<td class='center hover' @click='addMark(metal)' id='mark'>
 							<unicon name="pen" fill="black" width='20' />
 						</td>
 					</tr>
@@ -263,8 +264,8 @@ export default {
 			'filterMetaloworkingByShipments'
 		]),
 		unmount_marks(res) {
-			if(res == 'closed') return false
-			if(res) {
+			if (res == 'closed') return false
+			if (res) {
 				this.fetchAllMetalloworkingTypeOperation(this.type_operation_id)
 				showMessage('', 'Отметка о выполнении успешно создана', 's');
 			}	else 
@@ -307,15 +308,22 @@ export default {
       });
     },  
 		openDetal(detal) {
-			if(!detal || !detal.id) return showMessage('', 'Нет детали!', 'w');
+			if (!detal || !detal.id) return showMessage('', 'Нет детали!', 'w');
 			this.parametrs_detal = detal.id;
       this.detalModalKey = random(1, 999);
 		},
 		showOperation(metal, type) {
-			if(!metal.tech_process || !metal.operation_id) return 'Нет операций';
+			if (!metal.tech_process || !metal.operation_id) return 'Нет операций';
 			return afterAndBeforeOperation(
 				metal.tech_process, metal.operation_id, type).full_name
 		},
+		openOperation(metal, type) {
+			if (!type) return false;
+			if (!metal.tech_process || !metal.operation_id) return showMessage('', 'Нет операций', 'w');
+			const operation = afterAndBeforeOperation(metal.tech_process, metal.operation_id, type);
+			if (operation.full_name == 'Нет' || !operation.tOperationId) return showMessage('', 'Нет операций', 'w');
+			window.open(`${window.location.origin}/metalloworking/operation-metall/${operation.tOperationId}/${operation.full_name}`);
+		},		
 		openDocuments(id) {
 			if(!id) return false
       this.fetchOneOperationById(id).then(res => {
@@ -358,7 +366,7 @@ export default {
 			this.keyParentsModal = random(1, 999);
     },
 		returnKolvoCreate(operation) {
-			if(!operation) return showMessage('', 'Нет операций', 'w');
+			if (!operation) return showMessage('', 'Нет операций', 'w');
 			return returnKolvoCreate(operation);
 		},
 		returnFloor(number) {
@@ -387,16 +395,15 @@ export default {
 		},
 		findMarks(operation_id, marks) {
 			let find = null;
-			for(const mark of marks) {
-				if(operation_id == mark.oper_id) find = mark;
+			for (const mark of marks) {
+				if (operation_id == mark.oper_id) find = mark;
 			}
-
 			return find;
 		},
 		returnDateExist(metal) {
-			if(!metal.marks || !metal.marks.length) return '-';
+			if (!metal.marks || !metal.marks.length) return '-';
 			const mark = this.findMarks(metal.operation_id, metal.marks);
-			if(!mark) return '-';
+			if (!mark) return '-';
 
 			return mark.date_build;
 		},
@@ -415,14 +422,14 @@ export default {
 		// return true || false
 		statusBeforeOperation(metal, before_name) {
 			const its = this.beforesOperations.filter(item => item.id == metal.id);
-			if(!its[0] || its[0].beforeName != before_name) return false;
+			if (!its[0] || its[0].beforeName != before_name) return false;
 
-			if(its[0].beforeCreateCount >= metal.kolvo_shipments) return true;
+			if (its[0].beforeCreateCount >= metal.kolvo_shipments) return true;
 			return false;
 		}
 	},
 	async mounted() {
-		if(!this.$props.type_operation_id)
+		if (!this.$props.type_operation_id)
 			return this.$router.back();
 
 		this.loader = true;
@@ -430,16 +437,16 @@ export default {
 		await this.getAllUsers(true);
 		await this.fetchAllShipmentsMetaloworking({sort: undefined, light: true})
 
-		for(const item of this.getMetaloworkings) {
-			let newItem = { id: item.id, beforeCreateCount: 0, beforeName: '' };
+		for (const item of this.getMetaloworkings) {
+			const newItem = { id: item.id, beforeCreateCount: 0, beforeName: '' };
 			const beforeOperation = afterAndBeforeOperation(
 				item.tech_process, item.operation_id, 'before');
-			if(!beforeOperation || !beforeOperation.id) continue;
+			if (!beforeOperation || !beforeOperation.id) continue;
 			// Получаем все марки для текузей операции
 			const marks = await this.fetchMarksByOperation(beforeOperation.id);
 
-			if(marks && marks.length) {
-				for(const mark of marks) {
+			if (marks && marks.length) {
+				for (const mark of marks) {
 					newItem.beforeName = beforeOperation.full_name;
 					newItem.beforeCreateCount += Number(mark.kol);
 				}
