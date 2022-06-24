@@ -51,25 +51,23 @@ export function afterAndBeforeOperation(tp, operation_id, type = 'all') {
 }
 
 export async function getStatus(tech_proc, operation_id, curr_id=1, return_is='index') {
-	if(!tech_proc.operations.length) return false
+	if (!tech_proc.operations.length) return false
 
-	let index = 0
-	for(let inx in tech_proc.operations) {
-		if(tech_proc.operations[inx].id == operation_id) 
-			index = inx
+	let index = 0;
+	for (let inx in tech_proc.operations) {
+		if (tech_proc.operations[inx].id == operation_id) index = inx;
 	}
 
-	if(return_is == 'index')
-		return index
+	if (return_is == 'index') return index;
 
-	if(return_is == 'pug') {
-		let pug_true = '<p class="success_operation">Готово</p>'
-		let pug_false = '<p class="work_operation">В процессе</p>'
+	if (return_is == 'pug') {
+		const pug_true = '<p class="success_operation">Готово</p>';
+		const pug_false = '<p class="work_operation">В процессе</p>';
 
-		for(let inx in tech_proc.operations) {
-			if(tech_proc.operations[inx].id == curr_id) {
-				if(index > inx) return pug_true
-				else return pug_false
+		for (let inx in tech_proc.operations) {
+			if (tech_proc.operations[inx].id == curr_id) {
+				if(index > inx) return pug_true;
+				else return pug_false;
 			}
 		}
 	}
@@ -77,7 +75,7 @@ export async function getStatus(tech_proc, operation_id, curr_id=1, return_is='i
 
 export class OperationTime {
 	constructor(operation, kol_create_izd = 1) {
-		if(!operation) return false
+		if (!operation) return false
 
 		this.pt = Number(operation.preTime) 
 		this.mt = Number(operation.mainTime) 
@@ -108,10 +106,10 @@ export function worksHors(operation, kolvo_all = 1) {
 }
  
 export function workingForMarks(operation, marks) {
-	if(!marks || marks.length == 0) return 0
+	if (!marks || marks.length == 0) return 0
 	let count = 0;
 	// let ot = new OperationTime(operation)
-	for(let mark of marks) {
+	for (const mark of marks) {
 		count = count + worksHors(operation, mark.kol)
 	}
 
@@ -128,12 +126,12 @@ export function returnKolvoBefore(oper) {
  * @returns number
  */
 export function returnKolvoCreate(oper) {
-	if(!oper.marks || !oper.marks.length) return 0
-	let kol = 0
-	for(let mark of oper.marks) {
-		kol = kol + mark.kol
+	if (!oper.marks || !oper.marks.length) return 0;
+	let kol = 0;
+	for (const mark of oper.marks) {
+		kol = kol + mark.kol;
 	}
-	return kol
+	return kol;
 }
 
 /**
@@ -143,13 +141,13 @@ export function returnKolvoCreate(oper) {
  * @returns '12.13.2013'
  */
  export function returnShipmentsDate(shipments, znach_return = 1) {
-  if(!shipments || shipments.length == 0) return '-';
+  if (!shipments || shipments.length == 0) return '-';
   let end_date = shipments[0]?.date_shipments || '-';
-  if(znach_return == 2) end_date = shipments[0]?.number_order || '-';
+  if (znach_return == 2) end_date = shipments[0]?.number_order || '-';
 
-  for(let ship1 of shipments) {
-    for(let ship2 of shipments) {
-      if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order
+  for (const ship1 of shipments) {
+    for (const ship2 of shipments) {
+      if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order
     }
   }
   return end_date;

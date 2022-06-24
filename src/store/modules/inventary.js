@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -32,7 +32,7 @@ export default {
   },
   actions: { 
     async fetchAllInventary(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary`)
+      const res = await Req(`api/inventary`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('pushAllTInventary', result)
@@ -40,7 +40,7 @@ export default {
       }
     },
     async addNewTInventary(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary`, {
+      const res = await Req(`api/inventary`, {
         method: 'post',
         headers: { 
             'Accept': 'application/json',
@@ -58,14 +58,14 @@ export default {
       }
     },
     async removeTInventary(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/${id}`, {
+      const res = await Req(`api/inventary/${id}`, {
         method: 'delete'
       })
       if(res.ok)
         ctx.commit('removeTInventaryMutation', id)
     },
     async updateNewTInventary(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary`, {
+      const res = await Req(`api/inventary`, {
         method: 'put',
         headers: {
           'Accept': 'application/json',
@@ -82,7 +82,7 @@ export default {
       }
     },
     async fetchAllPInventary(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/pt/`)
+      const res = await Req(`api/inventary/pt/`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('pushAllPTInventary', result)
@@ -90,7 +90,7 @@ export default {
       }
     },
     async addNewPTInventary(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/pt/`, {
+      const res = await Req(`api/inventary/pt/`, {
         method: 'post',
         headers: { 
           'Accept': 'application/json',
@@ -108,14 +108,14 @@ export default {
       }
     },
     async removePTInventary(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/pt/${id}`, {
+      const res = await Req(`api/inventary/pt/${id}`, {
         method: 'delete'
       })
       if(res.ok)
         ctx.commit('removePTInventaryMutation', id)
     },
     async updatePTInventary(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/pt/`, {
+      const res = await Req(`api/inventary/pt/`, {
         method: 'put',
         headers: {
           'Accept': 'application/json',
@@ -132,7 +132,7 @@ export default {
       }
     },
     async fetchOneInventary(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/${id}`)
+      const res = await Req(`api/inventary/name/${id}`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('addOneInventaryMytation', result)
@@ -140,21 +140,21 @@ export default {
       }
     },
     async fetchAllNameInventary(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/`);
+      const res = await Req(`api/inventary/name/`);
       if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('addAllInventary', result);
       return result;
     },
     async fetchAllNameInventaryArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/archive/`);
+      const res = await Req(`api/inventary/name/archive/`);
       if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('addAllInventary', result);
       return result;
     },
     async createNewInventary(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/`, {
+      const res = await Req(`api/inventary/name/`, {
         method: 'post',
         body: data
       })
@@ -164,7 +164,7 @@ export default {
       }
     },
     async fetchUpdateInventary(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/`, {
+      const res = await Req(`api/inventary/name/`, {
         method: 'put',
         body: data
       })
@@ -174,14 +174,14 @@ export default {
       }
     },
     async banInventary(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/name/${id}`, {
+      const res = await Req(`api/inventary/name/${id}`, {
         method: 'delete',
       })
       if(res.ok)
         ctx.commit('banInventaryMutation', id)
     },
     async attachFileToInventary(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/inventary/files/${data.inventary_id}/${data.file_id}`)
+      const res = await Req(`api/inventary/files/${data.inventary_id}/${data.file_id}`)
       if(res.ok) {
         const result = await res.json()
         return result

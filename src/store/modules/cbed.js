@@ -1,6 +1,6 @@
 
-import {sortState} from '@/js/index';
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
+import { sortState } from '@/js/index';
 
 export default {
   state: {
@@ -27,7 +27,7 @@ export default {
     async createNewCbEd(ctx, data) {
       if(!ctx.getters.getAuth) return 0;
 
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed`, {
+      const res = await Req(`api/cbed`, {
         method :  'post',
         body   :  data
       });
@@ -38,7 +38,7 @@ export default {
     },
 
     async getAllCbed(ctx, light=false) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/${light}`);
+      const res = await Req(`api/cbed/${light}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -47,7 +47,7 @@ export default {
     },
 
     async getAllCbedArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/archive/`);
+      const res = await Req(`api/cbed/archive/`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -56,7 +56,7 @@ export default {
     },
 
     async fetchCbedRemains(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/remains`);
+      const res = await Req(`api/cbed/remains`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -65,21 +65,21 @@ export default {
     },
 
     async getAllCbedArticl() {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/articl`);
+      const res = await Req(`api/cbed/articl`);
       if (!res.ok) return false;
 
       return await res.json();
     },
 
     async fetchCbedAva(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/ava/${id}`);
+      const res = await Req(`api/cbed/ava/${id}`);
       if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
 
     async getOneCbEdField(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/field/${data.fields}/${data.id}`);
+      const res = await Req(`api/cbed/field/${data.fields}/${data.id}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -87,14 +87,14 @@ export default {
     },
 
     async getOneCbEdBelongs(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/belongs/${id}/`);
+      const res = await Req(`api/cbed/belongs/${id}/`);
       if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
 
     async attachFileToCbed(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/files/${data.cbed_id}/${data.file_id}`);
+      const res = await Req(`api/cbed/files/${data.cbed_id}/${data.file_id}`);
       if(!res.ok) return false;
       const result = await res.json();
       return result;
@@ -103,7 +103,7 @@ export default {
     async updateCbed(ctx, data) {
       if(!ctx.getters.getAuth) return 0;
 
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/update`, {
+      const res = await Req(`api/cbed/update`, {
         method :  'post',
         body   :  data
       });
@@ -117,7 +117,7 @@ export default {
     async deleteCbedById(ctx, id) {
       if (!ctx.getters.getAuth) return 0;
 
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/${id}`, {
+      const res = await Req(`api/cbed/${id}`, {
         method :  'delete'
       });
       if(!res.ok) return false;
@@ -125,7 +125,7 @@ export default {
     }, 
 
     async getOneCbEdById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/one/${id}`);
+      const res = await Req(`api/cbed/one/${id}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -133,7 +133,7 @@ export default {
     },
 
     async fetchAllCbedOperation() {
-      const res = await fetch(`${PATH_TO_SERVER}api/cbed/operation`);
+      const res = await Req(`api/cbed/operation`);
       if (!res.ok) return [];
       return await res.json();
     }

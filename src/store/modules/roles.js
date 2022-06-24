@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -6,18 +6,18 @@ export default {
   },
   getters: {
     allRoles(state) {
-      return state.roles
+      return state.roles;
     }
   },
   actions: {
     async fetchRoles(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/roles/`)
+      const res = await Req(`api/roles/`)
       const result = await res.json()
       ctx.commit('updateRoles', result);
       return true
     },
     async removeRole(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/roles/` + id, {
+      const res = await Req(`api/roles/` + id, {
         method: 'delete',
       }) 
       if(res.status == 200) {
@@ -27,7 +27,7 @@ export default {
       } 
     },
     async createRole(ctx, param) {
-      const res = await fetch(`${PATH_TO_SERVER}api/roles/`, {
+      const res = await Req(`api/roles/`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -45,7 +45,7 @@ export default {
       }
     },
     async editRoleById(ctx, param) {
-      const res = await fetch(`${PATH_TO_SERVER}api/roles/update`, {
+      const res = await Req(`api/roles/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -64,7 +64,7 @@ export default {
       }
     },
     async fetchUpdateAssetsRole(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/roles/assets`, {
+      const res = await Req(`api/roles/assets`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',

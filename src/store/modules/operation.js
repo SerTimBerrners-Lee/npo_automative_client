@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -16,7 +16,7 @@ export default {
   }, 
   actions: {
     async createTypeOperation(ctx, data) {   // +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/typeoperation`, {
+      const res = await Req(`api/operation/typeoperation`, {
         headers: { 
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -28,7 +28,7 @@ export default {
       ctx.commit('addNewTypeOperation', result)
     },
     async updateTypeOperation(ctx, data) {   // +
-      await fetch(`${PATH_TO_SERVER}api/operation/typeoperation/update`, {
+      await Req(`api/operation/typeoperation/update`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ export default {
       ctx.dispatch('getAllTypeOperations')
     },
     async getAllTypeOperations(ctx) { // +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/typeoperation`)
+      const res = await Req(`api/operation/typeoperation`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('addListTypeOperations', result)
@@ -47,7 +47,7 @@ export default {
       }
     },
     async deleteTypeOperation(ctx, id) {  // +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/typeoperation/${id}`, {
+      const res = await Req(`api/operation/typeoperation/${id}`, {
         method: 'delete'
       })
       const result = await res.json()
@@ -55,14 +55,14 @@ export default {
       return result
     },
     async fetchOneOperationById(ctx, id) { // +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/operation/get/${id}`);
+      const res = await Req(`api/operation/operation/get/${id}`);
 
       if(!res.ok) return false;
       const result = await res.json()
       return result 
     },
     async updateOperationTech(ctx, data) { // +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/operation/up/tech`, {
+      const res = await Req(`api/operation/operation/up/tech`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ export default {
       ctx.commit('updateOperationToList', result);
     },
     async banOperation(ctx, id) { // +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/operation/${id}`, {
+      const res = await Req(`api/operation/operation/${id}`, {
         method  : 'delete'
       });
 
@@ -86,7 +86,7 @@ export default {
       ctx.commit('banOperationMuttation', id);
     },
     async createOperation(ctx, data) {// +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/operation`, {
+      const res = await Req(`api/operation/operation`, {
         method :  'post',
         body   :  data
       })
@@ -96,7 +96,7 @@ export default {
       ctx.commit('addNewOperationToList', result);
     },
     async updateOperation(ctx, data) {// +
-      const res = await fetch(`${PATH_TO_SERVER}api/operation/operation/update`, {
+      const res = await Req(`api/operation/operation/update`, {
         method  :   'post',
         body    :   data
       })

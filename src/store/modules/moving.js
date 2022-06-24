@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -6,21 +6,20 @@ export default {
   },
   getters: { 
     getMoving(state) {
-      return state.moving
+      return state.moving;
     },
   }, 
   actions: {
     async fetchAllMovings(ctx) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/moving`)
-			if(res.ok) {
-				const result = await res.json()
-        ctx.commit('allMoving', result)
-        return result
-			}
+      const res = await Req(`api/moving`);
+			if (!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('allMoving', result);
+      return result;
     },
-		async fetchCreateMoving(ctx, data) { 
-      console.log(data)
-      const res = await fetch(`${PATH_TO_SERVER}api/moving`, {
+		async fetchCreateMoving(ctx, data) {
+      const res = await Req(`api/moving`, {
 				method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -29,17 +28,16 @@ export default {
         body: JSON.stringify({...data})
 			})
 			
-			if(res.ok) 
-				return true
-			return false
+			if (!res.ok) return false;
+			return true;
     },
   },
   mutations: {
     allMoving(state, result) { 
-      state.moving = result
+      state.moving = result;
     },
     addNewMoving(state, result) {
-      state.moving.push(result)
+      state.moving.push(result);
     }
   }
 }

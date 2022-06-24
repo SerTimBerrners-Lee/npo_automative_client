@@ -1,6 +1,7 @@
 
-import {sortState} from '@/js/index';
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
+import { sortState } from '@/js/index';
+
 export default {
   state: {
     setOneTypeM: {},
@@ -47,28 +48,28 @@ export default {
   },
   actions: { 
     async getAllTypeMaterial(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/settings/material`);
+      const res =  await Req(`api/settings/material`);
       const result = await res.json();
 
       await ctx.commit("getTypeMaterial", result);
       return result;
     },
     async getOneTypeMaterial(ctx, _id) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/settings/materials/one/${_id}`);
+      const res =  await Req(`api/settings/materials/one/${_id}`);
       if(!res.ok) return false; 
       const result = await res.json();
 
       return result;
     },
     async getAllPodTypeMaterial(ctx, instans = 'all') {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerial/${instans}`);
+      const res = await Req(`api/settings/typematerial/${instans}`);
       const result = await res.json();
 
       await ctx.commit('filterMatByPodType', result);
       return result;
     },
     async createTypeM(ctx, material) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/material`, {
+      const res = await Req(`api/settings/material`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -83,7 +84,7 @@ export default {
       ctx.commit('addTypeMaterial', result);
     },
     async createPodType(ctx, pod_type) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype`, {
+      const res = await Req(`api/settings/podtype`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -99,7 +100,7 @@ export default {
       ctx.commit('createPodType', result);
     },
     async removeMaterial(ctx, id) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/settings/material/${id}`, {
+      const res =  await Req(`api/settings/material/${id}`, {
         method: 'delete'
       });
       if(!res.ok) return false;
@@ -107,7 +108,7 @@ export default {
       ctx.commit('deleteMaterial', id);
     },
     async updateTypeM(ctx, material) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/material/update`, {
+      const res = await Req(`api/settings/material/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -122,7 +123,7 @@ export default {
       ctx.commit('updateMaterial', result);
     },
     async updatePodMaterial(ctx, podM) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/update`, {
+      const res = await Req(`api/settings/podtype/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -137,14 +138,14 @@ export default {
       ctx.commit('updatePodMaterial', {result, matId: podM.parentId});
     },
     async deletePodType(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podtype/${id}`, {
+      const res = await Req(`api/settings/podtype/${id}`, {
         method: 'delete'
       });
       if(!res.ok) return false;
       ctx.commit('deletePodMaterial', id)
     },
     async getOnePodType(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/typematerialid/${id}`);
+      const res = await Req(`api/settings/typematerialid/${id}`);
       const result = await res.json();
       if(!res.ok) return false;
 
@@ -152,7 +153,7 @@ export default {
       return result;
     },
     async createNewPodPodMaterial(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/`, {
+      const res = await Req(`api/settings/podpodtype/`, {
         method: 'post',
         body: data
       });
@@ -162,21 +163,21 @@ export default {
       return true;
     },
     async removePPM(ctx, id) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`, {
+      const res =  await Req(`api/settings/podpodtype/${id}`, {
         method: 'delete'
       });
       if(!res.ok) return false;
       ctx.dispatch('getAllTypeMaterial');
     },
     async bannedPPM(ctx, id) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/${id}`);
+      const res =  await Req(`api/settings/podpodtype/${id}`);
       if(!res.ok) return false;
 
       ctx.dispatch('getAllTypeMaterial');
       ctx.commit('bannedPPM', id);
     },
     async fetchGetOnePPM(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/get/${id}`);
+      const res = await Req(`api/settings/podpodtype/get/${id}`);
       if(!res.ok) return false;
 
       const result = await res.json();
@@ -184,14 +185,14 @@ export default {
       return result;
     },
     async fetchGetAllPPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype`);
+      const res = await Req(`api/settings/podpodtype`);
       if(!res.ok) return false;
       const result = await res.json();
       ctx.commit('pushAllPPT', result);
       return result;
     },
     async fetchGetArchivePPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/podpodtype/archive/`);
+      const res = await Req(`api/settings/podpodtype/archive/`);
       if(!res.ok) return false;
       const result = await res.json();
       
@@ -199,7 +200,7 @@ export default {
       return result;
     },
     async fetchPPMNoLight(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materials/podtypematerial`);
+      const res = await Req(`api/settings/materials/podtypematerial`);
       if(!res.ok) return false;
 
       const result = await res.json();
@@ -207,7 +208,7 @@ export default {
       return result;
     },
     async fetchAllProviderMaterial(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider`);
+      const res = await Req(`api/settings/materialprovider`);
       if(!res.ok) return false;
 
       const result = await res.json();
@@ -215,7 +216,7 @@ export default {
       return result;
     },
     async fetchAllProviderMaterialById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider/${id}`);
+      const res = await Req(`api/settings/materialprovider/${id}`);
       if(!res.ok) return false;
 
       const result = await res.json();
@@ -223,7 +224,7 @@ export default {
       return result;
     },
     async fetchGetAllShipmentsPPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialshipment`);
+      const res = await Req(`api/settings/materialshipment`);
       if(!res.ok) return false;
 
       const result = await res.json();
@@ -235,7 +236,7 @@ export default {
       return result;
     },
     async attachFileToMaterial(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/files/${data.mat_id}/${data.file_id}`);
+      const res = await Req(`api/settings/files/${data.mat_id}/${data.file_id}`);
       if(!res.ok) return false;
       const result = await res.json();
       return result;

@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
 	state: {
@@ -29,7 +29,7 @@ export default {
 	}, 
 	actions: {
 		async createIssue(ctx, data) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/issue`, {
+			const res = await Req(`api/issue`, {
 				method: "post",
 				body: data.data
 			})
@@ -41,7 +41,7 @@ export default {
 			}
 		},
 		async updateIssue(ctx, data) {
-			const res = await fetch(`${PATH_TO_SERVER}api/issue`, {
+			const res = await Req(`api/issue`, {
 				method: 'PUT',
 				body: data.data
 			})
@@ -53,7 +53,7 @@ export default {
 			}
 		}, 
 		async fetchIssueList(ctx, userId) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/issue`)
+			const res = await Req(`api/issue`)
 			if(res.ok) {
 				const result = await res.json()
 				ctx.commit('addAllIssues', result)

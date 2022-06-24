@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 import { comparison } from '../../js/';
 import { returnKolvoCreate, returnShipmentsDate } from '../../js/operation';
 
@@ -17,7 +17,7 @@ export default {
   }, 
   actions: {
     async fetchMetaloworking(ctx, isBan = false) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/all/${isBan}`)
+      const res = await Req(`api/metaloworking/all/${isBan}`)
 			if(res.ok) {
 				const result = await res.json()
         ctx.commit('allMetaloworking', result)
@@ -25,7 +25,7 @@ export default {
 			}
     },
 		async fetchCreateMetaloworking(ctx, data) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking`, {
+      const res = await Req(`api/metaloworking`, {
 				headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -38,7 +38,7 @@ export default {
 			return true;
     },
     async fetchUpdateMetaloworking(ctx, data) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking`, {
+      const res = await Req(`api/metaloworking`, {
 				headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -52,7 +52,7 @@ export default {
 			return false
     },
     async fetchMetalloworkShapeBid(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/shapebid`, {
+      const res = await Req(`api/metaloworking/shapebid`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -67,14 +67,14 @@ export default {
       return result;
     },
     async fetchMetaloworkingById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`);
+      const res = await Req(`api/metaloworking/${id}`);
 			if(res.ok) {
 				const result = await res.json();
 				return result;
 			}
     },
     async fetchMetalloworkingDelete(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/${id}`, {
+      const res = await Req(`api/metaloworking/${id}`, {
         method: 'delete'
       })
 			if(res.ok) {
@@ -84,7 +84,7 @@ export default {
 			}
     }, 
     async fetchCombackMetallowork(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/comback/${id}`, {
+      const res = await Req(`api/metaloworking/comback/${id}`, {
         method: 'put'
       })
 			if(res.ok) {
@@ -94,7 +94,7 @@ export default {
 			}
     },
     async fetchAllMetalloworkingTypeOperation(ctx, op_id) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/metaloworking/typeoperation/${op_id}`)
+      const res = await Req(`api/metaloworking/typeoperation/${op_id}`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('allMetaloworkingOperation', result)

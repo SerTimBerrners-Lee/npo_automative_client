@@ -1,6 +1,6 @@
 
+import Req from '../../js/req';
 import { sortState } from '@/js/index';
-import PATH_TO_SERVER from '@/js/path.js';
 
 export default { 
   state: {
@@ -24,7 +24,7 @@ export default {
   },
   actions: {
     async fetchIncludesAttributesDetal(ctx, data) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/detal/getattribute/${data.id}/`, {
+			const res = await Req(`api/detal/getattribute/${data.id}/`, {
 				method: 'post',
 				headers: {
           'Accept': 'application/json',
@@ -40,7 +40,7 @@ export default {
     async createNewDetal(ctx, data) {
       if(!ctx.getters.getAuth) return 0;
 
-      const res = await fetch(`${PATH_TO_SERVER}api/detal`, {
+      const res = await Req(`api/detal`, {
         headers: new Headers({
           'Authorization': ctx.getters.getAuth.id
         }),
@@ -55,7 +55,7 @@ export default {
     async deleteDetelyId(ctx, id) { 
       if(!ctx.getters.getAuth) return 0;
 
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/${id}`, {
+      const res = await Req(`api/detal/${id}`, {
         headers: new Headers({
           'Authorization': ctx.getters.getAuth.id
         }),
@@ -67,7 +67,7 @@ export default {
     async fetchUpdateDetal(ctx, data) {
       if(!ctx.getters.getAuth) return 0;
 
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/update`, {
+      const res = await Req(`api/detal/update`, {
         headers: new Headers({
           'Authorization': ctx.getters.getAuth.id
         }), 
@@ -81,42 +81,42 @@ export default {
       return result;
     }, 
     async fetchDetalAva(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/ava/${id}`);
+      const res = await Req(`api/detal/ava/${id}`);
       if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
     async getAllDetalsArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/archive/`);
+      const res = await Req(`api/detal/archive/`);
       const result = await res.json();
       ctx.commit('setDetalMutation', result);
 
       return result;
     },
     async getAllDetals(ctx, light = false) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/${light}`);
+      const res = await Req(`api/detal/${light}`);
       const result = await res.json();
       ctx.commit('setDetalMutation', result);
     },
     async fetchDetalsRemains(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/remains`);
+      const res = await Req(`api/detal/remains`);
       const result = await res.json();
       ctx.commit('setDetalMutation', result);
     },
     async getAllDetalsArticl() {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/articl`);
+      const res = await Req(`api/detal/articl`);
       const result = await res.json();
       return result;
     },
     async getOneDetal(ctx, id)  {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/one/${id}`);
+      const res = await Req(`api/detal/one/${id}`);
       if(!res.ok) return false;
       const result = await res.json();
       ctx.commit('addOneSelectDetal', result);
       return result;
     },
     async fetchAddFilesForDetal(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/detal/file`, {
+      const res = await Req(`api/detal/file`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'

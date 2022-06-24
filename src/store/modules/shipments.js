@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 import { differencesShipments, comparison, shipmentsNull } from '@/js/';
 
 export default {
@@ -37,7 +37,7 @@ export default {
 	}, 
 	actions: {
 		async fetchCreateShipments(ctx, data) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {
+			const res = await Req(`api/shipments`, {
 				method: "post",
 				body: data
 			});
@@ -45,7 +45,7 @@ export default {
 			return true;
 		},
 		async fetchCreateShComplit(ctx, data) {
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcheck`, {
+			const res = await Req(`api/shipments/shcheck`, {
 				method: "post",
 				body: data
 			});
@@ -54,7 +54,7 @@ export default {
 			return true;
 		},
 		async fetchCreateShUpdate(ctx, data) {
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcheckupdate`, {
+			const res = await Req(`api/shipments/shcheckupdate`, {
 				method: "post",
 				body: data
 			});
@@ -63,26 +63,26 @@ export default {
 			return true;
 		},
 		async fetchShComplitById(ctx, id) {
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcomplite/${id}`);
+			const res = await Req(`api/shipments/shcomplite/${id}`);
 			if (!res.ok) return false;
 			const result = await res.json();
 			return result;
 		},
 		async fetchShComplit(ctx) {
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/shcheck`);
+			const res = await Req(`api/shipments/shcheck`);
 			if (!res.ok) return false;
 			const result = await res.json();
 			ctx.commit('allShComplit', result);
 			return result;
 		},
 		async fetchCombackComplit(ctx, id) {
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/combackcomplit/${id}`);
+			const res = await Req(`api/shipments/combackcomplit/${id}`);
 			if (!res.ok) return false;
 			ctx.commit('deleteComplit', id);
 			return true;
 		},
 		async fetchUpdateShipments(ctx, data) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments`, {
+			const res = await Req(`api/shipments`, {
 				method: "put",
 				body: data
 			});
@@ -90,7 +90,7 @@ export default {
 			return true;
 		},
 		async fetchAllShipments(ctx, {sort = "sort_sclad", light = false}) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/${light}`);
+			const res = await Req(`api/shipments/all/${light}`);
 			if (!res.ok) return false;
 
 			const result = await res.json();
@@ -98,7 +98,7 @@ export default {
 			return result;
 		},
 		async fetchAllShipmentsNoStatus(ctx, status = 2) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/status/${status}`);
+			const res = await Req(`api/shipments/status/${status}`);
 			if (!res.ok) return false;
 
 			const result = await res.json();
@@ -106,7 +106,7 @@ export default {
 			return result;
 		},
 		async fetchAllShipmentsTo(ctx) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/all/to/shipments/`);
+			const res = await Req(`api/shipments/all/to/shipments/`);
 			if (!res.ok) return false;
 
 			const result = await res.json();
@@ -114,7 +114,7 @@ export default {
 			return result;
 		},
 		async fetchDeleteShipments(ctx, id) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/${id}`, {
+			const res = await Req(`api/shipments/${id}`, {
 				method: 'delete'
 			});
 			if (!res.ok) return false;
@@ -122,7 +122,7 @@ export default {
 			ctx.commit('deleteShipmentMutation', id);
 		},
 		async fetchIncludesFolderSh(ctx, data) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/getinclude/${data.id}/`, {
+			const res = await Req(`api/shipments/getinclude/${data.id}/`, {
 				method: 'post',
 				headers: {
           'Accept': 'application/json',
@@ -137,7 +137,7 @@ export default {
 		},
 		// getattribute
 		async fetchIncludesAttributesSh(ctx, data) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/getattribute/${data.id}/`, {
+			const res = await Req(`api/shipments/getattribute/${data.id}/`, {
 				method: 'post',
 				headers: {
           'Accept': 'application/json',
@@ -151,21 +151,21 @@ export default {
 			return result;
 		},
 		async fetchAllShipmentsById(ctx, obj) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/light/${obj.id}/${obj.light}`);
+			const res = await Req(`api/shipments/light/${obj.id}/${obj.light}`);
 			if (!res.ok) return false;
 			
 			const result = await res.json();
 			return result;
 		},
 		async fetchAllIzdToShipments(ctx, id) {
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/one/izd/${id}/`);
+			const res = await Req(`api/shipments/one/izd/${id}/`);
 			if (!res.ok) return false;
 
 			const result = await res.json();
 			return result;
 		},
 		async fetchAllShipmentsAssemble(ctx, {sort = "sort_sclad", light = false}) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/assemble/${light}`);
+			const res = await Req(`api/shipments/assemble/${light}`);
 			if (!res.ok) return false;
 
 			const result = await res.json();
@@ -173,7 +173,7 @@ export default {
 			return result;
 		},
 		async fetchAllShipmentsMetaloworking(ctx, {sort = "sort_sclad", light = false}) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/metaloworking/${light}`);
+			const res = await Req(`api/shipments/metaloworking/${light}`);
 			if (!res.ok) return false;
 
 			const result = await res.json();
@@ -181,7 +181,7 @@ export default {
 			return result;
 		},
 		async fetchChangeToSclad(ctx, id) { 
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/sclad/${id}`, {
+			const res = await Req(`api/shipments/sclad/${id}`, {
 				method: 'PUT'
 			});
 			if (!res.ok) return false;
@@ -190,7 +190,7 @@ export default {
 			return true;
 		},	
 		async fetchDocumentsShipments(ctx, id) {
-			const res = await fetch(`${PATH_TO_SERVER}api/shipments/documents/${id}`);
+			const res = await Req(`api/shipments/documents/${id}`);
 			if (!res.ok) return false;
 
 			const result = await res.json();

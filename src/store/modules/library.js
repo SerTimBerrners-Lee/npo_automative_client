@@ -1,5 +1,6 @@
-import PATH_TO_SERVER from '@/js/path.js';
  
+import Req from '../../js/req';
+
 export default {
   state: {
     chapter: [],
@@ -9,15 +10,15 @@ export default {
   },
   getters: {
     getChapter(state) {
-      return state.chapter
+      return state.chapter;
     },
     getLinks(state) {
-      return state.links
+      return state.links;
     }
   },
   actions: { 
     async createChapter(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/chapter`, {
+      const res = await Req(`api/library/chapter`, {
         method: "post",
         headers: {
           'Accept': 'application/json',
@@ -31,7 +32,7 @@ export default {
       }
     },
     async updateChapter(ctx, data) {
-      return await fetch(`${PATH_TO_SERVER}api/library/chapter/`, {
+      return await Req(`api/library/chapter/`, {
         method: "put",
         headers: {
           'Accept': 'application/json',
@@ -41,7 +42,7 @@ export default {
       })
     },
     async getAllChapter(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/chapter`)
+      const res = await Req(`api/library/chapter`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('mutationsAllChapter', result)
@@ -49,14 +50,14 @@ export default {
       }
     },
     async removeChapter(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/chapter/${id}`, {
+      const res = await Req(`api/library/chapter/${id}`, {
         method :  'delete'
       })
       if(res.ok) 
         ctx.commit('mutationsRemoveChapter', id)
     },
     async saveNewLink(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/links`, {
+      const res = await Req(`api/library/links`, {
         method :  'post', 
         body: data
       })
@@ -67,7 +68,7 @@ export default {
       }
     },
     async updateFileLink(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/links`, {
+      const res = await Req(`api/library/links`, {
         method :  'put', 
         body: data
       })
@@ -78,7 +79,7 @@ export default {
       }
     },
     async getAllLinks(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/links`)
+      const res = await Req(`api/library/links`)
       if(res.ok) {
         const result = await res.json()
         ctx.commit('pushAllLinks', result)
@@ -86,7 +87,7 @@ export default {
       }
     },
     async fetchToBanLinks(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/links/${id}`, {
+      const res = await Req(`api/library/links/${id}`, {
         method: 'delete'
       })
       if(res.ok) {
@@ -95,7 +96,7 @@ export default {
       }
     },
     async addLinkToFavorite(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/library/links/favorite/${data.user_id}/${data.links_id}`)
+      const res = await Req(`api/library/links/favorite/${data.user_id}/${data.links_id}`)
       if(res.ok) {
         ctx.commit('clearInstans')
         ctx.dispatch('getAllChapter')

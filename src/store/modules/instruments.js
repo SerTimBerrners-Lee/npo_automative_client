@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -36,12 +36,12 @@ export default {
   },
   actions: { 
     async fetchAllInstruments(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument`)
+      const res = await Req(`api/instrument`)
       const result = await res.json()
       ctx.commit('addAllTInstrument', result)
     },
     async addNewTInstrument(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument`, {
+      const res = await Req(`api/instrument`, {
         method: 'post',
         headers: { 
           'Accept': 'application/json',
@@ -59,7 +59,7 @@ export default {
       ctx.commit('addOneTInstrument', result);
     },
     async removeTInstrument(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/${id}`, {
+      const res = await Req(`api/instrument/${id}`, {
         method: 'delete'
       });
       
@@ -67,7 +67,7 @@ export default {
       ctx.commit('removeTInstrument', id)
     },
     async updateTInstrument(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/update`, {
+      const res = await Req(`api/instrument/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -82,7 +82,7 @@ export default {
       ctx.dispatch('fetchAllInstruments')
     },
     async addNewPTInstrument(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt`, {
+      const res = await Req(`api/instrument/pt`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -98,7 +98,7 @@ export default {
       ctx.commit('addOnePTInstrument', result);
     },
     async removePTInstrument(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`, {
+      const res = await Req(`api/instrument/pt/${id}`, {
         method: 'delete'
       });
 
@@ -107,7 +107,7 @@ export default {
       ctx.dispatch('fetchAllInstruments')
     },
     async updatePTInstryment(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/update`, {
+      const res = await Req(`api/instrument/pt/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -124,19 +124,19 @@ export default {
       ctx.dispatch('fetchAllInstruments');
     },
     async getAllPTInstances(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/${id}`);
+      const res = await Req(`api/instrument/pt/${id}`);
       const result = await res.json();
       ctx.commit('getAllName', result);
     },
 
     async getPTInstrumentList(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/pt/`);
+      const res = await Req(`api/instrument/pt/`);
       const result = await res.json();
 
       ctx.commit('pushPTInstrumentList', result);
     },
     async addNameInstrument(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`, {
+      const res = await Req(`api/instrument/nameinstrument`, {
         method: 'post',
         body: data
       });
@@ -148,17 +148,17 @@ export default {
       return result;
     },
     async fetchOneNameInstrument(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/name/${id}`);
+      const res = await Req(`api/instrument/name/${id}`);
       const result = await res.json();
       ctx.commit('addOneNameInstrument', result);
     },
     async removeFileInstrument(ctx, id) {
-      await fetch(`${PATH_TO_SERVER}api/instrument/file/${id}`, {
+      await Req(`api/instrument/file/${id}`, {
         method: 'delete'
       });
     },
     async updateNameInstrument(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/update`, {
+      const res = await Req(`api/instrument/nameinstrument/update`, {
         method: 'post',
         body: data
       });
@@ -168,33 +168,33 @@ export default {
       return result;
     },
     async banNameInstrument(ctx, id) {
-      await fetch(`${PATH_TO_SERVER}api/instrument/ban/${id}`, {
+      await Req(`api/instrument/ban/${id}`, {
         method: 'delete'
       });
       ctx.commit('hideNameInstrument', id);
     },
     async getAllNameInstrument(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument`);
+      const res = await Req(`api/instrument/nameinstrument`);
 
       if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('pushAllNameInstrument', result);
     },
     async getAllNameInstrumentArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/nameinstrument/archive/`);
+      const res = await Req(`api/instrument/nameinstrument/archive/`);
 
       if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('pushAllNameInstrument', result);
     },
     async attachFileToInstrument(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/files/${data.instr_id}/${data.file_id}`);
+      const res = await Req(`api/instrument/files/${data.instr_id}/${data.file_id}`);
       if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
     async fetchGetAllDeficitInsrument(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/instrument/instrumentdeficit`);
+      const res = await Req(`api/instrument/instrumentdeficit`);
 
       if (!res.ok) return false;
       const result = await res.json();

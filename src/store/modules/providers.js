@@ -1,6 +1,6 @@
 
-import {sortState} from '@/js/index';
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
+import { sortState } from '@/js/index';
 
 export default {
   state: {
@@ -51,7 +51,7 @@ export default {
   },
   actions: { 
     async fetchGetProviders(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider`);
+      const res =  await Req(`api/provider`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -59,7 +59,7 @@ export default {
       return result;
     },
     async fetchGetProvidersArchive(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider/archive/`);
+      const res =  await Req(`api/provider/archive/`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -67,7 +67,7 @@ export default {
       return result;
     },
     async addOneProvider(ctx, provider) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider`, {
+      const res =  await Req(`api/provider`, {
         method: 'POST',
         body:   provider
       });
@@ -76,13 +76,13 @@ export default {
       ctx.dispatch('fetchGetProviders');
     },
     async fetchProviderBan(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/provider/ban/${id}`)
+      const res = await Req(`api/provider/ban/${id}`)
       if (!res.ok) return false;
 
       ctx.commit('removeProvider', id);
     },
     async fetchNewDeliveries(ctx, data) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveried`, {
+      const res =  await Req(`api/provider/deliveried`, {
         method: 'POST',
         body:   data
       });
@@ -90,7 +90,7 @@ export default {
       return true;
     },
     async fetchGetDeliveries(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveried`);
+      const res =  await Req(`api/provider/deliveried`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -98,7 +98,7 @@ export default {
       return result;
     },
     async updateDeliveries(ctx, data) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveried/update`, {
+      const res =  await Req(`api/provider/deliveried/update`, {
         method: 'POST',
         body:   data
       });
@@ -106,7 +106,7 @@ export default {
       return true;
     },
     async fetchGetDeliveriesCaming(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider/deliveriedcoming`);
+      const res =  await Req(`api/provider/deliveriedcoming`);
       if (!res.ok) return false;
       
       const result = await res.json();
@@ -114,7 +114,7 @@ export default {
       return result;
     },
     async fetchPushWaybillCreate(ctx, data) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider/waylbil/create`, {
+      const res =  await Req(`api/provider/waylbil/create`, {
         method: 'POST',
         body:   data
       });
@@ -124,7 +124,7 @@ export default {
       return result;
     },
     async fetchWaybill(ctx) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/provider/waylbil`);
+      const res =  await Req(`api/provider/waylbil`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -132,7 +132,7 @@ export default {
       return result;
     },
     async fetchAllProviderMaterialById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/materialprovider/${id}`);
+      const res = await Req(`api/settings/materialprovider/${id}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -140,7 +140,7 @@ export default {
       return result;
     },
     async attachFileToProvider(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/provider/files/${data.provider_id}/${data.file_id}`);
+      const res = await Req(`api/provider/files/${data.provider_id}/${data.file_id}`);
       if (!res.ok) return false;
 
       const result = await res.json();

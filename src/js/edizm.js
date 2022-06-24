@@ -1,6 +1,6 @@
 // Парсит каждую ЕИ в материале
 const getKolvoMaterial = (mat) => {
-	let arr_ez = []
+	const arr_ez = []
 	try {
 		let pars_mat_kol = JSON.parse(mat.kolvo) // Выбранные ЕИ у Материала
 		let pars_ez_kol = null
@@ -28,7 +28,7 @@ const getKolvoMaterial = (mat) => {
 				else	arr_ez.push({ez: 'м.куб', ...mat})
 		
 		if(arr_ez.length == 0) arr_ez.push({ez: 'шт',...mat})
-		return arr_ez
+		return arr_ez;
 	} catch (e) {console.error(e)}
 }
 

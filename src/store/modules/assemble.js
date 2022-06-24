@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -12,21 +12,21 @@ export default {
   }, 
   actions: {
     async fetchAssemble(ctx, isBan = false) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble/all/${isBan}`);
+      const res = await Req(`api/assemble/all/${isBan}`);
 			if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('allAssemble', result);
     },
     async fetchAssemblePlan(ctx, type = 'all') { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble/asstoplan/${type}`);
+      const res = await Req(`api/assemble/asstoplan/${type}`);
 			if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('allAssemble', result);
     },
 		async fetchCreateAssemble(ctx, data) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble`, {
+      const res = await Req(`api/assemble`, {
 				headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -39,7 +39,7 @@ export default {
       return true;
     },
     async fetchUpdateAssemble(ctx, data) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble`, {
+      const res = await Req(`api/assemble`, {
 				headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -52,14 +52,14 @@ export default {
 			return true;
     },
     async fetchAssembleById(ctx, id) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble/${id}`);
+      const res = await Req(`api/assemble/${id}`);
 			if (!res.ok) return false;
 
       const result = await res.json();
       return result;
     },
     async fetchAssemblyDelete(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble/${id}`, {
+      const res = await Req(`api/assemble/${id}`, {
         method: 'delete'
       });
 			if(!res.ok) return false;
@@ -69,7 +69,7 @@ export default {
       return result;
     },
     async fetchCombackAssemble(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble/comback/${id}`, {
+      const res = await Req(`api/assemble/comback/${id}`, {
         method: 'put'
       });
 			if(!res.ok) return false;
@@ -79,7 +79,7 @@ export default {
       return result;
     },
     async fetchAllAssembleTypeOperation(ctx, op_id) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/assemble/typeoperation/${op_id}`);
+      const res = await Req(`api/assemble/typeoperation/${op_id}`);
       if(!res.ok) return false;
 
       const result = await res.json();

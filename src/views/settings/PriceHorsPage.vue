@@ -24,9 +24,9 @@
 </template>
 
 <script>
-import {mapGetters} from 'vuex';
+import Req from '@/js/req';
+import { mapGetters } from 'vuex';
 import { showMessage } from '@/js/';
-import PATH_TO_SERVER from '@/js/path';
 
 export default {
   data() {
@@ -37,7 +37,7 @@ export default {
   computed: mapGetters(['getRoleAssets']),
   methods: {
     async update() {
-      const res = await fetch(`${PATH_TO_SERVER}api/settings/normhors`, {
+      const res = await Req(`api/settings/normhors`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -48,18 +48,18 @@ export default {
         })
       });
 
-      if(res.ok) showMessage('', 'Значение успешно обновлено', 's');
+      if (res.ok) showMessage('', 'Значение успешно обновлено', 's');
       else showMessage('', 'Произошла ошибка при обновлении значения', 'e');
     }
   },
   async mounted() {
-    const res = await fetch(`${PATH_TO_SERVER}api/settings/normhors`);
-    if(res.ok) {
+    const res = await Req(`api/settings/normhors`);
+    if (res.ok) {
       try {
-        const result = await res.json()
-        this.norm_hors = result[0]
+        const result = await res.json();
+        this.norm_hors = result[0];
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     }
   }

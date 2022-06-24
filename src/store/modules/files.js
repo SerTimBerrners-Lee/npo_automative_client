@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -19,7 +19,7 @@ export default {
   },
   actions: { 
     async fetchFiles(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents`);
+      const res = await Req(`api/documents`);
       if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('updateFiles', result);
@@ -27,14 +27,14 @@ export default {
     },
 
     async fetchFilesArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/archive`);
+      const res = await Req(`api/documents/archive`);
       if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('addBannedFile', result);
     },
 
     async fetchBannedFiles(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/banned/all/${ctx.state.banFiles.length}`);
+      const res = await Req(`api/documents/banned/all/${ctx.state.banFiles.length}`);
       if (!res.ok) return false;
       const result = await res.json();
       if (result?.length)
@@ -42,18 +42,18 @@ export default {
     },
 
     async fetchAvaChange(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/avachanges/${id}`);
+      const res = await Req(`api/documents/avachanges/${id}`);
       if (!res.ok) return false;
       return true;
     },
 
     async fetchFilesNames() {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/names`);
+      const res = await Req(`api/documents/names`);
       return await res.json();
     },
 
     async pushDocuments(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/add`, {
+      const res = await Req(`api/documents/add`, {
         method: 'post',
         body: data
       });
@@ -63,7 +63,7 @@ export default {
     },
 
     async bannedFiles(ctx, docs) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/` + docs.id, {
+      const res = await Req(`api/documents/` + docs.id, {
         method: 'delete',
       });
       const result = await res.json();
@@ -74,7 +74,7 @@ export default {
     },
 
     async fetchFileById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/${id}`);
+      const res = await Req(`api/documents/${id}`);
 
       const result = await res.json();
       if (!res.ok) return false;
@@ -82,7 +82,7 @@ export default {
     },
 
     async checkedType(ctx, {id, type}) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/editype`, {
+      const res = await Req(`api/documents/editype`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -101,7 +101,7 @@ export default {
     },
 
     async updateDataFile(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/documents/update`, {
+      const res = await Req(`api/documents/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -115,7 +115,7 @@ export default {
     },
 
     async setDetalForFile(ctx, data) {
-      await fetch(`${PATH_TO_SERVER}api/documents/setdetal/`, {
+      await Req(`api/documents/setdetal/`, {
         headers:{
           'Content-Type':'application/json'
         },

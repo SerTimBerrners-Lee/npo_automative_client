@@ -1,6 +1,6 @@
 
-import {sortState} from '@/js/index';
-import PATH_TO_SERVER from '@/js/path.js'
+import Req from '../../js/req';
+import { sortState } from '@/js/index';
 
 export default {
   state: {
@@ -23,7 +23,7 @@ export default {
   },
   actions: { 
     async fetchAllBuyers(ctx, light = 'false') {
-      const res = await fetch(`${PATH_TO_SERVER}api/buyer/light/${light}`);
+      const res = await Req(`api/buyer/light/${light}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -31,7 +31,7 @@ export default {
       return result;
     },
     async fetchAllBuyersArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/buyer/archive`);
+      const res = await Req(`api/buyer/archive`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -39,7 +39,7 @@ export default {
       return result;
     },
     async addOneBuyer(ctx, buyer) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/buyer`, {
+      const res =  await Req(`api/buyer`, {
         method: 'POST',
         body:   buyer
       });
@@ -48,7 +48,7 @@ export default {
       ctx.dispatch('fetchAllBuyers');
     },
     async fetchBuyerBan(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/buyer/${id}`, {
+      const res = await Req(`api/buyer/${id}`, {
         method: 'delete'
       });
       if (!res.ok) return false;
@@ -57,7 +57,7 @@ export default {
     },
 
     async updateOneBuyer(ctx, data) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/buyer/update`, {
+      const res =  await Req(`api/buyer/update`, {
         method: 'POST',
         body:   data
       });
@@ -66,7 +66,7 @@ export default {
       ctx.dispatch('fetchAllBuyers');
     },
     async attachFileToBuyer(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/buyer/files/${data.buyer_id}/${data.file_id}`);
+      const res = await Req(`api/buyer/files/${data.buyer_id}/${data.file_id}`);
       if (!res.ok) return false;
 
       const result = await res.json();

@@ -89,17 +89,16 @@ export default {
   ]),
   methods: {
     ...mapActions(['getAllUsers', 'loginAuth', 'getUserById']),
-    ...mapMutations(['setRoleAssets', 'updateAuth', 'unAuth']),
+    ...mapMutations(['setRoleAssets', 'unAuth']),
     changeTabelUser() {
       this.getUsers.forEach((user) => {   
-        if(user.tabel == this.selectTabel) {
-          this.selectLogin = user.login
-        }
+        if (user.tabel == this.selectTabel)
+          this.selectLogin = user.login;
       })
     },
     changeSelectUser() {
       this.getUsers.forEach((user) => {   
-        if(user.login == this.selectLogin) 
+        if (user.login == this.selectLogin) 
           this.selectTabel = user.tabel
       })
     },
@@ -107,26 +106,25 @@ export default {
       if (this.flagsBlocingInput)
         return
 
-      if(num === 'del') {
-        if(this.strTabels.length)
+      if (num === 'del') {
+        if (this.strTabels.length)
           this.strTabels = this.strTabels.substr(0, this.strTabels.length - 1)
         return 
       }
 
       this.strTabels += num
-      if(this.password_flags) {
-        this.$refs.input_password.value = this.strTabels
-      }
+      if (this.password_flags)
+        this.$refs.input_password.value = this.strTabels;
     },
     tabelSearch() {
       let check = false
-      if(this.password_flags) {
+      if (this.password_flags) {
         this.login()
         this.$refs.input_password.value = ''
         this.strTabels = ''
       }
       this.getUsers.forEach((user) => {   
-        if(user.tabel == this.strTabels) {
+        if (user.tabel == this.strTabels) {
           this.selectTabel = user.tabel
           this.selectLogin = user.login
           this.$refs.input_password.focus()
@@ -135,7 +133,7 @@ export default {
           this.strTabels = ""
         } 
       })
-      if(!check) {
+      if (!check) {
         this.flagsBlocingInput = true
         setTimeout(() => {
           this.strTabels = "";
@@ -144,27 +142,19 @@ export default {
       }
     },
     async login() {
-      let password = this.$refs.input_password.value
-      if(password < 2) 
-        return 0
+      const password = this.$refs.input_password.value;
+      if (password < 2) return 0;
       const res = await this.loginAuth({
         login: this.selectLogin,
         password
       });
 
-      if(res.type != 's') return showMessage('', res.message, res.type);
+      if (res.type != 's') return showMessage('', res.message, res.type);
 
-      if(this.getAuth && this.getAuth.id) {
-        const user = await this.getUserById(this.getAuth.id);
-        if(!user) {
-          // Улаляем все что есть 
-          this.unAuth()
-          this.$emit('exit')
-          this.$router.push('/')
-        }
-        this.updateAuth(user)
-        if(user.role && user.role.assets) 
-          this.setRoleAssets({...user.role, assets: JSON.parse(user.role.assets)})
+      if (!this.getAuth || !this.getAuth.id) {
+        this.unAuth();
+        this.$emit('exit');
+        return this.$router.push('/');
       }
 
       setTimeout(() => { 
@@ -172,15 +162,14 @@ export default {
       }, 1000)
 
       return showMessage('', res.message, res.type);
-        
     }
   },
   async mounted() {
-    await this.getAllUsers(true)
+    await this.getAllUsers(true);
 
     if(this.getUsers.length) {
-      this.selectLogin = this.getUsers[0].login
-      this.selectTabel = this.getUsers[0].tabel
+      this.selectLogin = this.getUsers[0].login;
+      this.selectTabel = this.getUsers[0].tabel;
     }
   }
 }

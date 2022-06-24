@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -9,28 +9,28 @@ export default {
   },
   getters: { 
     getAuth(state) {
-      return state.auth
+      return state.auth;
     },
     getRoleAssets(state) {
-      return state.roleAssets
+      return state.roleAssets;
     }
   }, 
   actions: {
-    async loginAuth(ctx, data) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/auth/login`, {
+    async loginAuth(ctx, data) {
+      const res = await Req(`api/auth/login`, {
         headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
         },
         method: "post",
         body: JSON.stringify({...data})
-      })
-      const result = await res.json()
+      });
+      const auth = await res.json();
 
-      if (result && !result.id)
-        return { type: 'e', message: result.message}
-      if(result.id) {
-        ctx.commit('updateAuth', result)
+      if (auth && !auth.id)
+        return { type: 'e', message: auth.message}
+      if (auth.id) {
+        ctx.commit('updateAuth', {ctx, auth});
         return { type: 's', message: 'Пользователь авторизован'}
       }
       return { type: 'e', message: 'Произошла ошибка при авторизации'}
@@ -38,19 +38,22 @@ export default {
     }
   },
   mutations: {
-    updateAuth(state, auth) { 
-      state.auth = auth
-      localStorage.setItem('auth', JSON.stringify(auth))
+    updateAuth(state, {ctx, auth}) {
+      if (!auth?.role || !auth?.role?.assets) return ctx.commit('unAuth');
+      ctx.commit('setRoleAssets', {...auth.role, assets: JSON.parse(auth.role.assets)});
+
+      state.auth = auth;
+      localStorage.setItem('auth', JSON.stringify(auth));
     },
     unAuth(state) {
-      state.auth = null
-      state.roleAssets = null
-      localStorage.removeItem('auth')
-      localStorage.removeItem('roleAssets')
+      state.auth = null;
+      state.roleAssets = null;
+      localStorage.removeItem('auth');
+      localStorage.removeItem('roleAssets');
     },
     setRoleAssets(state, role) {
-      state.roleAssets = role
-      localStorage.setItem('roleAssets', JSON.stringify(state.roleAssets))
+      state.roleAssets = role;
+      localStorage.setItem('roleAssets', JSON.stringify(state.roleAssets));
     }
   }
 }

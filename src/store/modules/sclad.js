@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path';
+import Req from '../../js/req';
 import { differencesShipments } from '@/js/';
 
 export default {
@@ -12,7 +12,7 @@ export default {
   }, 
   actions: {
     async fetchDeficit(ctx) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit`);
+      const res = await Req(`api/sclad/deficit`);
       if (!res.ok) return false; 
       
       const result = await res.json();
@@ -20,7 +20,7 @@ export default {
       return result;
     },
     async fetchUpdateDeficit(ctx, data) {
-      return await fetch(`${PATH_TO_SERVER}api/sclad/deficit`, {
+      return await Req(`api/sclad/deficit`, {
         method: "post",
         headers: {
           'Accept': 'application/json',
@@ -30,7 +30,7 @@ export default {
       });
     },
     async setchDeficitCbed(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/cbed`);
+      const res = await Req(`api/sclad/deficit/cbed`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -46,7 +46,7 @@ export default {
       return result;
     },
     async setchDeficitDeficit(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/detal`);
+      const res = await Req(`api/sclad/deficit/detal`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -71,7 +71,7 @@ export default {
       return arr;
     },
     async setchDeficitProducts(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/deficit/product`);
+      const res = await Req(`api/sclad/deficit/product`);
       if (!res.ok) return false;
       const result = await res.json();
 
@@ -88,7 +88,7 @@ export default {
       return result;
     },
     async fetchGetAllDeficitPPM(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit`);
+      const res = await Req(`api/sclad/materialdeficit`);
       if(!res.ok) return false;
       const result = await res.json();
       ctx.commit('sortAllForeficitMaterial', result);
@@ -101,7 +101,7 @@ export default {
      * @returns 
      */
     async fetchMaterialToShipments(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialdeficit/shipments/${data.id}/${data.type}`);
+      const res = await Req(`api/sclad/materialdeficit/shipments/${data.id}/${data.type}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -110,14 +110,14 @@ export default {
       return result;
     },
     async getShipmentsForOneMaterial(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialonecshipments/${id}`);
+      const res = await Req(`api/sclad/materialonecshipments/${id}`);
       if (!res.ok) return false;
 
       const result = await res.json();
       return result;
     },
     async fetchMatRemParent(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/materialparents/${id}`);
+      const res = await Req(`api/sclad/materialparents/${id}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -125,14 +125,14 @@ export default {
     },
     // Marks
     async fetchMarksByOperation(ctx, _id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/marks/byoperation/${_id}`);
+      const res = await Req(`api/sclad/marks/byoperation/${_id}`);
       if (!res.ok) return false;
 
       const result = await res.json();
       return result;
     },
     async fetchCreateMarks(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/sclad/mark`, {
+      const res = await Req(`api/sclad/mark`, {
         method: "post",
         headers: {
           'Accept': 'application/json',

@@ -1,6 +1,6 @@
 
-import {sortState} from '@/js/index';
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
+import { sortState } from '@/js/index';
 
 export default {
   state: {
@@ -34,13 +34,13 @@ export default {
   },
   actions: { 
     async fetchAllEquipmentType(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment`);
+      const res = await Req(`api/equipment`);
       const result = await res.json();
 
       ctx.commit('addAllEquipmentType', result);
     },
     async addEquipmentType(ctx, name) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment`, {
+      const res = await Req(`api/equipment`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -56,14 +56,14 @@ export default {
       ctx.commit('addOneEquipmentType', result);
     },
     async removeEquipmentType(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/${id}`, {
+      const res = await Req(`api/equipment/${id}`, {
         method: 'delete'
       });
       if (!res.ok) return false;
       ctx.commit('removeEquipmentTyp', id)
     },
     async updateEquipmentType(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/update`, {
+      const res = await Req(`api/equipment/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -78,7 +78,7 @@ export default {
     },
 
     async createEquipmentPT(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/pt`, {
+      const res = await Req(`api/equipment/pt`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -95,7 +95,7 @@ export default {
       ctx.commit('mutationCreateEquipmentPT', result);
     },
     async removeEquipmentPType(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/pt/${id}`, {
+      const res = await Req(`api/equipment/pt/${id}`, {
         method: 'delete'
       });
       if (!res.ok) return false;
@@ -103,7 +103,7 @@ export default {
       ctx.commit('removeEquipmentPType', id)
     },
     async updateEquipmentPType(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/pt/update`, {
+      const res = await Req(`api/equipment/pt/update`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -120,17 +120,17 @@ export default {
       ctx.dispatch('fetchAllEquipmentType');
     },
     async getOneEquipmentPType(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/pt/${id}`);
+      const res = await Req(`api/equipment/pt/${id}`);
       const result = await res.json();
       ctx.commit('allEquipments', result);
     },
     async getAllEquipmentPType(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/pt/`);
+      const res = await Req(`api/equipment/pt/`);
       const result = await res.json();
       ctx.commit('pushAllEquipmentsPT', result);
     },
     async createEquipment(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq`, {
+      const res = await Req(`api/equipment/eq`, {
         method: 'post',
         body: data 
       });
@@ -141,13 +141,13 @@ export default {
       return true;
     },
     async fetchOneEquipment(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/${id}`);
+      const res = await Req(`api/equipment/eq/${id}`);
       const result = await res.json();
       ctx.commit('addOneEquipment', result);
       return result;
     },
     async fetchAllEquipment(ctx, light='false') {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/all/${light}`);
+      const res = await Req(`api/equipment/eq/all/${light}`);
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -155,7 +155,7 @@ export default {
       return result;
     },
     async fetchAllEquipmentArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/archive/`);
+      const res = await Req(`api/equipment/eq/archive/`);
       if (!res.ok) return false;
       
       const result = await res.json();
@@ -163,12 +163,12 @@ export default {
       return result;
     },
     async removeFileEquipment(ctx, id) {
-      await fetch(`${PATH_TO_SERVER}api/equipment/file/${id}`, {
+      await Req(`api/equipment/file/${id}`, {
         method: 'delete'
       });
     },
     async updateEquipment(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/eq/update`, {
+      const res = await Req(`api/equipment/eq/update`, {
         method: 'post',
         body: data
       });
@@ -178,7 +178,7 @@ export default {
       return result;
     },
     async banEquipment(ctx, id) {
-      await fetch(`${PATH_TO_SERVER}api/equipment/ban/${id}`, {
+      await Req(`api/equipment/ban/${id}`, {
         method: 'delete'
       });
       ctx.commit('hideEquipment', id);
@@ -186,7 +186,7 @@ export default {
     },
 
     async attachFileToEquipment(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/equipment/files/${data.eq_id}/${data.file_id}`)
+      const res = await Req(`api/equipment/files/${data.eq_id}/${data.file_id}`)
       if (!res.ok) return false;
       const result = await res.json();
       return result;

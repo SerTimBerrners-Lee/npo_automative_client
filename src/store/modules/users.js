@@ -1,4 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
+import Req from '../../js/req';
 
 export default {
   state: {
@@ -21,7 +21,7 @@ export default {
   }, 
   actions: {
     async saveUser(ctx, data) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/users`, {
+      const res = await Req(`api/users`, {
         method: "post",
         body: data
       })
@@ -36,7 +36,7 @@ export default {
         
     },
     async updateUser(ctx, data) {
-      const res =  await fetch(`${PATH_TO_SERVER}api/users/update`, {
+      const res =  await Req(`api/users/update`, {
         method: "post",
         body: data
       });
@@ -45,7 +45,7 @@ export default {
       return res;
     },
     async getAllUsers(ctx, light=false) {
-      const res = await fetch(`${PATH_TO_SERVER}api/users/data/${light}`)
+      const res = await Req(`api/users/data/${light}`)
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -53,7 +53,7 @@ export default {
       return result;
     },
     async getAllUsersArchive(ctx) {
-      const res = await fetch(`${PATH_TO_SERVER}api/users/archive/`)
+      const res = await Req(`api/users/archive/`)
       if (!res.ok) return false;
 
       const result = await res.json();
@@ -61,7 +61,7 @@ export default {
       return result;
     },
     async banUserById(crx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/users/ban`, {
+      const res = await Req(`api/users/ban`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -78,7 +78,7 @@ export default {
       return { type: 's', message: 'Пользователь успешно изменен'}
     },
     async deleteFIleForUser(ctx, data) {
-      return await fetch(`${PATH_TO_SERVER}api/users/fileban`, {
+      return await Req(`api/users/fileban`, {
         method: 'post',
         headers: {
           'Accept': 'application/json',
@@ -88,14 +88,14 @@ export default {
       });
     },
     async getUserById(ctx, id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/users/${id}`);
+      const res = await Req(`api/users/${id}`);
       if (!res.ok) return false;
 
       const respons = await res.json();
       return respons;
     },
     async attachFileToUser(ctx, data) {
-      const res = await fetch(`${PATH_TO_SERVER}api/users/files/${data.user_id}/${data.file_id}`);
+      const res = await Req(`api/users/files/${data.user_id}/${data.file_id}`);
       if (!res.ok) return false;
 
       const result = await res.json();

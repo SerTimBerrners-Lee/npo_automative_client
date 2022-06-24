@@ -57,7 +57,7 @@ const photoPreloadUrl = (input, cb, checkTypes = false) => {
 
   const reader = new FileReader();
   reader.onload = function(e){
-    if(e && e.target && e.target.result)
+    if (e && e.target && e.target.result)
       return cb({ type, url: e.target.result})
   } 
   reader.readAsDataURL(input)
@@ -170,19 +170,19 @@ const dateDifference = (date_one = new Date().toLocaleString('ru-RU').split(',')
 }
 
 const sortState = (arr, operation) => {
-  for(let obj in arr) {
-    for(let obj2 in arr) {
-      if(operation == '<')
-        if(Date.parse(arr[obj].createdAt) <
+  for (let obj in arr) {
+    for (let obj2 in arr) {
+      if (operation == '<')
+        if (Date.parse(arr[obj].createdAt) <
           Date.parse(arr[obj2].createdAt)) {
           let detal = arr[obj2];
           arr[obj2] = arr[obj];
           arr[obj] = detal;
         }
-      if(operation == '>')
-        if(Date.parse(arr[obj].createdAt) >
+      if (operation == '>')
+        if (Date.parse(arr[obj].createdAt) >
           Date.parse(arr[obj2].createdAt)) {
-          let variabl = arr[obj2];
+          const variabl = arr[obj2];
           arr[obj2] = arr[obj];
           arr[obj] = variabl;
         }

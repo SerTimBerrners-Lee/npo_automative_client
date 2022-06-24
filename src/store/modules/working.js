@@ -1,5 +1,4 @@
-import PATH_TO_SERVER from '@/js/path.js';
-
+import Req from '../../js/req';
 /**
  * Working
  * Модель в БД
@@ -18,21 +17,21 @@ export default {
   },
   actions: { 
     async fetchAllWorkings(ctx, archive = false) {
-      const res = await fetch(`${PATH_TO_SERVER}api/working/all/${archive}`);
+      const res = await Req(`api/working/all/${archive}`);
       if(!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('addAllWorkings', result);
     },
     async fetchWorkingsCount() {
-      const res = await fetch(`${PATH_TO_SERVER}api/working/count/`);
+      const res = await Req(`api/working/count/`);
       if(!res.ok) return false;
 
       const result = await res.json();
       return result;  
     },
     async fetchBannedWorkers(ctx, _id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/working/banned/${_id}`, {
+      const res = await Req(`api/working/banned/${_id}`, {
         method: 'delete'
       });
       if(!res.ok) return false;
@@ -41,7 +40,7 @@ export default {
       return result;  
     },
     async fetchCreateWorking(ctx, data) { 
-      const res = await fetch(`${PATH_TO_SERVER}api/working/`, {
+      const res = await Req(`api/working/`, {
 				headers: {
           'Accept': 'application/json',
           'Content-Type': 'application/json'
@@ -54,7 +53,7 @@ export default {
 			return true
     },
     async fetchOneWorking(ctx, _id) {
-      const res = await fetch(`${PATH_TO_SERVER}api/working/one/${_id}`);
+      const res = await Req(`api/working/one/${_id}`);
       if(!res.ok) return false;
 
       const result = await res.json();
