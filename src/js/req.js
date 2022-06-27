@@ -1,4 +1,4 @@
-
+import PATH_TO_SERVER from '@/js/path';
 
 export default async function Req(path, options = {}) {
   let auth = null;
@@ -10,5 +10,5 @@ export default async function Req(path, options = {}) {
       'Authorization': `Bearer ${auth?.token}`,
     }) : new Headers({'Authorization': `Bearer ${auth?.token}`});
     
-  return await fetch(path, options);
+  return await fetch(`${PATH_TO_SERVER}${path}`, options);
 }
