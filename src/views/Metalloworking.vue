@@ -24,12 +24,13 @@
         <table id='tablebody'>
           <tr class='fixed_table_85'>
             <th>№</th>
+            <th>Артикул Детали</th>
+            <th>Нимаенование Деталь</th>
+            <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Дата план. отгрузки</th>
+            <th class='tooltip'>Прин. <span class='tooltiptext'>Принадлежность</span></th>
             <th>Заказ склада</th>
             <th>№ Заказа</th>
-            <th>Деталь</th>
-            <th>Артикул Детали</th>
-            <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
             <th class='th_showZagParam' @click='showZagParam = !showZagParam'>
               <p v-if='showZagParam' >Параметры Заготовки</p>
@@ -43,22 +44,23 @@
             <th id='doc'>Документы</th>
             <th>Время на изг-е, ч</th>
             <th>Отходы (стружка), кг</th>
-            <th id='discription'>Примечание</th>
+            <th id='discription'>Прим.</th>
           </tr>
           <tr 
             v-for='(metalowork, inx) of getMetaloworkings' :key='metalowork'
             @click='e => setObject(metalowork, e.target.parentElement)'
             class='td-row'>
             <th>{{ inx + 1 }}</th>
+            <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td> <!-- Артикл Детали -->
+            <td>{{ metalowork?.detal?.name || "Нет детали" }}</td> <!-- Наименование Детали -->
+            <td class='center'>{{ metalowork?.kolvo_shipments }}</td>  <!-- Кол-во ВСЕГО по заказу склада, шт. -->
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal)' >
               {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
-            </td> <!-- Дата готовности -->
+            </td> <!-- Дата план отгрузки -->
+            <td class="center"><img src="@/assets/img/link.jpg" @click='returnShipmentsDateModal(metalowork?.detal)' class='link_img' atl='Показать' /></td>
             <td>{{ metalowork.date_order }}</td> <!-- Заказ склада-->
             <td class='center'>{{ metalowork.number_order }}</td>  <!-- № Заказа -->
-            <td>{{ metalowork?.detal?.name || "Нет детали" }}</td>
-            <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td>
-            <td class='center'>{{ metalowork?.kolvo_shipments }}</td>
-            <td class='center'>{{ metalowork?.detal?.shipments_kolvo || 'Нет детали' }}</td>
+            <td class='center'>{{ metalowork?.detal?.shipments_kolvo || 'Нет детали' }}</td> <!-- Кол-во в т.ч. по заказу покупателя, шт. -->
             <td class='params_td' v-if='showZagParam'>
               <TbodyZag :detal='metalowork.detal' />
             </td>

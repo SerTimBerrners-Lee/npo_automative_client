@@ -27,7 +27,7 @@
             v-for='(waybill, inx) of getAllWaybills' 
             @click='e => selectOrder(order, e.target.parentElement)'
             :key="waybill">
-            <td class="center">{{ inx }}</td>
+            <td class="center">{{ inx + 1 }}</td>
             <td>{{ waybill.name }}</td>
             <td>{{ new Date(waybill.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
             <td>{{ waybill.name }}</td>

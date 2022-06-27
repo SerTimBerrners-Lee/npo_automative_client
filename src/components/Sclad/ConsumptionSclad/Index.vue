@@ -25,7 +25,7 @@
 							<th>Дата</th>
 							<th>Статус</th>
 							<th>Тип</th>
-							<th>Артикул</th>
+							<th>Артикул</th> 
 							<th>Наименование</th>
 							<th>Кол-во</th>
 							<th>№ Заказа</th>
@@ -33,20 +33,27 @@
 							<th>Изделие</th>
 							<th>Заказчик</th>
 						</tr>
-						<tr v-for='t of 44' :key='t'>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-							<td>...</td>
-						</tr>
+						<tbody v-for='way of getAllWaybills' :key='way.id'>
+							<tr v-for='(product, inxz) of parseProduct(way.product)' :key='product.id'>
+								<td>
+									<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+										<p class="checkbox_block" @click='e => select(product, way, e.target)'></p>
+									</div>
+								</td>
+								<td class='center'>{{ inxz + 1 }}</td>
+								<td class='center'>{{ new Date(way.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
+								<td class='center'>Готово</td>
+								<td class='center' v-if='way.type_сoming === "Поставщик"'>ПД</td>
+								<td class='center' v-else>{{ way.type_сoming == 'Металлообработка' ? 'Д' : 'СБ' }}</td>
+								<td>{{ product.art }}</td>
+								<td>{{ product.name }}</td>
+								<td>{{ product.kol }}</td>
+								<td>...</td>
+								<td>...</td>
+								<td>...</td>
+								<td>...</td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
 				<div class="btn-control">
@@ -112,7 +119,9 @@
 		</div>
 	</div>
 </template>
-<script> 
+<script>
+import { eSelectSpan } from '@/js/methods';
+import { mapGetters, mapActions } from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
 export default {
 	data() {
@@ -122,15 +131,35 @@ export default {
 
 			material: null,
 			span_material: null,
+			selectWayl: null,
+			selectProd: null,
+			tr: null,
 		}
 	},
-	components: {DatePicterRange},
+	computed: mapGetters(['getAllWaybills']),
+	components: { DatePicterRange },
 	methods: {
+		...mapActions(['fetchWaybill']),
 		changeDatePicterRange(val) {
       console.log(val)
-    }
+    },
+		select(prod, way, e) {
+			this.tr = eSelectSpan(this.tr, e, 'checkbox_block_select');
+			this.selectWayl = way;
+			this.selectProd = prod;
+		},
+		parseProduct(json) {
+			try {
+				const pars = JSON.parse(json);
+				return pars;
+			} catch(err) {
+				console.error(err);
+				return [];
+			}
+		}
 	},
 	async mounted() {
+		await this.fetchWaybill();
 	}
 }
 </script>
