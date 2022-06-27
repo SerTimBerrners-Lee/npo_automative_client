@@ -14,7 +14,7 @@ import { comparison } from './index';
  */
 
 export function afterAndBeforeOperation(tp, operation_id, type = 'all') {
-	if (!tp.operations.length) return false
+	if (!tp.operations || !tp.operations.length) return false
 	
 	let beforeOperation = null;
 	let afterOperation = null;
