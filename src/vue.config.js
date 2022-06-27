@@ -10,6 +10,7 @@ console.info("\n\n\nVUE_APP_IS_PROD: ", process.env.VUE_APP_IS_PROD,
 
 module.exports = {
 	devServer: process.env.VUE_APP_IS_PROD === 'true' ?	{
+		disableHostCheck: true,
     compress: true,
 		public: 'server-npo-automotive.ru',
 		proxy
