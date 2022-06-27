@@ -5,7 +5,8 @@ const proxy = {
 	}
 }
 
-console.info("\n\n\nVUE_APP_IS_PROD: ", process.env.VUE_APP_IS_PROD, "\n\n\n");
+console.info("\n\n\nVUE_APP_IS_PROD: ", process.env.VUE_APP_IS_PROD, 
+"\nVUE_APP_PATH_TO_SERVER: ", process.env.VUE_APP_PATH_TO_SERVER, "\n\n\n");
 
 module.exports = {
 	devServer: process.env.VUE_APP_IS_PROD === 'true' ?	{
