@@ -8,21 +8,30 @@
           {{ new Date().toLocaleString('ru-RU').split(',')[0] }} 
         </h3>
         <div class="block header_block">
-          <span>Выбор поставщика:</span>
-          <input type="text" :value='provider ? provider.name : ""' >
-          <button class="btn-small" @click='addProvider'>Выбрать</button>
-          <label for='prod'>Производство:</label>
-          <input type="checkbox" id="prod">
+          <div>
+            <span>Поставщик:</span>
+            <p v-if='!sclad'>
+              <input type="text" :value='provider ? provider.name : ""' >
+              <button class="btn-small" @click='addProvider'>Выбрать</button>
+            </p>
+            <p v-else style='font-weight: bold;'>Склад</p>
+          </div>
+          <select v-model='typeComing' class='select-small'>
+            <option value="Постащики">Постащики</option>
+            <option value="Сборка">Сборка</option>
+            <option value="Металлообработка">Металлообработка</option>
+          </select>
         </div>
 
         <div>
-          <h3>Потенциальные приходы от поставщика </h3>
-          <div class="table-scroll">
+          <h3>Потенциальные приходы от {{ typeComing }} </h3>
+          <div v-if="typeComing === 'Постащики'">
+            <div class="table-scroll">
             <table>
               <tr>
                 <th
                   style='cursor: pointer;' 
-                  @click='allItemsAdd'>
+                  @click='allItemsAdd("provider", product)'>
                   <unicon name="check" fill="royalblue" width='20' />
                 </th> 
                 <th>Артикул</th>
@@ -37,9 +46,9 @@
                 v-for='(prod, inx) of product' :key='prod'
                 class='td-row'>
                 <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-                  <p class="checkbox_block" @click='setProd(prod)'></p>
+                  <p class="checkbox_block" @click='delProd(prod, selected_products, product)'></p>
                 </td>
-                <td contenteditable="true" @keyup="e => editArt(inx, e.target.innerText)">
+                <td contenteditable="true" @keyup="e => editArt(inx, e.target.innerText, product)">
                   {{ prod.art }}
                 </td>
                 <td>{{ returnTypePosition(prod.type) }}</td>
@@ -49,7 +58,7 @@
                 </td>
                 <td>
                   <input type="number" 
-                    @change="e => editKol(inx, e.target.value)"
+                    @change="e => editKol(inx, e.target.value, product)"
                     min='0' :value='prod.kol'>
                 </td>
                 <td
@@ -62,21 +71,67 @@
                 <td class='center'>{{ prod.kol * prod.sum }}</td>
               </tr>
             </table>
+            </div>
+            <div class="btn-control">
+              <button 
+                class="btn-small" @click='newPosition'> Создать новый </button>
+            </div>
           </div>
-          <div class="btn-control">
-            <button 
-              class="btn-small" @click='newPosition'> Создать новый </button>
+          
+          <div v-if="typeComing !== 'Постащики'">
+            <div class="table-scroll">
+            <table>
+              <tr>
+                <th
+                  style='cursor: pointer;' 
+                  @click='allItemsAdd("sclad", scladArr)'>
+                  <unicon name="check" fill="royalblue" width='20' />
+                </th> 
+                <th>Артикул</th>
+                <th>Наименование</th>
+                <th>ЕИ</th>
+                <th>Кол-во</th>
+                <th>План. дата прихода</th>
+              </tr>
+              <tr 
+                v-for='(prod, inx) of scladArr' :key='prod'
+                class='td-row'>
+                <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                  <p class="checkbox_block" @click='delProd(prod, scladArrSelected, scladArr)'></p>
+                </td>
+                <td contenteditable="true" @keyup="e => editArt(inx, e.target.innerText, scladArr)">
+                  {{ prod.art }}
+                </td>
+                <td>{{ prod.name }}</td>
+                <td class='center'>шт</td>
+                <td>
+                  <input type="number" 
+                    @change="e => editKol(inx, e.target.value, scladArr)"
+                    min='0' :value='prod.kol'>
+                </td>
+                <td>{{ 'Планируемая дата прихода' }}</td>
+              </tr>
+            </table>
+            </div>
+            <div class="btn-control" v-if="typeComing === 'Сборка'">
+              <button 
+                class="btn-small" @click='openCbedModal'>Добавить Сборку </button>
+            </div>
+            <div class="btn-control" v-else-if="typeComing === 'Металлообработка'">
+              <button 
+                class="btn-small" @click="openDetalModal">Добавить Деталь из базы</button>
+            </div>
           </div>
         </div>
 
         <div>
           <h3>Выбранные позиции</h3>
           <div class="table-scroll">
-            <table>
+            <table v-if="typeComing === 'Постащики'">
               <tr>
                 <th 
                   style='cursor: pointer;'
-                  @click="allItemsDel">
+                  @click="allItemsDel('provider', selected_products)">
                   <unicon name="glass-tea" fill="#ee0942d0" width='20' />
                 </th> 
                 <th>Артикул</th>
@@ -91,7 +146,7 @@
                 v-for='prod of selected_products' :key='prod'
                 class='td-row'>
                 <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-                  <p class="checkbox_block_del" @click='delProd(prod)'></p>
+                  <p class="checkbox_block_del" @click='delProd(prod, product, selected_products)'></p>
                 </td>
                 <td>{{ prod.art }}</td>
                 <td>{{ returnTypePosition(prod.type) }}</td>
@@ -102,6 +157,33 @@
                 <td class='center'>{{ prod.kol }}</td>
                 <td class='center'>{{ prod.sum }}</td>
                 <td class='center'>{{ prod.kol * prod.sum }}</td>
+              </tr>
+            </table>
+
+            <table v-else>
+              <tr>
+                <th 
+                  style='cursor: pointer;'
+                  @click="allItemsDel('sclad', scladArrSelected)">
+                  <unicon name="glass-tea" fill="#ee0942d0" width='20' />
+                </th> 
+                <th>Артикул</th>
+                <th>Наименование</th>
+                <th>ЕИ</th>
+                <th>Кол-во</th>
+                <th>План. дата прихода</th>
+              </tr>
+              <tr 
+                v-for='prod of scladArrSelected' :key='prod'
+                class='td-row'>
+                <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+                  <p class="checkbox_block_del" @click='delProd(prod, scladArr, scladArrSelected)'></p>
+                </td>
+                <td>{{ prod.art }}</td>
+                <td>{{ prod.name }}</td>
+                <td>шт</td>
+                <td class='center'>{{ prod.kol }}</td>
+                <td class='center'>{{ 'план Дата прихода' }}</td>
               </tr>
             </table>
           </div>
@@ -142,16 +224,31 @@
       v-if='show_position'
       @unmount='unmount_position'
     />
+    <BaseDetalModal
+      :key='detalModalKey'
+      v-if='detalModalIs'
+      :getListDetal='scladArr'
+      @responsDetal='unmount_product'
+    />
+    <BaseCbedModal
+      :key='cbedModalKey'
+      v-if='cbedModalIs'
+      :getListCbed='scladArr'
+      @responsCbed='unmount_product'
+    />
     <Loader v-if='loader' />
   </div>
 </template>
 <script>
 import { showMessage } from '@/js/';
-import { random, toNumber } from 'lodash';
 import AddPosition from './NewPosition';
+import MixModal from '@/mixins/mixmodal';
+import { random, toNumber } from 'lodash';
 import { returnEzName } from '@/js/edizm';
 import { mapActions, mapGetters } from 'vuex';
 import AddFile from '@/components/FileBase/AddFile';
+import BaseCbedModal from '@/components/CbEd/BaseCbedModal';
+import BaseDetalModal from '@/components/BaseDetal/BaseDetalModal';
 import { returnTypePosition, posToDeliveries } from '@/js/methods';
 import ProviderList from '@/components/BaseProvider/AllFieldsProvider';
 
@@ -159,10 +256,6 @@ export default {
   props: ['parametrs'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',   
-
       date_shipments: null,
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
@@ -176,56 +269,97 @@ export default {
       key_provider_modal: random(1, 999),
       allProvider: [],
       provider: null,
+      sclad: false,
 
       product: [],
       selected_products: [],
+
+      scladArr: [],
+      scladArrSelected: [],
       description: '',
 
       select_m: null,
 
-      loader: false
+      loader: false,
+      typeComing: 'Постащики',
+      detalModalKey: random(1, 999),
+      detalModalIs: false,
+      cbedModalKey: random(1, 999),
+      cbedModalIs: false,
     }
   },
   computed: {
     ...mapGetters(['getAllDeliveries']),
   },
-  components: {AddFile, ProviderList, AddPosition},
+  mixins: [MixModal],
+  components: {
+    AddFile,
+    ProviderList,
+    AddPosition,
+    BaseDetalModal,
+    BaseCbedModal
+  },
+  watch: {
+    typeComing: function(news) {
+      if (news !== 'Постащики') this.sclad = true;
+      else this.sclad = false;
+    }
+  },
   methods: {
     ...mapActions([
       'fetchGetProviders', 
       'fetchPushWaybillCreate', 
       'fetchGetDeliveriesCaming',
     ]),
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-    },
     unmount(e) {
-      if(!e) return 0;
+      if (!e) return 0;
       this.formData = e.formData;
-      if(this.formData.get('document'))
+      if (this.formData.get('document'))
         this.document = this.formData.get('document').name;
     },
     unmount_provider(provider) {
-      if(provider && provider.product) {
+      if (provider && provider.product) {
         this.provider = provider;
         this.product = provider.product;
-      }
+      } 
     },
     unmount_position(position_list) {
-      if(!position_list) return false;
+      if (!position_list) return false;
       
-      for(const item of position_list) {
+      for (const item of position_list) {
         const position = item.obj;
         position.type = item.type;
 
         const result = posToDeliveries(position, this.product);
-        console.log(result, 'result');
-        if(!result) continue;
+        if (!result) continue;
 
         this.product.push(result);
       }
+    },
+    unmount_product(arr) {
+      if (!arr || !arr.length) return false;
+      for (const item of arr) {
+        const obj = this.typeComing == 'Металлообработка' ? item.det : item.cb;
+        this.scladArr.push({
+          art: item.art,
+          name: obj.name,
+          id: obj.id,
+          kol: item.kol,
+          ez: item.ez,
+          description: '',
+          sum: 0,
+        });  
+      }
+    },
+    openDetalModal() {
+      this.scladArr = [];
+      this.detalModalKey = random(1, 999);
+      this.detalModalIs = true;
+    },
+    openCbedModal() {
+      this.scladArr = [];
+      this.cbedModalKey = random(1, 999);
+      this.cbedModalIs = true;
     },
     returnEzName (ez) {
       return returnEzName(ez);
@@ -241,14 +375,13 @@ export default {
       this.key_provider_modal = random(1, 999);
     },
     editVariable() {
-      // mampping providers
-      let check = true
-      for(let dev of this.getAllDeliveries) {
-        for(let prov = 0; prov < this.allProvider.length; prov++) {
-          if(this.allProvider[prov].id == dev.provider.id && this.allProvider[prov].product && this.allProvider[prov].product.length) {
+      let check = true;
+      for (const dev of this.getAllDeliveries) {
+        for (let prov = 0; prov < this.allProvider.length; prov++) {
+          if (this.allProvider[prov].id == dev.provider.id && this.allProvider[prov].product && this.allProvider[prov].product.length) {
             try {
               const pars = JSON.parse(dev.product);
-              for(let d of pars) {
+              for (const d of pars) {
                 this.allProvider[prov].product.push(d);
               }
             } catch (e) {console.error(e)}
@@ -256,10 +389,10 @@ export default {
           }
         }
 
-        if(check) {
+        if (check) {
           try {
             const prod = JSON.parse(dev.product);
-            if(prod && prod.length)
+            if (prod && prod.length)
               this.allProvider.push({ ...dev.provider, product: prod});
           } catch(e) {console.error(e)}
         } else check = false;
@@ -269,66 +402,63 @@ export default {
       return returnTypePosition(type)[0];
     },
     pushToServer() {
-      if(!this.provider) return showMessage('', 'Выберите поставщика!', 'w');
-      if(!this.formData.get('docs') && !this.formData.get('document'))
+      if (!this.provider && !this.sclad) return showMessage('', 'Выберите поставщика!', 'w');
+      if (!this.formData.get('docs') && !this.formData.get('document'))
         return showMessage('', 'Обязательно прикрепите документ!', 'w');
 
-      this.formData.append('provider_id', this.provider.id);
+      this.formData.append('provider_id', this.provider?.id || null);
+      this.formData.append('sclad', this.sclad);
       this.formData.append('description', this.description);
-      this.formData.append('product_list', JSON.stringify(this.selected_products));
+      this.formData.append('product_list', 
+        this.sclad ? JSON.stringify(this.scladArrSelected) :
+          JSON.stringify(this.selected_products)
+      );
+      this.formData.append('typeComing', this.typeComing);
 
       this.fetchPushWaybillCreate(this.formData);
       this.destroyModalF();
       this.$emit('unmount', null);
     },
-    setProd(prod) {
-      this.selected_products.push(prod);
-      for(let inx in this.product) {
-        if(this.product[inx].id == prod.id && this.product[inx].art == prod.art)
-          this.product.splice(inx, 1);
+    delProd(prod, arr, select_arr) {
+      arr.push(prod);
+      for (let inx in select_arr) {
+        if (select_arr[inx].id == prod.id && select_arr[inx].art == prod.art)
+          select_arr.splice(inx, 1);
       }
     },
-    delProd(prod) {
-      this.product.push(prod);
-      for(let inx in this.selected_products) {
-        if(this.selected_products[inx].id == prod.id && this.selected_products[inx].art == prod.art)
-          this.selected_products.splice(inx, 1);
+    allItemsAdd(type, arr) {
+      for (const prod of arr) {
+        type == 'provider' ?
+          this.selected_products.push(prod) : this.scladArrSelected.push(prod);
       }
+      type == 'provider' ? this.product = [] : this.scladArr = [];
     },
-    allItemsAdd() {
-      for(let prod of this.product) {
-        this.selected_products.push(prod);
+    allItemsDel(type, arr) {
+      for (const prod of arr) {
+        type == 'provider' ?
+          this.product.push(prod) : this.scladArr.push(prod);
       }
-      this.product = [];
-    },
-    allItemsDel() {
-      for(let prod of this.selected_products) {
-        this.product.push(prod);
-      }
-      this.selected_products = [];
+      type == 'provider' ? 
+        this.selected_products = [] : this.scladArrSelected = [];
     },
     newPosition() {
       this.key_position = random(1, 999);
       this.show_position = true;
     },
-    editArt(inx, val) {
-      this.product[inx].art = val;
+    editArt(inx, val, arr) {
+      arr[inx].art = val;
     },
-    editKol(inx, val) {
+    editKol(inx, val, arr) {
       let check = toNumber(val);
-      if(!check) return this.product[inx].kol = 0;
+      if (!check) return arr[inx].kol = 0;
 
-      this.product[inx].kol = toNumber(val);
+      arr[inx].kol = toNumber(val);
     },
     editSum(inx, val) {
       this.product[inx].sum = val;
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-
     this.loader = true;
     await this.fetchGetDeliveriesCaming();
     this.editVariable();
@@ -366,8 +496,17 @@ label {
   font-size: 16px;
   cursor: pointer;
 }
-.header_block input{
-  width: 50%;
+.header_block>div>p>input {
+  width: 80%;
+}
+.header_block>div>p {
+  width: 74%;
+}
+.header_block>div {
+  display: flex;
+  width: 74%;
+  align-items: center;
+  margin: 0px;
 }
 .block {
   margin-bottom: 10px;

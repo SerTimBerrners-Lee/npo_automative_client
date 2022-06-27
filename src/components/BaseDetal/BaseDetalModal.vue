@@ -47,18 +47,17 @@
               <div class="scroll-table" >
                 <table class="table-base-detal">
                   <tr>
-                    <th colspan="3" scope="col">Сборочная единица (Тип СБ)</th>
+                    <th colspan="2" scope="col">Сборочная единица (Тип СБ)</th>
                   </tr>
                   <tr>
                     <th>Артикул</th>
                     <th>Наименование</th>
-                    <th style='width: 40px;'>Кол-во СБ на Изделие</th>
                   </tr>
                     <tr>
-                      <td class="tb-title" colspan="3" scope="col">Баз назначенного СБ</td>
+                      <td class="tb-title" colspan="2" scope="col">Баз назначенного СБ</td>
                     </tr>
                   <tr>
-                    <td colspan="3">
+                    <td colspan="2">
                       <Search 
                         :placeholder="'Поиск по Артиклу'"
                         @unmount='keySearchCb' 
@@ -72,7 +71,6 @@
                     @dblclick="infoModalCbed(cb)">
                     <td>{{ cb.articl }}</td>
                     <td>{{ cb.name }}</td>
-                    <td class='center'>{{ cb.kolvo_for_product ? cb.kolvo_for_product : '' }}</td>
                   </tr>
                   <tr v-for="item in 42" :key="item">
                     <td></td>
@@ -84,15 +82,14 @@
               <div class="scroll-table" >
                 <table class="table-base-detal">
                   <tr>
-                    <th colspan="3" scope="col">Деталь (Тип Д)</th>
+                    <th colspan="2" scope="col">Деталь (Тип Д)</th>
                   </tr>
                   <tr>
                     <th>Артикул</th>
                     <th>Наименование</th>
-                    <th style='width: 50px;'>Кол-во Д на СБ</th>
                   </tr>   
                   <tr>
-                    <td colspan="3">
+                    <td colspan="2">
                       <Search 
                         @unmount='keySearch' 
                       />
@@ -107,7 +104,6 @@
                     >
                     <td>{{ detal.articl }}</td>
                     <td>{{ detal.name }}</td>
-                    <td class='center'>{{ detal.kolvo_for_detal ? detal.kolvo_for_detal : '' }}</td>
                   </tr>
                   <tr v-for="item in 42" :key="item">
                     <td></td>
@@ -160,7 +156,7 @@
                   </td>
                   <td class='td_kolvo'>
                     <input class='inputs-small' 
-                      type='text' 
+                      type='number' 
                       :value='det.kol'
                       @change='e => changeKolvo(e.target, det)'
                       >
@@ -200,20 +196,17 @@
 </template>
 <script>
 import { random } from 'lodash';
+import MixModal from '@/mixins/mixmodal';
 import { eSelectSpan } from '@/js/methods';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
-import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DetalModal from '@/components/BaseDetal/DetalModal';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import ProductModalInfo from '@/components/BaseProduct/ProductModal';
 
 export default {
   props: ['getListDetal', 'listDetal', 'get_one'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',
-
       selectedCbEd: null,
       selecteProduct: null,
       tr_cb: null,
@@ -233,12 +226,8 @@ export default {
   },
   computed: mapGetters(['allDetal',  'allCbed', 'allProduct']),
   components: {DetalModal, CbedModalInfo, ProductModalInfo},
+  mixins: [MixModal],
   methods: {
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-    },
     ...mapActions(['getAllDetals', 
       'deleteDetelyId',
       'getAllProduct', 
@@ -267,7 +256,7 @@ export default {
       this.parametrs_detal = detal.id;
     },
     async setCbed(cbed, e) {
-      if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
+      if (this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');
         this.selectedCbEd = null;
@@ -276,14 +265,14 @@ export default {
       this.selectedCbEd = cbed;
 
       const res = await this.getOneCbEdById(cbed.id);
-      if(!res) return false;
+      if (!res) return false;
       this.selectedCbEd = res;
       this.getAllDetalByProduct(res);
   
       this.tr_cb = eSelectSpan(this.tr_cb, e);
     },
     infoModalCbed(cb) {
-      if(!cb) return false;
+      if (!cb) return false;
       this.parametrs_cbed = cb.id;
       this.cbedModalKey = random(1, 999);
     },
@@ -360,7 +349,7 @@ export default {
       this.destroyModalF();
     },
     changeKolvo(val, det) {
-      det.kol = val.value;
+      det.kol = Number(val.value);
     },
     changeArt(val, det) {
       det.art = val.value;
@@ -373,10 +362,6 @@ export default {
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-    
     this.getAllProduct(true);
     this.getAllCbed(true);
     this.getAllDetals(true);

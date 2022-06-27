@@ -12,6 +12,7 @@
       <div class="scroll-table" style='width: 99%;'>
         <table>
           <tr>
+            <th>№</th>
             <th>№ Накладной</th>
             <th>Дата прихода</th>
             <th>№ Заказа</th>
@@ -23,15 +24,16 @@
           </tr>
           <tr 
             class='td-row' 
-            v-for='waybill of getAllWaybills' 
+            v-for='(waybill, inx) of getAllWaybills' 
             @click='e => selectOrder(order, e.target.parentElement)'
             :key="waybill">
+            <td class="center">{{ inx }}</td>
             <td>{{ waybill.name }}</td>
             <td>{{ new Date(waybill.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
-            <td>{{  }}</td>
-            <td>{{ waybill.provider.name }}</td>
+            <td>{{ waybill.name }}</td>
+            <td>{{ waybill.provider?.name || 'Склад' }}</td>
             <td @click='openCheck(waybill.documents)' class='select_span_href'>{{ waybill.documents.length ? waybill.documents[0].name : '' }}</td>
-            <td>{{ getAllSum(waybill.product) }}</td>
+            <td class='center'>{{ getAllSum(waybill.product) }}</td>
             <td @click='OpenDescription(waybill.description)' class='center'>
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать'/>
             </td>
@@ -47,24 +49,24 @@
                     <th>Примечание</th>
                   </tr>
                   <tr 
-                    v-for='material of detals_order'
-                    :key='material'
+                    v-for='prod of detals_order'
+                    :key='prod'
                     class='td-row'>
-                    <td >{{ material.art }}</td>
-                    <td >{{ material.name }}</td>
+                    <td >{{ prod.art }}</td>
+                    <td >{{ prod.name }}</td>
                     <td>
-                      <span :value='1' v-if='material.ez == 1'>шт</span>
-                      <span :value='2' v-if='material.ez == 2'>л</span>
-                      <span :value='3' v-if='material.ez == 3'>кг</span>
-                      <span :value='4' v-if='material.ez == 4'>м</span>
-                      <span :value='5' v-if='material.ez == 5'>м.куб</span>
+                      <span :value='1' v-if='prod.ez == 1'>шт</span>
+                      <span :value='2' v-if='prod.ez == 2'>л</span>
+                      <span :value='3' v-if='prod.ez == 3'>кг</span>
+                      <span :value='4' v-if='prod.ez == 4'>м</span>
+                      <span :value='5' v-if='prod.ez == 5'>м.куб</span>
                     </td>
-                    <td>{{ material.kol }}</td>
+                    <td>{{ prod.kol }}</td>
                     <td
-                      class='tooltip'> {{ material.sum }}
-                      <span class="tooltiptext" >Общая сумма: {{ Number(material.kol) * Number(material.sum)  }}</span>
+                      class='tooltip'> {{ prod.sum }}
+                      <span class="tooltiptext" >Общая сумма: {{ Number(prod.kol) * Number(prod.sum)  }}</span>
                     </td>
-                    <td>{{ material.description }}</td>
+                    <td>{{ prod.description }}</td>
                   </tr>
                 </table>
               </div>
@@ -102,6 +104,7 @@
 <script>
 import { random } from 'lodash';
 import ComingModal from './ComingModal';
+import { eSelectSpan } from '@/js/methods';
 import { mapGetters, mapActions } from 'vuex';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterRange from '@/components/DatePicterRange';
@@ -135,78 +138,75 @@ export default {
 	components: {DatePicterRange, OpensFile, DescriptionModal, ComingModal},
 	methods: {
     ...mapActions(['fetchWaybill']),
-    unmount_waybill() {
-      this.loader = true
-      this.fetchWaybill().then(() => this.loader = false)
+    async unmount_waybill() {
+      console.log('unmount_waybill')
+      this.loader = true;
+      await this.fetchWaybill();
+      this.loader = false;
     },
     unmount_description() {
-      this.description = ''
+      this.description = '';
     },
     addOrder() {
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
+      this.showAddOrder = true;
+      this.AddOrderKey = random(1, 999);
     },
     getDetals(order) {
-      if(order.product) {
+      if (order.product) {
         try {
-          let prod = JSON.parse(order.product)
-          this.detals_order = prod
+          const prod = JSON.parse(order.product);
+          this.detals_order = prod;
         } catch (e) {
-          console.error(e)
+          console.error(e);
         }
       }
     },
     getAllSum(product) {
-      if(!product)
-        return 0;
+      if (!product) return 0;
 
       try {
-        let count = 0 
-        let pars = JSON.parse(product)
-        for(let prod of pars) {
-          count = count + (Number(prod.kol) * Number(prod.sum))
+        let count = 0 ;
+        const pars = JSON.parse(product);
+        for (const prod of pars) {
+          count = count + (Number(prod.kol) * Number(prod.sum));
         }
-        return count
+        return count;
       } catch (e) {
-        console.error(e)
+        console.error(e);
       }
     },
     selectOrder(order, span) {
-      this.order = order
-      if(this.span)
-        this.span.classList.remove('td-row-all')
-      this.span = span
-      this.span.classList.add('td-row-all')
+      this.order = order;
+      this.span = eSelectSpan(this.span, span);
     },
     editOrder() {
-      if(!this.order) return 0
-      this.showAddOrder = true
-      this.AddOrderKey = random(1, 999)
-      this.order_parametr = this.order
+      if (!this.order) return 0;
+      this.showAddOrder = true;
+      this.AddOrderKey = random(1, 999);
+      this.order_parametr = this.order;
     },
     changeDatePicterRange(val) {
-      console.log(val)
+      console.log(val);
     },
     openCheck(documents) {
-			if(!documents || documents.length == 0)
-				return 0;
-			this.itemFiles = documents[0]
-			this.keyWhenModalGenerateFileOpen = random(1, 999)
+			if(!documents || documents.length == 0) return 0;
+			this.itemFiles = documents[0];
+			this.keyWhenModalGenerateFileOpen = random(1, 999);
 		},
     OpenDescription(val) {
-      this.description = val
-      this.key_description = random(1, 999)
+      this.description = val;
+      this.key_description = random(1, 999);
     },
     startComing() {
-      this.parametrs = this.getAllWaybills.length
-      this.key_coming = random(1, 999)
-      this.show_coming = true
+      this.parametrs = this.getAllWaybills.length;
+      this.key_coming = random(1, 999);
+      this.show_coming = true;
     }
 	},
 	async mounted() {
-    this.loader = true
-    await this.fetchWaybill()
-    this.loader = false
+    this.loader = true;
+    await this.fetchWaybill();
+    this.loader = false;
 	}
 }
 </script>

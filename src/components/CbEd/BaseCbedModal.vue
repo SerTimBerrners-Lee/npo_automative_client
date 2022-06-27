@@ -121,7 +121,7 @@
               </td>
               <td class='td_kolvo' >
                 <input class='inputs-small' 
-                  type='text' 
+                  type='number' 
                   :value='cb.kol'
                   @change='e => changeKolvo(e.target, cb)'
                   >
@@ -156,6 +156,7 @@
 </template>
 <script>
 import { random } from 'lodash';
+import MixModal from '@/mixins/mixmodal';
 import { eSelectSpan } from '@/js/methods';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -165,10 +166,6 @@ export default {
   props: ['getListCbed', 'listCbed', 'get_one'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',
-      
       selectedCbed: null,
       tr: null,
 
@@ -188,12 +185,8 @@ export default {
     CbedModalInfo,
     ProductModalInfo
   },
+  mixins: [MixModal],
   methods: {
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-    },
     ...mapActions([
       'getAllCbed', 
       'deleteCbedById', 
@@ -214,7 +207,7 @@ export default {
       this.selectedCbed = cbed;
 
       const res = await this.getOneCbEdById(cbed.id);
-      if(!res) return false;
+      if (!res) return false;
       this.selectedCbed = res;
       this.setOneCbed(res);
 
@@ -258,7 +251,7 @@ export default {
       if (this.$props.getListCbed) {
         let add = true;
         if (this.cbedList.length > 0) {
-          for (let cb of this.cbedList) {
+          for (const cb of this.cbedList) {
             if (cb.cb.id == this.selectedCbed.id)
               add = false;
           }
@@ -284,7 +277,7 @@ export default {
       this.destroyModalF();
     },
     changeKolvo(val, cb) {
-      cb.kol = val.value;
+      cb.kol = Number(val.value);
     },
     changeArt(val, cb) {
       cb.art = val.value;
@@ -297,10 +290,6 @@ export default {
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-
     this.getAllProduct(true);
     this.getAllCbed(true);
     if (this.$props.listCbed)
