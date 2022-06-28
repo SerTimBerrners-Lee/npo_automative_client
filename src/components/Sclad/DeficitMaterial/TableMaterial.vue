@@ -8,8 +8,8 @@
         <tr>
           <th class='center' v-if='type_view == "def" || type_view == "mini"'>№</th>
           <th class='min_width-50' v-if='type_view == "def" || type_view == "mini"'>Наименование</th>
-          <th class='min_width-50' v-if='type_view == "def"'>Принадлежность по заказам</th>
-          <th class='min_width-50' v-if='type_view == "def"'>Принадлежность по Изд. СБ. Д.</th>
+          <th class='min_width-50' v-if='type_view == "def"'>Заказы</th>
+          <th class='min_width-50' v-if='type_view == "def"'>Принадлежность</th>
           <th class='min_width-50' v-if='type_view == "def" || type_view == "mini"'>ЕИ</th>
           <th class='min_width-50' v-if='type_view == "def" || type_view == "mini"'>Дефицит</th>
           <th class='min_width-50' v-if='type_view == "def" || type_view == "plan"'>Дефицит на план</th>

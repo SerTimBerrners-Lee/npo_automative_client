@@ -24,12 +24,10 @@ export default {
 	components: {
 		TableOperation
 	},
-	methods: {
-	},
 	async mounted() {
 		this.type_operation_id = this.$route.params.operation
 		this.name_operaiton = this.$route.params.name_operation
-		if(!this.type_operation_id || !this.name_operaiton)
+		if (!this.type_operation_id || !this.name_operaiton)
 			return this.$router.back()
 	}
 }

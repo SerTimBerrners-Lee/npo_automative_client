@@ -68,7 +68,7 @@
                 <th>Артикул</th>
                 <th>Наименование</th>
                 <th>Дата планируемой отгрузки</th>
-                <th style='word-break: break-all;'>Принадлежность</th>
+                <th style='word-break: break-all;'>Заказы</th>
               </tr>
               <tr>
                 <td colspan='1'>Поиск: </td>

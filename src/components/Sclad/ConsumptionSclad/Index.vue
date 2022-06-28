@@ -23,7 +23,6 @@
 						<tr>
 							<th>№</th>
 							<th>Дата</th>
-							<th>Статус</th>
 							<th>Тип</th>
 							<th>Артикул</th> 
 							<th>Наименование</th>
@@ -42,7 +41,6 @@
 								</td>
 								<td class='center'>{{ inxz + 1 }}</td>
 								<td class='center'>{{ new Date(way.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
-								<td class='center'>Готово</td>
 								<td class='center' v-if='way.type_сoming === "Поставщик"'>ПД</td>
 								<td class='center' v-else>{{ way.type_сoming == 'Металлообработка' ? 'Д' : 'СБ' }}</td>
 								<td>{{ product.art }}</td>
@@ -57,64 +55,9 @@
 					</table>
 				</div>
 				<div class="btn-control">
-					<button class="btn-small btn-del">Пометка на удаление</button>
-					<button class="btn-small">Изменить</button>
 					<button class="btn-small">Просмотр</button>
 					<button class="btn-small">Печать</button>
 				</div>
-			</div>
-		</div>
-		<div class="right">
-			<h3>Выдано</h3>
-			<div class="block">
-				<table>
-					<tr>
-						<th class='th_black' colspan='5'>Сборки(СБ)</th>
-						<th class='th_black' colspan="2">Выдано</th>
-					</tr>
-					<tr>
-						<td>Артикул</td>
-						<td>Наименование</td>
-						<td>ЕИ</td>
-						<td>Потребность на 1 сборку</td>
-						<td>Потребность итого</td>
-						<td class='td_ocean'>Дата</td>
-						<td class='td_ocean'>Кол-во</td>
-					</tr>
-
-					<tr>
-						<th class='th_black' colspan='5'>Детали(Д)</th>
-						<th class='th_black' colspan='2'>Выдано</th>
-					</tr>
-					<tr>
-						<td>Артикул</td>
-						<td>Наименование</td>
-						<td>ЕИ</td>
-						<td>Потребность на 1 сборку</td>
-						<td>Потребность итого</td>
-						<td class='td_ocean'>Дата</td>
-						<td class='td_ocean'>Кол-во</td>
-					</tr>
-				</table>
-
-				<table>
-					<tr>
-						<th class='th_black' colspan='5'>Покупные детали и расходные материалы(ПД и РМ)</th>
-						<th class='th_black' colspan='5'>Выдано по факту</th>
-					</tr>
-					<tr>
-						<td>Артикул</td>
-						<td>Наименование</td>
-						<td>ЕИ</td>
-						<td>Потребность на 1 сборку</td>
-						<td>Потребность итого</td>
-						<td class='td_ocean'>Дата</td>
-						<td class='td_ocean'>Аналог</td>
-						<td class='td_ocean'>Артикул</td>
-						<td class='td_ocean'>Наименование</td>
-						<td class='td_ocean'>Кол-во</td>
-					</tr>
-				</table>
 			</div>
 		</div>
 	</div>

@@ -24,11 +24,14 @@
             <td>{{ shipment.number_order }}</td>
             <td class='center'>{{ shipment.date_order }}</td>
             <td class='center'>{{ shipment.date_shipments }}</td>
-            <td class='center'>{{ shipment.kolvoIzd}}</td>
+            <td class='center'>{{ shipment.kolvoIzd }}</td>
           </tr>
 				</table>
         <span v-else>Заказов нет </span>
-			</div>
+      </div>
+      <div style="margin: 10px;">
+        <strong>Итого: {{ allKolvo }}</strong>
+      </div>
     </div>
   </div>
 </div>
@@ -51,7 +54,8 @@ export default {
       shipments_arr: [],
 
       key_modal_shipments: random(1, 999),
-      shipments_id: null
+      shipments_id: null,
+      allKolvo: 0,
     }
   },
   components: { ShipmentsModal },
@@ -84,6 +88,7 @@ export default {
       if (izd && izd.izd) {
         for (const item in this.shipments_arr) {
           this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
+          this.allKolvo += this.shipments_arr[item].kolvoIzd;
         }
       }
     }

@@ -28,10 +28,7 @@
             <th>Нимаенование Деталь</th>
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
             <th>Дата план. отгрузки</th>
-            <th class='tooltip'>Прин. <span class='tooltiptext'>Принадлежность</span></th>
-            <th>Заказ склада</th>
-            <th>№ Заказа</th>
-            <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
+            <th>Заказы</th>
             <th class='th_showZagParam' @click='showZagParam = !showZagParam'>
               <p v-if='showZagParam' >Параметры Заготовки</p>
               <p v-else class='showZagParam tooltip'>>
@@ -58,9 +55,6 @@
               {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
             </td> <!-- Дата план отгрузки -->
             <td class="center"><img src="@/assets/img/link.jpg" @click='returnShipmentsDateModal(metalowork?.detal)' class='link_img' atl='Показать' /></td>
-            <td>{{ metalowork.date_order }}</td> <!-- Заказ склада-->
-            <td class='center'>{{ metalowork.number_order }}</td>  <!-- № Заказа -->
-            <td class='center'>{{ metalowork?.detal?.shipments_kolvo || 'Нет детали' }}</td> <!-- Кол-во в т.ч. по заказу покупателя, шт. -->
             <td class='params_td' v-if='showZagParam'>
               <TbodyZag :detal='metalowork.detal' />
             </td>
