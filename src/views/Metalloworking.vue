@@ -52,7 +52,7 @@
             <td>{{ metalowork?.detal?.name || "Нет детали" }}</td> <!-- Наименование Детали -->
             <td class='center'>{{ metalowork?.kolvo_shipments }}</td>  <!-- Кол-во ВСЕГО по заказу склада, шт. -->
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal)' >
-              {{returnShipmentsKolvo(metalowork?.detal?.shipments)}}
+              {{ returnShipmentsKolvo(metalowork?.detal?.shipments) }}
             </td> <!-- Дата план отгрузки -->
             <td class="center"><img src="@/assets/img/link.jpg" @click='returnShipmentsDateModal(metalowork?.detal)' class='link_img' atl='Показать' /></td>
             <td class='params_td' v-if='showZagParam'>
@@ -327,11 +327,11 @@ export default {
     },
     showAllTimers(metal) {
       let count = 0;
-      if(!metal.tech_process) return false;
+      if (!metal.tech_process) return false;
       const operations = metal.tech_process.operations;
-      if(!operations || operations.length == 0) return;
+      if (!operations || operations.length == 0) return;
 
-      for(let operation of operations) {
+      for (const operation of operations) {
         count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * metal.kolvo_shipments) / 60;
       }
       return count.toFixed(2);

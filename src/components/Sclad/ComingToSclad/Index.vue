@@ -139,7 +139,6 @@ export default {
 	methods: {
     ...mapActions(['fetchWaybill']),
     async unmount_waybill() {
-      console.log('unmount_waybill')
       this.loader = true;
       await this.fetchWaybill();
       this.loader = false;
@@ -189,7 +188,7 @@ export default {
       console.log(val);
     },
     openCheck(documents) {
-			if(!documents || documents.length == 0) return 0;
+			if (!documents || documents.length == 0) return 0;
 			this.itemFiles = documents[0];
 			this.keyWhenModalGenerateFileOpen = random(1, 999);
 		},

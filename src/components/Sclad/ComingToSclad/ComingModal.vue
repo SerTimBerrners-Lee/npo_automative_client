@@ -78,6 +78,7 @@
             </div>
           </div>
           
+          <!-- Металл и Сборка -->
           <div v-if="typeComing !== 'Постащики'">
             <div class="table-scroll">
             <table>
@@ -109,7 +110,7 @@
                     @change="e => editKol(inx, e.target.value, scladArr)"
                     min='0' :value='prod.kol'>
                 </td>
-                <td>{{ 'Планируемая дата прихода' }}</td>
+                <td class='center'>{{ prod.date }}</td>
               </tr>
             </table>
             </div>
@@ -124,10 +125,11 @@
           </div>
         </div>
 
+        <!-- Выбранные позиции -->
         <div>
           <h3>Выбранные позиции</h3>
           <div class="table-scroll">
-            <table v-if="typeComing === 'Постащики'">
+            <table v-if="typeComing === 'Постащики'" >
               <tr>
                 <th 
                   style='cursor: pointer;'
@@ -183,7 +185,7 @@
                 <td>{{ prod.name }}</td>
                 <td>шт</td>
                 <td class='center'>{{ prod.kol }}</td>
-                <td class='center'>{{ 'план Дата прихода' }}</td>
+                <td class='center'>{{ prod.date }}</td>
               </tr>
             </table>
           </div>
@@ -247,6 +249,7 @@ import { random, toNumber } from 'lodash';
 import { returnEzName } from '@/js/edizm';
 import { mapActions, mapGetters } from 'vuex';
 import AddFile from '@/components/FileBase/AddFile';
+import { returnShipmentsDate } from '@/js/operation';
 import BaseCbedModal from '@/components/CbEd/BaseCbedModal';
 import BaseDetalModal from '@/components/BaseDetal/BaseDetalModal';
 import { returnTypePosition, posToDeliveries } from '@/js/methods';
@@ -289,7 +292,7 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getAllDeliveries']),
+    ...mapGetters(['getAllDeliveries', 'getMetaloworkings']),
   },
   mixins: [MixModal],
   components: {
@@ -303,6 +306,18 @@ export default {
     typeComing: function(news) {
       if (news !== 'Постащики') this.sclad = true;
       else this.sclad = false;
+      this.scladArr = [];
+      this.scladArrSelected = [];
+      this.selected_products = [];
+      this.product = [];
+
+      if (news == 'Металлообработка') {
+        this.loader = true;
+        this.fetchMetaloworking().then(() => {
+          this.formingMetatall();
+          this.loader = false;
+        });
+      }
     }
   },
   methods: {
@@ -310,6 +325,7 @@ export default {
       'fetchGetProviders', 
       'fetchPushWaybillCreate', 
       'fetchGetDeliveriesCaming',
+      'fetchMetaloworking'
     ]),
     unmount(e) {
       if (!e) return 0;
@@ -348,7 +364,22 @@ export default {
           ez: item.ez,
           description: '',
           sum: 0,
+          date: '-'
         });  
+      }
+    },
+    formingMetatall() {
+      for (const item of this.getMetaloworkings) {
+        this.scladArr.push({
+          art: item?.detal.articl,
+          name: item?.detal?.name,
+          id: item?.detal.id,
+          kol: item.kolvo_shipments,
+          ez: 1,
+          description: '',
+          sum: 0,
+          date: returnShipmentsDate(item?.detal?.shipments, 1),
+        });
       }
     },
     openDetalModal() {
@@ -469,6 +500,10 @@ export default {
 </script>
 
 <style scoped>
+.table-scroll {
+  height: 450px;
+  overflow: auto;
+}
 input[type='number'] {
   width: 50px;
 }

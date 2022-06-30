@@ -17,39 +17,43 @@
 							<th rowspan='2'>
 								<unicon name="check" fill="royalblue" />
 							</th>
-							<th colspan='7'>Накладные</th>
+							<th colspan='3'>Накладные</th>
 							<th colspan='4'>Информация о заказе</th>
 						</tr>
 						<tr>
 							<th>№</th>
 							<th>Дата</th>
-							<th>Тип</th>
-							<th>Артикул</th> 
-							<th>Наименование</th>
-							<th>Кол-во</th>
+							<th>Основание</th>
+							
 							<th>№ Заказа</th>
+							<th>Комплектация</th>
 							<th>Дата</th>
 							<th>Изделие</th>
 							<th>Заказчик</th>
 						</tr>
-						<tbody v-for='way of getAllWaybills' :key='way.id'>
-							<tr v-for='(product, inxz) of parseProduct(way.product)' :key='product.id'>
-								<td>
+						<tbody v-for='(complit, idx) of getShComplits' :key='complit.id'>
+							<tr>
+								<td :rowspan='complit.shipments.length + 1 || 1'>
 									<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-										<p class="checkbox_block" @click='e => select(product, way, e.target)'></p>
+										<p class="checkbox_block" @click='e => select(sh, e.target)'></p>
 									</div>
 								</td>
-								<td class='center'>{{ inxz + 1 }}</td>
-								<td class='center'>{{ new Date(way.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
-								<td class='center' v-if='way.type_сoming === "Поставщик"'>ПД</td>
-								<td class='center' v-else>{{ way.type_сoming == 'Металлообработка' ? 'Д' : 'СБ' }}</td>
-								<td>{{ product.art }}</td>
-								<td>{{ product.name }}</td>
-								<td>{{ product.kol }}</td>
-								<td>...</td>
-								<td>...</td>
-								<td>...</td>
-								<td>...</td>
+								<td :rowspan='complit.shipments.length + 1 || 1' class='center'>{{ idx + 1 }}</td>
+								<td :rowspan='complit.shipments.length + 1 || 1' class='center'>{{ new Date(complit.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
+								<td :rowspan='complit.shipments.length + 1 || 1'>{{ complit.base }}</td>
+							</tr>
+							<tr v-for='(sh) of complit.shipments' :key='sh.id'>
+								<td>{{ sh.number_order }}</td>
+								<td class='center'>
+									<img 
+										src="@/assets/img/link.jpg" 
+										@click='openComplect(sh)' 
+										class='link_img' 
+										atl='Показать' />
+								</td>
+								<td>{{ sh.date_order }}</td>
+								<td>{{ sh.product?.name || '-' }}</td>
+								<td>{{ sh.buyer?.name || 'Склад' }}</td>
 							</tr>
 						</tbody>
 					</table>
@@ -61,11 +65,20 @@
 			</div>
 		</div>
 	</div>
+	<KomplectCon 
+		v-if='komplectIs'
+		:key='komplectKey'
+		:sh='selectSh'
+	/>
+	<Loader v-if='loader' />
 </template>
 <script>
+import { random } from 'lodash';
+import KomplectCon from './KomplectCon';
 import { eSelectSpan } from '@/js/methods';
 import { mapGetters, mapActions } from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
+
 export default {
 	data() {
 		return {
@@ -74,35 +87,35 @@ export default {
 
 			material: null,
 			span_material: null,
-			selectWayl: null,
-			selectProd: null,
+			selectSh: null,
 			tr: null,
+
+			komplectIs: false,
+			komplectKey: random(1, 999),
+			loader: false,
 		}
 	},
-	computed: mapGetters(['getAllWaybills']),
-	components: { DatePicterRange },
+	computed: mapGetters(['getShComplits']),
+	components: { DatePicterRange, KomplectCon },
 	methods: {
-		...mapActions(['fetchWaybill']),
+		...mapActions(['fetchShComplit']),
 		changeDatePicterRange(val) {
       console.log(val)
     },
-		select(prod, way, e) {
+		select(sh, e) {
 			this.tr = eSelectSpan(this.tr, e, 'checkbox_block_select');
-			this.selectWayl = way;
-			this.selectProd = prod;
+			this.selectSh = sh;
 		},
-		parseProduct(json) {
-			try {
-				const pars = JSON.parse(json);
-				return pars;
-			} catch(err) {
-				console.error(err);
-				return [];
-			}
+		openComplect(sh) {
+			this.selectSh = sh;
+			this.komplectIs = true;
+			this.komplectKey = random(1, 999);
 		}
 	},
 	async mounted() {
-		await this.fetchWaybill();
+		this.loader = true; 
+    await this.fetchShComplit();
+    this.loader = false;
 	}
 }
 </script>

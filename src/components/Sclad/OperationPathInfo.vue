@@ -1,6 +1,6 @@
 <template>
 	<div v-if='operation_list.length'>
-		<h3>Сборка</h3>
+		<h3>Детали операций</h3>
 		<table class='table-end'>
 			<tr>
 				<th>№</th>
@@ -16,7 +16,7 @@
 				<th>Исполнитель</th>
 				<th>Примечание</th>
 			</tr>
-			<tbody  v-for='(operation, inx) of operation_list' :key='operation'>
+			<tbody v-for='(operation, inx) of operation_list' :key='operation'>
 				<tr>
 					<td :rowspan='operation.marks ? operation.marks.length + 1 : 1'>{{ inx + 1 }}</td>
 					<td :rowspan='operation.marks ? operation.marks.length + 1 : 1'>{{ operation.full_name }}</td>
