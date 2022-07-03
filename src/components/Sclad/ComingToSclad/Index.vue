@@ -4,24 +4,27 @@
     <div>
       <div class="block header_block">
         <DatePicterRange 
-          @unmount='changeDatePicterRange'  
+          @unmount='changeDatePicterRange'
+          v-if='!loader'  
         />
       </div>
     </div>
     <div style='width: fit-content;'>
       <div class="scroll-table" style='width: 99%;'>
         <table>
-          <tr>
-            <th>№</th>
-            <th>№ Накладной</th>
-            <th>Дата прихода</th>
-            <th>№ Заказа</th>
-            <th>Поставщик</th>
-            <th>Основание</th>
-            <th>Сумма, руб.</th>
-            <th>Примечание</th>
-            <th>Подробнее</th>
-          </tr>
+          <tbody class='fixed_table_10'>
+            <tr>
+              <th>№</th>
+              <th>№ Накладной</th>
+              <th>Дата прихода</th>
+              <th>№ Заказа</th>
+              <th>Поставщик</th>
+              <th>Основание</th>
+              <th>Сумма, руб.</th>
+              <th>Примечание</th>
+              <th>Подробнее</th>
+            </tr>
+          </tbody>
           <tr 
             class='td-row' 
             v-for='(waybill, inx) of getAllWaybills' 
@@ -105,7 +108,7 @@
 import { random } from 'lodash';
 import ComingModal from './ComingModal';
 import { eSelectSpan } from '@/js/methods';
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterRange from '@/components/DatePicterRange';
 import DescriptionModal from '@/components/DescriptionModal';
@@ -138,6 +141,7 @@ export default {
 	components: {DatePicterRange, OpensFile, DescriptionModal, ComingModal},
 	methods: {
     ...mapActions(['fetchWaybill']),
+    ...mapMutations(['filterComingData']),
     async unmount_waybill() {
       this.loader = true;
       await this.fetchWaybill();
@@ -184,8 +188,8 @@ export default {
       this.AddOrderKey = random(1, 999);
       this.order_parametr = this.order;
     },
-    changeDatePicterRange(val) {
-      console.log(val);
+    changeDatePicterRange(range) {
+      this.filterComingData(range);
     },
     openCheck(documents) {
 			if (!documents || documents.length == 0) return 0;

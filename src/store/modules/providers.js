@@ -1,6 +1,6 @@
 
 import Req from '../../js/req';
-import { sortState } from '@/js/index';
+import { sortState, comparison } from '@/js/';
 
 export default {
   state: {
@@ -22,6 +22,8 @@ export default {
     sMaterial: [],
     sMaterialT: [],
     sMaterialPT: [],
+
+    middleware_date_waylbill: [],
 
     date_is: '<'
   },
@@ -277,5 +279,17 @@ export default {
     filterProviderToDate(state) {
       state.date_is = sortState(state.providers, state.date_is);
     },
+    filterComingData(state, range) {
+			if (!state.middleware_date_waylbill.length)
+				state.middleware_date_waylbill = state.waybills;
+
+			const start = new Date(range.start).toLocaleDateString('ru-RU');
+			const end = new Date(range.end).toLocaleDateString('ru-RU');
+			state.waybills = state.middleware_date_waylbill.filter((el) => {
+        const dates = new Date(el.createdAt).toLocaleString('ru-RU').split(',')[0]
+				if (dates && comparison(start, dates, '<=') && comparison(end, dates, '>='))
+					return el;
+			});
+		},
   }
 }

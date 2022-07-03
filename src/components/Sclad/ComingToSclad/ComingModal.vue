@@ -82,18 +82,29 @@
           <div v-if="typeComing !== 'Постащики'">
             <div class="table-scroll">
             <table>
-              <tr>
-                <th
-                  style='cursor: pointer;' 
-                  @click='allItemsAdd("sclad", scladArr)'>
-                  <unicon name="check" fill="royalblue" width='20' />
-                </th> 
-                <th>Артикул</th>
-                <th>Наименование</th>
-                <th>ЕИ</th>
-                <th>Кол-во</th>
-                <th>План. дата прихода</th>
-              </tr>
+              <tbody class='fixed_table_10'>
+                <tr>
+                  <th
+                    style='cursor: pointer;' 
+                    @click='allItemsAdd("sclad", scladArr)'>
+                    <unicon name="check" fill="royalblue" width='20' />
+                  </th> 
+                  <th>Артикул</th>
+                  <th>Наименование</th>
+                  <th>ЕИ</th>
+                  <th>Кол-во/План приход</th>
+                  <th>Номер Заказа</th>
+                  <th>План. дата прихода</th>
+                </tr>
+                <tr id='search'>
+                  <th colspan="7">
+                    <Search 
+                      :placeholder="'Поиск по Артиклу и Наименованию'"
+                      @unmount='keySearch'
+                    />
+                  </th>
+                </tr>
+              </tbody>
               <tr 
                 v-for='(prod, inx) of scladArr' :key='prod'
                 class='td-row'>
@@ -110,6 +121,7 @@
                     @change="e => editKol(inx, e.target.value, scladArr)"
                     min='0' :value='prod.kol'>
                 </td>
+                <td class='center'>{{ typeComing === 'Металлообработка' ? 'М' : 'С' }} {{ prod.number_order }}</td>
                 <td class='center'>{{ prod.date }}</td>
               </tr>
             </table>
@@ -289,6 +301,7 @@ export default {
       detalModalIs: false,
       cbedModalKey: random(1, 999),
       cbedModalIs: false,
+      middleware_sclad: [],
     }
   },
   computed: {
@@ -307,6 +320,7 @@ export default {
       if (news !== 'Постащики') this.sclad = true;
       else this.sclad = false;
       this.scladArr = [];
+      this.middleware_sclad = [];
       this.scladArrSelected = [];
       this.selected_products = [];
       this.product = [];
@@ -364,7 +378,8 @@ export default {
           ez: item.ez,
           description: '',
           sum: 0,
-          date: '-'
+          date: '-',
+          number_order: '-'
         });  
       }
     },
@@ -379,16 +394,29 @@ export default {
           description: '',
           sum: 0,
           date: returnShipmentsDate(item?.detal?.shipments, 1),
+          number_order: item.number_order
         });
       }
     },
+    keySearch(str) {
+      if (!this.middleware_sclad.length)
+        this.middleware_sclad = this.scladArr;
+      
+      this.scladArr = this.middleware_sclad.filter(el => 
+        String(el.art)
+        .slice(0, String(str).length) == String(str) || 
+        ((el.name.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
+      );
+    },
     openDetalModal() {
       this.scladArr = [];
+      this.middleware_sclad = [];
       this.detalModalKey = random(1, 999);
       this.detalModalIs = true;
     },
     openCbedModal() {
       this.scladArr = [];
+      this.middleware_sclad = [];
       this.cbedModalKey = random(1, 999);
       this.cbedModalIs = true;
     },

@@ -9,15 +9,16 @@ export default {
 
     middleware: [],
     middleware_status: [],
+    middleware_zag: [],
   },
   getters: { 
     getMetaloworkings(state) {
-      return state.metaloworkings
+      return state.metaloworkings;
     },
   }, 
   actions: {
     async fetchMetaloworking(ctx, isBan = false) { 
-      const res = await Req(`api/metaloworking/all/${isBan}`)
+      const res = await Req(`api/metaloworking/all/${isBan}`);
 			if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('allMetaloworking', result);
@@ -59,14 +60,14 @@ export default {
         body: JSON.stringify(data)
       });
 
-      if(!res.ok) return false; 
+      if (!res.ok) return false; 
       const result = await res.json()
 
       return result;
     },
     async fetchMetaloworkingById(ctx, id) {
       const res = await Req(`api/metaloworking/${id}`);
-			if (!res.ok) return false; 
+			if (!res.ok) return false;
       const result = await res.json();
       return result;
     },
@@ -150,11 +151,11 @@ export default {
       state.metaloworkings = new_arr
     },
     breackFIlterMetal(state) {
-      if(state.filter_metal.length)
+      if (state.filter_metal.length)
         state.metaloworkings = state.filter_metal;
     },
     sortMatallZag(state, val) {
-      if(!state.middleware.length)
+      if (!state.middleware.length)
         state.middleware = state.metaloworkings;
         
       state.metaloworkings = state.middleware;
@@ -162,16 +163,27 @@ export default {
         .filter(el => val ? el?.detal?.mat_za_obj : !el?.detal?.mat_za_obj)
     },
     sortMaterialStatus(state, val) {
-      if(state.middleware_status.length == 0) state.middleware_status = state.metaloworkings;
+      if (state.middleware_status.length == 0) state.middleware_status = state.metaloworkings;
       
       state.metaloworkings = state.middleware_status;
-      if(val == 'Все') return null;
+      if (val == 'Все') return null;
      
-      if(val == 'В работе')
+      if (val == 'В работе')
         state.metaloworkings = state.middleware_status.filter(m => (m.kolvo_shipments - returnKolvoCreate(m)) != 0 && !returnKolvoCreate(m));
 
-      if(val == 'Готово') 
+      if (val == 'Готово') 
         state.metaloworkings = state.middleware_status.filter(m => (m.kolvo_shipments - returnKolvoCreate(m)) < 1);
+    },
+    sortMetallZag(state, str) {
+      if (!str) state.metaloworkings = state.middleware_zag;
+      if (state.middleware_zag.length == 0)
+        state.middleware_zag = state.metaloworkings;
+      
+      state.metaloworkings = state
+      .middleware_zag
+      .filter(metal =>
+        ((metal?.detal?.mat_za_obj?.name.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
+      );
     }
   }
 }

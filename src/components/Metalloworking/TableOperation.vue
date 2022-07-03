@@ -22,44 +22,55 @@
 
 			<div v-if='getMetaloworkings.length'>
 				<table id='tablebody'>
-					<tr>
-						<th>№</th>
-						<th>Артикул Детали</th>
-						<th>Наименование Детали</th>
-						<th>Кол-во, шт</th>
-						<th>Срок отгрузки</th>
-						<th>Дата готовности</th>
-						<th id='parent'>Принадлежность</th>
-						<th class='th_showZagParam' @click='showZagParam = !showZagParam'>
-							<p v-if='showZagParam' >Параметры Заготовки</p>
-							<p v-else class='showZagParam tooltip'>>
-								<span class='tooltiptext'>Показать параметры Заготовки</span>
-							</p>
-						</th>
-						<th>Заготовка</th>
-						<th class='work_operation'>Предыдущая операция</th>
-						<th>Статус</th>
-						<th>Сделано, шт</th>
-						<th>Осталось, шт</th>
+					<tbody class='fixed_table_85'>
+						<tr>
+							<th>№</th>
+							<th>Артикул Детали</th>
+							<th>Наименование Детали</th>
+							<th>Кол-во, шт</th>
+							<th>Срок отгрузки</th>
+							<th id='shipments'>Заказ</th>
+							<th id='parent'>Принадлежность</th>
+							<th class='th_showZagParam' @click='showZagParam = !showZagParam'>
+								<p v-if='showZagParam' >Парам. Заготовки</p>
+								<p v-else class='showZagParam tooltip'>>
+									<span class='tooltiptext'>Показать Норма времени</span>
+								</p>
+							</th>
+							<th>Заготовка</th>
+							<th class='work_operation'>Предыдущая операция</th>
+							<th>Статус</th>
+							<th>Сделано, шт</th>
+							<th>Осталось, шт</th>
 
-						<th class='th_showZagParam' v-if='!showNormTime' @click='showNormTime = !showNormTime'>
-							<p class='showZagParam tooltip'>>
-								<span class='tooltiptext'>Показать Норма времени</span>
-							</p>
-						</th>
+							<th class='th_showZagParam' v-if='!showNormTime' @click='showNormTime = !showNormTime'>
+								<p class='showZagParam tooltip'>>
+									<span class='tooltiptext'>Показать Норма времени</span>
+								</p>
+							</th>
 
-						<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (подготовительное), шт</th>
-						<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (вспомогательное), шт</th>
-						<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (основное), шт</th>
-						<th>Норма времени (общее на парт.), ч</th>
-						<th>Дата исполнения</th>
-						<th>Исполнитель</th>
-						<th>Отработано, н. ч.</th>
-						<th class='success_operation'>Следующая операция</th>
-						<th id='doc'>Документы</th>
-						<th id='discription'>Примечание</th>
-						<th id='mark'>Отметка</th>
-					</tr>
+							<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (подготовительное), шт</th>
+							<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (вспомогательное), шт</th>
+							<th v-if='showNormTime' @click='showNormTime = !showNormTime'>Норма времени (основное), шт</th>
+							<th>Норма времени (общее на парт.), ч</th>
+							<th>Дата исполнения</th>
+							<th>Исполнитель</th>
+							<th>Отработано, н. ч.</th>
+							<th class='success_operation'>Следующая операция</th>
+							<th id='doc'>Документы</th>
+							<th id='discription'>Примечание</th>
+							<th id='mark'>Отметка</th>
+						</tr>
+						<tr id='search'>
+              <th colspan="7">
+                <Search 
+                  :placeholder="'Поиск по Заготовки'"
+                  @unmount='keySearch'
+                />
+              </th>
+              <th colspan="20"></th>
+            </tr>
+					</tbody>
 					<tr 
 						v-for='(metal, inx) of getMetaloworkings'
 						:key='metal'
@@ -87,7 +98,7 @@
 						<td :class='statusBeforeOperation(metal, showOperation(metal,  "before")) ? "center hover success_operation" : "center hover work_operation"'>
 							<p class='last_column'>
 								<span @click='openOperation(metal,  "before")'>{{ showOperation(metal,  "before") }}</span>
-								<span v-if='showOperation(metal,  "before") != "Нет"'>Готово: {{ beforeOperationCount(metal) }}</span>
+								<span v-if='showOperation(metal,  "before") != "Нет"'>Готово: {{ beforeOperationCount(metal) || 0 }}</span>
 							</p>
 						</td> <!-- Пред. операция --> 
 						<td v-if='metal.kolvo_shipments - returnKolvoCreate(metal) == 0' class='success_operation center'>{{ 
@@ -261,7 +272,8 @@ export default {
 		...mapMutations([
 			'sortMatallZag',
 			'sortMaterialStatus',
-			'filterMetaloworkingByShipments'
+			'filterMetaloworkingByShipments',
+			'sortMetallZag',
 		]),
 		unmount_marks(res) {
 			if (res == 'closed') return false
@@ -271,11 +283,14 @@ export default {
 			}	else 
 					showMessage('', 'Произошла ошибка при обработки запроса', 'e');
 		},
+		keySearch(str) {
+      this.sortMetallZag(str);
+    },
 		returnDateShipments (shipments, znach_return = 1) {
 			return returnShipmentsDate(shipments, znach_return);
     },
 		toSetOrders(shipments) {
-      if(shipments.detals && shipments.detals.length)
+      if (shipments.detals && shipments.detals.length)
         this.filterMetaloworkingByShipments(shipments.detals)
     },
 		// Формируем заявку в архиве
@@ -291,9 +306,9 @@ export default {
 			showMessage('', 'Обработка началась, дождитесь результата...', '');
 
 			const res = await this.fetchMetalloworkShapeBid(data);
-				if(!res || !res.pathZip) return showMessage('', 'Не удалось сформировать заявку', 'w');
-				showMessage('', 'Заявка сформирована. Дождитесь загрузки.', 's');
-				window.open(`${PATH_TO_SERVER}/${res.pathZip}`, '_blank');
+			if (!res || !res.pathZip) return showMessage('', 'Не удалось сформировать заявку', 'w');
+			showMessage('', 'Заявка сформирована. Дождитесь загрузки.', 's');
+			window.open(`${PATH_TO_SERVER}/${res.pathZip}`, '_blank');
 		},
 		printPage() {
 			this.showZagParam = true;
@@ -303,8 +318,9 @@ export default {
         type: 'html',
         targetStyles: ['*'],
         documentTitle: "Операция: " + this.$props.name_operaiton,
-        ignoreElements: ['parent', 'doc', 'discription', 'mark'],
-        font_size: '10pt'
+        ignoreElements: ['parent', 'doc', 'discription', 'mark', 'search', 'shipments'],
+        font_size: '10pt',
+				maxWidth: '10%'
       });
     },  
 		openDetal(detal) {
@@ -325,7 +341,7 @@ export default {
 			window.open(`${window.location.origin}/metalloworking/operation-metall/${operation.tOperationId}/${operation.full_name}`);
 		},		
 		openDocuments(id) {
-			if(!id) return false
+			if (!id) return false
       this.fetchOneOperationById(id).then(res => {
         if(res.documents && res.documents.length) {
           this.keyWhenModalGenerateFileOpen = random(1, 999)
@@ -382,13 +398,13 @@ export default {
       this.shipments = shipments;
     },
 		responsible(metal) {
-			if(!metal.marks || !metal.marks.length) return '-';
+			if (!metal.marks || !metal.marks.length) return '-';
 			const mark = this.findMarks(metal.operation_id, metal.marks);
-			if(!mark) return '-';
+			if (!mark) return '-';
 
 			const user_id = mark.user_id
-			for(const user of this.getUsers) {
-				if(user.id == user_id)
+			for (const user of this.getUsers) {
+				if (user.id == user_id)
 					return user.login;
 			}
 			return '-';
@@ -414,7 +430,7 @@ export default {
 		// return 1 из 13
 		beforeOperationCount(metal) {
 			const its = this.beforesOperations.filter(item => item.id == metal.id);
-			if(!its[0]) return false;
+			if (!its[0]) return false;
 
 			const str = `${its[0].beforeCreateCount} из ${metal.kolvo_shipments}`;
 			return str;

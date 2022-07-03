@@ -530,6 +530,12 @@ textarea {
   background: #b6b6b6;
 }
 
+.fixed_table_120 {
+  position: sticky;
+  top: 120px;
+  background: #b6b6b6;
+}
+
 .btn-black {
   background-color: #2e2e2e;
   color:#ffffff;

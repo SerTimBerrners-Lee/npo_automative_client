@@ -38,7 +38,7 @@ export default {
 			return result;
 		},
     async createNewDetal(ctx, data) {
-      if(!ctx.getters.getAuth) return 0;
+      if (!ctx.getters.getAuth) return 0;
 
       const res = await Req(`api/detal`, {
         headers: new Headers({
@@ -53,7 +53,7 @@ export default {
       return result;
     },
     async deleteDetelyId(ctx, id) { 
-      if(!ctx.getters.getAuth) return 0;
+      if (!ctx.getters.getAuth) return 0;
 
       const res = await Req(`api/detal/${id}`, {
         headers: new Headers({
@@ -61,11 +61,11 @@ export default {
         }),
         method :  'delete'
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       ctx.commit('deleteDetalById', id);
     },
     async fetchUpdateDetal(ctx, data) {
-      if(!ctx.getters.getAuth) return 0;
+      if (!ctx.getters.getAuth) return 0;
 
       const res = await Req(`api/detal/update`, {
         headers: new Headers({
@@ -74,7 +74,7 @@ export default {
         method :  'post',
         body   :  data
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       
       const result = await res.json();
       ctx.commit('fetchUpdateDetalMutation', result);
@@ -110,7 +110,7 @@ export default {
     },
     async getOneDetal(ctx, id)  {
       const res = await Req(`api/detal/one/${id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       const result = await res.json();
       ctx.commit('addOneSelectDetal', result);
       return result;
@@ -125,30 +125,30 @@ export default {
         body: JSON.stringify(data),
       });
 
-      if(!res.ok) return false;
+      if (!res.ok) return false;
       return true;
     },
   },
   mutations: {
     reverseMidlevareDetal(state) {
-      if(!state.middleware_detals.length) return false;
+      if (!state.middleware_detals.length) return false;
       state.detal = state.middleware_detals;
       state.middleware_detals = [];
     },
     detalToShipmentsSort(state, detal) {
-      if(state.middleware_detals.length == 0) {
+      if (state.middleware_detals.length == 0) {
         state.middleware_detals = state.detal;
         state.detal = [];
       }
 
-      for(const det of detal) {
+      for (const det of detal) {
         let check = true;
-        for(const det_two of state.detal) {
+        for (const det_two of state.detal) {
           if(det_two.id == det.id) check = false;
         }
-        if(check) {
-          for(const item of state.middleware_detals) {
-            if(item.id == det.id) state.detal.push(item);
+        if (check) {
+          for (const item of state.middleware_detals) {
+            if (item.id == det.id) state.detal.push(item);
           }
         }
         else check = false;
@@ -158,8 +158,8 @@ export default {
       state.detal.push(detal);
     },
     fetchUpdateDetalMutation(state, new_detal) {
-      for(let inx in state.detal) {
-        if(state.detal[inx].id == new_detal.id) state.detal[inx] = new_detal;
+      for (let inx in state.detal) {
+        if (state.detal[inx].id == new_detal.id) state.detal[inx] = new_detal;
        }
     },
     addOneSelectDetal(state, detal) {
@@ -169,8 +169,8 @@ export default {
       state.detal = data;
     },
     filterDetalToArticle(state, str) {
-      if(!str) state.detal = state.filterDetal;
-      if(state.filterDetal.length == 0)
+      if (!str) state.detal = state.filterDetal;
+      if (state.filterDetal.length == 0)
         state.filterDetal = state.detal;
       
       state.detal = state
@@ -183,12 +183,12 @@ export default {
     },
     deleteDetalById(state, id) {
       state.detal = state.detal.filter(detal => detal.id != id);
-      if(state.filterDetal.length) 
+      if (state.filterDetal.length) 
         state.filterDetal = state.filterDetal.filter(detal => detal.id);
     },
 
     getAllDetalByProduct(state, product) {
-      if(!state.middleware_detals.length)
+      if (!state.middleware_detals.length)
         state.middleware_detals = state.detal;
 
       state.detal = state.middleware_detals;
@@ -201,11 +201,11 @@ export default {
             if(product.listDetal) 
               pars = JSON.parse(product.listDetal);
           } catch (e) {console.error(e)}
-          if(prod.id == det.id) {
+          if (prod.id == det.id) {
             const detal_new = det;
-            if(pars && !product.fabricNumber) {
-              for(let uu of pars) {
-                if(uu.det.id == det.id)
+            if (pars && !product.fabricNumber) {
+              for (const uu of pars) {
+                if (uu.det.id == det.id)
                   detal_new['kolvo_for_detal'] = uu.kol;
               }
             }
@@ -217,12 +217,12 @@ export default {
     },
     clearFilterDetalByProduct(state) {
       state.detal = state.middleware_detals.map(e => {
-        if(e.kolvo_for_detal) e.kolvo_for_detal = 0;
+        if (e.kolvo_for_detal) e.kolvo_for_detal = 0;
         return e;
       });
     },
     filterToAttention(state) {
-      if(state.tmp_attention.length == 0)
+      if (state.tmp_attention.length == 0)
         state.tmp_attention = state.detal;
       else {
         state.detal = state.tmp_attention;
@@ -234,7 +234,7 @@ export default {
       state.dete_id = sortState(state.detal, state.dete_id);
     },
     filterDetalToMyObject(state, user_id) {
-      if(state.tmp_responsible.length == 0) state.tmp_responsible = state.detal;
+      if (state.tmp_responsible.length == 0) state.tmp_responsible = state.detal;
       else {
         state.detal = state.tmp_responsible;
         return state.tmp_responsible = [];
@@ -242,16 +242,16 @@ export default {
       state.detal = state.detal.filter(detal => detal.responsibleId == user_id);
     },
     sortByNonOperationDetal(state, arr_operation) {
-      if(state.tmp_operation.length == 0)
+      if (state.tmp_operation.length == 0)
         state.tmp_operation = state.detal;
 
-      if(arr_operation.length == state.detal.length) 
+      if (arr_operation.length == state.detal.length) 
         return state.detal = state.tmp_operation;
 
       state.detal = [];
-      for(let id of arr_operation) {
-        for(let item of state.tmp_operation) {
-          if(item.id == id) state.detal.push(item);
+      for (const id of arr_operation) {
+        for (const item of state.tmp_operation) {
+          if (item.id == id) state.detal.push(item);
         }
       }
     },

@@ -12,8 +12,6 @@
       <span style='margin-left: 10px;'>Всего операций: {{ operation_stack.length }}</span>
       
       <span class='sort_span'>
-        <label for="sortZag">Сортировать по заготовки</label>
-        <input type="checkbox" id="sortZag" v-model='sortZag'>
       </span>
     </div>
     <div class='table_block'>
@@ -22,27 +20,38 @@
         :getShipments='getShipments'/>
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
-          <tr class='fixed_table_85'>
-            <th>№</th>
-            <th>Артикул Детали</th>
-            <th>Нимаенование Деталь</th>
-            <th>Кол-во ВСЕГО по заказу склада, шт.</th>
-            <th>Дата план. отгрузки</th>
-            <th>Заказы</th>
-            <th class='th_showZagParam' @click='showZagParam = !showZagParam'>
-              <p v-if='showZagParam' >Параметры Заготовки</p>
-              <p v-else class='showZagParam tooltip'>>
-                <span class='tooltiptext'>Показать параметры Заготовки</span>
-              </p>
-            </th>
-            <th>Материал</th>
-            <th id='operation'>Операции</th>
-            <th>Готовность</th>
-            <th id='doc'>Документы</th>
-            <th>Время на изг-е, ч</th>
-            <th>Отходы (стружка), кг</th>
-            <th id='discription'>Прим.</th>
-          </tr>
+          <tbody class='fixed_table_85'>
+            <tr>
+              <th>№</th>
+              <th>Артикул Детали</th>
+              <th>Нимаенование Деталь</th>
+              <th>Кол-во ВСЕГО по заказу склада, шт.</th>
+              <th>Дата план. отгрузки</th>
+              <th>Заказы</th>
+              <th class='th_showZagParam' @click='showZagParam = !showZagParam'>
+                <p v-if='showZagParam' >Параметры Заготовки</p>
+                <p v-else class='showZagParam tooltip'>>
+                  <span class='tooltiptext'>Показать параметры Заготовки</span>
+                </p>
+              </th>
+              <th>Материал</th>
+              <th id='operation'>Операции</th>
+              <th>Готовность</th>
+              <th id='doc'>Документы</th>
+              <th>Время на изг-е, ч</th>
+              <th>Отходы (стружка), кг</th>
+              <th id='discription'>Прим.</th>
+            </tr>
+            <tr>
+              <th colspan="4">
+                <Search 
+                  :placeholder="'Поиск по Заготовки'"
+                  @unmount='keySearch'
+                />
+              </th>
+              <th colspan="13"></th>
+            </tr>
+          </tbody>
           <tr 
             v-for='(metalowork, inx) of getMetaloworkings' :key='metalowork'
             @click='e => setObject(metalowork, e.target.parentElement)'
@@ -166,7 +175,6 @@ export default {
         'Просрочено' 
 			],
 
-      sortZag: true,
       span: null,
       selectMetalloworking: null,
       isArchive: false,
@@ -190,11 +198,6 @@ export default {
     ShipmentsModal,
     ShipmentList
   },
-  watch: {
-		sortZag: function(val) {
-			this.sortMatallZag(val);
-		}
-	},
 	methods: {
     ...mapActions([
       'fetchAllShipmentsMetaloworking', 
@@ -206,8 +209,12 @@ export default {
     ...mapMutations([
       'filterMetaloworkingByShipments', 
       'breackFIlterMetal',
-      'sortMatallZag'
+      'sortMatallZag',
+      'sortMetallZag'
     ]),
+    keySearch(str) {
+      this.sortMetallZag(str);
+    },
     returnStatus(status) {
       if (status == this.enumStatus[0]) return 'work_operation';
       if (status == this.enumStatus[1]) return 'success_operation';
@@ -243,7 +250,6 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
-      console.log(obj);
       this.span = eSelectSpan(this.span, e);
       this.selectMetalloworking = obj;
     },
