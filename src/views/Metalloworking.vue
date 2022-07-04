@@ -58,12 +58,14 @@
             class='td-row'>
             <th>{{ inx + 1 }}</th>
             <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td> <!-- Артикл Детали -->
-            <td>{{ metalowork?.detal?.name || "Нет детали" }}</td> <!-- Наименование Детали -->
+            <td @dblclick="showInformIzdel(metalowork?.detal.id)">{{ metalowork?.detal?.name || "Нет детали" }}</td> <!-- Наименование Детали -->
             <td class='center'>{{ metalowork?.kolvo_shipments }}</td>  <!-- Кол-во ВСЕГО по заказу склада, шт. -->
             <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal)' >
               {{ returnShipmentsKolvo(metalowork?.detal?.shipments) }}
             </td> <!-- Дата план отгрузки -->
-            <td class="center"><img src="@/assets/img/link.jpg" @click='returnShipmentsDateModal(metalowork?.detal)' class='link_img' atl='Показать' /></td>
+            <td class="center">
+              <img src="@/assets/img/link.jpg" @click='returnShipmentsDateModal(metalowork?.detal, metalowork)' class='link_img' atl='Показать' />
+            </td> <!-- Заказы -->
             <td class='params_td' v-if='showZagParam'>
               <TbodyZag :detal='metalowork.detal' />
             </td>
@@ -124,6 +126,12 @@
       v-if='shipments.length'
       :key='shipmentKey'
       :izd='izdForSchipment'
+      :scladWorking='scladWorking'
+    />
+    <DetalModal
+      :key='detalModalKey'
+      v-if='parametrs_detal'
+      :id='parametrs_detal'
     />
 
     <Loader v-if='loader' />
@@ -136,6 +144,7 @@ import { showMessage } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
 import { returnShipmentsDate } from '@/js/operation';
 import OpensFile from '@/components/FileBase/OpenFile';
+import DetalModal from '@/components/BaseDetal/DetalModal';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import TbodyZag from '@/components/Metalloworking/TableZag';
 import DescriptionModal from '@/components/DescriptionModal';
@@ -179,6 +188,10 @@ export default {
       selectMetalloworking: null,
       isArchive: false,
       izdForSchipment: null,
+      scladWorking: null,
+
+      detalModalKey: random(1, 999),
+			parametrs_detal: false,
 		}
 	},
 	computed: {
@@ -196,7 +209,8 @@ export default {
     OperationPathModal, 
     OperationModal, 
     ShipmentsModal,
-    ShipmentList
+    ShipmentList,
+    DetalModal
   },
 	methods: {
     ...mapActions([
@@ -215,6 +229,11 @@ export default {
     keySearch(str) {
       this.sortMetallZag(str);
     },
+    showInformIzdel(id) {
+      if (!id) return false;
+      this.parametrs_detal = id;
+      this.detalModalKey = random(1, 999);
+		},
     returnStatus(status) {
       if (status == this.enumStatus[0]) return 'work_operation';
       if (status == this.enumStatus[1]) return 'success_operation';
@@ -250,6 +269,7 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
+      console.log(obj);
       this.span = eSelectSpan(this.span, e);
       this.selectMetalloworking = obj;
     },
@@ -293,40 +313,41 @@ export default {
       this.key_operation_m = random(1, 999);
       this.show_operaiton_m = true;
     },
-    returnShipmentsDateModal(izd) {
+    returnShipmentsDateModal(izd, metal) {
       const shipments = izd.shipments;
-      if(!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
+      if (!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
       this.shipmentKey = random(1, 999);
-      this.izdForSchipment = {izd, type: 'detal'};
+      this.izdForSchipment = { izd, type: 'detal' };
+      this.scladWorking = metal;
       this.shipments = shipments;
     },
     filterOperation() {
-      for(const metal of this.getMetaloworkings) {
-        if(!metal.tech_process || !metal.tech_process.operations) continue;
-        for(let oper of metal.tech_process.operations) {
-          for(let ot of this.getTypeOperations) {
-            if(oper.name == ot.id) {
-              let check = true
-              for(let os of this.operation_stack) {
-                if(os.id == ot.id) check = false
+      for (const metal of this.getMetaloworkings) {
+        if (!metal.tech_process || !metal.tech_process.operations) continue;
+        for (const oper of metal.tech_process.operations) {
+          for (const ot of this.getTypeOperations) {
+            if (oper.name == ot.id) {
+              let check = true;
+              for (const os of this.operation_stack) {
+                if (os.id == ot.id) check = false;
               }
-              if(check) {
-                this.operation_stack.push(ot)
-              } else check = true
+              if (check) {
+                this.operation_stack.push(ot);
+              } else check = true;
             }
           }
         }
       }
-      this.operationFilter()
+      this.operationFilter();
     },
     operationFilter() {
-      if(!this.operation_stack.length) return false
-      for(let inx in this.operation_stack) {
-        for(let j in this.operation_stack) {
-          if(this.operation_stack[inx].id < this.operation_stack[j].id) {
-            let variabl = this.operation_stack[inx]
-            this.operation_stack[inx] = this.operation_stack[j]
-            this.operation_stack[j] = variabl
+      if (!this.operation_stack.length) return false;
+      for (let inx in this.operation_stack) {
+        for (let j in this.operation_stack) {
+          if (this.operation_stack[inx].id < this.operation_stack[j].id) {
+            let variabl = this.operation_stack[inx];
+            this.operation_stack[inx] = this.operation_stack[j];
+            this.operation_stack[j] = variabl;
           }
         }
       }

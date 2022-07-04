@@ -109,12 +109,28 @@ export default {
         arr.push(met);
       }
 
-      state.metaloworkings = arr.sort((a, b) => {
+      const sort = arr.sort((a, b) => {
         if (!a.detal.shipments || !a.detal.shipments.length || !returnShipmentsDate(a.detal.shipments)) return false;
         if (!b.detal.shipments || !b.detal.shipments.length || !returnShipmentsDate(b.detal.shipments)) return true;
         return comparison(returnShipmentsDate(a.detal.shipments), returnShipmentsDate(b.detal.shipments), '<');
       });
-      console.log(state.metaloworkings);
+
+      for (const item of sort) {
+        let find = false;
+        for (const met of state.metaloworkings) {
+          if (met.detal.id == item.detal.id) {
+            met.childrens.push(item);
+            met.kolvo_shipments += item.kolvo_shipments;
+            find = true;
+          }
+        }
+        
+        if (!find) {
+          item.childrens = [];
+          item.kolvo_for_parent = item.kolvo_shipments;
+          state.metaloworkings.push(item);
+        }
+      }
     },
     deleteMetalloworking(state, id) {
       state.metaloworkings = state.metaloworkings.filter(metal => metal.id != id);

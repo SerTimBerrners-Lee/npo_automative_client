@@ -32,6 +32,30 @@
       <div style="margin: 10px;">
         <strong>Итого: {{ allKolvo }}</strong>
       </div>
+
+    <p>Заказы склада:</p>
+    <div class="block">
+      <table v-if='sclad_arr.length'>
+        <tr>
+          <th>№ Заказа</th>
+          <th>Дата Заказа</th>
+          <th>Планируемая дата отгрузки</th> 
+          <th>Кол-во Изделий на Заказ</th>
+        </tr>
+        <tr v-for='shipment of sclad_arr' :key="shipment" 
+          class='td-row'>
+          <td>{{ shipment.number_order }}</td>
+          <td class='center'>{{ shipment.date_order }}</td>
+          <td class='center'>{{ returnShipmentsKolvo(shipment?.detal?.shipments) }}</td>
+          <td class='center'>{{ shipment.kolvo_for_parent || shipment.kolvo_shipments }}</td>
+        </tr>
+      </table>
+      <span v-else>Заказов нет </span>
+    </div>
+    <div style="margin: 10px;">
+      <strong>Итого: {{ allKolvoSclad }}</strong>
+    </div>
+
     </div>
   </div>
 </div>
@@ -45,17 +69,20 @@
 import { random } from 'lodash';
 import { comparison } from '@/js/';
 import MixModal from '@/mixins/mixmodal';
+import { returnShipmentsDate } from '@/js/operation';
 import ShipmentsModal from '@/components/IssueShipment/ShipmentsModal';
 
 export default {
-  props: ['shipments', 'izd'],
+  props: ['shipments', 'izd', 'scladWorking'],
   data() {
     return {
       shipments_arr: [],
+      sclad_arr: [],
 
       key_modal_shipments: random(1, 999),
       shipments_id: null,
       allKolvo: 0,
+      allKolvoSclad: 0,
     }
   },
   components: { ShipmentsModal },
@@ -64,6 +91,9 @@ export default {
     openShipments(id) {
       this.key_modal_shipments = random(1, 999);
       this.shipments_id = id;
+    },
+    returnShipmentsKolvo(shipments, znach_return = 1) {
+      return returnShipmentsDate(shipments, znach_return);
     },
     returnCountIzd(item, izd, type) {
       if (type == 'product') return item.kol || 0;
@@ -109,6 +139,17 @@ export default {
         char.unshift('C');
         this.shipments_arr[ship1].number_order = char.join('');
       }
+    }
+
+    if (this.$props.scladWorking) {
+      if (this.$props.scladWorking?.childrens) {
+        for (const item of this.$props.scladWorking.childrens) {
+          this.sclad_arr.push(item);
+          this.allKolvoSclad += item.kolvo_shipments;
+        }
+      }
+      this.sclad_arr.push(this.$props.scladWorking);
+      this.allKolvoSclad += this.$props.scladWorking.kolvo_for_parent;
     }
   },
 }

@@ -76,6 +76,11 @@ export default {
     const inaction = await this.fetchInactionHors();
     if (inaction && inaction.inaction) 
       this.inaction = inaction.inaction;
+    
+    if (localStorage.getItem('auth')) {
+      const auth = JSON.parse(localStorage.getItem('auth'));
+      if (!auth?.token) return this.exit();
+    } else return this.exit();
   }
 }
 </script>
