@@ -142,14 +142,17 @@ export default {
     }
 
     if (this.$props.scladWorking) {
-      if (this.$props.scladWorking?.childrens) {
-        for (const item of this.$props.scladWorking.childrens) {
-          this.sclad_arr.push(item);
-          this.allKolvoSclad += item.kolvo_shipments;
+      for (const item of this.$props.scladWorking) {
+        const types = izd.type == 'detal' ? item.metall : item.assemble;
+        for (const met of types) {
+          if (met.detal.id == izd.izd.id) {
+            item.kolvo_shipments = met.kolvo_shipments;
+            this.sclad_arr.push(item);
+            this.allKolvoSclad += met.kolvo_shipments;
+          }
         }
       }
-      this.sclad_arr.push(this.$props.scladWorking);
-      this.allKolvoSclad += this.$props.scladWorking.kolvo_for_parent;
+      console.log(this.sclad_arr);
     }
   },
 }

@@ -195,6 +195,7 @@
 import { random } from 'lodash';
 import AddOrder from './AddOrder';
 import WorkerModal from '../WorkerModal';
+import { eSelectSpan } from '@/js/methods';
 import { comparison, showMessage } from '@/js/'; 
 import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -251,11 +252,11 @@ export default {
     ]),
     ...mapMutations(['deleteOneWorkign']),
     unmount_order() {
-      this.fetchGetDeliveries()
-      this.order_parametr = null
+      this.fetchGetDeliveries();
+      this.order_parametr = null;
     },
     async unmount_working(_id) {
-      if(!_id) return false;
+      if (!_id) return false;
       this.deleteOneWorkign(_id);
       const works = await this.fetchOneWorking(_id);
       this.openWorkers(works);
@@ -264,8 +265,8 @@ export default {
     },
     returnShipmentsDateModal(shipments) {
       if(!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
-      this.shipmentKey = random(1, 999)
-      this.shipments = shipments
+      this.shipmentKey = random(1, 999);
+      this.shipments = shipments;
     },
     addOrder() {
       this.showAddOrder = true;
@@ -274,22 +275,19 @@ export default {
       this.order_parametr = null;
     },
     getDetals(order) {
-      if(order.product) {
+      if (order.product) {
         try {
-          let prod = JSON.parse(order.product);
+          const prod = JSON.parse(order.product);
           this.detals_order = prod;
         } catch (e) {console.error(e)}
       }
     },
     selectOrder(order, span) {
       this.order = order;
-      if(this.span)
-        this.span.classList.remove('td-row-all');
-      this.span = span;
-      this.span.classList.add('td-row-all');
+      this.span = eSelectSpan(this.span, span);
     },
     editOrder() {
-      if(!this.order) return 0;
+      if (!this.order) return 0;
       this.showAddOrder = true;
       this.AddOrderKey = random(1, 999);
       this.order_parametr = this.order;
@@ -298,11 +296,11 @@ export default {
       console.log(val);
     },
     returnShipmentsKolvo(shipments) {
-      if(!shipments || shipments.length == 0) return '-';
+      if (!shipments || shipments.length == 0) return '-';
       let end_date = shipments[0];
-      for(let ship1 of shipments) {
-        for(let ship2 of shipments) {
-          if(comparison(ship1.date_shipments, ship2.date_shipments, '<')) 
+      for (const ship1 of shipments) {
+        for (const ship2 of shipments) {
+          if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) 
             end_date = ship1;
         }
       }
@@ -349,7 +347,6 @@ export default {
       this.key_worker = random(1, 999);
     },
     sortWorkers() {
-      console.log("sortWorkers");
       this.assembles = this.getWorkings.filter(el => el.type == 'ass' && el.ban == this.arhives);
       this.metalloworkings = this.getWorkings.filter(el => el.type == 'metall' && el.ban == this.arhives);
     }

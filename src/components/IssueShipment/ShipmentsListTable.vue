@@ -43,7 +43,7 @@
 								</div>
 							</td>
 							<td class='td-row'>{{ metal.number_order }}</td>
-							<td class='td-row'>{{ returnShipmentsKolvo(metal?.detal?.shipments) }}</td>
+							<td class='td-row'>{{ '-' }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -146,6 +146,11 @@ export default {
 			if (shipments.number_order) this.keySearch(shipments.number_order);
     },
 		toSetMetal(metal, e) {
+			this.$emit('unmount_action');
+			if (this.span_ship) {
+        this.breackFIlterMetal();
+				this.breackFIlterAssembl();
+      }
 			this.span_ship = eSelectSpan(this.span_ship, e, 'checkbox_block_select');
 			this.$emit('unmount_set_metal', metal);
 		},

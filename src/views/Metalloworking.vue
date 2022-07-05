@@ -19,7 +19,7 @@
         @unmount_set='toSetOrders'
         @unmount_set_metal='toSetOrdersMetal'
         :getShipments='getShipments'
-        :metalloworing='getMetaloworkings' />
+        :metalloworing='metalloworkingsWorkings' />
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tbody class='fixed_table_85'>
@@ -128,7 +128,7 @@
       v-if='shipments.length'
       :key='shipmentKey'
       :izd='izdForSchipment'
-      :scladWorking='scladWorking'
+      :scladWorking='metalloworkingsWorkings'
     />
     <DetalModal
       :key='detalModalKey'
@@ -194,6 +194,7 @@ export default {
 
       detalModalKey: random(1, 999),
 			parametrs_detal: false,
+      metalloworkingsWorkings: []
 		}
 	},
 	computed: {
@@ -201,7 +202,8 @@ export default {
       'getShipments',
       'getTypeOperations',
       'getMetaloworkings',
-      'ShipmentList'
+      'ShipmentList',
+      'getWorkings'
     ])
   },
 	components: {
@@ -220,7 +222,8 @@ export default {
       'fetchMetaloworking',
       'getAllTypeOperations',
       'fetchMetalloworkingDelete',
-      'fetchCombackMetallowork'
+      'fetchCombackMetallowork',
+      'fetchAllWorkings'
     ]),
     ...mapMutations([
       'filterMetaloworkingByShipments', 
@@ -295,18 +298,22 @@ export default {
       if(shipments.detals && shipments.detals.length)
         this.filterMetaloworkingByShipments(shipments.detals);
     },
-    toSetOrdersMetal(metal) {
-      if(metal.detal)
-        this.filterMetaloworkingByShipments([metal.detal]);
+    toSetOrdersMetal(work) {
+      if (!work.metall || !work.metall.length) return false;
+      const arr = [];
+      for (const item of work.metall) {
+        if (item.detal) arr.push(item.detal);
+      }
+      this.filterMetaloworkingByShipments(arr);
     },
     openOperationPath(metalowork) {
-      if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет Технологической операции!', 'w');
+      if (!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет Технологической операции!', 'w');
       this.metaloworking_props = metalowork;
       this.keyOperationPathModal = random(1, 999);
       this.showOperationPathModal = true;
     },
     openDocuments(detal) {
-      if(detal.documents && detal.documents.length) {
+      if (detal.documents && detal.documents.length) {
         this.keyWhenModalGenerateFileOpen = random(1, 999);
         this.itemFiles = detal.documents;
       } else showMessage('', 'Документов нет', 'w');
@@ -376,6 +383,10 @@ export default {
     await this.getAllTypeOperations();
     await this.fetchMetaloworking();
     this.filterOperation();
+
+    await this.fetchAllWorkings();
+    this.metalloworkingsWorkings = this.getWorkings.filter(el => el.type == 'metall');
+    console.log(this.metalloworkingsWorkings);
     this.loader = false;
 	}
 }
