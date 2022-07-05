@@ -33,10 +33,10 @@
 							<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
 							<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
 						</tr>
-						<tr v-if='metalloworing.length'>
+						<tr v-if='metalloworing && metalloworing.length'>
 							<td colspan="3" class='center'><strong> Заказ склада Металообработка </strong></td>
 						</tr>
-						<tr v-for="metal of metalloworing" :key="metal.id">
+						<tr v-for="metal of metalloworing || []" :key="metal.id">
 							<td>
 								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
 									<p class="checkbox_block" @click='e => toSetMetal(metal, e.target)'></p>

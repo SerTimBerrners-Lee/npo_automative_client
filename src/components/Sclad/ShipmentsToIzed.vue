@@ -152,7 +152,6 @@ export default {
           }
         }
       }
-      console.log(this.sclad_arr);
     }
   },
 }
