@@ -156,12 +156,13 @@ const comparison = (one_date = new Date().toLocaleDateString('ru-RU'), two_date 
   return result;
 }
 
+const toFormatString = (date) => {
+  const spl = date.split('.');
+  return `${spl[2]}-${spl[1]}-${spl[0]}T10:20:30Z`;
+}
+
 const dateDifference = (date_one = new Date().toLocaleString('ru-RU').split(',')[0], date_two) => {
-  if(!date_two) return 0;
-  const toFormatString = (date) => {
-    const spl = date.split('.');
-    return `${spl[2]}-${spl[1]}-${spl[0]}T10:20:30Z`;
-  }
+  if (!date_two) return 0;
 
   let date1 = new Date(toFormatString(date_one));
   let date2 = new Date(toFormatString(date_two));

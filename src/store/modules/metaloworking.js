@@ -108,14 +108,22 @@ export default {
         }
         arr.push(met);
       }
+      // Сортировака по дате
+      const toFormatString = (date) => {
+        const spl = date.split('.');
+        return `${spl[2]}-${spl[1]}-${spl[0]}T10:20:30Z`;
+      }
 
-      const sort = arr.sort((a, b) => 
-        {
-          const aa = returnShipmentsDate(a.detal.shipments);
-          const bb = returnShipmentsDate(b.detal.shipments);
-            return comparison(aa, bb, '<');
-        }
-        );
+      const noShipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) == '-');
+      const shipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) != '-');
+
+      let sort = shipmentsData.sort((a, b) => {
+        const aa = returnShipmentsDate(a.detal.shipments);
+        const bb = returnShipmentsDate(b.detal.shipments);
+          return new Date(toFormatString(aa)).getTime() - new Date(toFormatString(bb)).getTime() ;
+      });
+
+      sort = sort.concat(noShipmentsData);
 
       for (const item of sort) {
         let find = false;
