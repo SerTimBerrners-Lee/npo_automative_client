@@ -24,7 +24,7 @@
 								/>
 							</th>
 						</tr>
-						<tr v-for='order of getShipments' :key='order' class='tooltip' @mouseover="tooltipInfo(order)" @mouseleave="mouseLeave">
+						<tr v-for='order of getShipments' :key='order.number_order' class='tooltip' @mouseover="tooltipInfo(order)" @mouseleave="mouseLeave">
 							<td>
 								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
 									<p class="checkbox_block" @click='e => toSetOrders(order, e.target)'></p>
@@ -32,6 +32,18 @@
 							</td>
 							<td @click="openShipments(order.id)" class='td-row'>{{ order.number_order }}</td>
 							<td @click="openShipments(order.id)" class='td-row'>{{ order.date_shipments }}</td>
+						</tr>
+						<tr v-if='metalloworing.length'>
+							<td colspan="3" class='center'><strong> Заказ склада Металообработка </strong></td>
+						</tr>
+						<tr v-for="metal of metalloworing" :key="metal.id">
+							<td>
+								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+									<p class="checkbox_block" @click='e => toSetMetal(metal, e.target)'></p>
+								</div>
+							</td>
+							<td class='td-row'>{{ metal.number_order }}</td>
+							<td class='td-row'>{{ returnShipmentsKolvo(metal?.detal?.shipments) }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -62,11 +74,15 @@
 <script>
 import { random } from 'lodash';
 import { eSelectSpan } from '@/js/methods';
-import { mapMutations, mapActions } from 'vuex';
 import ShipmentsModal from './ShipmentsModal';
+import { mapMutations, mapActions } from 'vuex';
+import { returnShipmentsDate } from '@/js/operation';
 
 export default {
-	props: ['getShipments'],
+	props: {
+		getShipments: [],
+		metalloworing: [],
+	},
 	data() {
 		return {
 			span_ship: null,
@@ -128,6 +144,13 @@ export default {
 			const res = await this.fetchAllIzdToShipments(shipments.id);
 			this.$emit('unmount_set', res);
 			if (shipments.number_order) this.keySearch(shipments.number_order);
+    },
+		toSetMetal(metal, e) {
+			this.span_ship = eSelectSpan(this.span_ship, e, 'checkbox_block_select');
+			this.$emit('unmount_set_metal', metal);
+		},
+		returnShipmentsKolvo(shipments, znach_return = 1) {
+      return returnShipmentsDate(shipments, znach_return);
     },
 		clearFilter() {
       if (this.span_ship) {

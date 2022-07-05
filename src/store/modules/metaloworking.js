@@ -109,11 +109,13 @@ export default {
         arr.push(met);
       }
 
-      const sort = arr.sort((a, b) => {
-        if (!a.detal.shipments || !a.detal.shipments.length || !returnShipmentsDate(a.detal.shipments)) return false;
-        if (!b.detal.shipments || !b.detal.shipments.length || !returnShipmentsDate(b.detal.shipments)) return true;
-        return comparison(returnShipmentsDate(a.detal.shipments), returnShipmentsDate(b.detal.shipments), '<');
-      });
+      const sort = arr.sort((a, b) => 
+        {
+          const aa = returnShipmentsDate(a.detal.shipments);
+          const bb = returnShipmentsDate(b.detal.shipments);
+            return comparison(aa, bb, '<');
+        }
+        );
 
       for (const item of sort) {
         let find = false;

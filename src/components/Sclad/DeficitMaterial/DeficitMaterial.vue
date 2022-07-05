@@ -90,13 +90,15 @@ export default {
       })
     },
 		exportExcel() {
+
 			const workbook = XLSX.utils.table_to_book(document.getElementById('tablebody'), {
-				sheet: "Дефицит Материалов"
+				header: ['dsf', 'fdg'],
+				sheet: "Дефицит Материалов",
 			});
 
 			const wscols = [ 
-				{wch:1},
-				{wch:40}
+				{wch: 1},
+				{wch: 40}
 			];
 			workbook.Sheets["Дефицит Материалов"]['!cols'] = wscols;
 			workbook.Sheets["Дефицит Материалов"]['!cols'][0] = { hidden: true };
@@ -108,7 +110,7 @@ export default {
 			const wopts = {
 				bookType: 'xlsx',
 				bookSST: false,
-				type: 'base64'
+				type: 'base64',
 			};
 			const wbout = XLSX.write(workbook, wopts);
 			const mediaType = "data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64," + wbout;
@@ -116,11 +118,11 @@ export default {
 
 		},
 		filterOrder(check, val) {
-			this.all_type_order = !check
+			this.all_type_order = !check;
 			this.filterMaterialStatus({status: 'order', val});
 		},
 		filterAll(val) {
-			this.filter_order = false
+			this.filter_order = false;
 			this.filterMaterialStatus({status: 'all', val});
 		},
 	}

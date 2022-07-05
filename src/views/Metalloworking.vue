@@ -17,12 +17,14 @@
     <div class='table_block'>
       <ShipmentList
         @unmount_set='toSetOrders'
-        :getShipments='getShipments'/>
+        @unmount_set_metal='toSetOrdersMetal'
+        :getShipments='getShipments'
+        :metalloworing='getMetaloworkings' />
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tbody class='fixed_table_85'>
             <tr>
-              <th>№</th>
+              <th>№</th> 
               <th>Артикул Детали</th>
               <th>Нимаенование Деталь</th>
               <th>Кол-во ВСЕГО по заказу склада, шт.</th>
@@ -292,6 +294,10 @@ export default {
     toSetOrders(shipments) {
       if(shipments.detals && shipments.detals.length)
         this.filterMetaloworkingByShipments(shipments.detals);
+    },
+    toSetOrdersMetal(metal) {
+      if(metal.detal)
+        this.filterMetaloworkingByShipments([metal.detal]);
     },
     openOperationPath(metalowork) {
       if(!metalowork.tech_process || !metalowork.tech_process.operations) return showMessage('', 'Нет Технологической операции!', 'w');
