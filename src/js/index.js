@@ -234,5 +234,6 @@ export  {
   differencesShipments,
   sortState,
   shipmentsNull,
-  shipmentsNullOne
+  shipmentsNullOne,
+  toFormatString
 }

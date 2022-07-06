@@ -164,10 +164,6 @@
       </table>
       </div>
       <div class='btn-control'>
-        <button 
-          class="btn-small" 
-          @click='editOrder'
-          > Редактировать заказ </button>
         <button class="btn-small btn-add" @click='addOrder'> Создать заказ </button>
       </div>
     </div>
@@ -285,12 +281,6 @@ export default {
     selectOrder(order, span) {
       this.order = order;
       this.span = eSelectSpan(this.span, span);
-    },
-    editOrder() {
-      if (!this.order) return 0;
-      this.showAddOrder = true;
-      this.AddOrderKey = random(1, 999);
-      this.order_parametr = this.order;
     },
     changeDatePicterRange(val) {
       console.log(val);

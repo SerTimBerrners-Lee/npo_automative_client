@@ -1,5 +1,5 @@
 import Req from '../../js/req';
-import { comparison } from '../../js/';
+import { comparison, toFormatString } from '../../js/';
 import { returnKolvoCreate, returnShipmentsDate } from '../../js/operation';
 
 export default {
@@ -108,12 +108,8 @@ export default {
         }
         arr.push(met);
       }
-      // Сортировака по дате
-      const toFormatString = (date) => {
-        const spl = date.split('.');
-        return `${spl[2]}-${spl[1]}-${spl[0]}T10:20:30Z`;
-      }
 
+      // Сортировака по дате
       const noShipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) == '-');
       const shipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) != '-');
 
