@@ -25,12 +25,13 @@
             <th>Наименование</th>
             <th>Кол-во в задании</th>
             <th>Кол-во сделанных</th>
+            <th>Перенести в архив</th>
           </tr>
           <tr 
             v-for='izd of komplect' 
             :key='izd'
             class='td-row'
-            @click='editWorksType(izd)'>
+            @dblclick='editWorksType(izd)'>
             <td class='center'>{{ izd.number_order }}</td>
             <td v-if='worker.type == "metall"'>{{ izd.detal?.articl }}</td>
             <td v-else>{{ izd.cbed?.articl }}</td>
@@ -38,6 +39,9 @@
             <td v-else>{{ izd.cbed?.name }}</td>
             <td class='center'>{{ izd.kolvo_shipments }}</td>
             <td class='center'>{{ izd.kolvo_create }}</td>
+            <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
+              <p class="checkbox_block_del" @click='delPos(izd, "metall")'></p>
+            </td>
           </tr>
         </table>
       </div>
@@ -67,6 +71,7 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { mapActions, mapMutations} from 'vuex';
+import MixModal from '../../mixins/mixmodal';
 import TreatmentEdit from '@/components/Sclad/EditTreatment';
 
 export default {
@@ -80,10 +85,6 @@ export default {
   },
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
-      
       date_order: '',
       number_order: '',
       description: '',
@@ -95,23 +96,29 @@ export default {
       treatment_key: random(1, 999),
     }
   },
-  components: {TreatmentEdit},
+  mixins: [MixModal],
+  components: { TreatmentEdit },
   methods: {
     ...mapActions([
       'fetchBannedWorkers',
+      'fetchMetalloworkingDelete'
     ]),
     ...mapMutations([
-      'deleteOneWorkign'
+      'deleteOneWorkign',
     ]),
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-    },
     unmount_treatment() {
       this.$emit('unmount_working', this.worker.id);
       this.treatment = null;
       this.type_treatment = null;
+    },
+    async delPos(pos, type) {
+      if (type == 'metall') {
+        const res = await this.fetchMetalloworkingDelete(pos.id);
+        if (res) {
+          this.komplect = this.komplect.filter(el => el.id !== pos.id);
+          return showMessage('', 'Металлообработка перенесана в архив', 's');
+        } else showMessage('', 'Произошла ошибка', 'e');
+      }
     },
     editWorksType(work) {
       this.treatment = work;
@@ -119,7 +126,7 @@ export default {
       this.treatment_key = random(1, 999);
     },
     endResult(res) {
-      if(!res) return showMessage('', 'Произошла ошибка...', 'e');
+      if (!res) return showMessage('', 'Произошла ошибка...', 'e');
 
       this.destroyModalF();
       return showMessage('', `Заказа №${this.number_order} отправлен в производство`, 's');
@@ -129,25 +136,21 @@ export default {
       this.number_order = this.worker.number_order;
       this.description = this.worker.description;
 
-      if(this.worker.type == "metall") this.komplect = this.worker.metall;
+      if (this.worker.type == "metall") this.komplect = this.worker.metall;
       else this.komplect = this.worker.assemble;
     },
     async archeves() {
-      if(!this.worker.id) return false;
+      if (!this.worker.id) return false;
 
       await this.fetchBannedWorkers(this.worker.id);
-      if(!this.worker.ban) 
+      if (!this.worker.ban)
         this.deleteOneWorkign(this.worker.id);
-      
+
       this.$emit('unmount_working', this.worker.id);
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-
-    if(!this.worker) return this.destroyModalF();
+    if (!this.worker) return this.destroyModalF();
     this.init();
   },
 }
