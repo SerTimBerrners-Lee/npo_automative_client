@@ -12,6 +12,13 @@
         <p class='tooltip'>
           <span>№ Заказа: <span style="font-weight: bold;">{{ number_order }}</span> </span>
         </p>
+        <p>
+          <span>Дата план. отгрузки: </span> 
+          <DatePicterCustom 
+            @unmount='change_date_shipments' 
+            :dateStart='date_shipments'
+          />
+        </p>
       </div>
       <div>
         <h3>Примечание</h3>
@@ -63,21 +70,22 @@
 import { mapActions} from 'vuex';
 import { showMessage } from '@/js/';
 import MixModal from '@/mixins/mixmodal';
+import DatePicterCustom from '@/components/DatePicter';
 
 export default {
   props: ['parametrs'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
-      
       date_order: new Date().toLocaleDateString("ru-RU"),
       number_order: '',
       description: '',
+      date_shipments: new Date().toLocaleDateString("ru-RU"),
 
       komplect: []
     }
+  },
+  components: {
+    DatePicterCustom
   },
   mixins: [MixModal],
   methods: {
@@ -85,9 +93,6 @@ export default {
       'fetchCreateWorking',
       'fetchWorkingsCount'
     ]),
-    change_date_order(date) {
-      this.date_order = date;
-    },
     change_date_shipments(date) {
       this.date_shipments = date;
     },
@@ -96,13 +101,14 @@ export default {
       this.komplect[idx].my_kolvo = value;
     },
     start() {
-      if(!this.$props.parametrs || !this.$props.parametrs.izd)
+      if (!this.$props.parametrs || !this.$props.parametrs.izd)
         return showMessage('', 'Сначала выберите изделие', 'w');
 
       const workers_data = {
         date_order: this.date_order,
         number_order: this.number_order,
         description: this.description,
+        date_shipments: this.date_shipments,
         type: this.$props.parametrs.type
       };
       const data = {};

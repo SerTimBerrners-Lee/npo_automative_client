@@ -11,6 +11,10 @@
         <p class='tooltip'>
           <span>№ Заказа: <span style="font-weight: bold;">{{ number_order }}</span> </span>
         </p>
+        <p>
+          <span> Дата план отгрузки: </span>
+          <span style="font-weight: bold;"> {{ date_shipments || '-' }} </span>
+        </p>
       </div>
       <div>
         <h3>Примечание</h3>
@@ -88,6 +92,7 @@ export default {
       date_order: '',
       number_order: '',
       description: '',
+      date_shipments: '',
 
       komplect: [],
 
@@ -135,6 +140,7 @@ export default {
       this.date_order = this.worker.date_order;
       this.number_order = this.worker.number_order;
       this.description = this.worker.description;
+      this.date_shipments = this.worker.date_shipments;
 
       if (this.worker.type == "metall") this.komplect = this.worker.metall;
       else this.komplect = this.worker.assemble;
