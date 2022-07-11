@@ -110,13 +110,13 @@ export default {
       }
 
       // Сортировака по дате
-      const noShipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) == '-');
-      const shipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) != '-');
+      const noShipmentsData = arr.filter(el => returnShipmentsDate(el.detal?.shipments) == '-');
+      const shipmentsData = arr.filter(el => returnShipmentsDate(el.detal?.shipments) != '-');
 
       let sort = shipmentsData.sort((a, b) => {
-        const aa = returnShipmentsDate(a.detal.shipments);
-        const bb = returnShipmentsDate(b.detal.shipments);
-          return new Date(toFormatString(aa)).getTime() - new Date(toFormatString(bb)).getTime() ;
+        const aa = returnShipmentsDate(a.detal?.shipments);
+        const bb = returnShipmentsDate(b.detal?.shipments);
+          return new Date(toFormatString(aa)).getTime() - new Date(toFormatString(bb)).getTime();
       });
 
       sort = sort.concat(noShipmentsData);

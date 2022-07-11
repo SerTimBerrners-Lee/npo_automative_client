@@ -42,9 +42,11 @@
                 <tr>
                 <th>№</th>
                 <th>Фото</th>
+                <th>Изображение СБ</th>
+                <th>Артикул СБ</th>
                 <th>Артикул</th>
-                <th>Наименование Детали</th>
-                <th>Материал Заготовки</th>
+                <th class='min_width-120'>Наименование Детали</th>
+                <th class='min_width-120'>Материал Заготовки</th>
                 <th>Размер заготовки</th>
                 <th>Кол-во</th>
               </tr>
@@ -58,8 +60,10 @@
                   <img class='img_preload' v-if="obj.ava_path" :src="obj.ava_path">
                   <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">                 
                 </td>
-                <td>{{ obj.obj.articl }}</td>
-                <td>{{ obj.obj.name }}</td>
+                <td>{{ 'foto' }}</td>
+                <td>{{ 'articl' }}</td>
+                <td class='min_width-120'>{{ obj.obj.articl }}</td>
+                <td class='min_width-120'>{{ obj.obj.name }}</td>
                 <td> {{ obj?.obj?.zag?.name }} </td>
                 <td class='center'>
                   <TableZag :detal='obj.obj' :key='obj.obj.id' />
