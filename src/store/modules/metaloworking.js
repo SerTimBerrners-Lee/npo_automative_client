@@ -124,7 +124,7 @@ export default {
       for (const item of sort) {
         let find = false;
         for (const met of state.metaloworkings) {
-          if (met.detal.id == item.detal.id) {
+          if (met.detal?.id == item.detal?.id) {
             met.childrens.push(item);
             met.kolvo_shipments += item.kolvo_shipments;
             find = true;
