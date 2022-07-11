@@ -41,9 +41,9 @@
             <table>
                 <tr>
                 <th>№</th>
-                <th>Фото</th>
                 <th>Изображение СБ</th>
                 <th>Артикул СБ</th>
+                <th>Фото</th>
                 <th>Артикул</th>
                 <th class='min_width-120'>Наименование Детали</th>
                 <th class='min_width-120'>Материал Заготовки</th>
@@ -56,15 +56,15 @@
                 class='td-row'
                 @click='showInformIzdel(obj.obj.id, obj.type)'>
                 <td class='center'>{{ inx + 1 }}</td>
-                <td class='center'>
-                  <img class='img_preload' v-if="obj.ava_path" :src="obj.ava_path">
-                  <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">                 
-                </td>
                 <td>
                   <img class='img_preload' v-if="obj?.CB?.ava_path" :src="obj?.CB?.ava_path">
                   <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">
                 </td>
                 <td>{{ obj?.CB?.articl || 'нет' }}</td>
+                <td class='center'>
+                  <img class='img_preload' v-if="obj.ava_path" :src="obj.ava_path">
+                  <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">                 
+                </td>
                 <td class='min_width-120'>{{ obj.obj.articl }}</td>
                 <td class='min_width-120'>{{ obj.obj.name }}</td>
                 <td> {{ obj?.obj?.zag?.name }} </td>
