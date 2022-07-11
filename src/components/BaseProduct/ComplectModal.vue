@@ -51,7 +51,7 @@
                 <th>Кол-во</th>
               </tr>
               <tr 
-                v-for='(obj, inx) of izd_detal_arr' 
+                v-for='(obj, inx) of detals' 
                 :key='obj'
                 class='td-row'
                 @click='showInformIzdel(obj.obj.id, obj.type)'>
@@ -192,6 +192,7 @@ export default {
       },
       izd_cbed_arr: [],
       izd_detal_arr: [],
+      detals: [],
       loader_key: random(1, 999),
     }
   },
@@ -278,6 +279,26 @@ export default {
 			this.material_key = random(1, 999);
 			this.material_id = id;
 		},
+    sortDdetals() {
+      this.detals = [];
+      try {
+        for (const item of this.izd_cbed_arr) {
+          const pars = item.obj?.listDetal ? JSON.parse(item.obj.listDetal) : [];
+          for (const det of this.izd_detal_arr) {
+            for (const parsDetal of pars) {
+              if (parsDetal.det.id == det.obj.id) {
+                det.CB = {
+                  ava_path: item.ava_path,
+                  articl: item.obj.articl
+                }
+                det.kol = Number(parsDetal.kol) * Number(item.kol);
+                this.detals.push(det);
+              }
+            }
+          }
+        }
+      } catch (err) { console.error(err);}
+    }
   },
   async mounted() {
 		if (isEmpty(this.parametrs)) return this.destroyModalF('unmount');
@@ -300,24 +321,7 @@ export default {
     }
 
     this.loader = false;
-    try {
-      for (const item of this.izd_cbed_arr) {
-        const pars = item.obj?.listDetal ? JSON.parse(item.obj.listDetal) : [];
-        for (const det of this.izd_detal_arr) {
-          for (const parsDetal of pars) {
-            if (parsDetal.det.id == det.obj.id) {
-              det.CB = {
-                ava_path: item.ava_path,
-                articl: item.obj.articl
-              }
-            }
-          }
-        }
-      }
-    } catch (err) {
-      console.error(err);
-    }
-    console.log(this.izd_detal_arr);
+    this.sortDdetals();
     this.loader_key = random(1, 999);
   },
 }
