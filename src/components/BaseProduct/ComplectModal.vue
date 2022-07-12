@@ -281,9 +281,11 @@ export default {
 		},
     sortDdetals() {
       this.detals = [];
+
       try {
         for (const item of this.izd_cbed_arr) {
           const pars = item.obj?.listDetal ? JSON.parse(item.obj.listDetal) : [];
+
           for (const det of this.izd_detal_arr) {
             for (const parsDetal of pars) {
               if (parsDetal.det.id == det.obj.id) {
@@ -292,12 +294,20 @@ export default {
                   articl: item.obj.articl
                 }
                 det.kol = Number(parsDetal.kol) * Number(item.kol);
-                this.detals.push(det);
               }
             }
           }
         }
       } catch (err) { console.error(err);}
+
+      for (const item of this.izd_detal_arr) {
+        const find = this.detals.find(el => el.obj.id == item.obj.id);
+        item.CB = {
+          ava_path: '',
+          articl: this.parametrs.obj.articl
+        }
+        if (!find) this.detals.push(item);
+      }
     }
   },
   async mounted() {

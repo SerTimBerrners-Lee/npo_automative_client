@@ -93,7 +93,7 @@ export default {
       this.files.unshift(findItem);
     }
 
-    this.swapMedia('l')
+    this.swapMedia('l');
   }
 }
 </script>
