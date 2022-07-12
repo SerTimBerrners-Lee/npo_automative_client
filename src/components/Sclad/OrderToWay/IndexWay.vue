@@ -88,8 +88,7 @@
           </tr>
 					<tbody v-for='works of getWorkings' :key='works'>
 						<tr 
-							class='td-row' 
-							@click='openWorkers(works)'>
+							class='td-row'>
 							<td class='center'>{{ works.number_order }}</td> <!-- Номер заказа -->
 							<td class='center'>{{ works.date_order }}</td> <!-- Дата заказа -->
 							<td class='center bold'>{{ works.type == 'metall' ? 'M' : 'С'  }}</td> <!-- Тип Заказа -->
@@ -137,19 +136,11 @@
 			v-if="itemFiles" 
 			:key='keyWhenModalGenerateFileOpen'
     />
-		<WorkerModal
-      :worker='select_worker'
-      v-if='show_worker && select_worker'
-      :key='key_worker'
-			:type_open='"read"'
-      @unmount_working='unmount_working'
-    />
   </div>
 </template> 
 
 <script>
 import { random } from 'lodash';
-import WorkerModal from '../WorkerModal';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
@@ -168,8 +159,6 @@ export default {
 			loader: false,
 
 			select_worker: null,
-      show_worker: false,
-      key_worker: random(1, 999),
 		}
 	},
   computed: mapGetters([
@@ -179,8 +168,7 @@ export default {
 		'getWorkings'
 	]),
 	components: {
-		OpensFile,
-		WorkerModal
+		OpensFile
 	},
 	methods: {
     ...mapActions([
@@ -195,12 +183,6 @@ export default {
 		unmount_working(_id) {
       if(!_id) return false;
 			this.select_worker = null;
-			this.show_worker = false;
-    },
-		openWorkers(obj) {
-      this.select_worker = obj;
-      this.show_worker = true;
-      this.key_worker = random(1, 999);
     },
 		instansMaterial(instans, span) {
       if(this.span) 

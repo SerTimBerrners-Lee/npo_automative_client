@@ -3,9 +3,6 @@
     <h3>Дефицит деталей</h3>
     <div>
       <div class="block header_block">
-        <DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
         <span>Статусы: </span>
         <div>
           <select 
@@ -34,7 +31,9 @@
           <ShipmentList
             @unmount_set='toSetOrders'
             @unmount_clear='unmount_clear'
-            :getShipments='getShipments'/>
+            @unmount_set_metal='toSetOrdersMetal'
+            :getShipments='getShipments'
+            :metalloworing='metalloworkingsWorkings' />
         </div>
         <div style='width: 99%;'> 
           <table>
@@ -108,7 +107,7 @@
               <td class='center'>{{ detal.parametrs ? JSON.parse(detal.parametrs).mainTime.znach || 0 : 0 }}</td><!-- Норма времени (основное) -->
               <td class='center'>{{ getTimming(detal.parametrs, detal.shipments_kolvo) }}</td><!-- Норма времени (общее на парт.) -->
               <td class='center' contenteditable="true" @keyup='e => alt(e.target)'>
-                  {{ detal?.my_kolvo || detal.min_remaining * 3  }}
+                {{ detal?.my_kolvo || detal.min_remaining * 3  }}
               </td> <!-- СВОЕ кол-во -->
               <td class='center'>{{ detal.metalloworking_kolvo }}</td><!-- Заказано на производстве -->
               <td class='center'>{{ detal.detal_kolvo + detal.metalloworking_kolvo - detal.shipments_kolvo }}</td> <!-- Реальный остаток с учетом -->
@@ -151,6 +150,7 @@
       :izd='izdForSchipment'
       v-if='shipments.length'
       :key='shipmentKey'
+      :scladWorking='metalloworkingsWorkings'
     />
     <TechProcess
       v-if='techProcessID'
@@ -167,7 +167,6 @@
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
-import DatePicterRange from '@/components/DatePicterRange';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
@@ -216,12 +215,12 @@ export default {
       ],
 
       techProcessKey: random(1, 999),
-      techProcessID: null
+      techProcessID: null,
+      metalloworkingsWorkings: [],
     }
   },
-  computed: mapGetters(['allDetal', 'getShipments']),
-  components: { 
-    DatePicterRange, 
+  computed: mapGetters(['allDetal', 'getShipments', 'getWorkings']),
+  components: {
     StartPraduction, 
     DescriptionModal,
     DetalModal,
@@ -238,7 +237,11 @@ export default {
     }
   }, 
   methods: {
-    ...mapActions(['setchDeficitDeficit', 'fetchAllShipmentsNoStatus']),
+    ...mapActions([
+      'setchDeficitDeficit',
+      'fetchAllShipmentsNoStatus',
+      'fetchAllWorkings'
+    ]),
     ...mapMutations([
       'filterDetalToArticle',
       'detalToShipmentsSort',
@@ -271,6 +274,15 @@ export default {
     toSetOrders(shipments) {
       this.reverseMidlevareDetal();
       this.detalToShipmentsSort(shipments.detals);
+    },
+    toSetOrdersMetal(work) {
+      this.reverseMidlevareDetal();
+      if (!work.metall || !work.metall.length) return false;
+      const arr = [];
+      for (const item of work.metall) {
+        if (item.detal) arr.push(item.detal);
+      }
+      this.detalToShipmentsSort(arr);
     },
     keySearch(v) {
       this.filterDetalToArticle(String(v));
@@ -361,6 +373,9 @@ export default {
     await this.setchDeficitDeficit();
     await this.fetchAllShipmentsNoStatus();
     this.loader = false;
+
+    await this.fetchAllWorkings();
+    this.metalloworkingsWorkings = this.getWorkings.filter(el => el.type == 'metall');
   }
 }
 </script>
