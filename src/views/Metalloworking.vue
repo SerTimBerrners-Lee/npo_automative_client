@@ -102,16 +102,16 @@
 
       <button class="btn-small" @click='printPage'>Печать</button>
     </div>
-      <DescriptionModal 
-        v-if='description'
-        :key='descriptionKey'
-        :parametrs='description'
-      />
+    <DescriptionModal 
+      v-if='description'
+      :key='descriptionKey'
+      :parametrs='description'
+    />
     <OpensFile 
       :parametrs='itemFiles' 
       v-if="itemFiles.length" 
       :key='keyWhenModalGenerateFileOpen'
-      />
+    />
     <OperationPathModal
       :metaloworking='metaloworking_props'
       v-if="showOperationPathModal" 
@@ -125,7 +125,7 @@
     />
     <ShipmentsModal 
       :shipments='shipments'
-      v-if='shipments.length'
+      v-if='izdForSchipment'
       :key='shipmentKey'
       :izd='izdForSchipment'
       :scladWorking='metalloworkingsWorkings'
@@ -274,7 +274,6 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
-      console.log(obj);
       this.span = eSelectSpan(this.span, e);
       this.selectMetalloworking = obj;
     },
@@ -295,7 +294,7 @@ export default {
       });
     },   
     toSetOrders(shipments) {
-      if(shipments.detals && shipments.detals.length)
+      if (shipments.detals && shipments.detals.length)
         this.filterMetaloworkingByShipments(shipments.detals);
     },
     toSetOrdersMetal(work) {
@@ -328,7 +327,6 @@ export default {
     },
     returnShipmentsDateModal(izd, metal) {
       const shipments = izd.shipments;
-      if (!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
       this.shipmentKey = random(1, 999);
       this.izdForSchipment = { izd, type: 'detal' };
       this.scladWorking = metal;
@@ -386,7 +384,6 @@ export default {
 
     await this.fetchAllWorkings();
     this.metalloworkingsWorkings = this.getWorkings.filter(el => el.type == 'metall');
-    console.log(this.metalloworkingsWorkings);
     this.loader = false;
 	}
 }

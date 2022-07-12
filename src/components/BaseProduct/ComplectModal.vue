@@ -41,25 +41,32 @@
             <table>
                 <tr>
                 <th>№</th>
+                <th>Изображение СБ</th>
+                <th>Артикул СБ</th>
                 <th>Фото</th>
                 <th>Артикул</th>
-                <th>Наименование Детали</th>
-                <th>Материал Заготовки</th>
+                <th class='min_width-120'>Наименование Детали</th>
+                <th class='min_width-120'>Материал Заготовки</th>
                 <th>Размер заготовки</th>
                 <th>Кол-во</th>
               </tr>
               <tr 
-                v-for='(obj, inx) of izd_detal_arr' 
+                v-for='(obj, inx) of detals' 
                 :key='obj'
                 class='td-row'
                 @click='showInformIzdel(obj.obj.id, obj.type)'>
                 <td class='center'>{{ inx + 1 }}</td>
+                <td>
+                  <img class='img_preload' v-if="obj?.CB?.ava_path" :src="obj?.CB?.ava_path">
+                  <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">
+                </td>
+                <td>{{ obj?.CB?.articl || 'нет' }}</td>
                 <td class='center'>
                   <img class='img_preload' v-if="obj.ava_path" :src="obj.ava_path">
                   <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">                 
                 </td>
-                <td>{{ obj.obj.articl }}</td>
-                <td>{{ obj.obj.name }}</td>
+                <td class='min_width-120'>{{ obj.obj.articl }}</td>
+                <td class='min_width-120'>{{ obj.obj.name }}</td>
                 <td> {{ obj?.obj?.zag?.name }} </td>
                 <td class='center'>
                   <TableZag :detal='obj.obj' :key='obj.obj.id' />
@@ -185,6 +192,7 @@ export default {
       },
       izd_cbed_arr: [],
       izd_detal_arr: [],
+      detals: [],
       loader_key: random(1, 999),
     }
   },
@@ -223,8 +231,8 @@ export default {
       this.material_arr.two = [];
       this.material_arr.free = [];
       
-      for(let item of this.list_cbed_detal) {
-        if(item.type != 'material') continue
+      for (const item of this.list_cbed_detal) {
+        if (item.type != 'material') continue
         switch(item?.obj?.material?.instansMaterial || 3) {
           case '1':
             this.pushAndCheck(this.material_arr.one, item);
@@ -240,13 +248,13 @@ export default {
     },
     pushAndCheck(arr, item) {
       let check = true;
-      for(let inx in arr) {
-        if(arr[inx].name == item?.obj?.material?.name || '') {
+      for (let inx in arr) {
+        if (arr[inx].name == item?.obj?.material?.name || '') {
           arr[inx].material.push(item);
           check = false;
         }
       }
-      if(check) {
+      if (check) {
         arr.push({
           name: item?.obj?.material?.name || '',
           material: [item]
@@ -254,14 +262,14 @@ export default {
       } else check = true;
     },
     showInformIzdel(id, type) {
-			if(type == 'cbed') {
-				if(id) {
+			if (type == 'cbed') {
+				if (id) {
 					this.parametrs_cbed = id;
 					this.cbedModalKey = random(1, 999);
 				}
 			}
-			if(type == 'detal') {
-				if(id) {
+			if (type == 'detal') {
+				if (id) {
 					this.parametrs_detal = id;
 					this.detalModalKey = random(1, 999);
 				}
@@ -271,15 +279,35 @@ export default {
 			this.material_key = random(1, 999);
 			this.material_id = id;
 		},
+    sortDdetals() {
+      this.detals = [];
+      try {
+        for (const item of this.izd_cbed_arr) {
+          const pars = item.obj?.listDetal ? JSON.parse(item.obj.listDetal) : [];
+          for (const det of this.izd_detal_arr) {
+            for (const parsDetal of pars) {
+              if (parsDetal.det.id == det.obj.id) {
+                det.CB = {
+                  ava_path: item.ava_path,
+                  articl: item.obj.articl
+                }
+                det.kol = Number(parsDetal.kol) * Number(item.kol);
+                this.detals.push(det);
+              }
+            }
+          }
+        }
+      } catch (err) { console.error(err);}
+    }
   },
   async mounted() {
-		if(isEmpty(this.parametrs)) return this.destroyModalF('unmount');
+		if (isEmpty(this.parametrs)) return this.destroyModalF('unmount');
     const obj = this.parametrs.obj;
 
     this.loader = true;
 
-		if(obj && this.parametrs.type == 'izd' || this.parametrs.type == 'cbed') {
-      if(this.parametrs.type == 'cbed') {
+		if (obj && this.parametrs.type == 'izd' || this.parametrs.type == 'cbed') {
+      if (this.parametrs.type == 'cbed') {
         // Получаем сборку 
         let izd_detals = await this.getOneCbEdField({fields: 'detals', id: obj.id});
         !izd_detals ? izd_detals = [] : izd_detals = izd_detals.detals;
@@ -293,6 +321,7 @@ export default {
     }
 
     this.loader = false;
+    this.sortDdetals();
     this.loader_key = random(1, 999);
   },
 }

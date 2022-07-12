@@ -70,7 +70,6 @@ async function checkedJsonList(izd, ctx) {
 	
 	if (izd.materials && izd.materials.length && izd.listPokDet)
 		await parseMaterialList(izd, izd.listPokDet, ctx);
-	
 }
 
 async function parseMaterialList(izd, materialJson, ctx) {

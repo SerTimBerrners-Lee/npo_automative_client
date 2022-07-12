@@ -110,13 +110,13 @@ export default {
       }
 
       // Сортировака по дате
-      const noShipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) == '-');
-      const shipmentsData = arr.filter(el => returnShipmentsDate(el.detal.shipments) != '-');
+      const noShipmentsData = arr.filter(el => returnShipmentsDate(el.detal?.shipments) == '-');
+      const shipmentsData = arr.filter(el => returnShipmentsDate(el.detal?.shipments) != '-');
 
       let sort = shipmentsData.sort((a, b) => {
-        const aa = returnShipmentsDate(a.detal.shipments);
-        const bb = returnShipmentsDate(b.detal.shipments);
-          return new Date(toFormatString(aa)).getTime() - new Date(toFormatString(bb)).getTime() ;
+        const aa = returnShipmentsDate(a.detal?.shipments);
+        const bb = returnShipmentsDate(b.detal?.shipments);
+          return new Date(toFormatString(aa)).getTime() - new Date(toFormatString(bb)).getTime();
       });
 
       sort = sort.concat(noShipmentsData);
@@ -124,7 +124,7 @@ export default {
       for (const item of sort) {
         let find = false;
         for (const met of state.metaloworkings) {
-          if (met.detal.id == item.detal.id) {
+          if (met.detal?.id == item.detal?.id) {
             met.childrens.push(item);
             met.kolvo_shipments += item.kolvo_shipments;
             find = true;

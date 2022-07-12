@@ -5,10 +5,10 @@
     <div :style="hiddens" >
       <h3>Список заказов</h3>
       <p v-if='izd'>Для 
-        <strong v-if='izd?.type =="cbed"'>Сборки:</strong>
-        <strong v-if='izd?.type =="detal"'>Детали:</strong>
-        <strong v-if='izd?.type =="product"'>Изделия:</strong>
-        <strong v-if='izd?.type =="material"'>Материала:</strong>
+        <strong v-if='izd?.type == "cbed"'>Сборки:</strong>
+        <strong v-if='izd?.type == "detal"'>Детали:</strong>
+        <strong v-if='izd?.type == "product"'>Изделия:</strong>
+        <strong v-if='izd?.type == "material"'>Материала:</strong>
           {{ izd?.izd?.name }}</p>
 			<div class="block">
 				<table v-if='shipments.length'>
