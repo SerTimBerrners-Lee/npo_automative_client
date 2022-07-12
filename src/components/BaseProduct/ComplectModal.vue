@@ -302,8 +302,15 @@ export default {
 
       for (const item of this.izd_detal_arr) {
         const find = this.detals.find(el => el.obj.id == item.obj.id);
+        let ava_path = '';
+        if (this.parametrs.obj.documents) {
+          for (const doc of this.parametrs.obj.documents) {
+            if (doc.ava) ava_path = doc.path;
+          }
+        }
+        
         item.CB = {
-          ava_path: '',
+          ava_path: ava_path,
           articl: this.parametrs.obj.articl
         }
         if (!find) this.detals.push(item);
