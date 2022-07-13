@@ -172,7 +172,6 @@
       v-if='param_deliv'
       :only_view='true'
       :order_parametr='param_deliv'/>
-    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -207,8 +206,7 @@ export default {
       keyWhenModalGenerateFileOpen: random(10, 999),
       keyDelivModal: random(10, 999),
       param_deliv: null,
-
-      loader: false,
+      
       detals_order: []
     }
   },
@@ -255,11 +253,11 @@ export default {
       this.keyDelivModal = random(1, 999);
     },
     setProvider(provider) { 
-      if(!provider) return false;
+      if (!provider) return false;
 
       this.setProviderState(provider);
       this.materials = provider.materials;
-      if(this.materials.length) {
+      if (this.materials.length) {
         this.table_key = random(1, 999);
         this.id_product = provider.id;
         this.is_empty = false;
@@ -273,13 +271,13 @@ export default {
       this.obj.inn = provider.inn;
       this.obj.cpp = provider.cpp;
       this.obj.description = provider.description;
-      if(provider.contacts) 
+      if (provider.contacts) 
         this.obj.contact = JSON.parse(provider.contacts);
-      
-      if(provider.rekvisit) 
+       
+      if (provider.rekvisit) 
         this.obj.rekvisit = JSON.parse(provider.rekvisit);
       
-      if(provider.documents) 
+      if (provider.documents) 
         this.obj.documents = provider.documents;
     },
     clickDoc(files) {
@@ -289,11 +287,11 @@ export default {
       }
     },
     banProvider() {
-      if(!this.provider.id) return 0;
+      if (!this.provider.id) return 0;
       this.fetchProviderBan(this.provider.id);
     },
     editProvider() {
-      if(!this.provider) return 0;
+      if (!this.provider) return 0;
       this.$router.push({path: '/baseprovider/addedit/edit'});
     },
     clearFilterByNode() {
@@ -301,7 +299,7 @@ export default {
       this.fetchAllProviderMaterial();
     },
     getDetals(order) {
-      if(order.product) {
+      if (order.product) {
         try {
           const prod = JSON.parse(order.product);
           this.detals_order = prod;
@@ -310,10 +308,8 @@ export default {
     },
   },
   async mounted() {
-    this.loader = true;
     this.clearCascheMaterial();
     await this.fetchGetProviders();
-    this.loader = false;
   }
 }
 </script>

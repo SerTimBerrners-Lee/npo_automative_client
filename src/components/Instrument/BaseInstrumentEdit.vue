@@ -104,7 +104,6 @@
       :fileArrModal='arrFileGet'
       @unmount='unmount_filemodal'
     />
-    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -139,7 +138,6 @@ export default {
         id: null
       },
 
-      loader: false,
       attention: false,
 
       fileModalKey: random(1, 999),
@@ -292,12 +290,10 @@ export default {
     }
   },
   async mounted() {
-    this.loader = true;
     await this.getAllEdizm();
     if(!this.$route.params.id) return this.exit();
     await this.fetchOneNameInstrument(this.$route.params.id);
     await this.checkedUpdate();
-    this.loader = false;
   }
 }
 </script>

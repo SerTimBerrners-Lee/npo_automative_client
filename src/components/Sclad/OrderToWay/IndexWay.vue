@@ -129,7 +129,6 @@
 			</div>
     </div>
 		<div v-else class='center'>Ничего не найдено...</div>
-		<Loader v-if='loader' />
 
 		<OpensFile 
 			:parametrs='itemFiles' 
@@ -141,6 +140,7 @@
 
 <script>
 import { random } from 'lodash';
+import { eSelectSpan } from '@/js/methods';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
@@ -155,8 +155,6 @@ export default {
 
 			itemFiles: null,
 			keyWhenModalGenerateFileOpen: random(1, 999),
-
-			loader: false,
 
 			select_worker: null,
 		}
@@ -181,47 +179,36 @@ export default {
 			'clearCascheMaterial',
 		]),
 		unmount_working(_id) {
-      if(!_id) return false;
+      if (!_id) return false;
 			this.select_worker = null;
     },
 		instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
+			this.span = eSelectSpan(this.span, span)
+			if (this.instansLet == instans) return 0;
 
-      this.span = span
-			this.span.classList.add('td-row-all')
-
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
-
+      this.getInstansMaterial(instans);
+      this.instansLet = instans;
     },
 		clickMat(mat) {
 			this.filterByNameMaterial(mat);
     },
 		setMaterial(material, span) {
-			if(this.material && this.material.id == material.id && this.span_material) {
+			if (this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null;
 			}
-			if(this.span_material)
-				this.span_material.classList.remove('td-row-all');
-			this.span_material = span;
-			this.span_material.classList.add('td-row-all');
+			this.span_material = eSelectSpan(this.span, span);
 
 			this.material = material;
 		},
     getComing(mat, type) {
-      if(!mat.dev) return 0
+      if (!mat.dev) return 0;
       try {
         const pars_str = JSON.parse(mat.dev.product);
-        for(let prod of pars_str) {
-          if(prod.id == mat.id) {
-            if(type == 'kol') 
-              return prod.kol;
-            if(type == 'ez')
-              return prod.ez;
+        for (const prod of pars_str) {
+          if (prod.id == mat.id) {
+            if (type == 'kol') return prod.kol;
+            if (type == 'ez') return prod.ez;
           }
         }
       } catch(e) { 
@@ -230,23 +217,20 @@ export default {
       
     },
 		materialOstat(material) {
-			let res = material.shipments_kolvo - this.getComing(material, 'kol');
+			const res = material.shipments_kolvo - this.getComing(material, 'kol');
 			return res < 0 ? -res : res;
 		},
 		openCheck(documents) {
-			if(!documents || documents.length == 0)
-				return 0;
+			if (!documents || documents.length == 0) return 0;
 			this.itemFiles = documents[0];
 			this.keyWhenModalGenerateFileOpen = random(1, 999);
 		}
 	},
 	async mounted() {
-		this.loader = true;
     this.clearCascheMaterial();
     await this.fetchGetAllShipmentsPPM();
 		await this.fetchAllWorkings();
 		console.log(this.getWorkings);
-		this.loader = false;
 	}
 }
 </script>

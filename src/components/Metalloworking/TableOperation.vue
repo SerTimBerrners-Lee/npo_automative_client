@@ -175,8 +175,6 @@
       v-if='parametrs_detal'
       :id='parametrs_detal'
     />
-
-		<Loader v-if='loader' />
 	</div>
 </template>
 
@@ -204,7 +202,6 @@ export default {
 	props: ['type_operation_id', 'name_operaiton'],
 	data() {
 		return {
-			loader: true,
 
 			itemFiles: [],
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -447,8 +444,7 @@ export default {
 	async mounted() {
 		if (!this.$props.type_operation_id)
 			return this.$router.back();
-
-		this.loader = true;
+			
     await this.fetchAllMetalloworkingTypeOperation(this.$props.type_operation_id);
 		await this.getAllUsers(true);
 		await this.fetchAllShipmentsMetaloworking({sort: undefined, light: true})
@@ -470,7 +466,6 @@ export default {
 
 			this.beforesOperations.push(newItem);
 		}
-		this.loader = false;
 	}
 }
 </script>

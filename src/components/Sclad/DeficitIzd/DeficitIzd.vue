@@ -3,9 +3,6 @@
     <h3>Дефицит Продукции</h3>
     <div>
       <div class="block header_block">
-        <DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
         <span>Статусы: </span>
         <div>
           <select 
@@ -150,13 +147,11 @@
       :parametrs='parametrs'
       @unmount="unmount_start_production"
     />
-    <Loader v-if='loader' />
   </div>
 </template>
 <script>
 import { random } from 'lodash';
 import { showMessage, comparison } from '@/js/';
-import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
@@ -182,8 +177,6 @@ export default {
       startProductionModalKey: random(1, 888),
 
       select_izd: null,
-
-      loader: false,
       type_norm_time: 'cb',
 
       izdForSchipment: null,
@@ -209,7 +202,6 @@ export default {
   computed: mapGetters(['allProduct', 'getShipments']),
   components: {
     ProductModalInfo,
-    DatePicterRange, 
     DescriptionModal, 
     NormTimeOperation, 
     ShipmentsModal,
@@ -251,13 +243,10 @@ export default {
       this.searchProduct(String(v));
     },
     async unmount_clear() {
-      this.loader = true;
       this.reverseMidlevareProduct();
       await this.fetchAllShipmentsNoStatus();
-      this.loader = false;
     },
     unmount_action() {
-      this.loader = true;
     },
     showInformIzdel(productId) {
       if (!productId) return false;
@@ -267,7 +256,6 @@ export default {
     toSetOrders(shipments) {
       this.reverseMidlevareProduct();
       this.productToShipmentsSort([shipments.product]);
-      this.loader = false;
     },
     openDescription(description) {
       this.showDescriptionModal = true;
@@ -322,9 +310,6 @@ export default {
         return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w');
       this.select_izd.my_kolvo = e.innerText;
     },
-    changeDatePicterRange(val) {
-      console.log(val);
-    },
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select');
       let check = true;
@@ -347,10 +332,8 @@ export default {
     },
   },
   async mounted() {
-    this.loader = true;
     await this.setchDeficitProducts();
     await this.fetchAllShipmentsNoStatus();
-    this.loader = false;
   }
 }
 </script>

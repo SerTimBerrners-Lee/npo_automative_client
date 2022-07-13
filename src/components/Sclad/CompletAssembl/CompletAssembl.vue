@@ -63,7 +63,6 @@
         v-if="itemFiles.length" 
         :key='keyWhenModalGenerateFileOpen'
       />
-      <Loader v-if='loader' />
 	</div>
 </template>
 <script>
@@ -83,7 +82,6 @@ export default {
 
       assembles: [],
       shipments: null,
-      loader: false,
       keyWhenModalGenerateFileOpen: random(1, 999),
       itemFiles: [],
 
@@ -147,10 +145,8 @@ export default {
     }
 	},
 	async mounted() {
-    this.loader = true;
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
     await this.fetchAssemblePlan('cbed');
-    this.loader = false;
 	}
 }
 </script>

@@ -34,7 +34,6 @@
 				Создать заказ
 			</button>
 		</div>
-		<Loader v-if='loader' />
 	</div>
 </template> 
 <script>
@@ -54,8 +53,6 @@ export default {
 			sort_buyer_key: random(1, 999),
 			is_print: false,
 			status_sort_key: random(1, 999),
-
-			loader: false,
 		}	
 	},
 	computed: mapGetters(['getShipments']),
@@ -73,14 +70,11 @@ export default {
 			this.selectShipments = select_shipemnts;
 		},
 		async clearFiltersF() {
-      this.loader = true;
 			this.sort_buyer_key = random(1, 999);
 
       this.clearFilters();
       await this.fetchAllShipmentsTo();
 			this.status_sort_key = random(1, 999);
-
-      this.loader = false;
     },
 		printPage() {
 			this.is_print = true;
@@ -95,10 +89,8 @@ export default {
 		},
 	},
 	async mounted() {
-		this.loader = true;
 		await this.fetchAllShipmentsTo();
 		this.status_sort_key = random(1, 999);
-		this.loader = false;
 	}
 }
 </script>

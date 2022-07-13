@@ -112,7 +112,6 @@
         v-if="itemFiles" 
         :key='keyWhenModalGenerateFileOpen'
       />
-    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -142,8 +141,6 @@ export default {
         description: '',
         id: null
       },
-
-      loader: false,
 
       itemFiles: null,
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -298,7 +295,6 @@ export default {
     },
   },
   async mounted() {
-    this.loader = true;
     await this.fetchAllInventary();
     await this.fetchAllPInventary();
 
@@ -309,7 +305,6 @@ export default {
         return this.exit();
       this.updateVariable();
     }
-    this.loader = false;
   }
 }
 </script>

@@ -157,7 +157,6 @@
 		v-if='material_id'
 		:id='material_id'
 	/>
-  <Loader v-if='loader' :key='loader_key' />
   </div>
 </template>
 <script>
@@ -194,7 +193,6 @@ export default {
       izd_cbed_arr: [],
       izd_detal_arr: [],
       detals: [],
-      loader_key: random(1, 999),
     }
   },
   components: {
@@ -324,8 +322,6 @@ export default {
 		if (isEmpty(this.parametrs)) return this.destroyModalF('unmount');
     const obj = this.parametrs.obj;
 
-    this.loader = true;
-
 		if (obj && this.parametrs.type == 'izd' || this.parametrs.type == 'cbed') {
       if (this.parametrs.type == 'cbed') {
         // Получаем сборку 
@@ -340,9 +336,7 @@ export default {
       else await checkedJsonList(obj, this);
     }
 
-    this.loader = false;
     this.sortDdetals();
-    this.loader_key = random(1, 999);
   },
 }
 </script>

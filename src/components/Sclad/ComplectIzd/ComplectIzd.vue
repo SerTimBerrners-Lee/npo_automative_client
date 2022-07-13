@@ -63,7 +63,6 @@
         v-if="itemFiles.length" 
         :key='keyWhenModalGenerateFileOpen'
       />
-      <Loader v-if='loader' />
 	</div>
 </template>
 <script>
@@ -83,7 +82,6 @@ export default {
 
       assembles: [],
       shipments: null,
-      loader: false,
       keyWhenModalGenerateFileOpen: random(1, 999),
       itemFiles: [],
 
@@ -146,15 +144,12 @@ export default {
     setTr(ass, span) {
       this.span = eSelectSpan(this.span, span);
       this.selectedAss = ass;
-      console.log(ass.type_izd);
     }
 	},
 	async mounted() {
-    this.loader = true;
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
     await this.fetchAssemblePlan('prod');
     await this.fetchAllBuyers(true);
-    this.loader = false;
 	}
 }
 </script>

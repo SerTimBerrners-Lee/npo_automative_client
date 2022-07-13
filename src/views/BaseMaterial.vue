@@ -53,7 +53,6 @@
         v-if="itemFiles != null" 
         :key='keyWhenModalGenerateFileOpen'
       />
-      <Loader v-if='loader' />
     </div>
   </div>
 </template> 
@@ -74,8 +73,6 @@ export default {
       keyWhenModalGenerateFileOpen: random(10, 999),
       span: null,
       instansLet: 0,
-
-      loader: false
     }
   },
   components:{TableMaterial, OpensFile, TableNode},
@@ -102,78 +99,72 @@ export default {
       'filterMaterialToDate'
     ]),
     instansMaterial(instans, span) {
-      if(!this.span)
-        this.span = (this.$refs.all)
-      if(span.classList.contains('active')) 
-        return 0  
-      this.span.classList.remove('active')
-      span.classList.add('active')
-      this.span = span
+      if (!this.span) this.span = (this.$refs.all);
+      if (span.classList.contains('active')) return 0;
+      this.span.classList.remove('active');
+      span.classList.add('active');
+      this.span = span;
 
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
+      this.getInstansMaterial(instans);
+      this.instansLet = instans;
     },
     unmount_attention() {
-      this.filterToAttentionMat()
+      this.filterToAttentionMat();
     },
     sortToDate() {
-      this.filterMaterialToDate()
+      this.filterMaterialToDate();
     },
     clickMat(mat, type) {
-      if(type == 'type') {
+      if (type == 'type') {
         this.material = mat
-        this.setOneTypeMMytation(mat)
-        this.filterByNameMaterial(mat) 
-        if(mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
-          this.filterMatByPodType(mat.podMaterials)
+        this.setOneTypeMMytation(mat);
+        this.filterByNameMaterial(mat);
+        if (mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
+          this.filterMatByPodType(mat.podMaterials);
         else 
-          this.getAllPodTypeMaterial(1)
+          this.getAllPodTypeMaterial(1);
       }
 
-      if(type == 'podM') 
-        this.getOnePodType(mat.id)
-      if(type == 'podPM') {
-        this.podPodMaterial = mat
+      if (type == 'podM') 
+        this.getOnePodType(mat.id);
+      if (type == 'podPM') {
+        this.podPodMaterial = mat;
         this.fetchGetOnePPM(mat.id).then((material) => {
-          this.podPodMaterial = material
-          if(this.podPodMaterial.documents && this.podPodMaterial.documents.length > 0) { 
-            this.itemFiles = this.podPodMaterial.documents
-            this.keyWhenModalGenerateFileOpen = random(10, 999)
+          this.podPodMaterial = material;
+          if (this.podPodMaterial.documents && this.podPodMaterial.documents.length > 0) { 
+            this.itemFiles = this.podPodMaterial.documents;
+            this.keyWhenModalGenerateFileOpen = random(10, 999);
           }
         })
       }
     },
     editMaterial() {
-      if(!this.podPodMaterial) return 0
-      this.$router.push({path: `/material/add/edit/${this.podPodMaterial.id}`}) 
+      if (!this.podPodMaterial) return 0;
+      this.$router.push({path: `/material/add/edit/${this.podPodMaterial.id}`});
     },
     createCopy( ) {
-      if(!this.podPodMaterial) return 0
-      this.$router.push({path: `/material/add/copy/${this.podPodMaterial.id}`}) 
+      if (!this.podPodMaterial) return 0;
+      this.$router.push({path: `/material/add/copy/${this.podPodMaterial.id}`});
     },
     banPPM() {
-      if(!this.podPodMaterial) return 0
-      this.bannedPPM(this.podPodMaterial.id)
+      if (!this.podPodMaterial) return 0;
+      this.bannedPPM(this.podPodMaterial.id);
     },
     searchTypeM(val) {
-      this.searchTypeMutation(val)
+      this.searchTypeMutation(val);
     },
     searchPT(val) {
-      this.searchPTypeMutation(val)
+      this.searchPTypeMutation(val);
     },
     searchM(val) {
-      this.searchMaterialMutation(val)
+      this.searchMaterialMutation(val);
     }
   },
   async mounted() {
-    this.loader = true
-    
-    this.clearCascheMaterial()
-    await this.getAllTypeMaterial()
-    await this.getAllPodTypeMaterial()
-    await this.fetchGetAllPPM()
-
-    this.loader = false
+    this.clearCascheMaterial();
+    await this.getAllTypeMaterial();
+    await this.getAllPodTypeMaterial();
+    await this.fetchGetAllPPM();
   }
 }
 </script>

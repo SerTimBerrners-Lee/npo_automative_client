@@ -136,7 +136,6 @@
 			:selected_sh='selected_sh'
       @unmount='unmount_sh_complit'
     />
-		<Loader v-if='loader' :description='"Загрузка Заказов"' />
 		</div>
       
     </div>
@@ -192,8 +191,7 @@ export default {
 			showModalFile: false,
       fileModalKey: random(1, 999),
 			selectedBaseProvesses: false,
-
-			loader: false,
+			
 			selected_sh: [],
 			print_click: false,
     }
@@ -229,13 +227,11 @@ export default {
 			this.selected_sh = this.selected_sh.filter(el => el.id != sh.id);
 		},
 		async unmount_sh_complit(is_true) {
-			this.loader = true;
 			if (is_true) {
 				for (const item of this.selected_sh) {
 					item.status = 'Отгружено';
 				}
 			} else this.$emit('unmount_sh_complit');
-			this.loader = false;
 		},
 		printPage(id_name) {
 			this.print_click = true;
@@ -283,15 +279,12 @@ export default {
     },
 	},
   async mounted() {
-		this.loader = true;
 
 		try {
 			if (!this.id_shipments) return this.destroyModalF('unmount_shpment');
 			await this.childrenSord(this.id_shipments);
 
 		} catch (err) { console.error(err, 'shipments modal mounted') }
-
-		this.loader = false;
 		
   },
 }

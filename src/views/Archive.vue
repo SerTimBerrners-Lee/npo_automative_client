@@ -25,7 +25,6 @@
       </div>
     </div>
   </div>
-  <Loader v-if='loader' />
 </template>
 <script>
 import { mapActions } from 'vuex';
@@ -44,7 +43,6 @@ import TableInventary from '@/components/Archive/TableInventary';
 export default {
   data() {
     return {
-      loader: false,
       arrData: [
         'Изделия',
         'Сборки',
@@ -90,9 +88,7 @@ export default {
     ]),
     async filterType(number) {
       this.selectItem = number - 1;
-      
-      this.loader = true;
-      switch(this.selectItem) {
+      switch (this.selectItem) {
         case 1:
           await this.getAllProductArchive();
           break;
@@ -127,13 +123,9 @@ export default {
           await this.fetchFilesArchive();
           break;
       }
-      this.loader = false;
     }
   },
   async mounted() {
-    this.loader = true;
-
-    this.loader = false;
   }
 }
 </script>

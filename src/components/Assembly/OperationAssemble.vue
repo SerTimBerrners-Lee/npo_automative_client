@@ -93,7 +93,6 @@
       :key='keyParentsModal'
       :parametrs='productListForIzd'
     />
-		<Loader v-if='loader' />
 	</div>
 </template>
 
@@ -113,7 +112,6 @@ import { afterAndBeforeOperation, OperationTime, returnKolvoCreate } from '@/js/
 export default {
 	data() {
 		return {
-			loader: false,
 			name_operaiton: null,
 			route_path: '',
 
@@ -152,8 +150,8 @@ export default {
       console.log(val)
     }, 
 		unmount_marks(res) {
-			if(res == 'closed') return false
-			if(res) {
+			if (res == 'closed') return false
+			if (res) {
 				this.fetchAllAssembleTypeOperation(this.type_operation_id)
 				showMessage('', 'Отметка о выполнении успешно создана', 's')
 			} else 
@@ -175,7 +173,7 @@ export default {
 				ass.tech_process, ass.operation_id, type).full_name
 		},
 		openDocuments(id) {
-			if(!id) return false
+			if (!id) return false
       this.fetchOneOperationById(id).then(res => {
         if(res.documents && res.documents.length) {
           this.keyWhenModalGenerateFileOpen = random(1, 999)
@@ -187,7 +185,7 @@ export default {
 			return kol - create <= 0 ? "Готово" : "В работе"
 		},
 		returnKolvoCreate(operation) {
-			if(!operation) return showMessage('', 'Нет операций', 'w')
+			if (!operation) return showMessage('', 'Нет операций', 'w')
 			return returnKolvoCreate(operation)
 		},
 		openDescription(description) {
@@ -195,7 +193,7 @@ export default {
       this.description = description
     },
 		oneIzdTime(operation) {
-			if(!operation) return showMessage('', 'Нет операций', 'w')
+			if (!operation) return showMessage('', 'Нет операций', 'w')
 			let ot = new OperationTime(operation) 
 			return ot.count
 		},
@@ -203,7 +201,7 @@ export default {
 			return number < 0 ? 0 : number
 		},
 		manyIzdTime(operation, kol_create_detal) {
-			if(!operation) return showMessage('', 'Нет операций', 'w')
+			if (!operation) return showMessage('', 'Нет операций', 'w')
 			let ot = new OperationTime(operation, kol_create_detal)
 			return ot.count
 		},
@@ -213,33 +211,31 @@ export default {
     },
 		responsible(cbed) {
 			let user_id = cbed.responsibleId
-			for(let user of this.getUsers) {
-				if(user.id == user_id)
+			for (const user of this.getUsers) {
+				if (user.id == user_id)
 					return user.login
 			}
 		},
 		showParents(izd, type) {
 			this.getOneCbEdById(izd.id).then(res => {
 				this.productListForIzd = { products: res.products, type, id: izd.id }
-				this.keyParentsModal = random(1, 999)
+				this.keyParentsModal = random(1, 999);
 			})
     },
 		addMark(ass) {
-			this.mark_key = random(1, 999)
-			this.mark_data = ass
+			this.mark_key = random(1, 999);
+			this.mark_data = ass;
 		}
 	},
 	async mounted() {
-		this.route_path = this.$route.path
-		this.type_operation_id = this.$route.params.operation
-		if(!this.type_operation_id)
-			return this.$router.back()
+		this.route_path = this.$route.path;
+		this.type_operation_id = this.$route.params.operation;
+		if (!this.type_operation_id)
+			return this.$router.back();
 
-		this.loader = true
-    await this.fetchAllAssembleTypeOperation(this.type_operation_id)
-		await this.getAllUsers(true)
-		this.name_operaiton = this.$route.params.name_operation
-    this.loader = false
+    await this.fetchAllAssembleTypeOperation(this.type_operation_id);
+		await this.getAllUsers(true);
+		this.name_operaiton = this.$route.params.name_operation;
 	}
 }
 </script>

@@ -45,7 +45,6 @@
           </div>
       </div>
     </div>
-     <Loader v-if='loader' />
   </div>
 </template>
 
@@ -64,8 +63,6 @@ export default {
 
 			shipments: null,
       tp: null,
-
-      loader: false,
       props_tp: null, 
       props_izdeles: null,
 
@@ -87,7 +84,6 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu'
     this.hiddens = 'opacity: 1;'
 
-    this.loader = true 
     if(this.$props.assemble && this.$props.assemble?.tech_process) {
       this.props_izdeles = this.$props.assemble
       this.props_tp = this.$props.assemble?.tech_process
@@ -95,8 +91,6 @@ export default {
     
 		if(this.$props.assemble && this.$props.assemble.shipments) 
 			this.fetchAllShipmentsById(this.$props.assemble.shipments.id).then(response => this.shipments = response)
-
-    this.loader = false
   }
 }
 </script>

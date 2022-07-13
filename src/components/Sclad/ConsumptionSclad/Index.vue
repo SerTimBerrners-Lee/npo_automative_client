@@ -70,7 +70,6 @@
 		:key='komplectKey'
 		:sh='selectSh'
 	/>
-	<Loader v-if='loader' />
 </template>
 <script>
 import { random } from 'lodash';
@@ -92,7 +91,6 @@ export default {
 
 			komplectIs: false,
 			komplectKey: random(1, 999),
-			loader: false,
 		}
 	},
 	computed: mapGetters(['getShComplits']),
@@ -113,9 +111,7 @@ export default {
 		}
 	},
 	async mounted() {
-		this.loader = true; 
     await this.fetchShComplit();
-    this.loader = false;
 	}
 }
 </script>

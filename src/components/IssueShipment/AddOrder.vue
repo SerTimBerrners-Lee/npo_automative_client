@@ -210,7 +210,6 @@
       :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
     />
-	<Loader v-if='loader' />
 	</div>
 </template>
 
@@ -243,8 +242,6 @@ export default {
 			isChangeFolderFile: false, 
 			keyWhenModalGenerate: random(1, 999),
 			keyWhenModalGenerateFileOpen: random(1, 999),
-			
-			loader: false,
 
 			select_tr_inx: null,
 			tr: null,
@@ -584,7 +581,6 @@ export default {
 					return showMessage('', 'Выберите Изделие', 'w');
 			
 			if (!this.buyer && !this.to_sklad) return showMessage('', 'Выберите Покупателя или склад', 'w')
-			this.loader = true
 			const data = {
 				date_order: this.date_order,
 				date_shipments: this.date_shipments,
@@ -625,8 +621,7 @@ export default {
 			if (this.$route.params.edit && this.$route.params.edit == 'true') {
 				data['id'] = this.getOneShipments.id
 				this.formData.append('data', JSON.stringify(data))
-				this.fetchUpdateShipments(this.formData).then( res => {
-					this.loader = false
+				this.fetchUpdateShipments(this.formData).then(res => {
 					setTimeout(() => this.$router.push('/issueshipment'), 3000)
 					if(res) return showMessage('', 'Заказ успешно обновлен!, Перенаправление на страницу заказов.', 's')
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e')
@@ -635,7 +630,6 @@ export default {
 				if (Number(this.$route.params.parent)) data['parent_id'] = Number(this.$route.params.parent);
 				this.formData.append('data', JSON.stringify(data));
 				this.fetchCreateShipments(this.formData).then(res => {
-					this.loader = false;
 					setTimeout(() => this.$router.push('/issueshipment'), 3000);
 					if(res) return showMessage('', 'Заказ успешно создан!, Перенаправление на страницу заказов.', 's');
 					else return showMessage('', 'Произошла ошибка при создании заказа', 'e');

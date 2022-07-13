@@ -184,7 +184,6 @@
       :key='key_worker'
       @unmount_working='unmount_working'
     />
-    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -207,8 +206,6 @@ export default {
       span: null,
       order: null,
       order_parametr: null,
-
-      loader: false,
 
       shipments: [],
       shipmentKey: random(1, 999),
@@ -326,10 +323,8 @@ export default {
       }
     },
     async getArchives() {
-      this.loader = true;
       await this.fetchAllWorkings(this.arhives);
       this.sortWorkers();
-      this.loader = false;
     },
     openWorkers(obj) {
       this.select_worker = obj;
@@ -342,13 +337,10 @@ export default {
     }
 	},
 	async mounted() {
-    this.loader = true;
     await this.fetchGetDeliveries();
     await this.fetchAllWorkings();
 
     this.sortWorkers();
-
-    this.loader = false;
 	}
 }
 </script>

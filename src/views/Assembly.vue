@@ -103,8 +103,6 @@
       v-if='shipments.length'
       :key='shipmentKey'
     />
-
-    <Loader v-if='loader' />
 	</div>
 </template>
 
@@ -118,8 +116,8 @@ import { mapActions, mapGetters, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from '@/components/Sclad/ShipmentsToIzed';
 import OperationModal from '@/components/Sclad/WorkingsOperations';
-import OperationPathModal from '@/components/Assembly/OperationPathModal';
 import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
+import OperationPathModal from '@/components/Assembly/OperationPathModal';
 
 export default {
 	data() {
@@ -140,8 +138,6 @@ export default {
       shipmentKey: random(1, 999),
 
       assemble_props: null,
-
-      loader: false,
 
       enumStatus: [				
 				'В процессе',
@@ -297,12 +293,10 @@ export default {
     }
 	},
 	async mounted() {
-    this.loader = true;
     await this.fetchAllShipmentsAssemble({sort: undefined, light: true});
     await this.fetchAssemble();
     await this.getAllTypeOperations();
     this.filterOperation();
-    this.loader = false;
 	}
 }
 </script>

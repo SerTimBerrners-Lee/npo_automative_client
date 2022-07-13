@@ -9,11 +9,11 @@
       </div>
       <button class='btn-add btn' @click='addIssue'>Дать задачу</button>
     </div>
-    <IssueForMe v-if='!loader'/>
+    <IssueForMe v-if='!getLoader'/>
     
-    <IssueMy v-if='!loader' />
+    <IssueMy v-if='!getLoader' />
 
-    <IssueController v-if='!loader' />
+    <IssueController v-if='!getLoader' />
 
     <div>
       <h3>Общецеховые задачи</h3>
@@ -45,7 +45,6 @@
     :editIssue='selectedIssue'
     :is_me='is_me'
   />
-  <Loader v-if='loader' />
 	</div>
 </template>
 <script>
@@ -72,7 +71,6 @@ export default {
       ],
       statusList: ['Новое', 'В работе', 'Просроченно', 'Выполнено'],
       selectedIssue: null,
-      loader: false,
       span_is_me: null,
       span_to_me: null,
       span_controler_me: null
@@ -81,6 +79,7 @@ export default {
   computed: 
     mapGetters([
       'getAuth',
+      'getLoader'
     ]),
 	components: {
     AddIssue, 
@@ -92,39 +91,36 @@ export default {
 	methods: {
     ...mapActions(['fetchIssueList']),
     addIssue() {
-      this.showAddIssue = true
-      this.keyAddIssue = random(1, 999)
-      this.selectedIssue = null
+      this.showAddIssue = true;
+      this.keyAddIssue = random(1, 999);
+      this.selectedIssue = null;
     },
     unmount_issue() {
-      this.selectedIssue = null
+      this.selectedIssue = null;
     },
     dateIncrementHors(date, hors) {
-      let dat = dateIncrementHors(date, hors)
-      return `${dat.day}.${dat.mount}.${dat.year}`
+      const dat = dateIncrementHors(date, hors);
+      return `${dat.day}.${dat.mount}.${dat.year}`;
     },
     incrementDay(date, hors) {
-      let dat = dateIncrementHors(date, hors)
-      return `${dat.iterationHors}`
+      const dat = dateIncrementHors(date, hors);
+      return `${dat.iterationHors}`;
     },
     showIssue(issue) {
-      this.addIssue()
-      this.selectedIssue = issue
+      this.addIssue();
+      this.selectedIssue = issue;
     },
     showIssueMe(issue) {
-      this.showIssue(issue)
-      this.is_me = 'me'
+      this.showIssue(issue);
+      this.is_me = 'me';
     },
     changeDatePicterRange(val) {
-      console.log(val)
+      console.log(val);
     },
 	}, 
 	async mounted() {
-    this.loader = true
     if(this.getAuth && this.getAuth.id) 
-      await this.fetchIssueList(this.getAuth.id)
-
-    this.loader = false
+      await this.fetchIssueList(this.getAuth.id);
 	}
 }
 </script>

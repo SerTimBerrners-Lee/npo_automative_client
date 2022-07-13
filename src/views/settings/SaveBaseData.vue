@@ -61,7 +61,6 @@
         <button class="btn blues" @click='saveInaction'>Сохранить</button>
       </div>
     </div>
-    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -74,8 +73,6 @@ export default {
   data() {
     return{
       select_db: null,
-      loader: false,
-
       inaction: 0
     }
   },
@@ -89,14 +86,13 @@ export default {
       'fetchChangeInaction'
     ]),
     downloadDB() {
-      if(!this.select_db) return showMessage('', 'Резервная копия не выбрана', 's');
+      if (!this.select_db) return showMessage('', 'Резервная копия не выбрана', 's');
       window.open(`${PATH_TO_SERVER}db/${this.select_db.name}`);
     },
     fetchAllDump() {
-      this.fetchDB().then(() => this.loader = false);
+      this.fetchDB();
     },
     async pushNewDB() {
-      this.loader = true
       const res = await this.fetchAddDB();
       if (res) showMessage('', 'Резервная копия успешно сгенерированна', 's');
       else showMessage('', 'Произошла ошибка на сервере', 'e');
@@ -107,22 +103,21 @@ export default {
       this.select_db = db;
     },
     async dropDB() {
-      if(!this.select_db) return false; 
+      if (!this.select_db) return false; 
       
       const res = await this.fetchDropDB(this.select_db.name)
-      if(res) showMessage('', 'Резервная копия успешно удалена', 's');
+      if (res) showMessage('', 'Резервная копия успешно удалена', 's');
       this.select_db = null;
     },
     async saveInaction() {
       const res = await this.fetchChangeInaction(this.inaction);
-      if(res) showMessage('', 'Часы бездействия успешно обновлены', 's');
+      if (res) showMessage('', 'Часы бездействия успешно обновлены', 's');
       else showMessage('', 'Произошла ошибка при обновлении часов', 'e');
     }
   },
   async mounted() {
-    this.loader = true;
     const res = await this.fetchInactionHors();
-    if(res) this.inaction = res.inaction;
+    if (res) this.inaction = res.inaction;
     this.fetchAllDump();
   }
 }

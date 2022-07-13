@@ -147,7 +147,6 @@
       :key='productModalKey'
       v-if='parametrs_product'
     />
-    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -174,8 +173,6 @@ export default {
       parametrs_detal: null,
       parametrs_product: null,
       productModalKey: random(1, 999),
-
-      loader: false
     }
   },
   computed: mapGetters(['allDetal', 'allCbed', 'allProduct', 'getAuth']),
@@ -203,12 +200,12 @@ export default {
       'addOneSelectDetal',
     ]),
     infoModalCbed(cb) {
-      if(!cb) return false;
+      if (!cb) return false;
       this.parametrs_cbed = cb.id;
       this.cbedModalKey = random(1, 999);
     },
     infoModalProduct(product) {
-      if(!product) return false;
+      if (!product) return false;
       this.parametrs_product = product.id;
       this.productModalKey = random(1, 999);
     },
@@ -220,21 +217,21 @@ export default {
       this.tr = eSelectSpan(this.tr, e);
     },
     infoDetal() {
-      if(!this.selectedDetal) return false;
+      if (!this.selectedDetal) return false;
 
       this.detalModalKey = random(1, 999);
       this.parametrs_detal = this.selectedDetal.id;
     },
     async setCbed(cbed, e) {
       console.log(cbed);
-      if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
+      if (this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');
         return this.selectedCbEd = null;
       }
 
       const res = await this.getOneCbEdById(cbed.id);
-      if(!res) return false;
+      if (!res) return false;
 
       const result = await this.getOneCbEdBelongs(res.id);
       if (!result) return false;
@@ -248,7 +245,7 @@ export default {
       this.tr_cb = eSelectSpan(this.tr_cb, e);
     },
     async setProduct(product, e) {
-      if(this.selecteProduct && this.selecteProduct.id == product.id) {
+      if (this.selecteProduct && this.selecteProduct.id == product.id) {
         this.clearFilterCbedByProduct();
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');
@@ -257,7 +254,7 @@ export default {
       }
 
       const res = await this.getAllProductById(product.id);
-      if(!res) return false;
+      if (!res) return false;
       this.selecteProduct = res;
       this.setOneProduct(res);
       this.getAllCbEdByProduct(res);
@@ -276,13 +273,9 @@ export default {
     },
   },
   async mounted() {
-    this.loader = true;
-
     await this.fetchProductRemains(true);
     await this.fetchCbedRemains(true);
     await this.fetchDetalsRemains(true);
-
-    this.loader = false;
   }
 }
 </script>

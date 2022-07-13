@@ -5,7 +5,7 @@
       <div class="block header_block">
        <DatePicterRange 
           @unmount='changeDatePicterRange'
-          v-if='!loader'
+          v-if='!getLoader'
         />
       </div> 
     </div>
@@ -78,7 +78,6 @@
       :complit='selected_complit'
       @unmount='unmount_complit_modal'
     />
-    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -98,7 +97,6 @@ export default {
       showShipmentModal: false,
       shipmentKey: random(1, 999),
       select_shipments: null,
-      loader: false,
 
 			tr: null,
 
@@ -121,15 +119,13 @@ export default {
     Shipment
   },
   computed: {
-    ...mapGetters(['getShComplits']),
+    ...mapGetters(['getShComplits', 'getLoader']),
   },
   methods: {
     ...mapActions(['fetchShComplit']),
     ...mapMutations(['filterShComplitData', 'searchComplitSh']),
     async unmount_complit_modal() {
-      this.loader = true;
       await this.fetchShComplit();
-      this.loader = false;
     },
     getBuyer(ship = []) {
       if (!ship.length) return 'На склад';
@@ -180,9 +176,7 @@ export default {
     }
   },
   async mounted() {
-    this.loader = true; 
     await this.fetchShComplit();
-    this.loader = false;
   }
 }
 </script>

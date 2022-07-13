@@ -1306,7 +1306,6 @@
           </div>
       </div>
     </div>
-    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -1319,16 +1318,14 @@ export default {
       select_model: 'Выбрать роль',
       selectRole: null,
       allChange: true,
-
-      loader: false
     }
   },
   computed: mapGetters(['allRoles', 'getRoleAssets']),
   methods: {
     ...mapActions(['fetchRoles', 'fetchUpdateAssetsRole']),
     select_model_change(e) {
-      for(let role of this.allRoles) {
-        if(role.id == e) {
+      for (const role of this.allRoles) {
+        if (role.id == e) {
           this.selectRole = {...role, assets: JSON.parse(role.assets)}
           this.allChange = true
             Object.keys(this.selectRole.assets).forEach((e) => {
@@ -1339,8 +1336,7 @@ export default {
       }
     },
     update() {
-      if(!this.selectRole)
-        return 0;
+      if (!this.selectRole) return 0;
       
       this.fetchUpdateAssetsRole(JSON.stringify({
         id: this.selectRole.id,
@@ -1351,11 +1347,10 @@ export default {
       })
     },
     allRasdel() {
-      if(!this.selectRole)
-        return 0
+      if (!this.selectRole) return 0;
       
       Object.keys(this.selectRole.assets).forEach((e) => {
-        if(this.selectRole.assets[e] == true 
+        if (this.selectRole.assets[e] == true 
           || this.selectRole.assets[e] == false) {
           this.selectRole.assets[e] = this.allChange
         }
@@ -1365,9 +1360,7 @@ export default {
 
   },
   async mounted() {
-    this.loader = true
-    await this.fetchRoles()
-    this.loader = false
+    await this.fetchRoles();
   }
 }
 </script>

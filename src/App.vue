@@ -19,6 +19,7 @@
     </div>
 
   </div>
+  <Loader v-if='getLoader' :key='getKeyLoader' />
 </template>
 <script>
 import '@/assets/style/style.css';
@@ -49,7 +50,9 @@ export default {
     'getTitleInform',
     'getMessageInform',
     'getTypeInform',
-    'getKeyInform'
+    'getKeyInform',
+    'getLoader',
+    'getKeyLoader'
   ]),
   methods: {
     ...mapActions([

@@ -109,7 +109,6 @@
         v-if='instrumentIsShow'
         @unmount_instrument='unmount_instrument'
       />
-      <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -146,8 +145,6 @@ export default {
         instrumentIdList: []
       },
       listInstrument: null,
-
-      loader: false,
       attention: false
     }
   },
@@ -248,12 +245,10 @@ export default {
     }
   },
   async mounted() {
-    this.loader = true
-    await this.fetchAllEquipmentType()
-    await this.getAllEdizm()
-    await this.getAllUsers(true)
-    await this.getAllEquipmentPType()
-    this.loader = false
+    await this.fetchAllEquipmentType();
+    await this.getAllEdizm();
+    await this.getAllUsers(true);
+    await this.getAllEquipmentPType();
   }
 }
 </script>

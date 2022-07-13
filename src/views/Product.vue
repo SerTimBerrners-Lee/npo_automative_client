@@ -130,7 +130,6 @@
           />
       </div>
     </div>
-    <Loader v-if='loader' />
     <TechProcess 
       v-if='techProcessIsShow'
       :key='techProcessKey'
@@ -275,10 +274,8 @@ export default {
     },
   },
   async mounted() {
-    this.loader = true;
     await this.getAllProduct(true);
     this.productOperation = await this.fetchAllProductOperation();
-    this.loader = false;
   }
 }
 </script>

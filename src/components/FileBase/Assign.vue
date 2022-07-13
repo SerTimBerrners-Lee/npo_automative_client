@@ -1,5 +1,5 @@
 <template>
-	<div class='mini-modal'>
+	<div class='mini_modal'>
 		<div class='cross' @click='exitModal'>
 			<unicon name="times" fill="gray"  />
 		</div>
@@ -42,13 +42,13 @@
     @unmount_instrument='responsTools'
 		:get_one='true'
   />
-	<ModalBaseMaterial 
+	<ModalBaseMaterial
 		:key='generateKeyBFMaterial'
 		v-if='showBFMaterial'
 		@unmount_material='responsMaterials'
 		:getOneMaterial='true'
 	/>
-	<ListProvider  
+	<ListProvider
 		@unmount='responsProvider' 
 		:key='generateKeyBFProvider'
 		v-if='showBFProvider'
@@ -147,118 +147,91 @@ export default {
 			'attachFileToUser'
 		]),
 		addingFileToDetal() {
-			this.generateKeyBFM = random(5, 999)
-			this.showBFM = true
+			this.generateKeyBFM = random(5, 999);
+			this.showBFM = true;
     },
     addingFileToCbed() {
-			this.generateKeyBFCbed = random(1, 999)
-			this.showBFCbed = true
+			this.generateKeyBFCbed = random(1, 999);
+			this.showBFCbed = true;
     },
     addingFileToProduct() {
-			this.generateKeyBFProduct = random(1, 999)
-			this.showBFProduct = true
+			this.generateKeyBFProduct = random(1, 999);
+			this.showBFProduct = true;
     },
     addingFileToEquipment() {
-			this.generateKeyBFEquipment = random(1, 999)
-			this.showBFEquipment = true
+			this.generateKeyBFEquipment = random(1, 999);
+			this.showBFEquipment = true;
     },
     addingFileToTools() {
-      this.generateKeyBFTools = random(1, 999)
-			this.showBFTools = true
+      this.generateKeyBFTools = random(1, 999);
+			this.showBFTools = true;
     },
     addingFileToMaterial() {
-      this.generateKeyBFMaterial = random(1, 999)
-			this.showBFMaterial = true
+      this.generateKeyBFMaterial = random(1, 999);
+			this.showBFMaterial = true;
     },
     addingFileToProvider() {
-      this.generateKeyBFProvider = random(1, 999)
-			this.showBFProvider = true
+      this.generateKeyBFProvider = random(1, 999);
+			this.showBFProvider = true;
     },
     addingFileToBuyer() {
-      this.generateKeyBFBuyer = random(1, 999)
-			this.showBFBuyer = true
+      this.generateKeyBFBuyer = random(1, 999);
+			this.showBFBuyer = true;
     },
     addingFileToInventary() {
-      this.generateKeyBFInventary = random(1, 999)
-			this.showBFInventary = true
+      this.generateKeyBFInventary = random(1, 999);
+			this.showBFInventary = true;
     },
     addingFileToUser() {
-      this.generateKeyBFUser = random(1, 999)
-			this.showBFUser = true
+      this.generateKeyBFUser = random(1, 999);
+			this.showBFUser = true;
     },
 		responsDetal(detal) {
-      if(!detal || !this.itemFiles.id) return 0 
-      this.setDetalForFile({id_detal: detal.id, id_document: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!detal || !this.itemFiles.id) return 0;
+      this.setDetalForFile({id_detal: detal.id, id_document: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsCbed(cbed) {
-      if(!cbed || !this.itemFiles.id) return 0 
-      this.attachFileToCbed({cbed_id: cbed.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!cbed || !this.itemFiles.id) return 0;
+      this.attachFileToCbed({cbed_id: cbed.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsProduct(product) {
-      if(!product || !this.itemFiles.id) return 0 
-      this.attachFileToProduct({product_id: product.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!product || !this.itemFiles.id) return 0;
+      this.attachFileToProduct({product_id: product.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsEquipment(eq) {
-      if(!eq || !this.itemFiles.id) return 0 
-      this.attachFileToEquipment({eq_id: eq.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!eq || !this.itemFiles.id) return 0;
+      this.attachFileToEquipment({eq_id: eq.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsTools(tools) {
-      if(!tools || !this.itemFiles.id) return 0 
-      this.attachFileToInstrument({instr_id: tools.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!tools || !this.itemFiles.id) return 0;
+      this.attachFileToInstrument({instr_id: tools.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsMaterials(mat) {
-      if(!mat.material || !this.itemFiles.id) return 0 
-      this.attachFileToMaterial({mat_id: mat.material.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!mat.material || !this.itemFiles.id) return 0;
+      this.attachFileToMaterial({mat_id: mat.material.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsProvider(provider) {
-				if(!provider || !this.itemFiles.id) return 0 
-      this.attachFileToProvider({provider_id: provider.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+			if (!provider || !this.itemFiles.id) return 0;
+      this.attachFileToProvider({provider_id: provider.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsBuyer(buyer) {
-      if(!buyer || !this.itemFiles.id) return 0 
-      this.attachFileToBuyer({buyer_id: buyer.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!buyer || !this.itemFiles.id) return 0;
+      this.attachFileToBuyer({buyer_id: buyer.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsInventary(inventary) {
-      if(!inventary || !this.itemFiles.id) return 0 
-      this.attachFileToInventary({inventary_id: inventary.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!inventary || !this.itemFiles.id) return 0;
+      this.attachFileToInventary({inventary_id: inventary.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
     responsUser(user) {
-      if(!user || !this.itemFiles.id) return 0 
-      this.attachFileToUser({user_id: user.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'))
+      if (!user || !this.itemFiles.id) return 0;
+      this.attachFileToUser({user_id: user.id, file_id: this.itemFiles.id}).then(() => showMessage('', 'Файл успешно прекреплен', 's'));
     },
 		exitModal() {
-			this.$emit('unmount', false)
+			this.$emit('unmount', false);
 		}
 	},
 	async mounted() {
-		if(!this.$props.itemFiles) return false
+		if (!this.$props.itemFiles) return false;
 	}
 }
 </script>
-
-<style scoped>
-.mini-modal {
-  background-color: #464646;
-  color: #fff;
-  text-align: center;
-  border-radius: 3px;
-  padding: 15px 15px;
-  border-left: 3px solid rgba(61, 150, 34, 0.788);
-  position: fixed;
-	display: flex;
-	flex-direction: column;
-	left: 0px;
-	right: 0px;
-	width: 300px;
-	bottom: 200px;
-	height: max-content;
-	margin: 0 auto;
-}
-.mini-modal * {
-	margin: 5px;
-}
-.cross{
-	cursor: pointer;
-	text-align: end;
-}
-</style>>

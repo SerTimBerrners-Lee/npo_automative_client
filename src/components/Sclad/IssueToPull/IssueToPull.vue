@@ -38,7 +38,6 @@
       :shipments_id='select_shipments.id'
       @unmount='unmount_sh_complit'
     />
-    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -58,7 +57,6 @@ export default {
       showShipmentModal: false,
       shipmentKey: random(1, 999),
       select_shipments: null,
-      loader: false,
 
 			tr: null,
       is_print: false,
@@ -109,10 +107,8 @@ export default {
     } 
   },
   async mounted() {
-    this.loader = true;
     await this.fetchAllShipmentsTo();
     this.status_sort_key = random(1, 999);
-    this.loader = false;
   }
 }
 </script>

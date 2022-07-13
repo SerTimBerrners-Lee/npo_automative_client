@@ -92,8 +92,6 @@
 			<button class="btn-small">Печать задания</button>
 			<button class="btn-small btn-add">Создать накладную на передачу заготовок на металлообработку</button>
 		</div> 
-
-		<Loader v-if='loader' />
 	</div>
 </template>
 
@@ -106,32 +104,24 @@ export default {
 			name_operaiton: '', 
 			type_operation_id: null,
 			showTableOperation: false,
-
-
-			loader: false
 		}
 	},
 	components: {OpPgMetalloworking},
 	computed: mapGetters(['getTypeOperations']),
 	methods: {
 		...mapActions(['getAllTypeOperations']),
-
 	},
 	async mounted() {
-		// Получить все операции найти тип с отметкой и тогда показать 
-		this.loader = true
 		await this.getAllTypeOperations()
-		
-
-		for(let item of this.getTypeOperations) {
-			if(item.square) {
+	
+		for (const item of this.getTypeOperations) {
+			if (item.square) {
 				this.type_operation_id = item.id
 				this.name_operation = item.name
 				this.showTableOperation = true
 				break;
 			}
 		}
-		this.loader = false
 	}
 }
 </script>

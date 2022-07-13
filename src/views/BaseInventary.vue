@@ -71,7 +71,6 @@
           />
       </div>
     </div>
-    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -97,7 +96,6 @@ export default {
       keyProvidersModal: random(1, 999),
       keyWhenModalGenerateFileOpen: random(1, 999),
       span: null,
-      loader: false,
     }
   },
   computed: mapGetters([
@@ -132,75 +130,69 @@ export default {
       'filterToAttentionInventary'
     ]), 
     unmount_attention() {
-      this.filterToAttentionInventary()
+      this.filterToAttentionInventary();
     },
     search(val) {
-      this.searchInventary(val)
+      this.searchInventary(val);
     },
     searchT(val) {
-      this.searchTInventary(val)
+      this.searchTInventary(val);
     },
     searchTP(val) {
-      this.searchPTInventary(val)
+      this.searchPTInventary(val);
     },
     clickTInventary(inventary) {
-      if(this.inventaryT && this.inventaryT.id == inventary.id) {
-        this.resetFilterInventary()
-        return this.resetFilterTInventary()
+      if (this.inventaryT && this.inventaryT.id == inventary.id) {
+        this.resetFilterInventary();
+        return this.resetFilterTInventary();
       }
-      this.inventaryT = inventary
-      this.filterPTByTInvetary(inventary)
-      if(inventary.inventary)
-        this.filterNameInventaryByPT(inventary.inventary)
+      this.inventaryT = inventary;
+      this.filterPTByTInvetary(inventary);
+      if (inventary.inventary)
+        this.filterNameInventaryByPT(inventary.inventary);
     },
     clickPTInventary(inventary) {
-      if(this.inventaryPT && this.inventaryPT.id == inventary.id) 
-        return this.resetFilterInventary()
-      this.inventaryPT = inventary
-      if(inventary.inventary)
-        this.filterNameInventaryByPT(inventary.inventary)
+      if (this.inventaryPT && this.inventaryPT.id == inventary.id) 
+        return this.resetFilterInventary();
+      this.inventaryPT = inventary;
+      if (inventary.inventary)
+        this.filterNameInventaryByPT(inventary.inventary);
     },
     clickInventary(inventary) {
-      this.inventary = inventary
-      this.fetchOneInventary(inventary.id)
+      this.inventary = inventary;
+      this.fetchOneInventary(inventary.id);
     },
     edit() {
-      if(!this.getOneInventary)
-        return 0 
-      this.$router.push({path: '/inventary/edit'})
+      if (!this.getOneInventary) return 0 ;
+      this.$router.push({path: '/inventary/edit'});
     },
     copy() {
-      if(!this.getOneInventary)
-        return 0 
-      this.$router.push({path: '/inventary/copy'})
+      if (!this.getOneInventary) return 0 ;
+      this.$router.push({path: '/inventary/copy'});
     },
     banned() {
-      if(!this.getOneInventary)
-        return 0 
-      this.banInventary(this.getOneInventary.id)
+      if (!this.getOneInventary) return 0;
+      this.banInventary(this.getOneInventary.id);
     },
     setDocs(dc) {
-        this.itemFiles = dc
+      this.itemFiles = dc;
     },
     openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      if (isEmpty(this.itemFiles)) return 0;
+      this.showFile = true;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     providershow() {
-      if(this.getOneInventary.providers.length > 0) {
-        this.keyProvidersModal = random(1, 999)
-        this.showProviders = true
+      if (this.getOneInventary.providers.length > 0) {
+        this.keyProvidersModal = random(1, 999);
+        this.showProviders = true;
       }
     },
   },
   async mounted() {
-    this.loader = true
-    await this.fetchAllInventary()
-    await this.fetchAllPInventary()
-    await this.fetchAllNameInventary()
-    this.loader = false
+    await this.fetchAllInventary();
+    await this.fetchAllPInventary();
+    await this.fetchAllNameInventary();
   }
 }
 </script>

@@ -127,7 +127,6 @@
       v-if='instrumentIsShow'
       @unmount_instrument='unmount_instrument'
     />
-    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -318,15 +317,13 @@ export default {
     }
   },
   async mounted() {
-    if(!this.$route.params.id) 
-        return this.$router.push('/baseequipment');
+    if (!this.$route.params.id) 
+      return this.$router.push('/baseequipment');
 
-    this.loader = true;
     await this.fetchOneEquipment(this.$route.params.id);
     await this.getAllEdizm();
     await this.checkedUpdate();
     await this.getAllUsers(true);
-    this.loader = false;
   }
 }
 </script>

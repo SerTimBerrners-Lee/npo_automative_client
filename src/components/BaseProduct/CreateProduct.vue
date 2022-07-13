@@ -199,7 +199,6 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
   />
-  <Loader v-if='loader' /> 
   </div>
 </template> 
 <script>
@@ -263,14 +262,13 @@ export default {
       showModalFile: false,
       fileModalKey: random(1, 999),
       data_arr: [],
-      loader: false
     }
   },
   watch: {
     'obj.articl': function (val, last_val) {
-      if(!last_val) return false;
-      for(let art of this.data_arr) {
-				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
+      if (!last_val) return false;
+      for (const art of this.data_arr) {
+				if (art.articl.toLowerCase() == val.trim().toLowerCase()) 
 					return showMessage('', 'Объект с такими характеристиками уже существует', 'w')
 			}
     }
@@ -288,10 +286,10 @@ export default {
     ...mapActions(['createNewProduct', 'getAllUsers', 'getAllArticlProduct']),
     ...mapMutations(['delitPathNavigate']),
     unmount_tech_process(tp) {
-      if(tp.id) {
+      if (tp.id) {
         this.techProcessID = tp.id
         localStorage.setItem('tpID', this.techProcessID)
-        if(tp.opers.length) {
+        if (tp.opers.length) {
           this.obj.parametrs[0].znach = 0
           tp.opers.forEach(op => {
             this.obj.parametrs[0].znach = 
@@ -302,28 +300,23 @@ export default {
       }
     },
     file_unmount(e) { 
-      if(!e) 
-        return 0
-      this.formData = e.formData
+      if (!e) return 0;
+      this.formData = e.formData;
     },
     unmount_filemodal(res) {
-      if(res) 
-        this.documentsData = res
+      if(res) this.documentsData = res;
     },
     unmount_material(mat) {
-      if(this.instanMaterial == 2) {
-        this.listPokDet = mat.materialList
-      }
-      if(this.instanMaterial == 3) {
-        this.materialList = mat.materialList
-      }
+      if (this.instanMaterial == 2) 
+        this.listPokDet = mat.materialList;
+      if (this.instanMaterial == 3)
+        this.materialList = mat.materialList;
     },
     saveProduct() {
-      if(this.obj.name.length < 3) 
-        return showMessage('', 'Наименование должно быть длинее или равно 2-м символам', 'w')
+      if (this.obj.name.length < 3) 
+        return showMessage('', 'Наименование должно быть длинее или равно 2-м символам', 'w');
 
-      if(!this.formData)
-        this.formData = new FormData()
+      if (!this.formData) this.formData = new FormData();
 
       this.formData.append('techProcessID', this.techProcessID || null)
       this.formData.append('name', this.obj.name)
@@ -335,36 +328,36 @@ export default {
       this.formData.append('fabricNumber', this.obj.fabricNumber)
       this.formData.append('attention', this.attention)
 
-      if(this.listDetal.length)
+      if (this.listDetal.length)
         this.formData.append('listDetal', JSON.stringify(this.listDetal))
-      if(this.listCbed.length)
+      if (this.listCbed.length)
         this.formData.append('listCbed', JSON.stringify(this.listCbed))
 
-      for(let mat = 0; mat < this.listPokDet.length; mat++) {
+      for (let mat = 0; mat < this.listPokDet.length; mat++) {
         this.listPokDet[mat].mat = {
           id: this.listPokDet[mat].mat.id,
           name: this.listPokDet[mat].mat.name,
           kol: this.listPokDet[mat].mat.kolvo
         }
-        if(mat == this.listPokDet.length - 1) {
+        if (mat == this.listPokDet.length - 1) {
           this.formData.append('listPokDet', JSON.stringify(this.listPokDet))
         }
       }
 
-      for(let mat = 0; mat < this.materialList.length; mat++) {
+      for (let mat = 0; mat < this.materialList.length; mat++) {
         this.materialList[mat].mat = {
           id: this.materialList[mat].mat.id,
           name: this.materialList[mat].mat.name,
           kol: this.materialList[mat].mat.kolvo
         }
-        if(mat == this.materialList.length - 1) {
+        if (mat == this.materialList.length - 1) {
           this.formData.append('materialList', JSON.stringify(this.materialList))
         }
       }
 
-      if(this.documentsData.length) {
+      if (this.documentsData.length) {
         let new_array = []
-        for(let inx in this.documentsData) {
+        for (let inx in this.documentsData) {
           new_array.push(this.documentsData[inx].id)
         }
         this.formData.append('file_base', JSON.stringify(new_array))
@@ -416,37 +409,37 @@ export default {
     removeHaracteristic() {
       if(this.selectHaracteristic.inx < 2) return false;
       if(this.selectHaracteristic) {
-        this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1)
-        this.selectHaracteristic = null
+        this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1);
+        this.selectHaracteristic = null;
       }
     },
     removeParametrs() {
       if(this.selectParametrs) {
-        this.obj.parametrs.splice(this.selectParametrs.inx, 1)
-        this.selectParametrs = null
+        this.obj.parametrs.splice(this.selectParametrs.inx, 1);
+        this.selectParametrs = null;
       }
     },
     changeHaracteristic(val, inst, inx) {
       if(inst == 'name')  
-        this.obj.haracteriatic[inx].name = val
+        this.obj.haracteriatic[inx].name = val;
       if(inst == 'ez')  
-        this.obj.haracteriatic[inx].ez = val
+        this.obj.haracteriatic[inx].ez = val;
       if(inst == 'znach')  {
-        this.obj.haracteriatic[inx].znach = val
+        this.obj.haracteriatic[inx].znach = val;
       }
     },
     changeParametrs(val, inst, inx) {
       if(inst == 'name')  
-        this.obj.parametrs[inx].name = val
+        this.obj.parametrs[inx].name = val;
       if(inst == 'ez')  
-        this.obj.parametrs[inx].ez = val
+        this.obj.parametrs[inx].ez = val;
       if(inst == 'znach')  {
-        this.obj.parametrs[inx].znach = val
+        this.obj.parametrs[inx].znach = val;
       }
     },
     showTechProcess() {
-      this.techProcessIsShow = true
-      this.techProcessKey = random(1, 999)
+      this.techProcessIsShow = true;
+      this.techProcessKey = random(1, 999);
     },
 
     exit(){
@@ -457,15 +450,13 @@ export default {
       this.listCbed = res;
     },
     addFileModal() {
-      this.fileModalKey = random(1, 999)
-      this.showModalFile = true
+      this.fileModalKey = random(1, 999);
+      this.showModalFile = true;
     }
   },
   async mounted() {
-    this.loader = true
-    await this.getAllUsers(true)
-    this.data_arr = await this.getAllArticlProduct()
-    this.loader = false
+    await this.getAllUsers(true);
+    this.data_arr = await this.getAllArticlProduct();
   }
 }
 </script>
