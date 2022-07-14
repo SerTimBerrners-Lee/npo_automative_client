@@ -42,12 +42,6 @@ export default {
 	props: {
     obj: {}
   },
-	data() {
-		return {
-		}
-	},
-	components: {
-	},
 	methods: {
 		exitModal() {
 			this.$emit('unmount', false);
