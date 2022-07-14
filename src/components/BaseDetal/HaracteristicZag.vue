@@ -170,9 +170,9 @@
 		</table>
 
 		<button
-			v-if='false'
-			class='btn-status btn_add_har'>Добавить характеристику <strong>+</strong>
-		</button>
+			class='btn-status btn_add_har'
+			@click='showAddHar = true'
+			v-if='mat_zag !== "Задать"'>Добавить характеристику <strong>+</strong></button>
 		<ModalBaseMaterial 
 			:key='modalMaterialKey'
 			v-if='modalMaterialIsShow'
@@ -180,9 +180,17 @@
 			:instanMaterial='1'
 			:getOneMaterial='true'
 		/>
+		<AddHar
+      v-if='showAddHar'
+			:key='keyAddHar'
+			:obj='obj'
+      @unmount='unmount_add_har'
+			@unmount_change_har='unmount_change_har'
+    />
 	</div>
 </template>
 <script>
+import AddHar from './AddHar';
 import { random } from 'lodash';
 import { mapActions } from 'vuex';
 import ModalBaseMaterial from '@/components/MathZag/ModalBaseMaterial';
@@ -224,11 +232,21 @@ export default {
 				areaCrossSectional: false
 			},
 			density: 0,
+			showAddHar: false,
+			keyAddHar: random(1, 999)
 		}
 	},
 	components: { ModalBaseMaterial, AddHar },
 	methods: {
 		...mapActions(['getOneTypeMaterial']),
+		unmount_add_har() {
+      this.showAddHar = false;
+			this.keyAddHar = random(1, 999);
+    },
+		unmount_change_har(type) {
+			this.obj[type] = 1;
+			this.emits();
+		},
 		// ТОЛЬКО ПЕРЕМЕННЫЕ ЗНАЧЕНИЯ МОЖНО РЕДАКТИРОВАТЬ !!!
 		updateVariablesEdit(bools) {
 			try {
@@ -324,6 +342,8 @@ export default {
 
 			this.obj.massZag = data.massZag;
 			this.obj.trash = data.trash;
+
+			this.keyAddHar = random(1, 999);
 		},
 		nullable(maz = false, zam = false) {
 			if (maz) {

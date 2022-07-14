@@ -3,7 +3,7 @@
 		<div class='cross' @click='exitModal'>
 			<unicon name="times" fill="gray"  />
 		</div>
-		<div>
+		<div v-if='obj'>
       <strong>Добавить Характеристики к материалу</strong>
       <button
         class='btn-small'
@@ -42,6 +42,12 @@ export default {
 	props: {
     obj: {}
   },
+	data() {
+		return {
+		}
+	},
+	components: {
+	},
 	methods: {
 		exitModal() {
 			this.$emit('unmount', false);
