@@ -42,15 +42,6 @@ export default {
 	props: {
     obj: {}
   },
-<<<<<<< HEAD
-	methods: {
-		exitModal() {
-      console.log('exitModal')
-			this.$emit('unmount', false);
-		},
-    changes(type) {
-      console.log('changes')
-=======
 	data() {
 		return {
 		}
@@ -62,7 +53,6 @@ export default {
 			this.$emit('unmount', false);
 		},
     changes(type) {
->>>>>>> backup
       this.$emit('unmount_change_har', type)
     }
 	},

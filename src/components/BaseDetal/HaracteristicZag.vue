@@ -235,11 +235,7 @@ export default {
 			showAddHar: false,
 		}
 	},
-<<<<<<< HEAD
-	components: { ModalBaseMaterial },
-=======
 	components: { ModalBaseMaterial, AddHar },
->>>>>>> backup
 	methods: {
 		...mapActions(['getOneTypeMaterial']),
 		unmount_add_har() {
