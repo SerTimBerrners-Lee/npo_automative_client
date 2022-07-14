@@ -235,7 +235,7 @@ export default {
       this.mat_zag_zam = obj.mat_zag_zam;
     },
     unmount_tech_process(tp) {
-      if( tp.id) {
+      if (tp.id) {
         this.techProcessID = tp.id;
         localStorage.setItem('tpID', this.techProcessID);
         if (tp.opers.length) {
@@ -261,13 +261,13 @@ export default {
       if (mat) this.materialList = mat.materialList;
     },
     saveDetal() {
-      if(this.obj.diametr == '0' || this.obj.lengt == '0' || this.obj.height == '0' || this.obj.thickness == '0' || this.obj.wallThickness == '0' || this.obj.width == '0' || this.obj.areaCS == '0') {
+      if (this.obj.diametr == '0' || this.obj.lengt == '0' || this.obj.height == '0' || this.obj.thickness == '0' || this.obj.wallThickness == '0' || this.obj.width == '0' || this.obj.areaCS == '0') {
         return showMessage('', 'Заполните все поля для характеристик заготовки', 'w');
       }
       
-      if(this.obj.name.length < 3) return 0;
+      if (this.obj.name.length < 3) return 0;
 
-      if(!this.formData) this.formData = new FormData();
+      if (!this.formData) this.formData = new FormData();
 
       this.formData.append('techProcessID', this.techProcessID || null);
       this.formData.append('name', this.obj.name);
@@ -291,7 +291,7 @@ export default {
       this.formData.append('attention', this.attention);
 
       if (this.documentsData.length) {
-        let new_array = []
+        const new_array = []
         for (let inx in this.documentsData) {
           new_array.push(this.documentsData[inx].id)
         }

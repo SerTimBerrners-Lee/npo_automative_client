@@ -11,7 +11,7 @@ async function getCommit() {
   });
 }
 
-export default async function Req(path, options = {}) {
+export default async function Req(path, options = {}, showLoader = true) {
   let auth = null;
   if (localStorage.getItem('auth')) auth = JSON.parse(localStorage.getItem('auth'));
 
@@ -22,9 +22,9 @@ export default async function Req(path, options = {}) {
       'Authorization': `Bearer ${auth?.token}`,
     }) : new Headers({'Authorization': `Bearer ${auth?.token}`});
     
-  commit('loaderChange', true);
+  if (showLoader) commit('loaderChange', true);
   const result = await fetch(`${PATH_TO_SERVER}${path}`, options);
-  commit('loaderChange', false);
+  if (showLoader) commit('loaderChange', false);
 
   return result;
 }
