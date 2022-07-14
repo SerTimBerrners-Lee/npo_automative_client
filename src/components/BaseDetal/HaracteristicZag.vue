@@ -182,7 +182,6 @@
 		/>
 		<AddHar
       v-if='showAddHar'
-			:key='keyAddHar'
 			:obj='obj'
       @unmount='unmount_add_har'
 			@unmount_change_har='unmount_change_har'
@@ -233,7 +232,6 @@ export default {
 			},
 			density: 0,
 			showAddHar: false,
-			keyAddHar: random(1, 999)
 		}
 	},
 	components: { ModalBaseMaterial, AddHar },
@@ -241,7 +239,6 @@ export default {
 		...mapActions(['getOneTypeMaterial']),
 		unmount_add_har() {
       this.showAddHar = false;
-			this.keyAddHar = random(1, 999);
     },
 		unmount_change_har(type) {
 			this.obj[type] = 1;
@@ -342,8 +339,6 @@ export default {
 
 			this.obj.massZag = data.massZag;
 			this.obj.trash = data.trash;
-
-			this.keyAddHar = random(1, 999);
 		},
 		nullable(maz = false, zam = false) {
 			if (maz) {
