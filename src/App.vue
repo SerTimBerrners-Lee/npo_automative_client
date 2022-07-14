@@ -34,7 +34,6 @@ export default {
     return {
       avtorization: this.getAuth,
       inaction: 1,
-
       id_inaction_interval: null,
     }
   },
@@ -149,13 +148,13 @@ a {
   color: #000 !important;
 }
 .width-350 {
-    width: 350px;
+  width: 350px;
 }
 .scrolls-type-490{
-    height: 490px !important;
+  height: 490px !important;
 }
 .cont {
-    float: left;
+  float: left;
 }
 .block {
   border: 1px solid #d3d3d3;

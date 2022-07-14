@@ -1,10 +1,6 @@
 <template>
 	<div> 
 		<div class="block header_block">
-			<p>
-				<label for="sortZag">Сортировать по заготовки</label>
-				<input type="checkbox" id="sortZag" v-model='sortZag'>
-			</p>
 			<p class='p_select_header'>
 				<label for="statusOperation">Сортировать по Статусу</label>
 				<select id="" class='select-small' v-model='selectStatusOperation'>
@@ -28,7 +24,7 @@
 							<th>Артикул Детали</th>
 							<th>Наименование Детали</th>
 							<th>Кол-во, шт</th>
-							<th>Срок отгрузки</th>
+							<th>Срок отгрузки</th>	
 							<th id='shipments'>Заказ</th>
 							<th id='parent'>Принадлежность</th>
 							<th class='th_showZagParam' @click='showZagParam = !showZagParam'>
@@ -44,7 +40,7 @@
 							<th>Осталось, шт</th>
 
 							<th class='th_showZagParam' v-if='!showNormTime' @click='showNormTime = !showNormTime'>
-								<p class='showZagParam tooltip'>>
+								<p class='showZagParam tooltip'>
 									<span class='tooltiptext'>Показать Норма времени</span>
 								</p>
 							</th>
@@ -63,7 +59,7 @@
 						</tr>
 						<tr id='search'>
               <th colspan="7">
-                <Search 
+                <Search
                   :placeholder="'Поиск по Заготовки'"
                   @unmount='keySearch'
                 />
@@ -192,7 +188,7 @@ import { 	afterAndBeforeOperation,
 					returnShipmentsDate } from '@/js/operation';
 import CreateMark from '@/components/Sclad/MarkModal';
 import OpensFile from '@/components/FileBase/OpenFile';
-import { 	showMessage, dateIncrementHors } from '@/js/';
+import { showMessage, dateIncrementHors } from '@/js/';
 import {mapGetters, mapActions, mapMutations} from 'vuex';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 import DescriptionModal from '@/components/DescriptionModal';
@@ -221,7 +217,6 @@ export default {
 			detalModalKey: random(1, 999),
 			parametrs_detal: false,
 
-			sortZag: true,
 			showZagParam: false,
 			showNormTime: false,
 
@@ -252,9 +247,6 @@ export default {
 		ShipmentList
 	},
 	watch: {
-		sortZag: function(val) {
-			this.sortMatallZag(val);
-		},
 		selectStatusOperation: function(val) {
 			this.sortMaterialStatus(val);
 		}
@@ -270,7 +262,6 @@ export default {
 			'fetchAllShipmentsMetaloworking'
 		]),
 		...mapMutations([
-			'sortMatallZag',
 			'sortMaterialStatus',
 			'filterMetaloworkingByShipments',
 			'sortMetallZag',

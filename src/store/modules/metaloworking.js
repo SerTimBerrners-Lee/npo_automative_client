@@ -95,6 +95,13 @@ export default {
       const result = await res.json();
       ctx.commit('allMetaloworkingOperation', result);
       return result;
+    },
+    async fetchResultWorkMetall(ctx) { 
+      const res = await Req(`api/metaloworking/resultworks/`);
+      if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('allMetaloworkingOperation', result);
+      return result;
     }
   },
   mutations: {
@@ -148,8 +155,8 @@ export default {
         if (r.metal.detal && r.metal.detal.techProcesses) 
           r.metal.tech_process = r.metal.detal.techProcesses;
 
-        const {description, id, ...operation} = r.operation;
-        state.metaloworkings.push({...operation, ...r.metal, description, operation_id: id});
+        const { description, id, ...operation } = r.operation;
+        state.metaloworkings.push({...operation, ...r.metal, description, operation_id: id, mark: r.mark});
       }
     },
     filterMetaloworkingByShipments(state, detals) {

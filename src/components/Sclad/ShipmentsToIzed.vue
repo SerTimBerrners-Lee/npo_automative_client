@@ -10,7 +10,9 @@
         <strong v-if='izd?.type == "product"'>Изделия:</strong>
         <strong v-if='izd?.type == "material"'>Материала:</strong>
           {{ izd?.izd?.name }}</p>
+        Артикул: <strong>{{ izd?.izd?.articl }}</strong>
 			<div class="block">
+        <span>Заказы покупателей:</span>
 				<table v-if='shipments.length'>
 					<tr>
 						<th>№ Заказа</th>
