@@ -54,6 +54,7 @@
 					<button class="btn-small" @click='printPage'> Печать отчета </button>
 				</div>
 		</div>
+		<Loader v-if='loader' />
 	</div>
 </template>
 <script> 

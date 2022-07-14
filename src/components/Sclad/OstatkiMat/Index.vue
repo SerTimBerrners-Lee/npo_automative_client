@@ -347,19 +347,20 @@
 				</table>
 			</div>
 		</div>
+		<Loader v-if='loader' />
 	</div>
 </template>
 <script> 
-import { eSelectSpan } from '@/js/methods';
 import { getKolvoMaterial } from '@/js/edizm.js';
+import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DatePicterRange from '@/components/DatePicterRange';
-import { mapGetters, mapActions, mapMutations } from 'vuex'; 
 
 export default {
 	data() {
 		return {
 			span: null,
 			instansLet: 0,
+			loader: false, 
 
 			material: null,
 			span_material: null,
@@ -420,112 +421,120 @@ export default {
 		setMaterial(material, span) {
 			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
-				return this.span_material = null;
+				return this.span_material = null
 			}
 
-			this.span_material = eSelectSpan(this.span, span);
-			this.material = material;
+			if(this.span_material)
+				this.span_material.classList.remove('td-row-all')
+			this.span_material = span
+			this.span_material.classList.add('td-row-all')
+
+			this.material = material
 		},
 		returnOstatokWays(material) {
-			if (!material.deliveries) return 0;
+			if(!material.deliveries) return 0
 
-			let count = 0;
-			for (const dev of material.deliveries) {
-				if (!dev.product) continue;
+			let count = 0
+			for(let dev of material.deliveries) {
+				if(!dev.product) continue;
 				try { 
-					const pars = JSON.parse(dev.product);
-					for (const product of pars) {
-						if (product.id == material.id) count = count + Number(product.kol);
+					let pars = JSON.parse(dev.product)
+					for(let product of pars) {
+						if(product.id == material.id)
+							count = count + Number(product.kol)
 					}
 				} catch(e) {	console.error(e) 	}
 			}
-			if (count - material.shipments_kolvo < 0 ) return +count;
-			return count - material.shipments_kolvo;
+			if(count - material.shipments_kolvo < 0 ) return +count 
+			return count - material.shipments_kolvo
 		},
 		clickMat(mat, type) {
-      if (type == 'type') {
-        this.material = mat;
-				this.setOneTypeMMytation(mat);
-        this.filterByNameMaterialById(mat) ;
-        if (mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
-          this.filterMatByPodType(mat.podMaterials);
+      if(type == 'type') {
+        this.material = mat
+				this.setOneTypeMMytation(mat)
+        this.filterByNameMaterialById(mat) 
+        if(mat.podMaterials && mat.podMaterials.length && this.instansLet != 1) 
+          this.filterMatByPodType(mat.podMaterials)
         else 
-          this.getAllPodTypeMaterial(1);
+          this.getAllPodTypeMaterial(1)
       }
 
-      if (type == 'podM') 
-        this.filterByNameMaterialById(mat);
+      if(type == 'podM') 
+        this.filterByNameMaterialById(mat) 
     },
 		clickEq(eq, type) {
-			if (type == 'type') 
-				this.filterAllPTEquipment(eq);
-      if (type == 'podT') 
-				this.getOneEquipmentPType(eq.id);
+			if(type == 'type') 
+				this.filterAllPTEquipment(eq)
+      if(type == 'podT') 
+				this.getOneEquipmentPType(eq.id)
 		},
 		clickTools(tools, type) {
-			if (type == 'type') 
-				this.filterAllpInstrument(tools);
-      if (type == 'podT') 
-				this.getAllPTInstances(tools.id);
+			if(type == 'type') 
+				this.filterAllpInstrument(tools)
+      if(type == 'podT') 
+				this.getAllPTInstances(tools.id)
 		},
 		clickInventary(inventary, type) {
-			if (type == 'type') 
-				this.filterNameInventaryByPT(inventary.inventary);
-      if (type == 'podT') 
-				this.filterNameInventaryByPT(inventary.inventary);
+			if(type == 'type') 
+				this.filterNameInventaryByPT(inventary.inventary)
+      if(type == 'podT') 
+				this.filterNameInventaryByPT(inventary.inventary)
 		},
 		getKolvoMaterialTow(mat) {
-			return getKolvoMaterial(mat);
+			return getKolvoMaterial(mat)
 		},
 		changeDatePicterRange(val) {
-      console.log(val);
+      console.log(val)
     },
 		getAllDeficit() {
-			this.clearAllState();
+			this.clearAllState()
 
-			this.getOnlyMaterialDeficit();
-			this.getAllNameInstrument();
+			this.getOnlyMaterialDeficit()
+			this.getAllNameInstrument()
 		},
 		getOnlyMaterialDeficit() {
-			this.clearAllState();
+			this.clearAllState()
 
-			this.getAllTypeMaterial();
-			this.getAllPodTypeMaterial();
-			this.fetchPPMNoLight();
+			this.getAllTypeMaterial()
+			this.getAllPodTypeMaterial()
+			this.fetchPPMNoLight()
 		},
 		getOnlyInstrumentDeficit() {
-			this.clearAllState();
-			this.getAllNameInstrument();
-			this.fetchAllInstruments();
-			this.getPTInstrumentList();
+			this.clearAllState()
+			this.getAllNameInstrument()
+			this.fetchAllInstruments()
+			this.getPTInstrumentList()
 		},
 		getOnlyEquipmentDeficit() {
-			this.clearAllState();
-			this.fetchAllEquipment(true);
-			this.getAllEquipmentPType();
-			this.fetchAllEquipmentType();
+			this.clearAllState()
+			this.fetchAllEquipment(true)
+			this.getAllEquipmentPType()
+			this.fetchAllEquipmentType()
 		},
 		getOnlyInventarytDeficit() {
-			this.clearAllState();
-			this.fetchAllInventary();
-			this.fetchAllPInventary();
-			this.fetchAllNameInventary();
+			this.clearAllState()
+			this.fetchAllInventary()
+			this.fetchAllPInventary()
+			this.fetchAllNameInventary()
 		},
 		clearAllState() {
-			this.clearCascheMaterial();
-			this.clearCascheInstrument();
-			this.clearCascheEquipment();
-			this.clearCascheInventary();
+			this.clearCascheMaterial()
+			this.clearCascheInstrument()
+			this.clearCascheEquipment()
+			this.clearCascheInventary()
 		}
 	},
-	async mounted() {
-    this.clearAllState();
-    await this.getAllTypeMaterial();
-    await this.getAllPodTypeMaterial();
-    await this.fetchPPMNoLight();
-		await this.getAllNameInstrument();
-		await this.fetchAllEquipment();
-		await this.fetchAllNameInventary();
+	async mounted() { 
+		this.loader = true
+    
+    this.clearAllState()
+    await this.getAllTypeMaterial()
+    await this.getAllPodTypeMaterial()
+    await this.fetchPPMNoLight()
+		await this.getAllNameInstrument()
+		await this.fetchAllEquipment()
+		await this.fetchAllNameInventary()
+    this.loader = false
 	}
 }
 </script>

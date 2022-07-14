@@ -167,6 +167,7 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
     />
+    <Loader v-if='loader' /> 
   </div>
 </template>
 <script>
@@ -241,6 +242,7 @@ export default {
       actions: [],
 
       data_arr: [],
+      loader: false,
       show_harater_zag: false
     }
   },
@@ -437,6 +439,7 @@ export default {
     if(this.getOneSelectDetal.actions)
       this.actions = this.getOneSelectDetal.actions;
 
+    this.loader = true;
     await this.getAllUsers(true);
         
     this.obj.articl = this.getOneSelectDetal.articl;
@@ -481,6 +484,7 @@ export default {
     this.show_harater_zag = true;
 
     this.data_arr = await this.getAllDetalsArticl();
+    this.loader = false;
   }
 }
 </script>

@@ -29,6 +29,7 @@
       :chapter='chapter_selected'
       @unmount='unmount_chapter'
     />
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -44,6 +45,8 @@ export default {
       showGenerateModal: false,
       chapter_selected: null,
       type_open: 'create',
+
+      loader: false
     }
   },
   computed: mapGetters(['getRoleAssets', 'getChapter']),
@@ -51,30 +54,33 @@ export default {
   methods: {
     ...mapActions(['getAllChapter', 'removeChapter']),
     unmount_chapter() {
-      this.getAllChapter();
+      this.getAllChapter()
     },
     create() {
-      this.keyGenerateModal = random(1, 999);
-      this.showGenerateModal = true;
-      this.type_open = 'create';
+      this.keyGenerateModal = random(1, 999)
+      this.showGenerateModal = true
+      this.type_open = 'create'
     },
     edit() {
-      if (!this.chapter_selected) return false;
+      if(!this.chapter_selected) return false
 
-      this.keyGenerateModal = random(1, 999);
-      this.showGenerateModal = true;
-      this.type_open = 'edit';
+      this.keyGenerateModal = random(1, 999)
+      this.showGenerateModal = true
+      this.type_open = 'edit'
     },
     remove() {
-     if (!this.chapter_selected) return false;
-      this.removeChapter(this.chapter_selected.id);
+     if(!this.chapter_selected) return false
+
+      this.removeChapter(this.chapter_selected.id)
     },
     selected(chapted) {
-      this.chapter_selected = chapted;
+      this.chapter_selected = chapted
     }
   },
   async mounted() {
-    await this.getAllChapter();
+    this.loader = true
+    await this.getAllChapter()
+    this.loader = false
   }
 }
 </script>

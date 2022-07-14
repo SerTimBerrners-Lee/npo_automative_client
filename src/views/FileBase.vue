@@ -96,62 +96,62 @@ export default {
       'pushFilesMutation'
     ]),
     unmount(res){
-      if (!res) {
+      if(!res) {
         this.docFiles = []
         this.itemFiles = null,
         this.showModalOpenFile = false
         return 0;
       }
-      if (res.files && res.files.length) {
-        for (const file of res.files) {
+      if(res.files && res.files.length) {
+        for(const file of res.files) {
           this.pushFilesMutation(file)
         }
       }
       showMessage('', res.message, res.type);
     },
     changeEnv(env) {
-      if (!env) return false;
-      this.nowType = env.nowType;
+      if(!env) return false;
+      this.nowType = env.nowType
     },
     getFilesToClick(file) {
       this.fetchFileById(file.id).then((res) => {
-        this.itemFiles = {...res, type_open_modal: 'edit'};
-        this.nodeTableKey = random(5, 999);
+        this.itemFiles = {...res, type_open_modal: 'edit'}
+        this.nodeTableKey = random(5, 999)
       })
     },
     dbPushFile(file) {
-      if (this.itemFiles) {
-        this.keyWhenModalGenerateFileOpen = random(5, 999);
-        this.showModalOpenFile = true;
+      if(this.itemFiles) {
+        this.keyWhenModalGenerateFileOpen = random(5, 999)
+        this.showModalOpenFile = true
       } else {
         this.fetchFileById(file.id).then((res) => {
-          if (!res) return false;
+          if(!res) return false
           this.itemFiles = {...res, type_open_modal: 'edit'}
-          this.keyWhenModalGenerateFileOpen = random(5, 999);
-          this.showModalOpenFile = true;
+          this.keyWhenModalGenerateFileOpen = random(5, 999)
+          this.showModalOpenFile = true
         })
       }
     },
     editFile() {
-      if (!this.itemFiles) return showMessage('', 'Для начала выберите файл', 'w');
-      this.dbPushFile(this.itemFiles);
+      if(!this.itemFiles) return showMessage('', 'Для начала выберите файл', 'w');
+      this.dbPushFile(this.itemFiles)
     },
     changeTypeF() {
-      if (!this.itemFiles)
+      if(!this.itemFiles)
         return showMessage('', 'Вы не выбрали файл', 'w', this)
-      if (this.itemFiles.type == this.changeType)
+      if(this.itemFiles.type == this.changeType)
         return showMessage('', 'Файлу уже присвоен выбранный вами Тип', 'w');
       this.typeDocs.forEach(type => {
-        if (type == this.changeType) 
+        if(type == this.changeType) 
           this.checkedType({id: this.itemFiles.id, type: this.changeType})
           .then(f => {
             showMessage('', f.message, f.type, this);
-            this.changeType = 'Изменить тип';
+            this.changeType = 'Изменить тип'
           })
       })
     },
     changeBanned() {
-      if (!this.itemFiles)
+      if(!this.itemFiles)
         return showMessage('', 'Вы не выбрали файл', 'w');
 
       this.bannedFiles(this.itemFiles).then(f => {
@@ -159,7 +159,7 @@ export default {
       })
     },
     exitModalAttach() {
-      this.showMiniModal = false;
+      this.showMiniModal = false
     }
   }
 }

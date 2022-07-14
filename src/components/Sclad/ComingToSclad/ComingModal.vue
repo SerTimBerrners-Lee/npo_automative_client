@@ -250,6 +250,7 @@
       :getListCbed='scladArr'
       @responsCbed='unmount_product'
     />
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -517,8 +518,10 @@ export default {
     },
   },
   async mounted() {
+    this.loader = true;
     await this.fetchGetDeliveriesCaming();
     this.editVariable();
+    this.loader = false;
       
   },
 }

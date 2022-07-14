@@ -109,6 +109,7 @@
         :fileArrModal='arrFileGet'
         @unmount='unmount_filemodal'
       />
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -142,7 +143,8 @@ export default {
       fileModalKey: random(1, 999),
       showModalFile: false,
       arrFileGet: [],
-      
+
+      loader: false,
       attention: false
     }
   },
@@ -248,6 +250,7 @@ export default {
     }
   },
   async mounted() {
+    this.loader = true;
     await this.fetchAllInstruments();
     await this.getAllEdizm();
     this.getInstansTools(this.getLinkIdInstrument || 0);
@@ -255,6 +258,7 @@ export default {
       await this.fetchAllInstruments();
       await this.getPTInstrumentList();
     }
+    this.loader = false;
   }
 }
 </script>

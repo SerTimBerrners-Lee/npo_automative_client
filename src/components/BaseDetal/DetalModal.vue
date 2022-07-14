@@ -166,6 +166,8 @@ export default {
       const getDetal = await this.getOneDetal(_id);
       if(isEmpty(getDetal)) return this.destroyModalF();
       this.addOneSelectDetal(getDetal);
+
+      this.loader = false;
     }
   },
   async mounted() {

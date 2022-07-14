@@ -65,6 +65,7 @@
 				</div>
       </div>
     </div>
+		<Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -78,6 +79,7 @@ export default {
   props: ['parametrs', 'type_izd'],
   data() {
     return {
+			loader: false,
 
 			obj_name: null,
 			obj_max_det: 1,
@@ -139,6 +141,7 @@ export default {
 		}
   },
   async mounted() {
+		this.loader = true;
 		await this.getAllUsers(true);
 		await this.getAllTypeOperations();
 
@@ -160,6 +163,7 @@ export default {
 			
 			if (this.obj_max_det <=0) this.min_det = 0;
 		}
+		this.loader = false;
   },
 }
 </script>

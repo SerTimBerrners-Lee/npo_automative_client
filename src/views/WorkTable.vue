@@ -62,7 +62,8 @@
       <div class="btn-control">
         <button class="btn-small">Печать</button>
       </div>
-    </div>=
+    </div>
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -81,6 +82,7 @@ export default {
         'Отложено',
         'На контроль'
       ],
+      loader: false
     }
   },
   components: { DatePicterRange, IssueForMe },
@@ -104,10 +106,12 @@ export default {
 		}
   },
   async mounted() {
-    if (this.getAuth && this.getAuth.id) 
+    this.loader = true;
+    if(this.getAuth && this.getAuth.id) 
       await this.fetchIssueList(this.getAuth.id);
 
     await this.getAllTypeOperations();
+    this.loader = false;
   }
 }
 </script>

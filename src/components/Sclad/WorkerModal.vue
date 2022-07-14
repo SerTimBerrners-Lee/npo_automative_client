@@ -12,11 +12,8 @@
           <span>№ Заказа: <span style="font-weight: bold;">{{ number_order }}</span> </span>
         </p>
         <p>
-          <span>Дата план. отгрузки: </span> 
-          <DatePicterCustom
-            @unmount='change_date_shipments' 
-            :dateStart='date_shipments'
-          />
+          <span> Дата план отгрузки: </span>
+          <span style="font-weight: bold;"> {{ date_shipments || '-' }} </span>
         </p>
       </div>
       <div>
@@ -53,19 +50,14 @@
         </table>
       </div>
       <div class="btn-control out-btn-control" v-if='type_open != "read"'>
-        <button class="btn-status btn-black"
-          @click='archeves'>
-            {{ worker.ban ? "Вернуть из Архива" : "В Архив" }}
-        </button>
         <button 
         class="btn-status"
         @click='destroyModalF'>
           Отмена
         </button>
-        <button
-          class="btn-status"
-          @click='update'>
-          Обновить
+        <button class="btn-status btn-black"
+          @click='archeves'>
+            {{ worker.ban ? "Вернуть из Архива" : "В Архив" }}
         </button>
       </div>
     </div>
@@ -82,9 +74,8 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
-import MixModal from '../../mixins/mixmodal';
 import { mapActions, mapMutations} from 'vuex';
-import DatePicterCustom from '@/components/DatePicter';
+import MixModal from '../../mixins/mixmodal';
 import TreatmentEdit from '@/components/Sclad/EditTreatment';
 
 export default {
@@ -111,22 +102,15 @@ export default {
     }
   },
   mixins: [MixModal],
-  components: {
-    DatePicterCustom,
-    TreatmentEdit
-  },
+  components: { TreatmentEdit },
   methods: {
     ...mapActions([
       'fetchBannedWorkers',
-      'fetchUpdateWorking',
-      'fetchMetalloworkingDelete',
+      'fetchMetalloworkingDelete'
     ]),
     ...mapMutations([
       'deleteOneWorkign',
     ]),
-    change_date_shipments(date) {
-      this.date_shipments = date;
-    },
     unmount_treatment() {
       this.$emit('unmount_working', this.worker.id);
       this.treatment = null;
@@ -151,14 +135,6 @@ export default {
 
       this.destroyModalF();
       return showMessage('', `Заказа №${this.number_order} отправлен в производство`, 's');
-    },
-    async update() {
-      const res = await this.fetchUpdateWorking({
-        id: this.worker.id,
-        date_shipments: this.date_shipments,
-        description: this.description,
-      });
-      if (res) return showMessage('', 'Обновлено', 's');
     },
     init() {
       this.date_order = this.worker.date_order;

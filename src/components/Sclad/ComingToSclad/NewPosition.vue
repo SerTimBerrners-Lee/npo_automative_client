@@ -149,6 +149,7 @@
         </div>
       </div>
     </div>
+    <Loader v-if='loader' />
   </div>
 </template>
 <script scoped>
@@ -169,6 +170,8 @@ export default {
       instansLet: 0,
       span_material: null,
       position_list: [],
+
+      loader: false
     }
   },
   computed: mapGetters([
@@ -329,6 +332,8 @@ export default {
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
 
+    this.loader = true;
+
     this.clearCascheMaterial();
     await this.getAllTypeMaterial();
     await this.getAllPodTypeMaterial();
@@ -336,6 +341,8 @@ export default {
     await this.getAllNameInstrument();
 		await this.fetchAllEquipment();
 		await this.fetchAllNameInventary();
+
+    this.loader = false;
   },
 }
 </script>

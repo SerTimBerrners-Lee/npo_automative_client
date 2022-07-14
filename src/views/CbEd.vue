@@ -179,6 +179,7 @@
           />
       </div>
     </div>
+    <Loader v-if='loader' /> 
     <TechProcess 
       v-if='techProcessIsShow' 
       :key='techProcessKey'
@@ -230,6 +231,8 @@ export default {
 
       productOperation: [],
       cbedOperation: [],
+
+      loader: false
     }
   },
   computed: mapGetters(['allCbed', 'allProduct', 'getAuth']),
@@ -265,8 +268,8 @@ export default {
       'filterCbedToMyObject'
     ]),
     showModalNode() {
-      if (!this.selectedCbEd) return false;
-      if (typeof this.selectedCbEd.cbed == 'string') 
+      if(!this.selectedCbEd) return false;
+      if(typeof this.selectedCbEd.cbed == 'string') 
         this.selectedCbEd.cbed = JSON.parse(this.selectedCbEd.cbed);
       this.show_node_modal = !this.show_node_modal;
       this.key_node_modal = random(1, 999);
@@ -275,7 +278,7 @@ export default {
       this.show_node_modal = false;
 
       const res = await this.getOneCbEdById(cbed.id);
-      if (!res) return false;
+      if(!res) return false;
       this.selectedCbEd = res;
       this.parseSpetification(res);
       this.setOneCbed(res);
@@ -304,7 +307,7 @@ export default {
       this.productModalKey = random(1, 999);
     },
     async setProduct(product, e) {
-      if (this.selecteProduct && this.selecteProduct.id == product.id) {
+      if(this.selecteProduct && this.selecteProduct.id == product.id) {
         this.clearFilterCbedByProduct();
         e.classList.remove('td-row-all');
         this.selecteProduct = null;
@@ -313,7 +316,7 @@ export default {
       }
 
       const res = await this.getAllProductById(product.id);
-      if (!res) return false;
+      if(!res) return false;
       this.selecteProduct = res;
       this.setOneProduct(res);
       this.getAllCbEdByProduct(res);
@@ -321,7 +324,7 @@ export default {
       this.tr_product = eSelectSpan(this.tr_product, e);
     },
     editCbEd() {
-      if (!this.selectedCbEd) return 0;
+      if(!this.selectedCbEd) return 0;
 
       this.$router.push({path: '/cbed/edit/false'});
     },
@@ -329,7 +332,7 @@ export default {
       this.$router.push({path: '/cbed/create'});
     },
     createCopy() {
-      if (!this.selectedCbEd) return 0;
+      if(!this.selectedCbEd) return 0;
 
       this.$router.push({path: '/cbed/edit/true'});
     },
@@ -337,12 +340,12 @@ export default {
       this.$router.push('/createproduct');
     },
     createCopyProduct() {
-      if (!this.selecteProduct) return 0;
+      if(!this.selecteProduct) return 0;
 
       this.$router.push({path: '/product/edit/true'});
     },
     editProduct() {
-      if (!this.selecteProduct) return 0;
+      if(!this.selecteProduct) return 0;
 
       this.$router.push({path: '/product/edit/false'});
     }, 
@@ -353,7 +356,7 @@ export default {
       this.searchProduct(String(v));
     },
     deleteCbEd() { 
-      if (!this.selectedCbEd) return 0;
+      if(!this.selectedCbEd) return 0;
 
       this.deleteCbedById(this.selectedCbEd.id);
     },
@@ -365,9 +368,9 @@ export default {
     },
     сolNotOperation(arr_one, arr_two) {
       let counter = 0;
-      for (const item of arr_one) {
-        for (const id of arr_two) {
-          if (item.id == id) counter++;
+      for(const item of arr_one) {
+        for(const id of arr_two) {
+          if(item.id == id) counter++;
         } 
       }
       return counter;
@@ -378,19 +381,21 @@ export default {
       this.keyWhenModalGenerateFileOpen = random(1, 999);
     },
     showTechProcess() {
-      if (isEmpty(this.selectedCbEd)) return false;
-      if (!this.selectedCbEd.techProcesses) return false;
+      if(isEmpty(this.selectedCbEd)) return false;
+      if(!this.selectedCbEd.techProcesses) return false;
       this.techProcessID = this.selectedCbEd.techProcesses.id;
       this.techProcessIsShow = true;
       this.techProcessKey = random(1, 999);
     },
   },
   async mounted() {
+    this.loader = true;
     await this.getAllProduct(true);
     await this.getAllCbed(true);
 
     this.productOperation = await this.fetchAllProductOperation();
     this.cbedOperation = await this.fetchAllCbedOperation();
+    this.loader = false;
   }
 }
 </script>

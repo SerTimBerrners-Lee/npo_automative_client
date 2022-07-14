@@ -121,6 +121,7 @@
       v-if='showModalShipments && shipments.length'
       :key='shipmentKey'
     />
+    <Loader v-if='loader' :description='"Получение Материала"' />
   </div>
 </template>
 
@@ -156,6 +157,7 @@ export default {
 
 			e_type_material: null,
 			e_ptype_material: null,
+      loader: false
     }
   },
   computed: mapGetters(['getOnePodMaterial']),
@@ -175,7 +177,7 @@ export default {
 			return getKolvoMaterial(mat);
 		},
     setMaterial(material, span) {
-			if (this.material && this.material.id == material.id && this.span_material) {
+			if(this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null;
 			}
@@ -186,7 +188,7 @@ export default {
 		},
     openShipmentsModal(material) {
 			this.getShipmentsForOneMaterial(material.id).then(res => {
-				if (!res || !res.length) return showMessage('', 'Нет Заказов или произошла ощибка.', 'i');
+				if(!res || !res.length) return showMessage('', 'Нет Заказов или произошла ощибка.', 'i');
 				this.material = material;
 				this.showModalShipments = true;
 				this.shipments = res;
@@ -194,7 +196,7 @@ export default {
 			})
     },
     showRemaningParent(id) {
-			if (!id) return false;
+			if(!id) return false;
 			this.mat_id = id;
 			this.materialParentKey = random(1, 999);
 		},
@@ -215,8 +217,12 @@ export default {
     }
   },
   async mounted() {
+		this.loader = true;
+
     this.clearCascheMaterial();
     await this.fetchGetAllDeficitPPM();
+
+		this.loader = false;
   }
 }
 </script>

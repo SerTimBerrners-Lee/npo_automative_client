@@ -229,6 +229,7 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
     />
+    <Loader v-if='loader' /> 
   </div>
 </template>
 <script>
@@ -305,13 +306,14 @@ export default {
       showModalFile: false,
       fileModalKey: random(1, 999),
       data_arr: [],
+      loader: false
     }
   },
   watch: {
     'obj.articl': function (val, last_val) {
-      if (!last_val) return false;
-      for (const art of this.data_arr) {
-				if (art.articl.toLowerCase() == val.trim().toLowerCase()) 
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
 					return showMessage('', 'Объект с такими характеристиками уже существует', 'w');
 			}
     },
@@ -340,10 +342,10 @@ export default {
     ]),
     ...mapMutations(['delitPathNavigate']),
      unmount_tech_process(tp) {
-      if (tp.id) {
+      if(tp.id) {
         this.techProcessID = tp.id;
         localStorage.setItem('tpID', this.techProcessID);
-        if (tp.opers.length) {
+        if(tp.opers.length) {
           this.obj.parametrs[0].znach = 0
           tp.opers.forEach(op => {
             this.obj.parametrs[0].znach = 
@@ -354,23 +356,25 @@ export default {
       }
     },
     unmount_filemodal(res) {
-      if (res) this.documentsData = res;
+      if(res) this.documentsData = res;
     },
     file_unmount(e) { 
-      if (!e) return 0;
+      if(!e) return 0;
       this.formData = e.formData;
     },
     unmount_material(mat) {
-      if (this.instanMaterial == 2)
-        this.listPokDet = mat.materialListж
-      if (this.instanMaterial == 3)
-        this.materialList = mat.materialListж
+      if(this.instanMaterial == 2) {
+        this.listPokDet = mat.materialList
+      }
+      if(this.instanMaterial == 3) {
+        this.materialList = mat.materialList
+      }
     },
     saveProduct() {
-      if (this.obj.name.length < 3) 
+      if(this.obj.name.length < 3) 
         return showMessage('', 'Наименование должно быть длинее или равно 2-м символам', 'w')
 
-      if (!this.formData)
+      if(!this.formData)
         this.formData = new FormData();
 
       this.formData.append('techProcessID', this.techProcessID || null);
@@ -383,34 +387,34 @@ export default {
       this.formData.append('fabricNumber', this.obj.fabricNumber);
       this.formData.append('attention', this.attention);
 
-      if (this.listDetal.length)
+      if(this.listDetal.length)
         this.formData.append('listDetal', JSON.stringify(this.listDetal));
-      if (this.listCbed.length)
+      if(this.listCbed.length)
         this.formData.append('listCbed', JSON.stringify(this.listCbed));
 
-      for (let mat = 0; mat < this.listPokDet.length; mat++) {
+      for(let mat = 0; mat < this.listPokDet.length; mat++) {
         this.listPokDet[mat].mat = {
           id: this.listPokDet[mat].mat.id,
           name: this.listPokDet[mat].mat.name,
           kol: this.listPokDet[mat].mat.kolvo
         }
-        if (mat == this.listPokDet.length - 1) {
+        if(mat == this.listPokDet.length - 1) {
           this.formData.append('listPokDet', JSON.stringify(this.listPokDet));
         }
       }
       
-      for (let mat = 0; mat < this.materialList.length; mat++) {
+      for(let mat = 0; mat < this.materialList.length; mat++) {
         this.materialList[mat].mat = {
           id: this.materialList[mat].mat.id,
           name: this.materialList[mat].mat.name,
           kol: this.materialList[mat].mat.kolvo
         }
-        if (mat == this.materialList.length - 1) {
+        if(mat == this.materialList.length - 1) {
           this.formData.append('materialList', JSON.stringify(this.materialList));
         }
       }
 
-      if (this.documentsData.length) {
+      if(this.documentsData.length) {
         let new_array = [];
         for(let inx in this.documentsData) {
           new_array.push(this.documentsData[inx].id);
@@ -418,7 +422,7 @@ export default {
         this.formData.append('file_base', JSON.stringify(new_array));
       }
 
-      if (this.$route.params.copy == 'false')  { 
+      if(this.$route.params.copy == 'false')  { 
         this.formData.append('id', this.id);
         showMessage('', 'Изделие усешно обновлена. Перенаправление на главную страницу...', 's');
         this.updateProduct(this.formData);
@@ -468,33 +472,33 @@ export default {
       this.obj.parametrs.push({name: '', ez: '', znach: ''});
     },
     removeHaracteristic() {
-      if (this.selectHaracteristic.inx < 2) return false;
-      if (this.selectHaracteristic) {
+      if(this.selectHaracteristic.inx < 2) return false;
+      if(this.selectHaracteristic) {
         this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1);
         this.selectHaracteristic = null;
       }
     },
     removeParametrs() {
-      if (this.selectParametrs) {
+      if(this.selectParametrs) {
         this.obj.parametrs.splice(this.selectParametrs.inx, 1);
         this.selectParametrs = null;
       }
     },
     changeHaracteristic(val, inst, inx) {
-      if (inst == 'name')  
+      if(inst == 'name')  
         this.obj.haracteriatic[inx].name = val;
-      if (inst == 'ez')  
+      if(inst == 'ez')  
         this.obj.haracteriatic[inx].ez = val;
-      if (inst == 'znach')  {
+      if(inst == 'znach')  {
         this.obj.haracteriatic[inx].znach = val;
       }
     },
     changeParametrs(val, inst, inx) {
-      if (inst == 'name')  
+      if(inst == 'name')  
         this.obj.parametrs[inx].name = val;
-      if (inst == 'ez')  
+      if(inst == 'ez')  
         this.obj.parametrs[inx].ez = val;
-      if (inst == 'znach')  {
+      if(inst == 'znach')  {
         this.obj.parametrs[inx].znach = val;
       }
     },
@@ -524,7 +528,7 @@ export default {
       this.listCbed = this.getOneSelectProduct.listCbed ? JSON.parse(this.getOneSelectProduct.listCbed) : [];
       this.obj.fabricNumber = this.getOneSelectProduct.fabricNumber
 
-      if (this.$route.params.copy == 'false')  {
+      if(this.$route.params.copy == 'false')  {
         this.documentsData = this.getOneSelectProduct.documents;
         this.getOneSelectProduct.documents.forEach(d => this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path}));
         this.randomDataMedia = random(10, 999);
@@ -544,11 +548,13 @@ export default {
     }
   },
   async mounted() {
-    if (isEmpty(this.getOneSelectProduct))
+    if(isEmpty(this.getOneSelectProduct))
       return this.$router.back();
 
+    this.loader = true;
     await this.getAllUsers(true);
     this.data_arr = await this.getAllArticlProduct();
+    this.loader = false;
 
     this.updateForEdit();
   }

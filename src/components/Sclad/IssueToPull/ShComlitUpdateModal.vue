@@ -160,6 +160,7 @@
       :get_one='true'
       @unmount='unmount_user_modal'
     />
+    <Loader v-if='loader' />
   </div>
 </div>
 </template>
@@ -207,7 +208,8 @@ export default {
       responsible_user: '',
       creater_user: '',
       typeOpen: '',
-      
+
+      loader: false,
       transport: '',
       lastFormData: null,
       documentsData: [],
@@ -326,8 +328,11 @@ export default {
     },
   },
   async mounted() {
+    this.loader = true;
     if (!this.complit) return this.destroyModalF();
     await this.update();
+
+    this.loader = false;
   },
 }
 </script>

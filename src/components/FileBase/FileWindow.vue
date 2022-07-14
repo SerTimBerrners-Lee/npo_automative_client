@@ -31,6 +31,7 @@
         @dbPushFile='dbPushFile'
         @keySearch='keySearch'   />
     </div>
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -46,6 +47,8 @@ export default {
       searchToArr: [],
       nowFileType: '',
       searchFileType: '',
+
+      loader: false
     }
   },
   computed: {
@@ -150,10 +153,12 @@ export default {
     },
   },
   async mounted() { 
-    this.targetLink = this.$refs.allFilesLink;
-    
-    await this.fetchFiles();
-    this.getType('all');
+    this.targetLink = this.$refs.allFilesLink
+
+    this.loader = true
+    await this.fetchFiles()
+    this.getType('all')
+    this.loader = false
   }
 }
 </script>

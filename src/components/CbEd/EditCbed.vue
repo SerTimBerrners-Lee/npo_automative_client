@@ -233,6 +233,7 @@
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
     />
+    <Loader v-if='loader' /> 
   </div>
 </template>
 <script>
@@ -305,6 +306,7 @@ export default {
       showModalFile: false,
       fileModalKey: random(1, 999),
       data_arr: [],
+      loader: false
     }
   },
   watch: {
@@ -346,13 +348,13 @@ export default {
     ]),
     ...mapMutations(['removeOperationStorage', 'delitPathNavigate']),
     unmount_filemodal(res) {
-      if (res) this.documentsData = res;
+      if(res) this.documentsData = res;
     },
     unmount_tech_process(tp) {
-      if (tp.id) {
+      if(tp.id) {
         this.techProcessID = tp.id;
         localStorage.setItem('tpID', this.techProcessID);
-        if (tp.opers.length) {
+        if(tp.opers.length) {
           this.obj.parametrs[0].znach = 0;
           tp.opers.forEach(op => {
             this.obj.parametrs[0].znach = 
@@ -365,7 +367,7 @@ export default {
     file_unmount(e) { 
       if (!e) return 0;
       this.formData = e.formData;
-      for (const fd of this.formData.getAll('document')) {
+      for(const fd of this.formData.getAll('document')) {
         this.documentsData.push(fd);
       }
     },
@@ -376,10 +378,10 @@ export default {
         this.materialList = mat.materialList;
     },
     saveCbed() {
-      if (this.obj.name.length < 3) 
+      if(this.obj.name.length < 3) 
         return showMessage('', 'Наименование должно быть длинее или равно 2-м символам', 'w');
 
-      if (!this.formData) this.formData = new FormData();
+      if(!this.formData) this.formData = new FormData();
 
       this.formData.append('techProcessID', this.techProcessID || null);
       this.formData.append('name', this.obj.name);
@@ -390,23 +392,23 @@ export default {
       this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic));
       this.formData.append('attention', this.attention);
 
-      if (this.listDetal.length)
+      if(this.listDetal.length)
         this.formData.append('listDetal', JSON.stringify(this.listDetal));
-      if (this.listCbed.length)
+      if(this.listCbed.length)
         this.formData.append('listCbed', JSON.stringify(this.listCbed));
 
-      for (let mat = 0; mat < this.listPokDet.length; mat++) {
+      for(let mat = 0; mat < this.listPokDet.length; mat++) {
         this.listPokDet[mat].mat = {
           id: this.listPokDet[mat].mat.id,
           name: this.listPokDet[mat].mat.name,
           kol: this.listPokDet[mat].mat.kol
         }
-        if (mat == this.listPokDet.length - 1) {
+        if(mat == this.listPokDet.length - 1) {
           this.formData.append('listPokDet', JSON.stringify(this.listPokDet));
         }
       }
 
-      for (let mat = 0; mat < this.materialList.length; mat++) {
+      for(let mat = 0; mat < this.materialList.length; mat++) {
         this.materialList[mat].mat = {
           id: this.materialList[mat].mat.id,
           name: this.materialList[mat].mat.name,
@@ -416,7 +418,7 @@ export default {
           this.formData.append('materialList', JSON.stringify(this.materialList));
       }
 
-      if (this.documentsData.length) {
+      if(this.documentsData.length) {
         const new_array = [];
         for(let inx in this.documentsData) {
           new_array.push(this.documentsData[inx].id);
@@ -424,7 +426,7 @@ export default {
         this.formData.append('file_base', JSON.stringify(new_array));
       }
 
-      if (this.$route.params.copy == 'false') {
+      if(this.$route.params.copy == 'false') {
         this.formData.append('id', this.id);
         this.updateCbed(this.formData);
         showMessage('', 'Сборочная единица усешно Обновлена. Перенаправление на главную страницу...', 's');
@@ -476,26 +478,26 @@ export default {
       this.obj.parametrs.push({name: '', ez: '', znach: ''});
     },
     removeHaracteristic() {
-      if (this.selectHaracteristic) {
+      if(this.selectHaracteristic) {
         this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1);
         this.selectHaracteristic = null;
       }
     },
     removeParametrs() {
-      if (this.selectParametrs) {
+      if(this.selectParametrs) {
         this.obj.parametrs.splice(this.selectParametrs.inx, 1);
         this.selectParametrs = null;
       }
     },
     changeHaracteristic(val, inst, inx) {
-      if (inst == 'name') this.obj.haracteriatic[inx].name = val;
-      if (inst == 'ez') this.obj.haracteriatic[inx].ez = val;
-      if (inst == 'znach') this.obj.haracteriatic[inx].znach = val;
+      if(inst == 'name') this.obj.haracteriatic[inx].name = val;
+      if(inst == 'ez') this.obj.haracteriatic[inx].ez = val;
+      if(inst == 'znach') this.obj.haracteriatic[inx].znach = val;
     },
     changeParametrs(val, inst, inx) {
-      if (inst == 'name') this.obj.parametrs[inx].name = val;
-      if (inst == 'ez') this.obj.parametrs[inx].ez = val;
-      if (inst == 'znach') this.obj.parametrs[inx].znach = val;
+      if(inst == 'name') this.obj.parametrs[inx].name = val;
+      if(inst == 'ez') this.obj.parametrs[inx].ez = val;
+      if(inst == 'znach') this.obj.parametrs[inx].znach = val;
     },
     showTechProcess() {
       this.techProcessIsShow = true;
@@ -518,7 +520,7 @@ export default {
       this.listDetal = this.getOneSelectCbEd.listDetal ? JSON.parse(this.getOneSelectCbEd.listDetal) : [];
       this.listCbed = this.getOneSelectCbEd.listCbed ? JSON.parse(this.getOneSelectCbEd.listCbed) : [];
 
-      if (this.$route.params.copy == 'false')  {
+      if(this.$route.params.copy == 'false')  {
         this.documentsData = this.getOneSelectCbEd.documents;
         this.getOneSelectCbEd.documents.forEach(d => this.dataMedia.push({...d, path: PATH_TO_SERVER+d.path}))
         this.randomDataMedia = random(10, 999);
@@ -532,22 +534,24 @@ export default {
       this.showModalFile = true;
     },
     showModalNode() {
-      if (!this.getOneSelectCbEd) return false;
-      if (typeof this.getOneSelectCbEd.cbed == 'string') 
+      if(!this.getOneSelectCbEd) return false;
+      if(typeof this.getOneSelectCbEd.cbed == 'string') 
         this.getOneSelectCbEd.cbed = JSON.parse(this.getOneSelectCbEd.cbed);
       this.show_node_modal = !this.show_node_modal;
       this.key_node_modal = random(1, 999);
     }
   },
   async mounted() {
-    if (isEmpty(this.getOneSelectCbEd))
+    if(isEmpty(this.getOneSelectCbEd))
       return this.$router.back();
 
+    this.loader = true;
     await this.getAllUsers(true);
     this.data_arr = await this.getAllCbedArticl();
     let izd_products = await this.getOneCbEdField({fields: 'products', id: this.getOneSelectCbEd.id});
     !izd_products ? izd_products = [] : izd_products = izd_products.products;
     this.getOneSelectCbEd.products = izd_products;
+    this.loader = false;
     
     this.updateForEdit();
   }

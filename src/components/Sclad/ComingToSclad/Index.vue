@@ -5,7 +5,7 @@
       <div class="block header_block">
         <DatePicterRange 
           @unmount='changeDatePicterRange'
-          v-if='!getLoader'  
+          v-if='!loader'  
         />
       </div>
     </div>
@@ -101,6 +101,7 @@
       @unmount='unmount_waybill'
     />
 
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -130,17 +131,21 @@ export default {
 
       key_coming: random(1, 999),
       show_coming: false,
+
+      loader: false,
       parametrs: 0
 
 		}
 	},
-  computed: mapGetters(['getAllWaybills', 'getLoader']),
+  computed: mapGetters(['getAllWaybills']),
 	components: {DatePicterRange, OpensFile, DescriptionModal, ComingModal},
 	methods: {
     ...mapActions(['fetchWaybill']),
     ...mapMutations(['filterComingData']),
     async unmount_waybill() {
+      this.loader = true;
       await this.fetchWaybill();
+      this.loader = false;
     },
     unmount_description() {
       this.description = '';
@@ -202,7 +207,9 @@ export default {
     }
 	},
 	async mounted() {
+    this.loader = true;
     await this.fetchWaybill();
+    this.loader = false;
 	}
 }
 </script>

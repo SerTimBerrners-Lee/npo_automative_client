@@ -186,6 +186,7 @@
       :key='productModalKey'
       v-if='parametrs_product'
     />
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -255,12 +256,12 @@ export default {
       'filterDetalToMyObject'
     ]),
     infoModalCbed(cb) {
-      if (!cb) return false
+      if(!cb) return false
       this.parametrs_cbed = cb.id
       this.cbedModalKey = random(1, 999)
     },
     infoModalProduct(product) {
-      if (!product) return false 
+      if(!product) return false 
       this.parametrs_product = product.id
       this.productModalKey = random(1, 999)
     },
@@ -281,20 +282,20 @@ export default {
       this.filterDetalToMyObject(this.getAuth.id);
     },
     infoDetal() {
-      if (!this.selectedDetal) return false;
+      if(!this.selectedDetal) return false;
 
       this.detalModalKey = random(1, 999);
       this.parametrs_detal = this.selectedDetal.id;
     },
     async setCbed(cbed, e) {
-      if (this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
+      if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');
         return this.selectedCbEd = null;
       }
 
       const res = await this.getOneCbEdById(cbed.id);
-      if (!res) return false;
+      if(!res) return false;
 
       const result = await this.getOneCbEdBelongs(res.id);
       if (!result) return false;
@@ -308,7 +309,7 @@ export default {
       this.tr_cb = eSelectSpan(this.tr_cb, e);
     },
     async setProduct(product, e) {
-      if (this.selecteProduct && this.selecteProduct.id == product.id) {
+      if(this.selecteProduct && this.selecteProduct.id == product.id) {
         this.clearFilterCbedByProduct();
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');
@@ -317,7 +318,7 @@ export default {
       }
 
       const res = await this.getAllProductById(product.id);
-      if (!res) return false;
+      if(!res) return false;
       this.selecteProduct = res;
       this.setOneProduct(res);
       this.getAllCbEdByProduct(res);
@@ -326,33 +327,33 @@ export default {
       this.tr_product = eSelectSpan(this.tr_product, e);
     }, 
     editDetal() {
-      if (!this.selectedDetal) return 0;
+      if(!this.selectedDetal) return 0;
       this.$router.push({path: '/detal/edit/false'});
     },
     createCopy() {
-      if (!this.selectedDetal) return 0;
+      if(!this.selectedDetal) return 0;
       this.$router.push({path: '/detal/edit/true'});
     },
     createProduct() {
       this.$router.push('/createproduct');
     },
     createCopyProduct() {
-      if (!this.selecteProduct) return 0;
+      if(!this.selecteProduct) return 0;
       this.$router.push({path: '/product/edit/true'});
     },
     editProduct() {
-      if (!this.selecteProduct) return 0;
+      if(!this.selecteProduct) return 0;
       this.$router.push({path: '/product/edit/false'});
     }, 
     createCbed() {
       this.$router.push({path: '/cbed/create'});
     },
     createCopyCbed() {
-      if (!this.selectedCbEd) return 0;
+      if(!this.selectedCbEd) return 0;
       this.$router.push({path: '/cbed/edit/true'});
     },
     editCbEd() {
-      if (!this.selectedCbEd) return 0;
+      if(!this.selectedCbEd) return 0;
       this.$router.push({path: '/cbed/edit/false'});
     },
     keySearch(v) {
@@ -365,14 +366,14 @@ export default {
       this.searchProduct(String(v));
     },
     deleteDetal() {
-      if (!this.selectedDetal) return 0;
+      if(!this.selectedDetal) return 0;
       this.deleteDetelyId(this.selectedDetal.id);
     },
     сolNotOperation(arr_one, arr_two) {
       let counter = 0;
-      for (const item of arr_one) {
-        for (const id of arr_two) {
-          if (item.id == id) counter++;
+      for(const item of arr_one) {
+        for(const id of arr_two) {
+          if(item.id == id) counter++;
         } 
       }
       return counter;
@@ -388,12 +389,16 @@ export default {
     }
   },
   async mounted() {
+    this.loader = true;
+
     await this.getAllProduct(true);
     await this.getAllCbed(true);
     await this.getAllDetals(true);
     this.productOperation = await this.fetchAllProductOperation();
     this.cbedOperation = await this.fetchAllCbedOperation();
     this.detalOperation = await this.fetchAllDetalOperation();
+
+    this.loader = false;
   }
 }
 </script>

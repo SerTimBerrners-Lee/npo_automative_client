@@ -158,6 +158,8 @@
       @unmount='unmount_tech_process'
       :techProcessID='techProcessID'
     />
+
+    <Loader v-if='loader' />
   </div>
 </template>
 
@@ -196,6 +198,7 @@ export default {
       shipments: [],
 
       kolvo_all: 0,
+      loader: false,
       izdForSchipment: null,
       
       selectEnumStatus: 'Все',
@@ -365,9 +368,11 @@ export default {
     },
   },
   async mounted() {
+    this.loader = true;
     this.reverseMidlevareDetal();
     await this.setchDeficitDeficit();
     await this.fetchAllShipmentsNoStatus();
+    this.loader = false;
 
     await this.fetchAllWorkings();
     this.metalloworkingsWorkings = this.getWorkings.filter(el => el.type == 'metall');

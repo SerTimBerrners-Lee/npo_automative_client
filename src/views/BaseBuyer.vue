@@ -133,6 +133,7 @@
       :key='descriptionKey'
       :parametrs='description'
       />
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -160,6 +161,7 @@ export default {
 
       itemFiles: null,
       keyWhenModalGenerateFileOpen: random(10, 999),
+      loader: false
     }
   },
   computed: mapGetters(['allBuyer', 'allProduct']),
@@ -186,13 +188,13 @@ export default {
       this.obj.inn = buyer.inn;
       this.obj.cpp = buyer.cpp;
       this.obj.description = buyer.description;
-      if (buyer.contacts) 
+      if(buyer.contacts) 
         this.obj.contact = JSON.parse(buyer.contacts);
       
-      if (buyer.rekvisit) 
+      if(buyer.rekvisit) 
         this.obj.rekvisit = JSON.parse(buyer.rekvisit);
       
-      if (buyer.documents) 
+      if(buyer.documents) 
         this.obj.documents = buyer.documents;
     },
     unmount_attention() {
@@ -202,7 +204,7 @@ export default {
       this.filterBuyerToDate();
     },
     clickDoc(files) {
-      if (files) { 
+      if(files) { 
         this.itemFiles = files;
         this.keyWhenModalGenerateFileOpen = random(10, 999);
       }
@@ -211,11 +213,11 @@ export default {
       this.$router.push({path: '/buyer/create'});
     },
     edit() {
-      if (!this.buyer) return 0;
+      if(!this.buyer) return 0;
       this.$router.push({path: '/buyer/edit'});
     },
     ban() {
-      if (!this.buyer.id) return 0;
+      if(!this.buyer.id) return 0;
       this.fetchBuyerBan(this.buyer.id);
     },
     openDescription(description) {
@@ -223,14 +225,18 @@ export default {
       this.description = description;
     },
     returnNameProduct(id) {
-      for (const product of this.allProduct) {
-        if (product.id == id) return product.name;
+      for(let product of this.allProduct) {
+        if(product.id == id) return product.name;
       }
     }
   },
   async mounted() {
+    this.loader = true;
+
     await this.fetchAllBuyers();
     await this.getAllProduct(true);
+
+    this.loader = false;
 }
 }
 </script>

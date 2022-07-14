@@ -164,6 +164,7 @@
       :get_one='true'
       @unmount='unmount_user_modal'
     />
+    <Loader v-if='loader' />
   </div>
 </div>
 </template>
@@ -220,6 +221,7 @@ export default {
       creater_user: '',
       typeOpen: '',
 
+      loader: false,
       date_create: new Date().toLocaleDateString("ru-RU"),
       transport: '',
       childrens: [],
@@ -250,6 +252,7 @@ export default {
 			this.hiddens = 'display: none;';
 
       this.$emit('unmount', is_true);
+      this.loader = false;
     },
     unmount_user_modal(data) {
       if (!data) return false;
@@ -340,6 +343,7 @@ export default {
     this.destroyModalLeft = 'left-block-modal';
     this.destroyModalRight = 'content-modal-right-menu';
     this.hiddens = 'opacity: 1;';
+    this.loader = true;
 
     try {
       if (!this.shipments_id && !this.selected_sh.length) {
@@ -358,6 +362,7 @@ export default {
       
       this.update();
     } catch (err) { console.error(err, 'shcomplitModal') }
+    this.loader = false;
   },
 }
 </script>

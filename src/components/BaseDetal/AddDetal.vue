@@ -135,7 +135,8 @@
       :fileArrModal='documentsData'
       @unmount='unmount_filemodal'
       :search='this.obj.articl'
-    />
+  />
+  <Loader v-if='loader' /> 
   </div>
 </template>
 <script>
@@ -194,29 +195,25 @@ export default {
       attention: false,
 
       data_arr: [],
+      loader: false
     }
   },
   watch: {
     'obj.articl': function (val, last_val) {
-      if (!last_val) return false;
-      for (const art of this.data_arr) {
-				if (art.articl.toLowerCase() == val.trim().toLowerCase()) 
+      if(!last_val) return false;
+      for(let art of this.data_arr) {
+				if(art.articl.toLowerCase() == val.trim().toLowerCase()) 
 					return showMessage('', 'Объект с такими характеристиками уже существует', 'w')
 			}
     }
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
-  components: {
-    ModalBaseMaterial,
-    TechProcess,
-    BaseFileModal,
-    HaracteristicZag,
-  },
+  components: {ModalBaseMaterial, TechProcess, BaseFileModal, HaracteristicZag},
   methods: {
     ...mapActions(['createNewDetal', 'getAllUsers', 'getAllDetalsArticl']),
     ...mapMutations(['delitPathNavigate']),
     unmount_filemodal(res) {
-      if (res) this.documentsData = res;
+      if(res) this.documentsData = res;
     },
     unmount_har_zam(obj) {
       this.obj.DxL = obj.DxL;
@@ -235,64 +232,68 @@ export default {
       this.mat_zag_zam = obj.mat_zag_zam;
     },
     unmount_tech_process(tp) {
-      if( tp.id) {
-        this.techProcessID = tp.id;
-        localStorage.setItem('tpID', this.techProcessID);
-        if (tp.opers.length) {
-          this.obj.parametrs.preTime.znach = 0;
-          this.obj.parametrs.helperTime.znach = 0;
-          this.obj.parametrs.mainTime.znach = 0;
+      if(tp.id) {
+        this.techProcessID = tp.id
+        localStorage.setItem('tpID', this.techProcessID)
+        if(tp.opers.length) {
+          this.obj.parametrs.preTime.znach = 0
+          this.obj.parametrs.helperTime.znach = 0
+          this.obj.parametrs.mainTime.znach = 0
           tp.opers.forEach(op => {
-            this.obj.parametrs.preTime.znach = Number(this.obj.parametrs.preTime.znach) + Number(op.preTime);
-            this.obj.parametrs.helperTime.znach = Number(this.obj.parametrs.helperTime.znach) + Number(op.helperTime);
-            this.obj.parametrs.mainTime.znach = Number(this.obj.parametrs.mainTime.znach) + Number(op.mainTime);
+            this.obj.parametrs.preTime.znach = Number(this.obj.parametrs.preTime.znach) + Number(op.preTime)
+            this.obj.parametrs.helperTime.znach = Number(this.obj.parametrs.helperTime.znach) + Number(op.helperTime)
+            this.obj.parametrs.mainTime.znach = Number(this.obj.parametrs.mainTime.znach) + Number(op.mainTime)
           })
-          this.obj.parametrs.preTime.znach = (this.obj.parametrs.preTime.znach / 60).toFixed(2);
-          this.obj.parametrs.helperTime.znach = (this.obj.parametrs.helperTime.znach / 60).toFixed(2);
-          this.obj.parametrs.mainTime.znach = (this.obj.parametrs.mainTime.znach / 60).toFixed(2);
+          this.obj.parametrs.preTime.znach = (this.obj.parametrs.preTime.znach / 60).toFixed(2)
+          this.obj.parametrs.helperTime.znach = (this.obj.parametrs.helperTime.znach / 60).toFixed(2)
+          this.obj.parametrs.mainTime.znach = (this.obj.parametrs.mainTime.znach / 60).toFixed(2)
         }
       }
     },
     file_unmount(e) { 
-      if (!e) return 0;
-      this.formData = e.formData;
+      if(!e) 
+        return 0
+      this.formData = e.formData
     },
     unmount_material(mat) {
-      if (mat) this.materialList = mat.materialList;
+      if(mat)
+        this.materialList = mat.materialList
     },
     saveDetal() {
       if(this.obj.diametr == '0' || this.obj.lengt == '0' || this.obj.height == '0' || this.obj.thickness == '0' || this.obj.wallThickness == '0' || this.obj.width == '0' || this.obj.areaCS == '0') {
         return showMessage('', 'Заполните все поля для характеристик заготовки', 'w');
       }
       
-      if(this.obj.name.length < 3) return 0;
+      if(this.obj.name.length < 3) 
+        return 0
 
-      if(!this.formData) this.formData = new FormData();
+      if(!this.formData)
+        this.formData = new FormData()
 
-      this.formData.append('techProcessID', this.techProcessID || null);
-      this.formData.append('name', this.obj.name);
-      this.formData.append('articl', this.obj.articl);
-      this.formData.append('responsible', this.obj.responsible);
-      this.formData.append('description', this.obj.description);
-      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs));
-      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic));
-      this.formData.append('DxL', this.obj.DxL);
+      this.formData.append('techProcessID', this.techProcessID || null)
+      this.formData.append('name', this.obj.name)
+      this.formData.append('articl', this.obj.articl)
+      this.formData.append('responsible', this.obj.responsible)
+      this.formData.append('description', this.obj.description)
+      this.formData.append('parametrs', JSON.stringify(this.obj.parametrs))
+      this.formData.append('haracteriatic', JSON.stringify(this.obj.haracteriatic))
+      this.formData.append('DxL', this.obj.DxL)
 
-      this.formData.append('diametr', this.obj.diametr);
-      this.formData.append('lengt', this.obj.lengt);
-      this.formData.append('height', this.obj.height);
-      this.formData.append('thickness', this.obj.thickness);
-      this.formData.append('wallThickness', this.obj.wallThickness);
-      this.formData.append('width', this.obj.width);
-      this.formData.append('areaCS', this.obj.areaCS);
+      this.formData.append('diametr', this.obj.diametr)
+      this.formData.append('lengt', this.obj.lengt)
+      this.formData.append('height', this.obj.height)
+      this.formData.append('thickness', this.obj.thickness)
+      this.formData.append('wallThickness', this.obj.wallThickness)
+      this.formData.append('width', this.obj.width)
+      this.formData.append('areaCS', this.obj.areaCS)
 
-      this.formData.append('massZag', this.obj.massZag);
-      this.formData.append('trash', this.obj.trash);
-      this.formData.append('attention', this.attention);
+      this.formData.append('massZag', this.obj.massZag)
+      this.formData.append('trash', this.obj.trash)
+      this.formData.append('attention', this.attention)
 
-      if (this.documentsData.length) {
+      if(this.documentsData.length) {
         let new_array = []
-        for (let inx in this.documentsData) {
+        for(let inx in this.documentsData) {
           new_array.push(this.documentsData[inx].id)
         }
         this.formData.append('file_base', JSON.stringify(new_array))
@@ -302,54 +303,56 @@ export default {
         this.mat_zag.id : null)
       this.formData.append('mat_zag_zam', this.mat_zag_zam != 'Задать' ?
          this.mat_zag_zam.id : null)
-      if (this.materialList.length > 0) {
-        for (let mat = 0; mat < this.materialList.length; mat++) {
+      if(this.materialList.length > 0) {
+        for(let mat = 0; mat < this.materialList.length; mat++) {
           this.materialList[mat].mat = {
             id: this.materialList[mat].mat.id,
             name: this.materialList[mat].mat.name,
             kol: this.materialList[mat].mat.kolvo
           }
-          if (mat == this.materialList.length - 1) {
+          if(mat == this.materialList.length - 1) {
             this.formData.append('materialList', JSON.stringify(this.materialList))
             this.createNewDetal(this.formData).then(res => {
-              if (res) 
+              if(res) 
                 showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's')
             })
           }
         }
       } else {
          this.createNewDetal(this.formData).then(res => {
-            if (res) 
+            if(res) 
               showMessage('', 'Деталь усешно создана. Перенаправление на главную страницу...', 's')
           })
       }
       
       setTimeout(() =>  {
-        this.$router.push('/basedetals');
-        this.delitPathNavigate(this.$route.path);
+        this.$router.push('/basedetals')
+        this.delitPathNavigate(this.$route.path)
       }, 3000)
       
     },
     addPokMat() {
-      this.modalMaterialKey = random(10, 999);
-      this.modalMaterialIsShow = true;
+      this.modalMaterialKey = random(10, 999)
+      this.modalMaterialIsShow = true
     },
     showTechProcess() {
-      this.techProcessIsShow = true;
-      this.techProcessKey = random(1, 999);
+      this.techProcessIsShow = true
+      this.techProcessKey = random(1, 999)
     },
     exit(){
-      this.$router.push("/basedetals");
-      this.delitPathNavigate(this.$route.path);
+      this.$router.push("/basedetals")
+      this.delitPathNavigate(this.$route.path)
     },
     addFileModal() {
-      this.fileModalKey = random(1, 999);
-      this.showModalFile = true;
+      this.fileModalKey = random(1, 999)
+      this.showModalFile = true
     }
   },
   async mounted() {
-    await this.getAllUsers(true);
-    this.data_arr = await this.getAllDetalsArticl();
+    this.loader = true
+    await this.getAllUsers(true)
+    this.data_arr = await this.getAllDetalsArticl()
+    this.loader = false
   }
 }
 </script>

@@ -43,6 +43,7 @@
 
       </div>
     </div>
+     <Loader v-if='loader' />
   </div>
 </template>
 
@@ -58,6 +59,7 @@ export default {
     return {
       detal: [],
       cbed: [],
+      loader: true,
     }
   },
   mixins: [MixModal],
@@ -67,6 +69,7 @@ export default {
 
   },
   async mounted() {
+    this.loader = true;
     try {
       const pars1 = this.sh.list_cbed_detal ? JSON.parse(this.sh.list_cbed_detal) : [];
       const pars2 = this.sh.list_hidden_cbed_detal ? JSON.parse(this.sh.list_hidden_cbed_detal) : [];
@@ -78,6 +81,7 @@ export default {
     } catch(err) {
       console.error(err);
     }
+    this.loader = false;
   }
 }
 </script>

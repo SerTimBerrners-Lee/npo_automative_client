@@ -153,6 +153,7 @@
         </div>
       </div>
     </div>
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
@@ -184,6 +185,8 @@ export default {
       id: '',
 
       span: null,
+
+      loader: false
     }
   }, 
   computed: mapGetters([
@@ -203,10 +206,10 @@ export default {
       this.span = eSelectSpan(this.span, e)
 
       const res = await this.getUserById(user.id);
-      if (res) this.userShow(res);
+      if(res) this.userShow(res);
     },
     userShow(user) {
-      if (!user) return false;
+      if(!user) return false;
       this.roles = user.role ? user.role.description : '' ;
       this.initial = user.initial;
       this.tabel = user.tabel;
@@ -227,40 +230,44 @@ export default {
       this.selectedUser(user);
     },
     async userBan() {
-      if (!this.id)
+      if(!this.id)
         return showMessage('Ошибка', 'Пользователь не выбран', 'w');
-      if (this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone) 
+      if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone) 
         return showMessage('', 'Недостаточно прав', 'w');
 
       const mes = await this.banUserById(this.id);
       showMessage('', mes.message, mes.type);
-      if (mes.type == 's') this.getAllUsers(true);
+      if(mes.type == 's') this.getAllUsers(true);
     },
     openNewWindow(url) {
       window.open(PATH_TO_SERVER + url, '_blank');
     },
     editUser() {
-      if (!this.getSelectedUser) return 0;
+      if(!this.getSelectedUser) return 0;
       
-      if (this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
+      if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
         this.$router.push({path: `/employee/edit/edit`})
       else if(this.getRoleAssets && !this.getRoleAssets.assets.usersListAssets.writeSomeone && this.getRoleAssets.assets.usersListAssets.writeYour) 
-        if (this.getAuth && this.getAuth.id == this.getSelectedUser.id)
+        if(this.getAuth && this.getAuth.id == this.getSelectedUser.id)
           this.$router.push({path: `/employee/edit/edit`})
       else
         return showMessage('', 'Недостаточно прав', 'w');
     },
     addUser() {
-      if (this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
+      if(this.getRoleAssets && this.getRoleAssets.assets.usersListAssets.writeSomeone)
         this.$router.push({path: `/employee/edit/add`});
     }
   },
   async mounted() {
+    this.loader = true;
+
     await this.getAllUsers(true);
-    if (this.getUsers.length) {
+    if(this.getUsers.length) {
       const user = await this.getUserById(this.getUsers[0].id);
       this.userShow(user);
     }
+
+    this.loader = false;
   }
 }
 </script> 

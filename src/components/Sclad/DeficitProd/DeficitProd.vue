@@ -3,6 +3,9 @@
     <h3>Дефицит Сборочных Едениц</h3>
     <div>
       <div class="block header_block">
+        <DatePicterRange 
+          @unmount='changeDatePicterRange'  
+        />
         <span>Статусы: </span>
         <div>
           <select 
@@ -122,7 +125,7 @@
       :parametrs='parametrs'
       @unmount="unmount_start_production"
     />
-    <DescriptionModal
+    <DescriptionModal 
       v-if='showDescriptionModal'
       :key='descriptionKey'
       :parametrs='description'
@@ -138,18 +141,20 @@
       :key='cbedModalKey'
       v-if='parametrs_cbed'
     />
-    <ShipmentsModal
+    <ShipmentsModal 
       :shipments='shipments'
       :izd='izdForSchipment'
       v-if='shipments.length'
       :key='shipmentKey'
     />
+    <Loader v-if='loader' />
   </div>
 </template>
 <script>
 import { random } from 'lodash';
 import { showMessage, comparison } from '@/js/';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
+import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
@@ -178,7 +183,8 @@ export default {
 			cbedModalKey: random(1, 999),
 
       select_izd: null,
-      
+
+      loader: false,
       type_norm_time: 'cb',
 
       izdForSchipment: null,
@@ -199,6 +205,7 @@ export default {
   },
   computed: mapGetters(['allCbed', 'getShipments']),
   components: {
+    DatePicterRange, 
     StartProduction, 
     DescriptionModal, 
     NormTimeOperation,
@@ -238,8 +245,10 @@ export default {
       this.searchCbed(String(v));
     },
     async unmount_clear() {
+      this.loader = true;
       this.reverseMidlevareCbed();
       await this.fetchAllShipmentsNoStatus();
+      this.loader = false;
     },
     toSetOrders(shipments) {
       this.reverseMidlevareCbed();
@@ -310,6 +319,9 @@ export default {
         return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w');
       this.select_izd.my_kolvo = e.innerText;
     },
+    changeDatePicterRange(val) {
+      console.log(val);
+    },
     selectAllItem() {
       if (this.toProductionArr.length < this.allCbed.length) {
         this.toProductionArr = this.allCbed;
@@ -320,8 +332,8 @@ export default {
       }
     },
     showInformIzdel(id, type) {
-			if (type == 'cbed') {
-				if (id) {
+			if(type == 'cbed') {
+				if(id) {
 					this.parametrs_cbed = id;
 					this.cbedModalKey = random(1, 999);
 				}
@@ -329,9 +341,11 @@ export default {
 		}
   },
   async mounted() {
+    this.loader = true;
     this.reverseMidlevareCbed();
     await this.setchDeficitCbed();
     await this.fetchAllShipmentsNoStatus();
+    this.loader = false;
   }
 }
 </script>

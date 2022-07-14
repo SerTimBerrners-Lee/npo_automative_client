@@ -135,6 +135,8 @@
       v-if='parametrs_detal'
       :id='parametrs_detal'
     />
+
+    <Loader v-if='loader' />
 	</div>
 </template>
 <script>
@@ -173,7 +175,8 @@ export default {
       showOperationPathModal: false,
 
       metaloworking_props: null,
-  
+
+      loader: false,
       showZagParam: false,
 
       enumStatus: [				
@@ -373,6 +376,7 @@ export default {
     }
   },
 	async mounted() {
+    this.loader = true;
     await this.fetchAllShipmentsMetaloworking({sort: undefined, light: true});
     await this.getAllTypeOperations();
     await this.fetchMetaloworking();
@@ -380,6 +384,7 @@ export default {
 
     await this.fetchAllWorkings();
     this.metalloworkingsWorkings = this.getWorkings.filter(el => el.type == 'metall');
+    this.loader = false;
 	}
 }
 </script>

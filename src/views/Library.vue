@@ -68,6 +68,7 @@
         </div>
       </div>
     </div>
+    <Loader v-if='loader' />
     <AddFileLink 
       :key='keyLinlFile'
       v-if='showLinkFile'
@@ -91,7 +92,8 @@ import { mapGetters, mapActions, mapMutations } from 'vuex';
 
 export default {
   data() {
-    return {
+    return {  
+      loader: false,
       select_chapter: null,
       select_link: null,
       span_chapter: null,
@@ -121,71 +123,73 @@ export default {
     ]),
     ...mapMutations(['filterLinksToChapter', 'returnAllLinks']),
     setChapter(chapter, e) {
-      if (this.span_chapter) this.span_chapter.classList.remove('td-row-all');
-      if (this.select_chapter && chapter.id == this.select_chapter.id) return this.returnAllLinks();
-      this.select_chapter = chapter;
-      this.span_chapter = e;
-      this.span_chapter.classList.add('td-row-all');
+      if(this.span_chapter) this.span_chapter.classList.remove('td-row-all')
+      if(this.select_chapter && chapter.id == this.select_chapter.id) return this.returnAllLinks()
+      this.select_chapter = chapter
+      this.span_chapter = e
+      this.span_chapter.classList.add('td-row-all')
       
       this.filterLinksToChapter(chapter)
     },
     setLinks(link, e) {
-      if (this.span_link) this.span_link.classList.remove('td-row-all');
-       this.select_link = link;
-      this.span_link = e;
-      this.span_link.classList.add('td-row-all');
+      if(this.span_link) this.span_link.classList.remove('td-row-all')
+       this.select_link = link
+      this.span_link = e
+      this.span_link.classList.add('td-row-all')
     },
     addFileLink() {
-      if (!this.select_chapter)
-        return showMessage('', 'Выберите раздел', 'w');
-      this.keyLinlFile = random(1, 999);
-      this.showLinkFile = true;
-      this.type_open = 'create';
+      if(!this.select_chapter)
+        return showMessage('', 'Выберите раздел', 'w')
+      this.keyLinlFile = random(1, 999)
+      this.showLinkFile = true
+      this.type_open = 'create'
     },
     editFileLink() {
-      if (!this.select_link) return showMessage('', 'Сначала выберите что хотите отредактировать', 'w');
-      this.keyLinlFile = random(1, 999);
-      this.showLinkFile = true;
-      this.type_open = 'edit';
+      if(!this.select_link) return showMessage('', 'Сначала выберите что хотите отредактировать', 'w')
+      this.keyLinlFile = random(1, 999)
+      this.showLinkFile = true
+      this.type_open = 'edit'
     },
     openDocuments(documents) {
-      if (documents.length) 
-      this.itemFiles = documents[0];
-      this.keyWhenModalGenerateFileOpen = random(1, 999);
+      if(documents.length) 
+      this.itemFiles = documents[0]
+      this.keyWhenModalGenerateFileOpen = random(1, 999)
     },
     getFormat(link) {
-      if (link.documents && link.documents.length) {
-        const doc = link.documents[0].name;
-        return doc.split('.')[doc.split('.').length - 1].toUpperCase();
+      if(link.documents && link.documents.length) {
+        const doc = link.documents[0].name
+        return doc.split('.')[doc.split('.').length - 1].toUpperCase()
       }
     }, 
     async toBan() {
-      if (!this.select_link) return false;
+      if(!this.select_link) return false;
       await this.fetchToBanLinks(this.select_link.id);
 
       showMessage('', 'Успешно перенесено в архив', 's');
     },
     saveDocunment() {
-      if (!this.select_link) return false;
-      if (!this.select_link.documents || !this.select_link.documents.length) return false;
+      if(!this.select_link) return false;
+      if(!this.select_link.documents || !this.select_link.documents.length) return false;
       window.open(`${PATH_TO_SERVER+this.select_link.documents[0].path}`, '_blank').focus();
     },
     isFavorites(link) {
-      if (!link.users || !link.users.length) return false;
-      for (const user of link.users) {
-        if (user.id == this.getAuth.id) return true;
+      if(!link.users || !link.users.length) return false;
+      for(let user of link.users) {
+        if(user.id == this.getAuth.id) return true;
       }
       return false;
     },
     async addToFavorites(link) {
-      if (!this.getAuth.id) return false;
+      if(!this.getAuth.id) return false;
       await this.addLinkToFavorite({user_id: this.getAuth.id, links_id: link.id});
       showMessage('', 'Избранное изменено!', 's');
     }
   },
   async mounted() { 
-    await this.getAllChapter();
-    await this.getAllLinks();
+    this.loader = true
+    await this.getAllChapter()
+    await this.getAllLinks()
+    this.loader = false
   }
 }
 </script>
