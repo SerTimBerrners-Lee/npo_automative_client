@@ -168,6 +168,12 @@
 				</td>
 			</tr>
 		</table>
+
+		<button
+			class='btn-status btn_add_har'
+			@click='showAddHar = true'
+			v-if='mat_zag !== "Задать"'>Добавить характеристику <strong>+</strong></button>
+
 		<ModalBaseMaterial 
 			:key='modalMaterialKey'
 			v-if='modalMaterialIsShow'
@@ -175,9 +181,16 @@
 			:instanMaterial='1'
 			:getOneMaterial='true'
 		/>
+		<AddHar
+      v-if='showAddHar'
+			:obj='obj'
+      @unmount='unmount_add_har'
+			@unmount_change_har='unmount_change_har'
+    />
 	</div>
 </template>
 <script>
+import AddHar from './AddHar';
 import { random } from 'lodash';
 import { mapActions } from 'vuex';
 import ModalBaseMaterial from '@/components/MathZag/ModalBaseMaterial';
@@ -219,21 +232,29 @@ export default {
 				areaCrossSectional: false
 			},
 			density: 0,
+			showAddHar: false,
 		}
 	},
-	components: {ModalBaseMaterial},
+	components: { ModalBaseMaterial, AddHar },
 	methods: {
 		...mapActions(['getOneTypeMaterial']),
+		unmount_add_har() {
+      this.showAddHar = false;
+    },
+		unmount_change_har(type) {
+			this.obj[type] = 1;
+			this.emits();
+		},
 		// ТОЛЬКО ПЕРЕМЕННЫЕ ЗНАЧЕНИЯ МОЖНО РЕДАКТИРОВАТЬ !!!
 		updateVariablesEdit(bools) {
 			try {
-				if(!this.material) return false;
+				if (!this.material) return false;
 
-				for(const item in this.isEdit) {
+				for (const item in this.isEdit) {
 					const haracter = JSON.parse(this.material[item]);
-					if(!haracter || !haracter.znach) 
+					if (!haracter || !haracter.znach) 
 						this.isEdit[item] = bools;
-					else if(haracter.znach == 'permanent')
+					else if (haracter.znach == 'permanent')
 						this.isEdit[item] = bools;
 					else this.isEdit[item] = !bools;
 				}
@@ -241,19 +262,19 @@ export default {
 
 		},
 		unmount_material(mat) {
-			if(!this.mat_zag) {
+			if (!this.mat_zag) {
 				this.mat_zag = mat.material || 'Задать';
-				if(mat.material) {
+				if (mat.material) {
 					this.material = mat.material;
 					this.calcParametr(mat.material);
 					this.parseVariableFolder(mat.material);
 				} else 
 					this.nullable(true);
 			}
-			if(!this.mat_zag_zam) {
+			if (!this.mat_zag_zam) {
 				this.mat_zag_zam = mat.material || 'Задать';
 				this.emits();
-				if(!mat.material) this.nullable(false, true);
+				if (!mat.material) this.nullable(false, true);
 			}
 
 			this.updateVariablesEdit(false);
@@ -265,7 +286,7 @@ export default {
       t == 'zam' ? this.mat_zag_zam = '' : this.mat_zag = ''
     },
 		editHarZag(val, inx) {
-			if(!val) val = 0;
+			if (!val) val = 0;
 			changeHaracteristic(val, inx, this);
 			this.emits();
 		},
@@ -281,8 +302,8 @@ export default {
       this.obj.haracteriatic.push({name: '', ez: '', znach: ''});
     },
     removeHaracteristic() {
-      if(this.selectHaracteristic.inx == 0) return false;
-      if(this.selectHaracteristic) {
+      if (this.selectHaracteristic.inx == 0) return false;
+      if (this.selectHaracteristic) {
         this.obj.haracteriatic.splice(this.selectHaracteristic.inx, 1);
         this.selectHaracteristic = null;
       }
@@ -291,13 +312,13 @@ export default {
       this.selectHaracteristic = { har, inx };
     },
     changeHaracteristic(val, inst, inx) {
-      if(inst == 'name')  
+      if (inst == 'name')  
         this.obj.haracteriatic[inx].name = val;
-      if(inst == 'ez')  
+      if (inst == 'ez')  
         this.obj.haracteriatic[inx].ez = val;
-      if(inst == 'znach')  {
+      if (inst == 'znach')  {
         this.obj.haracteriatic[inx].znach = val;
-        if(inx == 0) 
+        if (inx == 0) 
           this.obj.trash = this.obj.haracteriatic[0].znach - this.obj.massZag;
       }
 
@@ -322,7 +343,7 @@ export default {
 			this.obj.trash = data.trash;
 		},
 		nullable(maz = false, zam = false) {
-			if(maz) {
+			if (maz) {
 				this.updateObj({
 					DxL: '',
 					diametr: '',
@@ -338,24 +359,24 @@ export default {
 				this.mat_zag = 'Задать';
 			}
 
-			if(zam) this.mat_zag_zam = 'Задать';
+			if (zam) this.mat_zag_zam = 'Задать';
 			this.emits();
 		}
 	}, 
 	async mounted() {
-		if(this.$props.parametrs && this.$props.parametrs.obj ) {
+		if (this.$props.parametrs && this.$props.parametrs.obj) {
 			this.updateObj(this.$props.parametrs.obj);
 
 			this.obj.haracteriatic = this.$props.parametrs.obj.haracteriatic;
 
-			if(this.$props.parametrs.mat_zag) {
+			if (this.$props.parametrs.mat_zag) {
 				this.mat_zag = this.$props.parametrs.mat_zag;
-				if(this.mat_zag.materialsId) 
+				if (this.mat_zag.materialsId) 
 					this.material = await this.getOneTypeMaterial(this.mat_zag.materialsId);
 
 				this.updateVariablesEdit(true);
 			}
-			if(this.$props.parametrs.mat_zag_zam) 
+			if (this.$props.parametrs.mat_zag_zam) 
 				this.mat_zag_zam = this.$props.parametrs.mat_zag_zam;
 		}
 	}
