@@ -50,9 +50,11 @@ export default {
 	},
 	methods: {
 		exitModal() {
+      console.log('exitModal')
 			this.$emit('unmount', false);
 		},
     changes(type) {
+      console.log('changes')
       this.$emit('unmount_change_har', type)
     }
 	},
