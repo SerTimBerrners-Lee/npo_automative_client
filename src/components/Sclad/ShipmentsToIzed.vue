@@ -144,7 +144,7 @@ export default {
         this.shipments_arr[ship1].number_order = char.join('');
       }
 
-      this.shipments_arr = this.shipments_arr.filter(el => el.status !== 'Отгружено');
+      this.shipments_arr = this.shipments_arr.filter(el => el?.status && el.status !== 'Отгружено');
     }
 
     if (this.$props.scladWorking) {
