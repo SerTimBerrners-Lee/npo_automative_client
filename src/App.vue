@@ -22,6 +22,7 @@
 </template>
 <script>
 import '@/assets/style/style.css';
+import { showMessage } from '@/js/';
 import MenuItem from '@/components/MenuLeft';
 import HeadersNav from '@/components/HeaderNav';
 import Authorization from '@/views/Authorization';
@@ -67,7 +68,8 @@ export default {
         clearInterval(this.id_inaction_interval);
 
       this.id_inaction_interval = setInterval(() => {
-        this.exit()
+        console.log('INACTION EXIT');
+        return showMessage('', 'Время ожидания истекло!', 'i');
       }, 60000 * this.inaction);
     }
   },
