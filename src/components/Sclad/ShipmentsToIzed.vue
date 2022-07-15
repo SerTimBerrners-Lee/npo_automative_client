@@ -25,7 +25,7 @@
             @click="openShipments(shipment.id)">
             <td>{{ shipment.number_order }}</td>
             <td class='center'>{{ shipment.date_order }}</td>
-            <td class='center'>{{ shipment.date_shipments }}</td>
+            <td class='center'>{{ shipment?.date_shipments }}</td>
             <td class='center'>{{ shipment.kolvoIzd }}</td>
           </tr>
 				</table>
@@ -131,7 +131,7 @@ export default {
     for (let ship1 in this.shipments_arr) {
       for (let ship2 in this.shipments_arr) {
         if (comparison(this.shipments_arr[ship1]?.date_shipments, 
-          this.shipments_arr[ship2].date_shipments, '<')) {
+          this.shipments_arr[ship2]?.date_shipments, '<')) {
             variables = this.shipments_arr[ship1];
             this.shipments_arr[ship1] = this.shipments_arr[ship2];
             this.shipments_arr[ship2] = variables;
