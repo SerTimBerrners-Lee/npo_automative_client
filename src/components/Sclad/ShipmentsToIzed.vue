@@ -117,6 +117,7 @@ export default {
 
     if (this.$props.shipments) {
       this.shipments_arr = this.$props.shipments;
+      console.log('this.shipments_arr ')
       if (izd && izd.izd) {
         for (const item in this.shipments_arr) {
           this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
