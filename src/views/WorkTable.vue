@@ -15,11 +15,9 @@
       </div>
     </div>
     
-    <TableResultWorkers 
-      v-if='getMetaloworkings.length'
+    <TableResultWorkers
       :metall='getMetaloworkings'
     />
-    <p v-else>Нет выполненых задач</p>
 
     <Loader v-if='loader' />
   </div>
@@ -70,7 +68,7 @@ export default {
   },
   async mounted() {
     this.loader = true;
-    if(this.getAuth && this.getAuth.id) 
+    if (this.getAuth && this.getAuth.id) 
       await this.fetchIssueList(this.getAuth.id);
 
     await this.getAllTypeOperations();

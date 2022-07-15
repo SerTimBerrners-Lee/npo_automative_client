@@ -6,11 +6,9 @@
       <span>По оборудованию</span>
     </div>
   
-    <TableResultWorkers 
-      v-if='getMetaloworkings.length'
+    <TableResultWorkers
       :metall='getMetaloworkings'
     />
-    <p v-else>Нет выполненых задач</p>
 
 	</div>
 </template>

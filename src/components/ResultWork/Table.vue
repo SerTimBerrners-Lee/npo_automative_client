@@ -1,15 +1,16 @@
 <template>
   <div class="block header_block">
     <DatePicterRange 
-      @unmount='changeDatePicterRange'  
+      @unmount='changeDatePicterRange'
+      v-if='!loader' 
     />
     <span>Кол-во рабочих дней в период:</span>
     <input type="text">
   </div>
 
-  <div>
+  <div v-if='!loader'>
     <div class="table-scroll" style='margin-left: 5px;'>
-      <table v-if='!loader'>
+      <table>
         <tr>
           <th scope="col" colspan="11"></th>
           <th scope="col" colspan="3">За 1 шт.</th>
@@ -44,8 +45,8 @@
         </tr>
         <tr v-for='(met, idx) of metall' :key='met.id'>
           <td class='center'><string>{{ idx + 1 }}</string></td>  
-          <td class='center'>{{ userObject(met?.mark.user_id)?.tabel }}</td>
-          <td>{{ userObject(met?.mark.user_id)?.login }}</td>
+          <td class='center'>{{ userObject(met?.mark?.user_id)?.tabel }}</td>
+          <td>{{ userObject(met?.mark?.user_id)?.login }}</td>
           <td>{{ met?.mark.date_build }}</td>
           <td>{{ met?.full_name }}</td>
           <td class='center'>Д</td>
@@ -81,9 +82,9 @@
 </template>
 
 <script>
-import { mapActions, mapGetters } from 'vuex';
 import { OperationTime } from '@/js/operation';
 import DatePicterRange from '@/components/DatePicterRange';
+import { mapActions, mapGetters, mapMutations } from 'vuex';
 
 export default {
   props: {
@@ -92,13 +93,14 @@ export default {
   },
   data() {
     return {
-      loader: false,
+      loader: true,
     }
   },
   components: { DatePicterRange },
   computed: mapGetters(['getUsers']),
   methods: {
     ...mapActions(['getAllUsers']),
+    ...mapMutations(['filterRangeResultM']),
     userObject(id) {
       for (const user of this.getUsers) {
         if (user.id == id) return user;
@@ -111,7 +113,7 @@ export default {
 			return ot;
 		},
     changeDatePicterRange(val) {
-      console.log(val)
+      this.filterRangeResultM(val);
     }
   },
   async mounted() {

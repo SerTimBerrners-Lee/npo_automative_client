@@ -138,7 +138,7 @@ export default {
 		}
 	},
   computed: mapGetters(['getAllWaybills']),
-	components: {DatePicterRange, OpensFile, DescriptionModal, ComingModal},
+	components: { DatePicterRange, OpensFile, DescriptionModal, ComingModal },
 	methods: {
     ...mapActions(['fetchWaybill']),
     ...mapMutations(['filterComingData']),

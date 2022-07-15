@@ -11,8 +11,8 @@
         <strong v-if='izd?.type == "material"'>Материала:</strong>
           {{ izd?.izd?.name }}</p>
         Артикул: <strong>{{ izd?.izd?.articl }}</strong>
+        <br><span class='title_block'>Заказы покупателей:</span>
 			<div class="block">
-        <span>Заказы покупателей:</span>
 				<table v-if='shipments.length'>
 					<tr>
 						<th>№ Заказа</th>
@@ -120,7 +120,8 @@ export default {
       if (izd && izd.izd) {
         for (const item in this.shipments_arr) {
           this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
-          this.allKolvo += this.shipments_arr[item].kolvoIzd;
+          if (this.shipments_arr[item].kolvoIzd) this.allKolvo += this.shipments_arr[item].kolvoIzd;
+          console.log('this.shipments_arr[item].kolvoIzd', this.shipments_arr[item].kolvoIzd);
         }
       }
     }
@@ -185,5 +186,9 @@ table {
 }
 textarea {
   height: 130px;
+}
+.title_block {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>

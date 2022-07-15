@@ -10,6 +10,7 @@ export default {
     middleware: [],
     middleware_status: [],
     middleware_zag: [],
+    middleware_date: [],
   },
   getters: { 
     getMetaloworkings(state) {
@@ -96,11 +97,12 @@ export default {
       ctx.commit('allMetaloworkingOperation', result);
       return result;
     },
-    async fetchResultWorkMetall(ctx) { 
+    async fetchResultWorkMetall({ commit }) { 
       const res = await Req(`api/metaloworking/resultworks/`);
       if (!res.ok) return false;
       const result = await res.json();
-      ctx.commit('allMetaloworkingOperation', result);
+      commit('allMetaloworkingOperation', result);
+      commit('filterResultDateBuild');
       return result;
     }
   },
@@ -109,6 +111,8 @@ export default {
       state.metaloworkings = [];
       const arr = [];
       for (const met of result) {
+        if (met.number_order.split('_').length > 1) 
+          met.number_order = met.number_order.split('_')[0]
         met.tech_process = [];
         if (met.detal && met.detal.techProcesses) {
           met.tech_process = met.detal.techProcesses;
@@ -151,6 +155,9 @@ export default {
     allMetaloworkingOperation(state, result) {
       state.metaloworkings = [];
       for (const r of result) {
+        if (r.metal.number_order.split('_').length > 1) 
+          r.metal.number_order = r.metal.number_order.split('_')[0];
+
         r.metal.tech_process = [];
         if (r.metal.detal && r.metal.detal.techProcesses) 
           r.metal.tech_process = r.metal.detal.techProcesses;
@@ -213,6 +220,23 @@ export default {
       .filter(metal =>
         ((metal?.detal?.mat_za_obj?.name.toLowerCase()).indexOf(str.toLowerCase(), 0) != -1)
       );
+    },
+    // Сортировка результат работ по дате 
+    filterRangeResultM(state, range) {
+      if (!state.middleware_date.length)
+				state.middleware_date = state.metaloworkings;
+
+			const start = new Date(range.start).toLocaleDateString('ru-RU');
+			const end = new Date(range.end).toLocaleDateString('ru-RU');
+			state.metaloworkings = state.middleware_date.filter((el) => {
+				if (comparison(start, el.mark.date_build, '<=') && comparison(end, el.mark.date_build, '>='))
+					return el;
+			});
+    },
+    filterResultDateBuild(state) {
+      state.metaloworkings = state.metaloworkings.sort((a, b) => {
+          return new Date(toFormatString(b?.mark.date_build)).getTime() - new Date(toFormatString(a?.mark.date_build)).getTime();
+      });
     }
   }
 }
