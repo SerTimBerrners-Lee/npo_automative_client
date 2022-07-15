@@ -16,6 +16,7 @@
     </div>
     
     <TableResultWorkers
+      v-if='!loader'
       :metall='getMetaloworkings'
     />
 
@@ -38,7 +39,7 @@ export default {
         'Отложено',
         'На контроль'
       ],
-      loader: false
+      loader: true
     }
   },
   components: { 
@@ -68,7 +69,7 @@ export default {
   },
   async mounted() {
     this.loader = true;
-    if (this.getAuth && this.getAuth.id) 
+    if (this.getAuth && this.getAuth.id)
       await this.fetchIssueList(this.getAuth.id);
 
     await this.getAllTypeOperations();

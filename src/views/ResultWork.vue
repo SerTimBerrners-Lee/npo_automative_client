@@ -7,8 +7,11 @@
     </div>
   
     <TableResultWorkers
+      v-if='!loader'
       :metall='getMetaloworkings'
     />
+
+    <Loader v-if="loader" />
 
 	</div>
 </template>
@@ -20,6 +23,7 @@ import TableResultWorkers from '@/components/ResultWork/Table';
 export default {
 	data() {
 		return{
+      loader: true,
 		}
 	},
   computed: mapGetters(['getMetaloworkings']),
@@ -28,7 +32,9 @@ export default {
     ...mapActions(['fetchResultWorkMetall']),
 	},
 	async mounted() {
+    this.loader = true;
     await this.fetchResultWorkMetall();
+    this.loader = false;
 	}
 }
 </script>
