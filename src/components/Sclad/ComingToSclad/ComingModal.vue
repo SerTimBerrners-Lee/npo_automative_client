@@ -327,7 +327,7 @@ export default {
 
       if (news == 'Металлообработка') {
         this.loader = true;
-        this.fetchMetaloworking().then(() => {
+        this.fetchMetalNoConduct().then(() => {
           this.formingMetatall();
           this.loader = false;
         });
@@ -339,7 +339,7 @@ export default {
       'fetchGetProviders', 
       'fetchPushWaybillCreate', 
       'fetchGetDeliveriesCaming',
-      'fetchMetaloworking'
+      'fetchMetalNoConduct'
     ]),
     unmount(e) {
       if (!e) return 0;
@@ -395,7 +395,8 @@ export default {
           description: '',
           sum: 0,
           date: returnShipmentsDate(item?.detal?.shipments, 1),
-          number_order: item.number_order
+          number_order: item.number_order,
+          worker_id: item.id
         });
       }
     },

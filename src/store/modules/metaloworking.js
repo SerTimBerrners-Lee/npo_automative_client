@@ -25,6 +25,13 @@ export default {
       ctx.commit('allMetaloworking', result);
       return result;
     },
+    async fetchMetalNoConduct(ctx, isBan = false) { 
+      const res = await Req(`api/metaloworking/allnocomducted/${isBan}`);
+			if (!res.ok) return false;
+      const result = await res.json();
+      ctx.commit('allMetaloworking', result);
+      return result;
+    },
 		async fetchCreateMetaloworking(ctx, data) { 
       const res = await Req(`api/metaloworking`, {
 				headers: {

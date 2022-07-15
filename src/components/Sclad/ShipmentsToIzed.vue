@@ -121,7 +121,8 @@ export default {
         for (const item in this.shipments_arr) {
           this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
           if (this.shipments_arr[item].kolvoIzd) this.allKolvo += this.shipments_arr[item].kolvoIzd;
-          console.log('this.shipments_arr[item].kolvoIzd', this.shipments_arr[item].kolvoIzd);
+          console.log('this.shipments_arr[item].kolvoIzd', this.shipments_arr[item].kolvoIzd, 
+            'this.allKolvo:', this.allKolvo);
         }
       }
     }
@@ -129,7 +130,7 @@ export default {
     let variables;
     for (let ship1 in this.shipments_arr) {
       for (let ship2 in this.shipments_arr) {
-        if (comparison(this.shipments_arr[ship1].date_shipments, 
+        if (comparison(this.shipments_arr[ship1]?.date_shipments, 
           this.shipments_arr[ship2].date_shipments, '<')) {
             variables = this.shipments_arr[ship1];
             this.shipments_arr[ship1] = this.shipments_arr[ship2];
