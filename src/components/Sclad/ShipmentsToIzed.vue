@@ -123,7 +123,7 @@ export default {
           this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
           if (this.shipments_arr[item].kolvoIzd) this.allKolvo += this.shipments_arr[item].kolvoIzd;
           console.log('this.shipments_arr[item].kolvoIzd', this.shipments_arr[item].kolvoIzd, 
-            'this.allKolvo:', this.allKolvo);
+            'this.allKolvo:', this.allKolvo, this.shipments_arr[item]);
         }
       }
     }
@@ -152,7 +152,7 @@ export default {
       for (const item of this.$props.scladWorking) {
         const types = izd.type == 'detal' ? item.metall : item.assemble;
         for (const met of types) {
-          if (met.detal.id == izd.izd.id) {
+          if (met.detal?.id == izd.izd?.id) {
             item.kolvo_shipments = met.kolvo_shipments;
             this.sclad_arr.push(item);
             this.allKolvoSclad += met.kolvo_shipments;
