@@ -305,7 +305,11 @@ export default {
     }
   },
   computed: {
-    ...mapGetters(['getAllDeliveries', 'getMetaloworkings']),
+    ...mapGetters([
+      'getAllDeliveries',
+      'getMetaloworkings',
+      'getAssembles'
+    ]),
   },
   mixins: [MixModal],
   components: {
@@ -332,6 +336,13 @@ export default {
           this.loader = false;
         });
       }
+      else if (news === 'Сборка') {
+        this.loader = true;
+        this.fetchAssemble().then(() => {
+          this.formingAss();
+          this.loader = false;
+        })
+      }
     }
   },
   methods: {
@@ -339,7 +350,8 @@ export default {
       'fetchGetProviders', 
       'fetchPushWaybillCreate', 
       'fetchGetDeliveriesCaming',
-      'fetchMetaloworking'
+      'fetchMetaloworking',
+      'fetchAssemble'
     ]),
     unmount(e) {
       if (!e) return 0;
@@ -394,7 +406,22 @@ export default {
           description: '',
           sum: 0,
           date: returnShipmentsDate(item?.detal?.shipments, 1),
-          number_order: item.number_order
+          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-'
+        });
+      }
+    },
+    formingAss() {
+      for (const item of this.getAssembles) {
+        this.scladArr.push({
+          art: item?.cbed.articl,
+          name: item?.cbed?.name,
+          id: item?.cbed.id,
+          kol: item.kolvo_shipments,
+          ez: 1,
+          description: '',
+          sum: 0,
+          date: returnShipmentsDate(item?.cbed?.shipments, 1),
+          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-'
         });
       }
     },

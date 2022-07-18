@@ -193,6 +193,7 @@ export default {
       this.fetchAssemble(this.isArchive);
     }, 
     setObject(obj, e) {
+      console.log(obj)
       this.span = eSelectSpan(this.span, e);
       this.selectAssembly = obj;
     },
@@ -228,7 +229,7 @@ export default {
       } else showMessage('', 'Документов нет', 'w', this);
     },
     openOperationPath(assemble) {
-      if(!assemble.tech_process || !assemble.tech_process.operations) return showMessage('', 'Нет Технологической операции! ', 'w');
+      if (!assemble.tech_process || !assemble.tech_process.operations) return showMessage('', 'Нет Технологической операции! ', 'w');
       this.assemble_props = assemble;
       this.keyOperationPathModal = random(1, 999);
       this.showOperationPathModal = true;
@@ -240,7 +241,7 @@ export default {
     returnShipmentsKolvo(shipments, znach_return = 1) {
       if (!shipments || shipments.length == 0) return '-';
       let end_date = shipments[0]?.date_shipments || '-';
-      if(znach_return == 2) end_date = shipments[0]?.number_order || '-';
+      if (znach_return == 2) end_date = shipments[0]?.number_order || '-';
       for (const ship1 of shipments) {
         for (const ship2 of shipments) {
           if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order;
