@@ -18,6 +18,13 @@ export default {
       const result = await res.json();
       ctx.commit('allAssemble', result);
     },
+    async fetchAssNoComing(ctx, isBan = false) { 
+      const res = await Req(`api/assemble/allnocomducted/${isBan}`);
+			if (!res.ok) return false;
+
+      const result = await res.json();
+      ctx.commit('allAssemble', result);
+    },
     async fetchAssemblePlan(ctx, type = 'all') { 
       const res = await Req(`api/assemble/asstoplan/${type}`);
 			if (!res.ok) return false;
@@ -62,7 +69,7 @@ export default {
       const res = await Req(`api/assemble/${id}`, {
         method: 'delete'
       });
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('deleteAssemble', id);
@@ -72,7 +79,7 @@ export default {
       const res = await Req(`api/assemble/comback/${id}`, {
         method: 'put'
       });
-			if(!res.ok) return false;
+			if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('deleteAssemble', id);
@@ -80,7 +87,7 @@ export default {
     },
     async fetchAllAssembleTypeOperation(ctx, op_id) { 
       const res = await Req(`api/assemble/typeoperation/${op_id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('allAssembleOperation', result);
@@ -90,10 +97,10 @@ export default {
   mutations: {
     allAssemble(state, result) { 
       state.assembles = [];
-      for(const ass of result) {
+      for (const ass of result) {
         ass.tech_process = [];
-        if(ass.cbed && ass.cbed?.techProcesses || []) {
-          ass.tech_process = ass.cbed.techProcesses;
+        if (ass.cbed && ass.cbed?.techProcesses || []) {
+          ass.tech_process = ass.cbed?.techProcesses || [];
         }
         state.assembles.push(ass);
       }
@@ -103,9 +110,9 @@ export default {
     },
     allAssembleOperation(state, result) { 
       state.assembles = [];
-      for(const r of result) {
+      for (const r of result) {
         r.ass.tech_process = [];
-        if(r.ass.cbed && r.ass.cbed.techProcesses) {
+        if (r.ass.cbed && r.ass.cbed?.techProcesses) {
           r.ass.tech_process = r.ass.cbed.techProcesses;
         }
         const {description, id, ...operation} = r.operation;
@@ -115,18 +122,18 @@ export default {
     },
     filterAssemblByShipments(state, cbeds) {
       const new_arr = [];
-      for(const ass of state.assembles) {
-        for(const cbed of cbeds) {
-          if(!ass.cbed) continue;
-          if(cbed.id == ass.cbed.id) new_arr.push(ass);
+      for (const ass of state.assembles) {
+        for (const cbed of cbeds) {
+          if (!ass.cbed) continue;
+          if (cbed.id == ass.cbed.id) new_arr.push(ass);
         }
       }
-      if(state.filter_assembl.length == 0)
+      if (state.filter_assembl.length == 0)
         state.filter_assembl = state.assembles;
       state.assembles = new_arr;
     },
     breackFIlterAssembl(state) {
-      if(state.filter_assembl.length)
+      if (state.filter_assembl.length)
         state.assembles = state.filter_assembl;
     }
   }

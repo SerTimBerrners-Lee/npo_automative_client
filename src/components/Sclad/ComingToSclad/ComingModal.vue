@@ -338,7 +338,7 @@ export default {
       }
       else if (news === 'Сборка') {
         this.loader = true;
-        this.fetchAssemble().then(() => {
+        this.fetchAssNoComing().then(() => {
           this.formingAss();
           this.loader = false;
         })
@@ -350,7 +350,7 @@ export default {
       'fetchGetProviders', 
       'fetchPushWaybillCreate', 
       'fetchGetDeliveriesCaming',
-      'fetchAssemble',
+      'fetchAssNoComing',
       'fetchMetalNoConduct'
     ]),
     unmount(e) {

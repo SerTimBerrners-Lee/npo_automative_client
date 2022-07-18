@@ -55,6 +55,9 @@
             <td v-if='assemble.status == enumStatus[1]' class='success_operation'>{{ assemble.status  }}</td>
             <td v-if='assemble.status == enumStatus[2]' class='delete_operation'>{{ assemble.status  }}</td>
             <td v-if='assemble.status == enumStatus[3]' class='delete_operation'>{{ assemble.status  }}</td>
+            <td v-if='assemble.status == enumStatus[4]' class='center success_operation'>
+              <unicon name="check" fill="black" />
+            </td>
             <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
             </td>
@@ -147,7 +150,8 @@ export default {
 				'В процессе',
         'Готово',
         'В архиве',
-        'Просрочено' 
+        'Просрочено',
+        'Проведено',
 			],
 
       span: null,
