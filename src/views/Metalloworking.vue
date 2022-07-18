@@ -76,9 +76,15 @@
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(metalowork)' class='link_img' atl='Показать' />
             </td>
-            <td :class='returnStatus(metalowork.status) + " tooltip center"'>
+            <td 
+              v-if="metalowork.status !== 'Проведено'"
+              :class='returnStatus(metalowork.status, precentWorks(metalowork)) + " tooltip center"'>
               <span>{{ precentWorks(metalowork) }}</span>
               <span class="tooltiptext">{{ metalowork.status }}</span>
+            </td>
+            <td v-else :class='returnStatus(metalowork.status) + " tooltip center"'>
+              <span class="tooltiptext">{{ metalowork.status }}</span>
+              <unicon name="check" fill="black" />
             </td>
             <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='metalowork.detal' @click='openDocuments(metalowork.detal)' class='link_img' atl='Показать' />
@@ -183,7 +189,8 @@ export default {
 				'В процессе',
         'Готово',
         'В архиве',
-        'Просрочено' 
+        'Просрочено',
+        'Проведено',
 			],
 
       span: null,
@@ -239,9 +246,9 @@ export default {
       this.parametrs_detal = id;
       this.detalModalKey = random(1, 999);
 		},
-    returnStatus(status) {
+    returnStatus(status, precent = null) {
+      if (status == this.enumStatus[1] || status == this.enumStatus[4] || precent == '100%') return 'success_operation';
       if (status == this.enumStatus[0]) return 'work_operation';
-      if (status == this.enumStatus[1]) return 'success_operation';
       return 'delete_operation';
     },
     precentWorks(metal) {
@@ -274,6 +281,7 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
+      console.log(obj);
       this.span = eSelectSpan(this.span, e);
       this.selectMetalloworking = obj;
     },

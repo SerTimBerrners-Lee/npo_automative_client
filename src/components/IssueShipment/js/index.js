@@ -183,6 +183,9 @@ async function pushElement(elements, list_pars, type, ctx) {
 	}
 }
 
+/**
+ * Осуществляем проверку на дублирование
+*/
 function checkDublecate(arr, res) {
 	for (let inx in arr) {
 		if (arr[inx].obj.id == res.obj.id && arr[inx].type == res.type) 
@@ -215,9 +218,6 @@ async function parserListIzd(res, kol, ctx) {
 			await checkedJsonList({...res, cbeds, detals}, ctx);
 	} catch(e) {console.error(e)}
 }
-/**
- * Осуществляем проверку на дублирование
-*/
 
 export {
 	checkedJsonList

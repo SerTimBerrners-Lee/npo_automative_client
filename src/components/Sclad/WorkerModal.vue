@@ -148,7 +148,8 @@ export default {
     async archeves() {
       if (!this.worker.id) return false;
 
-      await this.fetchBannedWorkers(this.worker.id);
+      const res = await this.fetchBannedWorkers(this.worker.id);
+      if (!res) return showMessage('', 'Произошла ошибка...', 'e'); 
       if (!this.worker.ban)
         this.deleteOneWorkign(this.worker.id);
 

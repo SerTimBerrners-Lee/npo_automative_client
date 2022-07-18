@@ -163,6 +163,7 @@
 <script>
 import print from 'print-js';
 import { mapActions } from 'vuex';
+import PATH_TO_SERVER from '@/js/path';
 import { isEmpty, random } from 'lodash';
 import MixModal from '@/mixins/mixmodal';
 import TableZag from '@/components/Metalloworking/TableZag';
@@ -281,9 +282,11 @@ export default {
 		},
     sortDdetals() {
       this.detals = [];
+
       try {
         for (const item of this.izd_cbed_arr) {
           const pars = item.obj?.listDetal ? JSON.parse(item.obj.listDetal) : [];
+
           for (const det of this.izd_detal_arr) {
             for (const parsDetal of pars) {
               if (parsDetal.det.id == det.obj.id) {
@@ -292,12 +295,29 @@ export default {
                   articl: item.obj.articl
                 }
                 det.kol = Number(parsDetal.kol) * Number(item.kol);
-                this.detals.push(det);
               }
             }
           }
         }
       } catch (err) { console.error(err);}
+
+      for (const item of this.izd_detal_arr) {
+        const find = this.detals.find(el => el.obj.id == item.obj.id);
+        let ava_path = '';
+        console.log(this.parametrs.obj.documents);
+        if (this.parametrs.obj.documents) {
+          for (const doc of this.parametrs.obj.documents) {
+            if (doc.ava) ava_path = doc.path;
+          }
+        }
+        console.log(PATH_TO_SERVER+ava_path);
+        
+        item.CB = {
+          ava_path: !ava_path || PATH_TO_SERVER+ava_path,
+          articl: this.parametrs.obj.articl
+        }
+        if (!find) this.detals.push(item);
+      }
     }
   },
   async mounted() {

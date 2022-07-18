@@ -22,6 +22,7 @@
 </template>
 <script>
 import '@/assets/style/style.css';
+import { showMessage } from '@/js/';
 import MenuItem from '@/components/MenuLeft';
 import HeadersNav from '@/components/HeaderNav';
 import Authorization from '@/views/Authorization';
@@ -34,7 +35,6 @@ export default {
     return {
       avtorization: this.getAuth,
       inaction: 1,
-
       id_inaction_interval: null,
     }
   },
@@ -68,7 +68,8 @@ export default {
         clearInterval(this.id_inaction_interval);
 
       this.id_inaction_interval = setInterval(() => {
-        this.exit()
+        console.log('INACTION EXIT');
+        return showMessage('', 'Время ожидания истекло!', 'i');
       }, 60000 * this.inaction);
     }
   },
@@ -149,13 +150,13 @@ a {
   color: #000 !important;
 }
 .width-350 {
-    width: 350px;
+  width: 350px;
 }
 .scrolls-type-490{
-    height: 490px !important;
+  height: 490px !important;
 }
 .cont {
-    float: left;
+  float: left;
 }
 .block {
   border: 1px solid #d3d3d3;

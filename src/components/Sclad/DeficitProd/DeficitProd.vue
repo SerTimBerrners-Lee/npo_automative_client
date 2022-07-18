@@ -3,9 +3,6 @@
     <h3>Дефицит Сборочных Едениц</h3>
     <div>
       <div class="block header_block">
-        <DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
         <span>Статусы: </span>
         <div>
           <select 
@@ -154,7 +151,6 @@
 import { random } from 'lodash';
 import { showMessage, comparison } from '@/js/';
 import CbedModalInfo from '@/components/CbEd/CbedModal';
-import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
@@ -205,7 +201,6 @@ export default {
   },
   computed: mapGetters(['allCbed', 'getShipments']),
   components: {
-    DatePicterRange, 
     StartProduction, 
     DescriptionModal, 
     NormTimeOperation,
@@ -318,9 +313,6 @@ export default {
       if (!this.select_izd)
         return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w');
       this.select_izd.my_kolvo = e.innerText;
-    },
-    changeDatePicterRange(val) {
-      console.log(val);
     },
     selectAllItem() {
       if (this.toProductionArr.length < this.allCbed.length) {

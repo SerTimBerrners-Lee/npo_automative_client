@@ -25,11 +25,11 @@
 
 <script>
 import { isEmpty } from 'lodash';
-import {photoPreloadUrl} from '@/js/';
 import PATH_TO_SERVER from '@/js/path';
+import { photoPreloadUrl } from '@/js/';
 
 export default {
-  // data = {name, path, (banned*)}
+  // data = { name, path, (banned*) }
   props: ['data', 'width', 'static', 'width_main'],
   data() {
     return {
@@ -56,7 +56,7 @@ export default {
     },
     sizeImg(img) {
       img.parentElement.classList.toggle('all_size_block');
-      if(img.parentElement.classList.contains('all_size_block'))
+      if (img.parentElement.classList.contains('all_size_block'))
         img.parentElement.style = "width: 100%";
       else
         img.parentElement.style = this.$props.width;
@@ -93,7 +93,7 @@ export default {
       this.files.unshift(findItem);
     }
 
-    this.swapMedia('l')
+    this.swapMedia('l');
   }
 }
 </script>
@@ -140,7 +140,7 @@ export default {
   display: flex;
 }
 .all_size_block {
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   left: 0;
@@ -154,5 +154,6 @@ export default {
 }
 .all_size_img {
   height: 100%;
+  position: fixed;
 }
 </style>

@@ -100,7 +100,7 @@ export default {
     }
   },
 	computed: mapGetters(['getUsers', 'getTypeOperations']),
-	components: {DatePicterCustom},
+	components: { DatePicterCustom },
 	mixins: [MixModal],
   methods: {
 		...mapActions([

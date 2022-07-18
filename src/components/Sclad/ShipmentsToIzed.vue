@@ -10,6 +10,8 @@
         <strong v-if='izd?.type == "product"'>Изделия:</strong>
         <strong v-if='izd?.type == "material"'>Материала:</strong>
           {{ izd?.izd?.name }}</p>
+        Артикул: <strong>{{ izd?.izd?.articl }}</strong>
+        <br><span class='title_block'>Заказы покупателей:</span>
 			<div class="block">
 				<table v-if='shipments.length'>
 					<tr>
@@ -23,7 +25,7 @@
             @click="openShipments(shipment.id)">
             <td>{{ shipment.number_order }}</td>
             <td class='center'>{{ shipment.date_order }}</td>
-            <td class='center'>{{ shipment.date_shipments }}</td>
+            <td class='center'>{{ shipment?.date_shipments }}</td>
             <td class='center'>{{ shipment.kolvoIzd }}</td>
           </tr>
 				</table>
@@ -115,10 +117,11 @@ export default {
 
     if (this.$props.shipments) {
       this.shipments_arr = this.$props.shipments;
+      console.log('this.shipments_arr ')
       if (izd && izd.izd) {
         for (const item in this.shipments_arr) {
           this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
-          this.allKolvo += this.shipments_arr[item].kolvoIzd;
+          if (this.shipments_arr[item].status !== 'Отгружено') this.allKolvo += this.shipments_arr[item].kolvoIzd;
         }
       }
     }
@@ -126,8 +129,8 @@ export default {
     let variables;
     for (let ship1 in this.shipments_arr) {
       for (let ship2 in this.shipments_arr) {
-        if (comparison(this.shipments_arr[ship1].date_shipments, 
-          this.shipments_arr[ship2].date_shipments, '<')) {
+        if (comparison(this.shipments_arr[ship1]?.date_shipments, 
+          this.shipments_arr[ship2]?.date_shipments, '<')) {
             variables = this.shipments_arr[ship1];
             this.shipments_arr[ship1] = this.shipments_arr[ship2];
             this.shipments_arr[ship2] = variables;
@@ -139,13 +142,15 @@ export default {
         char.unshift('C');
         this.shipments_arr[ship1].number_order = char.join('');
       }
+
+      this.shipments_arr = this.shipments_arr.filter(el => el?.status && el.status !== 'Отгружено');
     }
 
     if (this.$props.scladWorking) {
       for (const item of this.$props.scladWorking) {
         const types = izd.type == 'detal' ? item.metall : item.assemble;
         for (const met of types) {
-          if (met.detal.id == izd.izd.id) {
+          if (met.detal?.id == izd.izd?.id) {
             item.kolvo_shipments = met.kolvo_shipments;
             this.sclad_arr.push(item);
             this.allKolvoSclad += met.kolvo_shipments;
@@ -181,5 +186,9 @@ table {
 }
 textarea {
   height: 130px;
+}
+.title_block {
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 </style>

@@ -3,9 +3,6 @@
     <h3>Дефицит Продукции</h3>
     <div>
       <div class="block header_block">
-        <DatePicterRange 
-          @unmount='changeDatePicterRange'  
-        />
         <span>Статусы: </span>
         <div>
           <select 
@@ -156,7 +153,6 @@
 <script>
 import { random } from 'lodash';
 import { showMessage, comparison } from '@/js/';
-import DatePicterRange from '@/components/DatePicterRange';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from  '@/components/Sclad/ShipmentsToIzed';
@@ -209,7 +205,6 @@ export default {
   computed: mapGetters(['allProduct', 'getShipments']),
   components: {
     ProductModalInfo,
-    DatePicterRange, 
     DescriptionModal, 
     NormTimeOperation, 
     ShipmentsModal,
@@ -321,9 +316,6 @@ export default {
       if (!this.select_izd)
         return showMessage('', 'Для начала выберите Изделие, иначе данные не сохранятся!', 'w');
       this.select_izd.my_kolvo = e.innerText;
-    },
-    changeDatePicterRange(val) {
-      console.log(val);
     },
     toProduction(izd, e) {
       e.classList.toggle('checkbox_block_select');

@@ -221,7 +221,7 @@ export default {
 			density: 0,
 		}
 	},
-	components: {ModalBaseMaterial},
+	components: { ModalBaseMaterial },
 	methods: {
 		...mapActions(['getOneTypeMaterial']),
 		// ТОЛЬКО ПЕРЕМЕННЫЕ ЗНАЧЕНИЯ МОЖНО РЕДАКТИРОВАТЬ !!!

@@ -73,7 +73,7 @@
             </table>
             </div>
             <div class="btn-control">
-              <button 
+              <button
                 class="btn-small" @click='newPosition'> Создать новый </button>
             </div>
           </div>
@@ -331,7 +331,7 @@ export default {
 
       if (news == 'Металлообработка') {
         this.loader = true;
-        this.fetchMetaloworking().then(() => {
+        this.fetchMetalNoConduct().then(() => {
           this.formingMetatall();
           this.loader = false;
         });
@@ -350,8 +350,8 @@ export default {
       'fetchGetProviders', 
       'fetchPushWaybillCreate', 
       'fetchGetDeliveriesCaming',
-      'fetchMetaloworking',
-      'fetchAssemble'
+      'fetchAssemble',
+      'fetchMetalNoConduct'
     ]),
     unmount(e) {
       if (!e) return 0;
@@ -397,16 +397,18 @@ export default {
     },
     formingMetatall() {
       for (const item of this.getMetaloworkings) {
+        if (!item?.detal?.articl || !item?.detal?.name || !item?.detal?.id) continue;
         this.scladArr.push({
-          art: item?.detal.articl,
+          art: item?.detal?.articl,
           name: item?.detal?.name,
-          id: item?.detal.id,
+          id: item?.detal?.id,
           kol: item.kolvo_shipments,
           ez: 1,
           description: '',
           sum: 0,
           date: returnShipmentsDate(item?.detal?.shipments, 1),
-          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-'
+          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-',
+          worker_id: item.id
         });
       }
     },
@@ -421,7 +423,8 @@ export default {
           description: '',
           sum: 0,
           date: returnShipmentsDate(item?.cbed?.shipments, 1),
-          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-'
+          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-',
+          worker_id: item.id
         });
       }
     },
