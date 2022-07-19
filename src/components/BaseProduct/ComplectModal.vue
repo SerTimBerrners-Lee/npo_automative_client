@@ -315,7 +315,7 @@ export default {
         const find = this.detals.find(el => el.obj.id == item.obj.id);
         if (this.parametrs.obj.documents) {
           for (const doc of this.parametrs.obj.documents) {
-            if (doc.ava) ava_path = doc.path;
+            if (doc.ava) this.ava_path = doc.path;
           }
         }
         
