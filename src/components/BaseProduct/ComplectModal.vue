@@ -9,8 +9,16 @@
             <button class='btn-small' @click='printPage'>На печать</button>
           </h3>
           <div id='spec_table'>
-            <h3>Наименование: <strong>{{ parametrs.obj.name }}</strong></h3>
-            <h3>Артикул: <strong>{{ parametrs.obj.articl }}</strong></h3>
+            <div class='flex'>
+              <div>
+                <img class='img_preload' v-if="ava_path" :src="ava_path">
+                <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">
+              </div>
+              <div>
+                <h3>Наименование: <strong>{{ parametrs.obj.name }}</strong></h3>
+                <h3>Артикул: <strong>{{ parametrs.obj.articl }}</strong></h3>
+              </div>
+            </div>
             <hr />
 
             <h3 class='center'>Сборочная единицы</h3>
@@ -57,7 +65,7 @@
                 @click='showInformIzdel(obj.obj.id, obj.type)'>
                 <td class='center'>{{ inx + 1 }}</td>
                 <td>
-                  <img class='img_preload' v-if="obj?.CB?.ava_path" :src="obj?.CB?.ava_path">
+                  <img class='img_preload' v-if="obj?.CB?.ava_path" :src="obj.CB.ava_path">
                   <img class='img_preload' v-else src="@/assets/img/not_fount_img.jpg">
                 </td>
                 <td>{{ obj?.CB?.articl || 'нет' }}</td>
@@ -195,6 +203,8 @@ export default {
       izd_detal_arr: [],
       detals: [],
       loader_key: random(1, 999),
+
+      ava_path: '',
     }
   },
   components: {
@@ -303,17 +313,14 @@ export default {
 
       for (const item of this.izd_detal_arr) {
         const find = this.detals.find(el => el.obj.id == item.obj.id);
-        let ava_path = '';
-        console.log(this.parametrs.obj.documents);
         if (this.parametrs.obj.documents) {
           for (const doc of this.parametrs.obj.documents) {
             if (doc.ava) ava_path = doc.path;
           }
         }
-        console.log(PATH_TO_SERVER+ava_path);
         
         item.CB = {
-          ava_path: !ava_path || PATH_TO_SERVER+ava_path,
+          ava_path: this.ava_path,
           articl: this.parametrs.obj.articl
         }
         if (!find) this.detals.push(item);
@@ -323,6 +330,12 @@ export default {
   async mounted() {
 		if (isEmpty(this.parametrs)) return this.destroyModalF('unmount');
     const obj = this.parametrs.obj;
+
+    if (obj.documents) {
+      for (const doc of obj.documents) {
+        if (doc.ava) this.ava_path = PATH_TO_SERVER+doc.path;
+      }
+    }
 
     this.loader = true;
 
@@ -389,5 +402,9 @@ table, .table_block {
   to {
     width: 40%;
   }
+}
+
+.flex {
+  align-items: center;
 }
 </style>

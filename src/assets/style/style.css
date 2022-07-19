@@ -852,3 +852,7 @@ textarea {
   font-size: 14px;
   cursor: pointer;
 }
+
+.flex {
+  display: flex;
+}
