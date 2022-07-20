@@ -93,7 +93,7 @@
               </td>
               <td class='center min_width-100' style='color: red;'>{{ returnDificit(product, product.product_kolvo) }}</td> <!-- Дефицит -->
               <td class='center min_width-100' style='color: red;'>{{ -product.shipments_kolvo }}</td> <!-- Дефицит по Заказам покупател  -->
-              <td class='center min_width-100'>{{ product.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
+              <td class='center min_width-100'>{{ (product.shipments_kolvo - product.product_kolvo) > 0 ? 0 : product.shipments_kolvo - product.product_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
               <td class='center min_width-100'>{{ product.product_kolvo }}</td> <!-- Остаток -->
               <td class='center min_width-100'>{{ product?.min_remaining }}</td> <!-- Минимальный остаток -->
               <td class='center min_width-100'>{{ product?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
