@@ -10,7 +10,7 @@
       </div>
     </div>
     <div style='width: fit-content;'>
-      <div class="scroll-table" style='width: 99%;'>
+      <div class="scroll-table">
         <table>
           <tbody class='fixed_table_10'>
             <tr>
@@ -28,13 +28,14 @@
           <tr 
             class='td-row' 
             v-for='(waybill, inx) of getAllWaybills' 
-            @click='e => selectOrder(order, e.target.parentElement)'
+            @click='e => selectOrder(waybill, e.target.parentElement)'
             :key="waybill">
             <td class="center">{{ inx + 1 }}</td>
             <td>{{ waybill.name }}</td>
             <td>{{ new Date(waybill.createdAt).toLocaleString('ru-RU').split(',')[0] }}</td>
             <td>{{ waybill.name }}</td>
-            <td>{{ waybill.provider?.name || 'Склад' }}</td>
+            <td v-if='waybill.type_сoming != "Металлообработка" && waybill.type_сoming != "Сборка"'>{{ waybill.provider?.name || 'Склад' }}</td>
+            <td v-else>{{ waybill.type_сoming == "Металлообработка" ? "Металлообработка" : "Сборка" }}</td>
             <td @click='openCheck(waybill.documents)' class='select_span_href'>{{ waybill.documents.length ? waybill.documents[0].name : '' }}</td>
             <td class='center'>{{ getAllSum(waybill.product) }}</td>
             <td @click='OpenDescription(waybill.description)' class='center'>
@@ -218,5 +219,8 @@ export default {
 <style scoped>
 .tooltiptext {
   margin-top: 40px;
+}
+.scroll-table {
+  width: 1250px;
 }
 </style>

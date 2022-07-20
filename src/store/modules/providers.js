@@ -151,7 +151,11 @@ export default {
   },
   mutations: {
     setAllWaybill(state, result) {
-      state.waybills = result;
+      state.waybills = result.sort((a, b) => {
+        const aa = new Date(a.createdAt).getTime();
+        const bb = new Date(b.createdAt).getTime();
+        return bb - aa;
+      });
     },
     setAllDeliveries(state, result) {
       state.deliveries = result;
@@ -166,81 +170,81 @@ export default {
       state.oneProvider = provider;
     },
     filterByMaterial(state, providers) {
-      if(state.onTimeProvider.length == 0)
+      if (state.onTimeProvider.length == 0)
         state.onTimeProvider = state.providers;
 
       state.providers = [];
-      for(let provider of state.onTimeProvider) {
-        for(let mat_provider of providers) {
+      for (const provider of state.onTimeProvider) {
+        for (const mat_provider of providers) {
           if(mat_provider.id == provider.id)
             state.providers.push(provider);
         }
       }
     },
     clearFilterProviders(state) {
-      if(state.onTimeProvider.length)
+      if (state.onTimeProvider.length)
         state.providers = state.onTimeProvider;
     },
     materialForProvider(state, material) {
       state.material = material;
 
-      for(let mat of material) {
+      for (const mat of material) {
         let check = false;
-        if(mat.material) {
-          for(let inx in state.materialT) {
-            if(state.materialT[inx].id == mat.material.id) {
+        if (mat.material) {
+          for (let inx in state.materialT) {
+            if (state.materialT[inx].id == mat.material.id) {
               check = true;
               state.materialT[inx].podPodMaterials.push(mat);
             }
           }
-          if(!check) 
+          if (!check) 
             state.materialT.push({ ...mat.material, podPodMaterials: [mat]});     
             else check = false;
-          if(!state.materialT.length)
+          if (!state.materialT.length)
             state.materialT.push({ ...mat.material, podPodMaterials: [mat]});
         }
 
         check = false;
-        if(mat.podMaterial) {
-          for(let inx in state.materialPT) {
-            if(state.materialPT[inx].id == mat.podMaterial.id) {
+        if (mat.podMaterial) {
+          for (let inx in state.materialPT) {
+            if (state.materialPT[inx].id == mat.podMaterial.id) {
               check = true;
-              if(state.materialPT[inx].podPodMaterials && state.materialPT[inx].podPodMaterials.length) 
+              if (state.materialPT[inx].podPodMaterials && state.materialPT[inx].podPodMaterials.length) 
                 state.materialPT[inx].podPodMaterials.push(mat);
               else 
                 state.materialPT[inx].podPodMaterials = [mat];
             }
           }
-          if(!check) 
+          if (!check) 
             state.materialPT.push({ ...mat.podMaterial, podPodMaterials: [mat]});       
             else check = false;
-          if(!state.materialPT.length)
+          if (!state.materialPT.length)
             state.materialPT.push({ ...mat.podMaterial, podPodMaterials: [mat]});
         } 
       }
     },
     searchProviderMaterial(state, tm) {
-      if(!state.sMaterial.length) state.sMaterial =  state.material;
+      if (!state.sMaterial.length) state.sMaterial =  state.material;
       state.material = state.sMaterial;
 
-      if(!tm) return;
+      if (!tm) return;
       state.material = state.material
         .filter(t => (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase());
     },
     searchProviderTMaterial(state, tm) {
-      if(!state.sMaterialT.length) state.sMaterialT =  state.materialT;
+      if (!state.sMaterialT.length) state.sMaterialT =  state.materialT;
       state.materialT = state.sMaterialT
 
-      if(!tm) return;
+      if (!tm) return;
       state.materialT = state.materialT
         .filter(t => (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase());
     },
     searchProviderPTMaterial(state, tm) {
-      if(!state.sMaterialPT.length) 
+      if (!state.sMaterialPT.length) 
         state.sMaterialPT = state.materialPT;
 
       state.materialPT = state.sMaterialPT;
-      if(!tm) return;
+      if (!tm) return;
       state.materialPT = state.materialPT
         .filter(t => (t.name.slice(0, tm.length).toLowerCase()) == tm.toLowerCase());
     },
@@ -254,11 +258,11 @@ export default {
       state.sMaterialPT = [];
     },
     searchProviderMutations(state, tm) {
-      if(!state.searchProvider.length) 
+      if (!state.searchProvider.length) 
         state.searchProvider = state.providers;
 
       state.providers = state.searchProvider;
-      if(!tm) return;
+      if (!tm) return;
 
       state.providers = state.providers
         .filter(t =>
@@ -268,7 +272,7 @@ export default {
       );
     },
     filterToAttentionProvider(state) {
-      if(state.tmp_attention.length == 0)
+      if (state.tmp_attention.length == 0)
         state.tmp_attention = state.providers;
       else {
         state.providers = state.tmp_attention;
