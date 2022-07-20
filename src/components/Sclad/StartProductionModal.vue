@@ -42,7 +42,7 @@
             <td>{{ izd.articl }}</td>
             <td>{{ izd.name }}</td>
             <td class='center'>{{ izd.shipments_kolvo }}</td>
-            <td class='center'>{{ izd.min_remaining * 3 }}</td>
+            <td class='center'>{{ izd.min_remaining * 3 + izd.shipments_kolvo }}</td>
             <td class='center input__td'>
               <input 
                 type="number" 

@@ -21,10 +21,9 @@
     <div style='width: fit-content;'>
       <div class="scroll-table" style='width: 99%; height: 550px;'>
         <table>
-          <tr>
+          <tr class='fixed_table_10'>
             <th>№ Заказа</th>
             <th>Дата создания</th>
-            <th>Тип Заказа</th>
             <th>Наименование поставщика</th>
             <th>№ счета и Дата</th>
             <th>Сумма, руб.</th>
@@ -39,9 +38,8 @@
               class='td-row' 
               v-if='show_dev'
               @click='e => selectOrder(order, e.target.parentElement)'>
-              <td>{{ order.name }}</td>
+              <td class='center'>{{ order.name }}</td>
               <td>{{ order.date_create }}</td>
-              <td v-if='order.provider' class='center'>{{ order.name }}П</td>
               <td>{{ order.provider ? order.provider.name : 'Нет поставщика' }}</td>
               <td>{{ order.number_check }}</td>
               <td>{{ order.count }}</td>
@@ -93,8 +91,7 @@
               @click='openWorkers(ass)'>
               <td class='center'>{{ ass.number_order }}</td> <!-- Номер заказа -->
               <td class='center'>{{ ass.date_order }}</td> <!-- Дата заказа -->
-              <td class='center bold'>{{ 'C' }}</td> <!-- Тип Заказа -->
-              <td class='center'>склад</td> <!-- Поставщик -->
+              <td class='center'>Сборка</td> <!-- Поставщик -->
               <td class='center'>{{ ass.date_order }}</td> <!-- Номер счета и дата -->
               <td class='center'>-</td> <!-- Сумма -->
               <td class='center'>-</td> <!-- Дата прихода -->
@@ -130,8 +127,7 @@
               @click='openWorkers(metal)'>
               <td class='center'>{{ metal.number_order }}</td> <!-- Номер заказа -->
               <td class='center'>{{ metal.date_order }}</td> <!-- Дата заказа -->
-              <td class='center bold'>{{ 'M' }}</td> <!-- Тип Заказа -->
-              <td class='center'>склад</td> <!-- Поставщик -->
+              <td class='center'>Металлообработка </td> <!-- Поставщик -->
               <td class='center'>{{ metal.date_order }}</td> <!-- Номер счета и дата -->
               <td class='center'>-</td> <!-- Сумма -->
               <td class='center'>-</td> <!-- Дата прихода -->
@@ -279,6 +275,7 @@ export default {
       }
     },
     selectOrder(order, span) {
+      console.log(order);
       this.order = order;
       this.span = eSelectSpan(this.span, span);
     },

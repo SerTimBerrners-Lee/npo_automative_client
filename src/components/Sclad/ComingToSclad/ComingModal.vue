@@ -107,7 +107,8 @@
               </tbody>
               <tr 
                 v-for='(prod, inx) of scladArr' :key='prod'
-                class='td-row'>
+                class='td-row'
+                @click='showProd(prod)'>
                 <td class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
                   <p class="checkbox_block" @click='delProd(prod, scladArrSelected, scladArr)'></p>
                 </td>
@@ -395,6 +396,9 @@ export default {
         });  
       }
     },
+    showProd(prod) {
+      console.log(prod)
+    },
     formingMetatall() {
       for (const item of this.getMetaloworkings) {
         if (!item?.detal?.articl || !item?.detal?.name || !item?.detal?.id) continue;
@@ -407,7 +411,7 @@ export default {
           description: '',
           sum: 0,
           date: returnShipmentsDate(item?.detal?.shipments, 1),
-          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-',
+          number_order: item.number_order || '-',
           worker_id: item.id
         });
       }
@@ -423,7 +427,7 @@ export default {
           description: '',
           sum: 0,
           date: returnShipmentsDate(item?.cbed?.shipments, 1),
-          number_order: item?.workings?.length ? item?.workings[0]?.number_order : '-',
+          number_order: item.number_order ||  '-',
           worker_id: item.id
         });
       }

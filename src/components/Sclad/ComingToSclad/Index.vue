@@ -179,6 +179,7 @@ export default {
       }
     },
     selectOrder(order, span) {
+      console.log(order);
       this.order = order;
       this.span = eSelectSpan(this.span, span);
     },

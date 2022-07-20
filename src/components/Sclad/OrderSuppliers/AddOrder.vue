@@ -39,7 +39,7 @@
         <div>
           <h3>Дефицитный материал</h3>
 
-          <div class="scroll-table table_material " style='height: 100%;'>
+          <div class="scroll-table table_material">
             <TableTypeMaterial />
             <TableMaterial :type_view='"mini"' @unmount_material='selectDeficitMaterial' />
           </div>
@@ -168,6 +168,7 @@
 <script>
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
+import { MixModal } from '@/mixins/mixmodal'; 
 import AddFile from '@/components/FileBase/AddFile';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
@@ -184,10 +185,6 @@ export default {
   props: ['parametrs', 'order_parametr', 'only_view'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',   
-
       date_shipments: new Date().toLocaleString('ru-RU').split(',')[0],
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
@@ -227,6 +224,7 @@ export default {
     TableMaterial,
     TableTypeMaterial
   },
+  mixins: [MixModal],
   methods: {
     ...mapActions([
       'fetchGetProviders', 
@@ -239,12 +237,6 @@ export default {
     ...mapMutations([
       'clearCascheMaterial'
     ]),
-    destroyModalF() {
-      console.log('destroyModalF');
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-    },
     unmount_position(mat_l) {
       this.clearCascheMaterial();
       this.fetchGetAllDeficitPPM();
@@ -438,10 +430,6 @@ export default {
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-
     this.fetchGetAllDeficitPPM();
 
     if(this.$props.order_parametr)
@@ -467,6 +455,10 @@ export default {
 }
 table {
   width: 100%;
+}
+.table_material {
+  height: 100%;
+  width: auto;
 }
 .two_header * {
   margin:4px;
