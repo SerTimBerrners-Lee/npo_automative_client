@@ -43,6 +43,7 @@
               <th rowspan="3" class='min_width-120'>Дефицит по заказам покупателя </th>
               <th rowspan="3" class='min_width-120'>Потребность по Заказам покупателя</th>
               <th rowspan="3" class='min_width-120'>Остаток</th>
+              <th rowspan="3" class='min_width-120'>С учетом прихода Сб. и Изд.</th>
               <th rowspan="3" class='min_width-120'>Минимальный остаток</th>
               <th rowspan="3" class='min_width-120'>Рекомендуемый остаток</th>
               <th rowspan="3" class='min_width-120'>Норма времени на одну единицу (сборка+изготовл.)</th>
@@ -93,7 +94,8 @@
             <td class='center min_width-100' style='color: red;'>{{ (-cbed.shipments_kolvo - cbed.cbed_kolvo) > 0 ? 0 : (-cbed.shipments_kolvo - cbed.cbed_kolvo) }}</td> <!-- Дефицит По заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.cbed_kolvo }}</td> <!-- Остаток -->
-            <td class='center min_width-100'>{{ cbed?.min_remaining }}</td> <!-- Минимальный остаток -->
+            <td class='center min_width-100'>{{ cbed.min_remaining - cbed.deficit }}</td> <!-- С учетом прихода Сб. и Изд. -->
+            <td class='center min_width-100'>{{ cbed.min_remaining }}</td> <!-- Минимальный остаток -->
             <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
             <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
             <td class='center min_width-100' contenteditable="true" @keyup='e => alt(e.target)'>{{ cbed?.my_kolvo || cbed.min_remaining * 3  }}</td> 
@@ -324,8 +326,8 @@ export default {
       }
     },
     showInformIzdel(id, type) {
-			if(type == 'cbed') {
-				if(id) {
+			if (type == 'cbed') {
+				if (id) {
 					this.parametrs_cbed = id;
 					this.cbedModalKey = random(1, 999);
 				}
@@ -356,7 +358,7 @@ export default {
   align-items: center;
 }
 th {
-  font-size: 13px;
+  font-size: 11px;
 }
 
 </style>

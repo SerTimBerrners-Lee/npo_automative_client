@@ -361,6 +361,6 @@ export default {
   align-items: center;
 }
 th {
-  font-size: 13px;
+  font-size: 11px;
 }
 </style>
