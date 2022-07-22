@@ -100,7 +100,7 @@
               <td class='center min_width-100' style='color: red;'>{{ -detal.shipments_kolvo }}</td> <!-- Дефицит По заказам покупателя -->
               <td class='center min_width-100'>{{ (detal.shipments_kolvo - detal.detal_kolvo) > 0 ? 0 : (detal.shipments_kolvo - detal.detal_kolvo) }}</td> <!-- Потребность по Заказам покупателя -->
               <td class='center'>{{ detal.detal_kolvo }}</td> <!-- Количество деталей -->
-              <td class='center min_width-100'>{{ detal.min_remaining - detal.deficit }}</td> <!-- С учетом прихода Сб. и Изд. -->
+              <td class='center min_width-100'>{{ detal.deficit - detal.min_remaining }}</td> <!-- С учетом прихода Сб. и Изд. -->
               <td class='center'>{{ detal.min_remaining }}</td> <!-- Минимальный остаток -->
               <td class='center'>{{ detal?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
               <td class='center'>{{ returnZnachCPU(detal) }}</td> <!-- ЧПУ --->

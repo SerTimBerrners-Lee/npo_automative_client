@@ -94,7 +94,7 @@
             <td class='center min_width-100' style='color: red;'>{{ (-cbed.shipments_kolvo - cbed.cbed_kolvo) > 0 ? 0 : (-cbed.shipments_kolvo - cbed.cbed_kolvo) }}</td> <!-- Дефицит По заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.shipments_kolvo }}</td> <!-- Потребность по Заказам покупателя -->
             <td class='center min_width-100'>{{ cbed.cbed_kolvo }}</td> <!-- Остаток -->
-            <td class='center min_width-100'>{{ cbed.min_remaining - cbed.deficit }}</td> <!-- С учетом прихода Сб. и Изд. -->
+            <td class='center min_width-100'>{{ cbed.deficit - cbed.min_remaining }}</td> <!-- С учетом прихода Сб. и Изд. -->
             <td class='center min_width-100'>{{ cbed.min_remaining }}</td> <!-- Минимальный остаток -->
             <td class='center min_width-100'>{{ cbed?.min_remaining * 3 }}</td> <!-- Рекомендуемый остаток -->
             <td class='center min_width-100'>{{ cbed.parametrs ? JSON.parse(cbed.parametrs)[0].znach : '' }}</td>
