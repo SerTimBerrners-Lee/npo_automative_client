@@ -58,7 +58,7 @@
             v-for='(metalowork, inx) of getMetaloworkings' :key='metalowork'
             @click='e => setObject(metalowork, e.target.parentElement)'
             class='td-row'>
-            <th>{{ inx + 1 }} {{ metalowork.kolvo_shipments }}</th>
+            <th>{{ inx + 1 }}</th>
             <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td> <!-- Артикл Детали -->
             <td @dblclick="showInformIzdel(metalowork?.detal.id)">{{ metalowork?.detal?.name || "Нет детали" }}</td> <!-- Наименование Детали -->
             <td class='center'>{{ metalowork?.kolvo_shipments }}</td>  <!-- Кол-во ВСЕГО по заказу склада, шт. -->

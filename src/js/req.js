@@ -10,5 +10,7 @@ export default async function Req(path, options = {}) {
       'Authorization': `Bearer ${auth?.token}`,
     }) : new Headers({'Authorization': `Bearer ${auth?.token}`});
     
-  return await fetch(`${PATH_TO_SERVER}${path}`, options);
+  const result = await fetch(`${PATH_TO_SERVER}${path}`, options);
+  console.log(result);
+  return result;
 }

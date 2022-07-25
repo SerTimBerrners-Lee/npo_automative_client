@@ -203,16 +203,17 @@ export default {
       'addOneSelectDetal',
     ]),
     infoModalCbed(cb) {
-      if(!cb) return false;
+      if (!cb) return false;
       this.parametrs_cbed = cb.id;
       this.cbedModalKey = random(1, 999);
     },
     infoModalProduct(product) {
-      if(!product) return false;
+      if (!product) return false;
       this.parametrs_product = product.id;
       this.productModalKey = random(1, 999);
     },
     async setDetals(detal, e) {
+      console.log(detal);
       const res = await this.getOneDetal(detal.id);
       this.selectedDetal = res;
       this.addOneSelectDetal(res);
@@ -220,21 +221,21 @@ export default {
       this.tr = eSelectSpan(this.tr, e);
     },
     infoDetal() {
-      if(!this.selectedDetal) return false;
+      if (!this.selectedDetal) return false;
 
       this.detalModalKey = random(1, 999);
       this.parametrs_detal = this.selectedDetal.id;
     },
     async setCbed(cbed, e) {
       console.log(cbed);
-      if(this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
+      if (this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');
         return this.selectedCbEd = null;
       }
 
       const res = await this.getOneCbEdById(cbed.id);
-      if(!res) return false;
+      if (!res) return false;
 
       const result = await this.getOneCbEdBelongs(res.id);
       if (!result) return false;

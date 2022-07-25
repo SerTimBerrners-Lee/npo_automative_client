@@ -168,7 +168,7 @@
 <script>
 import { showMessage } from '@/js/';
 import { random, toNumber } from 'lodash';
-import { MixModal } from '@/mixins/mixmodal'; 
+import MixModal from '@/mixins/mixmodal'; 
 import AddFile from '@/components/FileBase/AddFile';
 import OpensFile from '@/components/FileBase/OpenFile';
 import DatePicterCustom from '@/components/DatePicter';
@@ -243,8 +243,8 @@ export default {
       this.getAllTypeMaterial();
       this.getAllPodTypeMaterial();
 
-      if(mat_l && mat_l.length) {
-        for(let mat of mat_l) {
+      if (mat_l && mat_l.length) {
+        for (const mat of mat_l) {
           this.selected_material = mat.obj;
           this.selected_material.type = mat.type;
           this.pushMaterial();
@@ -252,16 +252,16 @@ export default {
       }
     },
     unmount(e) {
-      if(!e) return 0;
+      if (!e) return 0;
 
       this.formData = e.formData;
-      if(this.formData.get('document'))
+      if (this.formData.get('document'))
         this.name_check = this.formData.get('document').name;
 
       this.number_check = this.name_check;
     },
     unmount_provider(provider) {
-      if(provider)
+      if (provider)
         this.provider = provider;
 
       this.id_product = provider.id;
@@ -301,7 +301,7 @@ export default {
     pushMaterial() {
       const position = posToDeliveries(this.selected_material, this.position_lists);
       this.selected_material = null;
-      if(!position) return false;
+      if (!position) return false;
 
       this.position_lists.push(position);
     },
@@ -310,7 +310,7 @@ export default {
     },
     editKol(inx, val) {
       const check = toNumber(val);
-      if(!check || val < 1) return this.position_lists[inx].kol = 1;
+      if (!check || val < 1) return this.position_lists[inx].kol = 1;
 
       this.position_lists[inx].kol = toNumber(val);
     },
@@ -322,8 +322,8 @@ export default {
       this.position_lists[inx].description = val;
     },
     changeMainSum() {
-      this.count = 0
-      if(this.position_lists.length) {
+      this.count = 0;
+      if (this.position_lists.length) {
         this.position_lists.forEach(s => 
           this.count = Number(this.count) + (Number(s.sum) * Number(s.kol))
         )
@@ -338,23 +338,23 @@ export default {
       this.count = 0;
     },
     clearToSelect() {
-      if(!this.select_m) return 0;
+      if (!this.select_m) return 0;
       this.position_lists = this.position_lists.filter(e => e.id != this.select_m.id);
     },
     setSelected(material) {
       this.select_m = material;
     },
     checkMaterialList() {
-      if(!this.position_lists.length) return false;
-      for(const mat of this.position_lists) {
+      if (!this.position_lists.length) return false;
+      for (const mat of this.position_lists) {
         console.log(mat, 'mat')
         if(!Number(mat.ez) || !mat.ez) mat.ez = 1;
       }
     },
     async save() {
-      if(!this.provider) return showMessage('', 'Выберите поставщика', 'w');
-      if(!this.position_lists.length) return showMessage('', 'Выберите позиции для прихода', 'w');
-      if(!this.number_check) return showMessage('', 'Введите номер счета', 'w');
+      if (!this.provider) return showMessage('', 'Выберите поставщика', 'w');
+      if (!this.position_lists.length) return showMessage('', 'Выберите позиции для прихода', 'w');
+      if (!this.number_check) return showMessage('', 'Введите номер счета', 'w');
       this.checkMaterialList();
 
       this.formData.append('provider_id', this.provider.id);
@@ -365,7 +365,7 @@ export default {
       this.formData.append('date_shipments', this.date_shipments);
       this.formData.append('description', this.description);
 
-      if(this.$props.order_parametr) {
+      if (this.$props.order_parametr) {
         this.formData.append('id', this.$props.order_parametr.id);
           const res = await this.updateDeliveries(this.formData);
           if(!res) 
@@ -376,7 +376,7 @@ export default {
           this.destroyModalF();
       } else {
         const res = await this.fetchNewDeliveries(this.formData);
-        if(!res) 
+        if (!res) 
           return showMessage('', 'Произошла ошибка при создании поставки', 'e');
 
         showMessage('', 'Успешно!', 's', this);
@@ -390,11 +390,11 @@ export default {
       this.nds = order.nds;
       this.count = order.count;
       this.description = order.description;
-      if(order.product)
+      if (order.product)
         try { this.position_lists = JSON.parse(order.product) } 
           catch (e) { console.error(e) }
 
-      if(order.documents && order.documents.length) {
+      if (order.documents && order.documents.length) {
         this.name_check = order.documents[0].name;
         this.docFiles = order.documents;
       }
@@ -407,10 +407,10 @@ export default {
       this.position_lists[inx].ez = ez_position;
 
       const material = this.getOneMaterialById(this.position_lists[inx].id);
-      if(!material) return false;
+      if (!material) return false;
       try {
         const pars = JSON.parse(material.ez_kolvo);
-        if(!pars) return;
+        if (!pars) return;
         this.position_lists[inx].def = Object.values(pars)[ez_position--].shipments_kolvo;
       }catch(err) { console.error(err, 'changeValuesEz') }
     },
@@ -425,14 +425,14 @@ export default {
     },
     getOneMaterialById(id) {
       const find_material = this.getOnePodMaterial.filter(met => met.id == id);
-      if(!find_material && !find_material.length) return false;
+      if (!find_material && !find_material.length) return false;
       return find_material[0];
     }
   },
   async mounted() {
     this.fetchGetAllDeficitPPM();
 
-    if(this.$props.order_parametr)
+    if (this.$props.order_parametr)
       this.editVariables(this.$props.order_parametr);
   },
 }

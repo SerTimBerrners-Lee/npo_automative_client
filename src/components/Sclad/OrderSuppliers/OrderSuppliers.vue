@@ -82,7 +82,7 @@
               </td>
             </tr>
           </tbody>
-          
+
           <!-- Assemblye-->
           <tbody v-for='ass of assembles' :key='ass'>
             <tr 

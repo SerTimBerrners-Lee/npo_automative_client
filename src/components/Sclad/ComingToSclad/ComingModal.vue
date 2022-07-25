@@ -14,7 +14,7 @@
               <input type="text" :value='provider ? provider.name : ""' >
               <button class="btn-small" @click='addProvider'>Выбрать</button>
             </p>
-            <p v-else style='font-weight: bold;'>Склад</p>
+            <p v-else style='font-weight: bold;'>{{ typeComing  }}</p>
           </div>
           <select v-model='typeComing' class='select-small'>
             <option value="Постащики">Постащики</option>
@@ -383,6 +383,7 @@ export default {
       if (!arr || !arr.length) return false;
       for (const item of arr) {
         const obj = this.typeComing == 'Металлообработка' ? item.det : item.cb;
+        const type = this.typeComing == 'Металлообработка' ? 'met' : 'cbed';
         this.scladArr.push({
           art: item.art,
           name: obj.name,
@@ -392,7 +393,8 @@ export default {
           description: '',
           sum: 0,
           date: '-',
-          number_order: '-'
+          number_order: '-',
+          type
         });  
       }
     },
@@ -412,7 +414,8 @@ export default {
           sum: 0,
           date: returnShipmentsDate(item?.detal?.shipments, 1),
           number_order: item.number_order || '-',
-          worker_id: item.id
+          worker_id: item.id,
+          type: 'met',
         });
       }
     },
@@ -428,7 +431,8 @@ export default {
           sum: 0,
           date: returnShipmentsDate(item?.cbed?.shipments, 1),
           number_order: item.number_order ||  '-',
-          worker_id: item.id
+          worker_id: item.id,
+          type: item.type_izd == 'cbed' ? 'cbed' : 'prod'
         });
       }
     },
@@ -498,12 +502,14 @@ export default {
       if (!this.provider && !this.sclad) return showMessage('', 'Выберите поставщика!', 'w');
       if (!this.formData.get('docs') && !this.formData.get('document'))
         return showMessage('', 'Обязательно прикрепите документ!', 'w');
+      if (!this.selected_products.length && !this.scladArrSelected.length)
+        return showMessage('', 'Выберите позиции для прихода', 'w');
 
       this.formData.append('provider_id', this.provider?.id || null);
       this.formData.append('sclad', this.sclad);
       this.formData.append('description', this.description);
       this.formData.append('product_list', 
-        this.sclad ? JSON.stringify(this.scladArrSelected) :
+        this.sclad ? JSON.stringify(this.scladArrSelected) :  
           JSON.stringify(this.selected_products)
       );
       this.formData.append('typeComing', this.typeComing);
