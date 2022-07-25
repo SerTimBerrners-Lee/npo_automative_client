@@ -48,7 +48,7 @@
           class='td-row'>
           <td>{{ shipment.number_order }}</td>
           <td class='center'>{{ shipment.date_order }}</td>
-          <td class='center'>{{ returnShipmentsKolvo(shipment?.detal?.shipments) }}</td>
+          <td class='center'>{{ returnShipmentsKolvo(shipments_arr) }}</td>
           <td class='center'>{{ shipment.kolvo_for_parent || shipment.kolvo_shipments }}</td>
         </tr>
       </table>
@@ -71,7 +71,6 @@
 import { random } from 'lodash';
 import { comparison } from '@/js/';
 import MixModal from '@/mixins/mixmodal';
-import { returnShipmentsDate } from '@/js/operation';
 import ShipmentsModal from '@/components/IssueShipment/ShipmentsModal';
 
 export default {
@@ -94,8 +93,10 @@ export default {
       this.key_modal_shipments = random(1, 999);
       this.shipments_id = id;
     },
-    returnShipmentsKolvo(shipments, znach_return = 1) {
-      return returnShipmentsDate(shipments, znach_return);
+    returnShipmentsKolvo(shipments) {
+      for (const item of shipments) {
+        if (item.date_shipments) return item.date_shipments;
+      }
     },
     returnCountIzd(item, izd, type) {
       if (type == 'product') return item.kol || 0;

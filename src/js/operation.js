@@ -140,14 +140,14 @@ export function returnKolvoCreate(oper) {
  * @param 1 znach_return - 
  * @returns '12.13.2013'
  */
- export function returnShipmentsDate(shipments, znach_return = 1) {
+ export function returnShipmentsDate(shipments, znach_return = 1, comparis = '<') {
   if (!shipments || shipments.length == 0) return '-';
   let end_date = shipments[0]?.date_shipments || '-';
   if (znach_return == 2) end_date = shipments[0]?.number_order || '-';
 
   for (const ship1 of shipments) {
     for (const ship2 of shipments) {
-      if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order
+      if (comparison(ship1.date_shipments, ship2.date_shipments, comparis)) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order
     }
   }
   return end_date;
