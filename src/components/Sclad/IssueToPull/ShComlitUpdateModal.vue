@@ -256,7 +256,7 @@ export default {
         this.name_check += ` ${fd.name}`;
       }
     },
-    async update() {
+    async update() { 
       this.date_shipments = this.complit.date_shipments;
       this.date_shipments_fakt = this.complit.date_shipments_fakt;
       this.transport = this.complit.transport;

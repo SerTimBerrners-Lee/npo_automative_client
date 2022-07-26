@@ -210,7 +210,7 @@ export default {
 			const arr_var1 = [];
 			const arr_var2 = [];
 			if (sort == 'sort_sclad') {
-				for(const el of state.shipments) {
+				for (const el of state.shipments) {
 					if (el.to_sklad && el.number_order) {
 						const char = el.number_order.split('');
 						char.unshift('C');

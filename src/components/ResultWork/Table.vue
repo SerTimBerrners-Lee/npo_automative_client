@@ -113,7 +113,6 @@ export default {
 			return ot;
 		},
     changeDatePicterRange(val) {
-      console.log(val);
       this.filterRangeResultM(val);
     }
   },
