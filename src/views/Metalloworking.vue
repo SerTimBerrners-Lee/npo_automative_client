@@ -269,7 +269,7 @@ export default {
       return returnShipmentsDate(shipments, znach_return);
     },
     combackArchive() {
-      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w');
+      if (!this.selectMetalloworking) return showMessage('', 'Выберите объект для изменения', 'w');
       this.fetchCombackMetallowork(this.selectMetalloworking.id).then(() => {
         return showMessage('', 'Металлообработка возвращена из архива', 's');
       }).catch(() => {
@@ -286,7 +286,7 @@ export default {
       this.selectMetalloworking = obj;
     },
     async removeObject() {
-      if(!this.selectMetalloworking) return showMessage('', 'Выберите объект для удаления', 'w');
+      if (!this.selectMetalloworking) return showMessage('', 'Выберите объект для удаления', 'w');
       await this.fetchMetalloworkingDelete(this.selectMetalloworking.id);
       return showMessage('', 'Статус Металлообработки изменен', 's');
     },

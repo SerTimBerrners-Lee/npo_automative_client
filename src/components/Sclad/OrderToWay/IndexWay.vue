@@ -48,6 +48,7 @@
 
         <table>
           <tr> 
+						<th>№</th>
             <th>Наименование</th>
             <th>ЕИ</th>
             <th style='width: 10px;'>Планируемый приход</th>
@@ -56,7 +57,8 @@
             <th>Поставщик</th>
             <th>№ счета</th>
           </tr>
-          <tr v-for='material of getOnePodMaterial' :key='material'>
+          <tr v-for='(material, inx) of getOnePodMaterial' :key='material'>
+						<td class="center">{{ inxMet = inx + 1 }}</td>
 						<td 
 							@click='e => setMaterial(material, e.target)'
 							class='td-row'> {{ material.name }}</td>
@@ -75,7 +77,8 @@
 
 			<div class='scroll-table' v-if='getWorkings.length'>
 				<table>
-					<tr>
+					<tr class='fixed_table_10'>
+						<th>№</th>
             <th>№ Заказа</th>
             <th>Дата создания</th>
             <th>Тип Заказа</th>
@@ -86,16 +89,18 @@
             <th>Статус</th>
             <th>Подробнее</th>
           </tr>
-					<tbody v-for='works of getWorkings' :key='works'>
+					<tbody v-for='(works, inx) of getWorkings' :key='works'>
 						<tr 
-							class='td-row'>
+							class='td-row'
+							@click='setWorkers(works)'>
+							<td class="center">{{ inxWork = inx + 1 + inxMet }}</td>
 							<td class='center'>{{ works.number_order }}</td> <!-- Номер заказа -->
 							<td class='center'>{{ works.date_order }}</td> <!-- Дата заказа -->
 							<td class='center bold'>{{ works.type == 'metall' ? 'M' : 'С'  }}</td> <!-- Тип Заказа -->
 							<td class='center'>склад</td> <!-- Поставщик -->
 							<td class='center'>{{ works.date_order }}</td> <!-- Номер счета и дата -->
 							<td class='center'>-</td> <!-- Сумма -->
-							<td class='center'>-</td> <!-- Дата прихода -->
+							<td class='center'>{{ returnShipmentsKolvo(works.shipments) != '-' ?  returnShipmentsKolvo(works.shipments) : works.date_shipments }}</td> <!-- Дата прихода -->
 							<td> В работе </td> <!-- Статус -->
 							<td class='center tooltip'> <!-- Подробнее -->
 								<div class="tooltiptext">
@@ -141,6 +146,8 @@
 
 <script>
 import { random } from 'lodash';
+import { eSelectSpan } from '@/js/methods';
+import { returnShipmentsDate } from '@/js/operation';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
 
@@ -159,6 +166,8 @@ export default {
 			loader: false,
 
 			select_worker: null,
+			inxMet: 0,
+			inxWork: 0,
 		}
 	},
   computed: mapGetters([
@@ -181,47 +190,43 @@ export default {
 			'clearCascheMaterial',
 		]),
 		unmount_working(_id) {
-      if(!_id) return false;
+      if (!_id) return false;
 			this.select_worker = null;
     },
+		setWorkers(workers) {
+			console.log(workers)
+		},
 		instansMaterial(instans, span) {
-      if(this.span) 
-				this.span.classList.remove('td-row-all')
-			if(this.instansLet == instans)
-				return 0
+			if (this.instansLet == instans) return 0;
 
-      this.span = span
-			this.span.classList.add('td-row-all')
+      this.span = eSelectSpan(this.span, span);
 
-      this.getInstansMaterial(instans)
-      this.instansLet = instans
-
+      this.getInstansMaterial(instans);
+      this.instansLet = instans;
     },
 		clickMat(mat) {
 			this.filterByNameMaterial(mat);
     },
 		setMaterial(material, span) {
-			if(this.material && this.material.id == material.id && this.span_material) {
+			if (this.material && this.material.id == material.id && this.span_material) {
 				this.material = null;
 				return this.span_material = null;
 			}
-			if(this.span_material)
-				this.span_material.classList.remove('td-row-all');
-			this.span_material = span;
-			this.span_material.classList.add('td-row-all');
 
+			this.span_material = eSelectSpan(this.span_material, span);
 			this.material = material;
 		},
+		returnShipmentsKolvo(shipments, znach_return = 1) {
+      return returnShipmentsDate(shipments, znach_return);
+    },
     getComing(mat, type) {
-      if(!mat.dev) return 0
+      if (!mat.dev) return 0;
       try {
         const pars_str = JSON.parse(mat.dev.product);
-        for(let prod of pars_str) {
-          if(prod.id == mat.id) {
-            if(type == 'kol') 
-              return prod.kol;
-            if(type == 'ez')
-              return prod.ez;
+        for (const prod of pars_str) {
+          if (prod.id == mat.id) {
+            if (type == 'kol') return prod.kol;
+            if (type == 'ez')	return prod.ez;
           }
         }
       } catch(e) { 
@@ -230,12 +235,11 @@ export default {
       
     },
 		materialOstat(material) {
-			let res = material.shipments_kolvo - this.getComing(material, 'kol');
+			const res = material.shipments_kolvo - this.getComing(material, 'kol');
 			return res < 0 ? -res : res;
 		},
 		openCheck(documents) {
-			if(!documents || documents.length == 0)
-				return 0;
+			if (!documents || documents.length == 0) return 0;
 			this.itemFiles = documents[0];
 			this.keyWhenModalGenerateFileOpen = random(1, 999);
 		}
@@ -245,7 +249,6 @@ export default {
     this.clearCascheMaterial();
     await this.fetchGetAllShipmentsPPM();
 		await this.fetchAllWorkings();
-		console.log(this.getWorkings);
 		this.loader = false;
 	}
 }

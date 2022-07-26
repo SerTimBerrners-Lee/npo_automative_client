@@ -18,14 +18,14 @@ export default {
   actions: { 
     async fetchAllWorkings(ctx, archive = false) {
       const res = await Req(`api/working/all/${archive}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('addAllWorkings', result);
     },
     async fetchWorkingsCount() {
       const res = await Req(`api/working/count/`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;  
@@ -34,7 +34,7 @@ export default {
       const res = await Req(`api/working/banned/${_id}`, {
         method: 'delete'
       });
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       return result;  
@@ -49,12 +49,12 @@ export default {
         body: JSON.stringify(data)
 			})
 			
-			if(!res.ok) return false; 
+			if (!res.ok) return false; 
 			return true
     },
     async fetchOneWorking(ctx, _id) {
       const res = await Req(`api/working/one/${_id}`);
-      if(!res.ok) return false;
+      if (!res.ok) return false;
 
       const result = await res.json();
       ctx.commit('addOneWorking', result);

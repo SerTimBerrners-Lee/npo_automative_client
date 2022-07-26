@@ -48,7 +48,7 @@
           class='td-row'>
           <td>{{ shipment.number_order }}</td>
           <td class='center'>{{ shipment.date_order }}</td>
-          <td class='center'>{{ returnShipmentsKolvo(shipments_arr) }}</td>
+          <td class='center'>{{ returnShipmentsKolvo(shipments_arr) || shipment.date_shipments }}</td>
           <td class='center'>{{ shipment.kolvo_for_parent || shipment.kolvo_shipments }}</td>
         </tr>
       </table>
@@ -118,7 +118,6 @@ export default {
 
     if (this.$props.shipments) {
       this.shipments_arr = this.$props.shipments;
-      console.log('this.shipments_arr ')
       if (izd && izd.izd) {
         for (const item in this.shipments_arr) {
           this.shipments_arr[item].kolvoIzd = this.returnCountIzd(this.shipments_arr[item], izd.izd, izd.type);
@@ -138,6 +137,7 @@ export default {
           }
       }
 
+      if (!this.shipments_arr[ship1]) continue;
       if (this.shipments_arr[ship1].to_sklad && this.shipments_arr[ship1].number_order.indexOf('C') == -1) {
         const char = this.shipments_arr[ship1].number_order.split('');
         char.unshift('C');
