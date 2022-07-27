@@ -33,11 +33,13 @@
           :izdel='assemble.cbed'
         />
  
-        <OperationTable 
-          :tp='props_tp' 
-          :izdeles='props_izdeles'
-          v-if='props_tp'
-        />
+        <div class="pb_100">
+          <OperationTable 
+            :tp='props_tp' 
+            :izdeles='props_izdeles'
+            v-if='props_tp'
+          />
+        </div>
 				
 				<div class="btn-control out-btn-control" style='position:fixed; bottom: 10px; width: 58%;'>
 					<button class="btn-status btn-black" 

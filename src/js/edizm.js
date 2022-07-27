@@ -5,8 +5,7 @@ const getKolvoMaterial = (mat) => {
 		let pars_mat_kol = JSON.parse(mat.kolvo) // Выбранные ЕИ у Материала
 		let pars_ez_kol = null
 		if(mat.ez_kolvo) pars_ez_kol = JSON.parse(mat.ez_kolvo) // Данные о количестве материала для определенной ЕИ
-		if(mat.id == 64) console.log(pars_mat_kol, pars_ez_kol)
-
+		
 		if(pars_mat_kol.c1) 
 			if(pars_ez_kol)	arr_ez.push({...returnObjectPos(pars_ez_kol, 0, 'шт')})
 				else 	arr_ez.push({ez: 'шт', ...mat})

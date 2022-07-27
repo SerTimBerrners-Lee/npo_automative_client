@@ -120,7 +120,6 @@ export default {
     this.loader = true;
 
     await this.getAllUsers(true);
-    console.log(this.metall);
 
     this.loader = false;
   }

@@ -31,9 +31,9 @@
           <ShipmentList
             @unmount_set='toSetOrders'
             @unmount_clear='unmount_clear'
-            @unmount_set_metal='toSetOrdersMetal'
+            @unmount_set_work='toSetOrdersMetal'
             :getShipments='getShipments'
-            :metalloworing='metalloworkingsWorkings' />
+            :workings='metalloworkingsWorkings' />
         </div>
         <div style='width: 99%;'> 
           <table>
@@ -312,7 +312,6 @@ export default {
       this.startProductionModalKey = random(1, 999);
     },
     toProduction(izd, e) {
-      console.log(izd);
       e.classList.toggle('checkbox_block_select');
       let check = true;
       for (const izdd of this.toProductionArr) {

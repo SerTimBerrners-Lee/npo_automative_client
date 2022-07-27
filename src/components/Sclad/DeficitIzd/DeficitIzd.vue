@@ -33,7 +33,10 @@
           @unmount_set='toSetOrders'
           @unmount_clear='unmount_clear'
           @unmount_action='unmount_action'
-          :getShipments='getShipments'/>
+          :getShipments='getShipments'
+          @unmount_set_work='toSetOrdersAss'
+          :workings='assemblyWorkings'
+        />
       </div>
       <div style='margin-left: 5px;'>
         <table>
@@ -88,7 +91,7 @@
               <td class='center'>{{ product.fabricNumber }}</td>
               <td class='center'>{{ product.articl }}</td>
               <td class='center' @dblclick="showInformIzdel(product.id)">{{ product.name }}</td>
-              <td class='center' @click='returnShipmentsDateModal(product, "product")'>
+              <td class='center' @click='returnShipmentsDateModal(product)'>
                 <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
               </td>
               <td class='center min_width-100' style='color: red;'>{{ returnDificit(product, product.product_kolvo) }}</td> <!-- Дефицит -->
@@ -135,6 +138,7 @@
       :izd='izdForSchipment'
       v-if='shipments.length'
       :key='shipmentKey'
+      :scladWorking='assemblyWorkings'
     />
     <ProductModalInfo
       :id='parametrs_product'
@@ -170,6 +174,7 @@ export default {
 
       shipments: [],
       shipmentKey: random(1, 999),
+      assemblyWorkings: [],
       
       showNormTimeOperation: false,
       normTimeOperationKey: random(1, 999),
@@ -202,7 +207,11 @@ export default {
       productModalKey: random(1, 999)
     }
   },
-  computed: mapGetters(['allProduct', 'getShipments']),
+  computed: mapGetters([
+    'getWorkings',
+    'allProduct',
+    'getShipments'
+  ]),
   components: {
     ProductModalInfo,
     DescriptionModal, 
@@ -223,15 +232,15 @@ export default {
     ...mapActions([
       'setchDeficitProducts', 
       'fetchAllShipmentsNoStatus',
-      'getAllProductShipmentsById'
+      'getAllProductShipmentsById',
+      'fetchAllWorkings'
     ]),
     ...mapMutations([
       'searchProduct',
-      'detalToShipmentsSort',
       'changeStatusDeficitProduct',
       'reverseMidlevareProduct',
       'productToShipmentsSort',
-      'changeKolDeficitProduct'
+      'changeKolDeficitProduct',
     ]),
     // Меняем параметры с учетом заказа
     unmount_start_production(data) {
@@ -286,19 +295,12 @@ export default {
       }
       return end_date;
     },
-    returnShipmentsDateModal(izd, type) {
+    returnShipmentsDateModal(izd) {
       const shipments = izd.shipments;
-      if (izd.shipments == undefined) {
-        this.getAllProductShipmentsById(izd.id).then(res => {
-          this.shipments = res.shipments;
-          this.izdForSchipment = { izd, type };
-          this.shipmentKey = random(1, 999);
-        })
-      }
       if (shipments && shipments.length == 0) return showMessage('', 'Нет Заказов', 'i');
       if (!shipments) return;
       this.shipments = shipments;
-      this.izdForSchipment = {izd, type};
+      this.izdForSchipment = {izd, type: 'prod'};
       this.shipmentKey = random(1, 999);
     },
     getTimming(param, kol = 1) {
@@ -337,11 +339,23 @@ export default {
       };
       this.startProductionModalKey = random(1, 999);
     },
+    toSetOrdersAss(work) {
+      if (!work.assemble || !work.assemble.length) return false;
+      const arr = [];
+      for (const item of work.assemble) {
+        if (item.cbed) arr.push(item.cbed);
+      }
+      this.productToShipmentsSort(arr);
+      this.loader = false;
+    }
   },
   async mounted() {
     this.loader = true;
     await this.setchDeficitProducts();
     await this.fetchAllShipmentsNoStatus();
+
+    await this.fetchAllWorkings();
+    this.assemblyWorkings = this.getWorkings.filter(el => el.type == 'ass');
     this.loader = false;
   }
 }

@@ -32,7 +32,9 @@
         <ShipmentList
           @unmount_set='toSetOrders'
           @unmount_clear='unmount_clear'
-          :getShipments='getShipments'/>
+          :getShipments='getShipments'
+          @unmount_set_work='toSetOrdersAss'
+          :workings='assemblyWorkings'/>
       </div>
       <div style='margin-left: 5px;'>
         <table>
@@ -87,7 +89,7 @@
             <td class='center'>СБ</td>
             <td class='center'>{{ cbed.articl }}</td>
             <td class='center' @dblclick="showInformIzdel(cbed.id, 'cbed')">{{ cbed.name }}</td>
-            <td class='center' @click='returnShipmentsDateModal(cbed, "cbed")'>
+            <td class='center' @click='returnShipmentsDateModal(cbed)'>
               <img src="@/assets/img/link.jpg" class='link_img' atl='Показать' />
             </td>
             <td class='center min_width-100' style='color: red;'>{{ returnDificit(cbed, cbed.cbed_kolvo) }}</td> <!-- Дефицит -->
@@ -145,6 +147,7 @@
       :izd='izdForSchipment'
       v-if='shipments.length'
       :key='shipmentKey'
+      :scladWorking='assemblyWorkings'
     />
     <Loader v-if='loader' />
   </div>
@@ -173,6 +176,7 @@ export default {
       shipments: [],
       toProductionArr: [],
       shipmentKey: random(1, 999),
+      assemblyWorkings: [],
       
       showNormTimeOperation: false,
       normTimeOperationKey: random(1, 999),
@@ -201,7 +205,11 @@ export default {
       ],
     }
   },
-  computed: mapGetters(['allCbed', 'getShipments']),
+  computed: mapGetters([
+    'getWorkings',
+    'allCbed',
+    'getShipments'
+  ]),
   components: {
     StartProduction, 
     DescriptionModal, 
@@ -221,14 +229,15 @@ export default {
   methods: {
     ...mapActions([
       'setchDeficitCbed',
-      'fetchAllShipmentsNoStatus'
+      'fetchAllShipmentsNoStatus',
+      'fetchAllWorkings'
     ]),
     ...mapMutations([
       'searchCbed',
       'cbedToShipmentsSort',
       'reverseMidlevareCbed',
       'changeStatusDeficitCbed',
-      'changeDeficitCbed'
+      'changeDeficitCbed',
     ]),
     unmount_start_production(data) {
       if (!data) return;
@@ -282,11 +291,11 @@ export default {
       }
       return end_date;
     },
-    returnShipmentsDateModal(izd, type) {
+    returnShipmentsDateModal(izd) {
       const shipments = izd.shipments;
       if (!shipments || shipments.length == 0) return showMessage('', 'Нет Заказов', 'i')
       this.shipments = shipments;
-      this.izdForSchipment = {izd, type};
+      this.izdForSchipment = {izd, type: 'cbed'};
       this.shipmentKey = random(1, 999);
     },
     getTimming(param, kol = 1) {
@@ -332,13 +341,25 @@ export default {
 					this.cbedModalKey = random(1, 999);
 				}
 			}
-		}
+		},
+    toSetOrdersAss(work) {
+      if (!work.assemble || !work.assemble.length) return false;
+      const arr = [];
+      for (const item of work.assemble) {
+        if (item.cbed) arr.push(item.cbed);
+      }
+      this.cbedToShipmentsSort(arr);
+      this.loader = false;
+    }
   },
   async mounted() {
     this.loader = true;
     this.reverseMidlevareCbed();
     await this.setchDeficitCbed();
     await this.fetchAllShipmentsNoStatus();
+
+    await this.fetchAllWorkings();
+    this.assemblyWorkings = this.getWorkings.filter(el => el.type == 'ass');
     this.loader = false;
   }
 }

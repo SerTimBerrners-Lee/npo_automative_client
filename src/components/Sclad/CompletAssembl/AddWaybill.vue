@@ -174,6 +174,7 @@
 <script>
 import { mapActions } from 'vuex';
 import { dataFormat } from '@/js/';
+import MixModal from '@/mixins/mixmodal';
 import { returnEzName } from '@/js/edizm';
 import { parseSpetification } from '@/js/methods';
 
@@ -189,10 +190,6 @@ export default {
   },
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',
-
       ass: null,
       izdels: null,
 
@@ -201,6 +198,7 @@ export default {
       listCbed: [],
     }
   },
+  mixins: [MixModal],
   methods: {
     ...mapActions([
       'getOneCbEdById',
@@ -208,11 +206,6 @@ export default {
       'getOneDetal',
       'fetchGetOnePPM'
     ]),
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-    },
     dataReturn() {
       return dataFormat();
     },
@@ -221,10 +214,6 @@ export default {
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
-
     if (!this.type_open || !this.cbed) return this.destroyModalF();
     this.ass = this.cbed;
 
@@ -247,13 +236,11 @@ export default {
 
     for (let item of this.listDetal) {
       const data = await this.getOneDetal(item.det.id);
-      console.log(data);
       if (data) item = {...data, ...item};
     }
 
     for (let item of this.listCbed) {
       const data = await this.getOneCbEdById(item.cb.id);
-      console.log(data);
       if (data) item = {...data, ...item};
     }
   }

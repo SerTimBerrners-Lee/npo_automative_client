@@ -138,6 +138,7 @@
 import print from 'print-js';
 import { isArray } from 'lodash';
 import PATH_TO_SERVER from '@/js/path';
+import MixModal from '@/mixins/mixmodal';
 import { mapActions, mapGetters } from 'vuex';
 import { photoPreloadUrl, showMessage } from '@/js/';
 
@@ -145,10 +146,6 @@ export default {
   props: ['parametrs'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',
-
       typeDocs: ['МД', 'КД', 'ЧЖ', 'СД', 'DXF'],
       urlImg: '',
       imgShow: false,
@@ -168,6 +165,7 @@ export default {
     }
   },
   computed: mapGetters(['getUsers', 'getRoleAssets']),
+  mixins: [MixModal],
   methods: {
     ...mapActions([
       'pushDocuments', 
@@ -175,12 +173,6 @@ export default {
       'updateDataFile',
       'fetchAvaChange'
     ]),
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-      this.$emit('unmount', null);
-    },
     async changeAvaFile(file) {
       file.ava = !file.ava;
       this.$emit('unmount_ava', {id: file.id, ava: file.ava})
@@ -191,15 +183,14 @@ export default {
 
     },
     nextFile(){
-      if(this.file_increment == this.file.length - 1) 
+      if (this.file_increment == this.file.length - 1) 
         this.file_increment = 0;
       else this.file_increment++;
       
       this.showDocs(this.file[this.file_increment]);
     },
     showDocs(file) {
-      if(!file) 
-        return 0
+      if (!file) return 0;
       photoPreloadUrl(file, (res) => {
         this.docType = {...res}
       }, true)
@@ -213,7 +204,7 @@ export default {
       window.open(url, '_blank')
     },
     edit(e) {
-      if(this.is_edit) {
+      if (this.is_edit) {
         this.is_edit = false
         e.innerText = 'Редактировать'
         this.update()
@@ -255,7 +246,7 @@ export default {
         description: this.description
       }
       const res = await this.updateDataFile(data);
-      if(res) {
+      if (res) {
         setTimeout(() => {
           this.destroyModalF()
           this.$emit('unmount', {
@@ -271,14 +262,10 @@ export default {
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-
     this.getAllUsers(true);
-    if(this.parametrs.type == 'create') return 0;
+    if (this.parametrs.type == 'create') return 0;
 
-    if(this.parametrs.type_open_modal == 'edit') {
+    if (this.parametrs.type_open_modal == 'edit') {
       this.titleapp = 'Редактирование';
       this.type_document = this.parametrs.type;
       this.description = this.parametrs.description;
@@ -287,20 +274,19 @@ export default {
       this.version = this.parametrs.version;
       this.id = this.parametrs.id;
     }
-    if(this.$props.parametrs && this.$props.parametrs.responsible_user_id) {
-      for(const user of this.getUsers) {
-        if(user.id == this.$props.parametrs.responsible_user_id) {
+    if (this.$props.parametrs && this.$props.parametrs.responsible_user_id) {
+      for (const user of this.getUsers) {
+        if (user.id == this.$props.parametrs.responsible_user_id) {
           this.responsible_name = user.login;
         }
       }
     }
 
     const file = this.$props.parametrs;
-    if(isArray(file)) this.file = file;
+    if (isArray(file)) this.file = file;
     else this.file.push(file);
 
     this.showDocs(this.file[0]);
-    console.log(this.file)
       
   },
 }

@@ -213,7 +213,6 @@ export default {
       this.productModalKey = random(1, 999);
     },
     async setDetals(detal, e) {
-      console.log(detal);
       const res = await this.getOneDetal(detal.id);
       this.selectedDetal = res;
       this.addOneSelectDetal(res);
@@ -227,7 +226,6 @@ export default {
       this.parametrs_detal = this.selectedDetal.id;
     },
     async setCbed(cbed, e) {
-      console.log(cbed);
       if (this.selectedCbEd && this.selectedCbEd.id == cbed.id) {
         this.clearFilterDetalByProduct();
         e.classList.remove('td-row-all');

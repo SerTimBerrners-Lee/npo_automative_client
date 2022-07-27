@@ -75,36 +75,45 @@ export async function getStatus(tech_proc, operation_id, curr_id=1, return_is='i
 
 export class OperationTime {
 	constructor(operation, kol_create_izd = 1) {
-		if (!operation) return false
+		if (!operation) return false;
 
-		this.pt = Number(operation.preTime) 
-		this.mt = Number(operation.mainTime) 
-		this.ht = Number(operation.helperTime) 
-		this.kol_create_izd = Number(kol_create_izd)
+		this.pt = Number(operation.preTime);
+		this.mt = Number(operation.mainTime);
+		this.ht = Number(operation.helperTime);
+		this.kol_create_izd = Number(kol_create_izd);
 
 		return {
-			count: this.timeKolvo(),
+			count: Number(this.timeKolvo()),
 			pt: (this.pt / 60).toFixed(2),
 			mt: (this.mt / 60).toFixed(2),
 			ht: (this.ht / 60).toFixed(2)
 		}
 	}
-	static pt
-	static mt
-	static ht
-	static kol_create_izd 
+	static pt;
+	static mt;
+	static ht;
+	static kol_create_izd;
 
 	timeKolvo() {
-		const num = ((this.pt + (this.mt + this.ht) * this.kol_create_izd) / 60)
-		return num.toFixed(2)
+		const num = ((this.pt + ((this.mt + this.ht) * this.kol_create_izd)) / 60);
+		return num.toFixed(2);
 	}
 }
 
 export function worksHors(operation, kolvo_all = 1) {
-	let ot = new OperationTime(operation, kolvo_all)
-	return ot.count
+	const ot = new OperationTime(operation, kolvo_all);
+	return ot.count;
 }
  
+export function worksHorsOperations(operations, kolvo_all = 1) {
+	let count = 0.00;
+	for (const op of operations) {
+		const ot = new OperationTime(op, kolvo_all);
+		count += ot.count;
+	}
+	return count;
+}
+
 export function workingForMarks(operation, marks) {
 	if (!marks || marks.length == 0) return 0
 	let count = 0;
@@ -151,4 +160,24 @@ export function returnKolvoCreate(oper) {
     }
   }
   return end_date;
+}
+
+/**
+ * 
+ * @param {*} work - metall || ass  
+ * @returns 
+ */
+export function precentWorksAsOperation(work) {
+	const tp = work.tech_process;
+	if (!tp || !tp.operations || !tp.operations.length) return '0%';
+	let kolDetalComplit = 0;
+	for (const item of tp.operations) {
+		if (!item?.marks.length) continue;
+		for (const mark of item.marks) {
+			kolDetalComplit += mark.kol;
+		}
+	}
+	const kolDetalForOpetaion = tp.operations.length * work.kolvo_shipments;
+	const precent = kolDetalComplit * 100 / kolDetalForOpetaion;
+	return precent.toFixed(0) + '%';
 }

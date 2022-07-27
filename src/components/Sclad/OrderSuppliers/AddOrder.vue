@@ -347,7 +347,6 @@ export default {
     checkMaterialList() {
       if (!this.position_lists.length) return false;
       for (const mat of this.position_lists) {
-        console.log(mat, 'mat')
         if(!Number(mat.ez) || !mat.ez) mat.ez = 1;
       }
     },

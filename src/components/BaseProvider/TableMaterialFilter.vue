@@ -110,7 +110,6 @@ export default {
       // this.filterByNameMaterial(mat);
     },
     clickGPPT(mat, span) {
-      console.log(mat);
       this.span_gppt = eSelectSpan(this.span_gppt, span);
       this.$emit('unmount_material', mat);
     }
@@ -118,9 +117,9 @@ export default {
   async mounted() {
     this.loader = true;
 
-    if(this.$props.id_product)
+    if (this.$props.id_product)
       await this.fetchAllProviderMaterialById(this.$props.id_product);
-    if(this.$props.is_empty)
+    if (this.$props.is_empty)
       this.clearMaterialCurrentProducts();
       
     this.loader = false;

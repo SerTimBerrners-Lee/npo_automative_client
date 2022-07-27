@@ -162,7 +162,6 @@ export default {
     },
     setComplit(complit, e) {
       this.selected_complit = complit;
-      console.log(complit);
       this.tr = eSelectSpan(this.tr, e);
     },
     openComplectation(sh) {
@@ -175,7 +174,6 @@ export default {
     openComplitModal(sh_complit) {
       if (!sh_complit) return showMessage('', 'Выберите отгрузку', 'w');
       this.selected_complit = sh_complit;
-      console.log(sh_complit);
       this.shipment_key = random(1, 999);
     }
   },

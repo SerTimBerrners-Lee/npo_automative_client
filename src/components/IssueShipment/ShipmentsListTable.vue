@@ -36,13 +36,13 @@
 						<tr v-if='metalloworing && metalloworing.length'>
 							<td colspan="3" class='center'><strong> Заказ склада Металообработка </strong></td>
 						</tr>
-						<tr v-for="metal of metalloworing || []" :key="metal.id">
+						<tr v-for="work of workings || []" :key="work.id">
 							<td>
 								<div class='center_block checkbox_parent' style='border: none; border-bottom: 1px solid #e4e4e4ce'>
-									<p class="checkbox_block" @click='e => toSetMetal(metal, e.target)'></p>
+									<p class="checkbox_block" @click='e => toSetWorks(work, e.target)'></p>
 								</div>
 							</td>
-							<td class='td-row'>{{ metal.number_order }}</td>
+							<td class='td-row'>{{ work.number_order }}</td>
 							<td class='td-row'>{{ '-' }}</td>
 						</tr>
 					</tbody>
@@ -81,7 +81,7 @@ import { returnShipmentsDate } from '@/js/operation';
 export default {
 	props: {
 		getShipments: [],
-		metalloworing: [],
+		workings: [],
 	},
 	data() {
 		return {
@@ -145,14 +145,14 @@ export default {
 			this.$emit('unmount_set', res);
 			if (shipments.number_order) this.keySearch(shipments.number_order);
     },
-		toSetMetal(metal, e) {
+		toSetWorks(work, e) {
 			this.$emit('unmount_action');
 			if (this.span_ship) {
         this.breackFIlterMetal();
 				this.breackFIlterAssembl();
       }
 			this.span_ship = eSelectSpan(this.span_ship, e, 'checkbox_block_select');
-			this.$emit('unmount_set_metal', metal);
+			this.$emit('unmount_set_work', work);
 		},
 		returnShipmentsKolvo(shipments, znach_return = 1) {
       return returnShipmentsDate(shipments, znach_return);

@@ -26,33 +26,21 @@
 </template>
 
 <script>
+import MixModal from '@/mixins/mixmodal';
 import DatePicterRange from '@/components/DatePicterRange';
+
 export default {
-  props: [''],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',
-     
     }
   },
   components: {DatePicterRange},
+  mixins: [MixModal],
   methods: {
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden'
-      this.destroyModalRight = 'content-modal-right-menu-hidden'
-      this.hiddens = 'display: none;'
-    },
     changeDatePicterRange(val) {
       console.log(val)
     }
   },
-  async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-  }
 }
 </script>
 

@@ -146,7 +146,6 @@ export default {
     setTr(ass, span) {
       this.span = eSelectSpan(this.span, span);
       this.selectedAss = ass;
-      console.log(ass.type_izd);
     }
 	},
 	async mounted() {

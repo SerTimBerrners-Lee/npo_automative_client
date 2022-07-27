@@ -7,7 +7,7 @@
       <p v-if='izd'>Для 
         <strong v-if='izd?.type == "cbed"'>Сборки:</strong>
         <strong v-if='izd?.type == "detal"'>Детали:</strong>
-        <strong v-if='izd?.type == "product"'>Изделия:</strong>
+        <strong v-if='izd?.type == "prod"'>Изделия:</strong>
         <strong v-if='izd?.type == "material"'>Материала:</strong>
           {{ izd?.izd?.name }}</p>
         Артикул: <strong>{{ izd?.izd?.articl }}</strong>
@@ -99,7 +99,7 @@ export default {
       }
     },
     returnCountIzd(item, izd, type) {
-      if (type == 'product') return item.kol || 0;
+      if (type == 'prod') return item.kol || 0;
       if (type == 'material') return item.shipments_material || 0;
       try {
         let count = 0;
@@ -150,11 +150,15 @@ export default {
     if (this.$props.scladWorking) {
       for (const item of this.$props.scladWorking) {
         const types = izd.type == 'detal' ? item.metall : item.assemble;
-        for (const met of types) {
-          if (met.detal?.id == izd.izd?.id) {
-            item.kolvo_shipments = met.kolvo_shipments;
+        for (const work of types) {
+          let find = false;
+          if (izd.type === 'detal' && work.detal?.id == izd.izd?.id) find = true;
+          else if (izd.type != 'detal' && work.cbed?.id == izd.izd?.id) find = true;
+
+          if (find) {
+            item.kolvo_shipments = work.kolvo_shipments;
             this.sclad_arr.push(item);
-            this.allKolvoSclad += met.kolvo_shipments;
+            this.allKolvoSclad += work.kolvo_shipments;
           }
         }
       }

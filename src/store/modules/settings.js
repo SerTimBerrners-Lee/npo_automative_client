@@ -11,27 +11,25 @@ export default {
   }, 
   actions: {
     async fetchDB(ctx) { 
-      const res = await Req(`api/settings/db/`)
-      if(res.ok == true) {
-        const result = await res.json()
-        ctx.commit('setDB', result)
-        return result
+      const res = await Req(`api/settings/db/`);
+      if (res.ok == true) {
+        const result = await res.json();
+        ctx.commit('setDB', result);
+        return result;
       }
     },
     async fetchAddDB() {
-      const res =  await Req(`api/settings/db/new/`)
-      console.log(res)
-      if(res.ok)
-        return true
+      const res =  await Req(`api/settings/db/new/`);
+      if (res.ok) return true;
 
-      return false
+      return false;
     },
     async fetchDropDB(ctx, name_dump) {
       const res = await Req(`api/settings/db/${name_dump}`, {
         method: "delete"
       })
       if (res.ok)
-        ctx.commit('filterDB', name_dump)
+        ctx.commit('filterDB', name_dump);
     },
     async fetchInactionHors() {
       const res = await Req(`api/settings/inaction/`);

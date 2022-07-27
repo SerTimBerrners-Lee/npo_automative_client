@@ -74,10 +74,6 @@ export default {
   },
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
-
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -148,8 +144,7 @@ export default {
 			this.komplect_generate_key = random(1, 999);
 			this.parametrs_komplect = komplect;
 		},
-    openFiles() { 
-      console.log('openFiles')
+    openFiles() {
       this.keyWhenModalGenerateFileOpen = random(1, 999);
       this.showModalFiles = true;
     },

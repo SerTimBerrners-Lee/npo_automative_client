@@ -55,7 +55,6 @@ export default {
     ...mapMutations(['searchNameInst']),
     async setObject(instr, e) {
       this.selected = instr;
-      console.log(instr)
 
       this.tr = eSelectSpan(this.tr, e);
     },

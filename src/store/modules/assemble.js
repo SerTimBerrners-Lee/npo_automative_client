@@ -118,7 +118,6 @@ export default {
         const {description, id, ...operation} = r.operation;
         state.assembles.push({...operation, ...r.ass, description, operation_id: id});
       }
-      console.log(state.assembles);
     },
     filterAssemblByShipments(state, cbeds) {
       const new_arr = [];

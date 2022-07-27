@@ -14,50 +14,56 @@
     <div class='table_block'> 
       <ShipmentList
         @unmount_set='toSetOrders' 
-        :getShipments='getShipments'/> 
+        :getShipments='getShipments'
+        @unmount_set_work='toSetOrdersAss'
+        :workings='assemblyWorkings'
+      /> 
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tr class='fixed_table_85'>
-            <th>Дата план. отгрузки</th>
-            <th>Заказ склада</th>
-            <th>№ Заказа</th>
-            <th>Сборочная единица</th>
-            <th>Артикул СБ</th>
+            <th>№</th>
+            <th>Тип</th>
+            <th>Артикул</th>
+            <th>Наименование</th>
             <th>Кол-во ВСЕГО по заказу склада, шт.</th>
-            <th>Кол-во в т.ч. по заказу покупателя, шт.</th>
+            <th>Дата план. отгрузки</th>
+            <th>Заказы</th>
             <th id='operation'>Операции</th>
             <th>Готовность</th>
             <th>Готовность к сборке</th>
-            <th>Статус</th>
             <th id='doc'>Документы</th>
             <th>Время на сборку, ч</th>
             <th id='discription'>Примечание</th>
           </tr> 
           <tr 
-            v-for='assemble of getAssembles' :key='assemble'
+            v-for='(assemble, inx) of getAssembles' :key='assemble'
             @click='e => setObject(assemble, e.target.parentElement)'
             class='td-row'>
-            <td class='center link_img' @click='returnShipmentsDateModal(assemble?.cbed?.shipments)'> <!-- Дата готовности --> 
-              {{returnShipmentsKolvo(assemble?.cbed?.shipments)}}
+            <td class="center">{{ inx + 1}}</td>
+            <td class="center"><strong>{{ assemble.type_izd == 'prod' ? 'Изд.' : 'СБ' }}</strong></td>
+            <td>{{ assemble?.cbed?.articl || 'Нет артикла' }}</td>
+            <td>{{ assemble?.cbed?.name || 'Нет наименования' }}</td>
+            <td class='center'>{{ assemble.kolvo_shipments }}</td> <!-- Кол-во ВСЕГО по заказу склада, шт. -->
+            <td class='center link_img'> <!-- Дата готовности --> 
+              {{ returnFirstDate(assemble?.cbed?.shipments) == '-' ? returnFirstDate(assemble?.workings) : returnFirstDate(assemble?.cbed?.shipments) }}
             </td>
-            <td>{{ assemble.date_order }}</td> <!-- Заказ склада -->
-           <td class='center'>{{ assemble.number_order }}</td>  <!-- № Заказа -->
-            <td>{{ assemble?.cbed?.name || 'Нет СБ' }}</td> 
-            <td>{{ assemble?.cbed?.articl || 'Нет СБ' }}</td>
-            <td class='center'>{{ assemble.kolvo_shipments }}</td>
-            <td class='center'>{{ assemble.cbed?.shipments_kolvo || 0 }}</td>
+            <td class="center">
+              <img src="@/assets/img/link.jpg" @click='returnShipmentsDateModal(assemble)' class='link_img' atl='Показать' />
+            </td> <!-- Заказы -->
             <td class='center' id='operation'>
               <img src="@/assets/img/link.jpg" @click='openOperationPath(assemble)' class='link_img' atl='Показать' />
             </td>
-            <td>{{  }}</td>
-            <td class='center'>{{ "нет" }}</td>
-            <td v-if='assemble.status == enumStatus[0]' class='work_operation'>{{ assemble.status  }}</td>
-            <td v-if='assemble.status == enumStatus[1]' class='success_operation'>{{ assemble.status  }}</td>
-            <td v-if='assemble.status == enumStatus[2]' class='delete_operation'>{{ assemble.status  }}</td>
-            <td v-if='assemble.status == enumStatus[3]' class='delete_operation'>{{ assemble.status  }}</td>
-            <td v-if='assemble.status == enumStatus[4]' class='center success_operation'>
-              <unicon name="check" fill="black" />
+            <td 
+              v-if="assemble.status !== 'Проведено'"
+              :class='returnStatus(assemble.status, precentWorks(assemble)) + " tooltip center"'>
+                <span>{{ precentWorks(assemble) }}</span>
+                <span class="tooltiptext">{{ assemble.status }}</span>
             </td>
+            <td v-else :class='returnStatus(assemble.status) + " tooltip center"'>
+              <span class="tooltiptext">{{ assemble.status }}</span>
+              <unicon name="check" fill="black" />
+            </td> <!-- Готовность -->
+            <td class='center'>{{ "нет" }}</td>
             <td class='center' id='doc'>
               <img src="@/assets/img/link.jpg" v-if='assemble.cbed' @click='openDocuments(assemble.cbed.id)' class='link_img' atl='Показать' />
             </td>
@@ -81,7 +87,7 @@
       <button class="btn-small" @click='printPage'>Печать</button>
     </div>
     <DescriptionModal 
-      v-if='description'
+      v-if='descriptionKey'
       :key='descriptionKey'
       :parametrs='description'
     />
@@ -101,10 +107,13 @@
       :parametrs='operation_stack'
       :is_type='"cb"'
     />
+
     <ShipmentsModal 
       :shipments='shipments'
-      v-if='shipments.length'
+      v-if='izdForSchipment'
       :key='shipmentKey'
+      :izd='izdForSchipment'
+      :scladWorking='assemblyWorkings'
     />
 
     <Loader v-if='loader' />
@@ -114,21 +123,24 @@
 <script>
 import print from 'print-js';
 import { random } from 'lodash';
+import { showMessage } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
-import { showMessage, comparison } from '@/js/';
+import { worksHorsOperations } from '@/js/operation';
+import { returnShipmentsDate } from '@/js/operation';
 import OpensFile from '@/components/FileBase/OpenFile';
+import { precentWorksAsOperation } from '@/js/operation';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import DescriptionModal from '@/components/DescriptionModal';
 import ShipmentsModal from '@/components/Sclad/ShipmentsToIzed';
 import OperationModal from '@/components/Sclad/WorkingsOperations';
-import OperationPathModal from '@/components/Assembly/OperationPathModal';
 import ShipmentList from '@/components/IssueShipment/ShipmentsListTable';
+import OperationPathModal from '@/components/Assembly/OperationPathModal';
 
 export default {
 	data() {
 		return{
       assembles: [],
-      descriptionKey: random(1, 999),
+      descriptionKey: null,
       description: '',
       itemFiles: [],
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -140,7 +152,9 @@ export default {
       key_operation_m: random(1, 999),
       show_operaiton_m: false,
       shipments: [],
+      izdForSchipment: null,
       shipmentKey: random(1, 999),
+      assemblyWorkings: [],
 
       assemble_props: null,
 
@@ -162,7 +176,8 @@ export default {
   computed: mapGetters([
     'getShipments',
     'getTypeOperations',
-    'getAssembles'
+    'getAssembles',
+    'getWorkings'
   ]),
 	components: {
     OperationModal,
@@ -180,7 +195,8 @@ export default {
       'getAllTypeOperations',
       'getOneCbEdField',
       'fetchAssemblyDelete',
-      'fetchCombackAssemble'
+      'fetchCombackAssemble',
+      'fetchAllWorkings',
     ]),
     ...mapMutations([
       'filterAssemblByShipments',
@@ -197,7 +213,6 @@ export default {
       this.fetchAssemble(this.isArchive);
     }, 
     setObject(obj, e) {
-      console.log(obj)
       this.span = eSelectSpan(this.span, e);
       this.selectAssembly = obj;
     },
@@ -216,6 +231,14 @@ export default {
         ignoreElements: ['operation', 'doc', 'discription'],
         font_size: '10pt'
       });
+    },
+    precentWorks(metal) {
+      return precentWorksAsOperation(metal);
+    },
+    returnStatus(status, precent = null) {
+      if (status == this.enumStatus[1] || status == this.enumStatus[4] || precent == '100%') return 'success_operation';
+      if (status == this.enumStatus[0]) return 'work_operation';
+      return 'delete_operation';
     },
     toSetOrders(shipments) {
       if (shipments.cbeds && shipments.cbeds.length)
@@ -242,21 +265,8 @@ export default {
       this.key_operation_m = random(1, 999);
       this.show_operaiton_m = true;
     }, 
-    returnShipmentsKolvo(shipments, znach_return = 1) {
-      if (!shipments || shipments.length == 0) return '-';
-      let end_date = shipments[0]?.date_shipments || '-';
-      if (znach_return == 2) end_date = shipments[0]?.number_order || '-';
-      for (const ship1 of shipments) {
-        for (const ship2 of shipments) {
-          if (comparison(ship1.date_shipments, ship2.date_shipments, '<')) end_date = znach_return == 1 ? ship1.date_shipments : ship1.number_order;
-        }
-      }
-      return end_date;
-    },
-    returnShipmentsDateModal(shipments) {
-      if (!shipments || shipments.length == 0) return showMessage('', 'Нет заказов', 'i');
-      this.shipmentKey = random(1, 999);
-      this.shipments = shipments;
+    returnFirstDate(shipments, znach_return = 1) {
+      return returnShipmentsDate(shipments, znach_return);
     },
     filterOperation() {
       for (const ass of this.getAssembles) {
@@ -289,17 +299,25 @@ export default {
         }
       }
     },
-    showAllTimers(ass) {
-      let count = 0;
-      if (!ass.tech_process) return false;
-      const operations = ass.tech_process.operations;
-      if (!operations || operations.length == 0) return;
+    showAllTimers(work) {
+      const operations = work?.tech_process?.operations;
+      if (!operations || operations.length == 0) return 0;
 
-      for (const operation of operations) {
-        count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * ass.kolvo_shipments) / 60;
+      return worksHorsOperations(operations, work.kolvo_shipments);
+    },
+    toSetOrdersAss(work) {
+      if (!work.assemble || !work.assemble.length) return false;
+      const arr = [];
+      for (const item of work.assemble) {
+        if (item.cbed) arr.push(item.cbed);
       }
-      return count.toFixed(2);
-    }
+      this.filterAssemblByShipments(arr);
+    },
+    returnShipmentsDateModal(ass) {
+      this.shipments = ass?.cbed?.shipments || [];
+      this.izdForSchipment = {izd: ass?.cbed, type: ass.type_izd};
+      this.shipmentKey = random(1, 999);
+    },
 	},
 	async mounted() {
     this.loader = true;
@@ -307,6 +325,9 @@ export default {
     await this.fetchAssemble();
     await this.getAllTypeOperations();
     this.filterOperation();
+
+    await this.fetchAllWorkings();
+    this.assemblyWorkings = this.getWorkings.filter(el => el.type == 'ass');
     this.loader = false;
 	}
 }

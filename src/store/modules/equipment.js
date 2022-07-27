@@ -137,7 +137,6 @@ export default {
 
       if (res.ok) return false;
       const result = await res.json();
-      console.log(result);
       return true;
     },
     async fetchOneEquipment(ctx, id) {

@@ -13,14 +13,14 @@ const calcParams = (m, ctx) => {
 	let lengt = m.length // Длина
 	let aCS = m.areaCrossSectional //  Площадь сечения 
 	let density = m.density
-	if(m) return false
-	if(oD) {
+	if (m) return false
+	if (oD) {
 		oD = JSON.parse(oD)
-		if(!m.material.outsideDiametr || !oD?.znach) 
+		if (!m.material.outsideDiametr || !oD?.znach) 
 			ctx.obj.DxL = null
 		else ctx.obj.DxL = padStart('x', oD.znach.length + 1, oD.znach)
 	} else {
-		if(m.material?.outsideDiametr && (JSON.parse(m.material.outsideDiametr)?.znach == 'variable'))
+		if (m.material?.outsideDiametr && (JSON.parse(m.material.outsideDiametr)?.znach == 'variable'))
 			ctx.obj.DxL = padStart('x', oD?.znach?.length + 1 || 1, oD?.znach || 0)
 		else ctx.obj.DxL = null
 	}
@@ -30,21 +30,21 @@ const calcParams = (m, ctx) => {
 			ctx.obj.DxL = padEnd(ctx.obj.DxL, ctx.obj.DxL.length + lengt.znach.length, lengt.znach)
 	}
 	//  Чтобы узнать Массу нужно ПЛОТНОСТЬ * (ПЛОЩАДЬ СЕЧЕНИЯ * ДЛИНУ)
-	if(aCS && ctx.obj.DxL) {
+	if (aCS && ctx.obj.DxL) {
 		aCS = JSON.parse(aCS)
 		if(m.material.areaCrossSectional) {
-			let dxl = ctx.obj.DxL.split('x')
-			if(dxl.length == 2 && Number(dxl[1])) {
-				if(isNaN(Number(aCS.znach))) 
+			const dxl = ctx.obj.DxL.split('x')
+			if (dxl.length == 2 && Number(dxl[1])) {
+				if (isNaN(Number(aCS.znach))) 
 					ctx.obj.massZag = floatParse(aCS.znach) 
 					else ctx.obj.massZag = aCS.znach 
 				ctx.inputMassZag = ctx.obj.massZag
-				if(Number(dxl[1]) * Number(ctx.obj.massZag))
+				if (Number(dxl[1]) * Number(ctx.obj.massZag))
 					ctx.obj.massZag = Number(dxl[1]) * Number(ctx.obj.massZag)
 					else ctx.obj.massZag = 0
 			} else {
-				if(isNaN(Number(aCS.znach))) 
-					ctx.obj.massZag = floatParse(aCS.znach) 
+				if (isNaN(Number(aCS.znach))) 
+					ctx.obj.massZag = floatParse(aCS.znach);
 				else
 					ctx.obj.massZag = aCS.znach 
 				ctx.inputMassZag = ctx.obj.massZag
@@ -52,10 +52,10 @@ const calcParams = (m, ctx) => {
 			ctx.obj.trash = ctx.obj.haracteriatic[0].znach - ctx.obj.massZag
 		}
 	}
-	if(density) {
+	if (density) {
 		try {
-			density = JSON.parse(density)
-			ctx.density = density.znach
+			density = JSON.parse(density);
+			ctx.density = density.znach;
 		} catch(e) {console.error(e)}
 	}
 }
@@ -72,9 +72,8 @@ function floatParse(n) {
  * @returns 
  */
 const parseVariableFold = (m, ctx) => {
-	if(!m.material) return false;
+	if (!m.material) return false;
 	try{
-		console.log(m)
 		const diametr = m.material.outsideDiametr ? JSON.parse(m.material.outsideDiametr) : null,
 					areaCS = m.material.areaCrossSectional ? JSON.parse(m.material.areaCrossSectional) : null,
 					height = m.material.height ? JSON.parse(m.material.height) : null,
@@ -83,23 +82,20 @@ const parseVariableFold = (m, ctx) => {
 					width = m.material.width ? JSON.parse(m.material.width) : null,
 					lengt = m.material.length ? JSON.parse(m.material.length) : null;
 
-		if(height) height?.znach == 'variable' ? ctx.obj.height = 0 : ctx.obj.height = returnZnach(m.height);
-		if(thickness) thickness?.znach == 'variable' ? ctx.obj.thickness = 0 : ctx.obj.thickness = returnZnach(m.thickness);
-		if(wallThickness) wallThickness?.znach == 'variable' ? ctx.obj.wallThickness = 0 : ctx.obj.wallThickness = returnZnach(m.wallThickness);
-		if(width) width?.znach == 'variable' ? ctx.obj.width = 0 : ctx.obj.width = returnZnach(m.width);
-		if(lengt) lengt?.znach == 'variable' ? ctx.obj.lengt = 0 : ctx.obj.lengt = returnZnach(m.length);
-		if(areaCS) areaCS?.znach == 'variable' ? ctx.obj.areaCS = 0 : ctx.obj.areaCS = returnZnach(m.areaCrossSectional);
-		if(diametr) diametr?.znach == 'variable' ? ctx.obj.diametr = 0 : ctx.obj.diametr = returnZnach(m.outsideDiametr);
-
-		console.log('diametr, areaCS, height, thickness, wallThickness, width, lengt', 
-			diametr, areaCS, height, thickness, wallThickness, width, lengt);
+		if (height) height?.znach == 'variable' ? ctx.obj.height = 0 : ctx.obj.height = returnZnach(m.height);
+		if (thickness) thickness?.znach == 'variable' ? ctx.obj.thickness = 0 : ctx.obj.thickness = returnZnach(m.thickness);
+		if (wallThickness) wallThickness?.znach == 'variable' ? ctx.obj.wallThickness = 0 : ctx.obj.wallThickness = returnZnach(m.wallThickness);
+		if (width) width?.znach == 'variable' ? ctx.obj.width = 0 : ctx.obj.width = returnZnach(m.width);
+		if (lengt) lengt?.znach == 'variable' ? ctx.obj.lengt = 0 : ctx.obj.lengt = returnZnach(m.length);
+		if (areaCS) areaCS?.znach == 'variable' ? ctx.obj.areaCS = 0 : ctx.obj.areaCS = returnZnach(m.areaCrossSectional);
+		if (diametr) diametr?.znach == 'variable' ? ctx.obj.diametr = 0 : ctx.obj.diametr = returnZnach(m.outsideDiametr);
 		
 	} catch(e) {console.error(e)}
 }
 
 function returnZnach(string) {
 	try {
-		if(!string) return 0;
+		if (!string) return 0;
 		const result = JSON.parse(string);
 		return Number(floatParse(result?.znach)) || 0;
 	} catch(err) {console.error(err)}
@@ -107,7 +103,7 @@ function returnZnach(string) {
 
 
 const changeHaracteristic = (val, inx, ctx) =>  {
-	switch(inx) {
+	switch (inx) {
 		case "diametr":
 			ctx.obj['diametr'] = val;
 			break;

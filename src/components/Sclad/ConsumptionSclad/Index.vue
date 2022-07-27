@@ -131,8 +131,7 @@ export default {
     },
 		selectComplit(complit, e) {
 			this.selected_complit = complit;
-			this.shipment_key = random(1, 999);	
-			console.log(complit);
+			this.shipment_key = random(1, 999);
 			this.tr = eSelectSpan(this.tr, e);
 		},
 		openSh(sh) {

@@ -55,9 +55,6 @@ export default {
     changes(type) {
       this.$emit('unmount_change_har', type)
     }
-	},
-	async mounted() {
-    console.log(this.obj);
 	}
 }
 </script>

@@ -17,9 +17,9 @@
     <div class='table_block'>
       <ShipmentList
         @unmount_set='toSetOrders'
-        @unmount_set_metal='toSetOrdersMetal'
+        @unmount_set_work='toSetOrdersMetal'
         :getShipments='getShipments'
-        :metalloworing='metalloworkingsWorkings' />
+        :workings='metalloworkingsWorkings' />
       <div class="table-scroll" style='margin-left: 5px;'>
         <table id='tablebody'>
           <tbody class='fixed_table_85'>
@@ -43,7 +43,7 @@
               <th>Время на изг-е, ч</th>
               <th>Отходы (стружка), кг</th>
               <th id='discription'>Прим.</th>
-            </tr>
+            </tr> 
             <tr>
               <th colspan="4">
                 <Search 
@@ -62,8 +62,8 @@
             <td>{{ metalowork?.detal?.articl || "Нет детали" }}</td> <!-- Артикл Детали -->
             <td @dblclick="showInformIzdel(metalowork?.detal.id)">{{ metalowork?.detal?.name || "Нет детали" }}</td> <!-- Наименование Детали -->
             <td class='center'>{{ metalowork?.kolvo_shipments }}</td>  <!-- Кол-во ВСЕГО по заказу склада, шт. -->
-            <td class='center link_img' @click='returnShipmentsDateModal(metalowork?.detal)' >
-              {{ returnShipmentsKolvo(metalowork?.detal?.shipments) }}
+            <td class='center link_img'>
+              {{ returnFirstDate(metalowork?.detal?.shipments) == '-' ? returnFirstDate(metalowork?.workings) : returnFirstDate(metalowork?.detal?.shipments) }}
             </td> <!-- Дата план отгрузки -->
             <td class="center">
               <img src="@/assets/img/link.jpg" @click='returnShipmentsDateModal(metalowork?.detal, metalowork)' class='link_img' atl='Показать' />
@@ -150,8 +150,10 @@ import print from 'print-js';
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
 import { eSelectSpan } from '@/js/methods';
+import { worksHorsOperations } from '@/js/operation';
 import { returnShipmentsDate } from '@/js/operation';
 import OpensFile from '@/components/FileBase/OpenFile';
+import { precentWorksAsOperation } from '@/js/operation';
 import DetalModal from '@/components/BaseDetal/DetalModal';
 import { mapActions, mapGetters, mapMutations } from 'vuex';
 import TbodyZag from '@/components/Metalloworking/TableZag';
@@ -252,20 +254,9 @@ export default {
       return 'delete_operation';
     },
     precentWorks(metal) {
-      const tp = metal.tech_process;
-      if (!tp || !tp.operations || !tp.operations.length) return '0%';
-      let kolDetalComplit = 0;
-      for (const item of tp.operations) {
-        if (!item?.marks.length) continue;
-        for (const mark of item.marks) {
-          kolDetalComplit += mark.kol;
-        }
-      }
-      const kolDetalForOpetaion = tp.operations.length * metal.kolvo_shipments;
-      const precent = kolDetalComplit * 100 / kolDetalForOpetaion;
-      return precent.toFixed(0) + '%';
+      return precentWorksAsOperation(metal);
     },
-    returnShipmentsKolvo(shipments, znach_return = 1) {
+    returnFirstDate(shipments, znach_return = 1) {
       return returnShipmentsDate(shipments, znach_return);
     },
     combackArchive() {
@@ -281,7 +272,6 @@ export default {
       this.fetchMetaloworking(this.isArchive)
     }, 
     setObject(obj, e) {
-      console.log(obj);
       this.span = eSelectSpan(this.span, e);
       this.selectMetalloworking = obj;
     },
@@ -371,16 +361,11 @@ export default {
         }
       }
     },
-    showAllTimers(metal) {
-      let count = 0;
-      if (!metal.tech_process) return false;
-      const operations = metal.tech_process.operations;
-      if (!operations || operations.length == 0) return;
+    showAllTimers(work) {
+      const operations = work?.tech_process?.operations;
+      if (!operations || operations.length == 0) return 0;
 
-      for (const operation of operations) {
-        count = Number(count) + (Number(operation.preTime) + (Number(operation.helperTime) + Number(operation.mainTime)) * metal.kolvo_shipments) / 60;
-      }
-      return count.toFixed(2);
+      return worksHorsOperations(operations, work.kolvo_shipments);
     }
   },
 	async mounted() {

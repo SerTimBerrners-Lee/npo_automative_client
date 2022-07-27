@@ -172,6 +172,7 @@
 <script>
 import { random } from 'lodash';
 import { showMessage } from '@/js/';
+import MixModal from '@/mixins/mixmodal';
 import { mapActions, mapMutations } from 'vuex';
 import AddFile from '@/components/FileBase/AddFile';
 import OpensFile from '@/components/FileBase/OpenFile';
@@ -191,10 +192,6 @@ export default {
   },
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'display: none;',
-
       docFiles: [],
       keyWhenModalGenerate: random(1, 999),
       keyWhenModalGenerateFileOpen: random(1, 999),
@@ -239,6 +236,7 @@ export default {
     DatePicterCustom,
     TableDocument
   },
+  mixins: [MixModal],
   methods: {
     ...mapActions([
       'fetchAllShipmentsById',
@@ -247,10 +245,6 @@ export default {
     ]),
     ...mapMutations(['setStatusShipments']),
     destroyModalF(is_true = false) {
-			this.destroyModalLeft = 'left-block-modal-hidden';
-			this.destroyModalRight = 'content-modal-right-menu-hidden';
-			this.hiddens = 'display: none;';
-
       this.$emit('unmount', is_true);
       this.loader = false;
     },
@@ -282,8 +276,7 @@ export default {
 			this.komplect_generate_key = random(1, 999);
 			this.parametrs_komplect = komplect;
 		},
-    openFiles() { 
-      console.log('openFiles')
+    openFiles() {
       this.keyWhenModalGenerateFileOpen = random(1, 999);
       this.showModalFiles = true;
     },
@@ -340,9 +333,6 @@ export default {
     },
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal';
-    this.destroyModalRight = 'content-modal-right-menu';
-    this.hiddens = 'opacity: 1;';
     this.loader = true;
 
     try {

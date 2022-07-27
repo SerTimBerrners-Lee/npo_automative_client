@@ -1,6 +1,6 @@
 <template>
   <div class="right-menu-modal">
-    <div :class='destroyModalLeft' @click="destroyModalF('unmount')"></div>
+    <div :class='destroyModalLeft' @click="deleteStorage()"></div>
     <div :class='destroyModalRight'>
       <div :style="hiddens">
         <h3>Технологический процесс</h3>
@@ -160,8 +160,8 @@
         </div>
 
         <div class="btn-control out-btn-control wh_60p">
-          <button class="btn-status" @click='destroyModalF'>Отменить</button>
-          <button class="btn-status" @click='destroyModalF'>Печать технологического процесса</button>
+          <button class="btn-status" @click='deleteStorage()'>Отменить</button>
+          <button class="btn-status" @click='deleteStorage()'>Печать технологического процесса</button>
           <button class="btn-status btn-black" 
           style="height: 0px;" @click='saveTechProcess'>Сохранить</button>
         </div>
@@ -184,6 +184,8 @@
 import {random, isEmpty} from 'lodash';
 import PATH_TO_SERVER from '@/js/path';
 import { photoPreloadUrl } from '@/js/';
+import MixModal from '@/mixins/mixmodal';
+import { eSelectSpan } from '@/js/methods';
 import AddFile from '@/components/FileBase/AddFile';
 import OpensFile from '@/components/FileBase/OpenFile';
 import { mapGetters, mapActions, mapMutations } from 'vuex';
@@ -194,9 +196,6 @@ export default {
   props: ['techProcessID', 'izd', 'type_open', 'izd_type', 'documents'],
   data() {
     return {
-      destroyModalLeft: 'left-block-modal',
-      destroyModalRight: 'content-modal-right-menu',
-      hiddens: 'opacity: 1;',
       docFiles: [],
       keyWhenModalGenerate: random(10, 999),
       isChangeFolderFile: false,
@@ -217,15 +216,9 @@ export default {
     }
   },
   computed: mapGetters(['allOperationNewList', 'getTypeOperations']),
-  components: {AddFile, AddOperation, MediaSlider, OpensFile},
+  components: { AddFile, AddOperation, MediaSlider, OpensFile },
+  mixins: [MixModal],
   methods: {
-    destroyModalF() {
-      this.destroyModalLeft = 'left-block-modal-hidden';
-      this.destroyModalRight = 'content-modal-right-menu-hidden';
-      this.hiddens = 'display: none;';
-
-      this.deleteStorage();
-    },
     ...mapActions([
       'updateOperationTech', 
       'banOperation', 
@@ -242,72 +235,64 @@ export default {
     },
     addDock(val) {
       val.target.files.forEach(f => {
-        this.docFiles.push(f)
+        this.docFiles.push(f);
       })
-      this.keyWhenModalGenerate = random(10, 999)
-      this.isChangeFolderFile = true
+      this.keyWhenModalGenerate = random(10, 999);
+      this.isChangeFolderFile = true;
     },
     file_unmount(e) { 
-      if(!e) return 0
-      this.formData = e.formData
-      let all = this.formData.getAll("document")
-      if(all) 
+      if (!e) return 0;
+      this.formData = e.formData;
+      const all = this.formData.getAll("document");
+      if (all) 
         all.forEach(f => {
-          this.dataMedia.push({name: f.name, path: f.url, banned: f.banned})
-          this.randomDataMedia = random(10, 999)
+          this.dataMedia.push({name: f.name, path: f.url, banned: f.banned});
+          this.randomDataMedia = random(10, 999);
         })
     },
     addNewOperation() {
-      this.operationSelect = null
-      this.operationPanelShow = true
-      this.operationKey = random(10, 999)
+      this.operationSelect = null;
+      this.operationPanelShow = true;
+      this.operationKey = random(10, 999);
     },
     selectTr(e, operation) {
-      if(this.tr)
-        this.tr.classList.remove('td-row-all')
-      this.tr = e.parentElement
-      this.tr.classList.add('td-row-all')
-      this.operationSelect = operation
+      this.tr = eSelectSpan(this.tr, e.parentElement);
+      this.operationSelect = operation;
     },
     editOperation( ) {
-      if(!this.operationSelect)
-        return 0;
-      this.operationPanelShow = true
-      this.operationKey = random(10, 999)
+      if (!this.operationSelect) return 0;
+      this.operationPanelShow = true;
+      this.operationKey = random(10, 999);
     },
     changeOperation(val, operation, type) {
-      let eqID = operation.eqID
-      let instrumentID = operation.instrumentID
-      let instrumentMerID = operation.instrumentMerID
-      let instrumentOsnID = operation.instrumentOsnID
+      let eqID = operation.eqID;
+      let instrumentID = operation.instrumentID;
+      let instrumentMerID = operation.instrumentMerID;
+      let instrumentOsnID = operation.instrumentOsnID;
 
-      if(type == 'eq') eqID = val
-      if(type == 'inst') instrumentID = val
-      if(type == 'mer') instrumentMerID = val
-      if(type == 'osn') instrumentOsnID = val
+      if (type == 'eq') eqID = val;
+      if (type == 'inst') instrumentID = val;
+      if (type == 'mer') instrumentMerID = val;
+      if (type == 'osn') instrumentOsnID = val;
 
       this.updateOperationTech({
         eqID, instrumentID,  instrumentMerID, instrumentOsnID, id: operation.id
       })
     },
     bannedOperation() {
-      if(!this.operationSelect)
-        return 0;
+      if (!this.operationSelect) return 0;
 
-      this.banOperation(this.operationSelect.id)
+      this.banOperation(this.operationSelect.id);
     },
     saveTechProcess() {
-      if(!this.formData)
-        this.formData = new FormData();
-      if(isEmpty(this.allOperationNewList))
-        return 0;
+      if (!this.formData) this.formData = new FormData();
+      if (isEmpty(this.allOperationNewList)) return 0;
 
-      let operationList = [];
-      for(let tp = 0; tp < this.allOperationNewList.length; tp++) {
+      const operationList = [];
+      for (let tp = 0; tp < this.allOperationNewList.length; tp++) {
         operationList.push({  id: this.allOperationNewList[tp].id })
       }
       this.formData.append("operationList", JSON.stringify(operationList));
-      console.log('Операции перед сохранением ', operationList);
       this.formData.append("description", this.description);
 
       if(this.$props.techProcessID)
@@ -320,7 +305,7 @@ export default {
 
       this.createTechProcess(this.formData).then((res) => {
         this.$emit('unmount', { id: res.id, opers: this.allOperationNewList});
-        this.destroyModalF();
+        this.deleteStorage();
       })
     },
     deleteStorage() {
@@ -328,36 +313,31 @@ export default {
       this.removeOperationStorage();
     },
     setDocs(dc) {
-      this.itemFiles = dc
+      this.itemFiles = dc;
     },
     openDock() {
-      if(isEmpty(this.itemFiles))
-        return 0
-      this.showFile = true
-      this.keyWhenModalGenerateFileOpen = random(10, 999)
+      if (isEmpty(this.itemFiles)) return 0;
+      this.showFile = true;
+      this.keyWhenModalGenerateFileOpen = random(10, 999);
     },
     dragstartOperation(position) {
-      if(position.screenY) this.screenY = position.screenY
+      if (position.screenY) this.screenY = position.screenY;
     },
     dragleaveOperation(position, inx) {
-      if(this.screenY && position.screenY) {
-        if(this.screenY > position.screenY) 
-          this.movingOperation({inx, positionTo: 'top'})
-        if(this.screenY < position.screenY) 
-          this.movingOperation({inx, positionTo: 'bottom'})
+      if (this.screenY && position.screenY) {
+        if (this.screenY > position.screenY) 
+          this.movingOperation({inx, positionTo: 'top'});
+        if (this.screenY < position.screenY) 
+          this.movingOperation({inx, positionTo: 'bottom'});
       }
-      this.screenY = 0
+      this.screenY = 0;
     }
   },
   async mounted() {
-    this.destroyModalLeft = 'left-block-modal'
-    this.destroyModalRight = 'content-modal-right-menu'
-    this.hiddens = 'opacity: 1;'
-
     this.getAllTypeOperations()
 
-    if(this.$props.izd && this.$props.documents && this.$props.documents.length) {
-      for(let doc of this.$props.documents) {
+    if (this.$props.izd && this.$props.documents && this.$props.documents.length) {
+      for (const doc of this.$props.documents) {
         photoPreloadUrl({name: doc.path}, respons => {
           if(respons.type == 'img') this.documentsData.push(doc)
         }, true)
@@ -367,24 +347,22 @@ export default {
       })
     }
 
-    if(this.$props.techProcessID) {
+    if (this.$props.techProcessID) {
       this.fetchTechProcess(this.$props.techProcessID).then((res) => {
-        if(!res) return 0
-        if(res.operations) 
+        if (!res) return 0
+        if (res.operations) 
           this.allOperationMutations(res.operations)
         this.description = res.description;
 
-        console.log('all operations: ', res.operations)
-
         let document_izd = [];
-        if(res.detal && res.detal.documents) document_izd = res.detal.documents;
-        if(res.product && res.product.documents) document_izd = res.product.documents;
-        if(res.cbed && res.cbed.documents) document_izd = res.cbed.documents;
+        if (res.detal && res.detal.documents) document_izd = res.detal.documents;
+        if (res.product && res.product.documents) document_izd = res.product.documents;
+        if (res.cbed && res.cbed.documents) document_izd = res.cbed.documents;
         this.documentsData = res.documents;
 
-        for(let doc of document_izd) {
+        for (const doc of document_izd) {
           photoPreloadUrl({name: doc.path}, respons => {
-            if(respons.type == 'img') this.documentsData.push(doc);
+            if (respons.type == 'img') this.documentsData.push(doc);
           }, true);
         }
 
