@@ -137,7 +137,7 @@ export default {
 
       if (res.ok) return false;
       const result = await res.json();
-      return true;
+      return result;
     },
     async fetchOneEquipment(ctx, id) {
       const res = await Req(`api/equipment/eq/${id}`);
