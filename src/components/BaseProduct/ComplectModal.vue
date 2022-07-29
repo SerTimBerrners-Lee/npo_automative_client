@@ -301,7 +301,7 @@ export default {
             for (const parsDetal of pars) {
               if (parsDetal.det.id == det.obj.id) {
                 det.CB = {
-                  ava_path: item.ava_path,
+                  ava_path: PATH_TO_SERVER+item.ava_path,
                   articl: item.obj.articl
                 }
                 det.kol = Number(parsDetal.kol) * Number(item.kol);
@@ -315,12 +315,12 @@ export default {
         const find = this.detals.find(el => el.obj.id == item.obj.id);
         if (this.parametrs.obj.documents) {
           for (const doc of this.parametrs.obj.documents) {
-            if (doc.ava) this.ava_path = doc.path;
+            if (doc.ava) this.ava_path = PATH_TO_SERVER+doc.path;
           }
         }
         
         item.CB = {
-          ava_path: this.ava_path,
+          ava_path: PATH_TO_SERVER+this.ava_path,
           articl: this.parametrs.obj.articl
         }
         if (!find) this.detals.push(item);

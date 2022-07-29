@@ -5,12 +5,12 @@
       <div class="block header_block">
         <span>Статусы: </span>
         <div>
-          <select 
+          <select
             class='select-small' 
             v-model='selectEnumStatus'>
-            <option 
-              v-for='item of enumStatus' 
-              :key='item' 
+            <option
+              v-for='item of enumStatus'
+              :key='item'
               :value='item'>{{ item }}</option>
           </select>
         </div>
