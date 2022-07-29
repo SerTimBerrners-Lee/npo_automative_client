@@ -320,7 +320,7 @@ export default {
         }
         
         item.CB = {
-          ava_path: PATH_TO_SERVER+this.ava_path,
+          ava_path: this.ava_path,
           articl: this.parametrs.obj.articl
         }
         if (!find) this.detals.push(item);
