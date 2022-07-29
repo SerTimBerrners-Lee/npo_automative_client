@@ -123,8 +123,7 @@ export default {
             ...data,
             cbed_id: komplect.id,
           });
-        }
-        if (this.$props.parametrs.type == 'det') {
+        } else if (this.$props.parametrs.type == 'det') {
           working.push({
             ...data,
             detal_id: komplect.id,
@@ -145,12 +144,12 @@ export default {
     },
   },
   async mounted() {
-    if (this.$props.parametrs) {
-      this.komplect = this.$props.parametrs.izd;
-      for (const item of this.komplect) {
-        if (!item.my_kolvo || item.my_kolvo < 1) 
-          item.my_kolvo = item.min_remaining;
-      }
+    if (!this.$props.parametrs) return this.destroyModalF();
+
+    this.komplect = this.$props.parametrs.izd;
+    for (const item of this.komplect) {
+      if (!item.my_kolvo || item.my_kolvo < 1) 
+        item.my_kolvo = item.min_remaining;
     }
     const count = await this.fetchWorkingsCount() || new Date().getTime();
     this.number_order = this.date_order.slice(this.date_order.length-2) + "-" + (count.count + 1);
